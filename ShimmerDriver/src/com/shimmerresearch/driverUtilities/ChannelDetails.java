@@ -20,31 +20,33 @@ public class ChannelDetails implements Serializable {
 
 	/* Channels are Right bit justified unless otherwise stated */
 	public enum CHANNEL_DATA_TYPE{
-		UNKOWN(0, false),
-		UINT8(1, false),
-		UINT12(2, false),
-		UINT16(2, false),
-		UINT24(3, false),
-		UINT32(4, false),
+		UNKOWN(0, 0, false),
+		UINT8(8, 1, false),
+		UINT12(12, 2, false),
+		UINT16(16, 2, false),
+		UINT24(24, 3, false),
+		UINT32(32, 4, false),
 //		UINT32_SIGNED(4, true),
-		UINT48(6, false),
-		UINT64(8, false),
+		UINT48(48, 6, false),
+		UINT64(64, 8, false),
 		
-		INT8(1, true),
-		INT12(2, true),
+		INT8(8, 1, true),
+		INT12(12, 2, true),
 //		INT12_LBJ(2, true), //Left bit justified 
-		INT16(2, true),
-		INT24(3, true),
-		INT32(4, true),
-		INT72_SIGNED(9, true);
+		INT16(16, 2, true),
+		INT24(24, 3, true),
+		INT32(32, 4, true),
+		INT72(72, 9, true);
 
+		private final int numBits;
 		private final int numBytes;
 		private final boolean isSigned;
 
 	    /**
 	     * @param text
 	     */
-	    private CHANNEL_DATA_TYPE(final int numBytes, boolean isSigned) {
+	    private CHANNEL_DATA_TYPE(int numBits, int numBytes, boolean isSigned) {
+	    	this.numBits = numBits;
 	        this.numBytes = numBytes;
 	        this.isSigned = isSigned;
 	    }
@@ -55,6 +57,28 @@ public class ChannelDetails implements Serializable {
 	    
 	    public boolean isSigned(){
 	    	return isSigned;
+	    }
+	    
+	    public long getMaxVal(){
+	    	if(isSigned){
+		    	long mask = 0;
+		    	for(int i=0;i<numBits-1;i++){
+		    		mask|=(0x01<<i);
+		    	}
+	    		return UtilParseData.calculatetwoscomplement(mask, numBits);
+	    	}
+	    	else{
+	    		return (long) Math.pow(2, numBits);
+	    	}
+	    }
+
+	    public long getMinVal(){
+	    	if(isSigned){
+	    		return UtilParseData.calculatetwoscomplement((0x01<<(numBits-1)), numBits);
+	    	}
+	    	else{
+	    		return 0;
+	    	}
 	    }
 	}
 	

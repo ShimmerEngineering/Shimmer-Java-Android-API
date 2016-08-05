@@ -3551,7 +3551,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			writeInstruction(GET_BAUD_RATE_COMMAND);
 		}
 	}
-	
+
+	public void writeBaudRate() {
+		writeBaudRate(mBluetoothBaudRate);
+	}
+
 	/**
 	 * writeBaudRate(value) sets the baud rate on the Shimmer. 
 	 * @param value numeric value defining the desired Baud rate. Valid rate settings are 0 (115200 default),

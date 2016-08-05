@@ -46,7 +46,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilCalibration;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
-import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.SENSITIVITY_SCALE_FACTOR;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -751,28 +751,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3,
 			SensorMPU9X50.SensitivityMatrixGyro250dpsShimmer3,
 			SensorMPU9X50.OffsetVectorGyroShimmer3,
-			SENSITIVITY_SCALE_FACTOR.HUNDRED);
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro500 = new CalibDetailsKinematic(
 			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], 
 			SensorMPU9X50.ListofGyroRange[1],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3, 
 			SensorMPU9X50.SensitivityMatrixGyro500dpsShimmer3,
 			SensorMPU9X50.OffsetVectorGyroShimmer3,
-			SENSITIVITY_SCALE_FACTOR.HUNDRED);
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro1000 = new CalibDetailsKinematic(
 			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], 
 			SensorMPU9X50.ListofGyroRange[2],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3, 
 			SensorMPU9X50.SensitivityMatrixGyro1000dpsShimmer3, 
 			SensorMPU9X50.OffsetVectorGyroShimmer3,
-			SENSITIVITY_SCALE_FACTOR.HUNDRED);
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro2000 = new CalibDetailsKinematic(
 			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3],
 			SensorMPU9X50.ListofGyroRange[3],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3, 
 			SensorMPU9X50.SensitivityMatrixGyro2000dpsShimmer3, 
 			SensorMPU9X50.OffsetVectorGyroShimmer3,
-			SENSITIVITY_SCALE_FACTOR.HUNDRED);
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	
 	protected TreeMap<Integer, CalibDetails> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetails>(); 
 	{
@@ -797,12 +797,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	/** all raw params should start with a 1 byte identifier in position [0] */
 	protected byte[] mMagCalRawParams  = new byte[22];	
-
-//	protected boolean mDefaultCalibrationParametersMag = true;	
-//	
-//	protected double[][] mAlignmentMatrixMagnetometer = {{1,0,0},{0,1,0},{0,0,-1}};				
-//	protected double[][] mSensitivityMatrixMagnetometer = {{580,0,0},{0,580,0},{0,0,580}};	
-//	protected double[][] mOffsetVectorMagnetometer = {{0},{0},{0}};
 
 	//Shimmer2/2r Calibration - Default values
 	protected static final double[][] AlignmentMatrixMagShimmer2 = {{1,0,0},{0,1,0},{0,0,-1}};
@@ -970,17 +964,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// ----------- Pressure/Temperature Start -------------------------
 	protected int mPressureResolution = 0;
 	
-//	protected double pressTempAC1 = 408;          
-//	protected double pressTempAC2 = -72;
-//	protected double pressTempAC3 = -14383;
-//	protected double pressTempAC4 = 332741;
-//	protected double pressTempAC5 = 32757;
-//	protected double pressTempAC6 = 23153;
-//	protected double pressTempB1 = 6190;
-//	protected double pressTempB2 = 4;
-//	protected double pressTempMB = -32767;
-//	protected double pressTempMC = -8711;
-//	protected double pressTempMD = 2868;
 	private CalibDetailsBmp180 mCalibDetailsBmp180 = new CalibDetailsBmp180();
 	
 	protected byte[] mPressureCalRawParams = new byte[23];
@@ -4576,43 +4559,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void sendStatusMsgPacketLossDetected() {
 	}
 
-//	protected double[] calibratePressureSensorData(double UP, double UT){
-//		double X1 = (UT - pressTempAC6) * pressTempAC5 / 32768;
-//		double X2 = (pressTempMC * 2048 / (X1 + pressTempMD));
-//		double B5 = X1 + X2;
-//		double T = (B5 + 8) / 16;
-//
-//		double B6 = B5 - 4000;
-//		X1 = (pressTempB2 * (Math.pow(B6,2)/ 4096)) / 2048;
-//		X2 = pressTempAC2 * B6 / 2048;
-//		double X3 = X1 + X2;
-//		double B3 = (((pressTempAC1 * 4 + X3)*(1<<mPressureResolution) + 2)) / 4;
-//		X1 = pressTempAC3 * B6 / 8192;
-//		X2 = (pressTempB1 * (Math.pow(B6,2)/ 4096)) / 65536;
-//		X3 = ((X1 + X2) + 2) / 4;
-//		double B4 = pressTempAC4 * (X3 + 32768) / 32768;
-//		double B7 = (UP - B3) * (50000>>mPressureResolution);
-//		double p=0;
-//		if (B7 < 2147483648L ){ //0x80000000
-//			p = (B7 * 2) / B4;
-//		}
-//		else{
-//			p = (B7 / B4) * 2;
-//		}
-//		X1 = ((p / 256.0) * (p / 256.0) * 3038) / 65536;
-//		X2 = (-7357 * p) / 65536;
-//		p = p +( (X1 + X2 + 3791) / 16);
-//
-//		double[] caldata = new double[2];
-//		caldata[0]=p;
-//		caldata[1]=T/10;
-//		return caldata;
-//	}
-
-
 	protected static double calibrateU12AdcValue(double uncalibratedData,double offset,double vRefP,double gain){
-//		double calibratedData=(uncalibratedData-offset)*(((vRefP*1000)/gain)/4095);
-//		return calibratedData;
 		return SensorADC.calibrateU12AdcValue(uncalibratedData, offset, vRefP, gain);
 	}
 	
@@ -4627,29 +4574,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	*/
 	protected static double calibratePhillipsSkinTemperatureData(double uncalibratedData){
-//		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
-//		double y = -27.42*Math.log(x) + 56.502;
-//		return y;
 		return SensorBridgeAmp.calibratePhillipsSkinTemperatureData(uncalibratedData);
 	}
 
-//	protected static double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
-//		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
-//		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
-//		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
-//		//the following is the new linear method see user GSR user guide for further details
-//		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
-//		return gsrCalibratedData;  
-//	}
-// 
-//	protected static double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
-//		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
-//		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
-//		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
-//		//the following is the new linear method see user GSR user guide for further details
-//		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
-//		return gsrCalibratedData;  
-//	}
 
 //	public double getSamplingRateShimmer(){
 //		return getSamplingRateShimmer(COMMUNICATION_TYPE.SD); 
@@ -7450,47 +7377,47 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public double getPressTempAC1(){
-		return mCalibDetailsBmp180.pressTempAC1;
+		return mCalibDetailsBmp180.AC1;
 	}
 	
 	public double getPressTempAC2(){
-		return mCalibDetailsBmp180.pressTempAC2;
+		return mCalibDetailsBmp180.AC2;
 	}
 	
 	public double getPressTempAC3(){
-		return mCalibDetailsBmp180.pressTempAC3;
+		return mCalibDetailsBmp180.AC3;
 	}
 	
 	public double getPressTempAC4(){
-		return mCalibDetailsBmp180.pressTempAC4;
+		return mCalibDetailsBmp180.AC4;
 	}
 	
 	public double getPressTempAC5(){
-		return mCalibDetailsBmp180.pressTempAC5;
+		return mCalibDetailsBmp180.AC5;
 	}
 	
 	public double getPressTempAC6(){
-		return mCalibDetailsBmp180.pressTempAC6;
+		return mCalibDetailsBmp180.AC6;
 	}
 	
 	public double getPressTempB1(){
-		return mCalibDetailsBmp180.pressTempB1;
+		return mCalibDetailsBmp180.B1;
 	}
 	
 	public double getPressTempB2(){
-		return mCalibDetailsBmp180.pressTempB2;
+		return mCalibDetailsBmp180.B2;
 	}
 	
 	public double getPressTempMB(){
-		return mCalibDetailsBmp180.pressTempMB;
+		return mCalibDetailsBmp180.MB;
 	}
 	
 	public double getPressTempMC(){
-		return mCalibDetailsBmp180.pressTempMC;
+		return mCalibDetailsBmp180.MC;
 	}
 	
 	public double getPressTempMD(){
-		return mCalibDetailsBmp180.pressTempMD;
+		return mCalibDetailsBmp180.MD;
 	}
 
 
@@ -7875,461 +7802,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else if(packetType==MAG_CALIBRATION_RESPONSE){
 			parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.SD_HEADER);
 		}
-
-//		if (packetType==ACCEL_CALIBRATION_RESPONSE 
-//				|| packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE 
-//				|| packetType==GYRO_CALIBRATION_RESPONSE 
-//				|| packetType==MAG_CALIBRATION_RESPONSE ){
-//			
-//			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"}; 
-//			int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType); // using the datatype the calibration parameters are converted
-//			double[] AM=new double[9];
-//			for (int i=0;i<9;i++){
-//				AM[i]=((double)formattedPacket[6+i])/100;
-//			}
-//
-//			double[][] AlignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-//			double[][] SensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-//			double[][] OffsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-//			
-//			if(packetType==ACCEL_CALIBRATION_RESPONSE){
-//				if(checkIfDefaultAccelCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
-//					mDefaultCalibrationParametersAccel = true;
-//					mAlignmentMatrixAnalogAccel = AlignmentMatrix;
-//					mOffsetVectorAnalogAccel = OffsetVector;
-//					mSensitivityMatrixAnalogAccel = SensitivityMatrix;
-//				}
-//				else if (SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
-//					mDefaultCalibrationParametersAccel = false;
-//					mAlignmentMatrixAnalogAccel = AlignmentMatrix;
-//					mOffsetVectorAnalogAccel = OffsetVector;
-//					mSensitivityMatrixAnalogAccel = SensitivityMatrix;
-//				} 
-//				else if(SensitivityMatrix[0][0]==-1){
-//					if(mShimmerVerObject.isShimmerGen2()){
-//						mDefaultCalibrationParametersAccel = true;
-//						mAlignmentMatrixAnalogAccel = AlignmentMatrixAccelShimmer2;
-//						mOffsetVectorAnalogAccel = OffsetVectorAccelShimmer2;
-//						if (getAccelRange()==0){
-//							mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
-//						} else if (getAccelRange()==1){
-//							mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
-//						} else if (getAccelRange()==2){
-//							mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
-//						} else if (getAccelRange()==3){
-//							mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
-//						}
-//					} 
-//					else {
-//						setDefaultCalibrationShimmer3LowNoiseAccel();
-//					}
-//				}
-//				
-//				updateCalibMapAccelLn();
-//			}
-//			
-//			if(packetType==LSM303DLHC_ACCEL_CALIBRATION_RESPONSE){
-//				if(checkIfDefaultWideRangeAccelCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
-//					mDefaultCalibrationParametersDigitalAccel = true;
-//					mAlignmentMatrixWRAccel = AlignmentMatrix;
-//					mOffsetVectorWRAccel = OffsetVector;
-//					mSensitivityMatrixWRAccel = SensitivityMatrix;
-//				}
-//				else if (SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
-//					mDefaultCalibrationParametersDigitalAccel = false;
-//					mAlignmentMatrixWRAccel = AlignmentMatrix;
-//					mOffsetVectorWRAccel = OffsetVector;
-//					mSensitivityMatrixWRAccel = SensitivityMatrix;
-//				}
-//				else if(SensitivityMatrix[0][0]==-1){
-//					setDefaultCalibrationShimmer3WideRangeAccel();
-//				}
-//				
-//				updateCalibMapAccelWr();
-//			}
-//			
-//			else if(packetType==GYRO_CALIBRATION_RESPONSE){
-//				if(checkIfDefaulGyroCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
-//					mDefaultCalibrationParametersGyro = true;
-//					mAlignmentMatrixGyroscope = AlignmentMatrix;
-//					mOffsetVectorGyroscope = OffsetVector;
-//					mSensitivityMatrixGyroscope = SensitivityMatrix;
-//					for(int i=0;i<=2;i++){
-//						mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
-//					}
-//				}
-//				else if (SensitivityMatrix[0][0]!=-1) {
-//					mDefaultCalibrationParametersGyro = false;
-//					mAlignmentMatrixGyroscope = AlignmentMatrix;
-//					mOffsetVectorGyroscope = OffsetVector;
-//					mSensitivityMatrixGyroscope = SensitivityMatrix;
-//					for(int i=0;i<=2;i++){
-//						mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
-//					}
-//				} 
-//				else if(SensitivityMatrix[0][0]==-1){
-//					if(mShimmerVerObject.isShimmerGen2()){
-//						mDefaultCalibrationParametersGyro = true;
-//						mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
-//						mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
-//						mSensitivityMatrixGyroscope = SensitivityMatrixGyroShimmer2;	
-//					} 
-//					else {
-//						setDefaultCalibrationShimmer3Gyro();
-//					}
-//				} 
-//				
-//				updateCalibMapGyro();
-//			}
-//			
-//			else if(packetType==MAG_CALIBRATION_RESPONSE){
-//				if(checkIfDefaulMagCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
-//					mDefaultCalibrationParametersMag = true;
-//					mAlignmentMatrixMagnetometer = AlignmentMatrix;
-//					mOffsetVectorMagnetometer = OffsetVector;
-//					mSensitivityMatrixMagnetometer = SensitivityMatrix;
-//				}
-//				else if (SensitivityMatrix[0][0]!=-1) {
-//					mDefaultCalibrationParametersMag = false;
-//					mAlignmentMatrixMagnetometer = AlignmentMatrix;
-//					mOffsetVectorMagnetometer = OffsetVector;
-//					mSensitivityMatrixMagnetometer = SensitivityMatrix;
-//				}
-//				else if(SensitivityMatrix[0][0]==-1){
-//					mDefaultCalibrationParametersMag = true;
-//					if(mShimmerVerObject.isShimmerGen2()){
-//						mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer2;
-//						mOffsetVectorMagnetometer = OffsetVectorMagShimmer2;
-//						if (mMagRange==0){
-//							mSensitivityMatrixMagnetometer = SensitivityMatrixMag0p8GaShimmer2;
-//						} else if (mMagRange==1){
-//							mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer2;
-//						} else if (mMagRange==2){
-//							mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer2;
-//						} else if (mMagRange==3){
-//							mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer2;
-//						} else if (mMagRange==4){
-//							mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p0GaShimmer2;
-//						} else if (mMagRange==5){
-//							mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer2;
-//						} else if (mMagRange==6){
-//							mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer2;
-//						} else if (mMagRange==7){
-//							mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer2;
-//						}
-//					} else {
-//						setDefaultCalibrationShimmer3Mag();
-//					}
-//				}
-//				
-//				updateCalibMapMag();
-//			}
-//		}
 	}
 	
 	public void parseCalibParamFromPacketGyro(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
-//		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
-//		double[][] OffsetVector = calibDetailsKinematic.getCurrentOffsetVector();
-//		double[][] SensitivityMatrix = calibDetailsKinematic.getCurrentSensitivityMatrix();
-//		double[][] AlignmentMatrix = calibDetailsKinematic.getCurrentAlignmentMatrix();
-//		
-//		if (SensitivityMatrix[0][0]!=-1) {
-//			mAlignmentMatrixGyroscope = AlignmentMatrix;
-//			mOffsetVectorGyroscope = OffsetVector;
-//			mSensitivityMatrixGyroscope = SensitivityMatrix;
-//			for(int i=0;i<=2;i++){
-//				mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
-//			}
-//		} 
-//		else if(SensitivityMatrix[0][0]==-1){
-//			if(mShimmerVerObject.isShimmerGen2()){
-//				mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
-//				mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
-//				mSensitivityMatrixGyroscope = SensitivityMatrixGyroShimmer2;	
-//			} 
-//			else {
-//				setDefaultCalibrationShimmer3Gyro();
-//			}
-//		} 
-//		
-//		mDefaultCalibrationParametersGyro = checkIfDefaultGyroCal(mOffsetVectorGyroscope, mSensitivityMatrixGyroscope, mAlignmentMatrixGyroscope);
-//		updateCalibMapGyro();
-		
 		mCurrentCalibDetailsGyro.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
 	public void parseCalibParamFromPacketAccelAnalog(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
-//		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
-//		double[][] OffsetVector = calibDetailsKinematic.getCurrentOffsetVector();
-//		double[][] SensitivityMatrix = calibDetailsKinematic.getCurrentSensitivityMatrix();
-//		double[][] AlignmentMatrix = calibDetailsKinematic.getCurrentAlignmentMatrix();
-//		
-//		if (SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
-//			mAlignmentMatrixAnalogAccel = AlignmentMatrix;
-//			mOffsetVectorAnalogAccel = OffsetVector;
-//			mSensitivityMatrixAnalogAccel = SensitivityMatrix;
-//		} 
-//		else if(SensitivityMatrix[0][0]==-1){
-//			if(mShimmerVerObject.isShimmerGen2()){
-//				mAlignmentMatrixAnalogAccel = AlignmentMatrixAccelShimmer2;
-//				mOffsetVectorAnalogAccel = OffsetVectorAccelShimmer2;
-//				if (getAccelRange()==0){
-//					mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
-//				} else if (getAccelRange()==1){
-//					mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
-//				} else if (getAccelRange()==2){
-//					mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
-//				} else if (getAccelRange()==3){
-//					mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
-//				}
-//			} 
-//			else {
-//				setDefaultCalibrationShimmer3LowNoiseAccel();
-//			}
-//		}
-//			
-//		mDefaultCalibrationParametersAccel = checkIfDefaultAccelCal(mOffsetVectorAnalogAccel, mSensitivityMatrixAnalogAccel, mAlignmentMatrixAnalogAccel);
-//		updateCalibMapAccelLn();
-		
 		mCurrentCalibDetailsAccelLn.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
 	public void parseCalibParamFromPacketAccelLsm(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
-//		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
-//		double[][] OffsetVector = calibDetailsKinematic.getCurrentOffsetVector();
-//		double[][] SensitivityMatrix = calibDetailsKinematic.getCurrentSensitivityMatrix();
-//		double[][] AlignmentMatrix = calibDetailsKinematic.getCurrentAlignmentMatrix();
-//
-//		if (SensitivityMatrix[0][0]!=-1) {   //used to be 65535 but changed to -1 as we are now using i16
-//			mAlignmentMatrixWRAccel = AlignmentMatrix;
-//			mOffsetVectorWRAccel = OffsetVector;
-//			mSensitivityMatrixWRAccel = SensitivityMatrix;
-//		}
-//		else if(SensitivityMatrix[0][0]==-1){
-//			setDefaultCalibrationShimmer3WideRangeAccel();
-//		}
-//		
-//		mDefaultCalibrationParametersDigitalAccel = checkIfDefaultWideRangeAccelCal(mOffsetVectorWRAccel, mSensitivityMatrixWRAccel, mAlignmentMatrixWRAccel);
-//		updateCalibMapAccelWr();
-		
 		mCurrentCalibDetailsAccelWr.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
 	public void parseCalibParamFromPacketMag(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
-//		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
-//		double[][] OffsetVector = calibDetailsKinematic.getCurrentOffsetVector();
-//		double[][] SensitivityMatrix = calibDetailsKinematic.getCurrentSensitivityMatrix();
-//		double[][] AlignmentMatrix = calibDetailsKinematic.getCurrentAlignmentMatrix();
-//
-//		if (SensitivityMatrix[0][0]!=-1) {
-//			mAlignmentMatrixMagnetometer = AlignmentMatrix;
-//			mOffsetVectorMagnetometer = OffsetVector;
-//			mSensitivityMatrixMagnetometer = SensitivityMatrix;
-//		}
-//		else if(SensitivityMatrix[0][0]==-1){
-//			if(mShimmerVerObject.isShimmerGen2()){
-//				mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer2;
-//				mOffsetVectorMagnetometer = OffsetVectorMagShimmer2;
-//				if (getMagRange()==0){
-//					mSensitivityMatrixMagnetometer = SensitivityMatrixMag0p8GaShimmer2;
-//				} else if (getMagRange()==1){
-//					mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p3GaShimmer2;
-//				} else if (getMagRange()==2){
-//					mSensitivityMatrixMagnetometer = SensitivityMatrixMag1p9GaShimmer2;
-//				} else if (getMagRange()==3){
-//					mSensitivityMatrixMagnetometer = SensitivityMatrixMag2p5GaShimmer2;
-//				} else if (getMagRange()==4){
-//					mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p0GaShimmer2;
-//				} else if (getMagRange()==5){
-//					mSensitivityMatrixMagnetometer = SensitivityMatrixMag4p7GaShimmer2;
-//				} else if (getMagRange()==6){
-//					mSensitivityMatrixMagnetometer = SensitivityMatrixMag5p6GaShimmer2;
-//				} else if (getMagRange()==7){
-//					mSensitivityMatrixMagnetometer = SensitivityMatrixMag8p1GaShimmer2;
-//				}
-//			} 
-//			else {
-//				setDefaultCalibrationShimmer3Mag();
-//			}
-//		}
-//		
-//		mDefaultCalibrationParametersMag = checkIfDefaulMagCal(mOffsetVectorMagnetometer, mSensitivityMatrixMagnetometer, mAlignmentMatrixMagnetometer);
-//		updateCalibMapMag();
-		
 		mCurrentCalibDetailsMag.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
-//	private void updateCalibMapAccelLn() {
-//		int rangeValue = 0;
-//		CalibDetails calDetails = mCalibMapAccelAnalogShimmer3.get(rangeValue);
-//		if(calDetails==null){
-//			String rangeString = "+/- 2g";
-//			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
-//		}
-//		((CalibDetailsKinematic)calDetails).setCurrentValues(mAlignmentMatrixAnalogAccel, mSensitivityMatrixAnalogAccel, mOffsetVectorAnalogAccel);
-//		mCalibMapAccelAnalogShimmer3.put(rangeValue, calDetails);
-//	}
-
-//	private void updateCalibMapAccelWr() {
-//		int rangeValue = getAccelRange();
-//		CalibDetails calDetails = mCalibMapAccelWideRangeShimmer3.get(rangeValue);
-//		if(calDetails==null){
-//			String rangeString = ConfigOptionDetails.getConfigStringFromConfigValue(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues, SensorLSM303.ListofAccelRange, rangeValue);
-//			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
-//		}
-//		((CalibDetailsKinematic)calDetails).setCurrentValues(mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
-//		mCalibMapAccelWideRangeShimmer3.put(rangeValue, calDetails);
-//	}
-
-//	private void updateCalibMapGyro() {
-//		int rangeValue = getGyroRange();
-//		CalibDetails calDetails = mCalibMapGyroShimmer3.get(rangeValue);
-//		if(calDetails==null){
-//			String rangeString = ConfigOptionDetails.getConfigStringFromConfigValue(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues, SensorMPU9X50.ListofGyroRange, rangeValue);
-//			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
-//		}
-//		((CalibDetailsKinematic)calDetails).setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
-//		mCalibMapGyroShimmer3.put(rangeValue, calDetails);
-//	}
-	
-//	private void updateCalibMapMag() {
-//		int rangeValue = getMagRange();
-//		CalibDetails calDetails = mCalibMapMagShimmer3.get(rangeValue);
-//		if(calDetails==null){ //Should never be null
-//			String rangeString = ConfigOptionDetails.getConfigStringFromConfigValue(SensorLSM303.ListofMagRangeConfigValues, SensorLSM303.ListofMagRange, rangeValue);
-//			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
-//		}
-//		((CalibDetailsKinematic)calDetails).setCurrentValues(mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
-//		mCalibMapMagShimmer3.put(rangeValue, calDetails);
-//	}
-
-//	private boolean checkIfDefaultAccelCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
-//		
-//		double[][] offsetVectorToCompare = OffsetVectorLowNoiseAccelShimmer3;
-//		double[][] sensitivityVectorToCompare = SensitivityMatrixLowNoiseAccel2gShimmer3;
-//		double[][] alignmentVectorToCompare = AlignmentMatrixLowNoiseAccelShimmer3;
-//		
-//		if(mShimmerVerObject.isShimmerGen2()){
-//			alignmentVectorToCompare = AlignmentMatrixAccelShimmer2;
-//			offsetVectorToCompare = OffsetVectorAccelShimmer2;
-//			if (getAccelRange()==0){
-//				sensitivityVectorToCompare = SensitivityMatrixAccel1p5gShimmer2; 
-//			} else if (getAccelRange()==1){
-//				sensitivityVectorToCompare = SensitivityMatrixAccel2gShimmer2; 
-//			} else if (getAccelRange()==2){
-//				sensitivityVectorToCompare = SensitivityMatrixAccel4gShimmer2; 
-//			} else if (getAccelRange()==3){
-//				sensitivityVectorToCompare = SensitivityMatrixAccel6gShimmer2; 
-//			}
-//		} 
-//		
-//		return UtilCalibration.isCalibrationEqual(
-//				alignmentMatrixToTest, offsetVectorToTest, sensitivityMatrixToTest,
-//				alignmentVectorToCompare, offsetVectorToCompare, sensitivityVectorToCompare);
-//	}
-
-//	@Deprecated
-//	private boolean checkIfDefaultWideRangeAccelCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
-//		
-//		double[][] offsetVectorToCompare = OffsetVectorWideRangeAccelShimmer3;
-//		double[][] sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel2gShimmer3;
-//		double[][] alignmentVectorToCompare = AlignmentMatrixWideRangeAccelShimmer3;
-//		
-//		if (getAccelRange()==0){
-//			sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel2gShimmer3;
-//		} else if (getAccelRange()==1){
-//			sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel4gShimmer3;
-//		} else if (getAccelRange()==2){
-//			sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel8gShimmer3;
-//		} else if (getAccelRange()==3){
-//			sensitivityVectorToCompare = SensitivityMatrixWideRangeAccel16gShimmer3;
-//		}
-//		
-//		return UtilCalibration.isCalibrationEqual(
-//				alignmentMatrixToTest, offsetVectorToTest, sensitivityMatrixToTest,
-//				alignmentVectorToCompare, offsetVectorToCompare, sensitivityVectorToCompare);
-//	}
-
-//	@Deprecated 
-//	private boolean checkIfDefaultGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
-//		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer2;
-//		double[][] sensitivityVectorToCompare = SensitivityMatrixGyroShimmer2;
-//		double[][] alignmentVectorToCompare = AlignmentMatrixGyroShimmer2;
-//		
-//		if(getHardwareVersion()==HW_ID.SHIMMER_3){
-//			if (getGyroRange()==0){
-//				sensitivityVectorToCompare = SensitivityMatrixGyro250dpsShimmer3;
-//			} else if (getGyroRange()==1){
-//				sensitivityVectorToCompare = SensitivityMatrixGyro500dpsShimmer3;
-//			} else if (getGyroRange()==2){
-//				sensitivityVectorToCompare = SensitivityMatrixGyro1000dpsShimmer3;
-//			} else if (getGyroRange()==3){
-//				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
-//			}
-//			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
-//			offsetVectorToCompare = OffsetVectorGyroShimmer3;
-//		}
-//		
-//		for(int i=0;i<=2;i++){
-//			sensitivityVectorToCompare[i][i] = sensitivityVectorToCompare[i][i]*100;
-//		}
-//		
-//		return UtilCalibration.isCalibrationEqual(
-//				alignmentMatrixToTest, offsetVectorToTest, sensitivityMatrixToTest,
-//				alignmentVectorToCompare, offsetVectorToCompare, sensitivityVectorToCompare);
-//	}
-	
-//	private boolean checkIfDefaulMagCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
-//		double[][] offsetVectorToCompare = new double[][]{};
-//		double[][] sensitivityVectorToCompare = new double[][]{};
-//		double[][] alignmentVectorToCompare = new double[][]{};
-//		
-//		if(getHardwareVersion()==HW_ID.SHIMMER_3){
-//			alignmentVectorToCompare = AlignmentMatrixMagShimmer3;
-//			offsetVectorToCompare = OffsetVectorMagShimmer3;
-//			if (getMagRange()==1){
-//				sensitivityVectorToCompare = SensitivityMatrixMag1p3GaShimmer3;
-//			} else if (getMagRange()==2){
-//				sensitivityVectorToCompare = SensitivityMatrixMag1p9GaShimmer3;
-//			} else if (getMagRange()==3){
-//				sensitivityVectorToCompare = SensitivityMatrixMag2p5GaShimmer3;
-//			} else if (getMagRange()==4){
-//				sensitivityVectorToCompare = SensitivityMatrixMag4GaShimmer3;
-//			} else if (getMagRange()==5){
-//				sensitivityVectorToCompare = SensitivityMatrixMag4p7GaShimmer3;
-//			} else if (getMagRange()==6){
-//				sensitivityVectorToCompare = SensitivityMatrixMag5p6GaShimmer3;
-//			} else if (getMagRange()==7){
-//				sensitivityVectorToCompare = SensitivityMatrixMag8p1GaShimmer3;
-//			}
-//		}
-//		else{
-//			alignmentVectorToCompare = AlignmentMatrixMagShimmer2;
-//			offsetVectorToCompare = OffsetVectorMagShimmer2;
-//			if (getMagRange()==0){
-//				sensitivityVectorToCompare = SensitivityMatrixMag0p8GaShimmer2;
-//			} else if (getMagRange()==1){
-//				sensitivityVectorToCompare = SensitivityMatrixMag1p3GaShimmer2;
-//			} else if (getMagRange()==2){
-//				sensitivityVectorToCompare = SensitivityMatrixMag1p9GaShimmer2;
-//			} else if (getMagRange()==3){
-//				sensitivityVectorToCompare = SensitivityMatrixMag2p5GaShimmer2;
-//			} else if (getMagRange()==4){
-//				sensitivityVectorToCompare = SensitivityMatrixMag4p0GaShimmer2;
-//			} else if (getMagRange()==5){
-//				sensitivityVectorToCompare = SensitivityMatrixMag4p7GaShimmer2;
-//			} else if (getMagRange()==6){
-//				sensitivityVectorToCompare = SensitivityMatrixMag5p6GaShimmer2;
-//			} else if (getMagRange()==7){
-//				sensitivityVectorToCompare = SensitivityMatrixMag8p1GaShimmer2;
-//			}			
-//		}
-//		
-//		return UtilCalibration.isCalibrationEqual(
-//				alignmentMatrixToTest, offsetVectorToTest, sensitivityMatrixToTest,
-//				alignmentVectorToCompare, offsetVectorToCompare, sensitivityVectorToCompare);
-//	}
-	
 	public void setDefaultCalibrationShimmer3StandardImus(){
 		setDefaultCalibrationShimmer3LowNoiseAccel();
 		setDefaultCalibrationShimmer3WideRangeAccel();
@@ -8338,75 +7828,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	private void setDefaultCalibrationShimmer3LowNoiseAccel() {
-//		mDefaultCalibrationParametersAccel = true;
-//		mSensitivityMatrixAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixLowNoiseAccel2gShimmer3);
-//		mAlignmentMatrixAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixLowNoiseAccelShimmer3);
-//		mOffsetVectorAnalogAccel = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorLowNoiseAccelShimmer3);
-//		
-//		updateCalibMapAccelLn();
-		
 		mCurrentCalibDetailsAccelLn.resetToDefaultParameters();
 	}
 	
 	private void setDefaultCalibrationShimmer3WideRangeAccel() {
-//		mDefaultCalibrationParametersDigitalAccel = true;
-//		if (getAccelRange()==0){
-//			mSensitivityMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixWideRangeAccel2gShimmer3);
-//		} else if (getAccelRange()==1){
-//			mSensitivityMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixWideRangeAccel4gShimmer3);
-//		} else if (getAccelRange()==2){
-//			mSensitivityMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixWideRangeAccel8gShimmer3);
-//		} else if (getAccelRange()==3){
-//			mSensitivityMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixWideRangeAccel16gShimmer3);
-//		}
-//		mAlignmentMatrixWRAccel = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixWideRangeAccelShimmer3);
-//		mOffsetVectorWRAccel = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorWideRangeAccelShimmer3);
-//		
-//		updateCalibMapAccelWr();
-		
 		mCurrentCalibDetailsAccelWr.resetToDefaultParameters();
 	}
 
 	private void setDefaultCalibrationShimmer3Gyro() {
-//		mDefaultCalibrationParametersGyro = true;
-//		if (getGyroRange()==0){
-//			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
-//		} else if (getGyroRange()==1){
-//			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
-//		} else if (getGyroRange()==2){
-//			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
-//		} else if (getGyroRange()==3){
-//			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
-//		}
-//		mAlignmentMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixGyroShimmer3);
-//		mOffsetVectorGyroscope = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorGyroShimmer3);
-//		
-//		updateCalibMapGyro();
-		
 		mCurrentCalibDetailsGyro.resetToDefaultParameters();
 	}
 
 	private void setDefaultCalibrationShimmer3Mag() {
-//		mAlignmentMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixMagShimmer3);
-//		mOffsetVectorMagnetometer = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorMagShimmer3);
-//		if (getMagRange()==1){
-//			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag1p3GaShimmer3);
-//		} else if (getMagRange()==2){
-//			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag1p9GaShimmer3);
-//		} else if (getMagRange()==3){
-//			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag2p5GaShimmer3);
-//		} else if (getMagRange()==4){
-//			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag4GaShimmer3);
-//		} else if (getMagRange()==5){
-//			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag4p7GaShimmer3);
-//		} else if (getMagRange()==6){
-//			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag5p6GaShimmer3);
-//		} else if (getMagRange()==7){
-//			mSensitivityMatrixMagnetometer = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixMag8p1GaShimmer3);
-//		}
-//		
-//		updateCalibMapMag();
-		
 		mCurrentCalibDetailsMag.resetToDefaultParameters();
 	}
 	
@@ -10295,32 +9728,26 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 	public double[][] getAlignmentMatrixWRAccel(){
-//		return mAlignmentMatrixWRAccel;
 		return mCurrentCalibDetailsAccelWr.getCurrentAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixWRAccel(){
-//		return mSensitivityMatrixWRAccel;
 		return mCurrentCalibDetailsAccelWr.getCurrentSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixWRAccel(){
-//		return mOffsetVectorWRAccel;
 		return mCurrentCalibDetailsAccelWr.getCurrentOffsetVector();
 	}
 
 	public double[][] getAlignmentMatrixMag(){
-//		return mAlignmentMatrixMagnetometer;
 		return mCurrentCalibDetailsMag.getCurrentAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixMag(){
-//		return mSensitivityMatrixMagnetometer;
 		return mCurrentCalibDetailsMag.getCurrentSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixMag(){
-//		return mOffsetVectorMagnetometer;
 		return mCurrentCalibDetailsMag.getCurrentOffsetVector();
 	}
 
@@ -10834,17 +10261,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
     
 	public double[][] getAlignmentMatrixGyro(){
-//		return mAlignmentMatrixGyroscope;
 		return mCurrentCalibDetailsGyro.getCurrentAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixGyro(){
-//		return mSensitivityMatrixGyroscope;
 		return mCurrentCalibDetailsGyro.getCurrentSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixGyro(){
-//		return mOffsetVectorGyroscope;
 		return mCurrentCalibDetailsGyro.getCurrentOffsetVector();
 	}
 	

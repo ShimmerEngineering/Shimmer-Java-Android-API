@@ -19,7 +19,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
-import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.SENSITIVITY_SCALE_FACTOR;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.OldCalDetails;
@@ -137,25 +137,29 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			ListofGyroRange[0],
 			AlignmentMatrixGyroShimmer3,
 			SensitivityMatrixGyro250dpsShimmer3,
-			OffsetVectorGyroShimmer3);
+			OffsetVectorGyroShimmer3,
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro500 = new CalibDetailsKinematic(
 			ListofMPU9150GyroRangeConfigValues[1], 
 			ListofGyroRange[1],
 			AlignmentMatrixGyroShimmer3, 
 			SensitivityMatrixGyro500dpsShimmer3,
-			OffsetVectorGyroShimmer3);
+			OffsetVectorGyroShimmer3,
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro1000 = new CalibDetailsKinematic(
 			ListofMPU9150GyroRangeConfigValues[2], 
 			ListofGyroRange[2],
 			AlignmentMatrixGyroShimmer3, 
 			SensitivityMatrixGyro1000dpsShimmer3, 
-			OffsetVectorGyroShimmer3);
+			OffsetVectorGyroShimmer3,
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro2000 = new CalibDetailsKinematic(
 			ListofMPU9150GyroRangeConfigValues[3],
 			ListofGyroRange[3],
 			AlignmentMatrixGyroShimmer3, 
 			SensitivityMatrixGyro2000dpsShimmer3, 
-			OffsetVectorGyroShimmer3);
+			OffsetVectorGyroShimmer3,
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 
 //	private TreeMap<Integer, CalibDetails> mCalibMapGyroShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
 //	protected TreeMap<Integer, CalibDetails> mCalibMapGyroShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
@@ -1231,7 +1235,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		super(SENSORS.MPU9X50, svo);
 		initialise();
 		
-		setCalibSensitivityScaleFactor(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, SENSITIVITY_SCALE_FACTOR.HUNDRED);
+		setCalibSensitivityScaleFactor(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	}
 	
 	//--------- Abstract methods implemented start --------------

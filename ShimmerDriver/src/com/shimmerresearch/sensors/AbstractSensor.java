@@ -17,6 +17,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
+import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -531,13 +532,13 @@ public abstract class AbstractSensor implements Serializable{
 //		return true;
 //	}
 
-	protected void setAllCalibSensitivityScaleFactor(int sensitivityScaleFactor) {
+	protected void setAllCalibSensitivityScaleFactor(CALIBRATION_SCALE_FACTOR sensitivityScaleFactor) {
 		for(Integer sensorMapKey:mCalibMap.keySet()){
 			setCalibSensitivityScaleFactor(sensorMapKey, sensitivityScaleFactor);
 		}
 	}
 
-	protected void setCalibSensitivityScaleFactor(int sensorMapKey, double sensitivityScaleFactor) {
+	protected void setCalibSensitivityScaleFactor(int sensorMapKey, CALIBRATION_SCALE_FACTOR sensitivityScaleFactor) {
 		TreeMap<Integer, CalibDetails> calibMapPerSensor = mCalibMap.get(sensorMapKey);
 		if(calibMapPerSensor!=null){
 			for(CalibDetails calibMapPerRange:calibMapPerSensor.values()){

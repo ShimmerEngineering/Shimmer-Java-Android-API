@@ -60,6 +60,8 @@ public class Shimmer4 extends ShimmerDevice {
 	protected boolean mCalibFileCreationFlag = false;
 	private boolean isOverrideShowRwcErrorLeds = true;
 	
+	protected int mBluetoothBaudRate=9; //460800
+
 	public Shimmer4() {
 		// TODO Auto-generated constructor stub
 	}
@@ -199,6 +201,9 @@ public class Shimmer4 extends ShimmerDevice {
 				}
 			}
 			
+			mBluetoothBaudRate = infoMemBytes[infoMemLayoutCast.idxBtCommBaudRate] & infoMemLayoutCast.maskBaudRate;
+
+			
 			// Shimmer Name
 			byte[] shimmerNameBuffer = new byte[infoMemLayoutCast.lengthShimmerName];
 			System.arraycopy(infoMemBytes, infoMemLayoutCast.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemLayoutCast.lengthShimmerName);
@@ -289,6 +294,10 @@ public class Shimmer4 extends ShimmerDevice {
 				mInfoMemBytes[infoMemLayout.idxDerivedSensors2] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors2) & infoMemLayout.maskDerivedChannelsByte);
 			}
 		}
+		
+		//TODO handle the below better
+		mBluetoothBaudRate = 9;
+		mInfoMemBytes[infoMemLayout.idxBtCommBaudRate] = (byte) (mBluetoothBaudRate & infoMemLayout.maskBaudRate);
 
 		// Configuration from each Sensor settings
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
