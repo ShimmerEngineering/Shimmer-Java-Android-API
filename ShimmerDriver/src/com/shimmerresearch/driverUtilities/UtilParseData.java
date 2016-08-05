@@ -1,5 +1,7 @@
 package com.shimmerresearch.driverUtilities;
 
+import org.apache.http.util.ByteArrayBuffer;
+
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
@@ -45,7 +47,12 @@ public class UtilParseData {
 				//new new -> seems to be working?
 //				formattedData = (formattedData << 8)  | (data[i]&0xFF);
 				
-				formattedData = (formattedData << 8) | (((long)(data[i])) & 0xFF);
+				if(i==0){
+					formattedData = (((long)(data[i])) & 0xFF);
+				}
+				else{
+					formattedData = (formattedData << 8) | (((long)(data[i])) & 0xFF);
+				}
 
 				maskToApply = (maskToApply << 8) | 0xFF;
 			}

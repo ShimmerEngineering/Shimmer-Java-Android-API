@@ -11,7 +11,7 @@ public interface RadioListener {
 	public void disconnected();
 
 	//Inherited from ProtocolListener()
-	public void eventNewPacket(byte[] packetByteArray);
+	public void eventNewPacket(byte[] packetByteArray, long pcTimestamp);
 	@Deprecated
 	public void eventResponseReceived(byte[] responseBytes);
 	public void eventResponseReceived(int responseCommand, Object parsedResponse);

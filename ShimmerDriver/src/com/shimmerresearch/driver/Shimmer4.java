@@ -455,10 +455,9 @@ public class Shimmer4 extends ShimmerDevice {
 			}
 
 			@Override
-			public void eventNewPacket(byte[] packetByteArray) {
+			public void eventNewPacket(byte[] packetByteArray, long pcTimestamp) {
 //				System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
 
-				long pcTimestamp = System.currentTimeMillis();
 				ObjectCluster objectCluster = buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
 				
 				//TODO HACK for packet loss callback

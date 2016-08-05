@@ -1002,7 +1002,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			objectCluster = buildMsg(packet, fwType, timeSync, pcTimeStamp);
 			if(mFirstPacketParsed) {
 				mFirstPacketParsed=false;
-				FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
+//				FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
 				byte[] bSystemTS = objectCluster.mSystemTimeStamp;
 				ByteBuffer bb = ByteBuffer.allocate(8);
 		    	bb.put(bSystemTS);

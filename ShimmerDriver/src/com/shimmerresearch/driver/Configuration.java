@@ -1200,6 +1200,7 @@ public class Configuration {
 			public static final String PACKET_RECEPTION_RATE_TRIAL = "Packet_Reception_Rate_Trial";
 			
 			public static String TIMESTAMP = "Timestamp";
+			public static String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
 			public static String REAL_TIME_CLOCK = "RealTime";
 			public static String SYSTEM_TIMESTAMP = "System_Timestamp";
 			public static String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";

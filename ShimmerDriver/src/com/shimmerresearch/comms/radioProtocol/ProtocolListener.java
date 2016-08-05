@@ -10,7 +10,7 @@ public interface ProtocolListener {
 	public void eventAckReceived(int lastSentInstruction);
 	@Deprecated
 	public void eventAckInstruction(byte[] bs);
-	public void eventNewPacket(byte[] b);
+	public void eventNewPacket(byte[] b, long pcTimestamp);
 	public void eventNewResponse(byte[] b);
 	public void eventNewResponse(int responseCommand, Object parsedResponse);
 	
