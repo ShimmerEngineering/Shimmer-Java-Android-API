@@ -142,6 +142,13 @@ public class ChannelDetails implements Serializable {
 		API
 	}
 
+	//Mark test code
+	public CHANNEL_AXES mChannelAxes = CHANNEL_AXES.TIME;
+	public enum CHANNEL_AXES{
+		TIME,
+		FREQUENCY
+	}
+
 	/**
 	 * Empty constructor not used in standard Shimmer operations (GQ BLE related). 
 	 *  
