@@ -1233,8 +1233,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		mProtocolListener.eventAckInstruction(bs);
 	}
 
-	private void eventNewPacket(byte[] newPacket) {
-		mProtocolListener.eventNewPacket(newPacket);
+	private void eventNewPacket(byte[] newPacket, long pcTimestamp) {
+		mProtocolListener.eventNewPacket(newPacket, pcTimestamp);
 	}
 	
 	private void startOperation(BT_STATE currentOperation, int totalNumOfCmds) {
@@ -1418,7 +1418,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		//Skip the first byte as it is the identifier DATA_PACKET
 		System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
 		
-		eventNewPacket(newPacket);
+		long pcTimestamp = System.currentTimeMillis();
+		eventNewPacket(newPacket, pcTimestamp);
 	}
 
 	/**

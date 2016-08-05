@@ -91,8 +91,11 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	String[] mSensorIsUsingDefaultCal;
 	
 	public byte[] mSystemTimeStamp = new byte[8];
+	
 	public double mShimmerCalibratedTimeStamp;
 	public boolean mIsValidObjectCluster = true;
+
+
 	
 	public enum OBJECTCLUSTER_TYPE{
 		ARRAYS,

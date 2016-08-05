@@ -314,9 +314,9 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		}
 
 		@Override
-		public void eventNewPacket(byte[] packet) {
+		public void eventNewPacket(byte[] packet, long pcTimestamp) {
 			for (RadioListener rl:mRadioListenerList){
-				rl.eventNewPacket(packet);
+				rl.eventNewPacket(packet, pcTimestamp);
 			}
 		}
 
