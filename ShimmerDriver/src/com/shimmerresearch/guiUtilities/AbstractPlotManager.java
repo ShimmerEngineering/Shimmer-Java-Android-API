@@ -162,7 +162,7 @@ public abstract class AbstractPlotManager {
 		mListOfTraceColorsCurrentlyUsed.add(color);
 	}
 	
-	protected void addXAxis(String[] channelStringArray){
+	public void addXAxis(String[] channelStringArray){
 		String deviceName = channelStringArray[0];
 		mMapofXAxis.put(deviceName, channelStringArray);
 	}
@@ -213,7 +213,7 @@ public abstract class AbstractPlotManager {
 		return false;
 	}
 	
-	public String joinChannelStringArray(String[] a){
+	public static String joinChannelStringArray(String[] a){
 		String js="";
 		int lengthToUse = a.length>4? 4:a.length;
 

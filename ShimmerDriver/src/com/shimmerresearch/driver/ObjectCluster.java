@@ -110,6 +110,20 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public ObjectCluster(){
 	}
 	
+	public ObjectCluster(String myName){
+		mMyName = myName;
+	}
+
+	public ObjectCluster(String myName, String myBlueAdd){
+		this(myName);
+		mBluetoothAddress=myBlueAdd;
+	}
+
+	public ObjectCluster(String myName, String myBlueAdd, BT_STATE state){
+		this(myName, myBlueAdd);
+		mState = state;
+	}
+	
 	public ObjectCluster(ObjectCluster2 ojc2){
 		ojc2.getDataMap().get("");
 		for (String channelName:ojc2.getDataMap().keySet()){
@@ -137,20 +151,6 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	
 	public void setMacAddress(String macAddress){
 		mBluetoothAddress = macAddress;
-	}
-	
-	public ObjectCluster(String myName){
-		mMyName = myName;
-	}
-
-	public ObjectCluster(String myName, String myBlueAdd){
-		this(myName);
-		mBluetoothAddress=myBlueAdd;
-	}
-
-	public ObjectCluster(String myName, String myBlueAdd, BT_STATE state){
-		this(myName, myBlueAdd);
-		mState = state;
 	}
 	
 	/**
