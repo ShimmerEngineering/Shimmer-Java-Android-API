@@ -143,7 +143,7 @@ public class ChannelDetails implements Serializable {
 	}
 
 	//Mark test code
-	public CHANNEL_AXES mChannelAxes = CHANNEL_AXES.TIME;
+//	public CHANNEL_AXES mChannelAxes = CHANNEL_AXES.TIME;
 	public enum CHANNEL_AXES{
 		TIME,
 		FREQUENCY
