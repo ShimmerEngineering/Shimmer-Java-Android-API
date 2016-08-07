@@ -730,6 +730,10 @@ public class UtilShimmer implements Serializable {
 	    return Math.max(minVal, Math.min(maxVal, valToNudge));
 	}
 	
+	public static int nudgeInteger(int valToNudge, int minVal, int maxVal) {
+	    return Math.max(minVal, Math.min(maxVal, valToNudge));
+	}
+
 
 	public static boolean isAllZeros(double[][] matrix){
 		if(matrix==null){
@@ -764,5 +768,6 @@ public class UtilShimmer implements Serializable {
 		}
 		return true;
 	}
+
 	
 }
