@@ -456,21 +456,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void eventNewPacket(byte[] packetByteArray, long pcTimestamp) {
-//				System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
-
-				ObjectCluster objectCluster = buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
-				
-				//TODO HACK for packet loss callback
-//				AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);
-//				if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
-//					ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
-//					if(shimmerClock.mFlagPacketLoss){
-//						sendStatusMsgPacketLossDetected();
-//					}
-//					shimmerClock.mFlagPacketLoss = false;
-//				}
-				
-				dataHandler(objectCluster);
+				buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
 			}
 
 			@Override
@@ -756,6 +742,26 @@ public class Shimmer4 extends ShimmerDevice {
 //				mShimmerRadioHWLiteProtocol.mRadioProtocol.writeInstruction(instructionHW);
 //			}
 		}
+	}
+	
+	@Override
+	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp) {
+//		System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
+
+		ObjectCluster objectCluster = super.buildMsg(newPacket, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
+		
+		//TODO HACK for packet loss callback
+//		AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);
+//		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
+//			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
+//			if(shimmerClock.mFlagPacketLoss){
+//				sendStatusMsgPacketLossDetected();
+//			}
+//			shimmerClock.mFlagPacketLoss = false;
+//		}
+		
+		dataHandler(objectCluster);
+		return objectCluster;
 	}
 	
 	@Override

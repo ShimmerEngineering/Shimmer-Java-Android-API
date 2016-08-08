@@ -39,7 +39,7 @@ public class ShimmerClock extends AbstractSensor {
 	public int OFFSET_LENGTH = 9;
 	protected long mInitialTimeStamp = 0;
 	protected long mRTCOffset = 0; //this is in ticks
-	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
+	protected int mTimeStampPacketRawMaxValue = 16777216; // or 65536 
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	protected double mLastReceivedTimeStamp=0;
 	protected double mCurrentTimeStampCycle=0;
@@ -186,7 +186,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 			DatabaseChannelHandles.NONE,
 			CHANNEL_UNITS.CLOCK_UNIT,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL), true, false);
+			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
 	{
 		channelShimmerTsDiffernce.mChannelSource = CHANNEL_SOURCE.API;
 	}
@@ -208,7 +208,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,
 			DatabaseChannelHandles.OFFSET_TIMESTAMP,
 			CHANNEL_UNITS.NO_UNITS,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL), false, true);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
 		//TODO put into above constructor
 		channelShimmerClockOffset.mChannelSource = CHANNEL_SOURCE.API;
@@ -219,7 +219,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
 			DatabaseChannelHandles.REAL_TIME_CLOCK,
 			CHANNEL_UNITS.MILLISECONDS,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL), false, true);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
 		//TODO put into above constructor
 		channelRealTimeClock.mChannelSource = CHANNEL_SOURCE.API;
@@ -303,10 +303,12 @@ public class ShimmerClock extends AbstractSensor {
 			if(mShimmerVerObject.getFirmwareVersionCode()>=6){
 				channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
 				channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE, ShimmerClock.channelShimmerTsDiffernce);
+				mTimeStampPacketRawMaxValue = (int) Math.pow(2, 24);
 
 			}
 			else{
 				channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
+				mTimeStampPacketRawMaxValue = (int) Math.pow(2, 16);
 			}
 			
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
@@ -406,7 +408,7 @@ public class ShimmerClock extends AbstractSensor {
 							timestampUnCalToSave = newTimestamp;
 							if (mEnableCalibration){
 								timestampCalToSave = calibratedTS; 
-								objectCluster.mShimmerCalibratedTimeStamp = calibratedTS;
+								objectCluster.setShimmerCalibratedTimeStamp(calibratedTS);
 							}
 							
 //							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,newTimestamp));
@@ -545,7 +547,6 @@ public class ShimmerClock extends AbstractSensor {
 						if(commType==COMMUNICATION_TYPE.SD){
 							systemTime = System.currentTimeMillis();
 						}
-						objectCluster.mShimmerCalibratedTimeStamp = systemTime;
 						objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
 //						objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime));
 						objectCluster.addData(channelDetails, Double.NaN, systemTime);
@@ -560,11 +561,13 @@ public class ShimmerClock extends AbstractSensor {
 					    	bb.put(bSystemTS);
 					    	bb.flip();
 					    	mSystemTimeStamp = bb.getLong();
-							mOffsetFirstTime = mSystemTimeStamp-objectCluster.mShimmerCalibratedTimeStamp;
+							mOffsetFirstTime = mSystemTimeStamp-objectCluster.getShimmerCalibratedTimeStamp();
 						}
 						
 //						objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime);
-						objectCluster.addCalData(channelDetails, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime);
+						double calTimestamp = objectCluster.getShimmerCalibratedTimeStamp();
+						double systemTimestampPlot = calTimestamp+mOffsetFirstTime;
+						objectCluster.addCalData(channelDetails, systemTimestampPlot);
 						objectCluster.incrementIndexKeeper();
 						
 //						//Hack for debugging

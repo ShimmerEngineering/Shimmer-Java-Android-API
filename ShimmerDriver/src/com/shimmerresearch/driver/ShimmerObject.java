@@ -507,7 +507,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected int mPacketSize=0; // Default 2 bytes for time stamp and 6 bytes for accelerometer 
 	protected long mConfigByte0;	
-	protected int mNChannels=0;	                                                // Default number of sensor channels set to three because of the on board accelerometer 
+	public int mNChannels=0;	                                                // Default number of sensor channels set to three because of the on board accelerometer 
 	protected int mBufferSize;                   							
 
 	protected String[] mSignalNameArray=new String[MAX_NUMBER_OF_SIGNALS];							// 19 is the maximum number of signal thus far
@@ -1172,7 +1172,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.addData(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedTS);
 					calibratedData[iTimeStamp] = calibratedTS;
 					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
-					objectCluster.mShimmerCalibratedTimeStamp = calibratedTS;
+					objectCluster.setShimmerCalibratedTimeStamp(calibratedTS);
 				}
 			}
 
@@ -3654,7 +3654,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param numChannels
 	 * @param signalid
 	 */
-	protected void interpretDataPacketFormat(int numChannels, byte[] signalid){
+	public void interpretDataPacketFormat(int numChannels, byte[] signalid){
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
 		
@@ -5769,6 +5769,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setShimmerAndSensorsSamplingRate(51.2);
 			setDefaultECGConfiguration(getSamplingRateShimmer()); 
 			
+			updateCurrentAccelLnCalibInUse();
+			updateCurrentAccelWrCalibInUse();
+			updateCurrentGyroCalibInUse();
+			updateCurrentMagCalibInUse();
+			
 			syncNodesList.clear();
 			
 			sensorAndConfigMapsCreate();
@@ -6108,6 +6113,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		
 		checkAndCorrectShimmerName(shimmerName);
+	}
+	
+	@Override
+	public void prepareAllAfterConfigRead() {
+		super.prepareAllAfterConfigRead();
+		
+		updateCurrentAccelLnCalibInUse();
+		updateCurrentAccelWrCalibInUse();
+		updateCurrentGyroCalibInUse();
+		updateCurrentMagCalibInUse();
 	}
 	
 	/**

@@ -731,7 +731,7 @@ public class Configuration {
 			//Sensors channels originating from the Shimmer
 			
 			//Analog channels begin
-			public static final int SHIMMER_TIMESTAMP = 1;
+			public static final int SHIMMER_TIMESTAMP = -200;//1;
 			/** Shimmer3 Low-noise analog accelerometer */
 			public static final int SHIMMER_ANALOG_ACCEL = 2;
 			public static final int SHIMMER_VBATT = 3;

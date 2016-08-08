@@ -92,7 +92,8 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	
 	public byte[] mSystemTimeStamp = new byte[8];
 	
-	public double mShimmerCalibratedTimeStamp;
+	private double mShimmerCalibratedTimeStamp;
+
 	public boolean mIsValidObjectCluster = true;
 
 
@@ -492,5 +493,12 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		return mObjectClusterBuilder.build();
 	}
 	
+	public double getShimmerCalibratedTimeStamp() {
+		return mShimmerCalibratedTimeStamp;
+	}
+
+	public void setShimmerCalibratedTimeStamp(double mShimmerCalibratedTimeStamp) {
+		this.mShimmerCalibratedTimeStamp = mShimmerCalibratedTimeStamp;
+	}
 	
 }

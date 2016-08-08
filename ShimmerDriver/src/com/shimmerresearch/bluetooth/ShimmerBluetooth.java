@@ -180,7 +180,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private boolean mUseInfoMemConfigMethod = false;
 
 	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
-	List<Long> mListofPCTimeStamps = new ArrayList<Long>();
+	public List<Long> mListofPCTimeStamps = new ArrayList<Long>();
 	
 	protected boolean mIamAlive = false;
 	protected abstract void connect(String address,String bluetoothLibrary);
@@ -1008,10 +1008,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		    	bb.put(bSystemTS);
 		    	bb.flip();
 		    	long systemTimeStamp = bb.getLong();
-				mOffsetFirstTime = systemTimeStamp-objectCluster.mShimmerCalibratedTimeStamp;
+				mOffsetFirstTime = systemTimeStamp-objectCluster.getShimmerCalibratedTimeStamp();
 			}
 			
-			objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime);
+			double calTimestamp = objectCluster.getShimmerCalibratedTimeStamp();
+			double systemTimestampPlot = calTimestamp+mOffsetFirstTime;
+			objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, systemTimestampPlot);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1045,7 +1047,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @param bufferTemp
 	 */
-	private void processDataPacket(byte[] bufferTemp){
+	public void processDataPacket(byte[] bufferTemp){
 		//Create newPacket buffer
 		byte[] newPacket = new byte[mPacketSize];
 		//Skip the first byte as it is the identifier DATA_PACKET
