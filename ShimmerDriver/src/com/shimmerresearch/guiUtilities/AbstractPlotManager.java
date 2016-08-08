@@ -7,6 +7,8 @@ import java.util.Random;
 
 public abstract class AbstractPlotManager {
 
+	public abstract void setTraceLineStyleAll(PLOT_LINE_STYLE lineStyle);
+	
 	/** keeps a list of signals to plot */
 	public List<String[]> mListofPropertiestoPlot = new ArrayList<String[]>(); //this is used to identify he signals coming into the filter
 	
@@ -79,7 +81,23 @@ public abstract class AbstractPlotManager {
 		mListofTraceColorsDefault.add(rgb);
 	}
 	
-	//keeps xaxis data
+	public enum PLOT_LINE_STYLE{
+		JOINT_LINE("Joint Line"),
+		INDIVIDUAL_POINTS("Points"),
+		BAR("Bar"), 
+		FILL("Fill");
+		
+		private String mGuiOptionString = "";
+		
+		private PLOT_LINE_STYLE(String guiOptionString) {
+			mGuiOptionString = guiOptionString;
+		}
+		
+		public String getGuiOptionString(){
+			return mGuiOptionString;
+		}
+	}
+	public PLOT_LINE_STYLE mSelectedLineStyle = PLOT_LINE_STYLE.JOINT_LINE;
 
 	//generates 
 	public AbstractPlotManager(){
@@ -236,4 +254,17 @@ public abstract class AbstractPlotManager {
 		return mListOfTraceColorsCurrentlyUsed;
 	}
 	
+	public PLOT_LINE_STYLE getPlotLineStyle() {
+		return mSelectedLineStyle;
+	}
+	
+	public void setTraceLineStyleAll(String selectedLineStyle) {
+		for(PLOT_LINE_STYLE plotLineStyle:PLOT_LINE_STYLE.values()){
+			if(plotLineStyle.getGuiOptionString().equals(selectedLineStyle)){
+				setTraceLineStyleAll(plotLineStyle);
+				return;
+			}
+		}
+	}
+
 }
