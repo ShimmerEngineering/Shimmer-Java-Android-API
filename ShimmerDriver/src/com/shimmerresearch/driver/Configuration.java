@@ -1327,7 +1327,7 @@ public class Configuration {
 			public static String QUAT_DMP_6DOF_Y = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Y;
 			public static String QUAT_DMP_6DOF_Z = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Z;
 
-			public static String EVENT_MARKER = "Event Marker";
+			public static String EVENT_MARKER = "Event_Marker"; //RM changed (Aug 2016) from "Event Marker" as the empty space was causing issue with MAT file export (hopefully doesnt cause issue with GQ)
 
 //			public static String PPG_A12 = SensorPPG.ObjectClusterSensorName.PPG_A12;
 //			public static String PPG_A13 = SensorPPG.ObjectClusterSensorName.PPG_A13;
