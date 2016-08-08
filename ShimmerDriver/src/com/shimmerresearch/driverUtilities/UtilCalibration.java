@@ -49,6 +49,10 @@ public class UtilCalibration {
 	 * @return
 	 */
 	public static double[] calibrateInertialSensorData(double[] data, CalibDetailsKinematic calibDetails) {
+		if(calibDetails==null){
+			return data;
+		}
+		
 		return calibrateInertialSensorData(data, 
 				calibDetails.getCurrentAlignmentMatrix(), 
 				calibDetails.getCurrentSensitivityMatrix(), 

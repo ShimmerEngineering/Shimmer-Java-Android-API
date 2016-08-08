@@ -924,7 +924,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	//TODO get below working if even needed
 	/** Based on the SensorMap approach rather then legacy inquiry command */
-	protected void interpretDataPacketFormat(){
+	public void interpretDataPacketFormat(){
 //		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 //		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
 //		
@@ -3156,5 +3156,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		String strStackTrace = sWriter.toString();
 		System.out.println(strStackTrace);
 	}
+
+//	public void disableAllSensors() {
+//		for(int sensorMapKey:mSensorMap.keySet()){
+//			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.shimmer)
+//			sensorDetails.setIsEnabled(false);
+//		}
+//	}
 
 }
