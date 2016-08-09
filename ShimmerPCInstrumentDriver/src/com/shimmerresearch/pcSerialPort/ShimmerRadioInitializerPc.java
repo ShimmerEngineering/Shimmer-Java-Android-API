@@ -4,20 +4,17 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public class ShimmerRadioInitializerPc extends SerialPortCommJssc {
+public class ShimmerRadioInitializerPc extends ShimmerRadioInitializer {
 	
-	@Deprecated
 	public ShimmerRadioInitializerPc(String comPort, int baudToUse) {
 		this(comPort, comPort, baudToUse);
 	}
 	
-	@Deprecated
 	public ShimmerRadioInitializerPc(String comPort, String uniqueId, int baudToUse) {
 		super(comPort, uniqueId, baudToUse);
 		SERIAL_PORT_TIMEOUT = 2000; // was 2000
 	}
 	
-	@Deprecated
 	public ShimmerVerObject getShimmerVerObject() {
 		// TODO Auto-generated method stub
 		byte[] instruction = {InstructionsGet.GET_SHIMMER_VERSION_COMMAND_VALUE}; //every radio should have a method to get the version object, the command value should be the same across all byte radios
