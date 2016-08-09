@@ -145,7 +145,8 @@ public class SensorBMP180 extends AbstractSensor {
 			DatabaseChannelHandles.PRESSURE,
 			CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.KPASCAL,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x1B);
 	{
 		//TODO put into above constructor
 //		channelBmp180Press.mChannelSource = CHANNEL_SOURCE.SHIMMER;
@@ -159,7 +160,8 @@ public class SensorBMP180 extends AbstractSensor {
 			DatabaseChannelHandles.TEMPERATURE,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.DEGREES_CELSUIS,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x1A);
 	{
 		//TODO put into above constructor
 //		channelBmp180Temp.mChannelSource = CHANNEL_SOURCE.SHIMMER;

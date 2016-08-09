@@ -167,7 +167,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 //			CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x00);
     
     
     public static final ChannelDetails channelLSM303AccelY = new ChannelDetails(
@@ -177,7 +178,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 //			CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x01);
     
     
     public static final ChannelDetails channelLSM303AccelZ = new ChannelDetails(
@@ -187,7 +189,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 //			CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x02);
     
     
     public static final Map<String, ChannelDetails> mChannelMapRef;

@@ -161,7 +161,8 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.KOHMS,
 //			CHANNEL_UNITS.MICROSIEMENS,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x1C);
 	{
 		
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final

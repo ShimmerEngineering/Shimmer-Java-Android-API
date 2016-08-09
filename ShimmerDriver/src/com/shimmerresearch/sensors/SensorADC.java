@@ -255,7 +255,8 @@ public class SensorADC extends AbstractSensor {
     		DatabaseChannelHandles.EXT_ADC_A7,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x0D);
 
     public static final ChannelDetails channel_EXT_EXP_ADC_A6 = new ChannelDetails(
     		Configuration.Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,
@@ -263,7 +264,8 @@ public class SensorADC extends AbstractSensor {
     		DatabaseChannelHandles.EXT_ADC_A6,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x0E);
 
 
     public static final ChannelDetails channel_EXT_EXP_ADC_A15 = new ChannelDetails(
@@ -272,7 +274,8 @@ public class SensorADC extends AbstractSensor {
     		DatabaseChannelHandles.EXT_ADC_A15,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x0F);
 
     // Internal ADCs
     public static final ChannelDetails channel_INT_EXP_ADC_A1 = new ChannelDetails(
@@ -281,7 +284,8 @@ public class SensorADC extends AbstractSensor {
     		DatabaseChannelHandles.INT_ADC_A1,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x10);
 
 
     public static final ChannelDetails channel_INT_EXP_ADC_A12 = new ChannelDetails(
@@ -290,7 +294,8 @@ public class SensorADC extends AbstractSensor {
     		DatabaseChannelHandles.INT_ADC_A12,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x11);
 
 
     public static final ChannelDetails channel_INT_EXP_ADC_A13 = new ChannelDetails(
@@ -299,7 +304,8 @@ public class SensorADC extends AbstractSensor {
     		DatabaseChannelHandles.INT_ADC_A13,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x12);
 
     public static final ChannelDetails channel_INT_EXP_ADC_A14 = new ChannelDetails(
     		Configuration.Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14,
@@ -307,7 +313,8 @@ public class SensorADC extends AbstractSensor {
     		DatabaseChannelHandles.INT_ADC_A14,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x13);
 
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {

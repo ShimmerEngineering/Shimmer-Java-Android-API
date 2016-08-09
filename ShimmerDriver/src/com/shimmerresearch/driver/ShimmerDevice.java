@@ -1478,12 +1478,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfChannels;
 	}
 
-	public Map<String, ChannelDetails> getMapOfEnabledChannelsForStreaming() {
+	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledChannelsForStreaming() {
 		return getMapOfEnabledChannelsForStreaming(null);
 	}
 
-	public Map<String, ChannelDetails> getMapOfEnabledChannelsForStreaming(COMMUNICATION_TYPE commType) {
-		HashMap<String, ChannelDetails> listOfChannels = new HashMap<String, ChannelDetails>();
+	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledChannelsForStreaming(COMMUNICATION_TYPE commType) {
+		LinkedHashMap<String, ChannelDetails> listOfChannels = new LinkedHashMap<String, ChannelDetails>();
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
 			SensorDetails sensorDetails = iterator.next();
@@ -1796,6 +1796,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 //		//Debugging
 //		printSensorAndParserMaps();
+		
+		// This is to update the newly created sensor/algorithm classes (created
+		// above) with the current Shimmer sampling rate
+		setSamplingRateShimmer(getSamplingRateShimmer());
 	}
 	
 	protected void handleSpecialCasesAfterSensorMapCreate() {
