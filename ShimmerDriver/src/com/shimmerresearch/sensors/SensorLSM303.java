@@ -524,7 +524,8 @@ public class SensorLSM303 extends AbstractSensor{
 			DatabaseChannelHandles.WR_ACC_X,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x04);
     
     public static final ChannelDetails channelLSM303AccelY = new ChannelDetails(
 			ObjectClusterSensorName.ACCEL_WR_Y,
@@ -532,7 +533,8 @@ public class SensorLSM303 extends AbstractSensor{
 			DatabaseChannelHandles.WR_ACC_Y,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x05);
     
     public static final ChannelDetails channelLSM303AccelZ = new ChannelDetails(
 			ObjectClusterSensorName.ACCEL_WR_Z,
@@ -540,7 +542,8 @@ public class SensorLSM303 extends AbstractSensor{
 			DatabaseChannelHandles.WR_ACC_Z,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x06);
     
     public static final ChannelDetails channelLSM303MagX = new ChannelDetails(
 			ObjectClusterSensorName.MAG_X,
@@ -548,7 +551,8 @@ public class SensorLSM303 extends AbstractSensor{
 			DatabaseChannelHandles.MAG_X,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.LOCAL_FLUX,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x07);
 	
 	public static final ChannelDetails channelLSM303MagY = new ChannelDetails(
 			ObjectClusterSensorName.MAG_Y,
@@ -556,7 +560,8 @@ public class SensorLSM303 extends AbstractSensor{
 			DatabaseChannelHandles.MAG_Y,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.LOCAL_FLUX,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x08);
 	
 	public static final ChannelDetails channelLSM303MagZ = new ChannelDetails(
 			ObjectClusterSensorName.MAG_Z,
@@ -564,7 +569,8 @@ public class SensorLSM303 extends AbstractSensor{
 			DatabaseChannelHandles.MAG_Z,
 			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.LOCAL_FLUX,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x09);
     
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {

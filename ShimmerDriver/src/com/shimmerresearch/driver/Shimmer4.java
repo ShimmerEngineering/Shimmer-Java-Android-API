@@ -97,6 +97,7 @@ public class Shimmer4 extends ShimmerDevice {
 		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(this));
 		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
 		
+		
 		//TODO push version checking into the sensor classes
 		
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
@@ -373,6 +374,7 @@ public class Shimmer4 extends ShimmerDevice {
 	//TODO improve flow of below, move to ShimmerDevice also?
 	@Override
 	public void prepareAllAfterConfigRead() {
+		//Can't create again because any sensor configuration that was read from InfoMem will be over written
 //		sensorAndConfigMapsCreate();
 		
 //		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.ALL);

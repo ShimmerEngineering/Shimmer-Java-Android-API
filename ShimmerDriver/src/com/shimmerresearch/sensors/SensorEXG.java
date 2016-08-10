@@ -477,14 +477,16 @@ public class SensorEXG extends AbstractSensor{
 					DatabaseChannelHandles.EXG1_STATUS,
 					CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
 					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.UNCAL),
+					0x1D);
 	public static final ChannelDetails cDExg2Status = new ChannelDetails(
 					ObjectClusterSensorName.EXG2_STATUS,
 					ObjectClusterSensorName.EXG2_STATUS,
 					DatabaseChannelHandles.EXG2_STATUS,
 					CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
 					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.UNCAL),
+					0x20);
 	
 	//ExG - General
 	public static final ChannelDetails cDExg1Ch1_24bit = new ChannelDetails(
@@ -493,14 +495,16 @@ public class SensorEXG extends AbstractSensor{
 					DatabaseChannelHandles.EXG1_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					0x1E);
 	public static final ChannelDetails cDExg1Ch2_24bit = new ChannelDetails(
 					ObjectClusterSensorName.EXG1_CH2_24BIT,
 					ObjectClusterSensorName.EXG1_CH2_24BIT,
 					DatabaseChannelHandles.EXG1_CH2_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					0x1F);
 
 	public static final ChannelDetails cDExg2Ch1_24bit = new ChannelDetails(
 					ObjectClusterSensorName.EXG2_CH1_24BIT,
@@ -508,14 +512,16 @@ public class SensorEXG extends AbstractSensor{
 					DatabaseChannelHandles.EXG2_CH1_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					0x21);
 	public static final ChannelDetails cDExg2Ch2_24bit = new ChannelDetails(
 					ObjectClusterSensorName.EXG2_CH2_24BIT,
 					ObjectClusterSensorName.EXG2_CH2_24BIT,
 					DatabaseChannelHandles.EXG2_CH2_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					0x22);
 
 	public static final ChannelDetails cDExg1Ch1_16bit = new ChannelDetails(
 					ObjectClusterSensorName.EXG1_CH1_16BIT,
@@ -523,14 +529,16 @@ public class SensorEXG extends AbstractSensor{
 					DatabaseChannelHandles.EXG1_CH1_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					0x23);
 	public static final ChannelDetails cDExg1Ch2_16bit = new ChannelDetails(
 					ObjectClusterSensorName.EXG1_CH2_16BIT,
 					ObjectClusterSensorName.EXG1_CH2_16BIT,
 					DatabaseChannelHandles.EXG1_CH2_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					0x24);
 
 	public static final ChannelDetails cDExg2Ch1_16bit = new ChannelDetails(
 					ObjectClusterSensorName.EXG2_CH1_16BIT,
@@ -538,14 +546,16 @@ public class SensorEXG extends AbstractSensor{
 					DatabaseChannelHandles.EXG2_CH1_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					0x25);
 	public static final ChannelDetails cDExg2Ch2_16bit = new ChannelDetails(
 					ObjectClusterSensorName.EXG2_CH2_16BIT,
 					ObjectClusterSensorName.EXG2_CH2_16BIT,
 					DatabaseChannelHandles.EXG2_CH2_16BITS,
 					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
-					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+					0x26);
 
 	//ExG - EMG
 	public static final ChannelDetails cDEmgCh1_16bit = new ChannelDetails(

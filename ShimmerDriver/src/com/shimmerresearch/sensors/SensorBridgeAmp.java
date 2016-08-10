@@ -198,7 +198,8 @@ public class SensorBridgeAmp extends AbstractSensor{
 			DatabaseChannelHandles.BRIDGE_AMPLIFIER_HIGH,
 			CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.MILLIVOLTS,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x27);
 
 
 	public static ChannelDetails channelBridgeAmpLow = new ChannelDetails(
@@ -207,7 +208,8 @@ public class SensorBridgeAmp extends AbstractSensor{
 			DatabaseChannelHandles.BRIDGE_AMPLIFIER_LOW,
 			CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.MILLIVOLTS,
-			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x28);
 
 	// Philips Skin Temperature Probe (through Bridge Amp)
 	public static ChannelDetails channelSkinTemp = new ChannelDetails(

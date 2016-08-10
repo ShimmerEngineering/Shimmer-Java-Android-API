@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
 /**
  * Holds Channel details for parsing. Experimental feature not used currently
@@ -117,6 +120,7 @@ public class ChannelDetails implements Serializable {
 	public String mDatabaseChannelHandle = "";
 	public int mChannelId = -1;
 	public int mDefaultNumBytes = 0;
+	public int mLegacyChannelId = -1;
 	public CHANNEL_DATA_TYPE mDefaultChannelDataType = CHANNEL_DATA_TYPE.UNKOWN;
 	
 	// JC: default means the original signal this channel is derived form, it
@@ -291,11 +295,34 @@ public class ChannelDetails implements Serializable {
 		mDatabaseChannelHandle = databaseChannelHandle;
 	}
 
+	public ChannelDetails(String objectClusterName, 
+			String guiName, 
+			String databaseChannelHandle, 
+			CHANNEL_DATA_TYPE defaultChannelDataType, 
+			int defaultNumBytes, 
+			CHANNEL_DATA_ENDIAN channelDataEndian, 
+			String defaultCalibratedUnits, 
+			List<CHANNEL_TYPE> listOfChannelTypes,
+			int legacyChannelId) {
+		this(objectClusterName, guiName, databaseChannelHandle, defaultChannelDataType, defaultNumBytes, channelDataEndian, defaultCalibratedUnits, listOfChannelTypes);
+		mLegacyChannelId = legacyChannelId;
+	}
+	
+//	public ChannelDetails(String aCCEL_WR_X, String aCCEL_WR_X2, String wrAccX,
+//			CHANNEL_DATA_TYPE int16, int i, CHANNEL_DATA_ENDIAN lsb,
+//			String meterPerSecondSquare, List<CHANNEL_TYPE> asList, int j) {
+//		// TODO Auto-generated constructor stub
+//	}
+
 	private void checkDatabaseChannelHandle(){
 		if(mDatabaseChannelHandle.isEmpty()){
 //			mStoreToDatabase = false;
 			mDatabaseChannelHandle = mObjectClusterName;
 		}
+	}
+
+	public int getLegacyChannelId() {
+		return mLegacyChannelId;
 	}
 
 }

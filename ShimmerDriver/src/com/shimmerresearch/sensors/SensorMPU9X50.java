@@ -787,21 +787,24 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
     		DatabaseChannelHandles.GYRO_X,
     		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
     		CHANNEL_UNITS.DEGREES_PER_SECOND,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x0A);
     public static final ChannelDetails channelGyroY = new ChannelDetails(
     		ObjectClusterSensorName.GYRO_Y,
     		ObjectClusterSensorName.GYRO_Y,
     		DatabaseChannelHandles.GYRO_Y,
     		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
     		CHANNEL_UNITS.DEGREES_PER_SECOND,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x0B);
     public static final ChannelDetails channelGyroZ = new ChannelDetails(
     		ObjectClusterSensorName.GYRO_Z,
     		ObjectClusterSensorName.GYRO_Z,
     		DatabaseChannelHandles.GYRO_Z,
     		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
     		CHANNEL_UNITS.DEGREES_PER_SECOND,
-    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x0C);
     
     // MPU Accel
 	public static final ChannelDetails channelAccelX = new ChannelDetails(
