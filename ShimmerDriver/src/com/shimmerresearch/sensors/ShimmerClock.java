@@ -161,7 +161,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
 			DatabaseChannelHandles.NONE,
 			CHANNEL_UNITS.MILLISECONDS,
-			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
 		channelSystemTimestamp.mChannelSource = CHANNEL_SOURCE.API;
@@ -186,7 +186,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 			DatabaseChannelHandles.NONE,
 			CHANNEL_UNITS.CLOCK_UNIT,
-			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
 		channelShimmerTsDiffernce.mChannelSource = CHANNEL_SOURCE.API;
 	}
