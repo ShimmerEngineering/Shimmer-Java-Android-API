@@ -29,7 +29,7 @@ import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
-import com.shimmerresearch.sensors.SensorSystemTimeStamp;
+import com.shimmerresearch.sensors.SensorSystemTimeStampGq;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.ShimmerClock;
 
@@ -558,13 +558,13 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		if( UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				SVO_RELEASE_REV_0_1.mHardwareVersion, SVO_RELEASE_REV_0_1.mFirmwareIdentifier, SVO_RELEASE_REV_0_1.mFirmwareVersionMajor, SVO_RELEASE_REV_0_1.mFirmwareVersionMinor, SVO_RELEASE_REV_0_1.mFirmwareVersionInternal)){
 //			mMapOfSensors.put(SENSOR_NAMES.CLOCK,new ShimmerClock(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStampGq(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR, new SensorECGToHRFw(mShimmerVerObject));
 		} 
 		else {
 			mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(this));
-			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
+			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStampGq(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
 			mMapOfSensorClasses.put(SENSORS.ECG_TO_HR, new SensorECGToHRFw(mShimmerVerObject));
 //			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(mShimmerVerObject));

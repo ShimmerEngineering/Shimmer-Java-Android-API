@@ -85,7 +85,7 @@ import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
-import com.shimmerresearch.sensors.SensorSystemTimeStamp;
+import com.shimmerresearch.sensors.SensorSystemTimeStampGq;
 import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.SensorSTC3100.GuiLabelSensors;
 import com.shimmerresearch.sensors.SensorSTC3100.ObjectClusterSensorName;
@@ -1628,7 +1628,7 @@ public class Configuration {
 			
 			//TODO replace with ShimmerClock instance
 //			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, SensorSystemTimeStamp.cDSystemTimestamp);
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, SensorSystemTimeStampGq.cDSystemTimestamp);
 //			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 //					new ChannelDetails(
 //							Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
@@ -1639,7 +1639,7 @@ public class Configuration {
 			
 			//TODO replace with ShimmerClock instance
 //			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorSystemTimeStamp.cDSystemTimestampPlot);
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorSystemTimeStampGq.cDSystemTimestampPlot);
 			
 			//TODO replace with ShimmerClock instance
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
