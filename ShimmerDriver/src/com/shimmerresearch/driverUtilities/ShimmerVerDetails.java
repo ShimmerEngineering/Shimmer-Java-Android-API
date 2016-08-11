@@ -106,6 +106,8 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_LR, "ShimmerGQ 802.15.4");
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_NR, "ShimmerGQ 802.15.4");
         
+        aMap.put(HW_ID_SR_CODES.SHIMMER_4_SDK, "Shimmer4 SDK");
+        
         aMap.put(HW_ID_SR_CODES.BASE15U, "Base15U");
         aMap.put(HW_ID_SR_CODES.BASE6U, "Base6U");
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
