@@ -81,6 +81,8 @@ dependencies {
    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.6'
    // https://mvnrepository.com/artifact/com.codeminders/hidapi
    compile group: 'com.codeminders', name: 'hidapi', version: '1.1'
-   	// https://mvnrepository.com/artifact/joda-time/joda-time
-	compile group: 'joda-time', name: 'joda-time', version: '2.9.4'
+   // https://mvnrepository.com/artifact/joda-time/joda-time
+   compile group: 'joda-time', name: 'joda-time', version: '2.9.4'
+   // https://mvnrepository.com/artifact/com.github.wendykierp/JTransforms
+   compile group: 'com.github.wendykierp', name: 'JTransforms', version: '3.1'
 } 

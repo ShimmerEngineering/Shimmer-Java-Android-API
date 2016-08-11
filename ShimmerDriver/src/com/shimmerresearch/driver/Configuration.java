@@ -1230,6 +1230,7 @@ public class Configuration {
 			public static String BRIDGE_AMP_LOW = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_LOW;
 			public static String RESISTANCE_AMP = SensorBridgeAmp.ObjectClusterSensorName.RESISTANCE_AMP;
 			public static final String SKIN_TEMPERATURE_PROBE = SensorBridgeAmp.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE;
+			public static final String FREQUENCY = ShimmerGq802154.ObjectClusterSensorName.FREQUENCY;
 
 			public static String GSR = SensorGSR.ObjectClusterSensorName.GSR;
 			public static String GSR_CONDUCTANCE = SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE;
