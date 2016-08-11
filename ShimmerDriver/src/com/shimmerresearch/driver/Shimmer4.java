@@ -751,17 +751,6 @@ public class Shimmer4 extends ShimmerDevice {
 //		System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
 
 		ObjectCluster objectCluster = super.buildMsg(newPacket, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
-		
-		//TODO HACK for packet loss callback
-//		AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);
-//		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
-//			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
-//			if(shimmerClock.mFlagPacketLoss){
-//				sendStatusMsgPacketLossDetected();
-//			}
-//			shimmerClock.mFlagPacketLoss = false;
-//		}
-		
 		dataHandler(objectCluster);
 		return objectCluster;
 	}
@@ -1170,8 +1159,8 @@ public class Shimmer4 extends ShimmerDevice {
 
 	protected void dataHandler(ObjectCluster ojc) {
 		
-//		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getBluetoothAddress(), mComPort, getPacketReceptionRate());
-//		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE, callBackObject);
+		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, getMacId(), mComPort, getPacketReceptionRateOverall());
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, callBackObject);
 		
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET, ojc);
 	}
