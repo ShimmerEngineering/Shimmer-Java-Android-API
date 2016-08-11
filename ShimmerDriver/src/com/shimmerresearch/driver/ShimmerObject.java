@@ -4543,13 +4543,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
 			if (timeDifference>expectedTimeDifferenceLimit){
 //				mPacketLossCount=mPacketLossCount+1;
-				mPacketLossCount+= (long) (timeDifference/expectedTimeDifferenceLimit);
-				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
-
-				setPacketReceptionRateOverall((double)((mTotalNumberofPackets-mPacketLossCount)/(double)mTotalNumberofPackets)*100);
-				sendStatusMsgPacketLossDetected();
+				mPacketLossCountPerTrial+= (long) (timeDifference/expectedTimeDifferenceLimit);
 			}
-		}	
+		}
+		
+		Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
+		setPacketReceptionRateOverall((double)((mTotalNumberofPackets-mPacketLossCountPerTrial)/(double)mTotalNumberofPackets)*100);
+		if (mLastReceivedCalibratedTimeStamp!=-1){
+			sendStatusMsgPacketLossDetected();
+		}
+		
 		mLastReceivedCalibratedTimeStamp=calibratedTimeStamp;
 		return calibratedTimeStamp;
 	}

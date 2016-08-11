@@ -745,7 +745,6 @@ public class ShimmerClock extends AbstractSensor {
 			mCalTimeStart = calibratedTimeStamp;
 		}
 		
-		Long mTotalNumberofPackets = (long) ((calibratedTimeStamp-mCalTimeStart)/(1/mShimmerDevice.getSamplingRateShimmer()*1000));
 
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
@@ -754,11 +753,12 @@ public class ShimmerClock extends AbstractSensor {
 			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
 			if (timeDifference>expectedTimeDifferenceLimit){
 //				mPacketLossCount=mPacketLossCount+1;
-				mShimmerDevice.setPacketLossCount(mShimmerDevice.getPacketLossCount() + (long) (timeDifference/expectedTimeDifferenceLimit));
+				mShimmerDevice.setPacketLossCountPerTrial(mShimmerDevice.getPacketLossCountPerTrial() + (long) (timeDifference/expectedTimeDifferenceLimit));
 			}
 		}
 		
-		double packetReceptionRateTrial = (double)((mTotalNumberofPackets-mShimmerDevice.getPacketLossCount())/(double)mTotalNumberofPackets)*100;
+		Long mTotalNumberofPackets = (long) ((calibratedTimeStamp-mCalTimeStart)/(1/mShimmerDevice.getSamplingRateShimmer()*1000));
+		double packetReceptionRateTrial = (double)((mTotalNumberofPackets-mShimmerDevice.getPacketLossCountPerTrial())/(double)mTotalNumberofPackets)*100;
 //		packetReceptionRateTrial = UtilShimmer.nudgeDouble(mShimmerDevice.getPacketReceptionRateTrial(), 0.0, 100.0);
 		mShimmerDevice.setPacketReceptionRateOverall(packetReceptionRateTrial);
 		

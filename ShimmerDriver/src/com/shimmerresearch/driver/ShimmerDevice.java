@@ -151,7 +151,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
 	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
-	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
+	protected long mPacketLossCountPerTrial = 0;		//Used by ShimmerBluetooth
 	protected double mPacketReceptionRateOverall = 100;
 	protected double mPacketReceptionRateCurrent = 100;
 	
@@ -775,12 +775,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mPacketReceptionRateCurrent;
 	}
 
-	public void setPacketLossCount(long packetLossCount){
-		mPacketLossCount = packetLossCount;
+	public void setPacketLossCountPerTrial(long packetLossCountPerTrial){
+		mPacketLossCountPerTrial = packetLossCountPerTrial;
 	}
 
-	public long getPacketLossCount(){
-		return mPacketLossCount;
+	public long getPacketLossCountPerTrial(){
+		return mPacketLossCountPerTrial;
 	}
 	
 	

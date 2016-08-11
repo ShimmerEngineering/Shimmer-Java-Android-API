@@ -676,7 +676,7 @@ public class Shimmer4 extends ShimmerDevice {
 //					//do nothing
 //				}
 //				
-				mPacketLossCount = 0;
+				mPacketLossCountPerTrial = 0;
 				setPacketReceptionRateOverall(100);
 				mFirstPacketParsed=true;
 //				mFirstTimeCalTime=true;
