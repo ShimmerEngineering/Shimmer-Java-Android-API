@@ -163,7 +163,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	private boolean mInstructionStackLock = false;
-	protected boolean mSendProgressReport = false;
+	protected boolean mSendProgressReport = true;
 	protected boolean mOperationUnderway = false;
 	protected byte mCurrentCommand;	
 	protected boolean mWaitForAck=false;                                          // This indicates whether the device is waiting for an acknowledge packet from the Shimmer Device  

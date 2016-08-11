@@ -3125,6 +3125,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mComPort;
 	}
 	
+	public String getBtConnectionHandle() {
+		if(!mComPort.isEmpty()){
+			return mComPort;
+		}
+		else{
+			return getMacId();
+		}
+	}
+	
 	/** Only supported in ShimmerPCMSS currently*/
 	public void setComPort(String comPort){
 		mComPort = comPort;
