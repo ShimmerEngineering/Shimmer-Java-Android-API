@@ -85,6 +85,7 @@ import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
+import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.SensorSystemTimeStampGq;
 import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.SensorSTC3100.GuiLabelSensors;
@@ -1626,40 +1627,11 @@ public class Configuration {
 			//TODO incorporate 3 byte timestamp change for newer firmware
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
 			
-			//TODO replace with ShimmerClock instance
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, SensorSystemTimeStampGq.cDSystemTimestamp);
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-//							Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-//							DatabaseChannelHandles.TIMESTAMP_SYSTEM,
-//							CHANNEL_UNITS.MILLISECONDS,
-//							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
 			
-			//TODO replace with ShimmerClock instance
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorSystemTimeStampGq.cDSystemTimestampPlot);
-			
-			//TODO replace with ShimmerClock instance
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-//							DatabaseChannelHandles.REAL_TIME_CLOCK,
-//							CHANNEL_UNITS.MILLISECONDS,
-//							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
-
-			//TODO replace with ShimmerClock instance
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-//							Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-//							DatabaseChannelHandles.REAL_TIME_CLOCK_SYNC,
-//							CHANNEL_UNITS.MILLISECONDS,
-//							Arrays.asList(CHANNEL_TYPE.CAL), false, true));
 			
 //			TIMESTAMP_SYNC
 			
@@ -1700,6 +1672,7 @@ public class Configuration {
 			// Algorithm Channels
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR, SensorECGToHRFw.channelEcgToHr);
 			
+			//TODO remove below
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR,
 					new ChannelDetails(
 							Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR,
@@ -1707,121 +1680,7 @@ public class Configuration {
 							DatabaseChannelHandles.PPG_TO_HR,
 							CHANNEL_UNITS.BEATS_PER_MINUTE,
 							Arrays.asList(CHANNEL_TYPE.CAL)));
-			
-//			//TODO move to OrientationModule?
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W,
-//							DatabaseChannelHandles.QUARTENION_W_6DOF,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X,
-//							DatabaseChannelHandles.QUARTENION_X_6DOF,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y,
-//							DatabaseChannelHandles.QUARTENION_Y_6DOF,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z,
-//							DatabaseChannelHandles.QUARTENION_Z_6DOF,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W,
-//							DatabaseChannelHandles.QUARTENION_W_9DOF,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,
-//							DatabaseChannelHandles.QUARTENION_X_9DOF,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,
-//							DatabaseChannelHandles.QUARTENION_Y_9DOF,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
-//							Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,
-//							DatabaseChannelHandles.QUARTENION_Z_9DOF,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//						
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_A,
-//							DatabaseChannelHandles.EULER_6DOF_A,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_X,
-//							DatabaseChannelHandles.EULER_6DOF_X,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Y,
-//							DatabaseChannelHandles.EULER_6DOF_Y,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_Z,
-//							DatabaseChannelHandles.EULER_6DOF_Z,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_A,
-//							DatabaseChannelHandles.EULER_9DOF_A,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_X,
-//							DatabaseChannelHandles.EULER_9DOF_X,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Y,
-//							DatabaseChannelHandles.EULER_9DOF_Y,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
-//					new ChannelDetails(
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
-//							Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_Z,
-//							DatabaseChannelHandles.EULER_9DOF_Z,
-//							CHANNEL_UNITS.NO_UNITS,
-//							Arrays.asList(CHANNEL_TYPE.CAL)));
+
 
 			mChannelMapRef = Collections.unmodifiableMap(aMap);
 	    }
