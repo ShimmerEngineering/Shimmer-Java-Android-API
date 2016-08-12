@@ -1426,6 +1426,5 @@ public class Shimmer4 extends ShimmerDevice {
 		mSendProgressReport = state;
 	}
 
-
 	
 }
