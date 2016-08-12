@@ -26,8 +26,8 @@ public class FftCalculateDetails{
 	private List<Double> mTimeBuffer = new ArrayList<Double>();
 	private List<Double> mDataBuffer = new ArrayList<Double>();
 	private double[][] psdResults; 
-	public double meanFrequency;
-	public double medianFrequency; 
+	public double meanFreq;
+	public double medianFreq; 
 	
 	//TODO add support for the below
 	private int mFftOverlapPercent = 0;
@@ -77,11 +77,12 @@ public class FftCalculateDetails{
 
 	
 	//TODO calculate FFT on data buffers
-	public double[] calculateFft(){
+	public double[] calculateFft(int timeDiffMs){
 		//TODO interpolate missing samples
 		
+		System.err.println("" + mSamplingRate*(timeDiffMs/1000));
 		//TODO check if size is the same as the required minimum, not just >0
-		if(mDataBuffer.size()>0){
+		if(mDataBuffer.size()>(mSamplingRate*(timeDiffMs/1000))){
 			Double[] inputTemp = mDataBuffer.toArray(new Double[mDataBuffer.size()]);
 			
 			double[] input = toPrimitive(inputTemp);
@@ -102,8 +103,8 @@ public class FftCalculateDetails{
 		return null;
 	}
 	
-	public ObjectCluster[] calculateFftAndGenerateOJC() {
-		double[] fft = calculateFft();
+	public ObjectCluster[] calculateFftAndGenerateOJC(int timeDiff) {
+		double[] fft = calculateFft(timeDiff);
 		
 		ObjectCluster[] ojcArray = new ObjectCluster[fft.length];
 		
@@ -127,36 +128,42 @@ public class FftCalculateDetails{
 		return ojcArray;
 	}
 	
-	public double[][] calculateFftAndGenerateArray() {
-		double[] fft = calculateFft();
+	public double[][] calculateFftAndGenerateArray(int timeDiff) {
+		double[] fft = calculateFft(timeDiff);
 
-		if(mIsShowingTwoSidedFFT){
-			mDivider = 1;
-		}
-		
-		//TODO improve below - just implementing quick method to calculate sampling rate for the moment
-		if(mTimeBuffer.size()>1){
-			mSamplingRate = 1/(mTimeBuffer.get(1) - mTimeBuffer.get(0));
-		}
-		
-		double[][] results = new double[2][fft.length/mDivider];
-		double multiplier = mSamplingRate/fft.length;
-		
-		calculatePSDAndGenerateArray(fft, multiplier);
-		
-		for(int i=0;i<fft.length/mDivider;i++){
-			if(mSamplingRate==Double.NaN){
-				//Use index
-				results[0][i] = i;
+		if(fft.length>0){
+			if(mIsShowingTwoSidedFFT){
+				mDivider = 1;
 			}
-			else{
-				//Use freq
-				results[0][i] = i*multiplier;
+			
+			//TODO improve below - just implementing quick method to calculate sampling rate for the moment
+			if(mTimeBuffer.size()>2){
+				mSamplingRate = 1/(mTimeBuffer.get(1) - mTimeBuffer.get(0));
 			}
-			results[1][i] = fft[i];
+			
+			double[][] results = new double[2][fft.length/mDivider];
+			
+			double multiplier = mSamplingRate/fft.length;
+			
+			System.err.println("FFT LENGTH = " + fft.length);
+			
+			for(int i=0;i<fft.length/mDivider;i++){
+				if(mSamplingRate==Double.NaN){
+					//Use index
+					results[0][i] = i;
+				}
+				else{
+					//Use freq
+					results[0][i] = i*multiplier;
+				}
+				results[1][i] = fft[i];
+			}
+			
+			calculatePSDAndGenerateArray(fft);
+			return results;
 		}
 		
-		return results;
+		return new double[][]{};
 	}
 	
 	/**
@@ -164,13 +171,15 @@ public class FftCalculateDetails{
 	 *
 	 * Mean Frequency of a spectrum = sum of the product of the spectrogram intensity (in dB) and the frequency, divided by the total sum of spectrogram intensity.
 	 */
-	public void calculatePSDAndGenerateArray(double[] fft, double multiplier) {
+	public void calculatePSDAndGenerateArray(double[] fft) {
 
 		psdResults = new double[2][fft.length / mDivider];
 
 		double sumProductFreqPsd = 0;
 		double sumPsd = 0;
 		boolean isMedianValueReached = false;
+		//double multiplier = mSamplingRate/fft.length; 
+		double multiplier = 1024/fft.length; 
 
 		for (int i = 0; i < fft.length / mDivider; i++) {
 
@@ -189,9 +198,9 @@ public class FftCalculateDetails{
 			sumPsd = sumPsd + psdResults[1][i];
 		}
 
-		meanFrequency = sumProductFreqPsd / sumPsd; // Calculate Mean [2]
+		meanFreq = sumProductFreqPsd / sumPsd; // Calculate Mean [2]
 		
-		System.err.println("MEAN FREQUECNY = + " + meanFrequency);
+		System.err.println("MEAN FREQUECNY = + " + meanFreq);
 
 		// Calculate Median [1]
 		// TODO: Better check?
@@ -200,12 +209,12 @@ public class FftCalculateDetails{
 			for (int i = 0; i < fft.length / mDivider; i++) {
 
 				if (psdResults[1][i] > sumPsd / 2) {
-					medianFrequency = psdResults[0][i];
+					medianFreq = psdResults[0][i];
 					isMedianValueReached = true;
 					break;
 				}
 			}
-			System.err.println("MEDIAN FREQUECNY = + " + medianFrequency);
+			System.err.println("MEDIAN FREQUECNY = + " + medianFreq);
 		}
 	}
 	
