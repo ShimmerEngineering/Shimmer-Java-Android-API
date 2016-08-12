@@ -18,21 +18,21 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	private static final long serialVersionUID = -3556098650349506733L;
 	
 	public class CALIB_KINEMATIC_PARAM{
-		public static final String OFFSET_B0 = "b0";
-		public static final String OFFSET_B1 = "b1";
-		public static final String OFFSET_B2 = "b2";
-		public static final String SENSITIVITY_K0 = "k0";
-		public static final String SENSITIVITY_K1 = "k1";
-		public static final String SENSITIVITY_K2 = "k2";
-		public static final String ALIGNMENT_R00 = "r00";
-		public static final String ALIGNMENT_R01 = "r01";
-		public static final String ALIGNMENT_R02 = "r02";
-		public static final String ALIGNMENT_R10 = "r10";
-		public static final String ALIGNMENT_R11 = "r11";
-		public static final String ALIGNMENT_R12 = "r12";
-		public static final String ALIGNMENT_R20 = "r20";
-		public static final String ALIGNMENT_R21 = "r21";
-		public static final String ALIGNMENT_R22 = "r22";
+		public static final String OFFSET_B0 = "b0"; //called x elsewhere?
+		public static final String OFFSET_B1 = "b1"; //called y elsewhere?
+		public static final String OFFSET_B2 = "b2"; //called z elsewhere?
+		public static final String SENSITIVITY_K0 = "k0"; //called x elsewhere?
+		public static final String SENSITIVITY_K1 = "k1"; //called y elsewhere?
+		public static final String SENSITIVITY_K2 = "k2"; //called z elsewhere?
+		public static final String ALIGNMENT_R00 = "r00"; //called XX elsewhere?
+		public static final String ALIGNMENT_R01 = "r01"; //called XY elsewhere?
+		public static final String ALIGNMENT_R02 = "r02"; //called XZ elsewhere?
+		public static final String ALIGNMENT_R10 = "r10"; //called YX elsewhere?
+		public static final String ALIGNMENT_R11 = "r11"; //called YY elsewhere?
+		public static final String ALIGNMENT_R12 = "r12"; //called YZ elsewhere?
+		public static final String ALIGNMENT_R20 = "r20"; //called ZX elsewhere?
+		public static final String ALIGNMENT_R21 = "r21"; //called ZY elsewhere?
+		public static final String ALIGNMENT_R22 = "r22"; //called ZZ elsewhere?
 	}
 	
 	private double[][] mCurrentAlignmentMatrix = null; 			
@@ -343,11 +343,11 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	 * @param mean2
 	 * @param mean3
 	 */
-	public void updateCurrentOffsetVector(double XXmean, double XYmean, double XZmean) {
+	public void updateCurrentOffsetVector(double XXvalue, double YYvalue, double ZZvalue) {
 		double[][] newArray = new double[3][1];
-		newArray[0][0] = XXmean;
-		newArray[1][0] = XYmean;
-		newArray[2][0] = XZmean;
+		newArray[0][0] = XXvalue;
+		newArray[1][0] = YYvalue;
+		newArray[2][0] = ZZvalue;
 		setCurrentOffsetVector(newArray);
 	}
 	
@@ -356,11 +356,11 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 //		mCurrentOffsetVector = newArray;
 	}
 
-	public void updateCurrentSensitivityMatrix(double XXmean, double XYmean, double XZmean) {
+	public void updateCurrentSensitivityMatrix(double XXvalue, double YYvalue, double ZZvalue) {
 		double[][] newArray = new double[3][3];
-		newArray[0][0] = XXmean;
-		newArray[1][1] = XYmean;
-		newArray[2][2] = XZmean;
+		newArray[0][0] = XXvalue;
+		newArray[1][1] = YYvalue;
+		newArray[2][2] = ZZvalue;
 		setCurrentSensitivityMatrix(newArray);
 	}
 
@@ -370,22 +370,22 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}
 
 	public void updateCurrentAlignmentMatrix(
-			double XXmean, double XYmean, double XZmean, 
-			double YXmean, double YYmean, double YZmean,
-			double ZXmean, double ZYmean, double ZZmean) {
+			double XXvalue, double XYvalue, double XZvalue, 
+			double YXvalue, double YYvalue, double YZvalue,
+			double ZXvalue, double ZYvalue, double ZZvalue) {
 		
 		double[][] newMatrix = new double[3][3];
-		newMatrix[0][0] = XXmean;
-		newMatrix[0][1] = XYmean;
-		newMatrix[0][2] = XZmean;
+		newMatrix[0][0] = XXvalue;
+		newMatrix[0][1] = XYvalue;
+		newMatrix[0][2] = XZvalue;
 		
-		newMatrix[1][0] = YXmean;
-		newMatrix[1][1] = YYmean;
-		newMatrix[1][2] = YZmean;
+		newMatrix[1][0] = YXvalue;
+		newMatrix[1][1] = YYvalue;
+		newMatrix[1][2] = YZvalue;
 		
-		newMatrix[2][0] = ZXmean;
-		newMatrix[2][1] = ZYmean;
-		newMatrix[2][2] = ZZmean;
+		newMatrix[2][0] = ZXvalue;
+		newMatrix[2][1] = ZYvalue;
+		newMatrix[2][2] = ZZvalue;
 		
 		setCurrentAlignmentMatrix(newMatrix);
 	}
@@ -458,7 +458,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		mAlignmentMin = UtilShimmer.applyPrecisionCorrection(mAlignmentMin, mAlignmentPrecision);
 	}
 	
-	public String generateDebugString() {
+	public String getDebugString() {
 		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
 		debugString += generateDebugStringPerProperty("Default Alignment", mDefaultAlignmentMatrix);
 		debugString += generateDebugStringPerProperty("Current Alignment", getCurrentAlignmentMatrix());//mCurrentAlignmentMatrix);

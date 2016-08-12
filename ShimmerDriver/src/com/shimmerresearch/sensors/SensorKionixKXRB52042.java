@@ -88,6 +88,10 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	public class GuiLabelConfig{
 		public static final String KXRB8_2042_ACCEL_DEFAULT_CALIB = "Low Noise Accel Default Calibration";
+		
+		//NEW
+		public static final String KXRB8_2042_ACCEL_VALID_CALIB = "Low Noise Accel Valid Calibration";
+		public static final String KXRB8_2042_ACCEL_CALIB_PARAM = "Low Noise Accel Calibration Details";
 	}
 	
 	public class GuiLabelSensors{
@@ -205,6 +209,12 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 
 	
     //--------- Constructors for this class start --------------
+    /**Just used for accessing calibration*/
+	public SensorKionixKXRB52042() {
+		super(SENSORS.KIONIXKXRB52042);
+		initialise();
+	}
+	
 	public SensorKionixKXRB52042(ShimmerVerObject svo) {
 		super(SENSORS.KIONIXKXRB52042, svo);
 		initialise();

@@ -329,9 +329,15 @@ public class SensorLSM303 extends AbstractSensor{
 		
 		public static final String LSM303DLHC_ACCEL_LPM = "Wide Range Accel Low-Power Mode"; 
 		public static final String LSM303DLHC_MAG_LPM = "Mag Low-Power Mode";
-		
+
 		public static final String LSM303DLHC_ACCEL_DEFAULT_CALIB = "Wide Range Accel Default Calibration";
 		public static final String LSM303DLHC_MAG_DEFAULT_CALIB = "Mag Default Calibration";
+
+		//NEW
+		public static final String LSM303DLHC_ACCEL_CALIB_PARAM = "Wide Range Accel Calibration Details";
+		public static final String LSM303DLHC_ACCEL_VALID_CALIB = "Wide Range Accel Valid Calibration";
+		public static final String LSM303DLHC_MAG_CALIB_PARAM = "Mag Calibration Details";
+		public static final String LSM303DLHC_MAG_VALID_CALIB = "Mag Valid Calibration";
 	}
 	
 
@@ -597,6 +603,12 @@ public class SensorLSM303 extends AbstractSensor{
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
     
     //--------- Constructors for this class start --------------
+    /**Just used for accessing calibration*/
+    public SensorLSM303() {
+		super(SENSORS.LSM303);
+		initialise();
+    }
+    
     public SensorLSM303(ShimmerVerObject svo) {
 		super(SENSORS.LSM303, svo);
 		initialise();

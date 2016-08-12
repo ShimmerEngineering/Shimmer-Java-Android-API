@@ -265,6 +265,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
 		public static final String MPU9150_GYRO_LPM = "Gyro Low-Power Mode";
 		public static final String MPU9150_GYRO_DEFAULT_CALIB = "Gyro Default Calibration";
+		
+		public static final String MPU9150_GYRO_VALID_CALIB = "Gyro Valid Calibration";
+		public static final String MPU9150_GYRO_CALIB_PARAM = "Gyro Calibration Details";
 	}
 	
 	public class GuiLabelSensors{
@@ -1229,6 +1232,14 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
     }
 
 	//--------- Channel info end --------------
+
+    /**Just used for accessing calibration*/
+	public SensorMPU9X50(){
+		super(SENSORS.MPU9X50);
+		initialise();
+		
+		setCalibSensitivityScaleFactor(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
+	}
 
 
 	/** Constructor for this class

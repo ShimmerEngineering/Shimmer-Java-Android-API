@@ -122,9 +122,12 @@ public abstract class AbstractSensor implements Serializable{
 
     protected ShimmerDevice mShimmerDevice = null;
     
+	public AbstractSensor(SENSORS sensorType){
+		setSensorName(sensorType.toString());
+	}
 	
 	public AbstractSensor(SENSORS sensorType, ShimmerVerObject svo){
-		setSensorName(sensorType.toString());
+		this(sensorType);
 		if(svo!=null){
 			mShimmerVerObject = svo;
 		}
@@ -391,7 +394,7 @@ public abstract class AbstractSensor implements Serializable{
 //		System.out.println("Calib make check");
 	}
 
-	protected CalibDetails getCalibForSensor(int sensorMapKey, int range) {
+	public CalibDetails getCalibForSensor(int sensorMapKey, int range) {
 		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = getCalibrationMapForSensor(sensorMapKey); 
 		if(calibDetailsPerSensor!=null){
 			CalibDetails calibDetails = calibDetailsPerSensor.get(range);
@@ -400,7 +403,7 @@ public abstract class AbstractSensor implements Serializable{
 		return null;
 	}
 
-	protected TreeMap<Integer, CalibDetails> getCalibrationMapForSensor(int sensorMapKey) {
+	public TreeMap<Integer, CalibDetails> getCalibrationMapForSensor(int sensorMapKey) {
 //		for(int key:mCalibMap.keySet()){
 //			System.out.println("calibKey:\t" + key);
 //		}
