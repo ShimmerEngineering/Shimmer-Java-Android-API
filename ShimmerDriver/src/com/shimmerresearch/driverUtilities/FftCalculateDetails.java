@@ -179,17 +179,20 @@ public class FftCalculateDetails{
 		double sumProductFreqPsd = 0;
 		double sumPsd = 0;
 		boolean isMedianValueReached = false;
-		//double multiplier = mSamplingRate/fft.length; 
-		double multiplier = 1024/fft.length; 
+		
+		double mSamplingRate2 = 1024;
+		double multiplier = mSamplingRate2/fft.length; 
+		
+		System.err.println("MULTIPLIER = " + multiplier);
 
-		for (int i = 0; i < fft.length / mDivider; i++) {
+		for (int i = 0; i < fft.length / mDivider; i++) { //is divided by divider right? instead of just fft - half? 
 
 			if (mSamplingRate == Double.NaN) {
 				// Use index
 				psdResults[0][i] = i;
 			} else {
 				// Use freq
-				psdResults[0][i] = i * multiplier;
+				psdResults[0][i] = i*multiplier; //problem i = 0; 
 			}
 
 			psdResults[1][i] = 2 * ((Math.abs(Math.pow(fft[i], 2))) / mSamplingRate * fft.length); // psd = |fft|^2/(fs*N)
