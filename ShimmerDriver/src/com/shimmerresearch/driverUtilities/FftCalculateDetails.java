@@ -128,8 +128,9 @@ public class FftCalculateDetails{
 		return ojcArray;
 	}
 	
-	public double[][] calculateFftAndGenerateArray(int timeDiff) {
-		double[] fft = calculateFft(timeDiff);
+	public double[][] calculateFftAndGenerateArray(int mTimerPeriodCalculateFft) {
+		
+		double[] fft = calculateFft(mTimerPeriodCalculateFft);
 
 		if(fft.length>0){
 			if(mIsShowingTwoSidedFFT){
