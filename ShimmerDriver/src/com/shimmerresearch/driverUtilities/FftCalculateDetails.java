@@ -21,7 +21,7 @@ public class FftCalculateDetails{
 	
 	private String[] mTraceName = null;
 	private String mShimmerName = null;
-	private double mSamplingRate = 1024;//Double.NaN;
+	private double mSamplingRate = 1024; //Double.NaN;
 	private int mDivider = 2;
 	private List<Double> mTimeBuffer = new ArrayList<Double>();
 	private List<Double> mDataBuffer = new ArrayList<Double>();
