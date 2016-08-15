@@ -483,6 +483,12 @@ public class SensorADC extends AbstractSensor {
 		return calibratedData;
 	}
 	//--------- Sensor specific methods end --------------
+
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	

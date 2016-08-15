@@ -613,4 +613,10 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		return false;
 	}
 	//--------- Optional methods to override in Sensor Class end --------
+
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

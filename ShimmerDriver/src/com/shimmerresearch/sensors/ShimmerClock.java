@@ -731,6 +731,12 @@ public class ShimmerClock extends AbstractSensor {
 		return null;
 	}
 	
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+		
 	protected double calibrateTimeStamp(double timeStamp){
 		//first convert to continuous time stamp
 		double calibratedTimeStamp = 0;
@@ -824,7 +830,7 @@ public class ShimmerClock extends AbstractSensor {
 		mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
 		return mShimmerDevice.getPacketReceptionRateCurrent();
 	}
-	
+
 	//--------- Optional methods to override in Sensor Class start --------
 	//--------- Optional methods to override in Sensor Class end --------
 

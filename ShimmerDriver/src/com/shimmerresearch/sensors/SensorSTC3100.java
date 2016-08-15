@@ -449,4 +449,10 @@ public class SensorSTC3100 extends AbstractSensor{
 		return mBattPercentageParsed;
 	}
 
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

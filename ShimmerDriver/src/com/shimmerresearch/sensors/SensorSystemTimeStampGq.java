@@ -223,6 +223,12 @@ public class SensorSystemTimeStampGq extends AbstractSensor {
 		
 	}
 
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	//--------- Optional methods to override in Sensor Class start --------
 	//--------- Optional methods to override in Sensor Class end --------
 

@@ -1,5 +1,7 @@
 package com.shimmerresearch.sensors;
 
+import java.util.Map;
+
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -281,6 +283,14 @@ public class SensorTemplate extends AbstractSensor{
 				// TODO Auto-generated method stub
 				return null;
 			}
+			
+			@Override
+			public Map<String, Object> getConfigMapForDb() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+				
+
 			//--------- Abstract methods implemented end --------------
 
 

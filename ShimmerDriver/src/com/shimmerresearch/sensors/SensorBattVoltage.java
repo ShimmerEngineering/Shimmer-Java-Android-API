@@ -315,5 +315,11 @@ public class SensorBattVoltage extends AbstractSensor{
 		}
 	}
 
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

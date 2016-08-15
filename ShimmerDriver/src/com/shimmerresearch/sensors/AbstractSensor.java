@@ -102,6 +102,8 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public abstract void processResponse(Object obj, COMMUNICATION_TYPE commType);
 	
+	public abstract Map<String, Object> getConfigMapForDb();
+
 	// --------------- Abstract methods end ----------------	
 
 	protected String mSensorName = "";
@@ -577,7 +579,6 @@ public abstract class AbstractSensor implements Serializable{
 		}
 		return returnValue;
 	}
-	
 	
 	//--------- Optional methods to override in Sensor Class end -------- 
 

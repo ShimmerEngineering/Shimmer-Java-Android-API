@@ -369,6 +369,12 @@ public class SensorBMP280 extends AbstractSensor{
 	private int getPressureResolution() {
 		return mPressureResolution_BMP280;
 	}
+
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	

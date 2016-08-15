@@ -520,6 +520,13 @@ public class SensorBMP180 extends AbstractSensor {
 	//--------- Sensor specific methods end --------------
 
 
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 
 
 

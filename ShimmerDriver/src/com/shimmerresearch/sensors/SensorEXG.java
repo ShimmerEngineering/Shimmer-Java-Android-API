@@ -2856,5 +2856,11 @@ public class SensorEXG extends AbstractSensor{
 		return !mShimmerVerObject.isShimmerGenGq();
 	}
 
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

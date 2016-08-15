@@ -196,6 +196,12 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 		
 	}
 
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 }

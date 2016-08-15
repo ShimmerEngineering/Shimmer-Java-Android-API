@@ -2970,6 +2970,13 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 		return null;
 	}
+
+
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

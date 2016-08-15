@@ -423,4 +423,10 @@ public class SensorBridgeAmp extends AbstractSensor{
 		return y;
 	}
 
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }	

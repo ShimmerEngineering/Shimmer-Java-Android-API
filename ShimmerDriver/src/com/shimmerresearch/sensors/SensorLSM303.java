@@ -2,6 +2,7 @@ package com.shimmerresearch.sensors;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,6 +17,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.ShimmerDevice.DatabaseConfigHandle;
 import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -1821,6 +1823,24 @@ public class SensorLSM303 extends AbstractSensor{
 			return isUsingDefaultMagParam();
 		}
 		return false;
+	}
+	
+	public static final class DatabaseConfigHandle{
+		public static final String MAG_RANGE = "LSM303DLHC_Mag_Range";
+		public static final String MAG_RATE = "LSM303DLHC_Mag_Rate";
+		public static final String WR_ACC_RATE = "LSM303DLHC_Acc_Rate";
+		public static final String WR_ACC_RANGE = "LSM303DLHC_Acc_Range";
+	}
+	
+	@Override
+	public Map<String, Object> getConfigMapForDb() {
+		HashMap<String, Object> mapOfConfig = new HashMap<String, Object>();
+		mapOfConfig.put(DatabaseConfigHandle.MAG_RANGE, getMagRange());
+		mapOfConfig.put(DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RATE, getLSM303DigitalAccelRate());
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RANGE, getAccelRange());
+
+		return mapOfConfig;
 	}	
 
 

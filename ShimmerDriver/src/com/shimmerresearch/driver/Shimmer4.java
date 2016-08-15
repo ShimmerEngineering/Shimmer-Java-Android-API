@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
@@ -392,8 +393,12 @@ public class Shimmer4 extends ShimmerDevice {
 //		printSensorAndParserMaps();
 
 		updateExpectedDataPacketSize();
+		
+		//for testing
+		printMapOfConfigForDb();
 	}
 	
+
 	private void updateExpectedDataPacketSize() {
 		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
 //		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.ALL);
@@ -1426,5 +1431,13 @@ public class Shimmer4 extends ShimmerDevice {
 		mSendProgressReport = state;
 	}
 
+	@Override
+	public HashMap<String, Object> getConfigMapForDb() {
+		HashMap<String, Object> configMapForDb = super.getConfigMapForDb();
+		
+		//TODO 
+		
+		return configMapForDb;
+	}
 	
 }

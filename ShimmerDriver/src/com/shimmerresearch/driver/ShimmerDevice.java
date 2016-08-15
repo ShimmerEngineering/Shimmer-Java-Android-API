@@ -19,6 +19,11 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+
+
+
+
+//import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
@@ -53,6 +58,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.SensorLSM303;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -3176,5 +3182,66 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //			sensorDetails.setIsEnabled(false);
 //		}
 //	}
+	
+	
+	public static final class DatabaseConfigHandle{
+		public static final String SAMPLE_RATE = "Sample_Rate";
+		public static final String ENABLE_SENSORS = "Enable_Sensors";
+		public static final String DERIVED_SENSORS = "Derived_Sensors";
+		
+		public static final String SHIMMER_VERSION = "Shimmer_Version";
+		public static final String FW_VERSION = "FW_ID";
+		public static final String FW_VERSION_MAJOR = "FW_Version_Major";
+		public static final String FW_VERSION_MINOR = "FW_Version_Minor";
+		public static final String FW_VERSION_INTERNAL = "FW_Version_Internal";
+		
+	}
+	
+	public HashMap<String, Object> getConfigMapForDb(){
+		HashMap<String, Object> mapOfConfig = new HashMap<String, Object>();
+		
+		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
+		mapOfConfig.put(DatabaseConfigHandle.ENABLE_SENSORS, getEnabledSensors());
+		mapOfConfig.put(DatabaseConfigHandle.DERIVED_SENSORS, getDerivedSensors());
+
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			Map<String, Object> configMapPerSensor = abstractSensor.getConfigMapForDb();
+			if(configMapPerSensor!=null){
+				mapOfConfig.putAll(configMapPerSensor);
+			}
+		}
+		
+		return mapOfConfig;
+	}
+	
+	public void printMapOfConfigForDb() {
+		HashMap<String, Object> mapOfConfigForDb = getConfigMapForDb();
+		
+		System.out.println("Printing map of Config for DB, size = " + mapOfConfigForDb.keySet().size());
+		for(String configLbl:mapOfConfigForDb.keySet()){
+			String stringToPrint = configLbl + " = ";
+			Object val = mapOfConfigForDb.get(configLbl);
+			
+			if(val instanceof String){
+				stringToPrint += (String)val; 
+			}
+			else if(val instanceof Boolean){
+				stringToPrint += Boolean.toString((boolean) val); 
+			}
+			else if(val instanceof Double){
+				stringToPrint += Double.toString((double) val); 
+			}
+			else if(val instanceof Integer){
+				stringToPrint += Integer.toString((int) val); 
+			}
+			else if(val instanceof Long){
+				stringToPrint += Long.toString((long) val); 
+			}
+			System.out.println(stringToPrint);
+		}
+	}
+
 
 }
