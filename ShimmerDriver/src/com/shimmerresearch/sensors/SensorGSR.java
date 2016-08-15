@@ -449,7 +449,12 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	}
 	
-	
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
@@ -510,14 +515,6 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		return mGSRRange;
 	}
 	//--------- Sensor specific methods end --------------
-
-
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	//--------- Optional methods to override in Sensor Class start --------
 	//--------- Optional methods to override in Sensor Class end --------

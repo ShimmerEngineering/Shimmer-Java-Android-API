@@ -102,7 +102,7 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public abstract void processResponse(Object obj, COMMUNICATION_TYPE commType);
 	
-	public abstract Map<String, Object> getConfigMapForDb();
+	public abstract LinkedHashMap<String, Object> getConfigMapForDb();
 
 	// --------------- Abstract methods end ----------------	
 

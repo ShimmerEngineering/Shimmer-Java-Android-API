@@ -732,7 +732,7 @@ public class ShimmerClock extends AbstractSensor {
 	}
 	
 	@Override
-	public Map<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -396,8 +396,13 @@ public class SensorSTC3100 extends AbstractSensor{
 	}
 
 	@Override
-	public ActionSetting setSettings(String componentName, Object valueToSet,
-			COMMUNICATION_TYPE commType) {
+	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -449,10 +454,5 @@ public class SensorSTC3100 extends AbstractSensor{
 		return mBattPercentageParsed;
 	}
 
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

@@ -608,6 +608,11 @@ public class SensorPPG extends AbstractSensor {
 		return null;
 	}
 	
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
@@ -815,12 +820,6 @@ public class SensorPPG extends AbstractSensor {
 		return sensorMapKey;
 	}
 	//--------- Optional methods to override in Sensor Class end --------
-
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 }

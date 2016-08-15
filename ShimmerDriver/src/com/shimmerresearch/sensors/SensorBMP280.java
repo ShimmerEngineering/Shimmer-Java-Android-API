@@ -334,6 +334,12 @@ public class SensorBMP280 extends AbstractSensor{
 		}
 		return actionSetting;
 	}
+	
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
@@ -370,13 +376,6 @@ public class SensorBMP280 extends AbstractSensor{
 		return mPressureResolution_BMP280;
 	}
 
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
-	
+
 	
 }

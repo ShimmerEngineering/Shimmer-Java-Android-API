@@ -1132,7 +1132,18 @@ public class SensorLSM303 extends AbstractSensor{
 		
 	}
 	
-	
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+		mapOfConfig.put(DatabaseConfigHandle.MAG_RANGE, getMagRange());
+		mapOfConfig.put(DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RATE, getLSM303DigitalAccelRate());
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RANGE, getAccelRange());
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_LPM, getLowPowerAccelEnabled());
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_HRM, isHighResAccelWr());
+		return mapOfConfig;
+	}	
+
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
@@ -1836,19 +1847,6 @@ public class SensorLSM303 extends AbstractSensor{
 		public static final String WR_ACC_HRM = "LSM303DLHC_Acc_HRM";
 	}
 	
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		HashMap<String, Object> mapOfConfig = new HashMap<String, Object>();
-		mapOfConfig.put(DatabaseConfigHandle.MAG_RANGE, getMagRange());
-		mapOfConfig.put(DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
-		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RATE, getLSM303DigitalAccelRate());
-		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RANGE, getAccelRange());
-		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_LPM, getLowPowerAccelEnabled());
-		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_HRM, isHighResAccelWr());
-		return mapOfConfig;
-	}	
-
-
 	//--------- Optional methods to override in Sensor Class end --------
 
 }

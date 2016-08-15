@@ -1364,6 +1364,12 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		mShimmerVerObject = shimmerDevice.mShimmerVerObject;
 //		mSensorEnabledMap = shimmerDevice.getSensorEnabledMap();
@@ -2856,11 +2862,4 @@ public class SensorEXG extends AbstractSensor{
 		return !mShimmerVerObject.isShimmerGenGq();
 	}
 
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
 }

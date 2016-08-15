@@ -185,6 +185,12 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	}
 
 	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
@@ -195,13 +201,6 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 
 }

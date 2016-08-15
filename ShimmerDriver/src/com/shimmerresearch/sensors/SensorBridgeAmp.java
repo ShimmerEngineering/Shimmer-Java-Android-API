@@ -383,18 +383,27 @@ public class SensorBridgeAmp extends AbstractSensor{
 		}
 		return false;
 	}
+	
 	@Override
 	public Object getSettings(String componentName,
 			COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	@Override
 	public ActionSetting setSettings(String componentName,
 			Object valueToSet, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
@@ -421,12 +430,6 @@ public class SensorBridgeAmp extends AbstractSensor{
 		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
 		double y = -27.42*Math.log(x) + 56.502;
 		return y;
-	}
-
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }	

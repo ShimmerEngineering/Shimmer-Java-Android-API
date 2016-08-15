@@ -285,6 +285,12 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
@@ -314,12 +320,5 @@ public class SensorBattVoltage extends AbstractSensor{
 			return mShimmerBattStatusDetails;
 		}
 	}
-
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

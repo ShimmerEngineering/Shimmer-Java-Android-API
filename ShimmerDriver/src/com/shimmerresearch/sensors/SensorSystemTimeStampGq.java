@@ -204,6 +204,12 @@ public class SensorSystemTimeStampGq extends AbstractSensor {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public boolean checkConfigOptionValues(String stringKey) {
@@ -221,12 +227,6 @@ public class SensorSystemTimeStampGq extends AbstractSensor {
 	public void checkShimmerConfigBeforeConfiguring() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	//--------- Optional methods to override in Sensor Class start --------

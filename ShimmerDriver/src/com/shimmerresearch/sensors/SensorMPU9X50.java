@@ -2029,6 +2029,11 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return actionSetting;
 	}
 	
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
@@ -2970,14 +2975,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 		return null;
 	}
-
-
-	@Override
-	public Map<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 }
 	

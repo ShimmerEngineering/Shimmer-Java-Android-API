@@ -3190,7 +3190,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	
 	public HashMap<String, Object> getConfigMapForDb(){
-		HashMap<String, Object> mapOfConfig = new HashMap<String, Object>();
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
 		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
 		mapOfConfig.put(DatabaseConfigHandle.ENABLE_SENSORS, getEnabledSensors());
@@ -3205,7 +3205,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			Map<String, Object> configMapPerSensor = abstractSensor.getConfigMapForDb();
+			LinkedHashMap<String, Object> configMapPerSensor = abstractSensor.getConfigMapForDb();
 			if(configMapPerSensor!=null){
 				mapOfConfig.putAll(configMapPerSensor);
 			}
