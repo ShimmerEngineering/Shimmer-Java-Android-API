@@ -1828,8 +1828,12 @@ public class SensorLSM303 extends AbstractSensor{
 	public static final class DatabaseConfigHandle{
 		public static final String MAG_RANGE = "LSM303DLHC_Mag_Range";
 		public static final String MAG_RATE = "LSM303DLHC_Mag_Rate";
+		public static final String MAG = "LSM303DLHC_Mag";
 		public static final String WR_ACC_RATE = "LSM303DLHC_Acc_Rate";
 		public static final String WR_ACC_RANGE = "LSM303DLHC_Acc_Range";
+		
+		public static final String WR_ACC_LPM = "LSM303DLHC_Acc_LPM";
+		public static final String WR_ACC_HRM = "LSM303DLHC_Acc_HRM";
 	}
 	
 	@Override
@@ -1839,7 +1843,8 @@ public class SensorLSM303 extends AbstractSensor{
 		mapOfConfig.put(DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RATE, getLSM303DigitalAccelRate());
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RANGE, getAccelRange());
-
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_LPM, getLowPowerAccelEnabled());
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_HRM, isHighResAccelWr());
 		return mapOfConfig;
 	}	
 
