@@ -131,6 +131,11 @@ public class FftCalculateDetails{
 	public double[][] calculateFftAndGenerateArray(int mTimerPeriodCalculateFft) {
 		
 		double[] fft = calculateFft(mTimerPeriodCalculateFft);
+		
+		double sumProductFreqPsd = 0.00;
+		double sumPsd = 0.00;
+		boolean isMedianValueReached = false;
+		int count = 0; 
 
 		if(fft.length>0){
 			if(mIsShowingTwoSidedFFT){
@@ -139,14 +144,16 @@ public class FftCalculateDetails{
 			
 			//TODO improve below - just implementing quick method to calculate sampling rate for the moment
 			if(mTimeBuffer.size()>2){
-				mSamplingRate = 1/(mTimeBuffer.get(1) - mTimeBuffer.get(0));
+				//mSamplingRate = 1000/(mTimeBuffer.get(1) - mTimeBuffer.get(0));
 			}
+			
+			double mSamplingRate = 1024; 
 			
 			double[][] results = new double[2][fft.length/mDivider];
 			
-			double multiplier = mSamplingRate/fft.length;
+			double[][] psdResults = new double[2][fft.length/mDivider];
 			
-			System.err.println("FFT LENGTH = " + fft.length);
+			double multiplier = mSamplingRate/fft.length;
 			
 			for(int i=0;i<fft.length/mDivider;i++){
 				if(mSamplingRate==Double.NaN){
@@ -156,11 +163,22 @@ public class FftCalculateDetails{
 				else{
 					//Use freq
 					results[0][i] = i*multiplier;
+					psdResults[0][i] = i*multiplier;
 				}
 				results[1][i] = fft[i];
-			}
+				
+				psdResults[1][i] = 2 * ((Math.abs(Math.pow(fft[i], 2))) / mSamplingRate * fft.length); // psd = |fft|^2/(fs*N)
+				//psdResults[1][i] = 10 * Math.log10(psdResults[1][i]); Optional to display in dB - 
+				
+				sumProductFreqPsd = sumProductFreqPsd + (psdResults[1][i]) * (psdResults[0][i]);
+				sumPsd = sumPsd + psdResults[1][i];
+				
+				count = i; 
+			}	
+			meanFreq = sumProductFreqPsd/sumPsd; // Calculate Mean [2]
 			
 			calculatePSDAndGenerateArray(fft);
+			
 			return results;
 		}
 		
@@ -174,38 +192,40 @@ public class FftCalculateDetails{
 	 */
 	public void calculatePSDAndGenerateArray(double[] fft) {
 
-		psdResults = new double[2][fft.length / mDivider];
-
+		double[][] psdResults = new double[2][fft.length/mDivider];
+		//psdResults = new double[2][fft.length];
+		
 		double sumProductFreqPsd = 0;
 		double sumPsd = 0;
 		boolean isMedianValueReached = false;
-		//double multiplier = mSamplingRate/fft.length; 
-		double multiplier = 1024/fft.length; 
+		
+		double mSamplingRate = 1024;
+		double multiplier = mSamplingRate/fft.length; 
+		
+		System.err.println("MULTIPLIER = " + multiplier);
 
-		for (int i = 0; i < fft.length / mDivider; i++) {
-
+	//	 for (int i = 0; i < fft.length; i++) { //is divided by divider right? instead of just fft - half? 
+		for (int i = 0; i < fft.length / mDivider; i++) { //is divided by divider right? instead of just fft - half? 
 			if (mSamplingRate == Double.NaN) {
 				// Use index
 				psdResults[0][i] = i;
 			} else {
 				// Use freq
-				psdResults[0][i] = i * multiplier;
+				psdResults[0][i] = i*multiplier; //problem i = 0; 
 			}
 
-			psdResults[1][i] = 2 * ((Math.abs(Math.pow(fft[i], 2))) / mSamplingRate * fft.length); // psd = |fft|^2/(fs*N)
-			psdResults[1][i] = 10 * Math.log10(psdResults[1][i]); // Convert to DB
+			psdResults[1][i] = 2*((Math.abs(Math.pow(fft[i], 2)))/mSamplingRate*fft.length); // psd = |fft|^2/(fs*N)
+			//psdResults[1][i] = 10 * Math.log10(psdResults[1][i]); // Convert to DB - Madeleine doesn't use 
 
 			sumProductFreqPsd = sumProductFreqPsd + (psdResults[1][i]) * (psdResults[0][i]);
 			sumPsd = sumPsd + psdResults[1][i];
 		}
 
-		meanFreq = sumProductFreqPsd / sumPsd; // Calculate Mean [2]
-		
-		System.err.println("MEAN FREQUECNY = + " + meanFreq);
+		meanFreq = sumProductFreqPsd/sumPsd; // Calculate Mean [2]
 
 		// Calculate Median [1]
 		// TODO: Better check?
-		if (psdResults.length > 0 & !isMedianValueReached) {
+		if (psdResults.length > 1 & !isMedianValueReached) {
 
 			for (int i = 0; i < fft.length / mDivider; i++) {
 
@@ -215,7 +235,6 @@ public class FftCalculateDetails{
 					break;
 				}
 			}
-			System.err.println("MEDIAN FREQUECNY = + " + medianFreq);
 		}
 	}
 	
