@@ -19,11 +19,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-
-
-
-
-//import com.shimmerresearch.database.DatabaseHandler;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
@@ -181,7 +176,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public boolean mVerboseMode = true;
 
-
+	public static final class DatabaseConfigHandle{
+		public static final String SAMPLE_RATE = "Sample_Rate";
+		public static final String ENABLE_SENSORS = "Enable_Sensors";
+		public static final String DERIVED_SENSORS = "Derived_Sensors";
+		
+		public static final String SHIMMER_VERSION = "Shimmer_Version";
+		public static final String FW_VERSION = "FW_ID";
+		public static final String FW_VERSION_MAJOR = "FW_Version_Major";
+		public static final String FW_VERSION_MINOR = "FW_Version_Minor";
+		public static final String FW_VERSION_INTERNAL = "FW_Version_Internal";
+	}
 
 	// --------------- Abstract Methods Start --------------------------
 	
@@ -3183,19 +3188,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		}
 //	}
 	
-	
-	public static final class DatabaseConfigHandle{
-		public static final String SAMPLE_RATE = "Sample_Rate";
-		public static final String ENABLE_SENSORS = "Enable_Sensors";
-		public static final String DERIVED_SENSORS = "Derived_Sensors";
-		
-		public static final String SHIMMER_VERSION = "Shimmer_Version";
-		public static final String FW_VERSION = "FW_ID";
-		public static final String FW_VERSION_MAJOR = "FW_Version_Major";
-		public static final String FW_VERSION_MINOR = "FW_Version_Minor";
-		public static final String FW_VERSION_INTERNAL = "FW_Version_Internal";
-		
-	}
 	
 	public HashMap<String, Object> getConfigMapForDb(){
 		HashMap<String, Object> mapOfConfig = new HashMap<String, Object>();
