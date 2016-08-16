@@ -3,6 +3,7 @@ package com.shimmerresearch.sensors;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -27,6 +28,7 @@ import com.shimmerresearch.driverUtilities.UtilCalibration;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.SensorMPU9X50.DatabaseConfigHandle;
 
 /** Sensorclass for KionixKXRB52042 - analog/low-noise accelerometer
  * 
@@ -413,8 +415,12 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+		
+	
+		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsAccelLn(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC);
+		
+		return mapOfConfig;
 	}
 
 	@Override
@@ -617,6 +623,35 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		}
 		return false;
 	}
+	
+	public static final class DatabaseConfigHandle{
+		public static final String LN_ACC_OFFSET_X = "KXRB8_2042_Acc_Offset_X";
+		public static final String LN_ACC_OFFSET_Y = "KXRB8_2042_Acc_Offset_Y";
+		public static final String LN_ACC_OFFSET_Z = "KXRB8_2042_Acc_Offset_Z";
+		public static final String LN_ACC_GAIN_X = "KXRB8_2042_Acc_Gain_X";
+		public static final String LN_ACC_GAIN_Y = "KXRB8_2042_Acc_Gain_Y";
+		public static final String LN_ACC_GAIN_Z = "KXRB8_2042_Acc_Gain_Z";
+		public static final String LN_ACC_ALIGN_XX = "KXRB8_2042_Acc_Align_XX";
+		public static final String LN_ACC_ALIGN_XY = "KXRB8_2042_Acc_Align_XY";
+		public static final String LN_ACC_ALIGN_XZ = "KXRB8_2042_Acc_Align_XZ";
+		public static final String LN_ACC_ALIGN_YX = "KXRB8_2042_Acc_Align_YX";
+		public static final String LN_ACC_ALIGN_YY = "KXRB8_2042_Acc_Align_YY";
+		public static final String LN_ACC_ALIGN_YZ = "KXRB8_2042_Acc_Align_YZ";
+		public static final String LN_ACC_ALIGN_ZX = "KXRB8_2042_Acc_Align_ZX";
+		public static final String LN_ACC_ALIGN_ZY = "KXRB8_2042_Acc_Align_ZY";
+		public static final String LN_ACC_ALIGN_ZZ = "KXRB8_2042_Acc_Align_ZZ";
+		
+		public static final List<String> LIST_OF_CALIB_HANDLES_LN_ACC = Arrays.asList(
+				DatabaseConfigHandle.LN_ACC_OFFSET_X, DatabaseConfigHandle.LN_ACC_OFFSET_Y, DatabaseConfigHandle.LN_ACC_OFFSET_Z,
+				DatabaseConfigHandle.LN_ACC_GAIN_X, DatabaseConfigHandle.LN_ACC_GAIN_Y, DatabaseConfigHandle.LN_ACC_GAIN_Z,
+				DatabaseConfigHandle.LN_ACC_ALIGN_XX, DatabaseConfigHandle.LN_ACC_ALIGN_XY, DatabaseConfigHandle.LN_ACC_ALIGN_XZ,
+				DatabaseConfigHandle.LN_ACC_ALIGN_YX, DatabaseConfigHandle.LN_ACC_ALIGN_YY, DatabaseConfigHandle.LN_ACC_ALIGN_YZ,
+				DatabaseConfigHandle.LN_ACC_ALIGN_ZX, DatabaseConfigHandle.LN_ACC_ALIGN_ZY, DatabaseConfigHandle.LN_ACC_ALIGN_ZZ);
+	}
+	
+	
+	
+	
 	//--------- Optional methods to override in Sensor Class end --------
 
 }
