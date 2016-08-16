@@ -37,6 +37,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.sensors.SensorLSM303.DatabaseConfigHandle;
 
 
 /**
@@ -2033,7 +2034,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-//		mapOfConfig.put(DatabaseConfigHandle.MAG_RANGE, getMagRange());
+		mapOfConfig.put(DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
+		mapOfConfig.put(DatabaseConfigHandle.GYRO_RATE, getMPU9150GyroAccelRate());
+
+		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsGyro(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
 		return mapOfConfig;
 	}
 	
@@ -2970,6 +2974,29 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String MPU_MPL_VECT_COMP = "MPU9150_MPL_Vect_Comp";
 		public static final String MPU_MAG_DIST = "MPU9150_MAG_Dist";
 		public static final String MPU_MPL_ENABLE = "MPU9150_MPL_Enable";
+		
+		public static final String GYRO_OFFSET_X = "MPU9150_Gyro_Offset_X";
+		public static final String GYRO_OFFSET_Y = "MPU9150_Gyro_Offset_Y";
+		public static final String GYRO_OFFSET_Z = "MPU9150_Gyro_Offset_Z";
+		public static final String GYRO_GAIN_X = "MPU9150_Gyro_Gain_X";
+		public static final String GYRO_GAIN_Y = "MPU9150_Gyro_Gain_Y";
+		public static final String GYRO_GAIN_Z = "MPU9150_Gyro_Gain_Z";
+		public static final String GYRO_ALIGN_XX = "MPU9150_Gyro_Align_XX";
+		public static final String GYRO_ALIGN_XY = "MPU9150_Gyro_Align_XY";
+		public static final String GYRO_ALIGN_XZ = "MPU9150_Gyro_Align_XZ";
+		public static final String GYRO_ALIGN_YX = "MPU9150_Gyro_Align_YX";
+		public static final String GYRO_ALIGN_YY = "MPU9150_Gyro_Align_YY";
+		public static final String GYRO_ALIGN_YZ = "MPU9150_Gyro_Align_YZ";
+		public static final String GYRO_ALIGN_ZX = "MPU9150_Gyro_Align_ZX";
+		public static final String GYRO_ALIGN_ZY = "MPU9150_Gyro_Align_ZY";
+		public static final String GYRO_ALIGN_ZZ = "MPU9150_Gyro_Align_ZZ";
+		
+		public static final List<String> LIST_OF_CALIB_HANDLES_GYRO = Arrays.asList(
+				DatabaseConfigHandle.GYRO_OFFSET_X, DatabaseConfigHandle.GYRO_OFFSET_Y, DatabaseConfigHandle.GYRO_OFFSET_Z,
+				DatabaseConfigHandle.GYRO_GAIN_X, DatabaseConfigHandle.GYRO_GAIN_Y, DatabaseConfigHandle.GYRO_GAIN_Z,
+				DatabaseConfigHandle.GYRO_ALIGN_XX, DatabaseConfigHandle.GYRO_ALIGN_XY, DatabaseConfigHandle.GYRO_ALIGN_XZ,
+				DatabaseConfigHandle.GYRO_ALIGN_YX, DatabaseConfigHandle.GYRO_ALIGN_YY, DatabaseConfigHandle.GYRO_ALIGN_YZ,
+				DatabaseConfigHandle.GYRO_ALIGN_ZX, DatabaseConfigHandle.GYRO_ALIGN_ZY, DatabaseConfigHandle.GYRO_ALIGN_ZZ);
 		
 	}
 	
