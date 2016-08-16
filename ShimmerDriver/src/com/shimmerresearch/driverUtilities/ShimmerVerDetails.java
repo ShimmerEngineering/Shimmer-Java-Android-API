@@ -24,6 +24,7 @@ public class ShimmerVerDetails implements Serializable {
 	public static final int ANY_VERSION = -1;
 
 	//TODO change all to ENUMs with ints and Strings passed in
+	//WARNING! The ID can't change because Consensys relies on it.
 	public static final class HW_ID {
 		public static final int UNKNOWN = -1;
 		public static final int SHIMMER_1 = 0;
@@ -46,6 +47,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int KEYBOARD_AND_MOUSE = 1002;
 	}
 	
+	//WARNING! The name can't change because the database relies on it.
 	public static final Map<Integer, String> mMapOfShimmerRevisions;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
@@ -54,13 +56,14 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_2, "Shimmer2");
         aMap.put(HW_ID.SHIMMER_2R, "Shimmer2r");
         aMap.put(HW_ID.SHIMMER_3, "Shimmer3");
-        aMap.put(HW_ID.SHIMMER_SR30, "Shimmer SR30");
+        aMap.put(HW_ID.SHIMMER_SR30, "Shimmer_SR30");
         aMap.put(HW_ID.SHIMMER_GQ_BLE, "ShimmerGQBle");
 //        aMap.put(HW_ID.DCU_SWEATSENSOR, "DCU_SWEATSENSOR");
         aMap.put(HW_ID.SHIMMER_2R_GQ, "Shimmer2rGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
-        aMap.put(HW_ID.SHIMMER_4_SDK, "Shimmer4_SDK");
+        aMap.put(HW_ID.SHIMMER_4_SDK, "Shimmer4 SDK");
+        aMap.put(HW_ID.KEYBOARD_AND_MOUSE, "Keyboard and Mouse");
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
     
