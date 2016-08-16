@@ -1138,6 +1138,9 @@ public class SensorLSM303 extends AbstractSensor{
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(DatabaseConfigHandle.MAG_RANGE, getMagRange());
 		mapOfConfig.put(DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
+		
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC, getSensorName());
+		
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RATE, getLSM303DigitalAccelRate());
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RANGE, getAccelRange());
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_LPM, getLowPowerAccelEnabled());
@@ -1846,6 +1849,8 @@ public class SensorLSM303 extends AbstractSensor{
 		public static final String MAG_RANGE = "LSM303DLHC_Mag_Range";
 		public static final String MAG_RATE = "LSM303DLHC_Mag_Rate";
 		public static final String MAG = "LSM303DLHC_Mag";
+		
+		public static final String WR_ACC = "LSM303DLHC_Acc";
 		public static final String WR_ACC_RATE = "LSM303DLHC_Acc_Rate";
 		public static final String WR_ACC_RANGE = "LSM303DLHC_Acc_Range";
 		

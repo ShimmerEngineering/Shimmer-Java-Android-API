@@ -31,6 +31,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.sensors.SensorMPU9X50.DatabaseConfigHandle;
 
 public class SensorEXG extends AbstractSensor{
 
@@ -227,6 +228,15 @@ public class SensorEXG extends AbstractSensor{
 		public static final String EXG2_CH2_16BITS = "ADS1292R_2_CH2_16BIT";
 		public static final String EXG1_STATUS = "ADS1292R_1_STATUS";
 		public static final String EXG2_STATUS = "ADS1292R_2_STATUS";
+		
+		public static final String EXT_ADC_A7 = "F5437a_Ext_A7"; //channel
+		public static final String EXT_ADC_A6 = "F5437a_Ext_A6"; //channel
+		
+		public static final String EXT_ADC_A15 = "F5437a_Ext_A15"; //channel
+		public static final String INT_ADC_A1 = "F5437a_Int_A1";   //channel
+		public static final String INT_ADC_A12 = "F5437a_Int_A12"; //channel
+		public static final String INT_ADC_A13 = "F5437a_Int_A13"; //channel
+		public static final String INT_ADC_A14 = "F5437a_Int_A14"; //channel
 	}
 	
 	//Chip 1 - 24-bit
@@ -1365,8 +1375,9 @@ public class SensorEXG extends AbstractSensor{
 
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+//		mapOfConfig.put(DatabaseConfigHandle.EXG1_16BITS,get);
+		return mapOfConfig;
 	}
 
 	@Override
@@ -2856,7 +2867,39 @@ public class SensorEXG extends AbstractSensor{
 	}
 	//--------- Optional methods to override in Sensor Class end --------
 
-
+	public static final class DatabaseConfigHandle{
+		public static final String EXG1_24BITS = "ADS1292R_1_24BIT";
+		public static final String EXG2_24BITS = "ADS1292R_2_24BIT";
+		
+		public static final String EXG1_16BITS = "ADS1292R_1_16BIT";
+		public static final String EXG2_16BITS = "ADS1292R_2_16BIT";
+		
+		public static final String EXG1_CONFIG_1 = "ADS1292R_1_Config1";
+		public static final String EXG1_CONFIG_2 = "ADS1292R_1_Config2";
+		public static final String EXG1_LEAD_OFF = "ADS1292R_1_LOff";
+		public static final String EXG1_CH1_SET = "ADS1292R_1_Ch1_Set";
+		public static final String EXG1_CH2_SET = "ADS1292R_1_Ch2_Set";
+		public static final String EXG1_RLD_SENSE = "ADS1292R_1_RLD_Sense";
+		public static final String EXG1_LEAD_OFF_SENSE = "ADS1292R_1_LOff_Sense";
+		public static final String EXG1_LEAD_OFF_STATUS = "ADS1292R_1_LOff_Status";
+		public static final String EXG1_RESPIRATION_1 = "ADS1292R_1_Resp1";
+		public static final String EXG1_RESPIRATION_2 = "ADS1292R_1_Resp2";
+		public static final String EXG2_CONFIG_1 = "ADS1292R_2_Config1";
+		public static final String EXG2_CONFIG_2 = "ADS1292R_2_Config2";
+		public static final String EXG2_LEAD_OFF = "ADS1292R_2_LOff";
+		public static final String EXG2_CH1_SET = "ADS1292R_2_Ch1_Set";
+		public static final String EXG2_CH2_SET = "ADS1292R_2_Ch2_Set";
+		public static final String EXG2_RLD_SENSE = "ADS1292R_2_RLD_Sense";
+		public static final String EXG2_LEAD_OFF_SENSE = "ADS1292R_2_LOff_Sense";
+		public static final String EXG2_LEAD_OFF_STATUS = "ADS1292R_2_LOff_Status";
+		public static final String EXG2_RESPIRATION_1 = "ADS1292R_2_Resp1";
+		public static final String EXG2_RESPIRATION_2 = "ADS1292R_2_Resp2";
+		
+		/** Uncalibrated Data Table **/
+		
+		
+		
+	}
 	
 	private boolean isTwoChipExg(){
 		return !mShimmerVerObject.isShimmerGenGq();

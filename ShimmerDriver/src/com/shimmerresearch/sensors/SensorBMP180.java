@@ -356,7 +356,7 @@ public class SensorBMP180 extends AbstractSensor {
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		mapOfConfig.put(DatabaseConfigHandle.PRESSURE, getPressureResolution());
+		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, getPressureResolution());
 		//		mapOfConfig.put(DatabaseConfigHandle.TEMPERATURE, get);
 
 
@@ -542,9 +542,7 @@ public class SensorBMP180 extends AbstractSensor {
 	
 	
 	public static final class DatabaseConfigHandle{
-		public static final String PRESSURE = "BMP180_Pressure"; //channel
 		public static final String PRESSURE_PRECISION = "BMP180_Pressure_Precision";
-		public static final String TEMPERATURE = "BMP180_Temperature";
 		
 		public static final String TEMP_PRES_AC1 = "BMP180_AC1";
 		public static final String TEMP_PRES_AC2 = "BMP180_AC2";

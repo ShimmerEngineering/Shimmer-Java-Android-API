@@ -77,6 +77,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	public static class DatabaseChannelHandles{
 		public static final String GSR = "F5437a_Int_A1_GSR";
+		
 	}
 	
 	
@@ -453,7 +454,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		mapOfConfig.put(DatabaseConfigHandle.GSR, getSensorName());
+		
 		mapOfConfig.put(DatabaseConfigHandle.GSR_RANGE, getGSRRange());
 		return mapOfConfig;
 	}
@@ -519,7 +520,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	}
 	
 	public static final class DatabaseConfigHandle{
-		public static final String GSR = "F5437a_Int_A1_GSR"; //channel
+		
 		public static final String GSR_RANGE = "F5437a_Int_A1_GSR_Range";
 	}
 	//--------- Sensor specific methods end --------------
