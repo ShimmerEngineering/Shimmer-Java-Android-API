@@ -357,11 +357,11 @@ public class SensorBMP180 extends AbstractSensor {
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(DatabaseConfigHandle.PRESSURE, getPressureResolution());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMPERATURE, get);
+		//		mapOfConfig.put(DatabaseConfigHandle.TEMPERATURE, get);
 
-		
-//		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, );
-		
+
+		//		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, );
+
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC1, getPressTempAC1());
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC2, getPressTempAC2());
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC3, getPressTempAC3());
@@ -374,9 +374,7 @@ public class SensorBMP180 extends AbstractSensor {
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MC, getPressTempMC());
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MD, getPressTempMD());
 
-
-		
-		return null;
+		return mapOfConfig;
 	}
 
 	@Override

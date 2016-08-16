@@ -36,6 +36,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
+import com.shimmerresearch.sensors.SensorMPU9X50.DatabaseConfigHandle;
 
 public class SensorGSR extends AbstractSensor implements Serializable{
 
@@ -451,8 +452,10 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+		mapOfConfig.put(DatabaseConfigHandle.GSR, getSensorName());
+		mapOfConfig.put(DatabaseConfigHandle.GSR_RANGE, getGSRRange());
+		return mapOfConfig;
 	}
 
 	@Override
@@ -513,6 +516,11 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 	public int getGSRRange(){
 		return mGSRRange;
+	}
+	
+	public static final class DatabaseConfigHandle{
+		public static final String GSR = "F5437a_Int_A1_GSR"; //channel
+		public static final String GSR_RANGE = "F5437a_Int_A1_GSR_Range";
 	}
 	//--------- Sensor specific methods end --------------
 
