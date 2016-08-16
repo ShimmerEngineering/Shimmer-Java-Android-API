@@ -1431,7 +1431,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param state the mInternalExpPower state to set
 	 */
-	protected void setInternalExpPower(int state) {
+	public void setInternalExpPower(int state) {
 		this.mInternalExpPower = state;
 	}
 	
@@ -1448,7 +1448,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param state the mInternalExpPower state to set
 	 */
-	protected void setInternalExpPower(boolean state) {
+	public void setInternalExpPower(boolean state) {
 		if(state) 
 			mInternalExpPower = 0x01;
 		else 
