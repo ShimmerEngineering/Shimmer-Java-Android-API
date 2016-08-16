@@ -2036,8 +2036,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
 		mapOfConfig.put(DatabaseConfigHandle.GYRO_RATE, getMPU9150GyroAccelRate());
+		
+		mapOfConfig.put(DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE, getMPU9150MPLSamplingRate());
+		
 
 		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsGyro(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
+		
 		return mapOfConfig;
 	}
 	
@@ -2946,7 +2950,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	public static final class DatabaseConfigHandle{
 		public static final String GYRO = "MPU9150_Gyro";
-		
+		public static final String ALTERNATIVE_ACC = "MPU9150_Acc"; // not available but supported in FW
+		public static final String ALTERNATIVE_MAG = "MPU9150_Mag"; // not available but supported in FW
 		public static final String MPU_TEMP = "MPU9150_Temperature"; //channel
 		
 		public static final String MPU_QUAT_6DOF = "MPU9150_MPL_Quat_6DOF"; 
@@ -2974,7 +2979,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String MPU_MPL_VECT_COMP = "MPU9150_MPL_Vect_Comp";
 		public static final String MPU_MAG_DIST = "MPU9150_MAG_Dist";
 		public static final String MPU_MPL_ENABLE = "MPU9150_MPL_Enable";
-		
+		// MPU GYRO
 		public static final String GYRO_OFFSET_X = "MPU9150_Gyro_Offset_X";
 		public static final String GYRO_OFFSET_Y = "MPU9150_Gyro_Offset_Y";
 		public static final String GYRO_OFFSET_Z = "MPU9150_Gyro_Offset_Z";
@@ -2990,6 +2995,54 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String GYRO_ALIGN_ZX = "MPU9150_Gyro_Align_ZX";
 		public static final String GYRO_ALIGN_ZY = "MPU9150_Gyro_Align_ZY";
 		public static final String GYRO_ALIGN_ZZ = "MPU9150_Gyro_Align_ZZ";
+		// MPU MPL ACCEL
+		public static final String MPU_ACC_OFFSET_X = "MPU9150_MPL_Acc_Cal_Offset_X";
+		public static final String MPU_ACC_OFFSET_Y = "MPU9150_MPL_Acc_Cal_Offset_Y";
+		public static final String MPU_ACC_OFFSET_Z = "MPU9150_MPL_Acc_Cal_Offset_Z";
+		public static final String MPU_ACC_GAIN_X = "MPU9150_MPL_Acc_Cal_Gain_X";
+		public static final String MPU_ACC_GAIN_Y = "MPU9150_MPL_Acc_Cal_Gain_Y";
+		public static final String MPU_ACC_GAIN_Z = "MPU9150_MPL_Acc_Cal_Gain_Z";
+		public static final String MPU_ACC_ALIGN_XX = "MPU9150_MPL_Acc_Cal_Align_XX";
+		public static final String MPU_ACC_ALIGN_XY = "MPU9150_MPL_Acc_Cal_Align_XY";
+		public static final String MPU_ACC_ALIGN_XZ = "MPU9150_MPL_Acc_Cal_Align_XZ";
+		public static final String MPU_ACC_ALIGN_YX = "MPU9150_MPL_Acc_Cal_Align_YX";
+		public static final String MPU_ACC_ALIGN_YY = "MPU9150_MPL_Acc_Cal_Align_YY";
+		public static final String MPU_ACC_ALIGN_YZ = "MPU9150_MPL_Acc_Cal_Align_YZ";
+		public static final String MPU_ACC_ALIGN_ZX = "MPU9150_MPL_Acc_Cal_Align_ZX";
+		public static final String MPU_ACC_ALIGN_ZY = "MPU9150_MPL_Acc_Cal_Align_ZY";
+		public static final String MPU_ACC_ALIGN_ZZ = "MPU9150_MPL_Acc_Cal_Align_ZZ";
+		// MPU MPL MAG
+		public static final String MPU_MAG_OFFSET_X = "MPU9150_MPL_Mag_Cal_Offset_X";
+		public static final String MPU_MAG_OFFSET_Y = "MPU9150_MPL_Mag_Cal_Offset_Y";
+		public static final String MPU_MAG_OFFSET_Z = "MPU9150_MPL_Mag_Cal_Offset_Z";
+		public static final String MPU_MAG_GAIN_X = "MPU9150_MPL_Mag_Cal_Gain_X";
+		public static final String MPU_MAG_GAIN_Y = "MPU9150_MPL_Mag_Cal_Gain_Y";
+		public static final String MPU_MAG_GAIN_Z = "MPU9150_MPL_Mag_Cal_Gain_Z";
+		public static final String MPU_MAG_ALIGN_XX = "MPU9150_MPL_Mag_Cal_Align_XX";
+		public static final String MPU_MAG_ALIGN_XY = "MPU9150_MPL_Mag_Cal_Align_XY";
+		public static final String MPU_MAG_ALIGN_XZ = "MPU9150_MPL_Mag_Cal_Align_XZ";
+		public static final String MPU_MAG_ALIGN_YX = "MPU9150_MPL_Mag_Cal_Align_YX";
+		public static final String MPU_MAG_ALIGN_YY = "MPU9150_MPL_Mag_Cal_Align_YY";
+		public static final String MPU_MAG_ALIGN_YZ = "MPU9150_MPL_Mag_Cal_Align_YZ";
+		public static final String MPU_MAG_ALIGN_ZX = "MPU9150_MPL_Mag_Cal_Align_ZX";
+		public static final String MPU_MAG_ALIGN_ZY = "MPU9150_MPL_Mag_Cal_Align_ZY";
+		public static final String MPU_MAG_ALIGN_ZZ = "MPU9150_MPL_Mag_Cal_Align_ZZ";
+		// MPU MPL GYRO
+		public static final String MPU_GYRO_OFFSET_X = "MPU9150_MPL_Gyro_Cal_Offset_X";
+		public static final String MPU_GYRO_OFFSET_Y = "MPU9150_MPL_Gyro_Cal_Offset_Y";
+		public static final String MPU_GYRO_OFFSET_Z = "MPU9150_MPL_Gyro_Cal_Offset_Z";
+		public static final String MPU_GYRO_GAIN_X = "MPU9150_MPL_Gyro_Cal_Gain_X";
+		public static final String MPU_GYRO_GAIN_Y = "MPU9150_MPL_Gyro_Cal_Gain_Y";
+		public static final String MPU_GYRO_GAIN_Z = "MPU9150_MPL_Gyro_Cal_Gain_Z";
+		public static final String MPU_GYRO_ALIGN_XX = "MPU9150_MPL_Gyro_Cal_Align_XX";
+		public static final String MPU_GYRO_ALIGN_XY = "MPU9150_MPL_Gyro_Cal_Align_XY";
+		public static final String MPU_GYRO_ALIGN_XZ = "MPU9150_MPL_Gyro_Cal_Align_XZ";
+		public static final String MPU_GYRO_ALIGN_YX = "MPU9150_MPL_Gyro_Cal_Align_YX";
+		public static final String MPU_GYRO_ALIGN_YY = "MPU9150_MPL_Gyro_Cal_Align_YY";
+		public static final String MPU_GYRO_ALIGN_YZ = "MPU9150_MPL_Gyro_Cal_Align_YZ";
+		public static final String MPU_GYRO_ALIGN_ZX = "MPU9150_MPL_Gyro_Cal_Align_ZX";
+		public static final String MPU_GYRO_ALIGN_ZY = "MPU9150_MPL_Gyro_Cal_Align_ZY";
+		public static final String MPU_GYRO_ALIGN_ZZ = "MPU9150_MPL_Gyro_Cal_Align_ZZ";
 		
 		public static final List<String> LIST_OF_CALIB_HANDLES_GYRO = Arrays.asList(
 				DatabaseConfigHandle.GYRO_OFFSET_X, DatabaseConfigHandle.GYRO_OFFSET_Y, DatabaseConfigHandle.GYRO_OFFSET_Z,
@@ -2998,6 +3051,26 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				DatabaseConfigHandle.GYRO_ALIGN_YX, DatabaseConfigHandle.GYRO_ALIGN_YY, DatabaseConfigHandle.GYRO_ALIGN_YZ,
 				DatabaseConfigHandle.GYRO_ALIGN_ZX, DatabaseConfigHandle.GYRO_ALIGN_ZY, DatabaseConfigHandle.GYRO_ALIGN_ZZ);
 		
+		public static final List<String> LIST_OF_CALIB_HANDLES_MPU_MPL_ACC = Arrays.asList(
+				DatabaseConfigHandle.MPU_ACC_OFFSET_X, DatabaseConfigHandle.MPU_ACC_OFFSET_Y, DatabaseConfigHandle.MPU_ACC_OFFSET_Z,
+				DatabaseConfigHandle.MPU_ACC_GAIN_X, DatabaseConfigHandle.MPU_ACC_GAIN_Y, DatabaseConfigHandle.MPU_ACC_GAIN_Z,
+				DatabaseConfigHandle.MPU_ACC_ALIGN_XX, DatabaseConfigHandle.MPU_ACC_ALIGN_XY, DatabaseConfigHandle.MPU_ACC_ALIGN_XZ,
+				DatabaseConfigHandle.MPU_ACC_ALIGN_YX, DatabaseConfigHandle.MPU_ACC_ALIGN_YY, DatabaseConfigHandle.MPU_ACC_ALIGN_YZ,
+				DatabaseConfigHandle.MPU_ACC_ALIGN_ZX, DatabaseConfigHandle.MPU_ACC_ALIGN_ZY, DatabaseConfigHandle.MPU_ACC_ALIGN_ZZ);
+		
+		public static final List<String> LIST_OF_CALIB_HANDLES_MPU_MPL_MAG = Arrays.asList(
+				DatabaseConfigHandle.MPU_MAG_OFFSET_X, DatabaseConfigHandle.MPU_MAG_OFFSET_Y, DatabaseConfigHandle.MPU_MAG_OFFSET_Z,
+				DatabaseConfigHandle.MPU_MAG_GAIN_X, DatabaseConfigHandle.MPU_MAG_GAIN_Y, DatabaseConfigHandle.MPU_MAG_GAIN_Z,
+				DatabaseConfigHandle.MPU_MAG_ALIGN_XX, DatabaseConfigHandle.MPU_MAG_ALIGN_XY, DatabaseConfigHandle.MPU_MAG_ALIGN_XZ,
+				DatabaseConfigHandle.MPU_MAG_ALIGN_YX, DatabaseConfigHandle.MPU_MAG_ALIGN_YY, DatabaseConfigHandle.MPU_MAG_ALIGN_YZ,
+				DatabaseConfigHandle.MPU_MAG_ALIGN_ZX, DatabaseConfigHandle.MPU_MAG_ALIGN_ZY, DatabaseConfigHandle.MPU_MAG_ALIGN_ZZ);
+		
+		public static final List<String> LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO = Arrays.asList(
+				DatabaseConfigHandle.MPU_GYRO_OFFSET_X, DatabaseConfigHandle.MPU_GYRO_OFFSET_Y, DatabaseConfigHandle.MPU_GYRO_OFFSET_Z,
+				DatabaseConfigHandle.MPU_GYRO_GAIN_X, DatabaseConfigHandle.MPU_GYRO_GAIN_Y, DatabaseConfigHandle.MPU_GYRO_GAIN_Z,
+				DatabaseConfigHandle.MPU_GYRO_ALIGN_XX, DatabaseConfigHandle.MPU_GYRO_ALIGN_XY, DatabaseConfigHandle.MPU_GYRO_ALIGN_XZ,
+				DatabaseConfigHandle.MPU_GYRO_ALIGN_YX, DatabaseConfigHandle.MPU_GYRO_ALIGN_YY, DatabaseConfigHandle.MPU_GYRO_ALIGN_YZ,
+				DatabaseConfigHandle.MPU_GYRO_ALIGN_ZX, DatabaseConfigHandle.MPU_GYRO_ALIGN_ZY, DatabaseConfigHandle.MPU_GYRO_ALIGN_ZZ);
 	}
 	
 	
