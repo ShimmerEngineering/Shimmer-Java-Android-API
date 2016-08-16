@@ -175,7 +175,7 @@ public class FftCalculateDetails{
 				
 				count = i; 
 			}	
-			meanFreq = sumProductFreqPsd/sumPsd; // Calculate Mean [2]
+		//	meanFreq = sumProductFreqPsd/sumPsd; // Calculate Mean [2]
 			
 			calculatePSDAndGenerateArray(fft);
 			
@@ -201,10 +201,7 @@ public class FftCalculateDetails{
 		
 		double mSamplingRate = 1024;
 		double multiplier = mSamplingRate/fft.length; 
-		
-		System.err.println("MULTIPLIER = " + multiplier);
 
-	//	 for (int i = 0; i < fft.length; i++) { //is divided by divider right? instead of just fft - half? 
 		for (int i = 0; i < fft.length / mDivider; i++) { //is divided by divider right? instead of just fft - half? 
 			if (mSamplingRate == Double.NaN) {
 				// Use index
