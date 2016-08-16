@@ -3195,7 +3195,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
 		mapOfConfig.put(DatabaseConfigHandle.ENABLE_SENSORS, getEnabledSensors());
 		mapOfConfig.put(DatabaseConfigHandle.DERIVED_SENSORS, getDerivedSensors());
-		mapOfConfig.put(DatabaseConfigHandle.SHIMMER_VERSION, getShimmerVerObject());
+		mapOfConfig.put(DatabaseConfigHandle.SHIMMER_VERSION, getHardwareVersion());
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION, getFirmwareVersionCode()); // getFirmwareIdentifier()?
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MAJOR, getFirmwareVersionMajor());
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MINOR, getFirmwareVersionMinor());
