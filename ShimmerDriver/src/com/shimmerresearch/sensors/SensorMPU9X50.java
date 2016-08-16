@@ -38,6 +38,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 
+
 /**
  * @author Ronan McCormack
  * @author Mark Nolan
@@ -2031,8 +2032,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+//		mapOfConfig.put(DatabaseConfigHandle.MAG_RANGE, getMagRange());
+		return mapOfConfig;
 	}
 	
 	@Override
@@ -2936,6 +2938,44 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 		return false;
 	}
+	
+	
+	public static final class DatabaseConfigHandle{
+		public static final String GYRO = "MPU9150_Gyro";
+		
+		public static final String MPU_TEMP = "MPU9150_Temperature"; //channel
+		
+		public static final String MPU_QUAT_6DOF = "MPU9150_MPL_Quat_6DOF"; 
+		public static final String MPU_EULER_6DOF = "MPU9150_MPL_Euler_6DOF"; 
+		
+		public static final String MPU_HEADING = "MPU9150_MPL_Heading"; // not available but supported in FW //channel
+		
+		public static final String MPU_PEDOMETER = "MPU9150_MPL_Pedometer"; 
+		public static final String MPU_TAP = "MPU9150_MPL_Tap"; 
+		public static final String MPU_MOTION_ORIENT = "MPU9150_MPL_Motion"; 
+		public static final String MPU_GYRO = "MPU9150_MPL_Gyro_Cal";
+		public static final String GYRO_RATE = "MPU9150_Gyro_Rate";
+		public static final String GYRO_RANGE = "MPU9150_Gyro_Range";
+		public static final String ALTERNATIVE_ACC_RANGE = "MPU9150_Acc_Range";
+		public static final String MPU_ACC = "MPU9150_MPL_Acc_Cal";
+		public static final String MPU_MAG = "MPU9150_MPL_Mag_Cal";
+		public static final String MPU_QUAT_6DOF_DMP = "MPU9150_Quat_6DOF_Dmp";
+		public static final String MPU_DMP = "MPU9150_DMP";
+		public static final String MPU_LPF = "MPU9150_LFP";
+		public static final String MPU_MOT_CAL_CFG = "MPU9150_MOT_Cal_Cfg";
+		public static final String MPU_MPL_SAMPLING_RATE = "MPU9150_MPL_Sampling_rate";
+		public static final String MPU_MAG_SAMPLING_RATE = "MPU9150_MAG_Sampling_rate";
+		public static final String MPU_MPL_SENSOR_FUSION = "MPU9150_MPL_Sensor_Fusion";
+		public static final String MPU_MPL_GYRO_TC = "MPU9150_MPL_Gyro_TC";
+		public static final String MPU_MPL_VECT_COMP = "MPU9150_MPL_Vect_Comp";
+		public static final String MPU_MAG_DIST = "MPU9150_MAG_Dist";
+		public static final String MPU_MPL_ENABLE = "MPU9150_MPL_Enable";
+		
+	}
+	
+	
+	
+	
 	//--------- Optional methods to override in Sensor Class end -------- 
 
 //	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
