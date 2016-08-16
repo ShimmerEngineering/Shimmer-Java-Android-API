@@ -477,7 +477,7 @@ public class SensorEXG extends AbstractSensor{
 					DatabaseChannelHandles.EXG1_STATUS,
 					CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
 					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.UNCAL),
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 					0x1D);
 	public static final ChannelDetails cDExg2Status = new ChannelDetails(
 					ObjectClusterSensorName.EXG2_STATUS,
@@ -485,7 +485,7 @@ public class SensorEXG extends AbstractSensor{
 					DatabaseChannelHandles.EXG2_STATUS,
 					CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
 					CHANNEL_UNITS.NO_UNITS,
-					Arrays.asList(CHANNEL_TYPE.UNCAL),
+					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 					0x20);
 	
 	//ExG - General
