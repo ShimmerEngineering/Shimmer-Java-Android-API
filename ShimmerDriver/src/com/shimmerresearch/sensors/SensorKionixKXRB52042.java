@@ -28,7 +28,7 @@ import com.shimmerresearch.driverUtilities.UtilCalibration;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.sensors.SensorMPU9X50.DatabaseConfigHandle;
+
 
 /** Sensorclass for KionixKXRB52042 - analog/low-noise accelerometer
  * 
@@ -416,10 +416,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		
-	
 		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsAccelLn(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC);
-		
 		return mapOfConfig;
 	}
 
@@ -625,6 +622,8 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}
 	
 	public static final class DatabaseConfigHandle{
+		public static final String LN_ACC = "KXRB8_2042_Acc";
+		
 		public static final String LN_ACC_OFFSET_X = "KXRB8_2042_Acc_Offset_X";
 		public static final String LN_ACC_OFFSET_Y = "KXRB8_2042_Acc_Offset_Y";
 		public static final String LN_ACC_OFFSET_Z = "KXRB8_2042_Acc_Offset_Z";

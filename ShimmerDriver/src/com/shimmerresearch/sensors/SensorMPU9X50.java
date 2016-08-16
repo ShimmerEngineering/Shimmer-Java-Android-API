@@ -2038,6 +2038,12 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		mapOfConfig.put(DatabaseConfigHandle.GYRO_RATE, getMPU9150GyroAccelRate());
 		
 		mapOfConfig.put(DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE, getMPU9150MPLSamplingRate());
+		mapOfConfig.put(DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE, getMPU9150MagSamplingRate());
+		mapOfConfig.put(DatabaseConfigHandle.MPU_MOT_CAL_CFG, getMPU9150MotCalCfg());
+		mapOfConfig.put(DatabaseConfigHandle.MPU_DMP, getMPU9150DMP());
+		mapOfConfig.put(DatabaseConfigHandle.MPU_LPF, getMPU9150LPF());
+
+		
 		
 
 		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsGyro(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);

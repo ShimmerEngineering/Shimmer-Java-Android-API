@@ -355,7 +355,27 @@ public class SensorBMP180 extends AbstractSensor {
 
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+		mapOfConfig.put(DatabaseConfigHandle.PRESSURE, getPressureResolution());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMPERATURE, get);
+
+		
+//		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, );
+		
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC1, getPressTempAC1());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC2, getPressTempAC2());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC3, getPressTempAC3());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC4, getPressTempAC4());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC5, getPressTempAC5());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC6, getPressTempAC6());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B1, getPressTempB1());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B2, getPressTempB2());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MB, getPressTempMB());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MC, getPressTempMC());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MD, getPressTempMD());
+
+
+		
 		return null;
 	}
 
@@ -521,6 +541,27 @@ public class SensorBMP180 extends AbstractSensor {
 	public double getPressTempMD(){
 		return mCalibDetailsBmp180.MD;
 	}
+	
+	
+	public static final class DatabaseConfigHandle{
+		public static final String PRESSURE = "BMP180_Pressure"; //channel
+		public static final String PRESSURE_PRECISION = "BMP180_Pressure_Precision";
+		public static final String TEMPERATURE = "BMP180_Temperature";
+		
+		public static final String TEMP_PRES_AC1 = "BMP180_AC1";
+		public static final String TEMP_PRES_AC2 = "BMP180_AC2";
+		public static final String TEMP_PRES_AC3 = "BMP180_AC3";
+		public static final String TEMP_PRES_AC4 = "BMP180_AC4";
+		public static final String TEMP_PRES_AC5 = "BMP180_AC5";
+		public static final String TEMP_PRES_AC6 = "BMP180_AC6";
+		public static final String TEMP_PRES_B1 = "BMP180_B1";
+		public static final String TEMP_PRES_B2 = "BMP180_B2";
+		public static final String TEMP_PRES_MB = "BMP180_MB";
+		public static final String TEMP_PRES_MC = "BMP180_MC";
+		public static final String TEMP_PRES_MD = "BMP180_MD";
+		
+	}
+	
 	//--------- Sensor specific methods end --------------
 
 
