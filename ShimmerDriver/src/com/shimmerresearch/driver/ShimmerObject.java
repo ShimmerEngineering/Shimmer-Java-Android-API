@@ -951,14 +951,52 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double[][] SensitivityMatrixMPLAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
 	protected double[][] OffsetVectorMPLAccel = {{0},{0},{0}};
 	
+	private CalibDetailsKinematic calibDetailsMplAccel = new CalibDetailsKinematic(
+			0,
+			"0",
+			AlignmentMatrixMPLAccel, 
+			SensitivityMatrixMPLAccel, 
+			OffsetVectorMPLAccel,
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
+	
+	protected TreeMap<Integer, CalibDetails> mCalibMapMplAccel = new TreeMap<Integer, CalibDetails>(); 
+	{
+		mCalibMapMplAccel.put(calibDetailsMplAccel.mRangeValue, calibDetailsMplAccel);
+	}
+	
 	protected double[][] AlignmentMatrixMPLMag = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
 	protected double[][] SensitivityMatrixMPLMag = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
 	protected double[][] OffsetVectorMPLMag = {{0},{0},{0}};
+	
+	private CalibDetailsKinematic calibDetailsMplMag = new CalibDetailsKinematic(
+			0,
+			"0",
+			AlignmentMatrixMPLMag, 
+			SensitivityMatrixMPLMag, 
+			OffsetVectorMPLMag,
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
+	
+	protected TreeMap<Integer, CalibDetails> mCalibMapMplMag = new TreeMap<Integer, CalibDetails>(); 
+	{
+		mCalibMapMplMag.put(calibDetailsMplMag.mRangeValue, calibDetailsMplMag);
+	}
 	
 	protected double[][] AlignmentMatrixMPLGyro = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
 	protected double[][] SensitivityMatrixMPLGyro = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
 	protected double[][] OffsetVectorMPLGyro = {{0},{0},{0}};
 
+	private CalibDetailsKinematic calibDetailsMplGyro = new CalibDetailsKinematic(
+			0,
+			"0",
+			AlignmentMatrixMPLGyro, 
+			SensitivityMatrixMPLGyro, 
+			OffsetVectorMPLGyro,
+			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
+	
+	protected TreeMap<Integer, CalibDetails> mCalibMapMplGyro = new TreeMap<Integer, CalibDetails>(); 
+	{
+		mCalibMapMplGyro.put(calibDetailsMplGyro.mRangeValue, calibDetailsMplGyro);
+	}
 	// ----------- MPU9X50 options end -------------------------	
 
 	// ----------- Pressure/Temperature Start -------------------------
@@ -5607,6 +5645,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mRTCOffset;
 	}
 
+	public void setRTCOffset(long rtcOffset){
+		mRTCOffset = rtcOffset;
+	}
+
 	public String[] getListofSupportedSensors(){
 		String[] sensorNames = null;
 		if (getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){
@@ -7438,6 +7480,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mCalibDetailsBmp180.MD;
 	}
 
+	public void setPressureCalib(
+			double AC1, double AC2, double AC3, 
+			double AC4, double AC5, double AC6,
+			double B1, double B2, 
+			double MB, double MC, double MD){
+		mCalibDetailsBmp180.setPressureCalib(AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
+	}
 
 	public boolean isUsingConfigFromInfoMem() {
 		return mShimmerUsingConfigFromInfoMem;
@@ -7493,6 +7542,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public long getInitialTimeStamp(){
 		return mInitialTimeStamp;
+	}
+
+	public void setInitialTimeStamp(long initialTimeStamp){
+		mInitialTimeStamp = initialTimeStamp;
 	}
 
 	public void setPressureResolution(int i){
@@ -7607,10 +7660,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the mMasterShimmer state to set
 	 */
 	public void setMasterShimmer(boolean state) {
-		if(state) 
-			this.mMasterShimmer = 0x01;
-		else 
-			this.mMasterShimmer = 0x00;
+		this.mMasterShimmer = (state? 1:0);
 	}
 	
 	/**
@@ -7627,10 +7677,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the mSingleTouch state to set
 	 */
 	public void setSingleTouch(boolean state) {
-		if(state) 
-			this.mSingleTouch = 0x01;
-		else 
-			this.mSingleTouch = 0x00;
+		this.mSingleTouch = (state? 1:0);
 	}
 
 	/**
@@ -7646,11 +7693,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param state  the mTCXO state to set
 	 */
-	protected void setTCXO(boolean state) {
-		if(state) 
-			this.mTCXO = 0x01;
-		else 
-			this.mTCXO = 0x00;
+	public void setTCXO(boolean state) {
+		this.mTCXO = (state? 1:0);
 	}
 
 	/**
@@ -7677,10 +7721,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the mSyncWhenLogging state to set
 	 */
 	public void setSyncWhenLogging(boolean state) {
-		if(state) 
-			this.mSyncWhenLogging = 0x01;
-		else 
-			this.mSyncWhenLogging = 0x00;
+		this.mSyncWhenLogging = (state? 1:0);
 	}
 
 
@@ -7699,10 +7740,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the mButtonStart state to set
 	 */
 	public void setButtonStart(boolean state) {
-		if(state) 
-			this.mButtonStart = 0x01;
-		else 
-			this.mButtonStart = 0x00;
+		this.mButtonStart = (state? 1:0);
 	}
 
 	/**
@@ -7879,6 +7917,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
 					Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
 					Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL);
+			
+			if(mShimmerVerObject.isMplSupported() && isMPLEnable()){
+				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO);
+				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL);
+				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG);
+			}
 		}
 		
 		for(Integer sensorMapKey:listOfSensorMapKeys){
@@ -7920,6 +7964,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 				return mCalibMapGyroShimmer3;
+			}
+			if(mShimmerVerObject.isMplSupported() && isMPLEnable()){
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO){
+					return mCalibMapMplGyro;
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL){
+					return mCalibMapMplAccel;
+				}
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG){
+					return mCalibMapMplMag;
+				}
 			}
 		}
 		return null;
@@ -9513,11 +9568,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mLSM303DigitalAccelRate = mLSM303DigitalAccelRate;
 	}
 	
-	protected void setMagRange(int i){
+	public void setMagRange(int i){
 		setLSM303MagRange(i);
 	}
 	
-	protected void setLSM303MagRange(int i){
+	public void setLSM303MagRange(int i){
 		if(ArrayUtils.contains(SensorLSM303.ListofMagRangeConfigValues, i)){
 			mMagRange = i;
 			updateCurrentMagCalibInUse();
@@ -9527,7 +9582,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param mLSM303MagRate the mLSM303MagRate to set
 	 */
-	protected void setLSM303MagRate(int mLSM303MagRate) {
+	public void setLSM303MagRate(int mLSM303MagRate) {
 		this.mLSM303MagRate = mLSM303MagRate;
 	}
 	
@@ -10034,6 +10089,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mMPU9150GyroAccelRate;
 	}
 
+	public void setMPU9150GyroAccelRate(int rate) {
+		mMPU9150GyroAccelRate = rate;
+	}
+
 	/**
 	 * @return the mMPU9150MotCalCfg
 	 */
@@ -10086,7 +10145,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
 	 */
-	protected void setMPU9150AccelRange(int i) {
+	public void setMPU9150AccelRange(int i) {
 		if(ArrayUtils.contains(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues, i)){
 			if(checkIfAnyMplChannelEnabled()){
 				i=0; // 2g
@@ -10106,7 +10165,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mGyroRange;
 	}
 	
-	protected void setGyroRange(int newRange) {
+	public void setGyroRange(int newRange) {
 		setMPU9150GyroRange(newRange);
 	}
 
@@ -10127,14 +10186,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param mMPU9150MPLSamplingRate the mMPU9150MPLSamplingRate to set
 	 */
-	protected void setMPU9150MPLSamplingRate(int mMPU9150MPLSamplingRate) {
+	public void setMPU9150MPLSamplingRate(int mMPU9150MPLSamplingRate) {
 		this.mMPU9150MPLSamplingRate = mMPU9150MPLSamplingRate;
 	}
 
 	/**
 	 * @param mMPU9150MagSamplingRate the mMPU9150MagSamplingRate to set
 	 */
-	protected void setMPU9150MagSamplingRate(int mMPU9150MagSamplingRate) {
+	public void setMPU9150MagSamplingRate(int mMPU9150MagSamplingRate) {
 		this.mMPU9150MagSamplingRate = mMPU9150MagSamplingRate;
 	}
 	
@@ -10150,13 +10209,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param state the mMPU9150DMP state to set
 	 */
-	protected void setMPU9150DMP(boolean state) {
-		if(state) 
-			this.mMPU9150DMP = 0x01;
-		else 
-			this.mMPU9150DMP = 0x00;
+	public void setMPU9150DMP(boolean state) {
+		setMPU9150DMP((state? 1:0));
 	}
-	
+
+	public void setMPU9150DMP(int i) {
+		this.mMPU9150DMP = i;
+	}
+
 	/**
 	 * @return the mMPLEnable
 	 */
@@ -10167,11 +10227,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param state the mMPLEnable state to set
 	 */
-	protected void setMPLEnable(boolean state) {
-		if(state) 
-			this.mMPLEnable = 0x01;
-		else 
-			this.mMPLEnable = 0x00;
+	public void setMPLEnable(boolean state) {
+		this.mMPLEnable = (state? 1:0);
 	}
 
 	/**
@@ -10184,11 +10241,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param state the mMPLSensorFusion state to set
 	 */
-	protected void setMPLSensorFusion(boolean state) {
-		if(state) 
-			this.mMPLSensorFusion = 0x01;
-		else 
-			this.mMPLSensorFusion = 0x00;
+	public void setMPLSensorFusion(boolean state) {
+		this.mMPLSensorFusion = (state? 1:0);
 	}
 
 	/**
@@ -10201,7 +10255,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param state the mMPLGyroCalTC state to set
 	 */
-	protected void setMPLGyroCalTC(boolean state) {
+	public void setMPLGyroCalTC(boolean state) {
 		if(state) 
 			this.mMPLGyroCalTC = 0x01;
 		else 
@@ -10218,7 +10272,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param state the mMPLVectCompCal state to set
 	 */
-	protected void setMPLVectCompCal(boolean state) {
+	public void setMPLVectCompCal(boolean state) {
 		if(state) 
 			this.mMPLVectCompCal = 0x01;
 		else 
@@ -10235,7 +10289,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param state the mMPLMagDistCal state to set
 	 */
-	protected void setMPLMagDistCal(boolean state) {
+	public void setMPLMagDistCal(boolean state) {
 		if(state) 
 			this.mMPLMagDistCal = 0x01;
 		else 
@@ -10252,7 +10306,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param state the mMPLSensorFusion state to set
 	 */
-	protected void setmMPLSensorFusion(boolean state) {
+	public void setmMPLSensorFusion(boolean state) {
 		if(state) 
 			this.mMPLSensorFusion = 0x01;
 		else 
@@ -10263,14 +10317,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param mMPU9150MotCalCfg the mMPU9150MotCalCfg to set
 	 */
-	protected void setMPU9150MotCalCfg(int mMPU9150MotCalCfg) {
+	public void setMPU9150MotCalCfg(int mMPU9150MotCalCfg) {
 		this.mMPU9150MotCalCfg = mMPU9150MotCalCfg;
 	}
 
 	/**
 	 * @param mMPU9150LPF the mMPU9150LPF to set
 	 */
-	protected void setMPU9150LPF(int mMPU9150LPF) {
+	public void setMPU9150LPF(int mMPU9150LPF) {
 		this.mMPU9150LPF = mMPU9150LPF;
 	}
 

@@ -24,6 +24,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.sensors.SensorLSM303.DatabaseConfigHandle;
 
 public abstract class AbstractSensor implements Serializable{
 	
@@ -578,6 +579,43 @@ public abstract class AbstractSensor implements Serializable{
 				break;
 		}
 		return returnValue;
+	}
+	
+	public void addCalibDetailsToDbMap(
+			LinkedHashMap<String, Object> mapOfConfig, CalibDetailsKinematic calibDetails, 
+			String offsetX, String offsetY, String offsetZ,
+			String gainX, String gainY, String gainZ,
+			String alignXx, String alignXy, String alignXz,
+			String alignYx, String alignYy, String alignYz,
+			String alignZx, String alignZy, String alignZz) {
+
+		mapOfConfig.put(offsetX, calibDetails.getCurrentOffsetVector()[0][0]);
+		mapOfConfig.put(offsetY, calibDetails.getCurrentOffsetVector()[1][0]);
+		mapOfConfig.put(offsetZ, calibDetails.getCurrentOffsetVector()[2][0]);
+
+		mapOfConfig.put(gainX, calibDetails.getCurrentSensitivityMatrix()[0][0]);
+		mapOfConfig.put(gainY, calibDetails.getCurrentSensitivityMatrix()[1][1]);
+		mapOfConfig.put(gainZ, calibDetails.getCurrentSensitivityMatrix()[2][2]);
+
+		mapOfConfig.put(alignXx, calibDetails.getCurrentAlignmentMatrix()[0][0]);
+		mapOfConfig.put(alignXy, calibDetails.getCurrentAlignmentMatrix()[0][1]);
+		mapOfConfig.put(alignXz, calibDetails.getCurrentAlignmentMatrix()[0][2]);
+		
+		mapOfConfig.put(alignYx, calibDetails.getCurrentAlignmentMatrix()[1][0]);
+		mapOfConfig.put(alignYy, calibDetails.getCurrentAlignmentMatrix()[1][1]);
+		mapOfConfig.put(alignYz, calibDetails.getCurrentAlignmentMatrix()[1][2]);
+		
+		mapOfConfig.put(alignZx, calibDetails.getCurrentAlignmentMatrix()[2][0]);
+		mapOfConfig.put(alignZy, calibDetails.getCurrentAlignmentMatrix()[2][1]);
+		mapOfConfig.put(alignZz, calibDetails.getCurrentAlignmentMatrix()[2][2]);
+	}
+	public void addCalibDetailsToDbMap(LinkedHashMap<String, Object> mapOfConfig, CalibDetailsKinematic calibDetails, List<String> listOfCalibHandlesMag) {
+		this.addCalibDetailsToDbMap(mapOfConfig, calibDetails, 
+				listOfCalibHandlesMag.get(0), listOfCalibHandlesMag.get(1), listOfCalibHandlesMag.get(2), 
+				listOfCalibHandlesMag.get(3), listOfCalibHandlesMag.get(4), listOfCalibHandlesMag.get(5), 
+				listOfCalibHandlesMag.get(6), listOfCalibHandlesMag.get(7), listOfCalibHandlesMag.get(8), 
+				listOfCalibHandlesMag.get(9), listOfCalibHandlesMag.get(10), listOfCalibHandlesMag.get(11), 
+				listOfCalibHandlesMag.get(12), listOfCalibHandlesMag.get(13), listOfCalibHandlesMag.get(14));
 	}
 	
 	//--------- Optional methods to override in Sensor Class end -------- 

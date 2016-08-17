@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -1137,10 +1138,18 @@ public class SensorLSM303 extends AbstractSensor{
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(DatabaseConfigHandle.MAG_RANGE, getMagRange());
 		mapOfConfig.put(DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
+		
+		mapOfConfig.put(DatabaseConfigHandle.WR_ACC, getSensorName());
+		
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RATE, getLSM303DigitalAccelRate());
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_RANGE, getAccelRange());
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_LPM, getLowPowerAccelEnabled());
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_HRM, isHighResAccelWr());
+		
+		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsMag(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG);
+
+		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsAccelWr(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL);
+
 		return mapOfConfig;
 	}	
 
@@ -1840,11 +1849,60 @@ public class SensorLSM303 extends AbstractSensor{
 		public static final String MAG_RANGE = "LSM303DLHC_Mag_Range";
 		public static final String MAG_RATE = "LSM303DLHC_Mag_Rate";
 		public static final String MAG = "LSM303DLHC_Mag";
+		
+		public static final String WR_ACC = "LSM303DLHC_Acc";
 		public static final String WR_ACC_RATE = "LSM303DLHC_Acc_Rate";
 		public static final String WR_ACC_RANGE = "LSM303DLHC_Acc_Range";
 		
 		public static final String WR_ACC_LPM = "LSM303DLHC_Acc_LPM";
 		public static final String WR_ACC_HRM = "LSM303DLHC_Acc_HRM";
+		
+		public static final String WR_ACC_OFFSET_X = "LSM303DLHC_Acc_Offset_X";
+		public static final String WR_ACC_OFFSET_Y = "LSM303DLHC_Acc_Offset_Y";
+		public static final String WR_ACC_OFFSET_Z = "LSM303DLHC_Acc_Offset_Z";
+		public static final String WR_ACC_GAIN_X = "LSM303DLHC_Acc_Gain_X";
+		public static final String WR_ACC_GAIN_Y = "LSM303DLHC_Acc_Gain_Y";
+		public static final String WR_ACC_GAIN_Z = "LSM303DLHC_Acc_Gain_Z";
+		public static final String WR_ACC_ALIGN_XX = "LSM303DLHC_Acc_Align_XX";
+		public static final String WR_ACC_ALIGN_XY = "LSM303DLHC_Acc_Align_XY";
+		public static final String WR_ACC_ALIGN_XZ = "LSM303DLHC_Acc_Align_XZ";
+		public static final String WR_ACC_ALIGN_YX = "LSM303DLHC_Acc_Align_YX";
+		public static final String WR_ACC_ALIGN_YY = "LSM303DLHC_Acc_Align_YY";
+		public static final String WR_ACC_ALIGN_YZ = "LSM303DLHC_Acc_Align_YZ";
+		public static final String WR_ACC_ALIGN_ZX = "LSM303DLHC_Acc_Align_ZX";
+		public static final String WR_ACC_ALIGN_ZY = "LSM303DLHC_Acc_Align_ZY";
+		public static final String WR_ACC_ALIGN_ZZ = "LSM303DLHC_Acc_Align_ZZ";
+		
+		public static final String MAG_OFFSET_X = "LSM303DLHC_Mag_Offset_X";
+		public static final String MAG_OFFSET_Y = "LSM303DLHC_Mag_Offset_Y";
+		public static final String MAG_OFFSET_Z = "LSM303DLHC_Mag_Offset_Z";
+		public static final String MAG_GAIN_X = "LSM303DLHC_Mag_Gain_X";
+		public static final String MAG_GAIN_Y = "LSM303DLHC_Mag_Gain_Y";
+		public static final String MAG_GAIN_Z = "LSM303DLHC_Mag_Gain_Z";
+		public static final String MAG_ALIGN_XX = "LSM303DLHC_Mag_Align_XX";
+		public static final String MAG_ALIGN_XY = "LSM303DLHC_Mag_Align_XY";
+		public static final String MAG_ALIGN_XZ = "LSM303DLHC_Mag_Align_XZ";
+		public static final String MAG_ALIGN_YX = "LSM303DLHC_Mag_Align_YX";
+		public static final String MAG_ALIGN_YY = "LSM303DLHC_Mag_Align_YY";
+		public static final String MAG_ALIGN_YZ = "LSM303DLHC_Mag_Align_YZ";
+		public static final String MAG_ALIGN_ZX = "LSM303DLHC_Mag_Align_ZX";
+		public static final String MAG_ALIGN_ZY = "LSM303DLHC_Mag_Align_ZY";
+		public static final String MAG_ALIGN_ZZ = "LSM303DLHC_Mag_Align_ZZ";
+		
+		public static final List<String> LIST_OF_CALIB_HANDLES_MAG = Arrays.asList(
+				DatabaseConfigHandle.MAG_OFFSET_X, DatabaseConfigHandle.MAG_OFFSET_Y, DatabaseConfigHandle.MAG_OFFSET_Z,
+				DatabaseConfigHandle.MAG_GAIN_X, DatabaseConfigHandle.MAG_GAIN_Y, DatabaseConfigHandle.MAG_GAIN_Z,
+				DatabaseConfigHandle.MAG_ALIGN_XX, DatabaseConfigHandle.MAG_ALIGN_XY, DatabaseConfigHandle.MAG_ALIGN_XZ,
+				DatabaseConfigHandle.MAG_ALIGN_YX, DatabaseConfigHandle.MAG_ALIGN_YY, DatabaseConfigHandle.MAG_ALIGN_YZ,
+				DatabaseConfigHandle.MAG_ALIGN_ZX, DatabaseConfigHandle.MAG_ALIGN_ZY, DatabaseConfigHandle.MAG_ALIGN_ZZ);
+		
+		public static final List<String> LIST_OF_CALIB_HANDLES_WR_ACCEL = Arrays.asList(
+				DatabaseConfigHandle.WR_ACC_OFFSET_X, DatabaseConfigHandle.WR_ACC_OFFSET_Y, DatabaseConfigHandle.WR_ACC_OFFSET_Z,
+				DatabaseConfigHandle.WR_ACC_GAIN_X, DatabaseConfigHandle.WR_ACC_GAIN_Y, DatabaseConfigHandle.WR_ACC_GAIN_Z,
+				DatabaseConfigHandle.WR_ACC_ALIGN_XX, DatabaseConfigHandle.WR_ACC_ALIGN_XY, DatabaseConfigHandle.WR_ACC_ALIGN_XZ,
+				DatabaseConfigHandle.WR_ACC_ALIGN_YX, DatabaseConfigHandle.WR_ACC_ALIGN_YY, DatabaseConfigHandle.WR_ACC_ALIGN_YZ,
+				DatabaseConfigHandle.WR_ACC_ALIGN_ZX, DatabaseConfigHandle.WR_ACC_ALIGN_ZY, DatabaseConfigHandle.WR_ACC_ALIGN_ZZ);
+
 	}
 	
 	//--------- Optional methods to override in Sensor Class end --------

@@ -1431,7 +1431,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param state the mInternalExpPower state to set
 	 */
-	protected void setInternalExpPower(int state) {
+	public void setInternalExpPower(int state) {
 		this.mInternalExpPower = state;
 	}
 	
@@ -1448,7 +1448,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param state the mInternalExpPower state to set
 	 */
-	protected void setInternalExpPower(boolean state) {
+	public void setInternalExpPower(boolean state) {
 		if(state) 
 			mInternalExpPower = 0x01;
 		else 
@@ -3195,7 +3195,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
 		mapOfConfig.put(DatabaseConfigHandle.ENABLE_SENSORS, getEnabledSensors());
 		mapOfConfig.put(DatabaseConfigHandle.DERIVED_SENSORS, getDerivedSensors());
-		mapOfConfig.put(DatabaseConfigHandle.SHIMMER_VERSION, getShimmerVerObject());
+		mapOfConfig.put(DatabaseConfigHandle.SHIMMER_VERSION, getHardwareVersion());
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION, getFirmwareVersionCode()); // getFirmwareIdentifier()?
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MAJOR, getFirmwareVersionMajor());
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MINOR, getFirmwareVersionMinor());

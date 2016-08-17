@@ -67,4 +67,22 @@ public class CalibDetailsBmp180 extends CalibDetails {
 		
 	}
 
+	public void setPressureCalib(
+			double AC1, double AC2, double AC3, 
+			double AC4, double AC5, double AC6, 
+			double B1, double B2, 
+			double MB, double MC, double MD) {
+		this.AC1 = AC1;
+		this.AC2 = AC2;
+		this.AC3 = AC3;
+		this.AC4 = AC4;
+		this.AC5 = AC5;
+		this.AC6 = AC6;
+		this.B1 = B1;
+		this.B2 = B2;
+		this.MB = MB;
+		this.MC = MC;
+		this.MD = MD;
+	}
+
 }

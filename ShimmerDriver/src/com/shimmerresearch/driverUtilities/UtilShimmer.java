@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -721,7 +722,14 @@ public class UtilShimmer implements Serializable {
 	public static double applyPrecisionCorrection(double value, int precision) {
 		return new BigDecimal(value).setScale(precision, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
+	
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
 
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
+	}
 
 	public static double nudgeDouble(double valToNudge, double minVal, double maxVal) {
 //		valToNudge = (valToNudge>maxVal? maxVal:valToNudge);
