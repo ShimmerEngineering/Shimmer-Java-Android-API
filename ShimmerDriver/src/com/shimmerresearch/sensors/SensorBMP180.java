@@ -377,20 +377,27 @@ public class SensorBMP180 extends AbstractSensor {
 
 
 		//		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, );
-
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC1, getPressTempAC1());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC2, getPressTempAC2());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC3, getPressTempAC3());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC4, getPressTempAC4());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC5, getPressTempAC5());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC6, getPressTempAC6());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B1, getPressTempB1());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B2, getPressTempB2());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MB, getPressTempMB());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MC, getPressTempMC());
-		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MD, getPressTempMD());
+//
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC1, getPressTempAC1());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC2, getPressTempAC2());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC3, getPressTempAC3());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC4, getPressTempAC4());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC5, getPressTempAC5());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC6, getPressTempAC6());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B1, getPressTempB1());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B2, getPressTempB2());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MB, getPressTempMB());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MC, getPressTempMC());
+//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MD, getPressTempMD());
 
 		return mapOfConfig;
+	}
+
+	@Override
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION)){
+			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION)).intValue());
+		}
 	}
 
 	@Override

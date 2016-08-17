@@ -1403,6 +1403,14 @@ public class SensorEXG extends AbstractSensor{
 
 		return mapOfConfig;
 	}
+	
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public static final class DatabaseConfigHandle{
 		public static final String EXG1_24BITS = "ADS1292R_1_24BIT";
 		public static final String EXG2_24BITS = "ADS1292R_2_24BIT";

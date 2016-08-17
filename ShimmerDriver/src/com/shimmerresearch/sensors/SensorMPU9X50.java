@@ -2175,6 +2175,49 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //		super.addCalibDetailsToDbMap(mapOfConfig, get, DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
 		return mapOfConfig;
 	}
+	@Override
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.GYRO_RATE)){
+			setMPU9150GyroAccelRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.GYRO_RATE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.GYRO_RANGE)){
+			setGyroRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.GYRO_RANGE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)){
+			setMPU9150AccelRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)).intValue());
+		}
+//		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_DMP)){
+//			setMPU9150DMP(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_DMP)).intValue());
+//		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_LPF)){
+			setMPU9150LPF(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_LPF)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MOT_CAL_CFG)){
+			setMPU9150MotCalCfg(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MOT_CAL_CFG)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE)){
+			setMPU9150MPLSamplingRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE)){
+			setMPU9150MagSamplingRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION)){
+			setmMPLSensorFusion(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MPL_GYRO_TC)){
+			setMPLGyroCalTC(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MPL_GYRO_TC))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MPL_VECT_COMP)){
+			setMPLVectCompCal(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MPL_VECT_COMP))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MAG_DIST)){
+			setMPLMagDistCal(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MAG_DIST))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MPL_ENABLE)){
+			setMPLEnable(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MPL_ENABLE))>0? true:false);
+		}
+	}
+
 	
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
@@ -2670,6 +2713,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			this.mMPU9150DMP = 0x00;
 	}
 	
+	
 	/**
 	 * @return the mMPLEnable
 	 */
@@ -2787,6 +2831,13 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		this.mMPU9150LPF = mMPU9150LPF;
 	}
 	
+	/**
+	 * @return the mMPU9150GyroAccelRate
+	 */
+
+	public void setMPU9150GyroAccelRate(int rate) {
+		mMPU9150GyroAccelRate = rate;
+	}
     public boolean isGyroOnTheFlyCalEnabled(){
 		return mEnableOntheFlyGyroOVCal;
 	}

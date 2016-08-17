@@ -403,6 +403,14 @@ public class SensorBridgeAmp extends AbstractSensor{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {

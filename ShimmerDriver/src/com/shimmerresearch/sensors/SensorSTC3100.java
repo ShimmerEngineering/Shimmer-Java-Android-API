@@ -408,6 +408,13 @@ public class SensorSTC3100 extends AbstractSensor{
 	}
 
 	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		

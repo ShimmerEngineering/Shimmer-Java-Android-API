@@ -290,6 +290,14 @@ public class SensorTemplate extends AbstractSensor{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 	//--------- Abstract methods implemented end --------------

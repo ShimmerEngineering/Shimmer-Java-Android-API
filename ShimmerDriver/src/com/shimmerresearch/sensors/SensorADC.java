@@ -475,6 +475,14 @@ public class SensorADC extends AbstractSensor {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
@@ -489,5 +497,6 @@ public class SensorADC extends AbstractSensor {
 		return calibratedData;
 	}
 	//--------- Sensor specific methods end --------------
+
 	
 }

@@ -748,7 +748,13 @@ public class ShimmerClock extends AbstractSensor {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
 		
+	}
+
 	protected double calibrateTimeStamp(double timeStamp){
 		//first convert to continuous time stamp
 		double calibratedTimeStamp = 0;

@@ -1152,6 +1152,32 @@ public class SensorLSM303 extends AbstractSensor{
 
 		return mapOfConfig;
 	}	
+	
+	@Override
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.WR_ACC_RATE)){
+			setLSM303DigitalAccelRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.WR_ACC_RATE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.WR_ACC_RANGE)){
+			setLSM303AccelRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.WR_ACC_RANGE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.WR_ACC_LPM)){
+			setLowPowerAccelWR(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.WR_ACC_LPM))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.WR_ACC_HRM)){
+			setHighResAccelWR(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.WR_ACC_HRM))>0? true:false);
+		}
+		
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MAG_RANGE)){
+			setLSM303MagRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MAG_RANGE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MAG_RATE)){
+			setLSM303MagRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MAG_RATE)).intValue());
+		}
+		
+	}
+
 
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {

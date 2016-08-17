@@ -345,6 +345,14 @@ public class SensorBMP280 extends AbstractSensor{
 		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION_BMP280, getPressureResolution());
 		return mapOfConfig;
 	}
+	
+	@Override
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)){
+			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)).intValue());
+		}
+	}
+
 
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {

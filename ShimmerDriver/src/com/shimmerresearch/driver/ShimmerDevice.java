@@ -3232,6 +3232,42 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfConfig;
 	}
 	
+	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		
+		setShimmerVersionInfoAndCreateSensorMap(svo);
+
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.SAMPLE_RATE)){
+			setShimmerAndSensorsSamplingRate((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE));
+		}
+
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ENABLE_SENSORS)
+				&&mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DERIVED_SENSORS)){
+			setEnabledAndDerivedSensors(
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.ENABLE_SENSORS)).longValue(), 
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.DERIVED_SENSORS)).longValue());
+		}
+		
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_ID)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_REV)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)){
+			ExpansionBoardDetails eBD = new ExpansionBoardDetails(
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_ID)).intValue(), 
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV)).intValue(), 
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)).intValue());
+			setExpansionBoardDetails(eBD);
+		}
+		
+		
+		
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.parseConfigMapFromDb(mapOfConfigPerShimmer);
+		}
+		
+	}
+
+	
 	public void printMapOfConfigForDb() {
 		HashMap<String, Object> mapOfConfigForDb = getConfigMapForDb();
 		

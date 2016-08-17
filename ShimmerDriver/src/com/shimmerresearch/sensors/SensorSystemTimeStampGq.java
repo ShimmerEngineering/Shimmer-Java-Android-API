@@ -212,6 +212,13 @@ public class SensorSystemTimeStampGq extends AbstractSensor {
 	}
 
 	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public boolean checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
 		return false;
