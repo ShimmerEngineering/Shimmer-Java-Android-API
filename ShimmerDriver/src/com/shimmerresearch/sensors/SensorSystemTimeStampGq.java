@@ -71,7 +71,7 @@ public class SensorSystemTimeStampGq extends AbstractSensor {
 	public static final ChannelDetails cDSystemTimestamp = new ChannelDetails(
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-		DatabaseChannelHandles.TIMESTAMP_SYSTEM,
+		DatabaseChannelHandlesCommon.TIMESTAMP_SYSTEM,
 		CHANNEL_DATA_TYPE.UINT64, 8, CHANNEL_DATA_ENDIAN.MSB,
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, true);
@@ -84,7 +84,7 @@ public class SensorSystemTimeStampGq extends AbstractSensor {
 	public static final ChannelDetails cDSystemTimestampPlot = new ChannelDetails(
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
-		DatabaseChannelHandles.NONE,
+		DatabaseChannelHandlesCommon.NONE,
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
@@ -209,6 +209,13 @@ public class SensorSystemTimeStampGq extends AbstractSensor {
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

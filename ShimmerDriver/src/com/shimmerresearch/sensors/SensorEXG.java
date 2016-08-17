@@ -1376,8 +1376,69 @@ public class SensorEXG extends AbstractSensor{
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-//		mapOfConfig.put(DatabaseConfigHandle.EXG1_16BITS,get);
+
+		byte[] exg1Array = getEXG1RegisterArray();
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_CONFIG_1,(double) (exg1Array[0] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_CONFIG_2,(double) (exg1Array[1] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_LEAD_OFF,(double) (exg1Array[2] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_CH1_SET,(double) (exg1Array[3] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_CH2_SET,(double) (exg1Array[4] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_RLD_SENSE,(double) (exg1Array[5] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_LEAD_OFF_SENSE,(double) (exg1Array[6] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_LEAD_OFF_STATUS,(double) (exg1Array[7] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_RESPIRATION_1,(double) (exg1Array[8] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG1_RESPIRATION_2,(double) (exg1Array[9] & 0xFF));
+
+		byte[] exg2Array = getEXG2RegisterArray();
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_CONFIG_1,(double) (exg1Array[0] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_CONFIG_2,(double) (exg1Array[1] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_LEAD_OFF,(double) (exg1Array[2] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_CH1_SET,(double) (exg1Array[3] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_CH2_SET,(double) (exg1Array[4] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_RLD_SENSE,(double) (exg1Array[5] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_LEAD_OFF_SENSE,(double) (exg1Array[6] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_LEAD_OFF_STATUS,(double) (exg1Array[7] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_RESPIRATION_1,(double) (exg1Array[8] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_RESPIRATION_2,(double) (exg1Array[9] & 0xFF));
+
 		return mapOfConfig;
+	}
+	
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static final class DatabaseConfigHandle{
+		public static final String EXG1_24BITS = "ADS1292R_1_24BIT";
+		public static final String EXG2_24BITS = "ADS1292R_2_24BIT";
+		
+		public static final String EXG1_16BITS = "ADS1292R_1_16BIT";
+		public static final String EXG2_16BITS = "ADS1292R_2_16BIT";
+		
+		public static final String EXG1_CONFIG_1 = "ADS1292R_1_Config1";
+		public static final String EXG1_CONFIG_2 = "ADS1292R_1_Config2";
+		public static final String EXG1_LEAD_OFF = "ADS1292R_1_LOff";
+		public static final String EXG1_CH1_SET = "ADS1292R_1_Ch1_Set";
+		public static final String EXG1_CH2_SET = "ADS1292R_1_Ch2_Set";
+		public static final String EXG1_RLD_SENSE = "ADS1292R_1_RLD_Sense";
+		public static final String EXG1_LEAD_OFF_SENSE = "ADS1292R_1_LOff_Sense";
+		public static final String EXG1_LEAD_OFF_STATUS = "ADS1292R_1_LOff_Status";
+		public static final String EXG1_RESPIRATION_1 = "ADS1292R_1_Resp1";
+		public static final String EXG1_RESPIRATION_2 = "ADS1292R_1_Resp2";
+		public static final String EXG2_CONFIG_1 = "ADS1292R_2_Config1";
+		public static final String EXG2_CONFIG_2 = "ADS1292R_2_Config2";
+		public static final String EXG2_LEAD_OFF = "ADS1292R_2_LOff";
+		public static final String EXG2_CH1_SET = "ADS1292R_2_Ch1_Set";
+		public static final String EXG2_CH2_SET = "ADS1292R_2_Ch2_Set";
+		public static final String EXG2_RLD_SENSE = "ADS1292R_2_RLD_Sense";
+		public static final String EXG2_LEAD_OFF_SENSE = "ADS1292R_2_LOff_Sense";
+		public static final String EXG2_LEAD_OFF_STATUS = "ADS1292R_2_LOff_Status";
+		public static final String EXG2_RESPIRATION_1 = "ADS1292R_2_Resp1";
+		public static final String EXG2_RESPIRATION_2 = "ADS1292R_2_Resp2";
+		
 	}
 
 	@Override
@@ -2867,39 +2928,7 @@ public class SensorEXG extends AbstractSensor{
 	}
 	//--------- Optional methods to override in Sensor Class end --------
 
-	public static final class DatabaseConfigHandle{
-		public static final String EXG1_24BITS = "ADS1292R_1_24BIT";
-		public static final String EXG2_24BITS = "ADS1292R_2_24BIT";
-		
-		public static final String EXG1_16BITS = "ADS1292R_1_16BIT";
-		public static final String EXG2_16BITS = "ADS1292R_2_16BIT";
-		
-		public static final String EXG1_CONFIG_1 = "ADS1292R_1_Config1";
-		public static final String EXG1_CONFIG_2 = "ADS1292R_1_Config2";
-		public static final String EXG1_LEAD_OFF = "ADS1292R_1_LOff";
-		public static final String EXG1_CH1_SET = "ADS1292R_1_Ch1_Set";
-		public static final String EXG1_CH2_SET = "ADS1292R_1_Ch2_Set";
-		public static final String EXG1_RLD_SENSE = "ADS1292R_1_RLD_Sense";
-		public static final String EXG1_LEAD_OFF_SENSE = "ADS1292R_1_LOff_Sense";
-		public static final String EXG1_LEAD_OFF_STATUS = "ADS1292R_1_LOff_Status";
-		public static final String EXG1_RESPIRATION_1 = "ADS1292R_1_Resp1";
-		public static final String EXG1_RESPIRATION_2 = "ADS1292R_1_Resp2";
-		public static final String EXG2_CONFIG_1 = "ADS1292R_2_Config1";
-		public static final String EXG2_CONFIG_2 = "ADS1292R_2_Config2";
-		public static final String EXG2_LEAD_OFF = "ADS1292R_2_LOff";
-		public static final String EXG2_CH1_SET = "ADS1292R_2_Ch1_Set";
-		public static final String EXG2_CH2_SET = "ADS1292R_2_Ch2_Set";
-		public static final String EXG2_RLD_SENSE = "ADS1292R_2_RLD_Sense";
-		public static final String EXG2_LEAD_OFF_SENSE = "ADS1292R_2_LOff_Sense";
-		public static final String EXG2_LEAD_OFF_STATUS = "ADS1292R_2_LOff_Status";
-		public static final String EXG2_RESPIRATION_1 = "ADS1292R_2_Resp1";
-		public static final String EXG2_RESPIRATION_2 = "ADS1292R_2_Resp2";
-		
-		/** Uncalibrated Data Table **/
-		
-		
-		
-	}
+
 	
 	private boolean isTwoChipExg(){
 		return !mShimmerVerObject.isShimmerGenGq();

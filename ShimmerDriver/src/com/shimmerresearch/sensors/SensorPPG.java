@@ -26,6 +26,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.SensorGSR.GuiLabelSensorTiles;
+import com.shimmerresearch.sensors.SensorMPU9X50.DatabaseConfigHandle;
 
 /**
  * @author Ronan McCormack
@@ -95,6 +96,14 @@ public class SensorPPG extends AbstractSensor {
 		public static final String PPG1_A13 = "F5437a_PPG1_A13";
 		public static final String PPG2_A1 = "F5437a_PPG2_A1";
 		public static final String PPG2_A14 = "F5437a_PPG2_A14";
+	}
+	
+public static class DatabaseConfigHandle{
+		
+		public static final String PPG_ADC_SELECTION_BOARD = "PPG_ADC_Selection_Board";
+		public static final String PPG1_ADC_SELECTION_BOARD = "PPG1_ADC_Selection_Board";
+		public static final String PPG2_ADC_SELECTION_BOARD = "PPG2_ADC_Selection_Board";
+
 	}
 	
 	public static class ObjectClusterSensorName{
@@ -610,10 +619,22 @@ public class SensorPPG extends AbstractSensor {
 	
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+		
+		mapOfConfig.put(DatabaseConfigHandle.PPG_ADC_SELECTION_BOARD, getPpgAdcSelectionGsrBoard());
+		mapOfConfig.put(DatabaseConfigHandle.PPG1_ADC_SELECTION_BOARD, getPpg1AdcSelectionProto3DeluxeBoard());
+		mapOfConfig.put(DatabaseConfigHandle.PPG2_ADC_SELECTION_BOARD, getPpg2AdcSelectionProto3DeluxeBoard());
+
+		return mapOfConfig;
 	}
 	
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub

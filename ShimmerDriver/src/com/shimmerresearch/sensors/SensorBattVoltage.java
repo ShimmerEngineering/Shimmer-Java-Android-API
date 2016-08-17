@@ -25,8 +25,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
-import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
+
 
 /**
  * @author Ronan McCormack
@@ -61,6 +60,9 @@ public class SensorBattVoltage extends AbstractSensor{
 	public static class DatabaseChannelHandles{
 		public static final String BATTERY = "F5437a_Int_A2_Battery";
 	}
+	
+
+	
 	public static class ObjectClusterSensorName{
 		public static final String BATTERY = "Battery";
 		public static final String BATT_PERCENTAGE = "Batt_Percentage";
@@ -286,8 +288,15 @@ public class SensorBattVoltage extends AbstractSensor{
 
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
+		//Not in this class
 		return null;
+	}
+	
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

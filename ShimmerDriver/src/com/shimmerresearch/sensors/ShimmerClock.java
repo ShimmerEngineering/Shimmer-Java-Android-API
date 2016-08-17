@@ -75,6 +75,18 @@ public class ShimmerClock extends AbstractSensor {
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
+	public static class DatabaseChannelHandles{
+		public static final String TIMESTAMP = "TimeStamp";
+		public static final String TIMESTAMP_EXPORT = "Timestamp";
+		public static final String OFFSET_TIMESTAMP = "Offset";
+		
+		
+		public static final String TIMESTAMP_SYNC = "TimeStampSync";
+		public static final String TIMESTAMP_SYNC_EXPORT = "TimestampSync";
+		public static final String REAL_TIME_CLOCK_SYNC = "RealTimeSync";
+		public static final String REAL_TIME_CLOCK = "Real_Time_Clock";
+	}
+	
 	public static final SensorDetailsRef sensorSystemTimeStampRef = new SensorDetailsRef(
 			GuiLabelSensors.SYSTEM_TIMESTAMP,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
@@ -135,7 +147,7 @@ public class ShimmerClock extends AbstractSensor {
 	public static final ChannelDetails channelSystemTimestamp = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-			DatabaseChannelHandles.TIMESTAMP_SYSTEM,
+			DatabaseChannelHandlesCommon.TIMESTAMP_SYSTEM,
 			CHANNEL_UNITS.MILLISECONDS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
@@ -147,7 +159,7 @@ public class ShimmerClock extends AbstractSensor {
 	public static final ChannelDetails channelSystemTimestampPlot = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
-			DatabaseChannelHandles.NONE,
+			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.MILLISECONDS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
@@ -159,7 +171,7 @@ public class ShimmerClock extends AbstractSensor {
 	public static final ChannelDetails channelSystemTimestampDiff = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
 			Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
-			DatabaseChannelHandles.NONE,
+			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.MILLISECONDS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
@@ -184,7 +196,7 @@ public class ShimmerClock extends AbstractSensor {
 	public static final ChannelDetails channelShimmerTsDiffernce = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 			Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
-			DatabaseChannelHandles.NONE,
+			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.CLOCK_UNIT,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
@@ -239,7 +251,7 @@ public class ShimmerClock extends AbstractSensor {
 	public static final ChannelDetails channelBattPercentage = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 			Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
-			DatabaseChannelHandles.NONE,
+			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.PERCENT,
 			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
 	{
@@ -250,7 +262,7 @@ public class ShimmerClock extends AbstractSensor {
 	public static final ChannelDetails channelReceptionRateCurrent = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
 			"Packet Reception Rate (per second)",
-			DatabaseChannelHandles.NONE,
+			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.PERCENT,
 			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
 	{
@@ -261,7 +273,7 @@ public class ShimmerClock extends AbstractSensor {
 	public static final ChannelDetails channelReceptionRateTrial = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
 			"Packet Reception Rate (overall)",
-			DatabaseChannelHandles.NONE,
+			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.PERCENT,
 			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
 	{
@@ -272,7 +284,7 @@ public class ShimmerClock extends AbstractSensor {
 	public static final ChannelDetails channelEventMarker = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
-			DatabaseChannelHandles.NONE,
+			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
 	{
@@ -736,7 +748,13 @@ public class ShimmerClock extends AbstractSensor {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void parseConfigMapFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
 		
+	}
+
 	protected double calibrateTimeStamp(double timeStamp){
 		//first convert to continuous time stamp
 		double calibratedTimeStamp = 0;

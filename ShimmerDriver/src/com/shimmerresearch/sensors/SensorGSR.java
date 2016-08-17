@@ -460,6 +460,13 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	}
 
 	@Override
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.GSR_RANGE)){
+			setGSRRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.GSR_RANGE)).intValue());
+		}
+	}
+
+	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		

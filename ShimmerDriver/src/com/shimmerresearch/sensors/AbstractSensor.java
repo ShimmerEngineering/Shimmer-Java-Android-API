@@ -77,6 +77,11 @@ public abstract class AbstractSensor implements Serializable{
 		public static final String CALIBRATION_ALL = "Calibration all";
 	}
 	
+	public static class DatabaseChannelHandlesCommon{
+		public static final String NONE = "";
+		public static final String TIMESTAMP_SYSTEM = "System_Timestamp";
+	}
+	
 	// --------------- Abstract methods start ----------------
 	/** call either createLocalSensorMap() or createLocalSensorMapWithCustomParser() inside depending if a custom parser is needed. */
 	public abstract void generateSensorMap();
@@ -104,6 +109,7 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void processResponse(Object obj, COMMUNICATION_TYPE commType);
 	
 	public abstract LinkedHashMap<String, Object> getConfigMapForDb();
+	public abstract void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer);
 
 	// --------------- Abstract methods end ----------------	
 
@@ -617,7 +623,7 @@ public abstract class AbstractSensor implements Serializable{
 				listOfCalibHandlesMag.get(9), listOfCalibHandlesMag.get(10), listOfCalibHandlesMag.get(11), 
 				listOfCalibHandlesMag.get(12), listOfCalibHandlesMag.get(13), listOfCalibHandlesMag.get(14));
 	}
-	
+
 	//--------- Optional methods to override in Sensor Class end -------- 
 
 }

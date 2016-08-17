@@ -181,11 +181,29 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		public static final String ENABLE_SENSORS = "Enable_Sensors";
 		public static final String DERIVED_SENSORS = "Derived_Sensors";
 		
+		public static final String USER_BUTTON = "User_Button";
+		public static final String RTC_SOURCE = "Rtc_Source"; 
+		public static final String SYNC_CONFIG = "Sync";
+		public static final String MASTER_CONFIG = "Master";
+		public static final String SINGLE_TOUCH_START = "Single_Touch_Start";
+		public static final String TXCO = "Txco";
+		public static final String BROADCAST_INTERVAL = "Broadcast_Interval";
+		public static final String BAUD_RATE = "Baud_Rate";
+		public static final String TRIAL_ID = "Trial_Id";
+		public static final String N_SHIMMER = "NShimmer";
+		
+		public static final String EXP_PWR = "Exp_PWR";
+		
 		public static final String SHIMMER_VERSION = "Shimmer_Version";
 		public static final String FW_VERSION = "FW_ID";
 		public static final String FW_VERSION_MAJOR = "FW_Version_Major";
 		public static final String FW_VERSION_MINOR = "FW_Version_Minor";
 		public static final String FW_VERSION_INTERNAL = "FW_Version_Internal";
+		
+		public static final String INITIAL_TIMESTAMP = "Initial_TimeStamp";
+		public static final String EXP_BOARD_ID = "Exp_Board_Id";
+		public static final String EXP_BOARD_REV = "Exp_Board_Rev";
+		public static final String EXP_BOARD_REV_SPEC = "Exp_Board_Rev_Special";
 	}
 
 	// --------------- Abstract Methods Start --------------------------
@@ -3213,6 +3231,42 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		return mapOfConfig;
 	}
+	
+	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		
+		setShimmerVersionInfoAndCreateSensorMap(svo);
+
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.SAMPLE_RATE)){
+			setShimmerAndSensorsSamplingRate((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE));
+		}
+
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ENABLE_SENSORS)
+				&&mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DERIVED_SENSORS)){
+			setEnabledAndDerivedSensors(
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.ENABLE_SENSORS)).longValue(), 
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.DERIVED_SENSORS)).longValue());
+		}
+		
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_ID)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_REV)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)){
+			ExpansionBoardDetails eBD = new ExpansionBoardDetails(
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_ID)).intValue(), 
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV)).intValue(), 
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)).intValue());
+			setExpansionBoardDetails(eBD);
+		}
+		
+		
+		
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.parseConfigMapFromDb(mapOfConfigPerShimmer);
+		}
+		
+	}
+
 	
 	public void printMapOfConfigForDb() {
 		HashMap<String, Object> mapOfConfigForDb = getConfigMapForDb();

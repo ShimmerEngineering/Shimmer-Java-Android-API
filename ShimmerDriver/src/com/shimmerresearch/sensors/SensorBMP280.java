@@ -27,6 +27,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.SensorBMP180.DatabaseConfigHandle;
 
 
 /**
@@ -77,6 +78,9 @@ public class SensorBMP280 extends AbstractSensor{
 	public static class DatabaseChannelHandles{
 		public static final String PRESSURE_BMP280 = "BMP280_Pressure";
 		public static final String TEMPERATURE_BMP280 = "BMP280_Temperature";
+	}
+	public static final class DatabaseConfigHandle{
+		public static final String PRESSURE_PRECISION_BMP280 = "BMP280_Pressure_Precision";
 	}
 	
 	public static class ObjectClusterSensorName{
@@ -337,9 +341,18 @@ public class SensorBMP280 extends AbstractSensor{
 	
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION_BMP280, getPressureResolution());
+		return mapOfConfig;
 	}
+	
+	@Override
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)){
+			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)).intValue());
+		}
+	}
+
 
 	@Override
 	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
