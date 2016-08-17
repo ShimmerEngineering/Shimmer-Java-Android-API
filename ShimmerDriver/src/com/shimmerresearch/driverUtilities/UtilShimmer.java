@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -776,6 +777,21 @@ public class UtilShimmer implements Serializable {
 		}
 		return true;
 	}
+
+	public static String formatDouble(double d){
+		//TODO not sure if there is an easier way to do this by just using DecimalFormat
+		if((d==0) || (d>=1.0 && d<=9999.0)){
+			return Double.toString(UtilShimmer.round(d, 2));
+		}
+		else if(d>=0.001 && d<1.0){
+			return Double.toString(UtilShimmer.round(d, 3));
+		}
+		else{
+			DecimalFormat format = new DecimalFormat("##0.0E0");
+			return format.format(d);
+		}
+	}
+
 
 	
 }

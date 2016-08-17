@@ -80,9 +80,9 @@ public class FftCalculateDetails{
 	public double[] calculateFft(int timeDiffMs){
 		//TODO interpolate missing samples
 		
-		System.err.println("" + mSamplingRate*(timeDiffMs/1000));
+//		System.err.println("" + mSamplingRate*(timeDiffMs/1000));
 		//TODO check if size is the same as the required minimum, not just >0
-		if(mDataBuffer.size()>(mSamplingRate*(timeDiffMs/1000))){
+		if(mDataBuffer.size()>((mSamplingRate*(timeDiffMs/1000))*0.9)){ //setting 90% packet loss to be acceptable (arbitrary)
 			Double[] inputTemp = mDataBuffer.toArray(new Double[mDataBuffer.size()]);
 			
 			double[] input = toPrimitive(inputTemp);
@@ -91,11 +91,26 @@ public class FftCalculateDetails{
 	        double[] fft = new double[input.length * 2];
 	        System.arraycopy(input, 0, fft, 0, input.length);
 	        fftDo.realForwardFull(fft);
+	     
+	        fft = rectifyFFT(fft);
 	        
 	        return fft;
 		}
 		
 		return new double[]{}; //Fail if not enough data points etc.
+	}
+
+	private double[] rectifyFFT(double[] signal) {
+		double[] rectifiedSignal = new double[signal.length];
+		for(int i=0;i<signal.length;i++){
+			if(signal[i]<0){
+				rectifiedSignal[i] = signal[i] * -1;
+			}
+			else{
+				rectifiedSignal[i] = signal[i];
+			}
+		}
+		return rectifiedSignal;
 	}
 
 	public ObjectCluster getResultsObjectCluster() {
@@ -128,9 +143,14 @@ public class FftCalculateDetails{
 		return ojcArray;
 	}
 	
-	public double[][] calculateFftAndGenerateArray(int mTimerPeriodCalculateFft) {
-		
-		double[] fft = calculateFft(mTimerPeriodCalculateFft);
+	public double[][] calculateFftAndGenerateArray(int periodMs) {
+
+		//TODO improve below - just implementing quick method to calculate sampling rate for the moment
+		if(mTimeBuffer.size()>2){
+			mSamplingRate = 1000/(mTimeBuffer.get(1) - mTimeBuffer.get(0));
+		}
+
+		double[] fft = calculateFft(periodMs);
 		
 		double sumProductFreqPsd = 0.00;
 		double sumPsd = 0.00;
@@ -142,17 +162,8 @@ public class FftCalculateDetails{
 				mDivider = 1;
 			}
 			
-			//TODO improve below - just implementing quick method to calculate sampling rate for the moment
-			if(mTimeBuffer.size()>2){
-				//mSamplingRate = 1000/(mTimeBuffer.get(1) - mTimeBuffer.get(0));
-			}
-			
-			double mSamplingRate = 1024; 
-			
 			double[][] results = new double[2][fft.length/mDivider];
-			
 			double[][] psdResults = new double[2][fft.length/mDivider];
-			
 			double multiplier = mSamplingRate/fft.length;
 			
 			for(int i=0;i<fft.length/mDivider;i++){
@@ -199,7 +210,6 @@ public class FftCalculateDetails{
 		double sumPsd = 0;
 		boolean isMedianValueReached = false;
 		
-		double mSamplingRate = 1024;
 		double multiplier = mSamplingRate/fft.length; 
 
 		for (int i = 0; i < fft.length / mDivider; i++) { //is divided by divider right? instead of just fft - half? 
