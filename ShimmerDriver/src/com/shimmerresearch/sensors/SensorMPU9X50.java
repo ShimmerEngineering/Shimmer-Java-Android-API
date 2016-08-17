@@ -2958,7 +2958,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String GYRO = "MPU9150_Gyro";
 		public static final String ALTERNATIVE_ACC = "MPU9150_Acc"; // not available but supported in FW
 		public static final String ALTERNATIVE_MAG = "MPU9150_Mag"; // not available but supported in FW
-		public static final String MPU_TEMP = "MPU9150_Temperature"; //channel
 		
 		public static final String MPU_QUAT_6DOF = "MPU9150_MPL_Quat_6DOF"; 
 		public static final String MPU_EULER_6DOF = "MPU9150_MPL_Euler_6DOF"; 
