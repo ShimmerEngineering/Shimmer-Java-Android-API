@@ -73,6 +73,22 @@ public class SensorBMP180 extends AbstractSensor {
 		public static final String PRESSURE = "BMP180_Pressure";
 		public static final String TEMPERATURE = "BMP180_Temperature";
 	}
+	public static final class DatabaseConfigHandle{
+		public static final String PRESSURE_PRECISION = "BMP180_Pressure_Precision";
+		
+		public static final String TEMP_PRES_AC1 = "BMP180_AC1";
+		public static final String TEMP_PRES_AC2 = "BMP180_AC2";
+		public static final String TEMP_PRES_AC3 = "BMP180_AC3";
+		public static final String TEMP_PRES_AC4 = "BMP180_AC4";
+		public static final String TEMP_PRES_AC5 = "BMP180_AC5";
+		public static final String TEMP_PRES_AC6 = "BMP180_AC6";
+		public static final String TEMP_PRES_B1 = "BMP180_B1";
+		public static final String TEMP_PRES_B2 = "BMP180_B2";
+		public static final String TEMP_PRES_MB = "BMP180_MB";
+		public static final String TEMP_PRES_MC = "BMP180_MC";
+		public static final String TEMP_PRES_MD = "BMP180_MD";
+		
+	}
 	
 	public static class ObjectClusterSensorName{
 		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
@@ -541,22 +557,7 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 	
 	
-	public static final class DatabaseConfigHandle{
-		public static final String PRESSURE_PRECISION = "BMP180_Pressure_Precision";
-		
-		public static final String TEMP_PRES_AC1 = "BMP180_AC1";
-		public static final String TEMP_PRES_AC2 = "BMP180_AC2";
-		public static final String TEMP_PRES_AC3 = "BMP180_AC3";
-		public static final String TEMP_PRES_AC4 = "BMP180_AC4";
-		public static final String TEMP_PRES_AC5 = "BMP180_AC5";
-		public static final String TEMP_PRES_AC6 = "BMP180_AC6";
-		public static final String TEMP_PRES_B1 = "BMP180_B1";
-		public static final String TEMP_PRES_B2 = "BMP180_B2";
-		public static final String TEMP_PRES_MB = "BMP180_MB";
-		public static final String TEMP_PRES_MC = "BMP180_MC";
-		public static final String TEMP_PRES_MD = "BMP180_MD";
-		
-	}
+
 	
 	//--------- Sensor specific methods end --------------
 

@@ -77,6 +77,11 @@ public abstract class AbstractSensor implements Serializable{
 		public static final String CALIBRATION_ALL = "Calibration all";
 	}
 	
+	public static class DatabaseChannelHandlesCommon{
+		public static final String NONE = "";
+		public static final String TIMESTAMP_SYSTEM = "System_Timestamp";
+	}
+	
 	// --------------- Abstract methods start ----------------
 	/** call either createLocalSensorMap() or createLocalSensorMapWithCustomParser() inside depending if a custom parser is needed. */
 	public abstract void generateSensorMap();

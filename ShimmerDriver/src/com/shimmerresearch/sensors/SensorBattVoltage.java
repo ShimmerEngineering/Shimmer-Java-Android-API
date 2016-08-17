@@ -25,9 +25,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
-import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
-import com.shimmerresearch.sensors.SensorMPU9X50.DatabaseConfigHandle;
+
 
 /**
  * @author Ronan McCormack
@@ -62,14 +60,9 @@ public class SensorBattVoltage extends AbstractSensor{
 	public static class DatabaseChannelHandles{
 		public static final String BATTERY = "F5437a_Int_A2_Battery";
 	}
-	public static final class DatabaseConfigHandle{
-		
-		public static final String BATERY_VOLTAGE = "Battery_Voltage";
-		public static final String BATERY_VOLTAGE_PARSED = "Battery_Voltage_Parsed";
-		public static final String CHARGING_STATUS_PARSED= "Charging_Status_Parsed";
-		public static final String ESTIMATED_CHARGE_PERCENTAGE= "Estimated_Charge_Percentage";
-		public static final String ESTIMATED_CHARGE_PERCENTAGE_PARSED= "Estimated_Charge_Percentage_Parsed";
-	}
+	
+
+	
 	public static class ObjectClusterSensorName{
 		public static final String BATTERY = "Battery";
 		public static final String BATT_PERCENTAGE = "Batt_Percentage";
@@ -295,15 +288,8 @@ public class SensorBattVoltage extends AbstractSensor{
 
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		mapOfConfig.put(DatabaseConfigHandle.BATERY_VOLTAGE, getShimmerBattStatusDetails().getBattVoltage());
-		mapOfConfig.put(DatabaseConfigHandle.BATERY_VOLTAGE_PARSED, getShimmerBattStatusDetails().getBattVoltageParsed());
-		mapOfConfig.put(DatabaseConfigHandle.CHARGING_STATUS_PARSED, getShimmerBattStatusDetails().getChargingStatusParsed());
-		mapOfConfig.put(DatabaseConfigHandle.ESTIMATED_CHARGE_PERCENTAGE, getShimmerBattStatusDetails().getEstimatedChargePercentage());
-		mapOfConfig.put(DatabaseConfigHandle.ESTIMATED_CHARGE_PERCENTAGE_PARSED, getShimmerBattStatusDetails().getEstimatedChargePercentageParsed());
-
-		
-		return mapOfConfig;
+		//Not in this class
+		return null;
 	}
 	
 	@Override
