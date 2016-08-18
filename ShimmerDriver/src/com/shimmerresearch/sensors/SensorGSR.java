@@ -80,6 +80,10 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		
 	}
 	
+	public static final class DatabaseConfigHandle{
+		public static final String GSR_RANGE = "F5437a_Int_A1_GSR_Range";
+	}
+	
 	
 	public static class ObjectClusterSensorName{
 		public static String GSR = "GSR";
@@ -526,10 +530,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		return mGSRRange;
 	}
 	
-	public static final class DatabaseConfigHandle{
-		
-		public static final String GSR_RANGE = "F5437a_Int_A1_GSR_Range";
-	}
+
 	//--------- Sensor specific methods end --------------
 
 	//--------- Optional methods to override in Sensor Class start --------

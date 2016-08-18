@@ -239,6 +239,36 @@ public class SensorEXG extends AbstractSensor{
 		public static final String INT_ADC_A14 = "F5437a_Int_A14"; //channel
 	}
 	
+	public static final class DatabaseConfigHandle{
+		public static final String EXG1_24BITS = "ADS1292R_1_24BIT";
+		public static final String EXG2_24BITS = "ADS1292R_2_24BIT";
+		
+		public static final String EXG1_16BITS = "ADS1292R_1_16BIT";
+		public static final String EXG2_16BITS = "ADS1292R_2_16BIT";
+		
+		public static final String EXG1_CONFIG_1 = "ADS1292R_1_Config1";
+		public static final String EXG1_CONFIG_2 = "ADS1292R_1_Config2";
+		public static final String EXG1_LEAD_OFF = "ADS1292R_1_LOff";
+		public static final String EXG1_CH1_SET = "ADS1292R_1_Ch1_Set";
+		public static final String EXG1_CH2_SET = "ADS1292R_1_Ch2_Set";
+		public static final String EXG1_RLD_SENSE = "ADS1292R_1_RLD_Sense";
+		public static final String EXG1_LEAD_OFF_SENSE = "ADS1292R_1_LOff_Sense";
+		public static final String EXG1_LEAD_OFF_STATUS = "ADS1292R_1_LOff_Status";
+		public static final String EXG1_RESPIRATION_1 = "ADS1292R_1_Resp1";
+		public static final String EXG1_RESPIRATION_2 = "ADS1292R_1_Resp2";
+		public static final String EXG2_CONFIG_1 = "ADS1292R_2_Config1";
+		public static final String EXG2_CONFIG_2 = "ADS1292R_2_Config2";
+		public static final String EXG2_LEAD_OFF = "ADS1292R_2_LOff";
+		public static final String EXG2_CH1_SET = "ADS1292R_2_Ch1_Set";
+		public static final String EXG2_CH2_SET = "ADS1292R_2_Ch2_Set";
+		public static final String EXG2_RLD_SENSE = "ADS1292R_2_RLD_Sense";
+		public static final String EXG2_LEAD_OFF_SENSE = "ADS1292R_2_LOff_Sense";
+		public static final String EXG2_LEAD_OFF_STATUS = "ADS1292R_2_LOff_Status";
+		public static final String EXG2_RESPIRATION_1 = "ADS1292R_2_Resp1";
+		public static final String EXG2_RESPIRATION_2 = "ADS1292R_2_Resp2";
+		
+	}
+	
 	//Chip 1 - 24-bit
 	private static List<String> listOfChannels_Chip1Ch1_24Bit = Arrays.asList(
 			ObjectClusterSensorName.ECG_LL_RA_24BIT,
@@ -1405,39 +1435,40 @@ public class SensorEXG extends AbstractSensor{
 	}
 	
 	@Override
-	public void parseConfigMapFromDb(
-			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-		// TODO Auto-generated method stub
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
-	}
-
-	public static final class DatabaseConfigHandle{
-		public static final String EXG1_24BITS = "ADS1292R_1_24BIT";
-		public static final String EXG2_24BITS = "ADS1292R_2_24BIT";
+		//EXG Configuration
+		byte[] exg1Bytes = SensorEXG.parseExgConfigFromDb(mapOfConfigPerShimmer, EXG_CHIP_INDEX.CHIP1, 
+				DatabaseConfigHandle.EXG1_CONFIG_1,
+				DatabaseConfigHandle.EXG1_CONFIG_2,
+				DatabaseConfigHandle.EXG1_LEAD_OFF,
+				DatabaseConfigHandle.EXG1_CH1_SET,
+				DatabaseConfigHandle.EXG1_CH2_SET,
+				DatabaseConfigHandle.EXG1_RLD_SENSE,
+				DatabaseConfigHandle.EXG1_LEAD_OFF_SENSE,
+				DatabaseConfigHandle.EXG1_LEAD_OFF_STATUS,
+				DatabaseConfigHandle.EXG1_RESPIRATION_1,
+				DatabaseConfigHandle.EXG1_RESPIRATION_2);
+		if(exg1Bytes!=null){
+			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1.ordinal(), exg1Bytes);
+		}
 		
-		public static final String EXG1_16BITS = "ADS1292R_1_16BIT";
-		public static final String EXG2_16BITS = "ADS1292R_2_16BIT";
+		byte[] exg2Bytes = SensorEXG.parseExgConfigFromDb(mapOfConfigPerShimmer, EXG_CHIP_INDEX.CHIP2, 
+				DatabaseConfigHandle.EXG2_CONFIG_1,
+				DatabaseConfigHandle.EXG2_CONFIG_2,
+				DatabaseConfigHandle.EXG2_LEAD_OFF,
+				DatabaseConfigHandle.EXG2_CH1_SET,
+				DatabaseConfigHandle.EXG2_CH2_SET,
+				DatabaseConfigHandle.EXG2_RLD_SENSE,
+				DatabaseConfigHandle.EXG2_LEAD_OFF_SENSE,
+				DatabaseConfigHandle.EXG2_LEAD_OFF_STATUS,
+				DatabaseConfigHandle.EXG2_RESPIRATION_1,
+				DatabaseConfigHandle.EXG2_RESPIRATION_2);
+		if(exg2Bytes!=null){
+			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP2.ordinal(), exg2Bytes);
+		}
 		
-		public static final String EXG1_CONFIG_1 = "ADS1292R_1_Config1";
-		public static final String EXG1_CONFIG_2 = "ADS1292R_1_Config2";
-		public static final String EXG1_LEAD_OFF = "ADS1292R_1_LOff";
-		public static final String EXG1_CH1_SET = "ADS1292R_1_Ch1_Set";
-		public static final String EXG1_CH2_SET = "ADS1292R_1_Ch2_Set";
-		public static final String EXG1_RLD_SENSE = "ADS1292R_1_RLD_Sense";
-		public static final String EXG1_LEAD_OFF_SENSE = "ADS1292R_1_LOff_Sense";
-		public static final String EXG1_LEAD_OFF_STATUS = "ADS1292R_1_LOff_Status";
-		public static final String EXG1_RESPIRATION_1 = "ADS1292R_1_Resp1";
-		public static final String EXG1_RESPIRATION_2 = "ADS1292R_1_Resp2";
-		public static final String EXG2_CONFIG_1 = "ADS1292R_2_Config1";
-		public static final String EXG2_CONFIG_2 = "ADS1292R_2_Config2";
-		public static final String EXG2_LEAD_OFF = "ADS1292R_2_LOff";
-		public static final String EXG2_CH1_SET = "ADS1292R_2_Ch1_Set";
-		public static final String EXG2_CH2_SET = "ADS1292R_2_Ch2_Set";
-		public static final String EXG2_RLD_SENSE = "ADS1292R_2_RLD_Sense";
-		public static final String EXG2_LEAD_OFF_SENSE = "ADS1292R_2_LOff_Sense";
-		public static final String EXG2_LEAD_OFF_STATUS = "ADS1292R_2_LOff_Status";
-		public static final String EXG2_RESPIRATION_1 = "ADS1292R_2_Resp1";
-		public static final String EXG2_RESPIRATION_2 = "ADS1292R_2_Resp2";
+		
 		
 	}
 
@@ -2929,9 +2960,38 @@ public class SensorEXG extends AbstractSensor{
 	//--------- Optional methods to override in Sensor Class end --------
 
 
-	
 	private boolean isTwoChipExg(){
 		return !mShimmerVerObject.isShimmerGenGq();
 	}
 
+	public static byte[] parseExgConfigFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer, EXG_CHIP_INDEX chipIndex, 
+			String config1, String config2, String leadOff, String ch1Set, String ch2Set, 
+			String rldSense, String leadOffSense, String leadOffStatus, String respiration1, String respiration2) {
+		
+		if(mapOfConfigPerShimmer.containsKey(config1)
+				&& mapOfConfigPerShimmer.containsKey(config2)
+				&& mapOfConfigPerShimmer.containsKey(leadOff)
+				&& mapOfConfigPerShimmer.containsKey(ch1Set)
+				&& mapOfConfigPerShimmer.containsKey(ch2Set)
+				&& mapOfConfigPerShimmer.containsKey(rldSense)
+				&& mapOfConfigPerShimmer.containsKey(leadOffSense)
+				&& mapOfConfigPerShimmer.containsKey(leadOffStatus)
+				&& mapOfConfigPerShimmer.containsKey(respiration1)
+				&& mapOfConfigPerShimmer.containsKey(respiration2)){
+			byte[] exgBytes = new byte[10];
+			exgBytes[0] = (byte) ((Double) mapOfConfigPerShimmer.get(config1)).intValue();
+			exgBytes[1] = (byte) ((Double) mapOfConfigPerShimmer.get(config2)).intValue();
+			exgBytes[2] = (byte) ((Double) mapOfConfigPerShimmer.get(leadOff)).intValue();
+			exgBytes[3] = (byte) ((Double) mapOfConfigPerShimmer.get(ch1Set)).intValue();
+			exgBytes[4] = (byte) ((Double) mapOfConfigPerShimmer.get(ch2Set)).intValue();
+			exgBytes[5] = (byte) ((Double) mapOfConfigPerShimmer.get(rldSense)).intValue();
+			exgBytes[6] = (byte) ((Double) mapOfConfigPerShimmer.get(leadOffSense)).intValue();
+			exgBytes[7] = (byte) ((Double) mapOfConfigPerShimmer.get(leadOffStatus)).intValue();
+			exgBytes[8] = (byte) ((Double) mapOfConfigPerShimmer.get(respiration1)).intValue();
+			exgBytes[9] = (byte) ((Double) mapOfConfigPerShimmer.get(respiration2)).intValue();
+			return exgBytes;
+		}
+		return null;
+	}
 }

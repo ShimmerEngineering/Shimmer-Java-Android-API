@@ -2,7 +2,10 @@ package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 /**
@@ -35,18 +38,14 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		public static final String ALIGNMENT_R22 = "r22"; //called ZZ elsewhere?
 	}
 	
-	private double[][] mCurrentAlignmentMatrix = null; 			
-	private double[][] mCurrentSensitivityMatrix = null; 	
-	private double[][] mCurrentOffsetVector = null;
-
-	private double[][] mDefaultAlignmentMatrix = null;   			
-	private double[][] mDefaultSensitivityMatrix = null;  	
-	private double[][] mDefaultOffsetVector = null; 
+	private CalibArraysKinematic mCurrentCalibration = new CalibArraysKinematic();
+	private CalibArraysKinematic mDefaultCalibration = new CalibArraysKinematic();
 	
-	//TODO: improve below, needed here?
-	private double[][] mEmptyAlignmentMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};  			
-	private double[][] mEmptySensitivityMatrix = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 	
-	private double[][] mEmptyOffsetVector = new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}}; 
+//	//TODO: improve below, needed here?
+	private CalibArraysKinematic mEmptyCalibration = new CalibArraysKinematic(
+			new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}},
+			new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}},
+			new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}});
 	
 	public enum CALIBRATION_SCALE_FACTOR{
 		NONE(1.0),
@@ -89,14 +88,14 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector) {
 		this(rangeValue, rangeString);
-		this.setDefaultValues(defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
+		this.setDefaultValues(defaultOffsetVector, defaultSensitivityMatrix, defaultAlignmentMatrix);
 	}
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, 
 			double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector,
 			double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
 		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
-		this.setCurrentValues(currentAlignmentMatrix, currentSensitivityMatrix, currentOffsetVector);
+		this.setCurrentValues(currentOffsetVector, currentSensitivityMatrix, currentAlignmentMatrix);
 	}
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, 
@@ -115,7 +114,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}
 
 
-	public void setCurrentValues(double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
+	public void setCurrentValues(double[][] currentOffsetVector, double[][] currentSensitivityMatrix, double[][] currentAlignmentMatrix) {
 		setCurrentAlignmentMatrix(currentAlignmentMatrix);
 		setCurrentSensitivityMatrix(currentSensitivityMatrix);
 		setCurrentOffsetVector(currentOffsetVector);
@@ -123,29 +122,31 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 //		System.out.println(generateDebugString());
 	}
 
-	public void setDefaultValues(double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector) {
-		this.mDefaultAlignmentMatrix = defaultAlignmentMatrix;
-		this.mDefaultSensitivityMatrix = defaultSensitivityMatrix;
-		this.mDefaultOffsetVector = defaultOffsetVector;
+	public void setDefaultValues(double[][] defaultOffsetVector, double[][] defaultSensitivityMatrix, double[][] defaultAlignmentMatrix) {
+		mDefaultCalibration.setValues(defaultOffsetVector, defaultSensitivityMatrix, defaultAlignmentMatrix);
 	}
 
 	@Override
 	public void resetToDefaultParameters(){
 		super.resetToDefaultParametersCommon();
 		
-		setCurrentAlignmentMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultAlignmentMatrix));
-		setCurrentSensitivityMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultSensitivityMatrix));
-		setCurrentOffsetVector(UtilShimmer.deepCopyDoubleMatrix(mDefaultOffsetVector));
+		setCurrentOffsetVector(UtilShimmer.deepCopyDoubleMatrix(mDefaultCalibration.mOffsetVector));
+		setCurrentSensitivityMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultCalibration.mSensitivityMatrix));
+		setCurrentAlignmentMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultCalibration.mAlignmentMatrix));
 	}
 	
 	
 	public boolean isCurrentValuesSet(){
-		if(mCurrentAlignmentMatrix!=null && mCurrentSensitivityMatrix!=null && mCurrentOffsetVector!=null){
+		return mCurrentCalibration.isCurrentValuesSet();
+	}
+
+	public boolean isAllCalibrationValid(){
+		if(mCurrentCalibration.isAllCalibrationValid() || isUsingDefaultParameters()){
 			return true;
 		}
 		return false;
 	}
-
+	
 	public boolean isUsingDefaultParameters(){
 		if(isAlignmentUsingDefault() && isSensitivityUsingDefault() && isOffsetVectorUsingDefault()){
 			return true;
@@ -154,66 +155,15 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}
 	
 	public boolean isAlignmentUsingDefault(){
-		if(mCurrentAlignmentMatrix==null || mDefaultAlignmentMatrix==null){
-			return false;
-		}
-		return Arrays.deepEquals(mCurrentAlignmentMatrix, mDefaultAlignmentMatrix);
+		return areCalibArraysEqual(mCurrentCalibration.mAlignmentMatrix, mDefaultCalibration.mAlignmentMatrix);
 	}
 
 	public boolean isSensitivityUsingDefault(){
-		if(mCurrentSensitivityMatrix==null || mDefaultSensitivityMatrix==null){
-			return false;
-		}
-		return Arrays.deepEquals(mCurrentSensitivityMatrix, mDefaultSensitivityMatrix);
+		return areCalibArraysEqual(mCurrentCalibration.mSensitivityMatrix, mDefaultCalibration.mSensitivityMatrix);
 	}
 
 	public boolean isOffsetVectorUsingDefault(){
-		if(mCurrentOffsetVector==null || mDefaultOffsetVector==null){
-			return false;
-		}
-		return Arrays.deepEquals(mCurrentOffsetVector, mDefaultOffsetVector);
-	}
-
-	public boolean isAllCalibrationValid(){
-		if((isAlignmentValid() && isSensitivityValid() && isOffsetVectorValid()) || isUsingDefaultParameters()){
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isAlignmentValid(){
-	 if(UtilShimmer.isAllZeros(mCurrentAlignmentMatrix)){
-			return false;
-		}else{
-			return true;
-		}
-	}
-
-	public boolean isSensitivityValid(){
-	 if(isDiagonalFilled(mCurrentSensitivityMatrix) ){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
-	//TODO : look up is there a valid check for a valid offset vector 
-	public boolean isOffsetVectorValid(){
-			return true;
-	}
-	
-	public boolean isDiagonalFilled(double[][] matrix){
-		if(matrix==null){
-			return false;
-		}
-		
-		boolean diagonalFilled = true;
-		for(int j = 0; j < matrix[1].length; j++){
-			if(matrix[0][j]==0 &&  matrix[1][j]==0 && matrix[2][j]==0){
-				diagonalFilled =false;
-			}
-		}
-		return diagonalFilled;
+		return areCalibArraysEqual(mCurrentCalibration.mOffsetVector, mDefaultCalibration.mOffsetVector);
 	}
 
 	@Override
@@ -249,10 +199,10 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	@Override
 	public byte[] generateCalParamByteArray() {
 		if(isCurrentValuesSet()){
-			return generateCalParamByteArray(mCurrentOffsetVector, mCurrentSensitivityMatrix, mCurrentAlignmentMatrix);
+			return generateCalParamByteArray(mCurrentCalibration.mOffsetVector, mCurrentCalibration.mSensitivityMatrix, mCurrentCalibration.mAlignmentMatrix);
 		}
 		else{
-			return generateCalParamByteArray(mDefaultOffsetVector, mDefaultSensitivityMatrix, mDefaultAlignmentMatrix);
+			return generateCalParamByteArray(mDefaultCalibration.mOffsetVector, mDefaultCalibration.mSensitivityMatrix, mDefaultCalibration.mAlignmentMatrix);
 		}
 	}
 	
@@ -294,105 +244,107 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}	
 	
 	public double[][] getCurrentAlignmentMatrix() {
-		if(mCurrentAlignmentMatrix!=null)
-			return mCurrentAlignmentMatrix;
+		if(mCurrentCalibration!=null && mCurrentCalibration.mAlignmentMatrix!=null)
+			return mCurrentCalibration.mAlignmentMatrix;
 		else
 			return getDefaultAlignmentMatrix();
 	}
 
 	public double[][] getCurrentSensitivityMatrix() {
-		if(mCurrentSensitivityMatrix!=null)
-			return mCurrentSensitivityMatrix;
+		if(mCurrentCalibration!=null && mCurrentCalibration.mSensitivityMatrix!=null)
+			return mCurrentCalibration.mSensitivityMatrix;
 		else
 			return getDefaultSensitivityMatrix();
 	}
 
 	public double[][] getCurrentOffsetVector() {
-		if(mCurrentOffsetVector!=null)
-			return mCurrentOffsetVector;
+		if(mCurrentCalibration!=null && mCurrentCalibration.mOffsetVector!=null)
+			return mCurrentCalibration.mOffsetVector;
 		else
 			return getDefaultOffsetVector();
 	}
 	
+	
 	public double[][] getEmptyOffsetVector() {
-		return mEmptyOffsetVector;
+		if(mEmptyCalibration==null){
+			return null;
+		}
+		return mEmptyCalibration.mOffsetVector;
 	}
 
 	public double[][] getEmptySensitivityMatrix() {
-		return mEmptySensitivityMatrix;
+		if(mEmptyCalibration==null){
+			return null;
+		}
+		return mEmptyCalibration.mSensitivityMatrix;
 	}
 
 	public double[][] getEmptyAlignmentMatrix() {
-		return mEmptyAlignmentMatrix;
+		if(mEmptyCalibration==null){
+			return null;
+		}
+		return mEmptyCalibration.mAlignmentMatrix;
 	}
 
+	
 	public double[][] getDefaultOffsetVector() {
-		return mDefaultOffsetVector;
+		if(mDefaultCalibration==null){
+			return null;
+		}
+		return mDefaultCalibration.mOffsetVector;
 	}
 
 	public double[][] getDefaultSensitivityMatrix() {
-		return mDefaultSensitivityMatrix;
+		if(mDefaultCalibration==null){
+			return null;
+		}
+		return mDefaultCalibration.mSensitivityMatrix;
 	}
 
 	public double[][] getDefaultAlignmentMatrix() {
-		return mDefaultAlignmentMatrix;
+		if(mDefaultCalibration==null){
+			return null;
+		}
+		return mDefaultCalibration.mAlignmentMatrix;
 	}
 
+	
 	/** For example used by Gyro on the fly calibration
 	 * @param mean
 	 * @param mean2
 	 * @param mean3
 	 */
+	//TODO no nudging implemented here
 	public void updateCurrentOffsetVector(double XXvalue, double YYvalue, double ZZvalue) {
-		double[][] newArray = new double[3][1];
-		newArray[0][0] = XXvalue;
-		newArray[1][0] = YYvalue;
-		newArray[2][0] = ZZvalue;
-		setCurrentOffsetVector(newArray);
+		mCurrentCalibration.updateOffsetVector(XXvalue, YYvalue, ZZvalue);
 	}
 	
 	private void setCurrentOffsetVector(double[][] newArray) {
-		mCurrentOffsetVector = UtilShimmer.nudgeDoubleArray(mOffsetMax, mOffsetMin, mOffsetPrecision, newArray);
-//		mCurrentOffsetVector = newArray;
+		mCurrentCalibration.setOffsetVector(UtilShimmer.nudgeDoubleArray(mOffsetMax, mOffsetMin, mOffsetPrecision, newArray));
+//		mCurrentCalibration.setOffsetVector(newArray);
 	}
 
+	//TODO no nudging implemented here
 	public void updateCurrentSensitivityMatrix(double XXvalue, double YYvalue, double ZZvalue) {
-		double[][] newArray = new double[3][3];
-		newArray[0][0] = XXvalue;
-		newArray[1][1] = YYvalue;
-		newArray[2][2] = ZZvalue;
-		setCurrentSensitivityMatrix(newArray);
+		mCurrentCalibration.updateSensitivityMatrix(XXvalue, YYvalue, ZZvalue);
 	}
 
 	private void setCurrentSensitivityMatrix(double[][] newArray) {
-		mCurrentSensitivityMatrix = UtilShimmer.nudgeDoubleArray(mSensitivityMax, mSensitivityMin, mSensitivityPrecision, newArray);
-//		mCurrentSensitivityMatrix = newArray;
+		mCurrentCalibration.setSensitivityMatrix(UtilShimmer.nudgeDoubleArray(mSensitivityMax, mSensitivityMin, mSensitivityPrecision, newArray));
+//		mCurrentCalibration.setSensitivityMatrix(newArray);
 	}
 
+	//TODO no nudging implemented here
 	public void updateCurrentAlignmentMatrix(
 			double XXvalue, double XYvalue, double XZvalue, 
 			double YXvalue, double YYvalue, double YZvalue,
 			double ZXvalue, double ZYvalue, double ZZvalue) {
-		
-		double[][] newMatrix = new double[3][3];
-		newMatrix[0][0] = XXvalue;
-		newMatrix[0][1] = XYvalue;
-		newMatrix[0][2] = XZvalue;
-		
-		newMatrix[1][0] = YXvalue;
-		newMatrix[1][1] = YYvalue;
-		newMatrix[1][2] = YZvalue;
-		
-		newMatrix[2][0] = ZXvalue;
-		newMatrix[2][1] = ZYvalue;
-		newMatrix[2][2] = ZZvalue;
-		
-		setCurrentAlignmentMatrix(newMatrix);
+		mCurrentCalibration.updateAlignmentMatrix(XXvalue, XYvalue, XZvalue, YXvalue, YYvalue, YZvalue, ZXvalue, ZYvalue, ZZvalue);
 	}
 
 	private void setCurrentAlignmentMatrix(double[][] newArray) {
-		mCurrentAlignmentMatrix = UtilShimmer.nudgeDoubleArray(mAlignmentMax, mAlignmentMin, mAlignmentPrecision, newArray);
-//		mCurrentAlignmentMatrix = newMatrix;
+		mCurrentCalibration.setAlignmentMatrix(UtilShimmer.nudgeDoubleArray(mAlignmentMax, mAlignmentMin, mAlignmentPrecision, newArray));
+//		mCurrentCalibration.setAlignmentMatrix(newMatrix);
 	}
 
 	public void setSensitivityScaleFactor(CALIBRATION_SCALE_FACTOR scaleFactor) {
@@ -425,11 +377,6 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		updateOffsetMaxMin();
 	}
 
-	private static int calculatePrecision(double scaleFactor) {
-		int length = (int)(Math.log10(scaleFactor)+1);
-		return length-1;
-	}
-
 	private void updateOffsetMaxMin() {
 		mOffsetMax = mOffsetDataType.getMaxVal()/mOffsetScaleFactor.scaleFactor;
 		mOffsetMax = UtilShimmer.applyPrecisionCorrection(mOffsetMax, mOffsetPrecision);
@@ -458,18 +405,25 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		mAlignmentMin = UtilShimmer.applyPrecisionCorrection(mAlignmentMin, mAlignmentPrecision);
 	}
 	
+	public void updateCurrentCalibration(CalibArraysKinematic calibArraysKinematic) {
+//		mCurrentCalibration = calibArraysKinematic;
+		setCurrentOffsetVector(calibArraysKinematic.mOffsetVector);
+		setCurrentAlignmentMatrix(calibArraysKinematic.mAlignmentMatrix);
+		setCurrentSensitivityMatrix(calibArraysKinematic.mSensitivityMatrix);
+	}
+	
 	public String getDebugString() {
 		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
-		debugString += generateDebugStringPerProperty("Default Alignment", mDefaultAlignmentMatrix);
-		debugString += generateDebugStringPerProperty("Current Alignment", getCurrentAlignmentMatrix());//mCurrentAlignmentMatrix);
-		debugString += generateDebugStringPerProperty("Default Sensitivity", mDefaultSensitivityMatrix);
-		debugString += generateDebugStringPerProperty("CurrentSensitivity", getCurrentSensitivityMatrix());//mCurrentSensitivityMatrix);
-		debugString += generateDebugStringPerProperty("Default Offset Vector", mDefaultOffsetVector);
+		debugString += generateDebugStringPerProperty("Default Offset Vector", getDefaultOffsetVector());
 		debugString += generateDebugStringPerProperty("Current Offset Vector", getCurrentOffsetVector());//mCurrentOffsetVector);
+		debugString += generateDebugStringPerProperty("Default Sensitivity", getDefaultSensitivityMatrix());
+		debugString += generateDebugStringPerProperty("CurrentSensitivity", getCurrentSensitivityMatrix());//mCurrentSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("Default Alignment", getDefaultAlignmentMatrix());
+		debugString += generateDebugStringPerProperty("Current Alignment", getCurrentAlignmentMatrix());//mCurrentAlignmentMatrix);
 		return debugString;
 	}
 
-	private String generateDebugStringPerProperty(String property, double[][] calMatrix) {
+	private static String generateDebugStringPerProperty(String property, double[][] calMatrix) {
 		String debugString = property + " =\n";
 		if(calMatrix==null){
 			debugString += "NULL\n";
@@ -478,6 +432,90 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			debugString += UtilShimmer.doubleArrayToString(calMatrix);
 		}
 		return debugString;
+	}
+
+	private static boolean areCalibArraysEqual(double[][] array1, double[][] array2) {
+		if(array1==null || array2==null){
+			return false;
+		}
+		return Arrays.deepEquals(array1, array2);
+	}
+	
+	private static int calculatePrecision(double scaleFactor) {
+		int length = (int)(Math.log10(scaleFactor)+1);
+		return length-1;
+	}
+
+	public void parseCalibDetailsKinematicFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer,
+			String offsetX, String offsetY, String offsetZ, 
+			String gainX, String gainY, String gainZ, 
+			String alignXx, String alignXy, String alignXz, 
+			String alignYx, String alignYy, String alignYz, 
+			String alignZx, String alignZy, String alignZz) {
+
+		CalibArraysKinematic calibArraysKinematic = CalibDetailsKinematic.parseCalibDetailsKinematicFromDbStatic(mapOfConfigPerShimmer,
+				offsetX, offsetY, offsetZ, 
+				gainX, gainY, gainZ, 
+				alignXx, alignXy, alignXz, 
+				alignYx, alignYy, alignYz, 
+				alignZx, alignZy, alignZz);
+		
+		if(calibArraysKinematic!=null){
+			updateCurrentCalibration(calibArraysKinematic);
+		}		
+	}
+
+	public static CalibArraysKinematic parseCalibDetailsKinematicFromDbStatic(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer,
+			String offsetX, String offsetY, String offsetZ, 
+			String gainX, String gainY, String gainZ, 
+			String alignXx, String alignXy, String alignXz, 
+			String alignYx, String alignYy, String alignYz, 
+			String alignZx, String alignZy, String alignZz) {
+
+		if(mapOfConfigPerShimmer.containsKey(offsetX)
+				&& mapOfConfigPerShimmer.containsKey(offsetY)
+				&& mapOfConfigPerShimmer.containsKey(offsetZ)
+				&& mapOfConfigPerShimmer.containsKey(gainX)
+				&& mapOfConfigPerShimmer.containsKey(gainY)
+				&& mapOfConfigPerShimmer.containsKey(gainZ)
+				&& mapOfConfigPerShimmer.containsKey(alignXx)
+				&& mapOfConfigPerShimmer.containsKey(alignXy)
+				&& mapOfConfigPerShimmer.containsKey(alignXz)
+				&& mapOfConfigPerShimmer.containsKey(alignYx)
+				&& mapOfConfigPerShimmer.containsKey(alignYy)
+				&& mapOfConfigPerShimmer.containsKey(alignYz)
+				&& mapOfConfigPerShimmer.containsKey(alignZx)
+				&& mapOfConfigPerShimmer.containsKey(alignZy)
+				&& mapOfConfigPerShimmer.containsKey(alignZz)){
+			CalibArraysKinematic calibArraysKinematic = new CalibArraysKinematic();
+			
+			Double XXvalue = (Double) mapOfConfigPerShimmer.get(offsetX);
+			Double YYvalue = (Double) mapOfConfigPerShimmer.get(offsetY);
+			Double ZZvalue = (Double) mapOfConfigPerShimmer.get(offsetZ);
+			calibArraysKinematic.updateOffsetVector(XXvalue, YYvalue, ZZvalue);
+			
+			XXvalue = (Double) mapOfConfigPerShimmer.get(gainX);
+			YYvalue = (Double) mapOfConfigPerShimmer.get(gainY);
+			ZZvalue = (Double) mapOfConfigPerShimmer.get(gainZ);
+			calibArraysKinematic.updateSensitivityMatrix(XXvalue, YYvalue, ZZvalue);
+					
+			XXvalue = (Double) mapOfConfigPerShimmer.get(alignXx);
+			Double XYvalue = (Double) mapOfConfigPerShimmer.get(alignXy);
+			Double XZvalue = (Double) mapOfConfigPerShimmer.get(alignXz);
+			Double YXvalue = (Double) mapOfConfigPerShimmer.get(alignYx);
+			YYvalue = (Double) mapOfConfigPerShimmer.get(alignYy);
+			Double YZvalue = (Double) mapOfConfigPerShimmer.get(alignYz);
+			Double ZXvalue = (Double) mapOfConfigPerShimmer.get(alignZx);
+			Double ZYvalue = (Double) mapOfConfigPerShimmer.get(alignZy);
+			ZZvalue = (Double) mapOfConfigPerShimmer.get(alignZz);
+			calibArraysKinematic.updateAlignmentMatrix(XXvalue, XYvalue, XZvalue, YXvalue, YYvalue, YZvalue, ZXvalue, ZYvalue, ZZvalue);
+
+			return calibArraysKinematic;
+		}
+
+		return null;
 	}
 
 }

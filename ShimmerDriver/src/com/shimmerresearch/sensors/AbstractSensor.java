@@ -18,6 +18,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
+import com.shimmerresearch.driverUtilities.CalibArraysKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -587,7 +588,7 @@ public abstract class AbstractSensor implements Serializable{
 		return returnValue;
 	}
 	
-	public void addCalibDetailsToDbMap(
+	public static void addCalibDetailsToDbMap(
 			LinkedHashMap<String, Object> mapOfConfig, CalibDetailsKinematic calibDetails, 
 			String offsetX, String offsetY, String offsetZ,
 			String gainX, String gainY, String gainZ,
@@ -615,8 +616,9 @@ public abstract class AbstractSensor implements Serializable{
 		mapOfConfig.put(alignZy, calibDetails.getCurrentAlignmentMatrix()[2][1]);
 		mapOfConfig.put(alignZz, calibDetails.getCurrentAlignmentMatrix()[2][2]);
 	}
-	public void addCalibDetailsToDbMap(LinkedHashMap<String, Object> mapOfConfig, CalibDetailsKinematic calibDetails, List<String> listOfCalibHandlesMag) {
-		this.addCalibDetailsToDbMap(mapOfConfig, calibDetails, 
+	
+	public static void addCalibDetailsToDbMap(LinkedHashMap<String, Object> mapOfConfig, CalibDetailsKinematic calibDetails, List<String> listOfCalibHandlesMag) {
+		addCalibDetailsToDbMap(mapOfConfig, calibDetails, 
 				listOfCalibHandlesMag.get(0), listOfCalibHandlesMag.get(1), listOfCalibHandlesMag.get(2), 
 				listOfCalibHandlesMag.get(3), listOfCalibHandlesMag.get(4), listOfCalibHandlesMag.get(5), 
 				listOfCalibHandlesMag.get(6), listOfCalibHandlesMag.get(7), listOfCalibHandlesMag.get(8), 
@@ -624,6 +626,35 @@ public abstract class AbstractSensor implements Serializable{
 				listOfCalibHandlesMag.get(12), listOfCalibHandlesMag.get(13), listOfCalibHandlesMag.get(14));
 	}
 
+	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles) {
+		parseCalibDetailsKinematicFromDb(
+				mapOfConfigPerShimmer, sensorMapKey, range, 
+				listOfCalibHandles.get(0), listOfCalibHandles.get(1), listOfCalibHandles.get(2), 
+				listOfCalibHandles.get(3), listOfCalibHandles.get(4), listOfCalibHandles.get(5), 
+				listOfCalibHandles.get(6), listOfCalibHandles.get(7), listOfCalibHandles.get(8), 
+				listOfCalibHandles.get(9), listOfCalibHandles.get(10), listOfCalibHandles.get(11), 
+				listOfCalibHandles.get(12), listOfCalibHandles.get(13), listOfCalibHandles.get(14));
+	}
+
+	public void parseCalibDetailsKinematicFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, 
+			String offsetX, String offsetY, String offsetZ, 
+			String gainX, String gainY, String gainZ, 
+			String alignXx, String alignXy, String alignXz, 
+			String alignYx, String alignYy, String alignYz, 
+			String alignZx, String alignZy, String alignZz) {
+		
+		CalibDetails calibDetails = getCalibForSensor(sensorMapKey, range);
+		if(calibDetails!=null && calibDetails instanceof CalibDetailsKinematic){
+			((CalibDetailsKinematic) calibDetails).parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer,
+					offsetX, offsetY, offsetZ, 
+					gainX, gainY, gainZ, 
+					alignXx, alignXy, alignXz, 
+					alignYx, alignYy, alignYz, 
+					alignZx, alignZy, alignZz);
+		}
+
+	}
 	//--------- Optional methods to override in Sensor Class end -------- 
 
 }

@@ -373,22 +373,19 @@ public class SensorBMP180 extends AbstractSensor {
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, getPressureResolution());
-		//		mapOfConfig.put(DatabaseConfigHandle.TEMPERATURE, get);
 
 
-		//		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, );
-//
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC1, getPressTempAC1());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC2, getPressTempAC2());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC3, getPressTempAC3());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC4, getPressTempAC4());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC5, getPressTempAC5());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC6, getPressTempAC6());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B1, getPressTempB1());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B2, getPressTempB2());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MB, getPressTempMB());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MC, getPressTempMC());
-//		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MD, getPressTempMD());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC1, getPressTempAC1());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC2, getPressTempAC2());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC3, getPressTempAC3());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC4, getPressTempAC4());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC5, getPressTempAC5());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC6, getPressTempAC6());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B1, getPressTempB1());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_B2, getPressTempB2());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MB, getPressTempMB());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MC, getPressTempMC());
+		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_MD, getPressTempMD());
 
 		return mapOfConfig;
 	}
@@ -397,6 +394,32 @@ public class SensorBMP180 extends AbstractSensor {
 	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION)){
 			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION)).intValue());
+		}
+		//PRESSURE (BMP180) CAL PARAMS
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_AC1)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_AC2)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_AC3)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_AC4)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_AC5)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_AC6)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_B1)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_B2)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_MB)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_MC)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_MD)){
+			
+			setPressureCalib(
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_AC1),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_AC2),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_AC3),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_AC4),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_AC5),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_AC6),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_B1),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_B2),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_MB),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_MC),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TEMP_PRES_MD));
 		}
 	}
 
@@ -518,7 +541,13 @@ public class SensorBMP180 extends AbstractSensor {
 		}
 	}
 	
-	
+	public void setPressureCalib(
+			double AC1, double AC2, double AC3, 
+			double AC4, double AC5, double AC6,
+			double B1, double B2, 
+			double MB, double MC, double MD){
+		mCalibDetailsBmp180.setPressureCalib(AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
+	}
 	public double getPressTempAC1(){
 		return mCalibDetailsBmp180.AC1;
 	}

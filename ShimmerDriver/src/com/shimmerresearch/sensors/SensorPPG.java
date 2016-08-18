@@ -99,11 +99,9 @@ public class SensorPPG extends AbstractSensor {
 	}
 	
 public static class DatabaseConfigHandle{
-		
 		public static final String PPG_ADC_SELECTION_BOARD = "PPG_ADC_Selection_Board";
 		public static final String PPG1_ADC_SELECTION_BOARD = "PPG1_ADC_Selection_Board";
 		public static final String PPG2_ADC_SELECTION_BOARD = "PPG2_ADC_Selection_Board";
-
 	}
 	
 	public static class ObjectClusterSensorName{

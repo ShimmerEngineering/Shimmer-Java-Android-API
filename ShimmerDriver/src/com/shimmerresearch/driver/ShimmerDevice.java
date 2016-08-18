@@ -35,6 +35,7 @@ import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driverUtilities.CalibArraysKinematic;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
@@ -192,8 +193,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		public static final String TRIAL_ID = "Trial_Id";
 		public static final String N_SHIMMER = "NShimmer";
 		
-		public static final String EXP_PWR = "Exp_PWR";
-		
 		public static final String SHIMMER_VERSION = "Shimmer_Version";
 		public static final String FW_VERSION = "FW_ID";
 		public static final String FW_VERSION_MAJOR = "FW_Version_Major";
@@ -204,6 +203,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		public static final String EXP_BOARD_ID = "Exp_Board_Id";
 		public static final String EXP_BOARD_REV = "Exp_Board_Rev";
 		public static final String EXP_BOARD_REV_SPEC = "Exp_Board_Rev_Special";
+		
+		public static final String CONFIG_TIME = "Config_Time";
+		
+		
+		//Shimmer3 specific
+		public static final String EXP_PWR = "Exp_PWR";
+		public static final String REAL_TIME_CLOCK_DIFFERENCE = "RTC_Difference";
 	}
 
 	// --------------- Abstract Methods Start --------------------------
@@ -3257,7 +3263,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			setExpansionBoardDetails(eBD);
 		}
 		
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_PWR)){
+			setInternalExpPower(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_PWR)).intValue());
+		}
 		
+		//Configuration Time
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.CONFIG_TIME)){
+			setConfigTime(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.CONFIG_TIME)).longValue());
+		}
 		
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
@@ -3267,7 +3280,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 	}
 
-	
 	public void printMapOfConfigForDb() {
 		HashMap<String, Object> mapOfConfigForDb = getConfigMapForDb();
 		
