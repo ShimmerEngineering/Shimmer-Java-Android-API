@@ -9808,13 +9808,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
 		if (mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_3 || mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			if(mSensorMap.keySet().size()>0){
-				
 				for(int key:SensorMPU9X50.mListOfMplChannels){
-//				for(int key:mListOfMplChannels){
-					if(key==sensorMapKey){
-						continue;
-					}
-					if(isSensorEnabled(key)) {
+					if(key!=sensorMapKey && isSensorEnabled(key)) {
 						return true;
 					}
 				}
