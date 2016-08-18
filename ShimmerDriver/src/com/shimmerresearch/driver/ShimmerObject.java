@@ -5865,6 +5865,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void infoMemByteArrayParse(byte[] infoMemBytes) {
 		String shimmerName = "";
 
+		mInfoMemBytesOriginal = infoMemBytes;
+		
 		if(!InfoMemLayout.checkInfoMemValid(infoMemBytes)){
 			// InfoMem not valid
 			setDefaultShimmerConfiguration();
