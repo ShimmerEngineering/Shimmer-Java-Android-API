@@ -1,4 +1,7 @@
-package com.shimmerresearch.driverUtilities;
+package com.shimmerresearch.driver.calibration;
+
+import com.shimmerresearch.driverUtilities.UtilParseData;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 public class CalibDetailsBmp180 extends CalibDetails {
 

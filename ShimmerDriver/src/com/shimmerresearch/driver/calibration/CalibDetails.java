@@ -1,8 +1,10 @@
-package com.shimmerresearch.driverUtilities;
+package com.shimmerresearch.driver.calibration;
 
 import java.io.Serializable;
 
 import org.apache.commons.lang3.ArrayUtils;
+
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 public abstract class CalibDetails implements Serializable {
 	

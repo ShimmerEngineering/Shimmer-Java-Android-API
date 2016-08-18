@@ -1,4 +1,4 @@
-package com.shimmerresearch.driverUtilities;
+package com.shimmerresearch.driver.calibration;
 
 import java.util.Arrays;
 

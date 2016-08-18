@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.calibration.CalibArraysKinematic;
+import com.shimmerresearch.driver.calibration.CalibDetails;
+import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
+import com.shimmerresearch.driver.calibration.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driverUtilities.CalibDetails;
-import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
-import com.shimmerresearch.driverUtilities.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
-import com.shimmerresearch.driverUtilities.CalibArraysKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
