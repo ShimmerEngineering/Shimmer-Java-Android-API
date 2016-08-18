@@ -68,7 +68,6 @@ import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.ShimmerClock;
-import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 import com.shimmerresearch.algorithms.Orientation3DObject;
 
 /**
@@ -712,7 +711,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCalibMapAccelWideRangeShimmer3.put(calibDetailsAccelWr8g.mRangeValue, calibDetailsAccelWr8g);
 		mCalibMapAccelWideRangeShimmer3.put(calibDetailsAccelWr16g.mRangeValue, calibDetailsAccelWr16g);
 	}
-	public CalibDetailsKinematic mCurrentCalibDetailsAccelWr = null;
+	public CalibDetailsKinematic mCurrentCalibDetailsAccelWr = calibDetailsAccelWr2g;
 	// ----------   Wide-range accel end ---------------
 
 	// ----------   Gyro start ---------------
@@ -787,7 +786,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCalibMapGyroShimmer3.put(calibDetailsGyro2000.mRangeValue, calibDetailsGyro2000);
 	}
 	
-	public CalibDetailsKinematic mCurrentCalibDetailsGyro = null;
+	public CalibDetailsKinematic mCurrentCalibDetailsGyro = calibDetailsGyro500;
 	// ----------   Gyro end ---------------
 
 		
@@ -932,7 +931,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCalibMapMagShimmer3.put(calibDetailsMag5p6.mRangeValue, calibDetailsMag5p6); 
 		mCalibMapMagShimmer3.put(calibDetailsMag8p1.mRangeValue, calibDetailsMag8p1); 
 	}
-	public CalibDetailsKinematic mCurrentCalibDetailsMag = null;
+	public CalibDetailsKinematic mCurrentCalibDetailsMag = calibDetailsMag1p3;
 
 	// ----------   Mag end ---------------
 	
@@ -5820,11 +5819,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			setShimmerAndSensorsSamplingRate(51.2);
 			setDefaultECGConfiguration(getSamplingRateShimmer()); 
-			
-			updateCurrentAccelLnCalibInUse();
-			updateCurrentAccelWrCalibInUse();
-			updateCurrentGyroCalibInUse();
-			updateCurrentMagCalibInUse();
+
+			setMagRange(getMagRange());
+			setAccelRange(getAccelRange());
+			setGyroRange(getGyroRange());
 			
 			syncNodesList.clear();
 			
@@ -9482,9 +9480,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void setDigitalAccelRange(int i){
 		if(isShimmerGen2() || ArrayUtils.contains(SensorLSM303.ListofLSM303DLHCAccelRangeConfigValues, i)){
 			mAccelRange = i;
-			updateCurrentAccelLnCalibInUse(); // this needs to be here for Shimmer2/2r
-			updateCurrentAccelWrCalibInUse();
 		}
+		updateCurrentAccelLnCalibInUse(); // this needs to be here for Shimmer2/2r
+		updateCurrentAccelWrCalibInUse();
 	}
 
 	
@@ -9506,8 +9504,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void setLSM303MagRange(int i){
 		if(ArrayUtils.contains(SensorLSM303.ListofMagRangeConfigValues, i)){
 			mMagRange = i;
-			updateCurrentMagCalibInUse();
 		}
+		updateCurrentMagCalibInUse();
 	}
 
 	/**
