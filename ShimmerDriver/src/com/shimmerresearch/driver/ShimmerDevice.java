@@ -1823,8 +1823,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		algorithmMapUpdateFromEnabledSensorsVars();
 //		sensorMapCheckandCorrectSensorDependencies();
 		
-//		//Debugging
-//		printSensorAndParserMaps();
+		//Debugging
+		printSensorAndParserMaps();
 		
 		// This is to update the newly created sensor/algorithm classes (created
 		// above) with the current Shimmer sampling rate
