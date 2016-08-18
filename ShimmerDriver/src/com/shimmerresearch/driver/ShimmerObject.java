@@ -30,8 +30,10 @@ import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driver.ShimmerDevice.DatabaseConfigHandle;
 import com.shimmerresearch.driverUtilities.CalibDetails;
 import com.shimmerresearch.driverUtilities.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driverUtilities.CalibArraysKinematic;
 import com.shimmerresearch.driverUtilities.CalibDetailsBmp180;
 import com.shimmerresearch.driverUtilities.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -65,6 +67,7 @@ import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
+import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 import com.shimmerresearch.algorithms.Orientation3DObject;
 
@@ -7540,6 +7543,191 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mMyBluetoothAddress = myBluetoothAddress;
 	}
 	
+	
+	@Override
+	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		super.parseConfigMapFromDb(svo, mapOfConfigPerShimmer);
+		
+		//LSM sensor
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303.DatabaseConfigHandle.WR_ACC_RATE)){
+			setLSM303DigitalAccelRate(((Double) mapOfConfigPerShimmer.get(SensorLSM303.DatabaseConfigHandle.WR_ACC_RATE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303.DatabaseConfigHandle.WR_ACC_RANGE)){
+			setAccelRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303.DatabaseConfigHandle.WR_ACC_RANGE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303.DatabaseConfigHandle.WR_ACC_LPM)){
+			setLowPowerAccelWR(((Double) mapOfConfigPerShimmer.get(SensorLSM303.DatabaseConfigHandle.WR_ACC_LPM))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303.DatabaseConfigHandle.WR_ACC_HRM)){
+			setHighResAccelWR(((Double) mapOfConfigPerShimmer.get(SensorLSM303.DatabaseConfigHandle.WR_ACC_HRM))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorMPU9X50.DatabaseConfigHandle.GYRO_RATE)){
+			setMPU9150GyroAccelRate(((Double) mapOfConfigPerShimmer.get(SensorMPU9X50.DatabaseConfigHandle.GYRO_RATE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303.DatabaseConfigHandle.MAG_RANGE)){
+			setMagRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303.DatabaseConfigHandle.MAG_RANGE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303.DatabaseConfigHandle.MAG_RATE)){
+			setLSM303MagRate(((Double) mapOfConfigPerShimmer.get(SensorLSM303.DatabaseConfigHandle.MAG_RATE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorMPU9X50.DatabaseConfigHandle.GYRO_RANGE)){
+			setGyroRange(((Double) mapOfConfigPerShimmer.get(SensorMPU9X50.DatabaseConfigHandle.GYRO_RANGE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorMPU9X50.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)){
+			setMPU9150AccelRange(((Double) mapOfConfigPerShimmer.get(SensorMPU9X50.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)).intValue());
+		}
+		//Pressure sensor
+		if(mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION)){
+			setPressureResolution(((Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorGSR.DatabaseConfigHandle.GSR_RANGE)){
+			setGSRRange(((Double) mapOfConfigPerShimmer.get(SensorGSR.DatabaseConfigHandle.GSR_RANGE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_PWR)){
+			setInternalExpPower(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_PWR)).intValue());
+		}
+		
+		//RTC_SOURCE Not needed
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MASTER_CONFIG)){
+			setMasterShimmer(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MASTER_CONFIG))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.SINGLE_TOUCH_START)){
+			setSingleTouch(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SINGLE_TOUCH_START))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TXCO)){
+			setTCXO(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.TXCO))>0? true:false);
+		}
+		//RTC Difference
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.REAL_TIME_CLOCK_DIFFERENCE)){
+			setRTCOffset(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.REAL_TIME_CLOCK_DIFFERENCE)).longValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.USER_BUTTON)){
+			setButtonStart(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.USER_BUTTON))>0? true:false);
+		}
+		
+		
+		//EXG Configuration
+		byte[] exg1Bytes = SensorEXG.parseExgConfigFromDb(mapOfConfigPerShimmer, EXG_CHIP_INDEX.CHIP1, 
+				SensorEXG.DatabaseConfigHandle.EXG1_CONFIG_1,
+				SensorEXG.DatabaseConfigHandle.EXG1_CONFIG_2,
+				SensorEXG.DatabaseConfigHandle.EXG1_LEAD_OFF,
+				SensorEXG.DatabaseConfigHandle.EXG1_CH1_SET,
+				SensorEXG.DatabaseConfigHandle.EXG1_CH2_SET,
+				SensorEXG.DatabaseConfigHandle.EXG1_RLD_SENSE,
+				SensorEXG.DatabaseConfigHandle.EXG1_LEAD_OFF_SENSE,
+				SensorEXG.DatabaseConfigHandle.EXG1_LEAD_OFF_STATUS,
+				SensorEXG.DatabaseConfigHandle.EXG1_RESPIRATION_1,
+				SensorEXG.DatabaseConfigHandle.EXG1_RESPIRATION_2);
+		if(exg1Bytes!=null){
+			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1.ordinal(), exg1Bytes);
+		}
+		
+		byte[] exg2Bytes = SensorEXG.parseExgConfigFromDb(mapOfConfigPerShimmer, EXG_CHIP_INDEX.CHIP2, 
+				SensorEXG.DatabaseConfigHandle.EXG2_CONFIG_1,
+				SensorEXG.DatabaseConfigHandle.EXG2_CONFIG_2,
+				SensorEXG.DatabaseConfigHandle.EXG2_LEAD_OFF,
+				SensorEXG.DatabaseConfigHandle.EXG2_CH1_SET,
+				SensorEXG.DatabaseConfigHandle.EXG2_CH2_SET,
+				SensorEXG.DatabaseConfigHandle.EXG2_RLD_SENSE,
+				SensorEXG.DatabaseConfigHandle.EXG2_LEAD_OFF_SENSE,
+				SensorEXG.DatabaseConfigHandle.EXG2_LEAD_OFF_STATUS,
+				SensorEXG.DatabaseConfigHandle.EXG2_RESPIRATION_1,
+				SensorEXG.DatabaseConfigHandle.EXG2_RESPIRATION_2);
+		if(exg2Bytes!=null){
+			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP2.ordinal(), exg2Bytes);
+		}
+		
+		//Digital Accel Calibration Configuration
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, getAccelRange(), SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL);
+		
+		//Magnetometer Calibration Configuration
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, getMagRange(), SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG);
+		
+		//Gyroscope Calibration Configuration
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, getGyroRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
+		
+		//Analog Accel Calibration Configuration
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, 0, SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC);
+		
+		//PRESSURE (BMP180) CAL PARAMS
+		if(mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC1)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC2)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC3)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC4)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC5)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC6)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B1)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B2)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MB)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MC)
+				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MD)){
+			
+			setPressureCalib(
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC1),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC2),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC3),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC4),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC5),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC6),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B1),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B2),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MB),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MC),
+					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MD));
+		}
+		
+		//TODO
+		//MPL Accel Calibration Configuration
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, getMPU9150AccelRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
+
+		//TODO
+		//MPL Mag Calibration Configuration
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, 0, SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
+		
+		//TODO
+		//MPL Gyro Calibration Configuration
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, getGyroRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
+
+		
+		//Initial TimeStamp
+		if(mapOfConfigPerShimmer.containsKey(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)){
+			setInitialTimeStamp(((Double) mapOfConfigPerShimmer.get(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
+		}
+		
+		
+	}
+	
+	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles) {
+		parseCalibDetailsKinematicFromDb(
+				mapOfConfigPerShimmer, sensorMapKey, range, 
+				listOfCalibHandles.get(0), listOfCalibHandles.get(1), listOfCalibHandles.get(2), 
+				listOfCalibHandles.get(3), listOfCalibHandles.get(4), listOfCalibHandles.get(5), 
+				listOfCalibHandles.get(6), listOfCalibHandles.get(7), listOfCalibHandles.get(8), 
+				listOfCalibHandles.get(9), listOfCalibHandles.get(10), listOfCalibHandles.get(11), 
+				listOfCalibHandles.get(12), listOfCalibHandles.get(13), listOfCalibHandles.get(14));
+	}
+
+	public void parseCalibDetailsKinematicFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, 
+			String offsetX, String offsetY, String offsetZ, 
+			String gainX, String gainY, String gainZ, 
+			String alignXx, String alignXy, String alignXz, 
+			String alignYx, String alignYy, String alignYz, 
+			String alignZx, String alignZy, String alignZz) {
+		
+		TreeMap<Integer, CalibDetailsKinematic> calibDetailsMap = getMapOfSensorCalibrationAllKinematic().get(sensorMapKey);
+		if(calibDetailsMap!=null){
+			CalibDetailsKinematic calibDetails = calibDetailsMap.get(range);
+			if(calibDetails!=null){
+				calibDetails.parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer,
+						offsetX, offsetY, offsetZ, 
+						gainX, gainY, gainZ, 
+						alignXx, alignXy, alignXz, 
+						alignYx, alignYy, alignYz, 
+						alignZx, alignZy, alignZz);
+			}
+		}
+	}
 
 	//-------------------- Calibration Parameters Start -----------------------------------
 	

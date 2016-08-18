@@ -2166,12 +2166,13 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		mapOfConfig.put(DatabaseConfigHandle.MPU_DMP, getMPU9150DMP());
 		mapOfConfig.put(DatabaseConfigHandle.MPU_LPF, getMPU9150LPF());
 
-		
-		
-
 		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsGyro(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
+		
+		//TODO
 //		super.addCalibDetailsToDbMap(mapOfConfig, get, DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
+		//TODO
 //		super.addCalibDetailsToDbMap(mapOfConfig, get, DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
+		//TODO
 //		super.addCalibDetailsToDbMap(mapOfConfig, get, DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
 		return mapOfConfig;
 	}
@@ -2186,9 +2187,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)){
 			setMPU9150AccelRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)).intValue());
 		}
-//		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_DMP)){
-//			setMPU9150DMP(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_DMP)).intValue());
-//		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_DMP)){
+			setMPU9150DMP(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_DMP)).intValue());
+		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_LPF)){
 			setMPU9150LPF(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_LPF)).intValue());
 		}
@@ -2216,6 +2217,22 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MPL_ENABLE)){
 			setMPLEnable(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MPL_ENABLE))>0? true:false);
 		}
+		
+		//Gyroscope Calibration Configuration
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, getGyroRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
+		
+//		//TODO
+//		//MPL Accel Calibration Configuration
+//		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, getMPU9150AccelRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
+//
+//		//TODO
+//		//MPL Mag Calibration Configuration
+//		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, 0, SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
+//		
+//		//TODO
+//		//MPL Gyro Calibration Configuration
+//		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, getGyroRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
+
 	}
 
 	
@@ -2713,6 +2730,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			this.mMPU9150DMP = 0x00;
 	}
 	
+	public void setMPU9150DMP(int i) {
+		this.mMPU9150DMP = i;
+	}
 	
 	/**
 	 * @return the mMPLEnable

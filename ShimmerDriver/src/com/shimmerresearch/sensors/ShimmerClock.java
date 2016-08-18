@@ -86,7 +86,10 @@ public class ShimmerClock extends AbstractSensor {
 		public static final String REAL_TIME_CLOCK_SYNC = "RealTimeSync";
 		public static final String REAL_TIME_CLOCK = "Real_Time_Clock";
 	}
-	
+	public static final class DatabaseConfigHandle{
+		public static final String INITIAL_TIMESTAMP = "Initial_Timestamp";
+
+	}
 	public static final SensorDetailsRef sensorSystemTimeStampRef = new SensorDetailsRef(
 			GuiLabelSensors.SYSTEM_TIMESTAMP,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
@@ -751,7 +754,10 @@ public class ShimmerClock extends AbstractSensor {
 	@Override
 	public void parseConfigMapFromDb(
 			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-		// TODO Auto-generated method stub
+		//Initial TimeStamp
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.INITIAL_TIMESTAMP)){
+			setInitialTimeStamp(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
+		}
 		
 	}
 
@@ -827,6 +833,9 @@ public class ShimmerClock extends AbstractSensor {
 	public void checkShimmerConfigBeforeConfiguring() {
 		// TODO Auto-generated method stub
 		
+	}
+	public void setInitialTimeStamp(long initialTimeStamp){
+		mInitialTimeStamp = initialTimeStamp;
 	}
 
 //	protected double mLastReceivedCalibratedTimeStamp=-1; 
