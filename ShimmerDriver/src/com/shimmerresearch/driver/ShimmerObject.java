@@ -158,6 +158,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/** * */
 	private static final long serialVersionUID = -1364568867018921219L;
 	
+	private boolean debugGyroRate = false;
+	
 	protected boolean mFirstTime = true;
 	double mFirstRawTS = 0;
 	public int OFFSET_LENGTH = 9;
@@ -5735,6 +5737,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
 			setLSM303MagRateFromFreq(samplingRateShimmer);
 			setLSM303AccelRateFromFreq(samplingRateShimmer);
+			if(debugGyroRate)
+				System.out.println("Gyro Rate change from freq:\t" + getMacId() + "\tsetSamplingRateSensors\t" + samplingRateShimmer);
 			setMPU9150GyroAccelRateFromFreq(samplingRateShimmer);
 			setExGRateFromFreq(samplingRateShimmer);
 			
@@ -9590,6 +9594,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	public int setMPU9150GyroAccelRateFromFreq(double freq) {
+		if(debugGyroRate)
+			System.out.println("Gyro Rate change from freq:\t" + getMacId() + "\t" + freq);
+		
 		boolean setFreq = false;
 		// Check if channel is enabled 
 		if(checkIfAnyMplChannelEnabled()){
@@ -9770,6 +9777,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mMPLSensorFusion = 0;
 			
 			if(checkIfAMpuGyroOrAccelEnabled()){
+				if(debugGyroRate)
+					System.out.println("Gyro Rate change from freq:\t" + getMacId() + "\tMPL off but Gyro/Accel still enabled\t" + getSamplingRateShimmer());
 				setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
 			}
 			else {
@@ -10156,10 +10165,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
 			if(!checkIfAnyMplChannelEnabled()) {
 				mLowPowerGyro = enable;
+				if(debugGyroRate)
+					System.out.println("Gyro Rate change from freq:\t" + getMacId() + "\tsetLowPowerGyro\t" + getSamplingRateShimmer());
 				setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
 			}
 			else{
 				mLowPowerGyro = false;
+				if(debugGyroRate)
+					System.out.println("Gyro Rate change from freq:\t" + getMacId() + "\tsetLowPowerGyro\t" + getSamplingRateShimmer());
 				setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
 			}
 		}
@@ -10764,6 +10777,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
             	
             	// Since user is manually entering a freq., clear low-power mode so that their chosen rate will be set correctly. Tick box will be re-enabled automatically if they enter LPM freq. 
             	setLowPowerGyro(false); 
+				if(debugGyroRate)
+					System.out.println("Gyro Rate change from freq:\t" + getMacId() + "\tGuiLabelConfig\t" + bufDouble);
         		setMPU9150GyroAccelRateFromFreq(bufDouble);
 
         		returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
