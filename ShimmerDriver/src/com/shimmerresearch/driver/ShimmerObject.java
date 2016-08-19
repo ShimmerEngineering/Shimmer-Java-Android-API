@@ -7848,6 +7848,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL);
 			
 			if(mShimmerVerObject.isMplSupported() && isMPLEnable()){
+				listOfSensorMapKeys = new ArrayList<Integer>(listOfSensorMapKeys);
 				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO);
 				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL);
 				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG);
