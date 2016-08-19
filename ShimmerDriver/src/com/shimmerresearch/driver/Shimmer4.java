@@ -1433,8 +1433,8 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	@Override
-	public HashMap<String, Object> getConfigMapForDb() {
-		HashMap<String, Object> configMapForDb = super.getConfigMapForDb();
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		LinkedHashMap<String, Object> configMapForDb = super.getConfigMapForDb();
 		
 		//TODO 
 		

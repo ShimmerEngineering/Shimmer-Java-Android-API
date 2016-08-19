@@ -3223,7 +3223,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	}
 	
 	
-	public HashMap<String, Object> getConfigMapForDb(){
+	public LinkedHashMap<String, Object> getConfigMapForDb(){
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
 		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
