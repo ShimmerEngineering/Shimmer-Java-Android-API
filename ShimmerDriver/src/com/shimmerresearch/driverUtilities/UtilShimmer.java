@@ -404,19 +404,24 @@ public class UtilShimmer implements Serializable {
 	}
 	
 	public static String fromMilToDateExcelCompatible(String miliseconds, Boolean showMillis){
-		
-		double miliInDouble = Double.parseDouble(miliseconds);
-		long mili = (long) miliInDouble;
-		Date date = new Date(mili);
-		DateFormat formatter;
-		if(showMillis){
-			formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+		if (miliseconds==null){
+			return "null";
+		} else {
+			double miliInDouble = Double.parseDouble(miliseconds);
+			long mili = (long) miliInDouble;
+			Date date = new Date(mili);
+			DateFormat formatter;
+			if(showMillis){
+				formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+			}
+			else{
+				formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			}
+
+			return formatter.format(date);
 		}
-		else{
-			formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		}
 		
-		return formatter.format(date);
+		
 	}
 	
 	public static File[] getArrayOfFilesWithFileType(File directory, final String fileType){
