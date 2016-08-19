@@ -1475,20 +1475,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return the mInternalExpPower
 	 */
 	public boolean isInternalExpPower() {
-		if(mInternalExpPower > 0)
-			return true;
-		else
-			return false;
+		return (mInternalExpPower > 0)? true:false;
 	}
 	
 	/**
 	 * @param state the mInternalExpPower state to set
 	 */
 	public void setInternalExpPower(boolean state) {
-		if(state) 
-			mInternalExpPower = 0x01;
-		else 
-			mInternalExpPower = 0x00;
+		mInternalExpPower = state? 1:0;
 	}
 
 	public int getInternalExpPower(){
@@ -1604,25 +1598,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 			}
 			
-//			int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
-//			if(hwIdToUse==ShimmerVerDetails.ANY_VERSION){
-//				hwIdToUse = getHardwareVersion();
-//			}
-//			
-//			int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
-//			if(fwIdToUse==ShimmerVerDetails.ANY_VERSION){
-//				fwIdToUse = getFirmwareIdentifier();
-//			}
-//			
-//			if(isThisVerCompatibleWith( 
-//					hwIdToUse,
-//					fwIdToUse, 
-//					compatibleVersionInfo.mFirmwareVersionMajor, 
-//					compatibleVersionInfo.mFirmwareVersionMinor, 
-//					compatibleVersionInfo.mFirmwareVersionInternal)){
-//				return true;
-//			}
-			
 			if(isThisVerCompatibleWith( 
 					compatibleVersionInfo.mHardwareVersion,
 					compatibleVersionInfo.mFirmwareIdentifier, 
@@ -1649,8 +1624,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
-
-
 	
 	
 	/**
