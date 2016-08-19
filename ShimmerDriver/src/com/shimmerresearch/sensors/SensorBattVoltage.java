@@ -208,7 +208,7 @@ public class SensorBattVoltage extends AbstractSensor{
 					calData *= 1.988;
 					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-1);
 					
-					getShimmerBattStatusDetails().processBattPercentage(calData/1000);
+					getShimmerBattStatusDetails().calculateBattPercentage(calData/1000);
 				}
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATT_PERCENTAGE)){
 					objectCluster.addCalData(channelDetails, getShimmerBattStatusDetails().getEstimatedChargePercentage());

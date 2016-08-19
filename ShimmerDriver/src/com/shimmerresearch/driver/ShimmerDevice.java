@@ -44,6 +44,7 @@ import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
+import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails.BATTERY_LEVEL;
 import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
@@ -666,6 +667,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public Double getEstimatedChargePercentage() {
 		return mShimmerBattStatusDetails.getEstimatedChargePercentage();
 	}
+	
+	public BATTERY_LEVEL getEstimatedBatteryLevel() {
+		return mShimmerBattStatusDetails.getEstimatedBatteryLevel();
+	}
+
 	
 	/**
 	 * @param docked the mDocked to set
@@ -1631,8 +1637,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public static boolean isVerCompatibleWith(ShimmerVerObject svo, int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
-		return UtilShimmer.compareVersions(svo.getFirmwareIdentifier(), svo.getFirmwareVersionMajor(), svo.getFirmwareVersionMinor(), svo.getFirmwareVersionInternal(),
-				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+		return svo.isVerCompatibleWith(hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 	
 	public boolean isThisVerCompatibleWith(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
@@ -3316,6 +3321,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			System.out.println(stringToPrint);
 		}
 	}
+
 
 
 }

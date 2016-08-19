@@ -235,8 +235,8 @@ public abstract class AbstractPlotManager {
 		String js="";
 		int lengthToUse = a.length>4? 4:a.length;
 
-		for (int i=0;i<lengthToUse;i++){
-//		for (int i=0;i<a.length;i++){
+//		for (int i=0;i<lengthToUse;i++){
+		for (int i=0;i<a.length;i++){
 			if (i==0){
 				js = a[i];
 			} else{
