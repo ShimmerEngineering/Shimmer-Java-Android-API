@@ -145,7 +145,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public String mShimmerLastReadRtcValueParsed = "";
 	protected InfoMemLayout mInfoMemLayout;// = new InfoMemLayoutShimmer3(); //default
 	protected byte[] mInfoMemBytes = InfoMemLayout.createEmptyInfoMemByteArray(512);
-
+	/**shows the original contents of the Infomem any configuration is changed */
+	protected byte[] mInfoMemBytesOriginal = InfoMemLayout.createEmptyInfoMemByteArray(512);
+	
 	public byte[] mCalibBytes = new byte[]{};
 
 	protected String mTrialName = "";
@@ -787,6 +789,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public byte[] getShimmerInfoMemBytes() {
 		return mInfoMemBytes;
+	}
+
+	public byte[] getShimmerInfoMemBytesOriginal() {
+		return mInfoMemBytesOriginal;
 	}
 
 	public void setPacketReceptionRateOverall(double packetReceptionRateTrial){
@@ -3062,6 +3068,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void parseCalibByteDump(byte[] calibBytesAll, CALIB_READ_SOURCE calibReadSource){
 
 		mCalibBytes = calibBytesAll;
+		
+		if(UtilShimmer.isAllZeros(calibBytesAll)){
+			return;
+		}
 		
 		if(calibBytesAll.length>2){
 			//1) Packet lENGTH -> don't need here
