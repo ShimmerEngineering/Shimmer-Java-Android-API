@@ -176,9 +176,6 @@ public class Shimmer4 extends ShimmerDevice {
 
 			createInfoMemLayoutObjectIfNeeded();
 
-			setSamplingRateShimmer((32768/(double)((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
-					+ ((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8))));
-
 			// Sensors
 			mEnabledSensors = ((long)infoMemBytes[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
 			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors1] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors1;
@@ -186,9 +183,6 @@ public class Shimmer4 extends ShimmerDevice {
 	
 			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors3] & 0xFF) << infoMemLayoutCast.bitShiftSensors3;
 			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors4] & 0xFF) << infoMemLayoutCast.bitShiftSensors4;
-			
-			mInternalExpPower = (infoMemBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
-
 			
 			mDerivedSensors = (long)0;
 			// Check if compatible and not equal to 0xFF
@@ -203,7 +197,15 @@ public class Shimmer4 extends ShimmerDevice {
 					mDerivedSensors |= ((long)infoMemBytes[infoMemLayoutCast.idxDerivedSensors2] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors2;
 				}
 			}
-			
+
+			prepareAllAfterConfigRead();
+
+			setSamplingRateShimmer((32768/(double)((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
+					+ ((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8))));
+
+			mInternalExpPower = (infoMemBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
+
+
 			mBluetoothBaudRate = infoMemBytes[infoMemLayoutCast.idxBtCommBaudRate] & infoMemLayoutCast.maskBaudRate;
 
 			
@@ -245,7 +247,6 @@ public class Shimmer4 extends ShimmerDevice {
 				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
 			}
 
-			prepareAllAfterConfigRead();
 		}
 		checkAndCorrectShimmerName(shimmerName);
 	}
@@ -373,16 +374,16 @@ public class Shimmer4 extends ShimmerDevice {
 		return mInfoMemBytes;
 	}
 	
-	//TODO improve flow of below, move to ShimmerDevice also?
 	@Override
 	public void prepareAllAfterConfigRead() {
+		super.prepareAllAfterConfigRead();
 		//Can't create again because any sensor configuration that was read from InfoMem will be over written
 //		sensorAndConfigMapsCreate();
 		
 //		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.ALL);
 //		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.BLUETOOTH);
 //		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.SD);
-		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors);
+//		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors);
 
 		//Override Shimmer4 sensors
 		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
@@ -391,12 +392,12 @@ public class Shimmer4 extends ShimmerDevice {
 
 //		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.BLUETOOTH);
 
-//		printSensorAndParserMaps();
-
 		updateExpectedDataPacketSize();
 		
 		//for testing
-		printMapOfConfigForDb();
+//		printSensorAndParserMaps();
+		//for testing
+//		printMapOfConfigForDb();
 	}
 	
 

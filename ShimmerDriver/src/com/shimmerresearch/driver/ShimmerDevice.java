@@ -628,11 +628,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mExpansionBoardDetails = new ExpansionBoardDetails();
 	}
 
-	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
-		mExpansionBoardDetails  = eBD;
+	public void setExpansionBoardDetailsAndCreateSensorMap(ExpansionBoardDetails eBD){
+		setExpansionBoardDetails(eBD);
 		sensorAndConfigMapsCreate();
 	}
-
+	
+	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
+		mExpansionBoardDetails  = eBD;
+	}
 	
 	/**
 	 * @return the mChargingState
@@ -1660,7 +1663,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				// Automatically control internal expansion board power
 				checkIfInternalExpBrdPowerIsNeeded();
 
+				printSensorAndParserMaps();
 				refreshEnabledSensorsFromSensorMap();
+				printSensorAndParserMaps();
 				
 				generateParserMap();
 				//refresh algorithms
@@ -1801,14 +1806,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void prepareAllAfterConfigRead() {
-		//TODO Complete and tidy below
 		sensorAndConfigMapsCreate();
 		sensorMapUpdateFromEnabledSensorsVars();
 		algorithmMapUpdateFromEnabledSensorsVars();
 //		sensorMapCheckandCorrectSensorDependencies();
 		
 		//Debugging
-		printSensorAndParserMaps();
+//		printSensorAndParserMaps();
 		
 		// This is to update the newly created sensor/algorithm classes (created
 		// above) with the current Shimmer sampling rate
@@ -1908,7 +1912,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * Map. Used in Consensys for dynamic GUI generation to configure a Shimmer.
 	 * 
 	 */
-	//TODO tidy the below. Remove? Almost exact same in ShimmerObject and not sure if this needs to be here 
 	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
 		handleSpecCasesBeforeSensorMapUpdateGeneral();
 
@@ -1926,6 +1929,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				// Process remaining channels
 				SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 				sensorDetails.updateFromEnabledSensorsVars(mEnabledSensors, mDerivedSensors);
+				
+//				setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
 
 //				// Process remaining channels
 //				mSensorMap.get(sensorMapKey).setIsEnabled(false);
@@ -3201,12 +3206,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
 		mapOfConfig.put(DatabaseConfigHandle.ENABLE_SENSORS, getEnabledSensors());
 		mapOfConfig.put(DatabaseConfigHandle.DERIVED_SENSORS, getDerivedSensors());
+		
 		mapOfConfig.put(DatabaseConfigHandle.SHIMMER_VERSION, getHardwareVersion());
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION, getFirmwareVersionCode()); // getFirmwareIdentifier()?
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MAJOR, getFirmwareVersionMajor());
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MINOR, getFirmwareVersionMinor());
 		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_INTERNAL, getFirmwareVersionInternal());
 
+		mapOfConfig.put(DatabaseConfigHandle.EXP_BOARD_ID, getExpansionBoardId());
+		mapOfConfig.put(DatabaseConfigHandle.EXP_BOARD_REV, getExpansionBoardRev());
+		mapOfConfig.put(DatabaseConfigHandle.EXP_BOARD_REV_SPEC, getExpansionBoardRevSpecial());
+
+		mapOfConfig.put(DatabaseConfigHandle.EXP_PWR, getInternalExpPower());
+		mapOfConfig.put(DatabaseConfigHandle.CONFIG_TIME, getConfigTime());
 
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
@@ -3222,17 +3234,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
-		setShimmerVersionInfoAndCreateSensorMap(svo);
-
-		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.SAMPLE_RATE)){
-			setShimmerAndSensorsSamplingRate((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE));
-		}
+		setShimmerVersionObject(svo);
 
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ENABLE_SENSORS)
 				&&mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DERIVED_SENSORS)){
-			setEnabledAndDerivedSensors(
-					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.ENABLE_SENSORS)).longValue(), 
-					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.DERIVED_SENSORS)).longValue());
+			setEnabledSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.ENABLE_SENSORS)).longValue());
+			setDerivedSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.DERIVED_SENSORS)).longValue());
 		}
 		
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_ID)
@@ -3243,6 +3250,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV)).intValue(), 
 					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)).intValue());
 			setExpansionBoardDetails(eBD);
+		}
+
+//		printSensorAndParserMaps();
+		prepareAllAfterConfigRead();
+		
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.SAMPLE_RATE)){
+			setShimmerAndSensorsSamplingRate((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE));
 		}
 		
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_PWR)){

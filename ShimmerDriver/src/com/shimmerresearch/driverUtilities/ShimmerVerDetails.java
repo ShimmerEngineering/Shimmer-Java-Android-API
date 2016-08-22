@@ -133,7 +133,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int GPIO_TEST = 6;
 		public static final int GQ_802154 = 9;
 		public static final int SPAN = 11;
-		public static final int SHIMMER4_SDK_STOCK = 12;
+		public static final int SHIMMER4_SDK_STOCK = 12;//7
 		
 		public static final Map<Integer, String> mMapOfFirmwareLabels;
 	    static {
