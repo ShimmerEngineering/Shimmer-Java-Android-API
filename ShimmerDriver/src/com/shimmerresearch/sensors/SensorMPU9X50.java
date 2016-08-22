@@ -97,18 +97,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	public double[][] mOffsetVectorMagnetometer = {{-5.0},{-95.0},{-260.0}};
 
 	// ----------   Gyro start ---------------
-//	/**TODO use calibration map instead*/
-//	@Deprecated
-//	public boolean mDefaultCalibrationParametersGyro = true;
-//	/**TODO use calibration map instead*/
-//	@Deprecated
-//	public double[][] mAlignmentMatrixGyroscope = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-//	/**TODO use calibration map instead*/
-//	@Deprecated
-//	public double[][] mSensitivityMatrixGyroscope = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
-//	/**TODO use calibration map instead*/
-//	@Deprecated
-//	public double[][] mOffsetVectorGyroscope = {{1843},{1843},{1843}};
 
 	//TODO Shimmer2 doesn't belong here
 	//Default values Shimmer2
@@ -162,62 +150,8 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 			SensitivityMatrixGyro2000dpsShimmer3, 
 			OffsetVectorGyroShimmer3,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
-
-//	private TreeMap<Integer, CalibDetails> mCalibMapGyroShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
-//	protected TreeMap<Integer, CalibDetails> mCalibMapGyroShimmer3Ref = new TreeMap<Integer, CalibDetails>(); 
-//	{
-//		mCalibMapGyroShimmer3Ref.put(ListofMPU9150GyroRangeConfigValues[0], 
-//				new CalibDetailsKinematic(
-//						ListofMPU9150GyroRangeConfigValues[0], 
-//						ListofGyroRange[0],
-//						AlignmentMatrixGyroShimmer3,
-//						SensitivityMatrixGyro250dpsShimmer3,
-//						OffsetVectorGyroShimmer3)
-//				);
-//		mCalibMapGyroShimmer3Ref.put(ListofMPU9150GyroRangeConfigValues[1], 
-//				new CalibDetailsKinematic(
-//						ListofMPU9150GyroRangeConfigValues[1], 
-//						ListofGyroRange[1],
-//						AlignmentMatrixGyroShimmer3, 
-//						SensitivityMatrixGyro500dpsShimmer3,
-//						OffsetVectorGyroShimmer3)
-//				);
-//		mCalibMapGyroShimmer3Ref.put(ListofMPU9150GyroRangeConfigValues[2], 
-//				new CalibDetailsKinematic(
-//						ListofMPU9150GyroRangeConfigValues[2], 
-//						ListofGyroRange[2],
-//						AlignmentMatrixGyroShimmer3, 
-//						SensitivityMatrixGyro1000dpsShimmer3, 
-//						OffsetVectorGyroShimmer3)
-//				);
-//		mCalibMapGyroShimmer3Ref.put(ListofMPU9150GyroRangeConfigValues[3], 
-//				new CalibDetailsKinematic(
-//						ListofMPU9150GyroRangeConfigValues[3],
-//						ListofGyroRange[3],
-//						AlignmentMatrixGyroShimmer3, 
-//						SensitivityMatrixGyro2000dpsShimmer3, 
-//						OffsetVectorGyroShimmer3)
-//				);
-//	}
 	
-	public CalibDetailsKinematic mCurrentCalibDetailsGyro = null;
-
-//	protected TreeMap<Integer, CalibDetailsKinematic> mCalibMapGyroShimmer3 = new TreeMap<Integer, CalibDetailsKinematic>(); 
-//	{
-//		//TODO improve the way these are loaded - using array indexes is too hard coded?
-//		mCalibMapGyroShimmer3.put(ListofMPU9150GyroRangeConfigValues[0], 
-//				new CalibDetailsKinematic(ListofMPU9150GyroRangeConfigValues[0], ListofGyroRange[0],
-//						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro250dpsShimmer3, OffsetVectorGyroShimmer3));
-//		mCalibMapGyroShimmer3.put(ListofMPU9150GyroRangeConfigValues[1], 
-//				new CalibDetailsKinematic(ListofMPU9150GyroRangeConfigValues[1], ListofGyroRange[1],
-//						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro500dpsShimmer3, OffsetVectorGyroShimmer3));
-//		mCalibMapGyroShimmer3.put(ListofMPU9150GyroRangeConfigValues[2], 
-//				new CalibDetailsKinematic(ListofMPU9150GyroRangeConfigValues[2], ListofGyroRange[2],
-//						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3));
-//		mCalibMapGyroShimmer3.put(ListofMPU9150GyroRangeConfigValues[3], 
-//				new CalibDetailsKinematic(ListofMPU9150GyroRangeConfigValues[3], ListofGyroRange[3],
-//						AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro2000dpsShimmer3, OffsetVectorGyroShimmer3));
-//	}
+	public CalibDetailsKinematic mCurrentCalibDetailsGyro = calibDetailsGyro250;
 	// ----------   Gyro end ---------------
 
 	
@@ -1500,9 +1434,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 					mGyroXZ.addValue(gyroCalibratedData[2]);
 	
 					if (mGyroXX.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXY.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXZ.getStandardDeviation()<mGyroXOVCalThreshold){
-//						mCurrentCalibDetailsGyro.getCurrentOffsetVector()[0][0]=mGyroXXRaw.getMean();
-//						mCurrentCalibDetailsGyro.getCurrentOffsetVector()[1][0]=mGyroXYRaw.getMean();
-//						mCurrentCalibDetailsGyro.getCurrentOffsetVector()[2][0]=mGyroXZRaw.getMean();
 						mCurrentCalibDetailsGyro.updateCurrentOffsetVector(mGyroXXRaw.getMean(), mGyroXYRaw.getMean(), mGyroXZRaw.getMean());
 					}
 				}
@@ -1510,13 +1441,13 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				//Add calibrated data to Object cluster
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_X)){
-						objectCluster.addCalData(channelDetails, gyroCalibratedData[0], objectCluster.getIndexKeeper()-3);
+						objectCluster.addCalData(channelDetails, gyroCalibratedData[0], objectCluster.getIndexKeeper()-3, isUsingDefaultGyroParam());
 					}
 					else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_Y)){
-						objectCluster.addCalData(channelDetails, gyroCalibratedData[1], objectCluster.getIndexKeeper()-2);
+						objectCluster.addCalData(channelDetails, gyroCalibratedData[1], objectCluster.getIndexKeeper()-2, isUsingDefaultGyroParam());
 					}
 					else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_Z)){
-						objectCluster.addCalData(channelDetails, gyroCalibratedData[2], objectCluster.getIndexKeeper()-2);
+						objectCluster.addCalData(channelDetails, gyroCalibratedData[2], objectCluster.getIndexKeeper()-2, isUsingDefaultGyroParam());
 					}
 				}
 			}
@@ -2471,86 +2402,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 	}
 	
-	public byte[] generateCalParamGyroscope(){
-//		// MPU9150 Gyroscope Calibration Parameters
-//		byte[] bufferCalibrationParameters = new byte[21];
-//		// offsetVector -> buffer offset = 0
-//		for (int i=0; i<3; i++) {
-//			bufferCalibrationParameters[0+(i*2)] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 8) & 0xFF);
-//			bufferCalibrationParameters[0+(i*2)+1] = (byte) ((((int)mOffsetVectorGyroscope[i][0]) >> 0) & 0xFF);
-//		}
-//		// sensitivityMatrix -> buffer offset = 6
-//		for (int i=0; i<3; i++) {
-//			bufferCalibrationParameters[6+(i*2)] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 8) & 0xFF);
-//			bufferCalibrationParameters[6+(i*2)+1] = (byte) ((((int)mSensitivityMatrixGyroscope[i][i]*100) >> 0) & 0xFF);
-//		}
-//		// alignmentMatrix -> buffer offset = 12
-//		for (int i=0; i<3; i++) {
-//			bufferCalibrationParameters[12+(i*3)] = (byte) (((int)(mAlignmentMatrixGyroscope[i][0]*100)) & 0xFF);
-//			bufferCalibrationParameters[12+(i*3)+1] = (byte) (((int)(mAlignmentMatrixGyroscope[i][1]*100)) & 0xFF);
-//			bufferCalibrationParameters[12+(i*3)+2] = (byte) (((int)(mAlignmentMatrixGyroscope[i][2]*100)) & 0xFF);
-//		}
-//		return bufferCalibrationParameters;
-		
-		return mCurrentCalibDetailsGyro.generateCalParamByteArray();
-	}
-	
-	private boolean checkIfDefaulGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
-//		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer3;
-//		double[][] sensitivityVectorToCompare = mSensitivityMatrixGyroscope;
-//		double[][] alignmentVectorToCompare = mAlignmentMatrixGyroscope;
-//		
-//		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-//			if (getGyroRange()==0){
-//				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
-//			} else if (getGyroRange()==1){
-//				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
-//			} else if (getGyroRange()==2){
-//				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
-//			} else if (getGyroRange()==3){
-//				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
-//			}
-//			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
-//			offsetVectorToCompare = OffsetVectorGyroShimmer3;
-//		}
-//		for(int i=0;i<=2;i++){
-//			sensitivityVectorToCompare[i][i] = sensitivityVectorToCompare[i][i]*100;
-//		}
-//		
-//		boolean alignmentPass = Arrays.deepEquals(alignmentVectorToCompare, alignmentMatrixToTest);
-//		boolean offsetPass = Arrays.deepEquals(offsetVectorToCompare, offsetVectorToTest);
-//		boolean sensitivityPass = Arrays.deepEquals(sensitivityVectorToCompare, sensitivityMatrixToTest);
-//		
-//		if(alignmentPass&&offsetPass&&sensitivityPass){
-//			return true;
-//		}
-//		return false;
-		
-		return mCurrentCalibDetailsGyro.isUsingDefaultParameters();
-	}
-	
-	private void setDefaultCalibrationShimmer3Gyro() {
-//		mDefaultCalibrationParametersGyro = true;
-//		if (getGyroRange()==0){
-//			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
-//
-//		} else if (getGyroRange()==1){
-//			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
-//
-//		} else if (getGyroRange()==2){
-//			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
-//
-//		} else if (getGyroRange()==3){
-//			mSensitivityMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
-//		}
-//		mAlignmentMatrixGyroscope = UtilShimmer.deepCopyDoubleMatrix(AlignmentMatrixGyroShimmer3);
-//		mOffsetVectorGyroscope = UtilShimmer.deepCopyDoubleMatrix(OffsetVectorGyroShimmer3);
-//		
-//		updateCalibMapGyro();
-		
-		mCurrentCalibDetailsGyro.resetToDefaultParameters();
-	}
-	
 	private boolean checkIfAMpuGyroOrAccelEnabled(){
 		if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)) {
 			return true;
@@ -2724,10 +2575,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	 * @param state the mMPU9150DMP state to set
 	 */
 	protected void setMPU9150DMP(boolean state) {
-		if(state) 
-			this.mMPU9150DMP = 0x01;
-		else 
-			this.mMPU9150DMP = 0x00;
+		mMPU9150DMP = state? 1:0;
 	}
 	
 	public void setMPU9150DMP(int i) {
@@ -2745,10 +2593,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	 * @param state the mMPLEnable state to set
 	 */
 	protected void setMPLEnable(boolean state) {
-		if(state) 
-			this.mMPLEnable = 0x01;
-		else 
-			this.mMPLEnable = 0x00;
+		mMPLEnable = state? 1:0;
 	}
 
 	/**
@@ -2762,10 +2607,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	 * @param state the mMPLSensorFusion state to set
 	 */
 	protected void setMPLSensorFusion(boolean state) {
-		if(state) 
-			this.mMPLSensorFusion = 0x01;
-		else 
-			this.mMPLSensorFusion = 0x00;
+		mMPLSensorFusion = state? 1:0;
 	}
 
 	/**
@@ -2779,10 +2621,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	 * @param state the mMPLGyroCalTC state to set
 	 */
 	protected void setMPLGyroCalTC(boolean state) {
-		if(state) 
-			this.mMPLGyroCalTC = 0x01;
-		else 
-			this.mMPLGyroCalTC = 0x00;
+		mMPLGyroCalTC = state? 1:0;
 	}
 
 	/**
@@ -2796,10 +2635,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	 * @param state the mMPLVectCompCal state to set
 	 */
 	protected void setMPLVectCompCal(boolean state) {
-		if(state) 
-			this.mMPLVectCompCal = 0x01;
-		else 
-			this.mMPLVectCompCal = 0x00;
+		mMPLVectCompCal = state? 1:0;
 	}
 
 	/**
@@ -2813,10 +2649,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	 * @param state the mMPLMagDistCal state to set
 	 */
 	protected void setMPLMagDistCal(boolean state) {
-		if(state) 
-			this.mMPLMagDistCal = 0x01;
-		else 
-			this.mMPLMagDistCal = 0x00;
+		mMPLMagDistCal = state? 1:0;
 	}
 	
 	/**
@@ -2830,10 +2663,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	 * @param state the mMPLSensorFusion state to set
 	 */
 	protected void setmMPLSensorFusion(boolean state) {
-		if(state) 
-			this.mMPLSensorFusion = 0x01;
-		else 
-			this.mMPLSensorFusion = 0x00;
+		mMPLSensorFusion = state? 1:0;
 	}
 
 
@@ -2862,18 +2692,29 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return mEnableOntheFlyGyroOVCal;
 	}
     
+    
+	public byte[] generateCalParamGyroscope(){
+		return mCurrentCalibDetailsGyro.generateCalParamByteArray();
+	}
+	
+	private boolean isGyroUsingDefaultParameters() {
+		return mCurrentCalibDetailsGyro.isUsingDefaultParameters();
+	}
+	
+	private void setDefaultCalibrationShimmer3Gyro() {
+		mCurrentCalibDetailsGyro.resetToDefaultParameters();
+	}
+	
+
 	public double[][] getAlignmentMatrixGyro(){
-//		return mAlignmentMatrixGyroscope;
 		return mCurrentCalibDetailsGyro.getCurrentAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixGyro(){
-//		return mSensitivityMatrixGyroscope;
 		return mCurrentCalibDetailsGyro.getCurrentSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixGyro(){
-//		return mOffsetVectorGyroscope;
 		return mCurrentCalibDetailsGyro.getCurrentOffsetVector();
 	}
 	
@@ -2918,16 +2759,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 	
 	public boolean isUsingDefaultGyroParam(){
-//		return mDefaultCalibrationParametersGyro;
 		return mCurrentCalibDetailsGyro.isUsingDefaultParameters();
-	}
-	
-	public boolean isUsingValidGyroParam(){
-		if(!UtilShimmer.isAllZeros(getAlignmentMatrixGyro()) && !UtilShimmer.isAllZeros(getSensitivityMatrixGyro())){
-			return true;
-		}else{
-			return false;
-		}
 	}
 	
 	/**
@@ -2987,112 +2819,11 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		return false;
 	}
 	
-
-
-//	public void parseCalibParamFromPacketGyro(byte[] bufferCalibrationParameters) {
-//		String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"}; 
-//		int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType); // using the datatype the calibration parameters are converted
-//		double[] AM=new double[9];
-//		for (int i=0;i<9;i++){
-//			AM[i]=((double)formattedPacket[6+i])/100;
-//		}
-//
-//		double[][] AlignmentMatrix = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-//		double[][] SensitivityMatrix = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-//		double[][] OffsetVector = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-//		
-//		if(checkIfDefaulGyroCal(OffsetVector, SensitivityMatrix, AlignmentMatrix)){
-//			mDefaultCalibrationParametersGyro = true;
-//			mAlignmentMatrixGyroscope = AlignmentMatrix;
-//			mOffsetVectorGyroscope = OffsetVector;
-//			mSensitivityMatrixGyroscope = SensitivityMatrix;
-//			for(int i=0;i<=2;i++){
-//				mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
-//			}
-//		}
-//		else if (SensitivityMatrix[0][0]!=-1) {
-//			mDefaultCalibrationParametersGyro = false;
-//			mAlignmentMatrixGyroscope = AlignmentMatrix;
-//			mOffsetVectorGyroscope = OffsetVector;
-//			mSensitivityMatrixGyroscope = SensitivityMatrix;
-//			for(int i=0;i<=2;i++){
-//				mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
-//			}
-//		} 
-//		else if(SensitivityMatrix[0][0]==-1){
-//			if(mShimmerVerObject.isShimmerGen2()){
-//				mDefaultCalibrationParametersGyro = true;
-//				mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
-//				mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
-//				mSensitivityMatrixGyroscope = SensitivityMatrixGyroShimmer2;	
-//			} 
-//			else {
-//				setDefaultCalibrationShimmer3Gyro();
-//			}
-//		} 
-//		
-//		updateCalibMapGyro();
-//	}
-	
 	public void parseCalibParamFromPacketGyro(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
-//		CalibDetailsKinematic calibDetailsKinematic = new CalibDetailsKinematic(bufferCalibrationParameters);
-//		double[][] OffsetVector = calibDetailsKinematic.mCurrentOffsetVector;
-//		double[][] SensitivityMatrix = calibDetailsKinematic.mCurrentSensitivityMatrix;
-//		double[][] AlignmentMatrix = calibDetailsKinematic.mCurrentAlignmentMatrix;
-//		
-//		if (SensitivityMatrix[0][0]!=-1) {
-//			mAlignmentMatrixGyroscope = AlignmentMatrix;
-//			mOffsetVectorGyroscope = OffsetVector;
-//			mSensitivityMatrixGyroscope = SensitivityMatrix;
-//			for(int i=0;i<=2;i++){
-//				mSensitivityMatrixGyroscope[i][i] = mSensitivityMatrixGyroscope[i][i]/100;
-//			}
-//		} 
-//		else if(SensitivityMatrix[0][0]==-1){
-//			if(mShimmerVerObject.isShimmerGen2()){
-//				mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer2;
-//				mOffsetVectorGyroscope = OffsetVectorGyroShimmer2;
-//				mSensitivityMatrixGyroscope = SensitivityMatrixGyroShimmer2;	
-//			} 
-//			else {
-//				setDefaultCalibrationShimmer3Gyro();
-//			}
-//		} 
-//		
-//		mDefaultCalibrationParametersGyro = checkIfDefaultGyroCal(mOffsetVectorGyroscope, mSensitivityMatrixGyroscope, mAlignmentMatrixGyroscope);
-//		updateCalibMapGyro();
-		
 		mCurrentCalibDetailsGyro.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 	
 	private boolean checkIfDefaultGyroCal(double[][] offsetVectorToTest, double[][] sensitivityMatrixToTest, double[][] alignmentMatrixToTest) {
-		
-//		double[][] offsetVectorToCompare = OffsetVectorGyroShimmer2;
-//		double[][] sensitivityVectorToCompare = SensitivityMatrixGyroShimmer2;
-//		double[][] alignmentVectorToCompare = AlignmentMatrixGyroShimmer2;
-//		
-//		if(getHardwareVersion()==HW_ID.SHIMMER_3){
-//			if (getGyroRange()==0){
-//				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro250dpsShimmer3);
-//			} else if (getGyroRange()==1){
-//				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro500dpsShimmer3);
-//			} else if (getGyroRange()==2){
-//				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro1000dpsShimmer3);
-//			} else if (getGyroRange()==3){
-//				sensitivityVectorToCompare = UtilShimmer.deepCopyDoubleMatrix(SensitivityMatrixGyro2000dpsShimmer3);
-//			}
-//			alignmentVectorToCompare = AlignmentMatrixGyroShimmer3;
-//			offsetVectorToCompare = OffsetVectorGyroShimmer3;
-//		}
-//		
-//		for(int i=0;i<=2;i++){
-//			sensitivityVectorToCompare[i][i] = sensitivityVectorToCompare[i][i]*100;
-//		}
-//		
-//		return UtilCalibration.isCalibrationEqual(
-//				alignmentMatrixToTest, offsetVectorToTest, sensitivityMatrixToTest,
-//				alignmentVectorToCompare, offsetVectorToCompare, sensitivityVectorToCompare);
-		
 		return mCurrentCalibDetailsGyro.isUsingDefaultParameters();
 	}
 	
@@ -3150,32 +2881,6 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 	
 	//--------- Optional methods to override in Sensor Class end -------- 
-
-//	private void setKinematicCalibration(TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration) {
-//		mCalibMap.putAll(mapOfKinematicSensorCalibration);
-//		System.out.println("Check here");
-//	}
-	
-
-//	@Override
-//	public void createLocalCalibMap(Map<Integer, CalibDetailsKinematic> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
-//		super.createLocalCalibMap(sensorMapRef, channelMapRef);
-//		mCalibMap.put(Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, mCalibMapGyroShimmer3);
-//	}
-
-
-
-//
-//	private void updateCalibMapGyro(double[][] mAlignmentMatrixGyroscope, double[][] mSensitivityMatrixGyroscope, double[][] mOffsetVectorGyroscope) {
-//		int rangeValue = getGyroRange();
-//		CalibDetails calDetails = mCalibMap.get(rangeValue);
-//		if(calDetails==null){
-//			String rangeString = ConfigOptionDetails.getConfigStringFromConfigValue(ListofMPU9150GyroRangeConfigValues, ListofGyroRange, rangeValue);
-//			calDetails = new CalibDetailsKinematic(rangeValue, rangeString);
-//		}
-//		((CalibDetailsKinematic) calDetails).setCurrentValues(mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
-//		mCalibMap.put(rangeValue, calDetails);
-//	}
 	
 	public void updateCurrentGyroCalibInUse(){
 		mCurrentCalibDetailsGyro = getCurrentCalibDetailsGyro();

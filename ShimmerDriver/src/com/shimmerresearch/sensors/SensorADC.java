@@ -492,11 +492,19 @@ public class SensorADC extends AbstractSensor {
 	
 	//--------- Abstract methods implemented end --------------
 	//--------- Sensor specific methods start --------------
-	public static double calibrateU12AdcValue(double uncalibratedData,double offset,double vRefP,double gain){
-		double calibratedData=(uncalibratedData-offset)*(((vRefP*1000)/gain)/4095);
+	public static double calibrateU12AdcValue(double uncalibratedData, double offset, double vRefP, double gain){
+		double calibratedData = (uncalibratedData-offset) * (((vRefP*1000)/gain)/4095);
 		return calibratedData;
 	}
 	//--------- Sensor specific methods end --------------
+
+	public static int uncalibrateU12AdcValue(double uncalibratedData, double offset, double vRefP, double gain) {
+//		double calibratedData=(uncalibratedData-offset)*(((vRefP*1000)/gain)/4095);
+//		return calibratedData;
+		
+		double adcVal = (uncalibratedData / (((vRefP*1000)/gain)/4095)) + offset;
+		return (int) adcVal;
+	}
 
 	
 }

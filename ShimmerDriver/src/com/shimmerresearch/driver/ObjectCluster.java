@@ -360,7 +360,11 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addCalData(ChannelDetails channelDetails, double calData, int index) {
-		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL, channelDetails.mDefaultCalUnits, calData, index);
+		addCalData(channelDetails, calData, index, false);
+	}
+
+	public void addCalData(ChannelDetails channelDetails, double calData, int index, boolean usingDefaultParameters) {
+		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL, channelDetails.mDefaultCalUnits, calData, index, usingDefaultParameters);
 	}
 
 	public void addUncalData(ChannelDetails channelDetails, double uncalData) {
@@ -382,9 +386,8 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data,dataArray));
 	}
 	
-	@Deprecated
-	public void addData(String channelName,String channelType, String units, double data,boolean defaultCal){
-		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data,defaultCal));
+	public void addData(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
 		
 	}
 	
@@ -403,6 +406,10 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data, int index) {
+		addData(objectClusterName, channelType, units, data, index, false);
+	}
+	
+	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data, int index, boolean isUsingDefaultCalib) {
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)){
 			if(channelType==CHANNEL_TYPE.CAL){
 				mCalData[index] = data;
@@ -426,7 +433,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		}
 		
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)){
-			addData(objectClusterName, channelType.toString(), units, data);
+			addData(objectClusterName, channelType.toString(), units, data, isUsingDefaultCalib);
 		}
 		
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.PROTOBUF)){
@@ -500,5 +507,6 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public void setShimmerCalibratedTimeStamp(double mShimmerCalibratedTimeStamp) {
 		this.mShimmerCalibratedTimeStamp = mShimmerCalibratedTimeStamp;
 	}
+
 	
 }

@@ -12,16 +12,12 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
@@ -59,6 +55,13 @@ public class ShimmerClock extends AbstractSensor {
 //	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
 //	protected double mPacketReceptionRate = 100;
 //	protected double mPacketReceptionRateCurrent = 100;
+	
+	//TODO move to Shimmer4 class? (copied from ShimmerPCMSS)
+	//transient to allow serialization, this objects aren't needed for the settings so setting it to transient is advisable
+//	transient TimeSyncFromObjectCluster mSync;
+	int mTimeSyncTrainingPeriod  = 15;
+	boolean mEnableTimeSync = false;
+
 	
 	public static class GuiLabelSensors{
 		public static String SYSTEM_TIMESTAMP = Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP; 
@@ -107,7 +110,8 @@ public class ShimmerClock extends AbstractSensor {
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET));
+					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,
+					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC));
 	{
 		sensorShimmerClock.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
 	}
@@ -120,7 +124,7 @@ public class ShimmerClock extends AbstractSensor {
 //					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC,
 					//temp only! JC: delete after db sync works
 //					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
-					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+//					Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
@@ -223,7 +227,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,
 			DatabaseChannelHandles.OFFSET_TIMESTAMP,
 			CHANNEL_UNITS.NO_UNITS,
-			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
 		//TODO put into above constructor
 		channelShimmerClockOffset.mChannelSource = CHANNEL_SOURCE.API;
@@ -234,7 +238,7 @@ public class ShimmerClock extends AbstractSensor {
 			Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,
 			DatabaseChannelHandles.REAL_TIME_CLOCK,
 			CHANNEL_UNITS.MILLISECONDS,
-			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
 		//TODO put into above constructor
 		channelRealTimeClock.mChannelSource = CHANNEL_SOURCE.API;
@@ -549,8 +553,14 @@ public class ShimmerClock extends AbstractSensor {
 						}
 					}
 					
+					//TODO move to Shimmer4 class? (copied from ShimmerPCMSS)
 					else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC)){
-						
+						if (mEnableTimeSync) {
+							//TODO
+//							objectCluster = mSync.CalculateTimeSync(ojc);
+						} else {
+							objectCluster.addCalData(channelDetails, Double.NaN);
+						}
 					}
 				}
 			}

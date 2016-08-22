@@ -1,8 +1,10 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
-import java.util.Locale;
+import java.util.Arrays;
+import java.util.List;
 
+import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails.BATTERY_LEVEL;
 import com.shimmerresearch.sensors.SensorADC;
 
 /**
@@ -14,15 +16,12 @@ import com.shimmerresearch.sensors.SensorADC;
  */
 public class ShimmerBattStatusDetails implements Serializable {
 	
-	/****/
 	private static final long serialVersionUID = -1108374309087845014L;
 	
 	private int mBattAdcValue = 0;
 	
 	private int mChargingStatusRaw = 0;
-	private String mChargingStatusParsed = "";
 	private CHARGING_STATUS mChargingStatus = CHARGING_STATUS.UNKNOWN;
-	private String mBattVoltageParsed = "";
 	private double mBattVoltage = 0.0;
 	private Double mEstimatedChargePercentage = 0.0;
 	private String mEstimatedChargePercentageParsed = "";
@@ -55,6 +54,13 @@ public class ShimmerBattStatusDetails implements Serializable {
 		public static final int BAD_BATTERY = 0xC0;
 	}
 	
+	public enum BATTERY_LEVEL{
+        UNKNOWN,
+        LOW,
+        MEDIUM,
+        HIGH
+	}
+	
 	public ShimmerBattStatusDetails() {
 	}
 	
@@ -77,12 +83,7 @@ public class ShimmerBattStatusDetails implements Serializable {
         mBattAdcValue = battAdcValue;
         mChargingStatusRaw = chargingStatus;
 
-		// Calibration method copied from
-		// com.shimmerresearch.driver.ShimmerObject.calibrateU12AdcValue
-		double calibratedData = SensorADC.calibrateU12AdcValue(mBattAdcValue, 0.0, 3.0, 1.0);
-//		double calibratedData=((double)mBattAdcValue-0.0)*(((3.0*1000.0)/1.0)/4095.0);
-		//double calibratedData = calibrateU12AdcValue((double)battAdcValue, 0.0, 3.0, 1.0);
-		mBattVoltage = ((calibratedData * 1.988)) / 1000;
+        mBattVoltage = adcValToBattVoltage(mBattAdcValue);
         
         if (mBattVoltage > 4.5) {
         	mChargingStatus = CHARGING_STATUS.CHECKING;
@@ -105,7 +106,7 @@ public class ShimmerBattStatusDetails implements Serializable {
         }
 
         if(adcVoltageError == false) {
-        	processBattPercentage(mBattVoltage);
+        	calculateBattPercentage(mBattVoltage);
         	
             if ((mChargingStatusRaw&0xFF) != 0xC0) {// Bad battery
 //            	mEstimatedChargePercentage = String.format(Locale.UK, "%,.1f",battPercentage) + "%";
@@ -116,11 +117,21 @@ public class ShimmerBattStatusDetails implements Serializable {
             }
         }
 	}
+	
+	public static double adcValToBattVoltage(int adcVal){
+		double calibratedData = SensorADC.calibrateU12AdcValue(adcVal, 0.0, 3.0, 1.0);
+		double battVoltage = ((calibratedData * 1.988)) / 1000; // 1.988 is due to components on the Shimmmer, 1000 is to convert to volts
+		return battVoltage;
+	}
 
-	public void processBattPercentage(double battVoltage) {
+	public static int battVoltageToAdcVal(double battVoltage){
+		double uncalibratedData = (battVoltage * 1000) / 1.988;
+		int adcVal = SensorADC.uncalibrateU12AdcValue(uncalibratedData, 0.0, 3.0, 1.0);
+		return adcVal;
+	}
+
+	public void calculateBattPercentage(double battVoltage) {
 		mBattVoltage = battVoltage;
-//    	mBattVoltage = String.format(Locale.UK, "%,.1f",battVoltage) + " V";
-    	mBattVoltageParsed = String.format("%,.1f",mBattVoltage) + " V";
     	
     	// equations are only valid when: 3.2 < x < 4.167. Leaving a 0.2v either side just incase
         if (mBattVoltage > (4.167 + 0.2)) { 
@@ -130,12 +141,7 @@ public class ShimmerBattStatusDetails implements Serializable {
         	mBattVoltage = 3.2;
         }
     	
-        // 4th order polynomial fit - good enough for purpose
-        mEstimatedChargePercentage = (1109.739792 * Math.pow(mBattVoltage, 4)) - (17167.12674 * Math.pow(mBattVoltage, 3)) + (99232.71686 * Math.pow(mBattVoltage, 2)) - (253825.397 * mBattVoltage) + 242266.0527;
-
-        // 6th order polynomial fit - best fit -> think there is a bug with this one
-        //battPercentage = -(29675.10393 * Math.pow(battVoltage, 6)) + (675893.9095 * Math.pow(battVoltage, 5)) - (6404308.2798 * Math.pow(battVoltage, 4)) + (32311485.5704 * Math.pow(battVoltage, 3)) - (91543800.1720 * Math.pow(battVoltage, 2)) + (138081754.0880 * battVoltage) - 86624424.6584;
-
+        mEstimatedChargePercentage = battVoltageToBattPercentage(mBattVoltage);
         if (mEstimatedChargePercentage > 100) {
         	mEstimatedChargePercentage = 100.0;
         }
@@ -145,9 +151,37 @@ public class ShimmerBattStatusDetails implements Serializable {
 
     	mEstimatedChargePercentageParsed = String.format("%,.1f",mEstimatedChargePercentage) + "%";
 	}
+	
+	public static double battVoltageToBattPercentage(double battVoltage) {
+        // 4th order polynomial fit - good enough for purpose
+        double battPercentage = (1109.739792 * Math.pow(battVoltage, 4)) - (17167.12674 * Math.pow(battVoltage, 3)) + (99232.71686 * Math.pow(battVoltage, 2)) - (253825.397 * battVoltage) + 242266.0527;
+        // 6th order polynomial fit - best fit -> think there is a bug with this one
+        //battPercentage = -(29675.10393 * Math.pow(battVoltage, 6)) + (675893.9095 * Math.pow(battVoltage, 5)) - (6404308.2798 * Math.pow(battVoltage, 4)) + (32311485.5704 * Math.pow(battVoltage, 3)) - (91543800.1720 * Math.pow(battVoltage, 2)) + (138081754.0880 * battVoltage) - 86624424.6584;
+        return battPercentage;
+	}
+
+	public static double battPercentageToBattVoltage(double battPercentage) {
+        // 4th order polynomial fit - Excel
+//		y = -7E-08x4 + 2E-05x3 - 0.0012x2 + 0.0393x + 3.3044
+        // 4th order polynomial fit - MATLAB
+//		y = - 6.6e-08*x^{4} + 1.6e-05*x^{3} - 0.0012*x^{2} + 0.039*x + 3.3
+        double battVoltage =
+        		- (6.6e-8 * Math.pow(battPercentage, 4)) 
+        		+ (1.6e-5 * Math.pow(battPercentage, 3)) 
+        		- (0.0012 * Math.pow(battPercentage, 2)) 
+        		+ (0.039 * battPercentage) 
+        		+ 3.3;
+        return battVoltage;
+	}
+	
+	public static int battPercentageToAdc(double battPercentage){
+		double battVoltage = battPercentageToBattVoltage(battPercentage);
+		return battVoltageToAdcVal(battVoltage);
+	}
+
 
 	public String getChargingStatusParsed() {
-		mChargingStatusParsed = mChargingStatus.toString();
+		String mChargingStatusParsed = mChargingStatus.toString();
         if(mChargingStatus==CHARGING_STATUS.CHARGING){
             if (mBattVoltage < 3.0) {// from lm3658 datasheet
             	mChargingStatusParsed += " (Preconditioning)";
@@ -173,6 +207,7 @@ public class ShimmerBattStatusDetails implements Serializable {
 	}
 
 	public String getBattVoltageParsed() {
+    	String mBattVoltageParsed = String.format("%,.1f",mBattVoltage) + " V";
 		return mBattVoltageParsed;
 	}
 
@@ -182,6 +217,95 @@ public class ShimmerBattStatusDetails implements Serializable {
 
 	public String getEstimatedChargePercentageParsed() {
 		return mEstimatedChargePercentageParsed;
+	}
+
+	public BATTERY_LEVEL getEstimatedBatteryLevel(){
+		return estimateBatteryLevel(mEstimatedChargePercentage);
+	}
+
+	public static BATTERY_LEVEL estimateBatteryLevel(double percentageBattery) {
+		if(percentageBattery <= 1){
+//			return BATTERY_LEVEL.UNKNOWN;
+			return BATTERY_LEVEL.LOW;
+		}
+		else if(percentageBattery < 33){ // 50 on PanelSetup, 25 on LiveData, firmware is 
+			return BATTERY_LEVEL.LOW;
+		}
+		else if(percentageBattery < 66){ //Software was set to 75, now 65 to match firmware
+			return BATTERY_LEVEL.MEDIUM;
+		}
+		else{
+			return BATTERY_LEVEL.HIGH;
+		}
+	}
+	
+	/* SDLog Firmware code
+	 * void SetBattVal(){
+		   if(battStat & BATT_MID){
+		      if(*(uint16_t*)battVal<2400){
+		         battStat = BATT_LOW;
+		      }else if(*(uint16_t*)battVal<2650){
+		         battStat = BATT_MID;
+		      }else
+		         battStat = BATT_HIGH;
+		   }else if(battStat & BATT_LOW){
+		      if(*(uint16_t*)battVal<2450){
+		         battStat = BATT_LOW;
+		      }else if(*(uint16_t*)battVal<2600){
+		         battStat = BATT_MID;
+		      }else
+		         battStat = BATT_HIGH;
+		   }else{
+		      if(*(uint16_t*)battVal<2400){
+		         battStat = BATT_LOW;
+		      }else if(*(uint16_t*)battVal<2600){
+		         battStat = BATT_MID;
+		      }else
+		         battStat = BATT_HIGH;
+		   }
+		   battVal[2] = P2IN & 0xC0;
+		}
+	*/
+	
+	public static void main(String[] args) {
+		
+		ShimmerBattStatusDetails shimmerBattStatusDetails = new ShimmerBattStatusDetails();
+		
+		System.out.println("Testing SDLog firmware thresholds...");
+		System.out.println(">>>--------------------------------->");
+		List<Integer> listOfSdLogThresholdsForLedChange = Arrays.asList(
+				2400, //Below 2400 = LOW batt LED (RED)
+				2450, //Buffer for transitioning from LOW to MEDIUM
+				2600, //Above 2600 = HIGH batt LED (GREEN)
+				2650, //Buffer for transitioning from MEDIUM to HIGH
+				2670); //Not used in firmware, just high to trigger HIGH
+		
+		for(Integer i:listOfSdLogThresholdsForLedChange){
+			shimmerBattStatusDetails.update(i, 0);
+			System.out.println("ADC val: " + i 
+					+ "\tVoltage: " + shimmerBattStatusDetails.getBattVoltage() 
+					+ "\tPercent: " + shimmerBattStatusDetails.getEstimatedChargePercentageParsed() 
+					+ "\tLevel: " + shimmerBattStatusDetails.getEstimatedBatteryLevel().toString());
+		}
+		
+		
+		System.out.println("");
+		System.out.println("Calculating ADC values from preferred thresholds");
+		System.out.println("<---------------------------------<<<");
+		List<Double> listOfPreferredThresholdsForLedChange = Arrays.asList(
+				0.0,
+				33.0,
+				66.0,
+				100.0);
+		for(Double d:listOfPreferredThresholdsForLedChange){
+			System.out.println("ADC val: " + ShimmerBattStatusDetails.battPercentageToAdc(d) 
+					+ "\tVoltage: " + ShimmerBattStatusDetails.battPercentageToBattVoltage(d) 
+					+ "\tPercent: " + d 
+//					+ "\tLevel: " + shimmerBattStatusDetails.getEstimatedBatteryLevel().toString()
+					+ "\tADC buffer: " + (ShimmerBattStatusDetails.battPercentageToAdc(d)-25) + "-to-" + (ShimmerBattStatusDetails.battPercentageToAdc(d)+25)
+					);
+		}
+		
 	}
 
 }

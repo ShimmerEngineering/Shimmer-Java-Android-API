@@ -33,7 +33,6 @@ import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.calibration.CalibArraysKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
@@ -44,6 +43,7 @@ import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
+import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails.BATTERY_LEVEL;
 import com.shimmerresearch.driverUtilities.ShimmerLogDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
@@ -54,7 +54,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorLSM303;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -225,9 +224,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract ShimmerDevice deepClone();
 
 	// Device sensor map related
-//	public abstract boolean setSensorEnabledState(int sensorMapKey, boolean state);
-//	public abstract List<Integer> sensorMapConflictCheck(Integer key);
-//	public abstract void checkConfigOptionValues(String stringKey);
 	public abstract void sensorAndConfigMapsCreate();
 	/**
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
@@ -235,7 +231,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected abstract void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE commType);
 	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
 	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
-//	public abstract byte[] refreshShimmerInfoMemBytes();
 	public abstract void createInfoMemLayout();
 
 	// --------------- Abstract Methods End --------------------------
@@ -666,6 +661,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public Double getEstimatedChargePercentage() {
 		return mShimmerBattStatusDetails.getEstimatedChargePercentage();
 	}
+	
+	public BATTERY_LEVEL getEstimatedBatteryLevel() {
+		return mShimmerBattStatusDetails.getEstimatedBatteryLevel();
+	}
+
 	
 	/**
 	 * @param docked the mDocked to set
@@ -1469,20 +1469,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return the mInternalExpPower
 	 */
 	public boolean isInternalExpPower() {
-		if(mInternalExpPower > 0)
-			return true;
-		else
-			return false;
+		return (mInternalExpPower > 0)? true:false;
 	}
 	
 	/**
 	 * @param state the mInternalExpPower state to set
 	 */
 	public void setInternalExpPower(boolean state) {
-		if(state) 
-			mInternalExpPower = 0x01;
-		else 
-			mInternalExpPower = 0x00;
+		mInternalExpPower = state? 1:0;
 	}
 
 	public int getInternalExpPower(){
@@ -1598,25 +1592,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 			}
 			
-//			int hwIdToUse = compatibleVersionInfo.mHardwareVersion;
-//			if(hwIdToUse==ShimmerVerDetails.ANY_VERSION){
-//				hwIdToUse = getHardwareVersion();
-//			}
-//			
-//			int fwIdToUse = compatibleVersionInfo.mFirmwareIdentifier;
-//			if(fwIdToUse==ShimmerVerDetails.ANY_VERSION){
-//				fwIdToUse = getFirmwareIdentifier();
-//			}
-//			
-//			if(isThisVerCompatibleWith( 
-//					hwIdToUse,
-//					fwIdToUse, 
-//					compatibleVersionInfo.mFirmwareVersionMajor, 
-//					compatibleVersionInfo.mFirmwareVersionMinor, 
-//					compatibleVersionInfo.mFirmwareVersionInternal)){
-//				return true;
-//			}
-			
 			if(isThisVerCompatibleWith( 
 					compatibleVersionInfo.mHardwareVersion,
 					compatibleVersionInfo.mFirmwareIdentifier, 
@@ -1631,8 +1606,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public static boolean isVerCompatibleWith(ShimmerVerObject svo, int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
-		return UtilShimmer.compareVersions(svo.getFirmwareIdentifier(), svo.getFirmwareVersionMajor(), svo.getFirmwareVersionMinor(), svo.getFirmwareVersionInternal(),
-				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+		return svo.isVerCompatibleWith(hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 	
 	public boolean isThisVerCompatibleWith(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
@@ -1644,8 +1618,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
-
-
 	
 	
 	/**
@@ -3223,7 +3195,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	}
 	
 	
-	public HashMap<String, Object> getConfigMapForDb(){
+	public LinkedHashMap<String, Object> getConfigMapForDb(){
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
 		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
@@ -3316,6 +3288,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			System.out.println(stringToPrint);
 		}
 	}
+
 
 
 }

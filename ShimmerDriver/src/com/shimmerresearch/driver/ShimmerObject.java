@@ -1439,9 +1439,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedData[iGyroY]=gyroCalibratedData[1];
 					calibratedData[iGyroZ]=gyroCalibratedData[2];
 					
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,gyroCalibratedData[0],isUsingDefaultGyroParam());
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,gyroCalibratedData[1],isUsingDefaultGyroParam());
-					objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,gyroCalibratedData[2],isUsingDefaultGyroParam());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,gyroCalibratedData[0], isUsingDefaultGyroParam());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,gyroCalibratedData[1], isUsingDefaultGyroParam());
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.GYRO_CAL_UNIT,gyroCalibratedData[2], isUsingDefaultGyroParam());
 					gyroscope.x=gyroCalibratedData[0]*Math.PI/180;
 					gyroscope.y=gyroCalibratedData[1]*Math.PI/180;
 					gyroscope.z=gyroCalibratedData[2]*Math.PI/180;
@@ -1564,7 +1564,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mVSenseBattMA.addValue(calibratedData[iBatt]);
 					checkBattery();
 					
-					mShimmerBattStatusDetails.processBattPercentage(calibratedData[iBatt]/1000);
+					mShimmerBattStatusDetails.calculateBattPercentage(calibratedData[iBatt]/1000);
 				}
 			}
 			if (((fwType == FW_TYPE_BT) && (mEnabledSensors & BTStream.EXT_EXP_A7) > 0) 
@@ -7417,10 +7417,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mMasterShimmer
 	 */
 	public boolean isMasterShimmer() {
-		if(this.mMasterShimmer > 0)
-			return true;
-		else
-			return false;
+		return (this.mMasterShimmer > 0)? true:false;
 	}
 
 	/**
@@ -7434,10 +7431,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mSingleTouch
 	 */
 	public boolean isSingleTouch() {
-		if(this.mSingleTouch > 0)
-			return true;
-		else
-			return false;
+		return (this.mSingleTouch > 0)? true:false;
 	}
 	
 	/**
@@ -7451,20 +7445,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mTCXO
 	 */
 	public boolean isTCXO() {
-		if(mTCXO > 0)
-			return true;
-		else
-			return false;
+		return (this.mTCXO > 0)? true:false;
 	}
 	
 	/**
 	 * @return the mSyncWhenLogging
 	 */
 	public boolean isSyncWhenLogging() {
-		if(mSyncWhenLogging > 0)
-			return true;
-		else
-			return false;
+		return (this.mSyncWhenLogging > 0)? true:false;
 	}
 
 	/**
@@ -7479,10 +7467,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mButtonStart
 	 */
 	public boolean isButtonStart() {
-		if(mButtonStart > 0)
-			return true;
-		else
-			return false;
+		return (this.mButtonStart > 0)? true:false;
 	}
 
 
@@ -8987,11 +8972,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return true if ExG respiration detection frequency is 32kHz and false if 64kHz
 	 */
 	public boolean isExgRespirationDetectFreq32kHz() {
-		if(getEXG2RespirationDetectFreq()==0)
-//		if(mEXG2RespirationDetectFreq==0)
-			return true;
-		else
-			return false;
+		return (getEXG2RespirationDetectFreq()==0)? true:false;
 	}
 	
 	
@@ -10380,10 +10361,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public int getLowPowerGyroEnabled() {
-		if(mLowPowerGyro)
-			return 1;
-		else
-			return 0;
+		return mLowPowerGyro? 1:0;
 	}
 	
 
