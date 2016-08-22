@@ -33,7 +33,6 @@ import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.calibration.CalibArraysKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
@@ -55,7 +54,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorLSM303;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -226,9 +224,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract ShimmerDevice deepClone();
 
 	// Device sensor map related
-//	public abstract boolean setSensorEnabledState(int sensorMapKey, boolean state);
-//	public abstract List<Integer> sensorMapConflictCheck(Integer key);
-//	public abstract void checkConfigOptionValues(String stringKey);
 	public abstract void sensorAndConfigMapsCreate();
 	/**
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
@@ -236,7 +231,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected abstract void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE commType);
 	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
 	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
-//	public abstract byte[] refreshShimmerInfoMemBytes();
 	public abstract void createInfoMemLayout();
 
 	// --------------- Abstract Methods End --------------------------
