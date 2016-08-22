@@ -9120,13 +9120,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						((ConfigOptionDetailsSensor) configOptions).setIndexOfValuesToUse(nonStandardIndex);
 					}
 
-					
-					// change config val if not appropriate
+					// change config val if not appropriate		
 					Integer[] configvalues = configOptions.getConfigValues();
+					configvalues = configOptions.mConfigValues; // RM: Needed to add this line as the above method wasn't was returning null
+					
 					if(!Arrays.asList(configvalues).contains(getEXGReferenceElectrode())){
 						setEXGReferenceElectrode(configvalues[0]);
 					}
-
 				}
 			}
 		}
