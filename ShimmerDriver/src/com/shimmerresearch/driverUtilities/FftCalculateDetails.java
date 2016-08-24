@@ -146,7 +146,7 @@ public class FftCalculateDetails{
 	public double[][] calculateFftAndGenerateArray(int periodMs) {
 
 		//TODO improve below - just implementing quick method to calculate sampling rate for the moment
-		if(mTimeBuffer.size()>2){
+		if(mTimeBuffer.size()>2 && mTimeBuffer.get(0)!=null && mTimeBuffer.get(1)!=null){
 			mSamplingRate = 1000/(mTimeBuffer.get(1) - mTimeBuffer.get(0));
 		}
 

@@ -1369,7 +1369,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			byte[] expBoardArray = readBytes(numBytesToReadFromExpBoard+1);
 //			getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
 			byte[] expBoardArraySplit = Arrays.copyOfRange(expBoardArray, 1, 4);
-			setExpansionBoardDetails(new ExpansionBoardDetails(expBoardArraySplit));
+			setExpansionBoardDetailsAndCreateSensorMap(new ExpansionBoardDetails(expBoardArraySplit));
 		}
 		else if(responseCommand==BAUD_RATE_RESPONSE) {
 			byte[] bufferBaud = readBytes(1);
