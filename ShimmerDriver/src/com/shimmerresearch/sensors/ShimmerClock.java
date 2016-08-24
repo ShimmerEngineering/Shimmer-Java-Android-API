@@ -789,7 +789,7 @@ public class ShimmerClock extends AbstractSensor {
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
 			double expectedTimeDifference = (1/mShimmerDevice.getSamplingRateShimmer())*1000;
-			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
+			double expectedTimeDifferenceLimit = expectedTimeDifference * 1.1; // 10% limit? 
 			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
 			if (timeDifference>expectedTimeDifferenceLimit){
 //				mPacketLossCount=mPacketLossCount+1;
