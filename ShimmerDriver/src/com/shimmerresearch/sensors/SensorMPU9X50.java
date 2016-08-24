@@ -679,10 +679,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //	public static final SensorDetailsRef sensorMpu9150TempRef = new SensorDetailsRef(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE));
 	public static final SensorDetailsRef sensorMpu9150TempRef = new SensorDetailsRef(0x02<<(2*8), 0x02<<(2*8), GuiLabelSensors.MPL_TEMPERATURE,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP), 
+			null, 
 			Arrays.asList(GuiLabelConfig.MPU9150_MPL_RATE),
-			Arrays.asList(
-					ObjectClusterSensorName.MPL_TEMPERATURE),
+			Arrays.asList(ObjectClusterSensorName.MPL_TEMPERATURE),
 			false);
 
 	
