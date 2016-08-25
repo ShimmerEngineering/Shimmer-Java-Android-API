@@ -2168,11 +2168,15 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
+		setLowPowerGyro(false);
+
 		setMPU9150GyroAccelRateFromFreq(samplingRateHz);
 		setMPU9150MagRateFromFreq(samplingRateHz);
 		if(mShimmerVerObject.isMplSupported()){
 			setMPU9150MplRateFromFreq(samplingRateHz);
 		}
+		
+    	checkLowPowerGyro();
 	}
 
 	@Override
@@ -2773,12 +2777,11 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			if(!checkIfAnyMplChannelEnabled()) {
 				mLowPowerGyro = enable;
-				setMPU9150GyroAccelRateFromFreq(mMaxSetShimmerSamplingRate);
 			}
 			else{
 				mLowPowerGyro = false;
-				setMPU9150GyroAccelRateFromFreq(mMaxSetShimmerSamplingRate);
 			}
+			setMPU9150GyroAccelRateFromFreq(mMaxSetShimmerSamplingRate);
 		}
 	}
 	

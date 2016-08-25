@@ -698,7 +698,7 @@ public class SensorLSM303 extends AbstractSensor{
 		
 		//idxConfigSetupByte2
 		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((getMagRange() & maskLSM303DLHCMagRange) << bitShiftLSM303DLHCMagRange);
-		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((mLSM303MagRate & maskLSM303DLHCMagSamplingRate) << bitShiftLSM303DLHCMagSamplingRate);
+		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((getLSM303MagRate() & maskLSM303DLHCMagSamplingRate) << bitShiftLSM303DLHCMagSamplingRate);
 		
 		// LSM303DLHC Digital Accel Calibration Parameters
 		byte[] bufferCalibrationParameters = generateCalParamLSM303DLHCAccel();
@@ -751,7 +751,7 @@ public class SensorLSM303 extends AbstractSensor{
 		
 		//idxConfigSetupByte2
 		setLSM303MagRange((mInfoMemBytes[idxConfigSetupByte2] >> bitShiftLSM303DLHCMagRange) & maskLSM303DLHCMagRange);
-		mLSM303MagRate = (mInfoMemBytes[idxConfigSetupByte2] >> bitShiftLSM303DLHCMagSamplingRate) & maskLSM303DLHCMagSamplingRate;
+		setLSM303MagRate((mInfoMemBytes[idxConfigSetupByte2] >> bitShiftLSM303DLHCMagSamplingRate) & maskLSM303DLHCMagSamplingRate);
 		checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
 		
 		// LSM303DLHC Digital Accel Calibration Parameters
@@ -906,9 +906,16 @@ public class SensorLSM303 extends AbstractSensor{
 	
 	@Override 
 	public void setSensorSamplingRate(double samplingRateHz) {
-		//set sampling rate of the sensors as close to the Shimmer sampling rate as possible (sensor sampling rate >= shimmer sampling rate) 
+		//set sampling rate of the sensors as close to the Shimmer sampling rate as possible (sensor sampling rate >= shimmer sampling rate)
+		setLowPowerAccelWR(false);
+		setLowPowerMag(false);
+		
 		setLSM303AccelRateFromFreq(samplingRateHz);
 		setLSM303MagRateFromFreq(samplingRateHz);
+		
+    	//TODO
+//    	checkLowPowerAccelWR();
+		checkLowPowerMag();
 	}
 	
 	@Override 
@@ -1152,7 +1159,7 @@ public class SensorLSM303 extends AbstractSensor{
 	}
 	
 	private boolean checkLowPowerMag() {
-		mLowPowerMag = (mLSM303MagRate <= 4)? true:false;
+		mLowPowerMag = (getLSM303MagRate() <= 4)? true:false;
 		return mLowPowerMag;
 	}
 	
@@ -1210,86 +1217,94 @@ public class SensorLSM303 extends AbstractSensor{
 		}
 	}
 	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	private int setLSM303AccelRateFromFreq(double freq) {
+		boolean isEnabled = isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL);
+		mLSM303DigitalAccelRate = SensorLSM303.getAccelRateFromFreq(isEnabled, freq, mLowPowerAccelWR);
+		return mLSM303DigitalAccelRate;
+	}
+	
+	/**
+	 * Unused: 8 = 1.620kHz (only low-power mode), 9 = 1.344kHz (normal-mode) / 5.376kHz (low-power mode)
+	 * */
+	public static int getAccelRateFromFreq(boolean isEnabled, double freq, boolean isLowPowerMode) {
+		int accelRate = 0; // Power down
+		
+		if(isEnabled){
+			if (freq<=1){
+				accelRate = 1; // 1Hz
+			} else if (freq<=10 || isLowPowerMode){ // 'Low-power mode' max is 10 - Shimmer defined
+				accelRate = 2; // 10Hz
+			} else if (freq<=25){
+				accelRate = 3; // 25Hz
+			} else if (freq<=50){
+				accelRate = 4; // 50Hz
+			} else if (freq<=100){
+				accelRate = 5; // 100Hz
+			} else if (freq<=200){
+				accelRate = 6; // 200Hz
+			} else if (freq<=400){
+				accelRate = 7; // 400Hz
+			} else {
+				accelRate = 9; // 1344Hz
+			}
+		}
+		return accelRate;
+	}
+	
+	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	private int setLSM303MagRateFromFreq(double freq) {
+		boolean isEnabled = isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG);
+		mLSM303MagRate = SensorLSM303.getMagRateFromFreq(isEnabled, freq, mLowPowerMag);
+		return mLSM303MagRate;
+	}
+
+	public static int getMagRateFromFreq(boolean isEnabled, double freq, boolean isLowPowerMode) {
+		int magRate = 0; // 0.75Hz
+		
+		if(isEnabled){
+			if (freq<=0.75){
+				magRate = 0; // 0.75Hz
+			} else if (freq<=1){
+				magRate = 1; // 1.5Hz
+			} else if (freq<=3) {
+				magRate = 2; // 3Hz
+			} else if (freq<=7.5) {
+				magRate = 3; // 7.5Hz
+			} else if (freq<=15 || isLowPowerMode) { // 'Low-power mode' max is 15 - Shimmer defined
+				magRate = 4; // 15Hz
+			} else if (freq<=30) {
+				magRate = 5; // 30Hz
+			} else if (freq<=75) {
+				magRate = 6; // 75Hz
+			} else {
+				magRate = 7; // 220Hz
+			}
+		}
+		return magRate;
+	}
+	
 	
 	public void setLSM303MagRate(int valueToSet){
 		mLSM303MagRate = valueToSet;
 	}
 	
-	
-	private int setLSM303AccelRateFromFreq(double freq) {
-		// Unused: 8 = 1.620kHz (only low-power mode), 9 = 1.344kHz (normal-mode) / 5.376kHz (low-power mode)
-		
-		// Check if channel is enabled 
-		if (!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
-			mLSM303DigitalAccelRate = 0; // Power down
-			return mLSM303DigitalAccelRate;
-		}
-		
-		if (!mLowPowerAccelWR){
-			if (freq<=1){
-				mLSM303DigitalAccelRate = 1; // 1Hz
-			} else if (freq<=10){
-				mLSM303DigitalAccelRate = 2; // 10Hz
-			} else if (freq<=25){
-				mLSM303DigitalAccelRate = 3; // 25Hz
-			} else if (freq<=50){
-				mLSM303DigitalAccelRate = 4; // 50Hz
-			} else if (freq<=100){
-				mLSM303DigitalAccelRate = 5; // 100Hz
-			} else if (freq<=200){
-				mLSM303DigitalAccelRate = 6; // 200Hz
-			} else if (freq<=400){
-				mLSM303DigitalAccelRate = 7; // 400Hz
-			} else {
-				mLSM303DigitalAccelRate = 9; // 1344Hz
-			}
-		}
-		else {
-			if (freq>=10){
-				mLSM303DigitalAccelRate = 2; // 10Hz
-			} else {
-				mLSM303DigitalAccelRate = 1; // 1Hz
-			}
-		}
-		return mLSM303DigitalAccelRate;
-	}
-	
-	
-	private int setLSM303MagRateFromFreq(double freq) {
-		// Check if channel is enabled 
-		if (!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
-			mLSM303MagRate = 0; // 0.75Hz
-			return mLSM303MagRate;
-		}
-		
-		if (!mLowPowerMag){
-			if (freq<=0.75){
-				mLSM303MagRate = 0; // 0.75Hz
-			} else if (freq<=1){
-				mLSM303MagRate = 1; // 1.5Hz
-			} else if (freq<=3) {
-				mLSM303MagRate = 2; // 3Hz
-			} else if (freq<=7.5) {
-				mLSM303MagRate = 3; // 7.5Hz
-			} else if (freq<=15) {
-				mLSM303MagRate = 4; // 15Hz
-			} else if (freq<=30) {
-				mLSM303MagRate = 5; // 30Hz
-			} else if (freq<=75) {
-				mLSM303MagRate = 6; // 75Hz
-			} else {
-				mLSM303MagRate = 7; // 220Hz
-			}
-		} else {
-			if (freq>=10){
-				mLSM303MagRate = 4; // 15Hz
-			} else {
-				mLSM303MagRate = 1; // 1.5Hz
-			}
-		}		
+	public int getLSM303MagRate() {
 		return mLSM303MagRate;
 	}
-	
 	
 	private void setDefaultLsm303dlhcMagSensorConfig(boolean isSensorEnabled) {
 		if(isSensorEnabled) {
@@ -1367,12 +1382,6 @@ public class SensorLSM303 extends AbstractSensor{
 	public int getMagRange() {
 		return mMagRange;
 	}
-	
-	
-	public int getLSM303MagRate() {
-		return mLSM303MagRate;
-	}
-
 	
 	public int getLSM303DigitalAccelRate() {
 		return mLSM303DigitalAccelRate;
@@ -1475,6 +1484,7 @@ public class SensorLSM303 extends AbstractSensor{
 		}
 		return false;
 	}
+
 	
 	
 	//--------- Optional methods to override in Sensor Class end --------

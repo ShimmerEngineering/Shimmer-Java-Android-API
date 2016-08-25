@@ -1193,6 +1193,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
         		setTrialName((String)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
 	          	// don't let sampling rate be empty
 	          	Double enteredSamplingRate;
 	          	if(((String)valueToSet).isEmpty()) {
@@ -1201,7 +1202,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	          	else {
 	          		enteredSamplingRate = Double.parseDouble((String)valueToSet);
 	          	}
-	      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
+	          	
+//	          	if(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE)){
+		      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
+//	          	}
+//	          	else if(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE)){
+//	          		setSamplingRateShimmer(enteredSamplingRate);
+//	          	}
 	      		
 	      		returnValue = Double.toString(getSamplingRateShimmer());
 				break;
@@ -1663,9 +1670,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				// Automatically control internal expansion board power
 				checkIfInternalExpBrdPowerIsNeeded();
 
-				printSensorAndParserMaps();
+//				printSensorAndParserMaps();
 				refreshEnabledSensorsFromSensorMap();
-				printSensorAndParserMaps();
+//				printSensorAndParserMaps();
 				
 				generateParserMap();
 				//refresh algorithms
@@ -1816,7 +1823,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		// This is to update the newly created sensor/algorithm classes (created
 		// above) with the current Shimmer sampling rate
-		setSamplingRateShimmer(getSamplingRateShimmer());
+		setSamplingRateSensors(getSamplingRateShimmer());
 	}
 	
 	protected void handleSpecialCasesAfterSensorMapCreate() {
@@ -2539,81 +2546,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-//	//@Override
-//	protected void initializeDerivedSensors(){
-//		//insert map of algorithms here 
-//		generateMapOfAlgorithmModules();
-//			
-//		try {
-//			initializeAlgorithms();
-//		} catch (Exception e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//	}
-//	
-//	protected void initializeAlgorithms() throws Exception{
-//		clearExtraSignalProperties();
-//		for (AbstractAlgorithm aa:mMapOfAlgorithms.values()){
-//			aa.initialize();
-//			String[] outputNameArray = aa.getSignalOutputNameArray();
-//			String[] outputFormatArray = aa.getSignalOutputFormatArray();
-//			String[] outputUnitArray = aa.getSignalOutputUnitArray();
-//
-//			for (int i=0;i<outputNameArray.length;i++){
-//				String[] prop= new String[4];
-//				prop[0] = mShimmerUserAssignedName;
-//				prop[1] = outputNameArray[i];
-//				prop[2] = outputFormatArray[i];
-//				prop[3] = outputUnitArray[i];
-//				addExtraSignalProperty(prop);
-//			}
-//		}
-//	}
-	
-//	public ObjectCluster processAlgorithmData(ObjectCluster ojc) {
-//		try {
-//			// update to work with consensys 4.3 with time sync switched off
-//			ojc.addData(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, Double.NaN);
-//			String[] sensorNames = new String[ojc.mSensorNames.length + 1];
-//			String[] unitCal = new String[ojc.mUnitCal.length + 1];
-//			String[] unitUncal = new String[ojc.mUnitUncal.length + 1];
-//			double[] uncalData = new double[ojc.mUncalData.length + 1];
-//			double[] calData = new double[ojc.mCalData.length + 1];
-//			System.arraycopy(ojc.mSensorNames, 0, sensorNames, 0, ojc.mSensorNames.length);
-//			System.arraycopy(ojc.mUnitCal, 0, unitCal, 0, ojc.mUnitCal.length);
-//			System.arraycopy(ojc.mUnitUncal, 0, unitUncal, 0, ojc.mUnitUncal.length);
-//			System.arraycopy(ojc.mUncalData, 0, uncalData, 0, ojc.mUncalData.length);
-//			System.arraycopy(ojc.mCalData, 0, calData, 0, ojc.mCalData.length);
-//			sensorNames[sensorNames.length - 1] = Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;
-//			unitCal[unitCal.length - 1] = CHANNEL_UNITS.MILLISECONDS;
-//			unitUncal[unitUncal.length - 1] = "";
-//			uncalData[uncalData.length - 1] = Double.NaN;
-//			calData[calData.length - 1] = Double.NaN;
-//			ojc.mSensorNames = sensorNames;
-//			ojc.mUnitCal = unitCal;
-//			ojc.mUnitUncal = unitUncal;
-//			ojc.mUncalData = uncalData;
-//			ojc.mCalData = calData;
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		// create new functions
-//		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values()) {
-//			if (mAlgorithmChannelsMap.get(aA).mEnabled) {
-//				try {
-//					ojc = (ObjectCluster) ((AlgorithmResultObject) aA.processDataRealTime(ojc)).mResult;
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//		return ojc;
-//	}
-
 	// ------------- Algorithm Code end -----------------------
 
 	
@@ -2623,35 +2555,87 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * sampling rate for the Shimmer's sensors (dependent on pre-set low-power
 	 * modes).
 	 * 
-	 * @param rate
+	 * @param rateHz
 	 */
-	public void setShimmerAndSensorsSamplingRate(double rate){
+	public void setShimmerAndSensorsSamplingRate(double rateHz){
+		double correctedRate = correctSamplingRate(rateHz); 
+		setSamplingRateShimmer(correctedRate);
+		
+		setSamplingRateSensors(correctedRate);
+		setSamplingRateAlgorithms(correctedRate);
+	}
+
+	public void setShimmerAndSensorsSamplingRate(COMMUNICATION_TYPE communicationType, double rateHz){
+		double correctedRate = correctSamplingRate(rateHz); 
+		setSamplingRateShimmer(communicationType, correctedRate);
+
+		setSamplingRateSensors(correctedRate);
+		setSamplingRateAlgorithms(correctedRate);
+	}
+
+	public void setSamplingRateShimmer(double rateHz){
+		Iterator<COMMUNICATION_TYPE> iterator = mMapOfSamplingRatesShimmer.keySet().iterator();
+		while(iterator.hasNext()){
+			setSamplingRateShimmer(iterator.next(), rateHz);
+		}
+	}
+
+	public void setSamplingRateShimmer(COMMUNICATION_TYPE communicationType, double rateHz){
+		mMapOfSamplingRatesShimmer.put(communicationType, rateHz);
+	}
+	
+	/** Returns the max set sampling rate for the available communication types
+	 * @return
+	 */
+	public double getSamplingRateShimmer() {
+		double maxSetRate = 0.0;
+		Iterator<COMMUNICATION_TYPE> iterator = mMapOfSamplingRatesShimmer.keySet().iterator();
+		while(iterator.hasNext()){
+			COMMUNICATION_TYPE commType = iterator.next();
+			double samplingRate = getSamplingRateShimmer(commType);
+			maxSetRate = Math.max(maxSetRate, samplingRate);
+		}
+		return maxSetRate;
+	}
+
+	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
+		double samplingRate = mMapOfSamplingRatesShimmer.get(communicationType);
+		if(!Double.isNaN(samplingRate)){
+			return samplingRate;
+		}
+		else {
+			return 0.0;
+		}
+	}
+
+	/** This is valid for Shimmers that use a 32.768kHz crystal as the basis for their sampling rate
+	 * @param rateHz
+	 * @return
+	 */
+	private double correctSamplingRate(double rateHz) {
 		double maxSamplingRateHz = calcMaxSamplingRate();
 		double maxShimmerSamplingRateTicks = 32768.0;
 		
     	// don't let sampling rate < 0 OR > maxRate
-    	if(rate < 1) {
-    		rate = 1.0;
+    	if(rateHz < 1) {
+    		rateHz = 1.0;
     	}
-    	else if (rate > maxSamplingRateHz) {
-    		rate = maxSamplingRateHz;
+    	else if (rateHz > maxSamplingRateHz) {
+    		rateHz = maxSamplingRateHz;
     	}
     	
     	// RM: get Shimmer compatible sampling rate (use ceil or floor depending on which is appropriate to the user entered sampling rate)
     	Double actualSamplingRate;
-    	if((Math.ceil(maxShimmerSamplingRateTicks/rate) - maxShimmerSamplingRateTicks/rate) < 0.05){
-           	actualSamplingRate = maxShimmerSamplingRateTicks/Math.ceil(maxShimmerSamplingRateTicks/rate);
+    	if((Math.ceil(maxShimmerSamplingRateTicks/rateHz) - maxShimmerSamplingRateTicks/rateHz) < 0.05){
+           	actualSamplingRate = maxShimmerSamplingRateTicks/Math.ceil(maxShimmerSamplingRateTicks/rateHz);
     	}
     	else{
-        	actualSamplingRate = maxShimmerSamplingRateTicks/Math.floor(maxShimmerSamplingRateTicks/rate);
+        	actualSamplingRate = maxShimmerSamplingRateTicks/Math.floor(maxShimmerSamplingRateTicks/rateHz);
     	}
     	
     	 // round sampling rate to two decimal places
     	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100;
-		setSamplingRateShimmer(actualSamplingRate);
-		
-//		setSamplingRateSensors(getSamplingRateShimmer());
-//		setSamplingRateAlgorithms(getSamplingRateShimmer());
+		return actualSamplingRate;
 	}
 
 	/**
@@ -2678,55 +2662,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			abstractSensor.setSamplingRateFromShimmer(samplingRateShimmer);
 		}
 	}
-	
-	public void setSamplingRateShimmer(double samplingRate){
-		Iterator<COMMUNICATION_TYPE> iterator = mMapOfSamplingRatesShimmer.keySet().iterator();
-		while(iterator.hasNext()){
-			setSamplingRateShimmer(iterator.next(), samplingRate);
-		}
-	}
 
-	public void setSamplingRateShimmer(COMMUNICATION_TYPE communicationType, double samplingRate){
-		mMapOfSamplingRatesShimmer.put(communicationType, samplingRate);
-		setSamplingRateSensors(samplingRate);
-		setSamplingRateAlgorithms(samplingRate);
-	}
-
-	public double getSamplingRateShimmer() {
-		//return the first value
-		Iterator<Double> iterator = mMapOfSamplingRatesShimmer.values().iterator();
-		while(iterator.hasNext()){
-			double samplingRate = iterator.next();
-			if(!Double.isNaN(samplingRate)){
-				return samplingRate;
-			}
-		}
-		return 0.0;
-	}
-
-	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
-		double samplingRate = mMapOfSamplingRatesShimmer.get(communicationType);
-		if(!Double.isNaN(samplingRate)){
-			return samplingRate;
-		}
-		else {
-			return 0.0;
-		}
-	}
-
-	//TODO revise
-	public Double getMaxSetShimmerSamplingRate(){
-		double maxSetRate = 0.001;
-		Iterator<Double> iterator = mMapOfSamplingRatesShimmer.values().iterator();
-		while(iterator.hasNext()){
-			double samplingRate = iterator.next();
-			maxSetRate = Math.max(maxSetRate, samplingRate);
-		}
-		return maxSetRate;
-	}
-	
 	private void setSamplingRateAlgorithms(double samplingRateShimmer) {
-		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
+		Iterator<AbstractAlgorithm> iterator = mMapOfAlgorithmModules.values().iterator();
+		while(iterator.hasNext()){
+			AbstractAlgorithm abstractAlgorithm = iterator.next();
 //			if(abstractAlgorithm.isEnabled()){
 				abstractAlgorithm.setSettings(AbstractAlgorithm.GuiLabelConfigCommon.SAMPLING_RATE, samplingRateShimmer);
 //			}
@@ -3256,7 +3196,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		prepareAllAfterConfigRead();
 		
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.SAMPLE_RATE)){
-			setShimmerAndSensorsSamplingRate((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE));
+			setSamplingRateShimmer((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE));
 		}
 		
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_PWR)){

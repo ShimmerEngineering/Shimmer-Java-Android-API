@@ -188,7 +188,6 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 
 	public AbstractAlgorithm(){
 		setGeneralAlgorithmName();
-		
 		setupAlgorithm();
 	}
 	

@@ -134,7 +134,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		Orientation3DObject orientationObject = applyOrientationAlgorithm();
 		object = addQuaternionToObjectCluster(orientationObject, object);
 		
-		AlgorithmResultObject aro = new AlgorithmResultObject(mAlgorithmResultType, object, mTrialName);
+		AlgorithmResultObject aro = new AlgorithmResultObject(mAlgorithmResultType, object, getTrialName());
 		return aro;						
 	}
 	

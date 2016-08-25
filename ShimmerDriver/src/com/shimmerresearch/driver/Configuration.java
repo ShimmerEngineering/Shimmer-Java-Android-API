@@ -158,7 +158,7 @@ public class Configuration {
 	}	
 	
 	public enum COMMUNICATION_TYPE{
-//		ALL,
+		ALL,
 		DOCK,
 		BLUETOOTH,
 		IEEE802154,
@@ -836,7 +836,9 @@ public class Configuration {
 		public class GuiLabelConfig{
 			public static final String SHIMMER_USER_ASSIGNED_NAME = "Shimmer Name";
 			public static final String TRIAL_NAME = "Trial Name";
+			/** Algorithm models and sensor classes also rely on this*/
 			public static final String SHIMMER_SAMPLING_RATE = "Sampling Rate";
+			public static final String SHIMMER_AND_SENSORS_SAMPLING_RATE = "Shimmer and Sensors Sampling Rate";
 			public static final String BUFFER_SIZE = "Buffer Size";
 			public static final String CONFIG_TIME = "Config Time";
 			public static final String EXPERIMENT_NUMBER_OF_SHIMMERS = "Number Of Shimmers";
@@ -922,12 +924,11 @@ public class Configuration {
 		 */
 		public enum GuiLabelSensorTiles{
 			LOW_NOISE_ACCEL(SensorKionixKXRB52042.GuiLabelSensorTiles.LOW_NOISE_ACCEL),
+			WIDE_RANGE_ACCEL(SensorLSM303.GuiLabelSensorTiles.WIDE_RANGE_ACCEL),
 			GYRO(SensorMPU9X50.GuiLabelSensorTiles.GYRO),
 			MAG(SensorLSM303.GuiLabelSensorTiles.MAG),
-			MPU(SensorMPU9X50.GuiLabelSensorTiles.MPU),
-			BATTERY_MONITORING(SensorBattVoltage.GuiLabelSensorTiles.BATTERY_MONITORING),
-			WIDE_RANGE_ACCEL(SensorLSM303.GuiLabelSensorTiles.WIDE_RANGE_ACCEL),
 			PRESSURE_TEMPERATURE(SensorBMP180.GuiLabelSensorTiles.PRESSURE_TEMPERATURE),
+			BATTERY_MONITORING(SensorBattVoltage.GuiLabelSensorTiles.BATTERY_MONITORING),
 			EXTERNAL_EXPANSION_ADC(SensorADC.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC), //"External Expansion ADCs"), //YYY
 			INTERNAL_EXPANSION_ADC(SensorADC.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC), //"Internal Expansion ADCs"), //YYY
 			GSR(SensorGSR.GuiLabelSensorTiles.GSR),
@@ -939,6 +940,7 @@ public class Configuration {
 			BRIDGE_AMPLIFIER_SUPP(SensorBridgeAmp.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP),
 			HIGH_G_ACCEL(Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL),
 			MPU_ACCEL_GYRO_MAG(SensorMPU9X50.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG), // "MPU 9DoF"),
+			MPU(SensorMPU9X50.GuiLabelSensorTiles.MPU),
 			MPU_OTHER(SensorMPU9X50.GuiLabelSensorTiles.MPU_OTHER), //"MPU Other"),
 			GPS("GPS"),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280),
