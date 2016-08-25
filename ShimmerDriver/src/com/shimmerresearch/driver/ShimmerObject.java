@@ -9521,10 +9521,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setLowPowerAccelWR(false);
 		}
 		else {
-			setDigitalAccelRange(0);
+		//	setDigitalAccelRange(0);
 			setLowPowerAccelWR(true);
 //			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
 		}
+		setDigitalAccelRange(0);
 	}
 
 	private void setDefaultLsm303dlhcMagSensorConfig(boolean state) {
@@ -9532,10 +9533,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setLowPowerMag(false);
 		}
 		else {
-			setMagRange(1);
+			//setMagRange(1);
 			setLowPowerMag(true);
 //			setLSM303MagRateFromFreq(mShimmerSamplingRate);
 		}
+		setMagRange(1);
 	}
 
 	/**
