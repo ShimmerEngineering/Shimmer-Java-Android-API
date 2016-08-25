@@ -186,13 +186,8 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public abstract void eventDataReceived(ShimmerMsg shimmerMSG);
 	
 
-	
-	
 	public AbstractAlgorithm(){
 		setGeneralAlgorithmName();
-		setFilteringOption();
-		setMinSamplingRateForAlgorithm();
-		setSupportedVerInfo();
 		
 		setupAlgorithm();
 	}
@@ -208,6 +203,10 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	private void setupAlgorithm() {
+		setFilteringOption();
+		setMinSamplingRateForAlgorithm();
+		setSupportedVerInfo();
+
 		generateConfigOptionsMap();
 		generateAlgorithmGroupingMap();
 	}
