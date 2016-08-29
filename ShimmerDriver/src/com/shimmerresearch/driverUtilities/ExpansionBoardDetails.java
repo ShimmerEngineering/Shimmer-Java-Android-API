@@ -27,21 +27,25 @@ public class ExpansionBoardDetails implements Serializable {
 		parseExpansionBoardDetails(boardID, boardRev, specialRev);
 	}
 	
-	public ExpansionBoardDetails(byte[] mExpBoardArray) {
-		if(mExpBoardArray!=null){
-			this.mExpBoardArray = mExpBoardArray; 
-			int boardID = mExpBoardArray[0] & 0xFF;
-			int boardRev = mExpBoardArray[1] & 0xFF;
-			int specialRev = mExpBoardArray[2] & 0xFF;
-			parseExpansionBoardDetails(boardID, boardRev, specialRev);
-		}
+	public ExpansionBoardDetails(byte[] expBoardArray) {
+		parseExpansionBoardDetails(expBoardArray);
 	}
 	
 	public ExpansionBoardDetails() {
 		// TODO Auto-generated constructor stub
 	}
 
-	private void parseExpansionBoardDetails(int boardID,
+	public void parseExpansionBoardDetails(byte[] expBoardArray) {
+		if(expBoardArray!=null){
+			this.mExpBoardArray = expBoardArray; 
+			int boardID = mExpBoardArray[0] & 0xFF;
+			int boardRev = mExpBoardArray[1] & 0xFF;
+			int specialRev = mExpBoardArray[2] & 0xFF;
+			parseExpansionBoardDetails(boardID, boardRev, specialRev);
+		}
+	}
+
+	public void parseExpansionBoardDetails(int boardID,
 											int boardRev,
 											int specialRev) {
 		String boardName = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
