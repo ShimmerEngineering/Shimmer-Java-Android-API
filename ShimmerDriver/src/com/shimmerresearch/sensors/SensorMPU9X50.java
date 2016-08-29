@@ -330,6 +330,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		public static final String MPU_MAG_DIST = "MPU9150_MAG_Dist";
 		public static final String MPU_MPL_ENABLE = "MPU9150_MPL_Enable";
 		// MPU GYRO
+		public static final String GYRO_CALIB_TIME = "MPU9150_Gyro_Calib_Time";
 		public static final String GYRO_OFFSET_X = "MPU9150_Gyro_Offset_X";
 		public static final String GYRO_OFFSET_Y = "MPU9150_Gyro_Offset_Y";
 		public static final String GYRO_OFFSET_Z = "MPU9150_Gyro_Offset_Z";

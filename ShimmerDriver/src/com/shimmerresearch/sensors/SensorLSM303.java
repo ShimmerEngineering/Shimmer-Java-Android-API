@@ -231,6 +231,7 @@ public class SensorLSM303 extends AbstractSensor{
 		public static final String WR_ACC_LPM = "LSM303DLHC_Acc_LPM";
 		public static final String WR_ACC_HRM = "LSM303DLHC_Acc_HRM";
 		
+		public static final String WR_ACC_CALIB_TIME = "LSM303DLHC_Acc_Calib_Time";
 		public static final String WR_ACC_OFFSET_X = "LSM303DLHC_Acc_Offset_X";
 		public static final String WR_ACC_OFFSET_Y = "LSM303DLHC_Acc_Offset_Y";
 		public static final String WR_ACC_OFFSET_Z = "LSM303DLHC_Acc_Offset_Z";
@@ -247,6 +248,7 @@ public class SensorLSM303 extends AbstractSensor{
 		public static final String WR_ACC_ALIGN_ZY = "LSM303DLHC_Acc_Align_ZY";
 		public static final String WR_ACC_ALIGN_ZZ = "LSM303DLHC_Acc_Align_ZZ";
 		
+		public static final String MAG_CALIB_TIME = "LSM303DLHC_Mag_Calib_Time";
 		public static final String MAG_OFFSET_X = "LSM303DLHC_Mag_Offset_X";
 		public static final String MAG_OFFSET_Y = "LSM303DLHC_Mag_Offset_Y";
 		public static final String MAG_OFFSET_Z = "LSM303DLHC_Mag_Offset_Z";
@@ -263,6 +265,7 @@ public class SensorLSM303 extends AbstractSensor{
 		public static final String MAG_ALIGN_ZY = "LSM303DLHC_Mag_Align_ZY";
 		public static final String MAG_ALIGN_ZZ = "LSM303DLHC_Mag_Align_ZZ";
 		
+
 		public static final List<String> LIST_OF_CALIB_HANDLES_MAG = Arrays.asList(
 				DatabaseConfigHandle.MAG_OFFSET_X, DatabaseConfigHandle.MAG_OFFSET_Y, DatabaseConfigHandle.MAG_OFFSET_Z,
 				DatabaseConfigHandle.MAG_GAIN_X, DatabaseConfigHandle.MAG_GAIN_Y, DatabaseConfigHandle.MAG_GAIN_Z,
@@ -276,7 +279,6 @@ public class SensorLSM303 extends AbstractSensor{
 				DatabaseConfigHandle.WR_ACC_ALIGN_XX, DatabaseConfigHandle.WR_ACC_ALIGN_XY, DatabaseConfigHandle.WR_ACC_ALIGN_XZ,
 				DatabaseConfigHandle.WR_ACC_ALIGN_YX, DatabaseConfigHandle.WR_ACC_ALIGN_YY, DatabaseConfigHandle.WR_ACC_ALIGN_YZ,
 				DatabaseConfigHandle.WR_ACC_ALIGN_ZX, DatabaseConfigHandle.WR_ACC_ALIGN_ZY, DatabaseConfigHandle.WR_ACC_ALIGN_ZZ);
-
 	}
 	
 	

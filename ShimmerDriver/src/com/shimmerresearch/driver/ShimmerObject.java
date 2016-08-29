@@ -28,11 +28,8 @@ import com.shimmerresearch.algorithms.GradDes3DOrientation;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
-import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
-import com.shimmerresearch.driver.ShimmerDevice.DatabaseConfigHandle;
-import com.shimmerresearch.driver.calibration.CalibArraysKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsBmp180;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
@@ -524,6 +521,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mSingleTouch = 0;
 	protected int mTCXO = 0;
 	protected long mRTCOffset = 0; //this is in ticks
+	public int mRTCSetByBT = 1; // RTC source, = 1 because it comes from the BT
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
 //	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
@@ -5628,7 +5626,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	//AlignmentMatrixMag, SensitivityMatrixMag, OffsetVectorMag
 
+	public int getRTCSetByBT(){
+		return mRTCSetByBT;
+	}
 
+	public void setRTCSetByBT(int RTCSetByBT){
+		mRTCSetByBT = RTCSetByBT;
+	}
+
+	public long getRTCDifference(){
+		return getRTCOffset();
+	}
+	
 	public long getRTCOffset(){
 		return mRTCOffset;
 	}
@@ -7446,6 +7455,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mSyncWhenLogging = (state? 1:0);
 	}
 
+
+	public int getButtonStart() {
+		return mButtonStart;
+	}
 
 	/**
 	 * @return the mButtonStart
@@ -9363,6 +9376,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+	public double getCalibTimeAccel() {
+		return mCurrentCalibDetailsAccelLn.getCalibTimeMs();
+	}
+
 	public boolean isUsingDefaultAccelParam(){
 		return isUsingDefaultLNAccelParam();
 	}
@@ -9566,6 +9583,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mLowPowerMag;
 	} 
 
+	public double getCalibTimeWRAccel() {
+		return mCurrentCalibDetailsAccelWr.getCalibTimeMs();
+	}
+
 	public boolean isUsingDefaultWRAccelParam(){
 //		return mDefaultCalibrationParametersDigitalAccel; 
 		return mCurrentCalibDetailsAccelWr.isUsingDefaultParameters();
@@ -9577,6 +9598,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}else{
 			return false;
 		}
+	}
+	
+	public double getCalibTimeMag() {
+		return mCurrentCalibDetailsMag.getCalibTimeMs();
 	}
 	
 	public boolean isUsingDefaultMagParam(){
@@ -10060,6 +10085,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mMPU9150DMP = i;
 	}
 
+	public int getMPLEnable() {
+		return mMPLEnable;
+	}
+
 	/**
 	 * @return the mMPLEnable
 	 */
@@ -10075,17 +10104,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	/**
-	 * @return the mMPLSensorFusion
-	 */
-	public boolean isMPLSensorFusion() {
-		return (mMPLSensorFusion>0)? true:false;
-	}
-
-	/**
 	 * @param state the mMPLSensorFusion state to set
 	 */
 	public void setMPLSensorFusion(boolean state) {
 		this.mMPLSensorFusion = (state? 1:0);
+	}
+
+	public int getMPLGyroCalTC() {
+		return mMPLGyroCalTC;
 	}
 
 	/**
@@ -10099,10 +10125,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the mMPLGyroCalTC state to set
 	 */
 	public void setMPLGyroCalTC(boolean state) {
-		if(state) 
-			this.mMPLGyroCalTC = 0x01;
-		else 
-			this.mMPLGyroCalTC = 0x00;
+		this.mMPLGyroCalTC = (state? 1:0);
+	}
+
+	public int getMPLVectCompCal() {
+		return mMPLVectCompCal;
 	}
 
 	/**
@@ -10116,10 +10143,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the mMPLVectCompCal state to set
 	 */
 	public void setMPLVectCompCal(boolean state) {
-		if(state) 
-			this.mMPLVectCompCal = 0x01;
-		else 
-			this.mMPLVectCompCal = 0x00;
+		this.mMPLVectCompCal = (state? 1:0);
+	}
+
+	public int getMPLMagDistCal() {
+		return mMPLMagDistCal;
 	}
 
 	/**
@@ -10133,29 +10161,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the mMPLMagDistCal state to set
 	 */
 	public void setMPLMagDistCal(boolean state) {
-		if(state) 
-			this.mMPLMagDistCal = 0x01;
-		else 
-			this.mMPLMagDistCal = 0x00;
+		this.mMPLMagDistCal = (state? 1:0);
 	}
-	
+
+	public int getMPLSensorFusion() {
+		return mMPLSensorFusion;
+	}
+
 	/**
 	 * @return the mMPLSensorFusion
 	 */
-	public boolean getmMPLSensorFusion() {
+	public boolean isMPLSensorFusion() {
 		return (mMPLSensorFusion>0)? true:false;
 	}
-
-	/**
-	 * @param state the mMPLSensorFusion state to set
-	 */
-	public void setmMPLSensorFusion(boolean state) {
-		if(state) 
-			this.mMPLSensorFusion = 0x01;
-		else 
-			this.mMPLSensorFusion = 0x00;
-	}
-
 
 	/**
 	 * @param mMPU9150MotCalCfg the mMPU9150MotCalCfg to set
@@ -10173,6 +10191,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
     public boolean isGyroOnTheFlyCalEnabled(){
 		return mEnableOntheFlyGyroOVCal;
+	}
+    
+	public double getCalibTimeGyro() {
+		return mCurrentCalibDetailsGyro.getCalibTimeMs();
 	}
     
 	public double[][] getAlignmentMatrixGyro(){
@@ -10943,6 +10965,186 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
+	
+	// --------------- Database related start --------------------------
+	
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		LinkedHashMap<String, Object> configMapForDb = new LinkedHashMap<String, Object>();
+
+		//TODO get keyset from Database handler
+		//TODO get values from getShimmerConfigToInsertInDB()
+		
+		return configMapForDb;
+	}
+	
+	
+	public List<Double> getShimmerConfigToInsertInDB(){
+		return getDbConfigFromShimmer(this);
+	}
+
+	/** This method only needs to support Shimmer3. ShimmerGQ is handled in the ShimmerGQ class and >=Shimmer4 is via a config map */
+	public static List<Double> getDbConfigFromShimmer(ShimmerDevice shimmerDevice){
+		if (shimmerDevice instanceof ShimmerObject){
+			ShimmerObject shimmerObject = (ShimmerObject) shimmerDevice;
+			List<Double> configValues = new ArrayList<Double>();
+			//0-1 Byte = Sampling Rate
+			configValues.add(shimmerObject.getSamplingRateShimmer());
+
+			//3-7 Byte = Sensors
+			configValues.add((double) shimmerObject.getEnabledSensors());
+			//40-71 Byte = Derived Sensors
+			configValues.add((double) shimmerObject.getDerivedSensors());
+
+			//The Configuration byte index 8 - 19
+			configValues.add((double) shimmerObject.getLSM303DigitalAccelRate());
+			configValues.add((double) shimmerObject.getAccelRange());
+			configValues.add((double) shimmerObject.getLowPowerAccelEnabled());
+			configValues.add((double) shimmerObject.getHighResAccelWREnabled());
+			configValues.add((double) shimmerObject.getMPU9150GyroAccelRate());
+			configValues.add((double) shimmerObject.getMagRange());
+			configValues.add((double) shimmerObject.getLSM303MagRate());
+			configValues.add((double) shimmerObject.getGyroRange());
+			configValues.add((double) shimmerObject.getMPU9150AccelRange());
+			configValues.add((double) shimmerObject.getPressureResolution());
+			configValues.add((double) shimmerObject.getGSRRange());
+			configValues.add((double) shimmerObject.getInternalExpPower());
+			configValues.add((double) shimmerObject.getMPU9150DMP());
+			configValues.add((double) shimmerObject.getMPU9150LPF());
+			configValues.add((double) shimmerObject.getMPU9150MotCalCfg());
+			configValues.add((double) shimmerObject.getMPU9150MPLSamplingRate());
+			configValues.add((double) shimmerObject.getMPU9150MagSamplingRate());
+			
+			configValues.add((double) shimmerObject.getMPLSensorFusion());
+			configValues.add((double) shimmerObject.getMPLGyroCalTC());
+			configValues.add((double) shimmerObject.getMPLVectCompCal());
+			configValues.add((double) shimmerObject.getMPLMagDistCal());
+			configValues.add((double) shimmerObject.getMPLEnable());
+			configValues.add((double) shimmerObject.getButtonStart());
+
+			configValues.add((double) shimmerObject.getRTCSetByBT());// RTC source, 1 = it comes from the BT, 0 = from dock
+			
+//			mConfigValues[25] = sd.mSyncWhenLogging; This is already inserted in the Trial table
+			configValues.add((double) shimmerObject.getMasterShimmer());
+			configValues.add((double) shimmerObject.getSingleTouch());
+			configValues.add((double) shimmerObject.getTCXO());
+//			mConfigValues[29] = sd.mBroadcastInterval; This is already inserted in the Trial table
+
+			//Firmware and Shimmer Parameters
+			configValues.add((double) shimmerObject.getHardwareVersion());
+//			mConfigValues[29] = sd.mMyTrialID; 
+//			mConfigValues[30] = sd.mNShimmer; This is already insrted in the Trial table
+			configValues.add((double) shimmerObject.getFirmwareIdentifier());
+			configValues.add((double) shimmerObject.getFirmwareVersionMajor());
+			configValues.add((double) shimmerObject.getFirmwareVersionMinor());
+			configValues.add((double) shimmerObject.getFirmwareVersionInternal());
+
+			//Configuration Time
+			configValues.add((double) shimmerObject.getConfigTime());
+
+			//RTC Difference
+			configValues.add((double) shimmerObject.getRTCOffset());
+
+			//EXG Configuration
+			byte[] exg1Array = shimmerObject.getEXG1RegisterArray();
+			for(int i=0; i<exg1Array.length; i++)
+				configValues.add((double) (exg1Array[i] & 0xFF));
+
+			byte[] exg2Array = shimmerObject.getEXG2RegisterArray();
+			for(int i=0; i<exg2Array.length; i++)
+				configValues.add((double) (exg2Array[i] & 0xFF));
+
+			//Digital Accel Calibration Configuration
+			double[][] offsetVectorWRAccel = shimmerObject.getOffsetVectorMatrixWRAccel();
+			double[][] sensitivityMatrixWRAccel = shimmerObject.getSensitivityMatrixWRAccel();
+			double[][] alignmentMatrixWRAccel = shimmerObject.getAlignmentMatrixWRAccel();
+			addCalibKinematicToDbConfigValues(configValues, offsetVectorWRAccel, sensitivityMatrixWRAccel, alignmentMatrixWRAccel);
+
+			//Gyroscope Calibration Configuration
+			double[][] offsetVectorGyroscope = shimmerObject.getOffsetVectorMatrixGyro();
+			double[][] sensitivityMatrixGyroscope = shimmerObject.getSensitivityMatrixGyro();
+			double[][] alignmentMatrixGyroscope = shimmerObject.getAlignmentMatrixGyro();
+			addCalibKinematicToDbConfigValues(configValues, offsetVectorGyroscope, sensitivityMatrixGyroscope, alignmentMatrixGyroscope);
+
+			//Magnetometer Calibration Configuration
+			double[][] offsetVectorMagnetometer = shimmerObject.getOffsetVectorMatrixMag();
+			double[][] sensitivityMatrixMagnetometer = shimmerObject.getSensitivityMatrixMag();
+			double[][] alignmentMatrixMagnetometer = shimmerObject.getAlignmentMatrixMag();
+			addCalibKinematicToDbConfigValues(configValues, offsetVectorMagnetometer, sensitivityMatrixMagnetometer, alignmentMatrixMagnetometer);
+
+			//Analog Accel Calibration Configuration
+			double[][] offsetVectorAnalogAccel = shimmerObject.getOffsetVectorMatrixAccel();
+			double[][] sensitivityMatrixAnalogAccel = shimmerObject.getSensitivityMatrixAccel();
+			double[][] alignmentMatrixAnalogAccel = shimmerObject.getAlignmentMatrixAccel();
+			addCalibKinematicToDbConfigValues(configValues, offsetVectorAnalogAccel, sensitivityMatrixAnalogAccel, alignmentMatrixAnalogAccel);
+
+			//PRESSURE (BMP180) CAL PARAMS
+			configValues.add(shimmerObject.getPressTempAC1());
+			configValues.add(shimmerObject.getPressTempAC2());
+			configValues.add(shimmerObject.getPressTempAC3());
+			configValues.add(shimmerObject.getPressTempAC4());
+			configValues.add(shimmerObject.getPressTempAC5());
+			configValues.add(shimmerObject.getPressTempAC6());
+			configValues.add(shimmerObject.getPressTempB1());
+			configValues.add(shimmerObject.getPressTempB2());
+			configValues.add(shimmerObject.getPressTempMB());
+			configValues.add(shimmerObject.getPressTempMC());
+			configValues.add(shimmerObject.getPressTempMD());
+
+			//MPL Accel Calibration Configuration
+			double[][] offsetVectorMPLAccel = shimmerObject.getOffsetVectorMPLAccel();
+			double[][] sensitivityMatrixMPLAccel = shimmerObject.getSensitivityMatrixMPLAccel();
+			double[][] alignmentMatrixMPLAccel = shimmerObject.getAlignmentMatrixMPLAccel();
+			addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLAccel, sensitivityMatrixMPLAccel, alignmentMatrixMPLAccel);
+
+			//MPL Mag Calibration Configuration
+			double[][] offsetVectorMPLMag = shimmerObject.getOffsetVectorMPLMag();
+			double[][] sensitivityMatrixMPLMag = shimmerObject.getSensitivityMatrixMPLMag();
+			double[][] alignmentMatrixMPLMag = shimmerObject.getAlignmentMatrixMPLMag();
+			addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLMag, sensitivityMatrixMPLMag, alignmentMatrixMPLMag);
+			
+			//MPL Gyro Calibration Configuration
+			double[][] offsetVectorMPLGyro = shimmerObject.getOffsetVectorMPLGyro();
+			double[][] sensitivityMatrixMPLGyro = shimmerObject.getSensitivityMatrixMPLGyro();
+			double[][] alignmentMatrixMPLGyro = shimmerObject.getAlignmentMatrixMPLGyro();
+			addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLGyro, sensitivityMatrixMPLGyro, alignmentMatrixMPLGyro);
+
+			//Initial TimeStamp
+			configValues.add((double) shimmerObject.getInitialTimeStamp());
+
+			//Expansion board
+			configValues.add((double) shimmerObject.getExpansionBoardId());
+			configValues.add((double) shimmerObject.getExpansionBoardRev());
+			configValues.add((double) shimmerObject.getExpansionBoardRevSpecial());
+			
+			configValues.add((double) shimmerObject.getCalibTimeWRAccel());
+			configValues.add((double) shimmerObject.getCalibTimeMag());
+			configValues.add((double) shimmerObject.getCalibTimeGyro());
+			configValues.add((double) shimmerObject.getCalibTimeAccel());
+
+			return configValues;
+		} 
+		return null;
+	}
+	
+	public static void addCalibKinematicToDbConfigValues(List<Double> configValues, double[][] offsetVector, double[][] sensitivityMatrix, double[][] alignmentMatrix) {
+		configValues.add(offsetVector[0][0]);
+		configValues.add(offsetVector[1][0]);
+		configValues.add(offsetVector[2][0]);
+		configValues.add(sensitivityMatrix[0][0]);
+		configValues.add(sensitivityMatrix[1][1]);
+		configValues.add(sensitivityMatrix[2][2]);
+		configValues.add(alignmentMatrix[0][0]);
+		configValues.add(alignmentMatrix[0][1]);
+		configValues.add(alignmentMatrix[0][2]);
+		configValues.add(alignmentMatrix[1][0]);
+		configValues.add(alignmentMatrix[1][1]);
+		configValues.add(alignmentMatrix[1][2]);
+		configValues.add(alignmentMatrix[2][0]);
+		configValues.add(alignmentMatrix[2][1]);
+		configValues.add(alignmentMatrix[2][2]);
+	}
+	// --------------- Database related end --------------------------
 
 	// --------------- Set Methods Start --------------------------
 
@@ -11153,5 +11355,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		return minAllowedSamplingRate;
 	}
+
+
 
 }
