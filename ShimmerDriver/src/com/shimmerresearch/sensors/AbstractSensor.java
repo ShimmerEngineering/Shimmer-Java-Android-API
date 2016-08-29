@@ -414,15 +414,7 @@ public abstract class AbstractSensor implements Serializable{
 	}
 
 	public TreeMap<Integer, CalibDetails> getCalibrationMapForSensor(int sensorMapKey) {
-//		for(int key:mCalibMap.keySet()){
-//			System.out.println("calibKey:\t" + key);
-//		}
-//		System.out.println("sensor map " + (mCalibMap.containsKey(sensorMapKey)? "DOES":"DOES NOT") + " contain key:\t" + sensorMapKey);
-		
 		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = mCalibMap.get(sensorMapKey); 
-		
-//		System.out.println("Calib details = " + ((calibDetailsPerSensor==null)? "NULL":"VALID"));
-
 		return calibDetailsPerSensor;
 	}
 	
@@ -589,7 +581,21 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public static void addCalibDetailsToDbMap(
+			LinkedHashMap<String, Object> mapOfConfig, 
+			CalibDetailsKinematic calibDetails, 
+			List<String> listOfCalibHandles, 
+			String calibTimeHandle) {
+		addCalibDetailsToDbMap(mapOfConfig, calibDetails, calibTimeHandle,
+				listOfCalibHandles.get(0), listOfCalibHandles.get(1), listOfCalibHandles.get(2), 
+				listOfCalibHandles.get(3), listOfCalibHandles.get(4), listOfCalibHandles.get(5), 
+				listOfCalibHandles.get(6), listOfCalibHandles.get(7), listOfCalibHandles.get(8), 
+				listOfCalibHandles.get(9), listOfCalibHandles.get(10), listOfCalibHandles.get(11), 
+				listOfCalibHandles.get(12), listOfCalibHandles.get(13), listOfCalibHandles.get(14));
+	}
+
+	public static void addCalibDetailsToDbMap(
 			LinkedHashMap<String, Object> mapOfConfig, CalibDetailsKinematic calibDetails, 
+			String calibTimeHandle,
 			String offsetX, String offsetY, String offsetZ,
 			String gainX, String gainY, String gainZ,
 			String alignXx, String alignXy, String alignXz,
@@ -615,20 +621,19 @@ public abstract class AbstractSensor implements Serializable{
 		mapOfConfig.put(alignZx, calibDetails.getCurrentAlignmentMatrix()[2][0]);
 		mapOfConfig.put(alignZy, calibDetails.getCurrentAlignmentMatrix()[2][1]);
 		mapOfConfig.put(alignZz, calibDetails.getCurrentAlignmentMatrix()[2][2]);
+		
+		if(!calibTimeHandle.isEmpty()){
+			mapOfConfig.put(calibTimeHandle, calibDetails.getCalibTimeMs());
+		}
 	}
 	
-	public static void addCalibDetailsToDbMap(LinkedHashMap<String, Object> mapOfConfig, CalibDetailsKinematic calibDetails, List<String> listOfCalibHandlesMag) {
-		addCalibDetailsToDbMap(mapOfConfig, calibDetails, 
-				listOfCalibHandlesMag.get(0), listOfCalibHandlesMag.get(1), listOfCalibHandlesMag.get(2), 
-				listOfCalibHandlesMag.get(3), listOfCalibHandlesMag.get(4), listOfCalibHandlesMag.get(5), 
-				listOfCalibHandlesMag.get(6), listOfCalibHandlesMag.get(7), listOfCalibHandlesMag.get(8), 
-				listOfCalibHandlesMag.get(9), listOfCalibHandlesMag.get(10), listOfCalibHandlesMag.get(11), 
-				listOfCalibHandlesMag.get(12), listOfCalibHandlesMag.get(13), listOfCalibHandlesMag.get(14));
-	}
 
-	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles) {
+	/** 
+	 * @see ShimmerObject.parseCalibDetailsKinematicFromDb
+	 * */
+	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles, String calibTimeHandle) {
 		parseCalibDetailsKinematicFromDb(
-				mapOfConfigPerShimmer, sensorMapKey, range, 
+				mapOfConfigPerShimmer, sensorMapKey, range, calibTimeHandle,
 				listOfCalibHandles.get(0), listOfCalibHandles.get(1), listOfCalibHandles.get(2), 
 				listOfCalibHandles.get(3), listOfCalibHandles.get(4), listOfCalibHandles.get(5), 
 				listOfCalibHandles.get(6), listOfCalibHandles.get(7), listOfCalibHandles.get(8), 
@@ -636,8 +641,11 @@ public abstract class AbstractSensor implements Serializable{
 				listOfCalibHandles.get(12), listOfCalibHandles.get(13), listOfCalibHandles.get(14));
 	}
 
+	/** 
+	 * @see ShimmerObject.parseCalibDetailsKinematicFromDb
+	 * */
 	public void parseCalibDetailsKinematicFromDb(
-			LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, 
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range,  String calibTimeHandle,
 			String offsetX, String offsetY, String offsetZ, 
 			String gainX, String gainY, String gainZ, 
 			String alignXx, String alignXy, String alignXz, 
@@ -645,16 +653,35 @@ public abstract class AbstractSensor implements Serializable{
 			String alignZx, String alignZy, String alignZz) {
 		
 		CalibDetails calibDetails = getCalibForSensor(sensorMapKey, range);
+		parseCalibDetailsKinematicFromDb(
+				calibDetails, mapOfConfigPerShimmer, calibTimeHandle,
+				offsetX, offsetY, offsetZ, 
+				gainX, gainY, gainZ, 
+				alignXx, alignXy, alignXz, 
+				alignYx, alignYy, alignYz, 
+				alignZx, alignZy, alignZz);
+	}
+	
+	public static void parseCalibDetailsKinematicFromDb(
+			CalibDetails calibDetails,
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer, String calibTimeHandle,
+			String offsetX, String offsetY, String offsetZ, 
+			String gainX, String gainY, String gainZ, 
+			String alignXx, String alignXy, String alignXz, 
+			String alignYx, String alignYy, String alignYz, 
+			String alignZx, String alignZy, String alignZz) {
+
 		if(calibDetails!=null && calibDetails instanceof CalibDetailsKinematic){
 			((CalibDetailsKinematic) calibDetails).parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer,
+					calibTimeHandle,
 					offsetX, offsetY, offsetZ, 
 					gainX, gainY, gainZ, 
 					alignXx, alignXy, alignXz, 
 					alignYx, alignYy, alignYz, 
 					alignZx, alignZy, alignZz);
 		}
-
 	}
+	
 	//--------- Optional methods to override in Sensor Class end -------- 
 
 }

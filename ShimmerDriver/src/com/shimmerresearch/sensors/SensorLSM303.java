@@ -1069,9 +1069,15 @@ public class SensorLSM303 extends AbstractSensor{
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_LPM, getLowPowerAccelEnabled());
 		mapOfConfig.put(DatabaseConfigHandle.WR_ACC_HRM, isHighResAccelWr());
 		
-		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsMag(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG);
+		super.addCalibDetailsToDbMap(mapOfConfig, 
+				getCurrentCalibDetailsMag(), 
+				SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
+				SensorLSM303.DatabaseConfigHandle.MAG_CALIB_TIME);
 
-		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsAccelWr(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL);
+		super.addCalibDetailsToDbMap(mapOfConfig, 
+				getCurrentCalibDetailsAccelWr(), 
+				SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
+				SensorLSM303.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
 
 		return mapOfConfig;
 	}	
@@ -1100,10 +1106,18 @@ public class SensorLSM303 extends AbstractSensor{
 		}
 		
 		//Digital Accel Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, getAccelRange(), SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 
+				getAccelRange(), 
+				SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
+				SensorLSM303.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
 		
 		//Magnetometer Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, getMagRange(), SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 
+				getMagRange(), 
+				SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
+				SensorLSM303.DatabaseConfigHandle.MAG_CALIB_TIME);
 	}
 
 

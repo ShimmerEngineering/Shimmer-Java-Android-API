@@ -409,10 +409,10 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}
 	
 	public void updateCurrentCalibration(CalibArraysKinematic calibArraysKinematic) {
-//		mCurrentCalibration = calibArraysKinematic;
 		setCurrentOffsetVector(calibArraysKinematic.mOffsetVector);
 		setCurrentAlignmentMatrix(calibArraysKinematic.mAlignmentMatrix);
 		setCurrentSensitivityMatrix(calibArraysKinematic.mSensitivityMatrix);
+		setCalibTimeMs(calibArraysKinematic.getCalibTime());
 	}
 	
 	public String getDebugString() {
@@ -451,6 +451,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 
 	public void parseCalibDetailsKinematicFromDb(
 			LinkedHashMap<String, Object> mapOfConfigPerShimmer,
+			String calibTimeHandle,
 			String offsetX, String offsetY, String offsetZ, 
 			String gainX, String gainY, String gainZ, 
 			String alignXx, String alignXy, String alignXz, 
@@ -458,6 +459,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			String alignZx, String alignZy, String alignZz) {
 
 		CalibArraysKinematic calibArraysKinematic = CalibDetailsKinematic.parseCalibDetailsKinematicFromDbStatic(mapOfConfigPerShimmer,
+				calibTimeHandle,
 				offsetX, offsetY, offsetZ, 
 				gainX, gainY, gainZ, 
 				alignXx, alignXy, alignXz, 
@@ -471,6 +473,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 
 	public static CalibArraysKinematic parseCalibDetailsKinematicFromDbStatic(
 			LinkedHashMap<String, Object> mapOfConfigPerShimmer,
+			String calibTimeHandle,
 			String offsetX, String offsetY, String offsetZ, 
 			String gainX, String gainY, String gainZ, 
 			String alignXx, String alignXy, String alignXz, 
@@ -514,6 +517,11 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			Double ZYvalue = (Double) mapOfConfigPerShimmer.get(alignZy);
 			ZZvalue = (Double) mapOfConfigPerShimmer.get(alignZz);
 			calibArraysKinematic.updateAlignmentMatrix(XXvalue, XYvalue, XZvalue, YXvalue, YYvalue, YZvalue, ZXvalue, ZYvalue, ZZvalue);
+			
+			if(!calibTimeHandle.isEmpty() && mapOfConfigPerShimmer.containsKey(calibTimeHandle)){
+				double calibTime = (double) mapOfConfigPerShimmer.get(calibTimeHandle);
+				calibArraysKinematic.setCalibTime((long)calibTime);
+			}
 
 			return calibArraysKinematic;
 		}

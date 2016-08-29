@@ -2097,7 +2097,10 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		mapOfConfig.put(DatabaseConfigHandle.MPU_DMP, getMPU9150DMP());
 		mapOfConfig.put(DatabaseConfigHandle.MPU_LPF, getMPU9150LPF());
 
-		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsGyro(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
+		super.addCalibDetailsToDbMap(mapOfConfig, 
+				getCurrentCalibDetailsGyro(), 
+				DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
+				DatabaseConfigHandle.GYRO_CALIB_TIME);
 		
 		//TODO
 //		super.addCalibDetailsToDbMap(mapOfConfig, get, DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
@@ -2150,7 +2153,11 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		}
 		
 		//Gyroscope Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, getGyroRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 
+				getGyroRange(), 
+				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
+				SensorMPU9X50.DatabaseConfigHandle.GYRO_CALIB_TIME);
 		
 //		//TODO
 //		//MPL Accel Calibration Configuration

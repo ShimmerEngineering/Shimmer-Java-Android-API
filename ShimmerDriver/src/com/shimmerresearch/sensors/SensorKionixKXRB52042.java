@@ -416,14 +416,21 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		super.addCalibDetailsToDbMap(mapOfConfig, getCurrentCalibDetailsAccelLn(), DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC);
+		super.addCalibDetailsToDbMap(mapOfConfig, 
+				getCurrentCalibDetailsAccelLn(), 
+				SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC,
+				SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_CALIB_TIME);
 		return mapOfConfig;
 	}
 
 	@Override
 	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		//Analog Accel Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, 0, SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, 
+				0, 
+				SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC,
+				SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_CALIB_TIME);
 	}
 
 	@Override

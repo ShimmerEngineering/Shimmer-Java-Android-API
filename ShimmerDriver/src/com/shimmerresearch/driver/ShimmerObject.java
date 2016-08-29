@@ -7620,16 +7620,32 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		
 		//Digital Accel Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, getAccelRange(), SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 
+				getAccelRange(), 
+				SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
+				SensorLSM303.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
 		
 		//Magnetometer Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, getMagRange(), SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 
+				getMagRange(), 
+				SensorLSM303.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
+				SensorLSM303.DatabaseConfigHandle.MAG_CALIB_TIME);
 		
 		//Gyroscope Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, getGyroRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer,
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 
+				getGyroRange(), 
+				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
+				SensorMPU9X50.DatabaseConfigHandle.GYRO_CALIB_TIME);
 		
 		//Analog Accel Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, 0, SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, 
+				0, 
+				SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC,
+				SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_CALIB_TIME);
 		
 		//PRESSURE (BMP180) CAL PARAMS
 		if(mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC1)
@@ -7660,15 +7676,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		//TODO
 		//MPL Accel Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, getMPU9150AccelRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, 
+				getMPU9150AccelRange(), 
+				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
 
 		//TODO
 		//MPL Mag Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, 0, SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, 
+				0, 
+				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
 		
 		//TODO
 		//MPL Gyro Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, getGyroRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, 
+				getGyroRange(), 
+				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
 
 		
 		//Initial TimeStamp
@@ -7678,10 +7703,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		
 	}
-	
-	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles) {
+
+	private void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles) {
+		this.parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, sensorMapKey, range, listOfCalibHandles, "");
+	}
+
+	/** 
+	 * @see AbstractSensor.parseCalibDetailsKinematicFromDb
+	 * */
+	private void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles, String calibTimeHandle) {
 		parseCalibDetailsKinematicFromDb(
-				mapOfConfigPerShimmer, sensorMapKey, range, 
+				mapOfConfigPerShimmer, sensorMapKey, range, calibTimeHandle,
 				listOfCalibHandles.get(0), listOfCalibHandles.get(1), listOfCalibHandles.get(2), 
 				listOfCalibHandles.get(3), listOfCalibHandles.get(4), listOfCalibHandles.get(5), 
 				listOfCalibHandles.get(6), listOfCalibHandles.get(7), listOfCalibHandles.get(8), 
@@ -7689,8 +7721,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				listOfCalibHandles.get(12), listOfCalibHandles.get(13), listOfCalibHandles.get(14));
 	}
 
-	public void parseCalibDetailsKinematicFromDb(
-			LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, 
+	/** 
+	 * @see AbstractSensor.parseCalibDetailsKinematicFromDb
+	 * */
+	private void parseCalibDetailsKinematicFromDb(
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, String calibTimeHandle,
 			String offsetX, String offsetY, String offsetZ, 
 			String gainX, String gainY, String gainZ, 
 			String alignXx, String alignXy, String alignXz, 
@@ -7700,14 +7735,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		TreeMap<Integer, CalibDetailsKinematic> calibDetailsMap = getMapOfSensorCalibrationAllKinematic().get(sensorMapKey);
 		if(calibDetailsMap!=null){
 			CalibDetailsKinematic calibDetails = calibDetailsMap.get(range);
-			if(calibDetails!=null){
-				calibDetails.parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer,
-						offsetX, offsetY, offsetZ, 
-						gainX, gainY, gainZ, 
-						alignXx, alignXy, alignXz, 
-						alignYx, alignYy, alignYz, 
-						alignZx, alignZy, alignZz);
-			}
+			AbstractSensor.parseCalibDetailsKinematicFromDb(
+					calibDetails, mapOfConfigPerShimmer, calibTimeHandle,
+					offsetX, offsetY, offsetZ, 
+					gainX, gainY, gainZ, 
+					alignXx, alignXy, alignXz, 
+					alignYx, alignYy, alignYz, 
+					alignZx, alignZy, alignZz);
 		}
 	}
 
