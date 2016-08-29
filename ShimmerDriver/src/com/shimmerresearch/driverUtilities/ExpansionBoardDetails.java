@@ -13,11 +13,13 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
  */
 public class ExpansionBoardDetails implements Serializable {
 	
+	/** * */
+	private static final long serialVersionUID = 1104467341565122266L;
+	
 	public int mExpansionBoardId = HW_ID_SR_CODES.UNKNOWN;
 	public int mExpansionBoardRev = HW_ID_SR_CODES.UNKNOWN;
 	public int mExpansionBoardRevSpecial = HW_ID_SR_CODES.UNKNOWN;
-	public String mExpansionBoardParsed = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
-	public String mExpansionBoardParsedWithVer = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
+	
 	public byte[] mExpBoardArray = new byte[]{}; 
 	
 	public ExpansionBoardDetails(
@@ -45,35 +47,50 @@ public class ExpansionBoardDetails implements Serializable {
 		}
 	}
 
-	public void parseExpansionBoardDetails(int boardID,
-											int boardRev,
-											int specialRev) {
-		String boardName = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
-		String boardNameWithVer = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
-		String boardVer = "SR" + boardID + "." + boardRev + "." + specialRev;
-		
-		if(boardID==ShimmerVerDetails.EXP_BRD_NONE_ID){
-			boardName = ShimmerVerDetails.EXP_BRD_NONE;
-		}
-		else {
-			if(ShimmerVerDetails.mMapOfShimmerHardware.containsKey(boardID)){
-				boardName = ShimmerVerDetails.mMapOfShimmerHardware.get(boardID);
-				boardNameWithVer = boardName + " (" + boardVer + ")";
-			}
-			else {
-//				boardName = ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN;
-				boardName = boardVer;
-			}
-		}
-			
-//		boardNameWithVer = boardName;
-//		if((!boardName.equals(ShimmerVerDetails.STRING_CONSTANT_FOR_UNKNOWN))&&(!boardName.equals("None"))){
-//			boardNameWithVer += " (SR" + boardID + "." + boardRev + "." + specialRev +")";
-//		}
+	public void parseExpansionBoardDetails(int boardID, int boardRev, int specialRev) {
 		mExpansionBoardId = boardID;
 		mExpansionBoardRev = boardRev;
 		mExpansionBoardRevSpecial = specialRev;
-		mExpansionBoardParsed = boardName;
-		mExpansionBoardParsedWithVer = boardNameWithVer;
 	}
+
+	public String getExpansionBoardParsed() {
+		String boardName = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
+		
+		if(mExpansionBoardId==ShimmerVerDetails.EXP_BRD_NONE_ID){
+			boardName = ShimmerVerDetails.EXP_BRD_NONE;
+		}
+		else {
+			if(ShimmerVerDetails.mMapOfShimmerHardware.containsKey(mExpansionBoardId)){
+				boardName = ShimmerVerDetails.mMapOfShimmerHardware.get(mExpansionBoardId);
+			}
+			else {
+				boardName = getBoardVerString();
+			}
+		}
+		return boardName;
+	}
+
+	public String getExpansionBoardParsedWithVer() {
+		String boardNameWithVer = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
+		String boardVerString = getBoardVerString();
+		
+		boardNameWithVer = getExpansionBoardParsed();
+		if(!boardNameWithVer.equals(boardVerString)){
+			boardNameWithVer += " (" + boardVerString + ")";
+		}
+		return boardNameWithVer;
+	}
+	
+	private String getBoardVerString(){
+		return ("SR" + mExpansionBoardId + "." + mExpansionBoardRev + "." + mExpansionBoardRevSpecial);
+	}
+	
+	public boolean isExpansionBoardValid(){
+		if(!(mExpansionBoardId==0 && mExpansionBoardRev==0 && mExpansionBoardRevSpecial==0)
+				&& (mExpansionBoardId!=-1 && mExpansionBoardRev!=-1 && mExpansionBoardRevSpecial!=-1)){
+			return true;
+		}
+		return false;
+	}
+
 }
