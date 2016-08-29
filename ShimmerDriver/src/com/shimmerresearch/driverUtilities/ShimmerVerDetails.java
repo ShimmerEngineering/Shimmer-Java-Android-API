@@ -13,13 +13,8 @@ import java.util.TreeMap;
  */
 public class ShimmerVerDetails implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** * */
 	private static final long serialVersionUID = -7940733886215010795L;
-	
-	public static final int EXP_BRD_NONE_ID = 255;
-	public static final String EXP_BRD_NONE = "None";
 	
 	public static final int ANY_VERSION = -1;
 
@@ -71,6 +66,8 @@ public class ShimmerVerDetails implements Serializable {
 	public static final class HW_ID_SR_CODES {
 		public static final int LOG_FILE = -2;
 		public static final int UNKNOWN = -1;
+		public static final int NONE = 255;
+		
 		public static final int EXP_BRD_BR_AMP = 8;
 		public static final int EXP_BRD_BR_AMP_UNIFIED = 49;
 		public static final int EXP_BRD_GSR = 14;
@@ -95,6 +92,9 @@ public class ShimmerVerDetails implements Serializable {
 	public static final Map<Integer, String> mMapOfShimmerHardware;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
+        aMap.put(HW_ID_SR_CODES.NONE, "None");
+        aMap.put(HW_ID_SR_CODES.UNKNOWN, "Unknown");
+        
         aMap.put(HW_ID_SR_CODES.EXP_BRD_BR_AMP, "Bridge Amplifier+");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED, "Bridge Amplifier+");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_GSR, "GSR+");
@@ -108,11 +108,13 @@ public class ShimmerVerDetails implements Serializable {
         
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_LR, "ShimmerGQ 802.15.4");
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_NR, "ShimmerGQ 802.15.4");
-        
         aMap.put(HW_ID_SR_CODES.SHIMMER_4_SDK, "Shimmer4 SDK");
         
+        aMap.put(HW_ID_SR_CODES.SHIMMER3, "Shimmer3");//not used
         aMap.put(HW_ID_SR_CODES.BASE15U, "Base15U");
         aMap.put(HW_ID_SR_CODES.BASE6U, "Base6U");
+        aMap.put(HW_ID_SR_CODES.SPAN, "Span");//not used
+        
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
     }
 

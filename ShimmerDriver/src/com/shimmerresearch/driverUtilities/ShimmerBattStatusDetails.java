@@ -23,8 +23,7 @@ public class ShimmerBattStatusDetails implements Serializable {
 	private int mChargingStatusRaw = 0;
 	private CHARGING_STATUS mChargingStatus = CHARGING_STATUS.UNKNOWN;
 	private double mBattVoltage = 0.0;
-	private Double mEstimatedChargePercentage = 0.0;
-	private String mEstimatedChargePercentageParsed = "";
+	private Double mEstimatedChargePercentage = -1.0;
 	
 	public enum CHARGING_STATUS{
 		UNKNOWN("Unknown"),
@@ -107,14 +106,6 @@ public class ShimmerBattStatusDetails implements Serializable {
 
         if(adcVoltageError == false) {
         	calculateBattPercentage(mBattVoltage);
-        	
-            if ((mChargingStatusRaw&0xFF) != 0xC0) {// Bad battery
-//            	mEstimatedChargePercentage = String.format(Locale.UK, "%,.1f",battPercentage) + "%";
-            	mEstimatedChargePercentageParsed = String.format("%,.1f",mEstimatedChargePercentage) + "%";
-            }
-            else {
-            	mEstimatedChargePercentageParsed = "0.0%";
-            }
         }
 	}
 	
@@ -148,8 +139,6 @@ public class ShimmerBattStatusDetails implements Serializable {
         else if (mEstimatedChargePercentage < 0) {
         	mEstimatedChargePercentage = 0.0;
         }
-
-    	mEstimatedChargePercentageParsed = String.format("%,.1f",mEstimatedChargePercentage) + "%";
 	}
 	
 	public static double battVoltageToBattPercentage(double battVoltage) {
@@ -216,7 +205,18 @@ public class ShimmerBattStatusDetails implements Serializable {
 	}
 
 	public String getEstimatedChargePercentageParsed() {
-		return mEstimatedChargePercentageParsed;
+		if ((mChargingStatusRaw&0xFF) != CHARGING_STATUS_BYTE.BAD_BATTERY) {// 0xC0 = Bad battery
+			if(mEstimatedChargePercentage==-1.0){
+				return null;
+			}
+			else{
+//	        	mEstimatedChargePercentage = String.format(Locale.UK, "%,.1f",battPercentage) + "%";
+				return (String.format("%,.1f",mEstimatedChargePercentage) + "%");
+			}
+		}
+		else {
+			return "0.0%";
+		}
 	}
 
 	public BATTERY_LEVEL getEstimatedBatteryLevel(){
@@ -224,9 +224,8 @@ public class ShimmerBattStatusDetails implements Serializable {
 	}
 
 	public static BATTERY_LEVEL estimateBatteryLevel(double percentageBattery) {
-		if(percentageBattery <= 1){
-//			return BATTERY_LEVEL.UNKNOWN;
-			return BATTERY_LEVEL.LOW;
+		if(percentageBattery <= 0.0){
+			return BATTERY_LEVEL.UNKNOWN;
 		}
 		else if(percentageBattery < 33){ // 50 on PanelSetup, 25 on LiveData, firmware is 
 			return BATTERY_LEVEL.LOW;
@@ -271,7 +270,7 @@ public class ShimmerBattStatusDetails implements Serializable {
 		
 		ShimmerBattStatusDetails shimmerBattStatusDetails = new ShimmerBattStatusDetails();
 		
-		System.out.println("Testing SDLog firmware thresholds...");
+		System.out.println("Testing SDLog <v0.12.3 firmware thresholds...");
 		System.out.println(">>>--------------------------------->");
 		List<Integer> listOfSdLogThresholdsForLedChange = Arrays.asList(
 				2400, //Below 2400 = LOW batt LED (RED)

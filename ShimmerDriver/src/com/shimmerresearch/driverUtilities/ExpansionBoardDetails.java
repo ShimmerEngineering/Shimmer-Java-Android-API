@@ -56,17 +56,17 @@ public class ExpansionBoardDetails implements Serializable {
 	public String getExpansionBoardParsed() {
 		String boardName = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 		
-		if(mExpansionBoardId==ShimmerVerDetails.EXP_BRD_NONE_ID){
-			boardName = ShimmerVerDetails.EXP_BRD_NONE;
-		}
-		else {
+//		if(mExpansionBoardId== || mExpansionBoardId==HW_ID_SR_CODES.UNKNOWN){
+//			boardName = ShimmerVerDetails.EXP_BRD_NONE;
+//		}
+//		else {
 			if(ShimmerVerDetails.mMapOfShimmerHardware.containsKey(mExpansionBoardId)){
 				boardName = ShimmerVerDetails.mMapOfShimmerHardware.get(mExpansionBoardId);
 			}
 			else {
 				boardName = getBoardVerString();
 			}
-		}
+//		}
 		return boardName;
 	}
 

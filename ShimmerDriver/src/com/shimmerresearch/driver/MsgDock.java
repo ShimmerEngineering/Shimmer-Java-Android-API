@@ -299,6 +299,8 @@ public class MsgDock {
 	public String mBSLComPort = "";
 	public String mUARTComPort = "";
 	public String mDockID = "";
+	/** currently just used as a fall back when undocking Shimmers */
+	public String mMacID = "";
 	public DEVICE_STATE mDockState = DEVICE_STATE.STATE_NONE;
 	
 	/**
@@ -416,6 +418,10 @@ public class MsgDock {
 		mCurrentJobDetails = currentJobDetails;
 	}
 
+	public MsgDock(int msgIdDockSlotRemoved, String dockID, int slotNumber, String macId) {
+		this(msgIdDockSlotRemoved, dockID, slotNumber);
+		mMacID = macId;
+	}
 	
 	public static int convertUniqueIdToSlotNumer(String uniqueId){
 		int slotNumber = -1;
