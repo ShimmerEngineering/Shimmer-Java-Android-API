@@ -161,7 +161,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/** * */
 	private static final long serialVersionUID = -1364568867018921219L;
 	
-	private boolean debugGyroRate = true;
+	private boolean debugGyroRate = false;
 	
 	protected boolean mFirstTime = true;
 	double mFirstRawTS = 0;
