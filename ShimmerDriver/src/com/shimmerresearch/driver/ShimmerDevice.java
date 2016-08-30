@@ -1431,7 +1431,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
 					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
 					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString + " " + getClass().getSimpleName() + ": " + getMacId() + " " + hashCode() + " "+ message);
+			System.out.println(rightNowString 
+					+ " " + getClass().getSimpleName() 
+					+ ": " + getMacIdParsed() 
+					+ " " + Integer.toHexString(this.hashCode()) 
+					+ " " + message);
 		}		
 	}
 	
