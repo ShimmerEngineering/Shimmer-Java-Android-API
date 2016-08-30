@@ -2917,6 +2917,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfSensorCalibration;
 	}
 
+	public void resetAllCalibParametersToDefault() {
+		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfCalibAll = getMapOfSensorCalibrationAll();
+		if(mapOfCalibAll != null){
+			// for each sensor
+			for(TreeMap<Integer, CalibDetails> mapOfCalibPerSensor:mapOfCalibAll.values()){
+				if(mapOfCalibPerSensor != null){
+					// for each range
+					for(CalibDetails calibDetails:mapOfCalibPerSensor.values()){
+						if(calibDetails != null){
+							// set to default
+							calibDetails.resetToDefaultParameters();
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	protected void setMapOfSensorCalibrationAll(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration){
 		Iterator<Integer> iterator = mapOfKinematicSensorCalibration.keySet().iterator();
 		while(iterator.hasNext()){
@@ -3246,7 +3264,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			System.out.println(stringToPrint);
 		}
 	}
-
 
 
 }
