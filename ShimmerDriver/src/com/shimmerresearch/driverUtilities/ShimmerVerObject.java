@@ -368,6 +368,18 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 
+	public boolean isCalibDumpSupported() {
+		return isCalibDumpSupported(this);
+	}
+	
+	public static boolean isCalibDumpSupported(ShimmerVerObject shimmerVerObject) {
+		if((isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 6, 7))
+				||(isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 13, 0))){
+			return true;
+		}
+		return false;
+	}
+
 
 	public boolean isShimmerGen2(){
 		return isShimmerGen2(getHardwareVersion());

@@ -26,7 +26,7 @@ public class ShimmerShell extends ShimmerDevice {
 	private static final long serialVersionUID = 3505947289367382624L;
 
 	public ShimmerShell() {
-		// TODO Auto-generated constructor stub
+		setFirstDockRead();
 	}
 
 	/** Initialisation via dock
@@ -34,6 +34,7 @@ public class ShimmerShell extends ShimmerDevice {
 	 * @param slotNumber
 	 */
 	public ShimmerShell(String dockId, int slotNumber){
+		this();
 		setDockInfo(dockId, slotNumber);
 	}
 

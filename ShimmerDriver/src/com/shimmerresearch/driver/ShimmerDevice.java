@@ -1411,6 +1411,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.isSdCardAccessSupported();
 	}
 
+	public boolean isCalibDumpSupported() {
+		return mShimmerVerObject.isCalibDumpSupported();
+	}
+
 	public boolean isShimmerGen2(){
 		return mShimmerVerObject.isShimmerGen2();
 	}
