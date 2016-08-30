@@ -5811,8 +5811,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mInitialTimeStamp = 0;
 			
 			setShimmerAndSensorsSamplingRate(51.2);
-			setDefaultECGConfiguration(getSamplingRateShimmer()); 
-
+			//setDefaultECGConfiguration(getSamplingRateShimmer()); // RM commented out for reason below
+			clearExgConfig(); // RM included this as ECG channel was being set after flashing firmware with reload config checkbox unticked
+			
 			setMagRange(getMagRange());
 			setAccelRange(getAccelRange());
 			setGyroRange(getGyroRange());

@@ -1660,6 +1660,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			
 			//Automatically handle required channels for each sensor
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+			//System.err.println("sensorDetails.mSensorDetailsRef: " +sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
 			
 			if(sensorDetails!=null){
 				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
