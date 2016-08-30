@@ -1443,7 +1443,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		else if(responseCommand==BMP180_PRES_RESOLUTION_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			mPressureResolution = (int)(responseData[0]&0xFF);
+			setPressureResolution((int)(responseData[0]&0xFF));
 		}
 		else if(responseCommand==BMP180_PRES_CALIBRATION_RESPONSE) { 
 			//TODO: Not used
@@ -1615,7 +1615,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 				}
 				else if(currentCommand==SET_BMP180_PRES_RESOLUTION_COMMAND){
-					mPressureResolution=(int)((byte [])getListofInstructions().get(0))[1];
+					setPressureResolution((int)((byte [])getListofInstructions().get(0))[1]);
 				}
 				else if(currentCommand==SET_5V_REGULATOR_COMMAND) {
 					if(((byte[])getListofInstructions().get(0))[1]==1) {

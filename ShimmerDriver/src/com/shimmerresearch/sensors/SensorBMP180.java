@@ -36,6 +36,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 
+//TODO add calibdetails from ShimmerObject (updateCurrentPressureCalibInUse() + generateCalibMap() + isSensorUsingDefaultCal(), refer to SensorKionix)
 
 /**
  * @author Ronan McCormack
@@ -465,7 +466,7 @@ public class SensorBMP180 extends AbstractSensor {
 		double X2 = (calibDetailsBmp180.MC * 2048 / (X1 + calibDetailsBmp180.MD));
 		double B5 = X1 + X2;
 		double T = (B5 + 8) / 16;
-
+		
 		double B6 = B5 - 4000;
 		X1 = (calibDetailsBmp180.B2 * (Math.pow(B6,2)/ 4096)) / 2048;
 		X2 = calibDetailsBmp180.AC2 * B6 / 2048;
@@ -526,10 +527,15 @@ public class SensorBMP180 extends AbstractSensor {
 //			System.out.println("New resolution:\t" + ListofPressureResolution[i]);
 			mPressureResolution = i;
 		}
+		updateCurrentPressureCalibInUse();
 	}
 	
 	private int getPressureResolution(){
 		return mPressureResolution;
+	}
+	
+	public void updateCurrentPressureCalibInUse(){
+		mCalibDetailsBmp180.mRangeValue = getPressureResolution();
 	}
 
 	private void setDefaultBmp180PressureSensorConfig(boolean isSensorEnabled) {

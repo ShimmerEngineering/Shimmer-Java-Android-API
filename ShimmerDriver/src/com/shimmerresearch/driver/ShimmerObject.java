@@ -2029,7 +2029,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				int iUP = getSignalIndex(Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180);
 				double UT = (double)newPacketInt[iUT];
 				double UP = (double)newPacketInt[iUP];
-				UP=UP/Math.pow(2,8-mPressureResolution);
+				UP=UP/Math.pow(2,8-getPressureResolution());
 				objectCluster.addData(Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,UP);
 				objectCluster.addData(Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,UT);
 				uncalibratedData[iUT]=(double)newPacketInt[iUT];
@@ -3275,7 +3275,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				int iUP = getSignalIndex("Pressure");
 				double UT = (double)newPacketInt[iUT];
 				double UP = (double)newPacketInt[iUP];
-				UP=UP/Math.pow(2,8-mPressureResolution);
+				UP=UP/Math.pow(2,8-getPressureResolution());
 				objectCluster.addData("Pressure",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,UP);
 				objectCluster.addData("Temperature",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,UT);
 				if (mEnableCalibration){
@@ -4205,7 +4205,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			pressTempMD = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[21] & 0xFF) + ((int)(pressureResoRes[20] & 0xFF) << 8)),16);
 			
 			mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes, calibReadSource);
-			mCalibDetailsBmp180.mRangeValue = getPressureResolution();
+			updateCurrentPressureCalibInUse();
 	}
 	
 	/**
@@ -4673,7 +4673,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mLSM303DigitalAccelRate = ((int)(mConfigByte0 & 0xF0))>>4;
 			setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
 			setLSM303MagRate(((int)(mConfigByte0 & 1835008))>>18); 
-			mPressureResolution = (((int)(mConfigByte0 >>28)) & 3);
+			setPressureResolution((((int)(mConfigByte0 >>28)) & 3));
 			mGSRRange  = (((int)(mConfigByte0 >>25)) & 7);
 			mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
 			mInquiryResponseBytes = new byte[8+mNChannels];
@@ -5919,7 +5919,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setGyroRange((infoMemBytes[infoMemLayoutCast.idxConfigSetupByte2] >> infoMemLayoutCast.bitShiftMPU9150GyroRange) & infoMemLayoutCast.maskMPU9150GyroRange);
 			
 			mMPU9150AccelRange = (infoMemBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftMPU9150AccelRange) & infoMemLayoutCast.maskMPU9150AccelRange;
-			mPressureResolution = (infoMemBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftBMP180PressureResolution) & infoMemLayoutCast.maskBMP180PressureResolution;
+			setPressureResolution((infoMemBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftBMP180PressureResolution) & infoMemLayoutCast.maskBMP180PressureResolution);
 			mGSRRange = (infoMemBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftGSRRange) & infoMemLayoutCast.maskGSRRange;
 			mInternalExpPower = (infoMemBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
 			
@@ -6168,6 +6168,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		updateCurrentAccelWrCalibInUse();
 		updateCurrentGyroCalibInUse();
 		updateCurrentMagCalibInUse();
+		updateCurrentPressureCalibInUse();
 	}
 	
 	/**
@@ -6233,7 +6234,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mInfoMemBytes[infoMemLayout.idxConfigSetupByte2] |= (byte) ((getGyroRange() & infoMemLayout.maskMPU9150GyroRange) << infoMemLayout.bitShiftMPU9150GyroRange);
 			
 			mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & infoMemLayout.maskMPU9150AccelRange) << infoMemLayout.bitShiftMPU9150AccelRange);
-			mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mPressureResolution & infoMemLayout.maskBMP180PressureResolution) << infoMemLayout.bitShiftBMP180PressureResolution);
+			mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((getPressureResolution() & infoMemLayout.maskBMP180PressureResolution) << infoMemLayout.bitShiftBMP180PressureResolution);
 			mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mGSRRange & infoMemLayout.maskGSRRange) << infoMemLayout.bitShiftGSRRange);
 			mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
 			
@@ -6998,7 +6999,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(state) {
 		}
 		else {
-			mPressureResolution = 0;
+			setPressureResolution(0);
 		}
 	}
 	
@@ -7295,6 +7296,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
 			mPressureResolution = i;
 		}
+		
+		updateCurrentPressureCalibInUse();
 	}
 	
 	public void setGSRRange(int i){
@@ -8006,6 +8009,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+	public void updateCurrentPressureCalibInUse(){
+		mCalibDetailsBmp180.mRangeValue = getPressureResolution();
+	}
+	
 	//-------------------- Calibration Parameters End -----------------------------------
 
 	//-------------------- PPG Start -----------------------------------
