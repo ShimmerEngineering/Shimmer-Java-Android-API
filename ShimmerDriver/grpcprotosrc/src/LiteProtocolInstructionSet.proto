@@ -65,6 +65,8 @@ message LiteProtocolInstructionSet {
 		TEST_CONNECTION_COMMAND            	= 0x96;
 		STOP_SDBT_COMMAND 						= 0x97;
 		SET_CALIB_DUMP_COMMAND					= 0x98;
+		//UPD_CALIB_DUMP_COMMAND					= 0x9B; //command exists but is not used
+		UPD_SDLOG_CFG_COMMAND					= 0x9C;
   	}
   	
    enum InstructionsGet {
