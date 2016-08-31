@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -72,6 +74,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public static final String STRING_CONSTANT_SD_ERROR = "SD Error";
 	
 	protected static final int MAX_CALIB_DUMP_MAX = 4096;
+	
+	public static String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9_()\\[\\]]";	
+
 	
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
@@ -1057,11 +1062,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public String getTrialName() {
 		return mTrialName;
 	}
+		
+	public static boolean isTrialNameInvalid(String trialName){
+		Pattern p = Pattern.compile(INVALID_TRIAL_NAME_CHAR);
+		Matcher m = p.matcher(trialName);
+		return m.find();
+	}
 	
 	/**
 	 * @param trialName the trialName to set
 	 */
+
 	public void setTrialName(String trialName) {
+		trialName = trialName.replaceAll(INVALID_TRIAL_NAME_CHAR, "");
+
+		//Limit the name to 12 Char
 		if(trialName.length()>12)
 			this.mTrialName = trialName.substring(0, 11);
 		else
