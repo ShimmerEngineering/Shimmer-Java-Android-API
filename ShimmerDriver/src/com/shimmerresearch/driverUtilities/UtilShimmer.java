@@ -765,6 +765,23 @@ public class UtilShimmer implements Serializable {
 		return allZeros;
 	}
 
+	public static boolean isAnyValueOutsideRange(double[][] matrix, int range){
+		if(matrix == null){
+			return true;
+		}
+
+		boolean isAnyOutsideRange = false;
+		for(int j = 0; j < matrix[1].length; j++){
+			for(int i = 0; i < matrix.length; i++){
+				double value = Math.abs(matrix[j][i]);
+				if(value > range){
+					return true;
+				}
+			}
+		}
+		return isAnyOutsideRange;
+	}
+	
 	public static boolean isAllFF(byte[] bufferCalibrationParameters) {
 		for(byte myByte:bufferCalibrationParameters){
 			if(myByte!=(byte)0xFF){

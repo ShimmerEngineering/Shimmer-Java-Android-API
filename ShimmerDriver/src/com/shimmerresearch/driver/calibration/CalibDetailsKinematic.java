@@ -144,10 +144,43 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}
 
 	public boolean isAllCalibrationValid(){
-		if(mCurrentCalibration.isAllCalibrationValid() || isUsingDefaultParameters()){
+		if((isSensitivityWithinRangeOfDefault() && mCurrentCalibration.isAllCalibrationValid()) || isUsingDefaultParameters()){
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Method to perform a basic sanity check on the sensitivity of the IMUs, implemented
+	 * as there were instances when the sensitivity of the gyroscope was -0.01 or 0.65 for example
+	 * @return boolean: true if the sensitivity is outside of the percentage range of the default sensitivity 
+	 * where the percentage is defined by validScaling factor
+	 */
+	public boolean isSensitivityWithinRangeOfDefault(){
+		boolean isValid = true; 
+		int validScalingFactor = 75;
+		
+		double[][] defaultSensitivityMatrix = getDefaultSensitivityMatrix();
+		double[][] currentSensitivityMatrix = getCurrentSensitivityMatrix();
+		
+		for (int i = 0; i<defaultSensitivityMatrix[0].length; i++){
+		     for (int j = 0; j<defaultSensitivityMatrix.length; j++){
+		    	 double defaultValue = defaultSensitivityMatrix[i][j];
+		    	 double currentValue = currentSensitivityMatrix[i][j];
+		    	 
+		    	 double minValidValue = defaultValue / validScalingFactor;
+		    	 double maxValidValue = defaultValue * validScalingFactor;
+		    	 
+		    	 if(currentValue != 0){
+			    	 if(currentValue >= maxValidValue || currentValue <= minValidValue){
+			    		 isValid = false;
+			    		 break;
+			    	 }
+		    	 }
+		     }
+		}
+		
+		return isValid;
 	}
 	
 	public boolean isUsingDefaultParameters(){

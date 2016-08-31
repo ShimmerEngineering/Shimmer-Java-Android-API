@@ -80,7 +80,8 @@ public class CalibArraysKinematic implements Serializable{
 	}
 	
 	public boolean isAlignmentValid(){
-		if(UtilShimmer.isAllZeros(mAlignmentMatrix)){
+		if(UtilShimmer.isAllZeros(mAlignmentMatrix) 
+				|| UtilShimmer.isAnyValueOutsideRange(mAlignmentMatrix, 1)){
 			return false;
 		}else{
 			return true;
