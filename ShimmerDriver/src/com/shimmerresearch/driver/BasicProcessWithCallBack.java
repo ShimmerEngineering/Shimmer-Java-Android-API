@@ -80,6 +80,36 @@ public abstract class BasicProcessWithCallBack {
 		
 	};
 	
+	public void setWaitForDataWithSingleInstanceCheck(BasicProcessWithCallBack b){
+		if (mGUIConsumerThread==null){
+			mGUIConsumerThread = new ConsumerThread();
+			if(!threadName.isEmpty()){
+				mGUIConsumerThread.setName(threadName);
+			}
+			mGUIConsumerThread.start();
+		}
+		
+		if (mWaitForData!=null){
+			boolean found = false;
+			if (mWaitForData.returnBasicProcessWithCallBack().equals(b)){
+				found = true;
+			}
+			if (!found){
+				for (WaitForData wfd:mListWaitForData){
+					if (wfd.returnBasicProcessWithCallBack().equals(b)){
+						found = true;
+					}
+				}
+			}
+			if(!found){
+				mListWaitForData.add(new WaitForData(b));
+			}
+		} else {
+			mWaitForData = new WaitForData(b);
+		}
+		
+	};
+	
 	public void passCallback(Callable c) {
 		// TODO Auto-generated method stub
 		if (mThread!=null){
@@ -111,9 +141,15 @@ public abstract class BasicProcessWithCallBack {
     //this is for the upper layer
 	public class WaitForData implements com.shimmerresearch.driver.Callable  
 	{
-
+		BasicProcessWithCallBack track;
+		
+		public BasicProcessWithCallBack returnBasicProcessWithCallBack(){
+			return track;
+		}
+		
 		public WaitForData(BasicProcessWithCallBack bpwcb)  
 		{  
+			track = bpwcb;
 			bpwcb.passCallback(this);
 		} 
 		
