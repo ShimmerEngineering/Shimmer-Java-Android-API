@@ -7475,6 +7475,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mSyncWhenLogging = (state? 1:0);
 	}
 
+	public void setSyncWhenLogging(int state) {
+		this.mSyncWhenLogging = state;
+	}
+
 
 	public int getButtonStart() {
 		return mButtonStart;
@@ -7720,7 +7724,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(mapOfConfigPerShimmer.containsKey(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)){
 			setInitialTimeStamp(((Double) mapOfConfigPerShimmer.get(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
 		}
-		
+
+
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandleShimmerObject.SYNC_WHEN_LOGGING)){
+			setSyncWhenLogging(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.SYNC_WHEN_LOGGING)).intValue());
+		}
+
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED)){
+			setExperimentDurationEstimated(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)){
+			setExperimentDurationMaximum(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)).intValue());
+		}
+
 		
 	}
 
