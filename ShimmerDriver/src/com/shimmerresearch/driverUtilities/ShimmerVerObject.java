@@ -374,7 +374,7 @@ public class ShimmerVerObject implements Serializable {
 	
 	public static boolean isCalibDumpSupported(ShimmerVerObject shimmerVerObject) {
 		if((isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 6, 7))
-				||(isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 13, 0))){
+				||(isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 12, 6))){
 			return true;
 		}
 		return false;
