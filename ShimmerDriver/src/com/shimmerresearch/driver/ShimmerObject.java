@@ -11175,7 +11175,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			configValues.add((double) shimmerObject.getCalibTimeMag());
 			configValues.add((double) shimmerObject.getCalibTimeGyro());
 			configValues.add((double) shimmerObject.getCalibTimeAccel());
-
+			
+			//Not in the SD header so can't add
+//			configValues.add((double) shimmerObject.getSyncWhenLogging());
+//			configValues.add((double) shimmerObject.getSyncBroadcastInterval());
+//			configValues.add((double) shimmerObject.getTrialDurationEstimated());
+//			configValues.add((double) shimmerObject.getTrialDurationMaximum());
+			
 			return configValues;
 		} 
 		return null;
