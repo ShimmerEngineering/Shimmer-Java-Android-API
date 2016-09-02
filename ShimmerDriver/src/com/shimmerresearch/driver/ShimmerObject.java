@@ -494,6 +494,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte TEST_CONNECTION_COMMAND            	= (byte) 0x96;
 	public static final byte STOP_SDBT_COMMAND 						= (byte) 0x97;
 
+	public static final class DatabaseConfigHandleShimmerObject{
+		public static final String SYNC_WHEN_LOGGING = 	"Sync_When_Logging";
+		public static final String TRIAL_DURATION_ESTIMATED = "Trial_Dur_Est";
+		public static final String TRIAL_DURATION_MAXIMUM = "Trial_Dur_Max";
+	}
+	
 	//new BT + SD command to set/rsp/get/update_dump_file all calibration parameters using the new byte array structure
 	public static final byte SET_CALIB_DUMP_COMMAND					= (byte) 0x98;
 	public static final byte RSP_CALIB_DUMP_COMMAND					= (byte) 0x99;
@@ -11037,7 +11043,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return getDbConfigFromShimmer(this);
 	}
 
-	/** This method only needs to support Shimmer3. ShimmerGQ is handled in the ShimmerGQ class and >=Shimmer4 is via a config map */
+	/** This method only needs to support Shimmer3. ShimmerGQ is handled in the ShimmerGQ class and >=Shimmer4 is via a config map
+	 * 
+	 * This corresponds to the Database column labels declared in DatabaseHandler.getShimmer3ConfigColumns()
+	 *  */
 	public static List<Double> getDbConfigFromShimmer(ShimmerDevice shimmerDevice){
 		if (shimmerDevice instanceof ShimmerObject){
 			ShimmerObject shimmerObject = (ShimmerObject) shimmerDevice;
@@ -11177,10 +11186,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			configValues.add((double) shimmerObject.getCalibTimeAccel());
 			
 			//Not in the SD header so can't add
-//			configValues.add((double) shimmerObject.getSyncWhenLogging());
+			configValues.add((double) shimmerObject.getSyncWhenLogging());
+			configValues.add((double) shimmerObject.getTrialDurationEstimated());
+			configValues.add((double) shimmerObject.getTrialDurationMaximum());
 //			configValues.add((double) shimmerObject.getSyncBroadcastInterval());
-//			configValues.add((double) shimmerObject.getTrialDurationEstimated());
-//			configValues.add((double) shimmerObject.getTrialDurationMaximum());
 			
 			return configValues;
 		} 
