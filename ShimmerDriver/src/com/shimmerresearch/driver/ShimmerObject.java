@@ -1045,14 +1045,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected byte[] mEXG2RegisterArray = new byte[10];
 	protected int mEXG1RateSetting; //setting not value
 	protected int mEXG1CH1GainSetting; // this is the setting not to be confused with the actual value
+	@Deprecated
 	protected int mEXG1CH1GainValue; // this is the value
 	protected int mEXG1CH2GainSetting; // this is the setting not to be confused with the actual value
+	@Deprecated
 	protected int mEXG1CH2GainValue; // this is the value
 	protected int mEXG2RateSetting; //setting not value
 	protected int mEXG2CH1GainSetting; // this is the setting not to be confused with the actual value
+	@Deprecated
 	protected int mEXG2CH1GainValue; // this is the value
 	protected int mEXG2CH2PowerDown;//Not used in ShimmerBluetooth
 	protected int mEXG2CH2GainSetting; // this is the setting not to be confused with the actual value
+	@Deprecated
 	protected int mEXG2CH2GainValue; // this is the value
 	
 	//EXG ADVANCED
@@ -1776,8 +1780,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				//TODO objectcluster will not be populated at all if mEnableCalibration is not enabled
 				if (mEnableCalibration){
-					double calexg1ch1 = exg1ch1 *(((2.42*1000)/mEXG1CH1GainValue)/(Math.pow(2,23)-1));
-					double calexg1ch2 = exg1ch2 *(((2.42*1000)/mEXG1CH2GainValue)/(Math.pow(2,23)-1));
+					double calexg1ch1 = exg1ch1 *(((2.42*1000)/getExg1CH1GainValue())/(Math.pow(2,23)-1));
+					double calexg1ch2 = exg1ch2 *(((2.42*1000)/getExg1CH2GainValue())/(Math.pow(2,23)-1));
 					calibratedData[iexg1ch1]=calexg1ch1;
 					calibratedData[iexg1ch2]=calexg1ch2;
 					calibratedData[iexg1sta]=(double)newPacketInt[iexg1sta];
@@ -1846,8 +1850,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				//TODO objectcluster will not be populated at all if mEnableCalibration is not enabled
 				if (mEnableCalibration){
-					double calexg2ch1 = exg2ch1 *(((2.42*1000)/mEXG2CH1GainValue)/(Math.pow(2,23)-1));
-					double calexg2ch2 = exg2ch2 *(((2.42*1000)/mEXG2CH2GainValue)/(Math.pow(2,23)-1));
+					double calexg2ch1 = exg2ch1 *(((2.42*1000)/getExg2CH1GainValue())/(Math.pow(2,23)-1));
+					double calexg2ch2 = exg2ch2 *(((2.42*1000)/getExg2CH2GainValue())/(Math.pow(2,23)-1));
 					calibratedData[iexg2ch1]=calexg2ch1;
 					calibratedData[iexg2ch2]=calexg2ch2;
 					calibratedData[iexg2sta]=(double)newPacketInt[iexg2sta];
@@ -1916,8 +1920,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				//TODO objectcluster will not be populated at all if mEnableCalibration is not enabled
 				if (mEnableCalibration){
-					double calexg1ch1 = exg1ch1 *(((2.42*1000)/(mEXG1CH1GainValue*2))/(Math.pow(2,15)-1));
-					double calexg1ch2 = exg1ch2 *(((2.42*1000)/(mEXG1CH2GainValue*2))/(Math.pow(2,15)-1));
+					double calexg1ch1 = exg1ch1 *(((2.42*1000)/(getExg1CH1GainValue()*2))/(Math.pow(2,15)-1));
+					double calexg1ch2 = exg1ch2 *(((2.42*1000)/(getExg1CH2GainValue()*2))/(Math.pow(2,15)-1));
 					calibratedData[iexg1ch1]=calexg1ch1;
 					calibratedData[iexg1ch2]=calexg1ch2;
 					calibratedData[iexg1sta]=(double)newPacketInt[iexg1sta];
@@ -1985,8 +1989,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				//TODO objectcluster will not be populated at all if mEnableCalibration is not enabled
 				if (mEnableCalibration){
-					double calexg2ch1 = ((exg2ch1)) *(((2.42*1000)/(mEXG2CH1GainValue*2))/(Math.pow(2,15)-1));
-					double calexg2ch2 = ((exg2ch2)) *(((2.42*1000)/(mEXG2CH2GainValue*2))/(Math.pow(2,15)-1));
+					double calexg2ch1 = ((exg2ch1)) *(((2.42*1000)/(getExg2CH1GainValue()*2))/(Math.pow(2,15)-1));
+					double calexg2ch2 = ((exg2ch2)) *(((2.42*1000)/(getExg2CH2GainValue()*2))/(Math.pow(2,15)-1));
 					calibratedData[iexg2ch1]=calexg2ch1;
 					calibratedData[iexg2ch2]=calexg2ch2;
 					calibratedData[iexg2sta]=(double)newPacketInt[iexg2sta];
@@ -3174,8 +3178,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				double exg1sta = (double)newPacketInt[iexg1sta];
 				objectCluster.addData("EXG1 STATUS",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1sta);
 				if (mEnableCalibration){
-					double calexg1ch1 = exg1ch1 *(((2.42*1000)/mEXG1CH1GainValue)/(Math.pow(2,23)-1));
-					double calexg1ch2 = exg1ch2 *(((2.42*1000)/mEXG1CH2GainValue)/(Math.pow(2,23)-1));
+					double calexg1ch1 = exg1ch1 *(((2.42*1000)/getExg1CH1GainValue())/(Math.pow(2,23)-1));
+					double calexg1ch2 = exg1ch2 *(((2.42*1000)/getExg1CH2GainValue())/(Math.pow(2,23)-1));
 					if (isEXGUsingDefaultECGConfiguration()){
 						objectCluster.addData("ECG LL-RA",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1);
 						objectCluster.addData("ECG LA-RA",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch2);
@@ -3204,8 +3208,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				objectCluster.addData("EXG2 STATUS",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2sta);
 				if (mEnableCalibration){
-					double calexg2ch1 = exg2ch1 *(((2.42*1000)/mEXG2CH1GainValue)/(Math.pow(2,23)-1));
-					double calexg2ch2 = exg2ch2 *(((2.42*1000)/mEXG2CH2GainValue)/(Math.pow(2,23)-1));
+					double calexg2ch1 = exg2ch1 *(((2.42*1000)/getExg2CH1GainValue())/(Math.pow(2,23)-1));
+					double calexg2ch2 = exg2ch2 *(((2.42*1000)/getExg2CH2GainValue())/(Math.pow(2,23)-1));
 					if (isEXGUsingDefaultECGConfiguration()){
 						objectCluster.addData("EXG2 CH1",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1);
 						objectCluster.addData("ECG Vx-RL",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2);
@@ -3235,8 +3239,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				double exg1sta = (double)newPacketInt[iexg1sta];
 				objectCluster.addData("EXG1 STATUS",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1sta);
 				if (mEnableCalibration){
-					double calexg1ch1 = exg1ch1 *(((2.42*1000)/(mEXG1CH1GainValue*2))/(Math.pow(2,15)-1));
-					double calexg1ch2 = exg1ch2 *(((2.42*1000)/(mEXG1CH2GainValue*2))/(Math.pow(2,15)-1));
+					double calexg1ch1 = exg1ch1 *(((2.42*1000)/(getExg1CH1GainValue()*2))/(Math.pow(2,15)-1));
+					double calexg1ch2 = exg1ch2 *(((2.42*1000)/(getExg1CH2GainValue()*2))/(Math.pow(2,15)-1));
 					if (isEXGUsingDefaultECGConfiguration()){
 						objectCluster.addData("ECG LL-RA",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1);
 						objectCluster.addData("ECG LA-RA",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch2);
@@ -3265,8 +3269,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				objectCluster.addData("EXG2 STATUS",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2sta);
 				if (mEnableCalibration){
-					double calexg2ch1 = ((exg2ch1)) *(((2.42*1000)/(mEXG2CH1GainValue*2))/(Math.pow(2,15)-1));
-					double calexg2ch2 = ((exg2ch2)) *(((2.42*1000)/(mEXG2CH2GainValue*2))/(Math.pow(2,15)-1));
+					double calexg2ch1 = ((exg2ch1)) *(((2.42*1000)/(getExg2CH1GainValue()*2))/(Math.pow(2,15)-1));
+					double calexg2ch2 = ((exg2ch2)) *(((2.42*1000)/(getExg2CH2GainValue()*2))/(Math.pow(2,15)-1));
 					if (isEXGUsingDefaultECGConfiguration()){
 						objectCluster.addData("EXG2 CH1",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1);
 						objectCluster.addData("ECG Vx-RL",CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2);
@@ -8628,19 +8632,29 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mExGResolution;
 	}
 	
+	public int getExGGainSetting(){
+//		mEXG1CH1GainSetting = i;
+//		mEXG1CH2GainSetting = i;
+//		mEXG2CH1GainSetting = i;
+//		mEXG2CH2GainSetting = i;
+//		System.out.println("SlotDetails: getExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
+//		return this.mEXG1CH1GainSetting;
+		return getExg1CH1GainValue();
+	}
+	
 	public int getExg1CH1GainValue(){
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
-		return mEXG1CH1GainValue;
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
+//		return mEXG1CH1GainValue;
 	}
 	
 	public int getExg1CH2GainValue(){
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
-		return mEXG1CH2GainValue;
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
+//		return mEXG1CH2GainValue;
 	}
 	
 	public int getExg2CH1GainValue(){
-//		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
-		return mEXG2CH1GainValue;
+		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
+//		return mEXG2CH1GainValue;
 	}
 	
 	public int getExg2CH2GainValue(){
@@ -8765,14 +8779,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		}
 	}
 	
-	public int getExGGainSetting(){
-//		mEXG1CH1GainSetting = i;
-//		mEXG1CH2GainSetting = i;
-//		mEXG2CH1GainSetting = i;
-//		mEXG2CH2GainSetting = i;
-//		System.out.println("SlotDetails: getExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
-		return this.mEXG1CH1GainSetting;
-	}
 	
 	/** Note: Doesn't update the Sensor Map
 	 * @param mEXG1RegisterArray the mEXG1RegisterArray to set
