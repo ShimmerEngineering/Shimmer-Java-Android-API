@@ -77,21 +77,28 @@ package com.shimmerresearch.algorithms;
  * @date   October, 2013
  */
 
-public class GradDes3DOrientation6DoF {
+public class GradDes3DOrientation6DoF extends GradDes3DOrientation {
 
-	double mBeta = 1;
-	double mSamplingPeriod = 1;
-	double q0, q1, q2, q3;
-	public GradDes3DOrientation6DoF(double beta, double samplingPeriod, double q1, double q2, double q3, double q4) {
-		mBeta = beta;
-		this.q0 = q1;
-		this.q1 = q2;
-		this.q2 = q3;
-		this.q3 = q4;
-		mSamplingPeriod = samplingPeriod;
+	/**
+	 * @param samplingPeriod
+	 * @see GradDes3DOrientation
+	 */
+	public GradDes3DOrientation6DoF(double samplingPeriod) {
+		super(samplingPeriod);
 	}
 
-
+	/**
+	 * @param beta
+	 * @param samplingPeriod
+	 * @param q1
+	 * @param q2
+	 * @param q3
+	 * @param q4
+	 * @see GradDes3DOrientation
+	 */
+	public GradDes3DOrientation6DoF(double beta, double samplingPeriod, double q1, double q2, double q3, double q4) {
+		super(beta, samplingPeriod, q1, q2, q3, q4);
+	}
 
 	/**
 	 * @param ax Accelerometer X in m/(sec^2)
@@ -102,17 +109,17 @@ public class GradDes3DOrientation6DoF {
 	 * @param gz Gyroscope X in rad/sec
 	 * @return Calculated Quaternion value
 	 */
-	public Orientation3DObject update(double ax,double ay,double az,double gx, double gy, double gz) {
+	public Orientation3DObject update(double ax, double ay, double az, double gx, double gy, double gz) {
 		double norm;
 		double s0, s1, s2, s3;
 		double qDot1, qDot2, qDot3, qDot4;
-		double _2q0, _2q1, _2q2, _2q3, _4q0, _4q1, _4q2 ,_8q1, _8q2, q0q0, q1q1, q2q2, q3q3;
+		double _2q1, _2q2, _2q3, _2q4, _4q1, _4q2, _4q3 ,_8q2, _8q3, q1q1, q2q2, q3q3, q4q4;
 
 		// Rate of change of quaternion from gyroscope
-		qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
-		qDot2 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
-		qDot3 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
-		qDot4 = 0.5f * (q0 * gz + q1 * gy - q2 * gx);
+		qDot1 = 0.5f * (-q2 * gx - q3 * gy - q4 * gz);
+		qDot2 = 0.5f * (q1 * gx + q3 * gz - q4 * gy);
+		qDot3 = 0.5f * (q1 * gy - q2 * gz + q4 * gx);
+		qDot4 = 0.5f * (q1 * gz + q2 * gy - q3 * gx);
 
 		// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
 		if(!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
@@ -130,25 +137,25 @@ public class GradDes3DOrientation6DoF {
 			    }
 
 			// Auxiliary variables to avoid repeated arithmetic
-			_2q0 = 2.0f * q0;
 			_2q1 = 2.0f * q1;
 			_2q2 = 2.0f * q2;
 			_2q3 = 2.0f * q3;
-			_4q0 = 4.0f * q0;
+			_2q4 = 2.0f * q4;
 			_4q1 = 4.0f * q1;
 			_4q2 = 4.0f * q2;
-			_8q1 = 8.0f * q1;
+			_4q3 = 4.0f * q3;
 			_8q2 = 8.0f * q2;
-			q0q0 = q0 * q0;
+			_8q3 = 8.0f * q3;
 			q1q1 = q1 * q1;
 			q2q2 = q2 * q2;
 			q3q3 = q3 * q3;
+			q4q4 = q4 * q4;
 
 			// Gradient decent algorithm corrective step
-			s0 = _4q0 * q2q2 + _2q2 * ax + _4q0 * q1q1 - _2q1 * ay;
-			s1 = _4q1 * q3q3 - _2q3 * ax + 4.0f * q0q0 * q1 - _2q0 * ay - _4q1 + _8q1 * q1q1 + _8q1 * q2q2 + _4q1 * az;
-			s2 = 4.0f * q0q0 * q2 + _2q0 * ax + _4q2 * q3q3 - _2q3 * ay - _4q2 + _8q2 * q1q1 + _8q2 * q2q2 + _4q2 * az;
-			s3 = 4.0f * q1q1 * q3 - _2q1 * ax + 4.0f * q2q2 * q3 - _2q2 * ay;
+			s0 = _4q1 * q3q3 + _2q3 * ax + _4q1 * q2q2 - _2q2 * ay;
+			s1 = _4q2 * q4q4 - _2q4 * ax + 4.0f * q1q1 * q2 - _2q1 * ay - _4q2 + _8q2 * q2q2 + _8q2 * q3q3 + _4q2 * az;
+			s2 = 4.0f * q1q1 * q3 + _2q1 * ax + _4q3 * q4q4 - _2q4 * ay - _4q3 + _8q3 * q2q2 + _8q3 * q3q3 + _4q3 * az;
+			s3 = 4.0f * q2q2 * q4 - _2q2 * ax + 4.0f * q3q3 * q4 - _2q3 * ay;
 
 		    norm = 1.0 / Math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s0 * s0);    // normalise
 		    s0 *= norm;
@@ -164,18 +171,18 @@ public class GradDes3DOrientation6DoF {
 		}
 		
 		 // Integrate to yield quaternion
-        q0 += qDot1 * mSamplingPeriod;
-        q1 += qDot2 * mSamplingPeriod;
-        q2 += qDot3 * mSamplingPeriod;
-        q3 += qDot4 * mSamplingPeriod;
-	    norm = 1.0 / Math.sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q0 * q0);    // normalise quaternion
+        q1 += qDot1 * mSamplingPeriod;
+        q2 += qDot2 * mSamplingPeriod;
+        q3 += qDot3 * mSamplingPeriod;
+        q4 += qDot4 * mSamplingPeriod;
+	    norm = 1.0 / Math.sqrt(q2 * q2 + q3 * q3 + q4 * q4 + q1 * q1);    // normalise quaternion
 	
-	    q1 = q1 * norm;
 	    q2 = q2 * norm;
 	    q3 = q3 * norm;
-	    q0 = q0 * norm;
+	    q4 = q4 * norm;
+	    q1 = q1 * norm;
 
 	    
-	    return new Orientation3DObject(q0,q1,q2,q3);
+	    return new Orientation3DObject(q1,q2,q3,q4);
 	}
 }

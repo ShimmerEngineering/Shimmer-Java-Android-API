@@ -422,7 +422,8 @@ public class OrientationModule6DOF extends OrientationModule{
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)
 				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
 			orientationType = ORIENTATION_TYPE.SIX_DOF;
-			orientationAlgorithm = new GradDes3DOrientation6DoF(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
+//			orientationAlgorithm = new GradDes3DOrientation6DoF(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
+			orientationAlgorithm = new GradDes3DOrientation6DoF(samplingPeriod);
 		}
 
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){

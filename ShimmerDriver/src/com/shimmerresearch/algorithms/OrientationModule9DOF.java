@@ -424,7 +424,8 @@ public class OrientationModule9DOF extends OrientationModule {
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)
 				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
 			orientationType = ORIENTATION_TYPE.NINE_DOF;
-			orientationAlgorithm = new GradDes3DOrientation(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
+//			orientationAlgorithm = new GradDes3DOrientation(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
+			orientationAlgorithm = new GradDes3DOrientation9DoF(samplingPeriod);
 		}
 
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
@@ -438,7 +439,7 @@ public class OrientationModule9DOF extends OrientationModule {
 	public Orientation3DObject applyOrientationAlgorithm(){
 
 		Orientation3DObject quaternion;
-		quaternion = ((GradDes3DOrientation) orientationAlgorithm).update(
+		quaternion = ((GradDes3DOrientation9DoF) orientationAlgorithm).update(
 				accValues.x, accValues.y, accValues.z, 
 				gyroValues.x, gyroValues.y, gyroValues.z
 				,magValues.x, magValues.y, magValues.z);

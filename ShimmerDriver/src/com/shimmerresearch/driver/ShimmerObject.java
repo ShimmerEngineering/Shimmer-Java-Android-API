@@ -24,7 +24,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
-import com.shimmerresearch.algorithms.GradDes3DOrientation;
+import com.shimmerresearch.algorithms.GradDes3DOrientation9DoF;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -562,7 +562,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private double mLastKnownHeartRate=0;
 	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024); //YYY -BattVolt-SensorClass
 	Quat4d mQ = new Quat4d();	
-	transient GradDes3DOrientation mOrientationAlgo;	
+	transient GradDes3DOrientation9DoF mOrientationAlgo;	
 	private boolean mIsOrientationEnabled = false;	
 
 	protected boolean mEnableCalibration = true;	
@@ -1733,7 +1733,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
-						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
+						mOrientationAlgo = new GradDes3DOrientation9DoF((double)1/getSamplingRateShimmer());
+//						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
 					//New 2016-05-31
 					Orientation3DObject q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
@@ -2706,7 +2707,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if ((mEnabledSensors & SENSOR_ACCEL) > 0 && (mEnabledSensors & SENSOR_GYRO) > 0 && (mEnabledSensors & SENSOR_MAG) > 0 && is3DOrientatioEnabled() ){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
-						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
+//						mOrientationAlgo = new GradDes3DOrientation9DoF(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
+						mOrientationAlgo = new GradDes3DOrientation9DoF((double)1/getSamplingRateShimmer());
 					}
 //					Orientation3DObject q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
 //					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
@@ -3148,7 +3150,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (((mEnabledSensors & SENSOR_ACCEL) > 0 || (mEnabledSensors & SENSOR_DACCEL) > 0) && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && is3DOrientatioEnabled() ){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
-						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
+//						mOrientationAlgo = new GradDes3DOrientation9DoF(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
+						mOrientationAlgo = new GradDes3DOrientation9DoF((double)1/getSamplingRateShimmer());
 					}
 					Orientation3DObject q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);					double theta, Rx, Ry, Rz, rho;
 					objectCluster.addData("Axis Angle A",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
@@ -3509,7 +3512,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if ((mEnabledSensors & SENSOR_ACCEL) > 0 && (mEnabledSensors & SENSOR_GYRO) > 0 && (mEnabledSensors & SENSOR_MAG) > 0 && is3DOrientatioEnabled() ){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
-						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
+//						mOrientationAlgo = new GradDes3DOrientation9DoF(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
+						mOrientationAlgo = new GradDes3DOrientation9DoF((double)1/getSamplingRateShimmer());
 					}
 					Orientation3DObject q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
 					objectCluster.addData("Axis Angle A",CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
