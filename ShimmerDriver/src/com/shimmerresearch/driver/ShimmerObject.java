@@ -6125,8 +6125,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mSyncBroadcastInterval = (int)(infoMemBytes[infoMemLayoutCast.idxSDBTInterval] & 0xFF);
 					
 					// Maximum and Estimated Length in minutes
-					mTrialDurationEstimated =  ((int)(infoMemBytes[infoMemLayoutCast.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemBytes[infoMemLayoutCast.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
-					mTrialDurationMaximum =  ((int)(infoMemBytes[infoMemLayoutCast.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemBytes[infoMemLayoutCast.idxMaxExpLengthMsb] & 0xFF)) << 8));
+					setTrialDurationEstimated((int)(infoMemBytes[infoMemLayoutCast.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(infoMemBytes[infoMemLayoutCast.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
+					setTrialDurationMaximum((int)(infoMemBytes[infoMemLayoutCast.idxMaxExpLengthLsb] & 0xFF) + (((int)(infoMemBytes[infoMemLayoutCast.idxMaxExpLengthMsb] & 0xFF)) << 8));
 				}
 					
 				byte[] macIdBytes = new byte[infoMemLayoutCast.lengthMacIdBytes];
@@ -6370,10 +6370,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mInfoMemBytes[infoMemLayout.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
 				
 					// Maximum and Estimated Length in minutes
-					mInfoMemBytes[infoMemLayout.idxEstimatedExpLengthLsb] = (byte) ((mTrialDurationEstimated >> 0) & 0xFF);
-					mInfoMemBytes[infoMemLayout.idxEstimatedExpLengthMsb] = (byte) ((mTrialDurationEstimated >> 8) & 0xFF);
-					mInfoMemBytes[infoMemLayout.idxMaxExpLengthLsb] = (byte) ((mTrialDurationMaximum >> 0) & 0xFF);
-					mInfoMemBytes[infoMemLayout.idxMaxExpLengthMsb] = (byte) ((mTrialDurationMaximum >> 8) & 0xFF);
+					mInfoMemBytes[infoMemLayout.idxEstimatedExpLengthLsb] = (byte) ((getTrialDurationEstimated() >> 0) & 0xFF);
+					mInfoMemBytes[infoMemLayout.idxEstimatedExpLengthMsb] = (byte) ((getTrialDurationEstimated() >> 8) & 0xFF);
+					mInfoMemBytes[infoMemLayout.idxMaxExpLengthLsb] = (byte) ((getTrialDurationMaximum() >> 0) & 0xFF);
+					mInfoMemBytes[infoMemLayout.idxMaxExpLengthMsb] = (byte) ((getTrialDurationMaximum() >> 8) & 0xFF);
 				}
 				
 				if(((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SDLOG))) {
@@ -7071,10 +7071,46 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	/**
+	 * @param mExperimentDurationEstimated the mExperimentDurationEstimated to set.  Min value is 1.
+	 */
+	public void setExperimentDurationEstimated(int mExperimentDurationEstimated) {
+    	int maxValue = (int) ((Math.pow(2, 16))-1); 
+    	if(mExperimentDurationEstimated>maxValue) {
+    		mExperimentDurationEstimated = maxValue;
+    	}
+    	else if(mExperimentDurationEstimated<=0) {
+    		mExperimentDurationEstimated = 1;
+    	}
+    	setTrialDurationEstimated(mExperimentDurationEstimated);
+	}
+
+	public void setTrialDurationEstimated(int trialDurationEstimated) {
+		mTrialDurationEstimated = trialDurationEstimated;
+	}
+
+	/**
 	 * @return the mTrialDurationMaximum
 	 */
 	public int getTrialDurationMaximum() {
 		return mTrialDurationMaximum;
+	}
+
+	/**
+	 * @param mExperimentDurationMaximum the mExperimentDurationMaximum to set. Min value is 0.
+	 */
+	public void setExperimentDurationMaximum(int mExperimentDurationMaximum) {
+    	int maxValue = (int) ((Math.pow(2, 16))-1); 
+    	if(mExperimentDurationMaximum>maxValue) {
+    		mExperimentDurationMaximum = maxValue;
+    	}
+    	else if(mExperimentDurationMaximum<0) {
+    		mExperimentDurationMaximum = 1;
+    	}
+    	setTrialDurationMaximum(mExperimentDurationMaximum);
+	}
+
+	public void setTrialDurationMaximum(int trialDurationMaximum) {
+		mTrialDurationMaximum = trialDurationMaximum;
 	}
 
 	/**
@@ -7359,34 +7395,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
     	this.mTrialNumberOfShimmers = mExperimentNumberOfShimmers;
 	}
 
-	/**
-	 * @param mExperimentDurationEstimated the mExperimentDurationEstimated to set.  Min value is 1.
-	 */
-	public void setExperimentDurationEstimated(int mExperimentDurationEstimated) {
-    	int maxValue = (int) ((Math.pow(2, 16))-1); 
-    	if(mExperimentDurationEstimated>maxValue) {
-    		mExperimentDurationEstimated = maxValue;
-    	}
-    	else if(mExperimentDurationEstimated<=0) {
-    		mExperimentDurationEstimated = 1;
-    	}
-    	this.mTrialDurationEstimated = mExperimentDurationEstimated;
-	}
-
-	/**
-	 * @param mExperimentDurationMaximum the mExperimentDurationMaximum to set. Min value is 0.
-	 */
-	public void setExperimentDurationMaximum(int mExperimentDurationMaximum) {
-    	int maxValue = (int) ((Math.pow(2, 16))-1); 
-    	if(mExperimentDurationMaximum>maxValue) {
-    		mExperimentDurationMaximum = maxValue;
-    	}
-    	else if(mExperimentDurationMaximum<0) {
-    		mExperimentDurationMaximum = 1;
-    	}
-    	this.mTrialDurationMaximum = mExperimentDurationMaximum;
-	}
-	
 //	/**
 //	 * @param state the mInternalExpPower state to set
 //	 */
