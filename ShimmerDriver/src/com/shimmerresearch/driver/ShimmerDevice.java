@@ -427,6 +427,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public void setShimmerUserAssignedName(String shimmerUserAssignedName) {
 		if(!shimmerUserAssignedName.isEmpty()){
+			//Remove any invalid characters
+			shimmerUserAssignedName = shimmerUserAssignedName.replaceAll(INVALID_TRIAL_NAME_CHAR, "");
+
 			//Don't allow the first char to be numeric - causes problems with MATLAB variable names
 			if(UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
 				shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
@@ -1063,7 +1066,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mTrialName;
 	}
 		
-	public static boolean isTrialNameInvalid(String trialName){
+	public static boolean isTrialOrShimmerNameInvalid(String trialName){
 		Pattern p = Pattern.compile(INVALID_TRIAL_NAME_CHAR);
 		Matcher m = p.matcher(trialName);
 		return m.find();
