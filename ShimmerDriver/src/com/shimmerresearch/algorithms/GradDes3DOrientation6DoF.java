@@ -177,11 +177,10 @@ public class GradDes3DOrientation6DoF extends GradDes3DOrientation {
         q4 += qDot4 * mSamplingPeriod;
 	    norm = 1.0 / Math.sqrt(q2 * q2 + q3 * q3 + q4 * q4 + q1 * q1);    // normalise quaternion
 	
+	    q1 = q1 * norm;
 	    q2 = q2 * norm;
 	    q3 = q3 * norm;
 	    q4 = q4 * norm;
-	    q1 = q1 * norm;
-
 	    
 	    return new Orientation3DObject(q1,q2,q3,q4);
 	}
