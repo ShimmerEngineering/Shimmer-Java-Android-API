@@ -4062,7 +4062,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void enable3DOrientation(boolean enable){
 		//enable the sensors if they have not been enabled 
-		mOrientationEnabled = enable;
+		set3DOrientation(enable);
 	}
 
 	/**
