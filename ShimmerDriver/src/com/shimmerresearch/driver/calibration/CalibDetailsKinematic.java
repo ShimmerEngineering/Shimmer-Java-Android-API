@@ -158,7 +158,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	 */
 	public boolean isSensitivityWithinRangeOfDefault(){
 		boolean isValid = true; 
-		int validScalingFactor = 50;
+		int validScalingFactor = 5;
 		
 		double[][] defaultSensitivityMatrix = getDefaultSensitivityMatrix();
 		double[][] currentSensitivityMatrix = getCurrentSensitivityMatrix();
