@@ -21,7 +21,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	/** * */
 	private static final long serialVersionUID = -4174847826978293223L;
 	
-	protected final double BETA = 1;
+	protected final double BETA = 0.5;
 	protected final double Q1 = 1;
 	protected final double Q2 = 1;
 	protected final double Q3 = 1;
