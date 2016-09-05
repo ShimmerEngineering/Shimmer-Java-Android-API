@@ -372,7 +372,27 @@ public class UtilShimmer implements Serializable {
 		}
 		return false; // if less or not the same FW ID
 	}
-	
+
+	/**Returns true if "this" version is greater or equal then comparison version
+	 * @param thisMajor
+	 * @param thisMinor
+	 * @param thisInternal
+	 * @param compMajor
+	 * @param compMinor
+	 * @param compInternal
+	 * @return
+	 */
+	public static boolean compareVersions(String thisMajor, String thisMinor, String thisInternal,
+			String compMajor, String compMinor, String compInternal) {
+
+		if ((thisMajor.compareTo(compMajor)>0)
+				||(thisMajor.equals(compMajor) && thisMinor.compareTo(compMinor)>0)
+				||(thisMajor.equals(compMajor) && thisMinor.equals(compMinor) && thisInternal.compareTo(compInternal)>=0)){
+			return true; // if FW ID is the same and version is greater or equal 
+		}
+		return false; // if less or not the same FW ID
+	}
+
 	public static String convertDuration(int duration){
 		
 		double totalSecs = duration/1000; //convert from miliseconds to seconds
