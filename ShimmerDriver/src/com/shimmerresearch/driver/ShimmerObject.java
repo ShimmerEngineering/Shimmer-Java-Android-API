@@ -1043,36 +1043,57 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected byte[] mEXG1RegisterArray = new byte[10];
 	protected byte[] mEXG2RegisterArray = new byte[10];
+	@Deprecated
 	protected int mEXG1RateSetting; //setting not value
+	@Deprecated
 	protected int mEXG1CH1GainSetting; // this is the setting not to be confused with the actual value
 	@Deprecated
 	protected int mEXG1CH1GainValue; // this is the value
+	@Deprecated
 	protected int mEXG1CH2GainSetting; // this is the setting not to be confused with the actual value
 	@Deprecated
 	protected int mEXG1CH2GainValue; // this is the value
+	@Deprecated
 	protected int mEXG2RateSetting; //setting not value
+	@Deprecated
 	protected int mEXG2CH1GainSetting; // this is the setting not to be confused with the actual value
 	@Deprecated
 	protected int mEXG2CH1GainValue; // this is the value
+	@Deprecated
 	protected int mEXG2CH2PowerDown;//Not used in ShimmerBluetooth
+	@Deprecated
 	protected int mEXG2CH2GainSetting; // this is the setting not to be confused with the actual value
 	@Deprecated
 	protected int mEXG2CH2GainValue; // this is the value
 	
 	//EXG ADVANCED
+	@Deprecated
 	protected int mEXGReferenceElectrode=-1;
+	@Deprecated
 	protected int mLeadOffDetectionMode;
+	@Deprecated
 	protected int mEXG1LeadOffCurrentMode;
+	@Deprecated
 	protected int mEXG2LeadOffCurrentMode;
+	@Deprecated
 	protected int mEXG1Comparators;
+	@Deprecated
 	protected int mEXG2Comparators;
+	@Deprecated
 	protected int mEXGRLDSense;
+	@Deprecated
 	protected int mEXG1LeadOffSenseSelection;
+	@Deprecated
 	protected int mEXG2LeadOffSenseSelection;
+	@Deprecated
 	protected int mEXGLeadOffDetectionCurrent;
+	@Deprecated
 	protected int mEXGLeadOffComparatorTreshold;
+	@Deprecated
 	protected int mEXG2RespirationDetectState;//Not used in ShimmerBluetooth
+	@Deprecated
 	protected int mEXG2RespirationDetectFreq;//Not used in ShimmerBluetooth
+	@Deprecated
 	protected int mEXG2RespirationDetectPhase;//Not used in ShimmerBluetooth
 	// ----------  ECG/EMG end ---------------
 	
