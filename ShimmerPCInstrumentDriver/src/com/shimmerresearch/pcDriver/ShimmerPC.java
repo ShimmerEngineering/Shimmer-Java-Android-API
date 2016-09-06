@@ -95,7 +95,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	private boolean mVerboseMode = true;
 //	private String mParentClassName = "ShimmerPC";
 	
-	double mLastSavedCalibratedTimeStamp = 0.0;
+	double mLastSavedCalibratedTimeStamp = -1;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
 	
 	/**
@@ -416,19 +416,17 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		
 		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
 		
-		if (mLastReceivedCalibratedTimeStamp!=-1){
+		if (mLastReceivedCalibratedTimeStamp!=-1 && mLastSavedCalibratedTimeStamp!=-1){
 			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
 			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
-			mPacketReceptionRateCurrent = (numPacketsReceived/numPacketsShouldHaveReceived)*100.0;
+			setPacketReceptionRateCurrent((numPacketsReceived/numPacketsShouldHaveReceived)*100.0);
 		}	
 
-		mPacketReceptionRateCurrent = UtilShimmer.nudgeDouble(mPacketReceptionRateCurrent, 0.0, 100.0);
-//		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent>100.0? 100.0:mPacketReceptionRateCurrent);
-//		mPacketReceptionRateCurrent = (mPacketReceptionRateCurrent<0? 0.0:mPacketReceptionRateCurrent);
+		if (mLastReceivedCalibratedTimeStamp!=-1){
+			mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
+		}
 
-		mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
-
-		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), mPacketReceptionRateCurrent);
+		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
 		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
 	}
 	

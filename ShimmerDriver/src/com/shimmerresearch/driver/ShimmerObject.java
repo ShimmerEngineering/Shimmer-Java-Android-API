@@ -2543,8 +2543,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE;
 				additionalChannelsOffset+=1;
 
-				objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRateCurrent);
-				calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRateCurrent;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)getPacketReceptionRateCurrent());
+				calibratedData[additionalChannelsOffset] = (double)getPacketReceptionRateCurrent();
 				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
 				uncalibratedData[additionalChannelsOffset] = Double.NaN;
 				uncalibratedDataUnits[additionalChannelsOffset] = "";
@@ -4622,16 +4622,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
 			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
-			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
-			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
+			double expectedTimeDifferenceLimit = expectedTimeDifference * 1.1; // 10% limit? 
 			if (timeDifference>expectedTimeDifferenceLimit){
-//				mPacketLossCount=mPacketLossCount+1;
-				mPacketLossCountPerTrial+= (long) (timeDifference/expectedTimeDifferenceLimit);
+				long packetLossCountPerTrial = getPacketLossCountPerTrial() + (long) (timeDifference/expectedTimeDifference);
+				setPacketLossCountPerTrial(packetLossCountPerTrial);
 			}
 		}
 		
-		Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
-		setPacketReceptionRateOverall((double)((mTotalNumberofPackets-mPacketLossCountPerTrial)/(double)mTotalNumberofPackets)*100);
+		Long totalNumberofPackets = (long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
+		if(totalNumberofPackets>0){
+			double packetReceptionRateTrial = (double)((totalNumberofPackets-getPacketLossCountPerTrial())/(double)totalNumberofPackets)*100; 
+			setPacketReceptionRateOverall(packetReceptionRateTrial);
+		}
+		
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			sendStatusMsgPacketLossDetected();
 		}
