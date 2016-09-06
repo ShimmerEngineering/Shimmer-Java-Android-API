@@ -8682,6 +8682,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
 	}
 	
+	
 	public boolean areExgChannelGainsEqual(List<EXG_CHIP_INDEX> listOfChipsToCheck){
 		boolean areEqual = true;
 		if(listOfChipsToCheck.contains(EXG_CHIP_INDEX.CHIP1)){
