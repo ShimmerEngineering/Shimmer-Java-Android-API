@@ -50,7 +50,14 @@ public class Shimmer6DoFor9DoFGui{
 	}
 	
 	public List<ChannelDetails> getChannelDetails(){
-		return orientationModule.getChannelDetails();
+		if(orientationModule != null){
+			return orientationModule.getChannelDetails();
+		}
+		else{
+			System.err.println("orientationModule.getChannelDetails() is NULL!");
+			return null;
+		}
+		
 	}
 	
 	/**
