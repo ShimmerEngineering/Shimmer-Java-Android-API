@@ -2,7 +2,7 @@ package com.shimmerresearch.algorithms;
 
 public class GradDes3DOrientation {
 	
-	public final static double BETA = 0.4;
+	public final static double BETA = 0.5;
 	public final static double Q1_INITIAL = 1;
 	public final static double Q2_INITIAL = 0;
 	public final static double Q3_INITIAL = 0;
