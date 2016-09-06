@@ -2718,15 +2718,15 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	
 
 	public double[][] getAlignmentMatrixGyro(){
-		return mCurrentCalibDetailsGyro.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsGyro.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixGyro(){
-		return mCurrentCalibDetailsGyro.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsGyro.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixGyro(){
-		return mCurrentCalibDetailsGyro.getCurrentOffsetVector();
+		return mCurrentCalibDetailsGyro.getValidOffsetVector();
 	}
 	
 	public double[][] getOffsetVectorMPLAccel(){

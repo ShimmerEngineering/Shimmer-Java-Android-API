@@ -54,9 +54,9 @@ public class UtilCalibration {
 		}
 		
 		return calibrateInertialSensorData(data, 
-				calibDetails.getCurrentAlignmentMatrix(), 
-				calibDetails.getCurrentSensitivityMatrix(), 
-				calibDetails.getCurrentOffsetVector());
+				calibDetails.getValidAlignmentMatrix(), 
+				calibDetails.getValidSensitivityMatrix(), 
+				calibDetails.getValidOffsetVector());
 	}
 	
 	public static double[][] matrixInverse3x3(double[][] data) {

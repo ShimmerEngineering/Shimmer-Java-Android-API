@@ -9523,17 +9523,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public double[][] getAlignmentMatrixAccel(){
 //		return mAlignmentMatrixAnalogAccel;
-		return mCurrentCalibDetailsAccelLn.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsAccelLn.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixAccel(){
 //		return mSensitivityMatrixAnalogAccel;
-		return mCurrentCalibDetailsAccelLn.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsAccelLn.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixAccel(){
 //		return mOffsetVectorAnalogAccel;
-		return mCurrentCalibDetailsAccelLn.getCurrentOffsetVector();
+		return mCurrentCalibDetailsAccelLn.getValidOffsetVector();
 	}
 	// ----------- KionixKXRB52042 - Analog Accelerometer end -----------------------------------
 
@@ -9799,27 +9799,27 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 	public double[][] getAlignmentMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsAccelWr.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsAccelWr.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getCurrentOffsetVector();
+		return mCurrentCalibDetailsAccelWr.getValidOffsetVector();
 	}
 
 	public double[][] getAlignmentMatrixMag(){
-		return mCurrentCalibDetailsMag.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsMag.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixMag(){
-		return mCurrentCalibDetailsMag.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsMag.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixMag(){
-		return mCurrentCalibDetailsMag.getCurrentOffsetVector();
+		return mCurrentCalibDetailsMag.getValidOffsetVector();
 	}
 
 	/** Only GQ BLE
@@ -10328,15 +10328,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
     
 	public double[][] getAlignmentMatrixGyro(){
-		return mCurrentCalibDetailsGyro.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsGyro.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixGyro(){
-		return mCurrentCalibDetailsGyro.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsGyro.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixGyro(){
-		return mCurrentCalibDetailsGyro.getCurrentOffsetVector();
+		return mCurrentCalibDetailsGyro.getValidOffsetVector();
 	}
 	
 	public double[][] getOffsetVectorMPLAccel(){

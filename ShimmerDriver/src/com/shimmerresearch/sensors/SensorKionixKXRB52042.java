@@ -470,16 +470,16 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}
 	
 	public double[][] getAlignmentMatrixAccel(){
-		return mCurrentCalibDetailsAccelLn.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsAccelLn.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixAccel(){
-		return mCurrentCalibDetailsAccelLn.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsAccelLn.getValidSensitivityMatrix();
 	}
 
 
 	public double[][] getOffsetVectorMatrixAccel(){
-		return mCurrentCalibDetailsAccelLn.getCurrentOffsetVector();
+		return mCurrentCalibDetailsAccelLn.getValidOffsetVector();
 	}
 	
 	public CalibDetailsKinematic getCurrentCalibDetails(int sensorMapKey, int range){
