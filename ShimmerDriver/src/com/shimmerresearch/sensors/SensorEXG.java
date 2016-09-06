@@ -1450,7 +1450,7 @@ public class SensorEXG extends AbstractSensor{
 				DatabaseConfigHandle.EXG1_RESPIRATION_1,
 				DatabaseConfigHandle.EXG1_RESPIRATION_2);
 		if(exg1Bytes!=null){
-			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1.ordinal(), exg1Bytes);
+			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1, exg1Bytes);
 		}
 		
 		byte[] exg2Bytes = SensorEXG.parseExgConfigFromDb(mapOfConfigPerShimmer, EXG_CHIP_INDEX.CHIP2, 
@@ -1465,7 +1465,7 @@ public class SensorEXG extends AbstractSensor{
 				DatabaseConfigHandle.EXG2_RESPIRATION_1,
 				DatabaseConfigHandle.EXG2_RESPIRATION_2);
 		if(exg2Bytes!=null){
-			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP2.ordinal(), exg2Bytes);
+			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP2, exg2Bytes);
 		}
 		
 		
@@ -1554,7 +1554,7 @@ public class SensorEXG extends AbstractSensor{
 	 *            the configuration byte array for an individual chip (10-bytes
 	 *            long)
 	 */
-	public void exgBytesGetConfigFrom(int chipIndex, byte[] byteArray) {
+	public void exgBytesGetConfigFrom(EXG_CHIP_INDEX chipIndex, byte[] byteArray) {
 		// to overcome possible backward compatability issues (where
 		// bufferAns.length was 11 or 12 using all of the ExG config bytes)
 		int index = 1;
@@ -1562,7 +1562,7 @@ public class SensorEXG extends AbstractSensor{
 			index = 0;
 		}
 		
-		if (chipIndex==1){
+		if (chipIndex==EXG_CHIP_INDEX.CHIP1){
 			System.arraycopy(byteArray, index, mEXG1RegisterArray, 0, 10);
 			// retrieve the gain and rate from the the registers
 			mEXG1RateSetting = mEXG1RegisterArray[0] & 7;
@@ -1581,7 +1581,7 @@ public class SensorEXG extends AbstractSensor{
 			mExGConfigBytesDetails.updateFromRegisterArray(EXG_CHIP_INDEX.CHIP1, mEXG1RegisterArray);
 		} 
 		
-		else if (chipIndex==2){
+		else if (chipIndex==EXG_CHIP_INDEX.CHIP2){
 			System.arraycopy(byteArray, index, mEXG2RegisterArray, 0, 10);
 			mEXG2RateSetting = mEXG2RegisterArray[0] & 7;
 			mEXG2CH1GainSetting = (mEXG2RegisterArray[3] >> 4) & 7;
@@ -1602,10 +1602,10 @@ public class SensorEXG extends AbstractSensor{
 		
 	}
 
-	public void exgBytesGetConfigFrom(byte[] mEXG1RegisterArray, byte[] mEXG2RegisterArray){
-		exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-		exgBytesGetConfigFrom(2, mEXG2RegisterArray);
-//		internalCheckExgModeAndUpdateSensorMap();
+	public void exgBytesGetConfigFrom(byte[] EXG1RegisterArray, byte[] EXG2RegisterArray){
+		setEXG1RegisterArray(EXG1RegisterArray);
+		setEXG2RegisterArray(EXG2RegisterArray);
+		internalCheckExgModeAndUpdateSensorMap();
 	}
 	
 	//TODO:2015-06-16 remove the need for this by using map
@@ -1836,22 +1836,6 @@ public class SensorEXG extends AbstractSensor{
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
 	 
-	/** Note: Doesn't update the Sensor Map
-	 * @param chipIndex
-	 * @param option
-	 */
-	protected void setExgPropertySingleChip(EXG_CHIP_INDEX chipIndex, ExGConfigOption option){
-		mExGConfigBytesDetails.setExgPropertySingleChip(chipIndex,option);
-		if(chipIndex==EXG_CHIP_INDEX.CHIP1){
-			mEXG1RegisterArray = mExGConfigBytesDetails.getEXG1RegisterArray();
-			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
-		}
-		else if(chipIndex==EXG_CHIP_INDEX.CHIP2){
-			mEXG2RegisterArray = mExGConfigBytesDetails.getEXG2RegisterArray();
-			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
-		}
-	}
-	
 	protected boolean isExgPropertyEnabled(EXG_CHIP_INDEX chipIndex, ExGConfigOption option){
 		return mExGConfigBytesDetails.isExgPropertyEnabled(chipIndex, option);
 	}
@@ -1863,6 +1847,21 @@ public class SensorEXG extends AbstractSensor{
 		
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
+
+	/** Note: Doesn't update the Sensor Map
+	 * @param chipIndex
+	 * @param option
+	 */
+	protected void setExgPropertySingleChip(EXG_CHIP_INDEX chipIndex, ExGConfigOption option){
+		mExGConfigBytesDetails.setExgPropertySingleChip(chipIndex, option);
+		if(chipIndex==EXG_CHIP_INDEX.CHIP1){
+			mEXG1RegisterArray = mExGConfigBytesDetails.getEXG1RegisterArray();
+		}
+		else if(chipIndex==EXG_CHIP_INDEX.CHIP2){
+			mEXG2RegisterArray = mExGConfigBytesDetails.getEXG2RegisterArray();
+		}
+		updateExgVariables(chipIndex);
+	}
 	
 	/** Note: Doesn't update the Sensor Map
 	 * @param chipIndex
@@ -1870,17 +1869,25 @@ public class SensorEXG extends AbstractSensor{
 	 * @param value
 	 */
 	public void setExgPropertySingleChipValue(EXG_CHIP_INDEX chipIndex, String propertyName, int value){
-		mExGConfigBytesDetails.setExgPropertyValue(chipIndex,propertyName,value);
+		mExGConfigBytesDetails.setExgPropertyValue(chipIndex, propertyName, value);
 		if(chipIndex==EXG_CHIP_INDEX.CHIP1){
 			mEXG1RegisterArray = mExGConfigBytesDetails.getEXG1RegisterArray();
-			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 		}
 		else if(chipIndex==EXG_CHIP_INDEX.CHIP2){
 			mEXG2RegisterArray = mExGConfigBytesDetails.getEXG2RegisterArray();
-			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
 		}
+		updateExgVariables(chipIndex);
 	}
 	
+	private void updateExgVariables(EXG_CHIP_INDEX chipIndex) {
+		if(chipIndex==EXG_CHIP_INDEX.CHIP1){
+			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1, mEXG1RegisterArray);
+		}
+		else if(chipIndex==EXG_CHIP_INDEX.CHIP2){
+			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1, mEXG2RegisterArray);
+		}
+	}
+
 	public int getExgPropertySingleChip(EXG_CHIP_INDEX chipIndex, String propertyName){
 		return mExGConfigBytesDetails.getExgPropertySingleChip(chipIndex, propertyName);
 	}
@@ -2221,15 +2228,14 @@ public class SensorEXG extends AbstractSensor{
 		setEXGRegisterArray(EXG_CHIP_INDEX.CHIP2, EXG2RegisterArray);
 	}
 
-	protected void setEXGRegisterArray(EXG_CHIP_INDEX chipId, byte[] EXGRegisterArray) {
-		if(chipId==EXG_CHIP_INDEX.CHIP1){
+	protected void setEXGRegisterArray(EXG_CHIP_INDEX chipIndex, byte[] EXGRegisterArray) {
+		if(chipIndex==EXG_CHIP_INDEX.CHIP1){
 			this.mEXG1RegisterArray = EXGRegisterArray;
-			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
 		}
-		else if(chipId==EXG_CHIP_INDEX.CHIP2){
+		else if(chipIndex==EXG_CHIP_INDEX.CHIP2){
 			this.mEXG2RegisterArray = EXGRegisterArray;
-			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
 		}
+		updateExgVariables(chipIndex);
 	}
 
 	/**
