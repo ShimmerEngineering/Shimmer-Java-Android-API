@@ -683,9 +683,9 @@ public class Shimmer4 extends ShimmerDevice {
 //					//do nothing
 //				}
 //				
-				mPacketLossCountPerTrial = 0;
-				setPacketReceptionRateOverall(100);
+				resetPacketLossTrial();
 				mFirstPacketParsed=true;
+				//TODO do similar as done in ShimmerBluetooth for the below
 //				mFirstTimeCalTime=true;
 //				resetCalibratedTimeStamp();
 //				mLastReceivedCalibratedTimeStamp = -1;
@@ -1264,8 +1264,8 @@ public class Shimmer4 extends ShimmerDevice {
 		AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);
 		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
 			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
-			mPacketReceptionRateCurrent = shimmerClock.calculatePacketReceptionRateCurrent(intervalMs);
-			CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), mPacketReceptionRateCurrent);
+			setPacketReceptionRateCurrent(shimmerClock.calculatePacketReceptionRateCurrent(intervalMs));
+			CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
 			sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
 		}
 

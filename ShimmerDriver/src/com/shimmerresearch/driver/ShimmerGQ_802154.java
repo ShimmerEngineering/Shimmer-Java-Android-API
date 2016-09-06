@@ -231,9 +231,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 
 	private double calculatePacketLoss(long packetExpectedCount, long packetReceivedCount){
-		mPacketReceptionRateCurrent = (double)((packetReceivedCount)/(double)packetExpectedCount)*100;
-		mPacketReceptionRateCurrent = UtilShimmer.nudgeDouble(mPacketReceptionRateCurrent, 0.0, 100.0);
-		return mPacketReceptionRateCurrent;
+		setPacketReceptionRateCurrent((double)((packetReceivedCount)/(double)packetExpectedCount)*100);
+		//TODO 2016-09-06 remove below because if it is going to be implemented it should be in the method setPacketReceptionRateCurrent()?
+		setPacketReceptionRateCurrent(UtilShimmer.nudgeDouble(getPacketReceptionRateCurrent(), 0.0, 100.0));
+		return getPacketReceptionRateCurrent();
 	}
 	
 

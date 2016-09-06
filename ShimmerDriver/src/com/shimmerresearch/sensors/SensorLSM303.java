@@ -1408,30 +1408,30 @@ public class SensorLSM303 extends AbstractSensor{
 
 	
 	public double[][] getAlignmentMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsAccelWr.getValidAlignmentMatrix();
 	}
 
 	
 	public double[][] getSensitivityMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsAccelWr.getValidSensitivityMatrix();
 	}
 
 	
 	public double[][] getOffsetVectorMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getCurrentOffsetVector();
+		return mCurrentCalibDetailsAccelWr.getValidOffsetVector();
 	}
 
 	
 	public double[][] getAlignmentMatrixMag(){
-		return mCurrentCalibDetailsMag.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsMag.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixMag(){
-		return mCurrentCalibDetailsMag.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsMag.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixMag(){
-		return mCurrentCalibDetailsMag.getCurrentOffsetVector();
+		return mCurrentCalibDetailsMag.getValidOffsetVector();
 	}
 	
 	public void updateCurrentMagCalibInUse(){

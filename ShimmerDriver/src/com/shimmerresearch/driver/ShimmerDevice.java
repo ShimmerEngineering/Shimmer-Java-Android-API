@@ -159,9 +159,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
 	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
-	protected long mPacketLossCountPerTrial = 0;		//Used by ShimmerBluetooth
-	protected double mPacketReceptionRateOverall = 100;
-	protected double mPacketReceptionRateCurrent = 100;
+	private long mPacketLossCountPerTrial = 0;		//Used by ShimmerBluetooth
+	private double mPacketReceptionRateOverall = 100.0;
+	private double mPacketReceptionRateCurrent = 100.0;
 	
 	//Events markers
 	protected int mEventMarkersCodeLast = 0;
@@ -805,9 +805,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public byte[] getShimmerInfoMemBytesOriginal() {
 		return mInfoMemBytesOriginal;
 	}
+	
+	protected void resetPacketLossTrial() {
+		mPacketLossCountPerTrial = 0;
+		setPacketReceptionRateOverall(100.0);
+	}
 
 	public void setPacketReceptionRateOverall(double packetReceptionRateTrial){
-		mPacketReceptionRateOverall = packetReceptionRateTrial;
+		mPacketReceptionRateOverall = UtilShimmer.nudgeDouble(packetReceptionRateTrial, 0.0, 100.0);
+//		mPacketReceptionRateOverall = packetReceptionRateTrial;
 	}
 
 	public double getPacketReceptionRateOverall(){
@@ -816,11 +822,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	@Deprecated
 	public double getPacketReceptionRate(){
-		return mPacketReceptionRateOverall;
+		return getPacketReceptionRateOverall();
 	}
 
 	public void setPacketReceptionRateCurrent(double packetReceptionRateCurrent){
-		mPacketReceptionRateCurrent = packetReceptionRateCurrent;
+		// Need to keep in range because the Bluetooth data is processed in
+		// blocks and not necessarily at a fixed number of packets per second.
+		// Probably the same for other communication protocols
+		mPacketReceptionRateCurrent = UtilShimmer.nudgeDouble(packetReceptionRateCurrent, 0.0, 100.0);
+//		mPacketReceptionRateCurrent = packetReceptionRateCurrent;
 	}
 
 	public double getPacketReceptionRateCurrent(){

@@ -771,6 +771,7 @@ public class ShimmerClock extends AbstractSensor {
 		
 	}
 
+	/** Mirrors calibrateTimeStamp() in ShimmerObject */
 	protected double calibrateTimeStamp(double timeStamp){
 		//first convert to continuous time stamp
 		double calibratedTimeStamp = 0;
@@ -784,50 +785,23 @@ public class ShimmerClock extends AbstractSensor {
 			mFirstTimeCalTime=false;
 			mCalTimeStart = calibratedTimeStamp;
 		}
-		
 
+		//Calculate packet loss
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
 			double expectedTimeDifference = (1/mShimmerDevice.getSamplingRateShimmer())*1000;
 			double expectedTimeDifferenceLimit = expectedTimeDifference * 1.1; // 10% limit? 
-			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
 			if (timeDifference>expectedTimeDifferenceLimit){
-//				mPacketLossCount=mPacketLossCount+1;
-				mShimmerDevice.setPacketLossCountPerTrial(mShimmerDevice.getPacketLossCountPerTrial() + (long) (timeDifference/expectedTimeDifferenceLimit));
+				long packetLossCountPerTrial = mShimmerDevice.getPacketLossCountPerTrial() + (long) (timeDifference/expectedTimeDifference);
+				mShimmerDevice.setPacketLossCountPerTrial(packetLossCountPerTrial);
 			}
 		}
 		
-		Long mTotalNumberofPackets = (long) ((calibratedTimeStamp-mCalTimeStart)/(1/mShimmerDevice.getSamplingRateShimmer()*1000));
-		double packetReceptionRateTrial = (double)((mTotalNumberofPackets-mShimmerDevice.getPacketLossCountPerTrial())/(double)mTotalNumberofPackets)*100;
-//		packetReceptionRateTrial = UtilShimmer.nudgeDouble(mShimmerDevice.getPacketReceptionRateTrial(), 0.0, 100.0);
-		mShimmerDevice.setPacketReceptionRateOverall(packetReceptionRateTrial);
-		
-//		if (mLastReceivedCalibratedTimeStamp!=-1){
-//			mFlagPacketLoss = true;
-//			//TODO
-////			mShimmerDevice.sendStatusMsgPacketLossDetected();
-//		}
-		
-		
-//		if (mLastReceivedCalibratedTimeStamp!=-1){
-//			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
-//			//TODO don't use mMaxSetShimmerSamplingRate? base it on communication type?
-////			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
-//			double expectedTimeDifference = (1/mMaxSetShimmerSamplingRate)*1000;
-//			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
-//			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
-//			if (timeDifference>expectedTimeDifferenceLimit){
-////				mPacketLossCount=mPacketLossCount+1;
-//				mPacketLossCount+= (long) (timeDifference/expectedTimeDifferenceLimit);
-//				//TODO don't use mMaxSetShimmerSamplingRate? base it on communication type?
-////				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
-//				Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/mMaxSetShimmerSamplingRate*1000));
-//
-//				mPacketReceptionRate = (double)((mTotalNumberofPackets-mPacketLossCount)/(double)mTotalNumberofPackets)*100;
-//				//TODO
-////				sendStatusMsgPacketLossDetected();
-//			}
-//		}
+		Long totalNumberofPackets = (long) ((calibratedTimeStamp-mCalTimeStart)/(1/mShimmerDevice.getSamplingRateShimmer()*1000));
+		if(totalNumberofPackets>0){
+			double packetReceptionRateTrial = (double)((totalNumberofPackets-mShimmerDevice.getPacketLossCountPerTrial())/(double)totalNumberofPackets)*100;
+			mShimmerDevice.setPacketReceptionRateOverall(packetReceptionRateTrial);
+		}
 		
 		mLastReceivedCalibratedTimeStamp = calibratedTimeStamp;
 		return calibratedTimeStamp;

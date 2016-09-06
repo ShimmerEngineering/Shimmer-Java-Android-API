@@ -156,20 +156,53 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	 * @return boolean: true if the sensitivity is outside of the percentage range of the default sensitivity 
 	 * where the percentage is defined by validScaling factor
 	 */
+//	public boolean isSensitivityWithinRangeOfDefault(){
+//		boolean isValid = true; 
+//		int validScalingFactor = 5;
+//		
+//		double[][] defaultSensitivityMatrix = getDefaultSensitivityMatrix();
+//		double[][] currentSensitivityMatrix = getCurrentSensitivityMatrix();
+//		
+//		for (int i = 0; i<defaultSensitivityMatrix[0].length; i++){
+//		     for (int j = 0; j<defaultSensitivityMatrix.length; j++){
+//		    	 double defaultValue = defaultSensitivityMatrix[i][j];
+//		    	 double currentValue = currentSensitivityMatrix[i][j];
+//		    	 
+//		    	 double minValidValue = defaultValue / validScalingFactor;
+//		    	 double maxValidValue = defaultValue * validScalingFactor;
+//		    	 
+//		    	 if(currentValue != 0){
+//			    	 if(currentValue >= maxValidValue || currentValue <= minValidValue){
+//			    		 isValid = false;
+//			    		 break;
+//			    	 }
+//		    	 }
+//		     }
+//		}
+//		
+//		return isValid;
+//	}
+	
+	/**
+	 * Method to perform a basic sanity check on the sensitivity of the IMUs, implemented
+	 * as there were instances when the sensitivity of the gyroscope was -0.01 or 0.65 for example
+	 * @return boolean: true if the sensitivity is outside of the percentage range of the default sensitivity 
+	 * where the percentage is defined by validScaling factor
+	 */
 	public boolean isSensitivityWithinRangeOfDefault(){
 		boolean isValid = true; 
-		int validScalingFactor = 5;
+		double validScalingFactor = 0.4; // +-40% = Aribitrary value
 		
 		double[][] defaultSensitivityMatrix = getDefaultSensitivityMatrix();
-		double[][] currentSensitivityMatrix = getCurrentSensitivityMatrix();
+		double[][] currentSensitivityMatrix = getValidSensitivityMatrix();
 		
-		for (int i = 0; i<defaultSensitivityMatrix[0].length; i++){
-		     for (int j = 0; j<defaultSensitivityMatrix.length; j++){
+		for (int i = 0; i<defaultSensitivityMatrix.length; i++){
+		     for (int j = 0; j<defaultSensitivityMatrix[i].length; j++){
 		    	 double defaultValue = defaultSensitivityMatrix[i][j];
 		    	 double currentValue = currentSensitivityMatrix[i][j];
 		    	 
-		    	 double minValidValue = defaultValue / validScalingFactor;
-		    	 double maxValidValue = defaultValue * validScalingFactor;
+		    	 double minValidValue = defaultValue * (1 - validScalingFactor);
+		    	 double maxValidValue = defaultValue * (1 + validScalingFactor);
 		    	 
 		    	 if(currentValue != 0){
 			    	 if(currentValue >= maxValidValue || currentValue <= minValidValue){
@@ -279,28 +312,42 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		return bufferCalibParam;
 	}	
 	
-	public double[][] getCurrentAlignmentMatrix() {
+	public double[][] getValidAlignmentMatrix() {
+		double[][] currentAlignmentMatrix = getCurrentAlignmentMatrix();
+		return (currentAlignmentMatrix!=null? currentAlignmentMatrix:getDefaultAlignmentMatrix());
+	}
+
+	private double[][] getCurrentAlignmentMatrix() {
 		if(mCurrentCalibration!=null && mCurrentCalibration.mAlignmentMatrix!=null)
 			return mCurrentCalibration.mAlignmentMatrix;
 		else
-			return getDefaultAlignmentMatrix();
+			return null;
 	}
 
-	public double[][] getCurrentSensitivityMatrix() {
+	public double[][] getValidSensitivityMatrix() {
+		double[][] currentSensitivityMatrix = getCurrentSensitivityMatrix();
+		return (currentSensitivityMatrix!=null? currentSensitivityMatrix:getDefaultSensitivityMatrix());
+	}
+
+	private double[][] getCurrentSensitivityMatrix() {
 		if(mCurrentCalibration!=null && mCurrentCalibration.mSensitivityMatrix!=null)
 			return mCurrentCalibration.mSensitivityMatrix;
 		else
-			return getDefaultSensitivityMatrix();
+			return null;
 	}
 
-	public double[][] getCurrentOffsetVector() {
+	public double[][] getValidOffsetVector() {
+		double[][] currentOffsetVector = getCurrentOffsetVector();
+		return (currentOffsetVector!=null? currentOffsetVector:getDefaultOffsetVector());
+	}
+	
+	private double[][] getCurrentOffsetVector() {
 		if(mCurrentCalibration!=null && mCurrentCalibration.mOffsetVector!=null)
 			return mCurrentCalibration.mOffsetVector;
 		else
-			return getDefaultOffsetVector();
+			return null;
 	}
-	
-	
+
 	public double[][] getEmptyOffsetVector() {
 		if(mEmptyCalibration==null){
 			return null;
@@ -451,11 +498,11 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	public String getDebugString() {
 		String debugString = "RangeString:" + mRangeString + "\t" + "RangeValue:" + mRangeValue + "\n";
 		debugString += generateDebugStringPerProperty("Default Offset Vector", getDefaultOffsetVector());
-		debugString += generateDebugStringPerProperty("Current Offset Vector", getCurrentOffsetVector());//mCurrentOffsetVector);
+		debugString += generateDebugStringPerProperty("Current Offset Vector", getValidOffsetVector());//mCurrentOffsetVector);
 		debugString += generateDebugStringPerProperty("Default Sensitivity", getDefaultSensitivityMatrix());
-		debugString += generateDebugStringPerProperty("CurrentSensitivity", getCurrentSensitivityMatrix());//mCurrentSensitivityMatrix);
+		debugString += generateDebugStringPerProperty("CurrentSensitivity", getValidSensitivityMatrix());//mCurrentSensitivityMatrix);
 		debugString += generateDebugStringPerProperty("Default Alignment", getDefaultAlignmentMatrix());
-		debugString += generateDebugStringPerProperty("Current Alignment", getCurrentAlignmentMatrix());//mCurrentAlignmentMatrix);
+		debugString += generateDebugStringPerProperty("Current Alignment", getValidAlignmentMatrix());//mCurrentAlignmentMatrix);
 		return debugString;
 	}
 

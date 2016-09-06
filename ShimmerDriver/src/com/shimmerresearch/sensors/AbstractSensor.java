@@ -602,25 +602,25 @@ public abstract class AbstractSensor implements Serializable{
 			String alignYx, String alignYy, String alignYz,
 			String alignZx, String alignZy, String alignZz) {
 
-		mapOfConfig.put(offsetX, calibDetails.getCurrentOffsetVector()[0][0]);
-		mapOfConfig.put(offsetY, calibDetails.getCurrentOffsetVector()[1][0]);
-		mapOfConfig.put(offsetZ, calibDetails.getCurrentOffsetVector()[2][0]);
+		mapOfConfig.put(offsetX, calibDetails.getValidOffsetVector()[0][0]);
+		mapOfConfig.put(offsetY, calibDetails.getValidOffsetVector()[1][0]);
+		mapOfConfig.put(offsetZ, calibDetails.getValidOffsetVector()[2][0]);
 
-		mapOfConfig.put(gainX, calibDetails.getCurrentSensitivityMatrix()[0][0]);
-		mapOfConfig.put(gainY, calibDetails.getCurrentSensitivityMatrix()[1][1]);
-		mapOfConfig.put(gainZ, calibDetails.getCurrentSensitivityMatrix()[2][2]);
+		mapOfConfig.put(gainX, calibDetails.getValidSensitivityMatrix()[0][0]);
+		mapOfConfig.put(gainY, calibDetails.getValidSensitivityMatrix()[1][1]);
+		mapOfConfig.put(gainZ, calibDetails.getValidSensitivityMatrix()[2][2]);
 
-		mapOfConfig.put(alignXx, calibDetails.getCurrentAlignmentMatrix()[0][0]);
-		mapOfConfig.put(alignXy, calibDetails.getCurrentAlignmentMatrix()[0][1]);
-		mapOfConfig.put(alignXz, calibDetails.getCurrentAlignmentMatrix()[0][2]);
+		mapOfConfig.put(alignXx, calibDetails.getValidAlignmentMatrix()[0][0]);
+		mapOfConfig.put(alignXy, calibDetails.getValidAlignmentMatrix()[0][1]);
+		mapOfConfig.put(alignXz, calibDetails.getValidAlignmentMatrix()[0][2]);
 		
-		mapOfConfig.put(alignYx, calibDetails.getCurrentAlignmentMatrix()[1][0]);
-		mapOfConfig.put(alignYy, calibDetails.getCurrentAlignmentMatrix()[1][1]);
-		mapOfConfig.put(alignYz, calibDetails.getCurrentAlignmentMatrix()[1][2]);
+		mapOfConfig.put(alignYx, calibDetails.getValidAlignmentMatrix()[1][0]);
+		mapOfConfig.put(alignYy, calibDetails.getValidAlignmentMatrix()[1][1]);
+		mapOfConfig.put(alignYz, calibDetails.getValidAlignmentMatrix()[1][2]);
 		
-		mapOfConfig.put(alignZx, calibDetails.getCurrentAlignmentMatrix()[2][0]);
-		mapOfConfig.put(alignZy, calibDetails.getCurrentAlignmentMatrix()[2][1]);
-		mapOfConfig.put(alignZz, calibDetails.getCurrentAlignmentMatrix()[2][2]);
+		mapOfConfig.put(alignZx, calibDetails.getValidAlignmentMatrix()[2][0]);
+		mapOfConfig.put(alignZy, calibDetails.getValidAlignmentMatrix()[2][1]);
+		mapOfConfig.put(alignZz, calibDetails.getValidAlignmentMatrix()[2][2]);
 		
 		if(!calibTimeHandle.isEmpty()){
 			mapOfConfig.put(calibTimeHandle, calibDetails.getCalibTimeMs());

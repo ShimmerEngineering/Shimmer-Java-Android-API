@@ -1124,14 +1124,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		objectCluster.setMacAddress(mMyBluetoothAddress);
 		objectCluster.mRawData = newPacket;
 		
-		long systemTime = System.currentTimeMillis();
-		if(fwType == FW_TYPE_BT){
-			systemTime = pcTimestamp;
-			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
-			objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime);
-		}
-		
-		
 		if(fwType != FW_TYPE_BT && fwType != FW_TYPE_SD){
 			throw new Exception("The Firmware is not compatible");
 		}
@@ -1144,7 +1136,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int numAdditionalChannels = 0;
 		
 		if (fwType == FW_TYPE_BT){
-			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
+			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(pcTimestamp).array();
 			//plus 1 because of: timestamp
 			numAdditionalChannels += 1;
 			
@@ -2543,8 +2535,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE;
 				additionalChannelsOffset+=1;
 
-				objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRateCurrent);
-				calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRateCurrent;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)getPacketReceptionRateCurrent());
+				calibratedData[additionalChannelsOffset] = (double)getPacketReceptionRateCurrent();
 				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
 				uncalibratedData[additionalChannelsOffset] = Double.NaN;
 				uncalibratedDataUnits[additionalChannelsOffset] = "";
@@ -2559,7 +2551,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL;
 				additionalChannelsOffset+=1;
 				
-				calibratedData[additionalChannelsOffset] = (double)systemTime;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,(double)pcTimestamp);
+				calibratedData[additionalChannelsOffset] = (double)pcTimestamp;
 				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.MILLISECONDS;
 				uncalibratedData[additionalChannelsOffset] = Double.NaN;
 				uncalibratedDataUnits[additionalChannelsOffset] = "";
@@ -4622,16 +4615,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
 			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
-			double expectedTimeDifferenceLimit = expectedTimeDifference + (expectedTimeDifference*0.1); 
-			//if (timeDifference>(1/(mShimmerSamplingRate-1))*1000){
+			double expectedTimeDifferenceLimit = expectedTimeDifference * 1.1; // 10% limit? 
 			if (timeDifference>expectedTimeDifferenceLimit){
-//				mPacketLossCount=mPacketLossCount+1;
-				mPacketLossCountPerTrial+= (long) (timeDifference/expectedTimeDifferenceLimit);
+				long packetLossCountPerTrial = getPacketLossCountPerTrial() + (long) (timeDifference/expectedTimeDifference);
+				setPacketLossCountPerTrial(packetLossCountPerTrial);
 			}
 		}
 		
-		Long mTotalNumberofPackets=(long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
-		setPacketReceptionRateOverall((double)((mTotalNumberofPackets-mPacketLossCountPerTrial)/(double)mTotalNumberofPackets)*100);
+		Long totalNumberofPackets = (long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
+		if(totalNumberofPackets>0){
+			double packetReceptionRateTrial = (double)((totalNumberofPackets-getPacketLossCountPerTrial())/(double)totalNumberofPackets)*100; 
+			setPacketReceptionRateOverall(packetReceptionRateTrial);
+		}
+		
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			sendStatusMsgPacketLossDetected();
 		}
@@ -9527,17 +9523,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public double[][] getAlignmentMatrixAccel(){
 //		return mAlignmentMatrixAnalogAccel;
-		return mCurrentCalibDetailsAccelLn.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsAccelLn.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixAccel(){
 //		return mSensitivityMatrixAnalogAccel;
-		return mCurrentCalibDetailsAccelLn.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsAccelLn.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixAccel(){
 //		return mOffsetVectorAnalogAccel;
-		return mCurrentCalibDetailsAccelLn.getCurrentOffsetVector();
+		return mCurrentCalibDetailsAccelLn.getValidOffsetVector();
 	}
 	// ----------- KionixKXRB52042 - Analog Accelerometer end -----------------------------------
 
@@ -9803,27 +9799,27 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 	public double[][] getAlignmentMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsAccelWr.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsAccelWr.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getCurrentOffsetVector();
+		return mCurrentCalibDetailsAccelWr.getValidOffsetVector();
 	}
 
 	public double[][] getAlignmentMatrixMag(){
-		return mCurrentCalibDetailsMag.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsMag.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixMag(){
-		return mCurrentCalibDetailsMag.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsMag.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixMag(){
-		return mCurrentCalibDetailsMag.getCurrentOffsetVector();
+		return mCurrentCalibDetailsMag.getValidOffsetVector();
 	}
 
 	/** Only GQ BLE
@@ -10332,15 +10328,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
     
 	public double[][] getAlignmentMatrixGyro(){
-		return mCurrentCalibDetailsGyro.getCurrentAlignmentMatrix();
+		return mCurrentCalibDetailsGyro.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixGyro(){
-		return mCurrentCalibDetailsGyro.getCurrentSensitivityMatrix();
+		return mCurrentCalibDetailsGyro.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixGyro(){
-		return mCurrentCalibDetailsGyro.getCurrentOffsetVector();
+		return mCurrentCalibDetailsGyro.getValidOffsetVector();
 	}
 	
 	public double[][] getOffsetVectorMPLAccel(){

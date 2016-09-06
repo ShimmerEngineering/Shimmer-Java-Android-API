@@ -2294,12 +2294,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//do nothing
 		}
 		
-		mPacketLossCountPerTrial = 0;
-		setPacketReceptionRateOverall(100);
 		mFirstPacketParsed=true;
-		mFirstTimeCalTime=true;
 		resetCalibratedTimeStamp();
-		mLastReceivedCalibratedTimeStamp = -1;
+		resetPacketLossTrial();
 		mSync=true; // a backup sync done every time you start streaming
 	}
 	
