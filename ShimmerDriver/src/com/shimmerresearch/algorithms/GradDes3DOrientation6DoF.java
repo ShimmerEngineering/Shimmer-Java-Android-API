@@ -41,8 +41,6 @@ package com.shimmerresearch.algorithms;
  * 
  */
 
-
-
 /*
  * Copyright (c) 2010, Shimmer Research, Ltd.
  * All rights reserved
@@ -120,7 +118,7 @@ public class GradDes3DOrientation6DoF extends GradDes3DOrientation {
 		qDot2 = 0.5f * (q1 * gx + q3 * gz - q4 * gy);
 		qDot3 = 0.5f * (q1 * gy - q2 * gz + q4 * gx);
 		qDot4 = 0.5f * (q1 * gz + q2 * gy - q3 * gx);
-
+	
 		// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
 		if(!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
 
@@ -136,7 +134,7 @@ public class GradDes3DOrientation6DoF extends GradDes3DOrientation {
 			
 			    }
 
-			// Auxiliary variables to avoid repeated arithmetic
+			// Auxiliary variables to avoid repeated  
 			_2q1 = 2.0f * q1;
 			_2q2 = 2.0f * q2;
 			_2q3 = 2.0f * q3;
