@@ -1884,7 +1884,7 @@ public class SensorEXG extends AbstractSensor{
 			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1, mEXG1RegisterArray);
 		}
 		else if(chipIndex==EXG_CHIP_INDEX.CHIP2){
-			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1, mEXG2RegisterArray);
+			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP2, mEXG2RegisterArray);
 		}
 	}
 

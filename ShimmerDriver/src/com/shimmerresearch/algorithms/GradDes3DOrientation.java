@@ -8,7 +8,7 @@ public class GradDes3DOrientation {
 	public final static double Q3_INITIAL = 0;
 	public final static double Q4_INITIAL = 0;
 
-	double mBeta = 0.5;
+	double mBeta = BETA;
     double mSamplingPeriod = 1;
     double q1, q2, q3, q4;
 
