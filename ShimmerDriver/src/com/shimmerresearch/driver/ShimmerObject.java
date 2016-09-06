@@ -1044,57 +1044,57 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected byte[] mEXG1RegisterArray = new byte[10];
 	protected byte[] mEXG2RegisterArray = new byte[10];
 	@Deprecated
-	protected int mEXG1RateSetting; //setting not value
+	private int mEXG1RateSetting; //setting not value
 	@Deprecated
-	protected int mEXG1CH1GainSetting; // this is the setting not to be confused with the actual value
+	private int mEXG1CH1GainSetting; // this is the setting not to be confused with the actual value
 	@Deprecated
-	protected int mEXG1CH1GainValue; // this is the value
+	private int mEXG1CH1GainValue; // this is the value
 	@Deprecated
-	protected int mEXG1CH2GainSetting; // this is the setting not to be confused with the actual value
+	private int mEXG1CH2GainSetting; // this is the setting not to be confused with the actual value
 	@Deprecated
-	protected int mEXG1CH2GainValue; // this is the value
+	private int mEXG1CH2GainValue; // this is the value
 	@Deprecated
-	protected int mEXG2RateSetting; //setting not value
+	private int mEXG2RateSetting; //setting not value
 	@Deprecated
-	protected int mEXG2CH1GainSetting; // this is the setting not to be confused with the actual value
+	private int mEXG2CH1GainSetting; // this is the setting not to be confused with the actual value
 	@Deprecated
-	protected int mEXG2CH1GainValue; // this is the value
+	private int mEXG2CH1GainValue; // this is the value
 	@Deprecated
-	protected int mEXG2CH2PowerDown;//Not used in ShimmerBluetooth
+	private int mEXG2CH2PowerDown;//Not used in ShimmerBluetooth
 	@Deprecated
-	protected int mEXG2CH2GainSetting; // this is the setting not to be confused with the actual value
+	private int mEXG2CH2GainSetting; // this is the setting not to be confused with the actual value
 	@Deprecated
-	protected int mEXG2CH2GainValue; // this is the value
+	private int mEXG2CH2GainValue; // this is the value
 	
 	//EXG ADVANCED
 	@Deprecated
-	protected int mEXGReferenceElectrode=-1;
+	private int mEXGReferenceElectrode=-1;
 	@Deprecated
-	protected int mLeadOffDetectionMode;
+	private int mLeadOffDetectionMode;
 	@Deprecated
-	protected int mEXG1LeadOffCurrentMode;
+	private int mEXG1LeadOffCurrentMode;
 	@Deprecated
-	protected int mEXG2LeadOffCurrentMode;
+	private int mEXG2LeadOffCurrentMode;
 	@Deprecated
-	protected int mEXG1Comparators;
+	private int mEXG1Comparators;
 	@Deprecated
-	protected int mEXG2Comparators;
+	private int mEXG2Comparators;
 	@Deprecated
-	protected int mEXGRLDSense;
+	private int mEXGRLDSense;
 	@Deprecated
-	protected int mEXG1LeadOffSenseSelection;
+	private int mEXG1LeadOffSenseSelection;
 	@Deprecated
-	protected int mEXG2LeadOffSenseSelection;
+	private int mEXG2LeadOffSenseSelection;
 	@Deprecated
-	protected int mEXGLeadOffDetectionCurrent;
+	private int mEXGLeadOffDetectionCurrent;
 	@Deprecated
-	protected int mEXGLeadOffComparatorTreshold;
+	private int mEXGLeadOffComparatorTreshold;
 	@Deprecated
-	protected int mEXG2RespirationDetectState;//Not used in ShimmerBluetooth
+	private int mEXG2RespirationDetectState;//Not used in ShimmerBluetooth
 	@Deprecated
-	protected int mEXG2RespirationDetectFreq;//Not used in ShimmerBluetooth
+	private int mEXG2RespirationDetectFreq;//Not used in ShimmerBluetooth
 	@Deprecated
-	protected int mEXG2RespirationDetectPhase;//Not used in ShimmerBluetooth
+	private int mEXG2RespirationDetectPhase;//Not used in ShimmerBluetooth
 	// ----------  ECG/EMG end ---------------
 	
 	// ---------- GSR start ------------------
@@ -8654,33 +8654,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public int getExGGainSetting(){
-//		mEXG1CH1GainSetting = i;
-//		mEXG1CH2GainSetting = i;
-//		mEXG2CH1GainSetting = i;
-//		mEXG2CH2GainSetting = i;
 //		System.out.println("SlotDetails: getExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
-//		return this.mEXG1CH1GainSetting;
 		return getExg1CH1GainValue();
 	}
 	
 	public int getExg1CH1GainValue(){
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
-//		return mEXG1CH1GainValue;
 	}
 	
 	public int getExg1CH2GainValue(){
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
-//		return mEXG1CH2GainValue;
 	}
 	
 	public int getExg2CH1GainValue(){
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
-//		return mEXG2CH1GainValue;
 	}
 	
 	public int getExg2CH2GainValue(){
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
-//		return mEXG2CH2GainValue;
 	}
 	
 	public boolean areExgChannelGainsEqual(List<EXG_CHIP_INDEX> listOfChipsToCheck){
@@ -8805,16 +8796,25 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param mEXG1RegisterArray the mEXG1RegisterArray to set
 	 */
 	protected void setEXG1RegisterArray(byte[] EXG1RegisterArray) {
-		this.mEXG1RegisterArray = EXG1RegisterArray;
-		exgBytesGetConfigFrom(1, EXG1RegisterArray);
+		setEXGRegisterArray(EXG_CHIP_INDEX.CHIP1, EXG1RegisterArray);
 	}
 
 	/** Note: Doesn't update the Sensor Map
 	 * @param mEXG2RegisterArray the mEXG2RegisterArray to set
 	 */
 	protected void setEXG2RegisterArray(byte[] EXG2RegisterArray) {
-		this.mEXG2RegisterArray = EXG2RegisterArray;
-		exgBytesGetConfigFrom(2, EXG2RegisterArray);
+		setEXGRegisterArray(EXG_CHIP_INDEX.CHIP2, EXG2RegisterArray);
+	}
+
+	protected void setEXGRegisterArray(EXG_CHIP_INDEX chipId, byte[] EXGRegisterArray) {
+		if(chipId==EXG_CHIP_INDEX.CHIP1){
+			this.mEXG1RegisterArray = EXGRegisterArray;
+			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+		}
+		else if(chipId==EXG_CHIP_INDEX.CHIP2){
+			this.mEXG2RegisterArray = EXGRegisterArray;
+			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+		}
 	}
 
 
@@ -8990,30 +8990,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG9_RESPIRATION_PHASE, mEXG2RespirationDetectPhase);
 	}
 	
-	//Moved to SensorEXG
-//	protected static int convertEXGGainSettingToValue(int setting){
-//
-//		if (setting==0){
-//			return 6;
-//		} else if (setting==1){
-//			return 1;
-//		} else if (setting==2){
-//			return 2;
-//		} else if (setting==3){
-//			return 3;
-//		} else if (setting==4){
-//			return 4;
-//		} else if (setting==5){
-//			return 8;
-//		} else if (setting==6){
-//			return 12;
-//		}
-//		else {
-//			return -1; // -1 means invalid value
-//		}
-//
-//	}
-
 	/** TODO USE SENSOR MAPS and isEXGUsingDefaultECGConfiguration() instead */
 	@Deprecated 
 	public boolean isEXGUsingDefaultECGConfigurationForSDFW(){

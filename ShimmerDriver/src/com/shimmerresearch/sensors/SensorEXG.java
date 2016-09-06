@@ -2211,18 +2211,26 @@ public class SensorEXG extends AbstractSensor{
 	 * @param mEXG1RegisterArray the mEXG1RegisterArray to set
 	 */
 	protected void setEXG1RegisterArray(byte[] EXG1RegisterArray) {
-		this.mEXG1RegisterArray = EXG1RegisterArray;
-		exgBytesGetConfigFrom(1, EXG1RegisterArray);
+		setEXGRegisterArray(EXG_CHIP_INDEX.CHIP1, EXG1RegisterArray);
 	}
 
 	/** Note: Doesn't update the Sensor Map
 	 * @param mEXG2RegisterArray the mEXG2RegisterArray to set
 	 */
 	protected void setEXG2RegisterArray(byte[] EXG2RegisterArray) {
-		this.mEXG2RegisterArray = EXG2RegisterArray;
-		exgBytesGetConfigFrom(2, EXG2RegisterArray);
+		setEXGRegisterArray(EXG_CHIP_INDEX.CHIP2, EXG2RegisterArray);
 	}
 
+	protected void setEXGRegisterArray(EXG_CHIP_INDEX chipId, byte[] EXGRegisterArray) {
+		if(chipId==EXG_CHIP_INDEX.CHIP1){
+			this.mEXG1RegisterArray = EXGRegisterArray;
+			exgBytesGetConfigFrom(1, mEXG1RegisterArray);
+		}
+		else if(chipId==EXG_CHIP_INDEX.CHIP2){
+			this.mEXG2RegisterArray = EXGRegisterArray;
+			exgBytesGetConfigFrom(2, mEXG2RegisterArray);
+		}
+	}
 
 	/**
 	 *This can only be used for Shimmer3 devices (EXG) 
