@@ -1124,14 +1124,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		objectCluster.setMacAddress(mMyBluetoothAddress);
 		objectCluster.mRawData = newPacket;
 		
-		long systemTime = System.currentTimeMillis();
-		if(fwType == FW_TYPE_BT){
-			systemTime = pcTimestamp;
-			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
-			objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,systemTime);
-		}
-		
-		
 		if(fwType != FW_TYPE_BT && fwType != FW_TYPE_SD){
 			throw new Exception("The Firmware is not compatible");
 		}
@@ -1144,7 +1136,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int numAdditionalChannels = 0;
 		
 		if (fwType == FW_TYPE_BT){
-			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(systemTime).array();
+			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(pcTimestamp).array();
 			//plus 1 because of: timestamp
 			numAdditionalChannels += 1;
 			
@@ -2559,7 +2551,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL;
 				additionalChannelsOffset+=1;
 				
-				calibratedData[additionalChannelsOffset] = (double)systemTime;
+				objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,(double)pcTimestamp);
+				calibratedData[additionalChannelsOffset] = (double)pcTimestamp;
 				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.MILLISECONDS;
 				uncalibratedData[additionalChannelsOffset] = Double.NaN;
 				uncalibratedDataUnits[additionalChannelsOffset] = "";
