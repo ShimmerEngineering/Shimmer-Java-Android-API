@@ -1065,10 +1065,22 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public String getTrialName() {
 		return mTrialName;
 	}
+	
+	public boolean isTrialNameInvalid(){
+		return isTrialOrShimmerNameInvalid(getTrialName());
+	}
+
+	public boolean isShimmerNameInvalid(){
+		return isTrialOrShimmerNameInvalid(getShimmerUserAssignedName());
+	}
+
+	public static boolean isTrialOrShimmerNameInvalid(String name){
+		if(name.isEmpty()){
+			return true;
+		}
 		
-	public static boolean isTrialOrShimmerNameInvalid(String trialName){
 		Pattern p = Pattern.compile(INVALID_TRIAL_NAME_CHAR);
-		Matcher m = p.matcher(trialName);
+		Matcher m = p.matcher(name);
 		return m.find();
 	}
 	
@@ -1079,6 +1091,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setTrialName(String trialName) {
 		trialName = trialName.replaceAll(INVALID_TRIAL_NAME_CHAR, "");
 
+		if(trialName.isEmpty()){
+			trialName = DEFAULT_EXPERIMENT_NAME;
+		}
+		
 		//Limit the name to 12 Char
 		if(trialName.length()>12)
 			this.mTrialName = trialName.substring(0, 11);

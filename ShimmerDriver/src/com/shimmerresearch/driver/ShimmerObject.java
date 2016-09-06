@@ -6877,6 +6877,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
 				setDefaultShimmerName();
 			}
+			
+			//This will fill a default trial name if the current one is invalid
+			setTrialName(getTrialName());
 
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
 				setDefaultLsm303dlhcAccelSensorConfig(false);
