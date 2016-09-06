@@ -1134,6 +1134,9 @@ public class SensorLSM303 extends AbstractSensor{
 //			setDefaultShimmerName();
 //		}
 
+		setLowPowerAccelWR(false);
+		setLowPowerMag(false);
+		
 		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
 			setDefaultLsm303dlhcAccelSensorConfig(false);
 		}

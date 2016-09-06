@@ -2849,6 +2849,9 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //		if(ShimmerDevice.mShimmerUserAssignedName.equals(ShimmerDevice.DEFAULT_SHIMMER_NAME)){
 //			setDefaultShimmerName();
 //			}
+		
+		setLowPowerGyro(false);
+		
 		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
 			setDefaultMpu9150GyroSensorConfig(false);
 		}

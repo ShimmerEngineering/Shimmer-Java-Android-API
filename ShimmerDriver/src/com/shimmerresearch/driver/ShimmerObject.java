@@ -6925,6 +6925,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			checkIfMPLandDMPIsNeeded();
 			
 			//Added this for Conensys 1.0.0 release - assumes individual sampling rates of each sensor matches the Shimmer sampling
+			setLowPowerGyro(false);
+			setLowPowerAccelWR(false);
+			setLowPowerMag(false);
 			setSamplingRateSensors(getSamplingRateShimmer());
 		}
 		
