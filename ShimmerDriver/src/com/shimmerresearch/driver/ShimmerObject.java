@@ -2527,28 +2527,37 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			
 			if(fwType == FW_TYPE_BT){
-				objectCluster.addData(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mShimmerBattStatusDetails.getEstimatedChargePercentage());
-				calibratedData[additionalChannelsOffset] = (double)mShimmerBattStatusDetails.getEstimatedChargePercentage();
-				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
-				uncalibratedData[additionalChannelsOffset] = Double.NaN;
-				uncalibratedDataUnits[additionalChannelsOffset] = "";
-				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE;
+				double estimatedChargePercentage = (double)mShimmerBattStatusDetails.getEstimatedChargePercentage();
+				if(Double.isFinite(estimatedChargePercentage)){
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.PERCENT, estimatedChargePercentage);
+					calibratedData[additionalChannelsOffset] = estimatedChargePercentage;
+					calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+					uncalibratedData[additionalChannelsOffset] = Double.NaN;
+					uncalibratedDataUnits[additionalChannelsOffset] = "";
+					sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE;
+				}
 				additionalChannelsOffset+=1;
 
-				objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)getPacketReceptionRateCurrent());
-				calibratedData[additionalChannelsOffset] = (double)getPacketReceptionRateCurrent();
-				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
-				uncalibratedData[additionalChannelsOffset] = Double.NaN;
-				uncalibratedDataUnits[additionalChannelsOffset] = "";
-				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT;
+				double packetReceptionRateCurrent = (double)getPacketReceptionRateCurrent();
+				if(Double.isFinite(packetReceptionRateCurrent)){
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT, packetReceptionRateCurrent);
+					calibratedData[additionalChannelsOffset] = packetReceptionRateCurrent;
+					calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+					uncalibratedData[additionalChannelsOffset] = Double.NaN;
+					uncalibratedDataUnits[additionalChannelsOffset] = "";
+					sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT;
+				}
 				additionalChannelsOffset+=1;
 
-				objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)getPacketReceptionRateOverall());
-				calibratedData[additionalChannelsOffset] = (double)getPacketReceptionRateOverall();
-				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
-				uncalibratedData[additionalChannelsOffset] = Double.NaN;
-				uncalibratedDataUnits[additionalChannelsOffset] = "";
-				sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL;
+				double packetReceptionRateOverall = (double)getPacketReceptionRateOverall();
+				if(Double.isFinite(packetReceptionRateOverall)){
+					objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT, packetReceptionRateOverall);
+					calibratedData[additionalChannelsOffset] = packetReceptionRateOverall;
+					calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
+					uncalibratedData[additionalChannelsOffset] = Double.NaN;
+					uncalibratedDataUnits[additionalChannelsOffset] = "";
+					sensorNames[additionalChannelsOffset] = Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL;
+				}
 				additionalChannelsOffset+=1;
 				
 				objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,(double)pcTimestamp);
@@ -9518,21 +9527,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public boolean isUsingDefaultLNAccelParam(){
 		return mCurrentCalibDetailsAccelLn.isUsingDefaultParameters();
-//		return mDefaultCalibrationParametersAccel;
 	}
 	
 	public double[][] getAlignmentMatrixAccel(){
-//		return mAlignmentMatrixAnalogAccel;
 		return mCurrentCalibDetailsAccelLn.getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixAccel(){
-//		return mSensitivityMatrixAnalogAccel;
 		return mCurrentCalibDetailsAccelLn.getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixAccel(){
-//		return mOffsetVectorAnalogAccel;
 		return mCurrentCalibDetailsAccelLn.getValidOffsetVector();
 	}
 	// ----------- KionixKXRB52042 - Analog Accelerometer end -----------------------------------
