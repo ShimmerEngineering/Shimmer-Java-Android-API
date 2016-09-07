@@ -1200,7 +1200,7 @@ public class Configuration {
 			public static String EULER_9DOF_Z;
 			public static final String SHIMMER = "Shimmer";
 			public static final String PACKET_RECEPTION_RATE_CURRENT = "Packet_Reception_Rate_Current";
-			public static final String PACKET_RECEPTION_RATE_TRIAL = "Packet_Reception_Rate_Trial";
+			public static final String PACKET_RECEPTION_RATE_OVERALL = "Packet_Reception_Rate_Trial";
 			
 			public static String TIMESTAMP = "Timestamp";
 			public static String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
@@ -1622,7 +1622,7 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, SensorBattVoltage.channelBattPercentage);
 	        
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL, ShimmerClock.channelReceptionRateTrial);
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, ShimmerClock.channelReceptionRateTrial);
 			
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER, ShimmerClock.channelEventMarker);
 			

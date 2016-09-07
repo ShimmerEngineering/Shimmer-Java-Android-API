@@ -128,7 +128,7 @@ public class ShimmerClock extends AbstractSensor {
 					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL,
 					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER
 					
 //					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
@@ -278,7 +278,7 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	public static final ChannelDetails channelReceptionRateTrial = new ChannelDetails(
-			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL,
+			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL,
 			"Packet Reception Rate (overall)",
 			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.PERCENT,
@@ -336,7 +336,7 @@ public class ShimmerClock extends AbstractSensor {
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, ShimmerClock.channelRealTimeClockSync);
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, ShimmerClock.channelBattPercentage);
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL, ShimmerClock.channelReceptionRateTrial);
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, ShimmerClock.channelReceptionRateTrial);
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER, ShimmerClock.channelEventMarker);
 		}
 		
@@ -652,8 +652,12 @@ public class ShimmerClock extends AbstractSensor {
 					}
 					else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT)){
 //						objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mShimmerDevice.getPacketReceptionRateCurrent());
-						objectCluster.addCalData(channelReceptionRateCurrent, mShimmerDevice.getPacketReceptionRateCurrent());
-						objectCluster.incrementIndexKeeper();
+						
+						double packetReceptionRateCurrent = (double)mShimmerDevice.getPacketReceptionRateCurrent();
+						if(Double.isFinite(packetReceptionRateCurrent)){
+							objectCluster.addCalData(channelReceptionRateCurrent, packetReceptionRateCurrent);
+							objectCluster.incrementIndexKeeper();
+						}
 
 //						objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT,(double)mPacketReceptionRateCurrent);
 //						calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRateCurrent;
@@ -665,11 +669,15 @@ public class ShimmerClock extends AbstractSensor {
 
 						
 					}
-					else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL)){
+					else if(channelDetails.mObjectClusterName.equals(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL)){
 
 //						objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mShimmerDevice.getPacketReceptionRate());
-						objectCluster.addCalData(channelReceptionRateTrial, mShimmerDevice.getPacketReceptionRateOverall());
-						objectCluster.incrementIndexKeeper();
+						
+						double packetReceptionRateOverall = (double)mShimmerDevice.getPacketReceptionRateOverall();
+						if(Double.isFinite(packetReceptionRateOverall)){
+							objectCluster.addCalData(channelReceptionRateTrial, packetReceptionRateOverall);
+							objectCluster.incrementIndexKeeper();
+						}
 
 //						calibratedData[additionalChannelsOffset] = (double)mPacketReceptionRate;
 //						calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
@@ -692,7 +700,7 @@ public class ShimmerClock extends AbstractSensor {
 					super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 							new String[]{Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, CHANNEL_TYPE.CAL.toString()}, 
 							new String[]{Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, CHANNEL_TYPE.CAL.toString()}, 
-							new String[]{Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL, CHANNEL_TYPE.CAL.toString()} 
+							new String[]{Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, CHANNEL_TYPE.CAL.toString()} 
 							));
 				}
 			}
