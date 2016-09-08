@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 
 /**
  * Used in Consensys to hold Shimmer configuration GUI information for each
@@ -36,6 +37,7 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 		}
 	}
 	
+	//TODO improve code below as a list or Map (implemented in the early days of Consensys)
 	private String[] mGuiValuesAlt1;
 	private Integer[] mConfigValuesAlt1;
 	private String[] mGuiValuesAlt2;
@@ -139,7 +141,17 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 		setmCommunicationType(commType);
 	}
 	
-	
+	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo, List<ConfigOptionObject> configOptionsList) {
+		this(guiValues, configValues, guiComponentType, compatibleVersionInfo);
+		setConfigOptions(configOptionsList);
+	}
+
+	public void setConfigOptions(List<ConfigOptionObject> configOptionsList) {
+		for(ConfigOptionObject configOptionObject:configOptionsList){
+			setConfigValues(configOptionObject.index, configOptionObject.configValues);
+			setGuiValues(configOptionObject.index, configOptionObject.guiValues);
+		}
+	}
 
 	/**
 	 * @return the mGuiValues
@@ -242,4 +254,6 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 		this.mCommunicationType = mCommunicationType;
 	}
 
+
+	
 }
