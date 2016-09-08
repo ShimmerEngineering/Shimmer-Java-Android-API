@@ -427,10 +427,10 @@ public class OrientationModule6DOF extends OrientationModule{
 		}
 
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
-			accelerometerSensor = GuiFriendlyLabelConfig.ORIENTATAION_LN;
+			setAccelerometer(GuiFriendlyLabelConfig.ORIENTATAION_LN);
 		}
 		else{
-			accelerometerSensor = GuiFriendlyLabelConfig.ORIENTATAION_WR;
+			setAccelerometer(GuiFriendlyLabelConfig.ORIENTATAION_WR);
 		}
 	}
 
