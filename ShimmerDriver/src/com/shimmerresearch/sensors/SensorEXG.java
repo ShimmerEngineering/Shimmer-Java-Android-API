@@ -20,6 +20,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
+import com.shimmerresearch.driverUtilities.ConfigOptionObject;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -377,6 +378,7 @@ public class SensorEXG extends AbstractSensor{
 			Arrays.asList(
 					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
 					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
+					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
 					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
 					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
 			Arrays.asList(
@@ -893,22 +895,33 @@ public class SensorEXG extends AbstractSensor{
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
 
 	//Advanced ExG		
+//	public static final ConfigOptionDetailsSensor configOptionExgRefElectrode = new ConfigOptionDetailsSensor(
+//			ListOfECGReferenceElectrode, 
+//			ListOfECGReferenceElectrodeConfigValues, 
+//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
+//	{	
+//		configOptionExgRefElectrode.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, ListOfEMGReferenceElectrode);
+//		configOptionExgRefElectrode.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, ListOfEMGReferenceElectrodeConfigValues);
+//		configOptionExgRefElectrode.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, ListOfExGReferenceElectrodeAll);
+//		configOptionExgRefElectrode.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, ListOfExGReferenceElectrodeConfigValuesAll);
+//		configOptionExgRefElectrode.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, ListOfRespReferenceElectrode);
+//		configOptionExgRefElectrode.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, ListOfRespReferenceElectrodeConfigValues);
+//		configOptionExgRefElectrode.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, ListOfTestReferenceElectrode);
+//		configOptionExgRefElectrode.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, ListOfTestReferenceElectrodeConfigValues);
+//	}
+
 	public static final ConfigOptionDetailsSensor configOptionExgRefElectrode = new ConfigOptionDetailsSensor(
 			ListOfECGReferenceElectrode, 
 			ListOfECGReferenceElectrodeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			Arrays.asList(
+					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, ListOfEMGReferenceElectrode, ListOfEMGReferenceElectrodeConfigValues),
+					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, ListOfExGReferenceElectrodeAll, ListOfExGReferenceElectrodeConfigValuesAll),
+					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, ListOfRespReferenceElectrode, ListOfRespReferenceElectrodeConfigValues),
+					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, ListOfTestReferenceElectrode, ListOfTestReferenceElectrodeConfigValues)));
 
-	{	
-		configOptionExgRefElectrode.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, ListOfEMGReferenceElectrode);
-		configOptionExgRefElectrode.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, ListOfEMGReferenceElectrodeConfigValues);
-		configOptionExgRefElectrode.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, ListOfExGReferenceElectrodeAll);
-		configOptionExgRefElectrode.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, ListOfExGReferenceElectrodeConfigValuesAll);
-		configOptionExgRefElectrode.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, ListOfRespReferenceElectrode);
-		configOptionExgRefElectrode.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, ListOfRespReferenceElectrodeConfigValues);
-		configOptionExgRefElectrode.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, ListOfTestReferenceElectrode);
-		configOptionExgRefElectrode.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, ListOfTestReferenceElectrodeConfigValues);
-	}
 	public static final ConfigOptionDetailsSensor configOptionExgBytes = new ConfigOptionDetailsSensor(
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.JPANEL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
