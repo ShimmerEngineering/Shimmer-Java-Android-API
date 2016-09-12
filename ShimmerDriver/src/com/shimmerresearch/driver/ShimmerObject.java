@@ -222,7 +222,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public final static int BMP180 			= 1<<18;
 		public final static int MPL_TEMPERATURE = 1<<17;
 		// 1<<16
-		public final static int MPL_QUAT_6DOF 	= 1<<31;
+		public final static long MPL_QUAT_6DOF 	= (long)1<<31; // needs to be cast to a long otherwise would overflow
 		public final static int MPL_QUAT_9DOF 	= 1<<30;
 		public final static int MPL_EULER_6DOF 	= 1<<29;
 		public final static int MPL_EULER_9DOF 	= 1<<28;
