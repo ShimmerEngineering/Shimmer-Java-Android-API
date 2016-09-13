@@ -1172,7 +1172,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		//numAdditionalChannels += 15;
 		
-		 
 		double [] calibratedData = new double[numCalibratedData+numAdditionalChannels];
 		double [] uncalibratedData = new double[numUncalibratedData+numAdditionalChannels];
 		String [] uncalibratedDataUnits = new String[numUncalibratedDataUnits+numAdditionalChannels];
@@ -2480,7 +2479,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if(fwType == FW_TYPE_SD){
 				if (getHardwareVersion() == HW_ID.SHIMMER_3){
-					if(isEXGUsingDefaultECGConfigurationForSDFW()){
+					//if(isEXGUsingDefaultECGConfigurationForSDFW()){ // RM: needed to comment this out as the deprecated method was not allowing the below to execute for SD data
 						//calculate the ECG Derived sensor for SD (LL-LA) and replace it for the ECG Respiration
 						if (((mEnabledSensors & BTStream.EXG1_16BIT) > 0)){
 							
@@ -2522,7 +2521,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							}
 							
 						}
-					}
+					//}
 				}
 			}
 			
