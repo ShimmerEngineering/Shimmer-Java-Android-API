@@ -142,7 +142,7 @@ public static class DatabaseConfigHandle{
 		Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
 		Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP};
 
-    List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
+    static List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
     
     public static final ConfigOptionDetailsSensor configOptionPpgAdcSelection = new ConfigOptionDetailsSensor(
     		ListOfPpgAdcSelection, 
@@ -168,13 +168,14 @@ public static class DatabaseConfigHandle{
 	//--------- Sensor info start --------------	
 	
 	public static final SensorDetailsRef sensorPpgDummy = new SensorDetailsRef(
-			0, 0,
+			0, 
+			0,
 			GuiLabelSensors.PPG_DUMMY,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
 			null,
 			Arrays.asList(GuiLabelConfig.PPG_ADC_SELECTION),
 			null,
-			true);
+			true);	
 	{
 		sensorPpgDummy.mIsDummySensor = true;
 	}
@@ -184,7 +185,7 @@ public static class DatabaseConfigHandle{
 			SensorADC.sensorADC_INT_EXP_ADC_A12Ref.mSensorBitmapIDSDLogHeader,
 			GuiLabelSensors.PPG_A12,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
-			null,
+			getListSensorPpgHostPPG_A12(), // RM passed in list into constructor as settings the list outside of constructor wasn't working
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG_A12),
 			true);
@@ -199,12 +200,28 @@ public static class DatabaseConfigHandle{
 //		sensorPpgHostPPG_A12.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
 	}
 	
+	/**
+	 * Hack method put in to return list of conflicting sensors for PPG A12 as the setting the list value
+	 * outside of the constructor was not working (talk to MN)
+	 * @return listOfConflictingSensorsForPPG_A12
+	 */
+	//TODO Talk to MN about replacing
+	public static final List<Integer> getListSensorPpgHostPPG_A12(){
+		List<Integer> listOfKeysConflicting =  new ArrayList<Integer>();
+		listOfKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
+		
+		return listOfKeysConflicting;
+	}
+	
 	public static final SensorDetailsRef sensorPpgHostPPG_A13 = new SensorDetailsRef(
 			SensorADC.sensorADC_INT_EXP_ADC_A13Ref.mSensorBitmapIDStreaming,
 			SensorADC.sensorADC_INT_EXP_ADC_A13Ref.mSensorBitmapIDSDLogHeader,
 			GuiLabelSensors.PPG_A13,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
-			null,
+			getListSensorPpgHostPPG_A13(), // RM passed in list into constructor as settings the list outside of constructor wasn't working
 			null,
 			Arrays.asList(ObjectClusterSensorName.PPG_A13),
 			true);
@@ -220,9 +237,26 @@ public static class DatabaseConfigHandle{
 //		sensorPpgHostPPG_A13.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
 	}
 	
+	/**
+	 * Hack method put in to return list of conflicting sensors for PPG A13as the setting the list value
+	 * outside of the constructor was not working (talk to MN)
+	 * @return listOfConflictingSensorsForPPG_A13
+	 */
+	//TODO Talk to MN about replacing
+	public static final List<Integer> getListSensorPpgHostPPG_A13(){
+		List<Integer> listOfKeysConflicting =  new ArrayList<Integer>();
+		listOfKeysConflicting.addAll(FixedConflictingSensorMapKeysList);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13);
+		
+		return listOfKeysConflicting;
+	}
+	
 	// Derived Channels - Proto3 Board
 	public static final SensorDetailsRef sensorPpg1Dummy = new SensorDetailsRef(
-			0, 0, 
+			0, 
+			0, 
 			GuiLabelSensors.PPG1_DUMMY,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
 			null,

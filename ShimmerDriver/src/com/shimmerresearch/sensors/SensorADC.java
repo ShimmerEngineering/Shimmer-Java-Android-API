@@ -161,7 +161,10 @@ public class SensorADC extends AbstractSensor {
 			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A1), 
 			false);
 	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A12Ref = new SensorDetailsRef(0x02<<(1*8), 0x02<<(1*8), GuiLabelSensors.INT_EXP_A12,
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A12Ref = new SensorDetailsRef(
+			0x02<<(1*8), 
+			0x02<<(1*8), 
+			GuiLabelSensors.INT_EXP_A12,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA12,
 			Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY,
@@ -185,7 +188,10 @@ public class SensorADC extends AbstractSensor {
 			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A12), 
 			false);
 	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A13Ref = new SensorDetailsRef(0x01<<(1*8), 0x01<<(1*8), GuiLabelSensors.INT_EXP_A13,
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A13Ref = new SensorDetailsRef(
+			0x01<<(1*8), 
+			0x01<<(1*8), 
+			GuiLabelSensors.INT_EXP_A13,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA13,
 			Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY,
@@ -209,7 +215,10 @@ public class SensorADC extends AbstractSensor {
 			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A13), 
 			false);
 	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A14Ref = new SensorDetailsRef(0x80<<(2*8), 0x80<<(2*8), GuiLabelSensors.INT_EXP_A14,
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A14Ref = new SensorDetailsRef(
+			0x80<<(2*8), 
+			0x80<<(2*8), 
+			GuiLabelSensors.INT_EXP_A14,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA14,
 			Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY,
