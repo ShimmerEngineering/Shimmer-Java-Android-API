@@ -532,6 +532,8 @@ public class ExGConfigBytesDetails implements Serializable {
     	}
     	
     	for(String key:mMapOfExGSettingsToRef.keySet()){
+//    		Integer i = (registerArray[mMapOfExGSettingsChip1.get(key).byteIndex] >> mMapOfExGSettingsChip1.get(key).bitShift) & mMapOfExGSettingsChip1.get(key).mask;
+//    		System.err.println(key + " : " +String.valueOf(i));
 			mMapOfExGSettingsToRef.put(key,(registerArray[mMapOfExGSettingsChip1.get(key).byteIndex] >> mMapOfExGSettingsChip1.get(key).bitShift) & mMapOfExGSettingsChip1.get(key).mask); 
     	}
 	}
@@ -557,6 +559,7 @@ public class ExGConfigBytesDetails implements Serializable {
 		
 		if(mapToRef!=null){
 			if(mapToRef.containsKey(propertyName)){
+				//System.err.println(propertyName + ": " +mapToRef.get(propertyName));
 				return mapToRef.get(propertyName); 
 			}
 		}

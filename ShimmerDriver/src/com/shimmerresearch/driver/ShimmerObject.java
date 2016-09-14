@@ -1792,6 +1792,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				//TODO objectcluster will not be populated at all if mEnableCalibration is not enabled
 				if (mEnableCalibration){
+					//System.err.println("getExg1CH1GainValue(): " +getExg1CH1GainValue());
 					double calexg1ch1 = exg1ch1 *(((2.42*1000)/getExg1CH1GainValue())/(Math.pow(2,23)-1));
 					double calexg1ch2 = exg1ch2 *(((2.42*1000)/getExg1CH2GainValue())/(Math.pow(2,23)-1));
 					calibratedData[iexg1ch1]=calexg1ch1;
@@ -8673,26 +8674,25 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public int getExGGainSetting(){
-//		System.out.println("SlotDetails: getExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
-		return getExg1CH1GainValue();
-	}
-	
-	public int getExg1CH1GainValue(){
+	//  System.out.println("SlotDetails: getExGGain - Setting: = " + mEXG1CH1GainSetting + " - Value = " + mEXG1CH1GainValue);
 		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
 	}
 	
+	public int getExg1CH1GainValue(){
+		return SensorEXG.convertEXGGainSettingToValue(getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN));
+	}
+		 
 	public int getExg1CH2GainValue(){
-		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
+		return SensorEXG.convertEXGGainSettingToValue(getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN));
 	}
-	
+ 
 	public int getExg2CH1GainValue(){
-		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN);
+		return SensorEXG.convertEXGGainSettingToValue(getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN));
 	}
-	
+ 
 	public int getExg2CH2GainValue(){
-		return getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN);
+		return SensorEXG.convertEXGGainSettingToValue(getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN));
 	}
-	
 	
 	public boolean areExgChannelGainsEqual(List<EXG_CHIP_INDEX> listOfChipsToCheck){
 		boolean areEqual = true;
