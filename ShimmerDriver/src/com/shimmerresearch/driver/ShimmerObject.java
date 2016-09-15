@@ -166,6 +166,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	//Sensor Bitmap for ID ; for the purpose of forward compatibility the sensor bitmap and the ID and the sensor bitmap for the Shimmer firmware has been kept separate, 
 	
+	
 	public static final int SENSOR_ACCEL				   = 0x80; 
 	public static final int SENSOR_DACCEL				   = 0x1000;
 	public static final int SENSOR_GYRO				   	   = 0x40;
