@@ -5989,6 +5989,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			}
 			
 			byte[] bufferCalibrationParameters = new byte[infoMemLayoutCast.lengthGeneralCalibrationBytes];
+			
+			//if bt connected use the infomem, otherwise if its docked the infomem read is skipped when u reset to default using bt
+			if (this.isConnected()){
+				mCurrentCalibDetailsGyro.mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+				mCurrentCalibDetailsAccelLn.mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+				mCurrentCalibDetailsMag.mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+				mCurrentCalibDetailsAccelWr.mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+			}
 			// Analog Accel Calibration Parameters
 			System.arraycopy(infoMemBytes, infoMemLayoutCast.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
 			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
