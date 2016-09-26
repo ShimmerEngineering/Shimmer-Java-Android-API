@@ -24,6 +24,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
+import com.shimmerresearch.algorithms.ActivityAlgorithmModule;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
@@ -2513,6 +2514,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, samplingRate);
 			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule6DOF);
 		}
+		
+		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedActivityCh = ActivityAlgorithmModule.getMapOfSupportedAlgorithms();
+		for (AlgorithmDetails algorithmDetails: mapOfSupportedActivityCh.values()) {
+			ActivityAlgorithmModule activityAlgorithmModule = new ActivityAlgorithmModule(algorithmDetails);
+			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, activityAlgorithmModule);
+		}
+		
 		// TODO load algorithm modules automatically from any included algorithm
 		// jars depending on licence?
 	}

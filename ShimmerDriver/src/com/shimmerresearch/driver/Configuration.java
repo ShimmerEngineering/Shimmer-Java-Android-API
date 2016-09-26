@@ -1043,7 +1043,8 @@ public class Configuration {
 			ECG_TO_HR("ECG-to-HR"),
 			PPG_TO_HR("PPG-to-HR"),
 			HRV_ECG("HRV"),
-			EMG("EMG Processing");
+			EMG("EMG Processing"),
+			ACTIVITY("Activity");
 
 			private String tileText = "";
 			
