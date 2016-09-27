@@ -1,5 +1,6 @@
 package com.shimmerresearch.comms.wiredProtocol;
 
+import com.google.common.base.Strings;
 import com.shimmerresearch.driver.DeviceException;
 
 /**
@@ -58,7 +59,7 @@ public class DockException extends DeviceException {
 	 * @param uniqueID
 	 */
 	public DockException(String comPort, int errorCode, int errorCodeLowLevel, String uniqueID){
-		if(!uniqueID.isEmpty()){
+		if(!Strings.isNullOrEmpty(uniqueID)){
 			mUniqueID = uniqueID;
 			String[] subString = uniqueID.split("\\.");
 			mDockID  = subString[0]+"."+subString[1];

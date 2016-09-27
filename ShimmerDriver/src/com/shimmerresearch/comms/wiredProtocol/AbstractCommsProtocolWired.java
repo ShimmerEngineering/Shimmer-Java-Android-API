@@ -523,6 +523,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
         }
 	}
 
+	//TODO not setup to handle streaming via dock connector -> add additional capability?
 	private void processRxBuf(byte[] rxBuf) throws DeviceException {
 		
 		byte headerByte = rxBuf[0];
