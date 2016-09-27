@@ -58,14 +58,16 @@ public class DockException extends DeviceException {
 	 * @param uniqueID
 	 */
 	public DockException(String comPort, int errorCode, int errorCodeLowLevel, String uniqueID){
-		mUniqueID = uniqueID;
-		String[] subString = uniqueID.split("\\.");
-		mDockID  = subString[0]+"."+subString[1];
-		if(subString.length>=3) {
-			mSlotNumber = Integer.parseInt(subString[2]);
-		}
-		else {
-			mSlotNumber = -1;
+		if(!uniqueID.isEmpty()){
+			mUniqueID = uniqueID;
+			String[] subString = uniqueID.split("\\.");
+			mDockID  = subString[0]+"."+subString[1];
+			if(subString.length>=3) {
+				mSlotNumber = Integer.parseInt(subString[2]);
+			}
+			else {
+				mSlotNumber = -1;
+			}
 		}
 		mComPort = comPort;
 		mErrorCode = errorCode;
