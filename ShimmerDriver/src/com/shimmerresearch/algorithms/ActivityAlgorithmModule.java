@@ -42,7 +42,14 @@ public class ActivityAlgorithmModule extends AbstractAlgorithm {
 	private Vector3d accValues;
 	
 	public static class ObjectClusterSensorName{
+		public static  String ACTIVITY = "Activity";
+		public static  String ACTIVITY_INTENSITY = "Intensity";
+		public static  String ACTIVITY_SHORT = "Period_Short";
+		public static  String ACTIVITY_MEDIUM = "Period_Medium";
+		public static  String ACTIVITY_LONG = "Period_Long";
 		public static  String ACTIVITY_STEP_COUNT = "Step_Count";
+		public static  String ACTIVITY_PERCENTAGE_SEDENTARY = "Percentage_Sedentary";
+		public static  String ACTIVITY_PERCENTAGE_ACTVIVE = "Percentage_Active";
 	}
 	
 	// --------------- copied from Configuration.Shimmer3 start -----------
@@ -60,17 +67,58 @@ public class ActivityAlgorithmModule extends AbstractAlgorithm {
 	
 	// --------- Channel maps start --------------
 	
+	private static final ChannelDetails channelActivityIntensity = new ChannelDetails(
+			ObjectClusterSensorName.ACTIVITY_INTENSITY, 
+			ObjectClusterSensorName.ACTIVITY_INTENSITY, 
+			CHANNEL_UNITS.NO_UNITS, 
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	private static final ChannelDetails channelActivityPeriodShort = new ChannelDetails(
+			ObjectClusterSensorName.ACTIVITY_SHORT, 
+			ObjectClusterSensorName.ACTIVITY_SHORT, 
+			CHANNEL_UNITS.NO_UNITS, 
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	private static final ChannelDetails channelActivityPeriodMedium = new ChannelDetails(
+			ObjectClusterSensorName.ACTIVITY_MEDIUM, 
+			ObjectClusterSensorName.ACTIVITY_MEDIUM, 
+			CHANNEL_UNITS.NO_UNITS, 
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	private static final ChannelDetails channelActivityPeriodLong = new ChannelDetails(
+			ObjectClusterSensorName.ACTIVITY_LONG, 
+			ObjectClusterSensorName.ACTIVITY_LONG, 
+			CHANNEL_UNITS.NO_UNITS, 
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
 	private static final ChannelDetails channelActivityStepCount = new ChannelDetails(
 			ObjectClusterSensorName.ACTIVITY_STEP_COUNT, 
 			ObjectClusterSensorName.ACTIVITY_STEP_COUNT, 
 			CHANNEL_UNITS.NO_UNITS, 
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
+	private static final ChannelDetails channelActivitySendentaryActive = new ChannelDetails(
+			ObjectClusterSensorName.ACTIVITY_PERCENTAGE_SEDENTARY,
+			ObjectClusterSensorName.ACTIVITY_PERCENTAGE_SEDENTARY,
+			CHANNEL_UNITS.NO_UNITS, 
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	
+	private static final ChannelDetails channelActivityPercentageActive = new ChannelDetails(
+			ObjectClusterSensorName.ACTIVITY_PERCENTAGE_ACTVIVE,
+			ObjectClusterSensorName.ACTIVITY_PERCENTAGE_ACTVIVE,
+			CHANNEL_UNITS.NO_UNITS, 
+			Arrays.asList(CHANNEL_TYPE.CAL));
 	
 	public static final Map<String, ChannelDetails> mChannelMapActivity;
 	static {
 		Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+		aMap.put(ObjectClusterSensorName.ACTIVITY_INTENSITY, channelActivityIntensity);
+		aMap.put(ObjectClusterSensorName.ACTIVITY_SHORT, channelActivityPeriodShort);
+		aMap.put(ObjectClusterSensorName.ACTIVITY_MEDIUM, channelActivityPeriodMedium);
+		aMap.put(ObjectClusterSensorName.ACTIVITY_LONG, channelActivityPeriodLong);
 		aMap.put(ObjectClusterSensorName.ACTIVITY_STEP_COUNT, channelActivityStepCount);
+		aMap.put(ObjectClusterSensorName.ACTIVITY_PERCENTAGE_SEDENTARY, channelActivitySendentaryActive);
+		aMap.put(ObjectClusterSensorName.ACTIVITY_PERCENTAGE_ACTVIVE, channelActivityPercentageActive);
 		
 		mChannelMapActivity = Collections.unmodifiableMap(aMap);
 	}
@@ -79,15 +127,18 @@ public class ActivityAlgorithmModule extends AbstractAlgorithm {
 	// --------- Algorithm maps start --------------
 	
 	public static final AlgorithmDetails algoActivity = new AlgorithmDetails(
-			ObjectClusterSensorName.ACTIVITY_STEP_COUNT, 
-			"Step Count", 
+			ObjectClusterSensorName.ACTIVITY, 
+			ObjectClusterSensorName.ACTIVITY, 
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z),
 			DerivedSensorsBitMask.EMG_PROCESSING_CHAN1,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL), 
 			CHANNEL_UNITS.NO_UNITS,
-			Arrays.asList(ActivityAlgorithmModule.channelActivityStepCount));
+			Arrays.asList(ActivityAlgorithmModule.channelActivityIntensity,
+					ActivityAlgorithmModule.channelActivityStepCount,
+					ActivityAlgorithmModule.channelActivitySendentaryActive,
+					ActivityAlgorithmModule.channelActivityPercentageActive));
 	
 	
 	public static final Map<String, AlgorithmDetails> mAlgorithmMapRef;
@@ -248,11 +299,11 @@ public class ActivityAlgorithmModule extends AbstractAlgorithm {
 	}
 	
 	@Override
-	public AlgorithmResultObject processDataRealTime(ObjectCluster object) throws Exception {
+	public AlgorithmResultObject processDataRealTime(ObjectCluster ojc) throws Exception {
 		accValues = new Vector3d();
 
 		for(String associatedChannel: mAlgorithmDetails.mListOfAssociatedSensors){
-			Collection<FormatCluster> dataFormatsSignal = object.getCollectionOfFormatClusters(associatedChannel);  // first retrieve all the possible formats for the current sensor device
+			Collection<FormatCluster> dataFormatsSignal = ojc.getCollectionOfFormatClusters(associatedChannel);  // first retrieve all the possible formats for the current sensor device
 			if(dataFormatsSignal!=null){
 				FormatCluster formatClusterSignal = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormatsSignal, mAlgorithmDetails.mChannelType.toString())); // retrieve the calibrated data
 				if(formatClusterSignal != null){
@@ -273,10 +324,15 @@ public class ActivityAlgorithmModule extends AbstractAlgorithm {
 			}
 		}
 		
-		object.addData(mAlgorithmDetails.mAlgorithmName, CHANNEL_TYPE.CAL, mAlgorithmDetails.mUnits, 1);
-		object.incrementIndexKeeper();
+		// process the data i.e. algorithm implementation
+		mActivityProcessing.activityProcessing(accValues);
 		
-		AlgorithmResultObject aro = new AlgorithmResultObject(mAlgorithmResultType, object, getTrialName());
+		// add the result of the algorithm to the objectcluster
+		for (ChannelDetails channelDetails : mChannelMapActivity.values()) {
+			addActivityProcessingChannelToObjectCluster(ojc, channelDetails);
+		}
+		
+		AlgorithmResultObject aro = new AlgorithmResultObject(mAlgorithmResultType, ojc, getTrialName());
 		return aro;		
 	}
 	
@@ -290,6 +346,40 @@ public class ActivityAlgorithmModule extends AbstractAlgorithm {
 		else if(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z)){
 			accValues.z = value;
 		}
+	}
+	
+	private void addActivityProcessingChannelToObjectCluster(ObjectCluster ojc, ChannelDetails channelDetails) {
+		double result = 0.0;
+		
+		if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACTIVITY_INTENSITY)){
+			result = mActivityProcessing.getActivityIntensity();
+		}	
+		else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACTIVITY_SHORT)){
+			result = mActivityProcessing.getActivityPeriodShort();
+		}
+		else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACTIVITY_MEDIUM)){
+			result = mActivityProcessing.getActivityPeriodMedium();
+		}	
+		else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACTIVITY_LONG)){
+			result = mActivityProcessing.getActivityPeriodLong();
+		}
+		else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACTIVITY_STEP_COUNT)){
+			result = mActivityProcessing.getStepCount();
+		}	
+		else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACTIVITY_PERCENTAGE_SEDENTARY)){
+			result = mActivityProcessing.getActivityPercentageSendentary();
+		}
+		else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACTIVITY_PERCENTAGE_ACTVIVE)){
+			result = mActivityProcessing.getActivityPercentageActive();
+		}
+		
+		// hack because Graphs hang if they try to plot a 0.
+		if (result == 0.0) {
+			result = -1;
+		}
+		
+		ojc.addData(mAlgorithmDetails.mAlgorithmName + "_" + channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL, mAlgorithmDetails.mUnits, 1);
+		ojc.incrementIndexKeeper();
 	}
 	
 	@Override

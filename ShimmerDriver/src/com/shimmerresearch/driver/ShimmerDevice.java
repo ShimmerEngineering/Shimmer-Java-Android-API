@@ -2518,7 +2518,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedActivityCh = ActivityAlgorithmModule.getMapOfSupportedAlgorithms();
 		for (AlgorithmDetails algorithmDetails: mapOfSupportedActivityCh.values()) {
 			ActivityAlgorithmModule activityAlgorithmModule = new ActivityAlgorithmModule(algorithmDetails);
-			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, activityAlgorithmModule);
+			
+			// TODO should be on internal use, commenting out until figure out best approach
+			//mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, activityAlgorithmModule);
+			
 		}
 		
 		// TODO load algorithm modules automatically from any included algorithm
