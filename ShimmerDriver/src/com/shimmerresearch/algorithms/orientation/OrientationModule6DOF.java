@@ -1,4 +1,4 @@
-package com.shimmerresearch.algorithms;
+package com.shimmerresearch.algorithms.orientation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +7,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.shimmerresearch.algorithms.AlgorithmDetails;
+import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
+import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_RESULT_TYPE;
+import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_TYPE;
+import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;

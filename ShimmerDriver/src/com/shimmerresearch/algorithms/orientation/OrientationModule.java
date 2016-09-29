@@ -1,4 +1,4 @@
-package com.shimmerresearch.algorithms;
+package com.shimmerresearch.algorithms.orientation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.vecmath.Vector3d;
 
+import com.shimmerresearch.algorithms.AbstractAlgorithm;
+import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;

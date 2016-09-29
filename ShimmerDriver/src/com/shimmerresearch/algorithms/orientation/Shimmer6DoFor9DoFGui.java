@@ -1,7 +1,8 @@
-package com.shimmerresearch.algorithms;
+package com.shimmerresearch.algorithms.orientation;
 
 import java.util.List;
 
+import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 
 public class Shimmer6DoFor9DoFGui{

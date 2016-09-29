@@ -1,4 +1,4 @@
-package com.shimmerresearch.algorithms;
+package com.shimmerresearch.algorithms.orientation;
 
 public class Orientation3DObject {
 

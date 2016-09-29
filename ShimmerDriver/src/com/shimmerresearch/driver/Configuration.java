@@ -56,8 +56,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.algorithms.AlgorithmDetails;
-import com.shimmerresearch.algorithms.OrientationModule;
-import com.shimmerresearch.algorithms.OrientationModule6DOF;
+import com.shimmerresearch.algorithms.orientation.OrientationModule;
+import com.shimmerresearch.algorithms.orientation.OrientationModule6DOF;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;

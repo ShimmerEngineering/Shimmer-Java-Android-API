@@ -1,4 +1,5 @@
-package com.shimmerresearch.algorithms;
+package com.shimmerresearch.algorithms.orientation;
+
 
 /* Rev 0.2
  * 
