@@ -1472,19 +1472,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.isShimmerGen4();
 	}
 
-	
+
+	public void consolePrintErrLn(String message) {
+		if(mVerboseMode) {
+			System.err.println(assemblePrintString(message));
+		}
+	}
+
 	public void consolePrintLn(String message) {
 		if(mVerboseMode) {
-			Calendar rightNow = Calendar.getInstance();
-			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
-					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString 
-					+ " " + getClass().getSimpleName() 
-					+ ": " + getMacIdParsed() 
-					+ " " + Integer.toHexString(this.hashCode()) 
-					+ " " + message);
+			System.out.println(assemblePrintString(message));
 		}		
 	}
 	
@@ -1492,6 +1489,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mVerboseMode) {
 			System.out.print(message);
 		}		
+	}
+	
+	private String assemblePrintString(String message){
+		Calendar rightNow = Calendar.getInstance();
+		String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
+				+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
+				+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
+				+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
+		return (rightNowString 
+				+ " " + getClass().getSimpleName() 
+				+ " (Mac:" + getMacIdParsed() 
+				+ " HashCode:" + Integer.toHexString(this.hashCode()) + ")" 
+				+ ": " + message);
 	}
 
 	public void setVerboseMode(boolean verboseMode) {
