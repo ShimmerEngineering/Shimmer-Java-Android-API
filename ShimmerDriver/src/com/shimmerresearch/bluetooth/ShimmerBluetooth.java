@@ -171,7 +171,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected boolean mTransactionCompleted=true;									// Variable is used to ensure a command has finished execution prior to executing the next command (see initialize())
 	transient protected IOThread mIOThread;
 	transient protected ProcessingThread mPThread;
-	protected boolean mContinousSync=false;                                       // This is to select whether to continuously check the data packets 
+	@Deprecated // mContinousSync doesn't do anything
+	private boolean mContinousSync=false;                                       // This is to select whether to continuously check the data packets 
 	protected boolean mSetupDevice=false;		
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected double mLowBattLimit=3.4;
@@ -436,42 +437,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//endregion
 	
-	/**
-	 * Provides an interface directly to the method BuildMSG. This can be used
-	 * to implement algorithm/filters/etc. Two methods are provided, processdata
-	 * to implement your methods, and InitializeProcessData which is called
-	 * everytime you startstreaming, in the event you need to reinitialize your
-	 * method/algorithm everytime a Shimmer starts streaming
-	 *
-	 */
-	public interface DataProcessing {
-
-		/**
-		 * Initialise your method/algorithm here, this callback is called when
-		 * startstreaming is called
-		 */
-		
-		/**
-		 * Initialise Process Data here. This is called whenever the
-		 * startStreaming command is called and can be used to initialise
-		 * algorithms
-		 * 
-		 */
-		public void InitializeProcessData();
-		
-		/**
-		 * Process data here, algorithms can access the object cluster built by
-		 * the buildMsg method here
-		 * 
-		 * @param ojc
-		 *            the objectCluster built by the buildMsg method
-		 * @return the processed objectCluster
-		 */
-		public ObjectCluster ProcessData(ObjectCluster ojc);
-
-	}
-	DataProcessing mDataProcessing;
-
 	private int mNumOfMemSetCmds = 0;
 
 	public static final int MSG_IDENTIFIER_DATA_PACKET = 2;
@@ -1020,9 +985,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(mDataProcessing!=null){
-			objectCluster = mDataProcessing.ProcessData(objectCluster);
-		}
+		
 		dataHandler(objectCluster);
 	}
 
@@ -2289,13 +2252,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readRealTimeClock();
 		}
 
-		//provides a callback for users to initialize their algorithms when start streaming is called
-		if(mDataProcessing!=null){
-			mDataProcessing.InitializeProcessData();
-		} 	
-		else {
-			//do nothing
-		}
+		initaliseDataProcessing();
 		
 		mFirstPacketParsed=true;
 		resetCalibratedTimeStamp();
@@ -4014,19 +3971,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
     //region --------- SET FUNCTIONS ---------
     
 	/**
-	 * 
-	 * Register a callback to be invoked after buildmsg has executed (A new
-	 * packet has been successfully received -> raw bytes interpreted into Raw
-	 * and Calibrated Sensor data)
-	 * 
-	 * @param d
-	 *            The callback that will be invoked
-	 */
-	public void setDataProcessing(DataProcessing d) {
-		mDataProcessing=d;
-	}
-    
-	/**
 	 * Set the battery voltage limit, when the Shimmer device goes below the
 	 * limit while streaming the LED on the Shimmer device will turn Yellow, in
 	 * order to use battery voltage monitoring the Battery has to be enabled.
@@ -4039,8 +3983,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mLowBattLimit=limit;
 	}
 	
+	@Deprecated //mContinousSync doesn't do anything
 	public void setContinuousSync(boolean continousSync){
 		mContinousSync=continousSync;
+	}
+	
+	@Deprecated //mContinousSync doesn't do anything
+	public boolean getContinuousSync(){
+		return mContinousSync;
 	}
 	
     //region --------- SET FUNCTIONS ---------

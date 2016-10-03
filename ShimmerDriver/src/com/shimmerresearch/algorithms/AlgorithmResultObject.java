@@ -15,8 +15,7 @@ public class AlgorithmResultObject {
 	}
 	
 	public AlgorithmResultObject(ALGORITHM_RESULT_TYPE type, Object result, String trialName){
-		mAlgorithmResultType = type;
-		mResult = result;
+		this(type, result);
 		mTrialName = trialName;
 	}
 }

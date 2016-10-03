@@ -186,10 +186,6 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		mRadioProtocol.readPressureCalibrationCoefficients();
 	}
 
-	public void startTimerCheckIfAlive() {
-		mRadioProtocol.startTimerCheckIfAlive();
-	}
-
 	public void readExpansionBoardID() {
 		mRadioProtocol.readExpansionBoardID();
 	}
@@ -206,16 +202,12 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		mRadioProtocol.readBattery();
 	}
 
-	public void inquiry() {
-		mRadioProtocol.inquiry();
-	}
-	
-	public void startTimerReadStatus() {
-		mRadioProtocol.startTimerReadStatus();
+	public void readRealTimeClock() {
+		mRadioProtocol.readRealTimeClock();
 	}
 
-	public void startTimerReadBattStatus() {
-		mRadioProtocol.startTimerReadBattStatus();
+	public void inquiry() {
+		mRadioProtocol.inquiry();
 	}
 
 	public void operationPrepare() {
@@ -231,6 +223,32 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 			mRadioProtocol.setPacketSize(expectedDataPacketSize);
 		}
 	}
+	
+	// -------------- Timers Start ----------------
+	public void startTimerCheckIfAlive() {
+		mRadioProtocol.startTimerCheckIfAlive();
+	}
+	
+	public void stopTimerCheckIfAlive() {
+		mRadioProtocol.stopTimerCheckIfAlive();
+	}
+
+	public void startTimerReadStatus() {
+		mRadioProtocol.startTimerReadStatus();
+	}
+
+	public void stopTimerReadStatus() {
+		mRadioProtocol.stopTimerReadStatus();
+	}
+
+	public void startTimerReadBattStatus() {
+		mRadioProtocol.startTimerReadBattStatus();
+	}
+	
+	public void stopTimerReadBattStatus() {
+		mRadioProtocol.stopTimerReadBattStatus();
+	}
+	// -------------- Timers End ----------------
 	
 //	@Override
 //	protected void connectionLost() {
@@ -483,5 +501,6 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 			rl.eventError(dE);
 		}
 	}
+
 	
 }

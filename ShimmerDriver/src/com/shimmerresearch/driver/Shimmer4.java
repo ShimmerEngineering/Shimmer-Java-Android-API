@@ -67,10 +67,11 @@ public class Shimmer4 extends ShimmerDevice {
 	protected int mBluetoothBaudRate=9; //460800
 
 	public Shimmer4() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 	
 	public Shimmer4(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE communicationType) {
+		this();
 		setDockInfo(dockId, slotNumber);
 		addCommunicationRoute(communicationType);
     	setSamplingRateShimmer(communicationType, 128);
@@ -90,7 +91,6 @@ public class Shimmer4 extends ShimmerDevice {
 //				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION)){
 //			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 //		}
-
 		
 		mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(this));
 		
@@ -100,7 +100,6 @@ public class Shimmer4 extends ShimmerDevice {
 		mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
 		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(this));
 		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
-		
 		
 		//TODO push version checking into the sensor classes
 		
@@ -678,14 +677,12 @@ public class Shimmer4 extends ShimmerDevice {
 
 			@Override
 			public void initialiseStreamingCallback() {
-//				//provides a callback for users to initialize their algorithms when start streaming is called
-//				if(mDataProcessing!=null){
-//					mDataProcessing.InitializeProcessData();
-//				} 	
-//				else {
-//					//do nothing
-//				}
-//				
+				mCommsProtocolRadio.stopTimerReadStatus();
+				
+				mCommsProtocolRadio.readRealTimeClock();
+
+				initaliseDataProcessing();
+
 				resetPacketLossTrial();
 				mFirstPacketParsed=true;
 				//TODO do similar as done in ShimmerBluetooth for the below

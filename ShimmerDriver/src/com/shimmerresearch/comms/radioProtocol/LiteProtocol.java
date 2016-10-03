@@ -1809,7 +1809,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	
 	public void stopAllTimers(){
 		stopTimerReadStatus();
-		stopTimerCheckAlive();
+		stopTimerCheckIfAlive();
 		stopTimerCheckForAckOrResp();
 		stopTimerReadBattStatus();
 	}
@@ -2009,6 +2009,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		
 	}
 	
+	@Override
 	public void startTimerCheckIfAlive(){
 		if(mCheckIfConnectionisAlive){
 			if(mTimerCheckAlive==null){ 
@@ -2023,7 +2024,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 	
-	public void stopTimerCheckAlive(){
+	@Override
+	public void stopTimerCheckIfAlive(){
 		if(mTimerCheckAlive!=null){
 			mTimerCheckAlive.cancel();
 			mTimerCheckAlive.purge();
@@ -2468,7 +2470,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			mProtocolListener.eventSetHaveAttemptedToRead(mHaveAttemptedToReadConfig);
 		}
 	}
-	
+
 	//***********************************
 	// Copied from ShimmerDevice end
 	//*********************************** 

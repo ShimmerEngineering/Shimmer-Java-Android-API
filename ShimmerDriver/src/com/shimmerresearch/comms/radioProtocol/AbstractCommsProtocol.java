@@ -43,14 +43,19 @@ public abstract class AbstractCommsProtocol {
 
 	public abstract void setInstructionStackLock(boolean state);
 
-	public abstract void startTimerCheckIfAlive();
 	public abstract void readExpansionBoardID();
 	public abstract void readLEDCommand();
 	public abstract void readStatusLogAndStream();
 	public abstract void readBattery();
+	public abstract void readRealTimeClock();
 	public abstract void inquiry();
+	
+	public abstract void startTimerCheckIfAlive();
+	public abstract void stopTimerCheckIfAlive();
 	public abstract void startTimerReadStatus();
+	public abstract void stopTimerReadStatus();
 	public abstract void startTimerReadBattStatus();
+	public abstract void stopTimerReadBattStatus();
 
 	public abstract void operationPrepare();
 	public abstract void operationStart(BT_STATE configuring);

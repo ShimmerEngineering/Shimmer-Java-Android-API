@@ -2903,6 +2903,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			consolePrintErrLn("The Hardware version is not compatible");
 		}
 		
+		objectCluster = processData(objectCluster);
+
 		return objectCluster;
 	}
 	
@@ -5717,8 +5719,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param bufferSize sets the buffersize of the window used to determine the new calibration parameters, see implementation for more details
 	 * @param threshold sets the threshold of when to use the incoming data to recalibrate gyroscope offset, this is in degrees, and the default value is 1.2
 	 */
-	public void enableOnTheFlyGyroCal(boolean enable,int bufferSize,double threshold){
-		if (enable){
+	public void enableOnTheFlyGyroCal(boolean state,int bufferSize,double threshold){
+		setOnTheFlyGyroCal(state);
+		if (mEnableOntheFlyGyroOVCal){
 			mGyroOVCalThreshold=threshold;
 			mGyroX=new DescriptiveStatistics(bufferSize);
 			mGyroY=new DescriptiveStatistics(bufferSize);
@@ -5726,8 +5729,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mGyroXRaw=new DescriptiveStatistics(bufferSize);
 			mGyroYRaw=new DescriptiveStatistics(bufferSize);
 			mGyroZRaw=new DescriptiveStatistics(bufferSize);
-			mEnableOntheFlyGyroOVCal = enable;
 		}
+	}
+
+	public void setOnTheFlyGyroCal(boolean state){
+		mEnableOntheFlyGyroOVCal = state;
 	}
 
 	public byte[] getPressureRawCoefficients(){
@@ -5823,6 +5829,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public boolean is3DOrientatioEnabled(){
 		return mIsOrientationEnabled;
 	}
+	
+	protected void setupOrientation(int orientation, double samplingRate) {
+		if (orientation == 1){
+			set3DOrientation(true);
+//			setOnTheFlyGyroCal(true);
+			enableOnTheFlyGyroCal(true, (int)samplingRate, 1.2);
+		} else {
+			set3DOrientation(false);
+			setOnTheFlyGyroCal(false);
+		}
+	}
+
+    public boolean isGyroOnTheFlyCalEnabled(){
+		return mEnableOntheFlyGyroOVCal;
+	}
+
 
 	
 	/* Need to override here because ShimmerDevice uses a different sensormap
@@ -7610,6 +7632,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mMyBluetoothAddress = myBluetoothAddress;
 	}
 	
+	
+	public void setPacketSize(int packetSize) {
+		mPacketSize = packetSize;
+	}
+
 	
 	@Override
 	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
@@ -10331,10 +10358,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mMPU9150LPF = mMPU9150LPF;
 	}
 
-    public boolean isGyroOnTheFlyCalEnabled(){
-		return mEnableOntheFlyGyroOVCal;
-	}
-    
 	public double getCalibTimeGyro() {
 		return mCurrentCalibDetailsGyro.getCalibTimeMs();
 	}

@@ -30,6 +30,7 @@ import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.orientation.OrientationModule6DOF;
 import com.shimmerresearch.algorithms.orientation.OrientationModule9DOF;
+import com.shimmerresearch.bluetooth.DataProcessingInterface;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
@@ -185,6 +186,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
 	
+	protected DataProcessingInterface mDataProcessing;
+
 	public boolean mVerboseMode = true;
 
 	public static final class DatabaseConfigHandle{
@@ -242,6 +245,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
 	public abstract void createInfoMemLayout();
 
+
 	// --------------- Abstract Methods End --------------------------
 
 	/**
@@ -249,8 +253,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public ShimmerDevice(){
 		setThreadName("ShimmerDevice");
+		setupDataProcessing();
 	}
 	
+	public void setupDataProcessing() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	// --------------- Get/Set Methods Start --------------------------
 	
 	public void setShimmerVersionObject(ShimmerVerObject sVO) {
@@ -973,15 +983,28 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			consolePrintErrLn("ERROR!!!! Parser map null");
 		}
 		
-		//add in algorithm processing
-//		ojc = processAlgorithmData(ojc);
+		ojc = processData(ojc);
 		
 		return ojc;
 	}
 	
-	protected ObjectCluster processAlgorithms(ObjectCluster ojc) {
+	/** Perform any processing required on the data. E.g. time sync, filtering and algorithms
+	 * @param ojc
+	 * @return
+	 */
+	protected ObjectCluster processData(ObjectCluster ojc) {
+		if(mDataProcessing!=null){
+			ojc = mDataProcessing.processData(ojc);
+		}
+		
+		//now process the enabled algorithms
+		ojc = processAlgorithms(ojc);
+		return ojc;
+	}
+
+	public ObjectCluster processAlgorithms(ObjectCluster ojc) {
 		//TODO sort out the flow of the below structure
-		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values()) {
+		for (AbstractAlgorithm aA:getMapOfAlgorithmModules().values()) {
 			if (aA.isEnabled()) {
 				try {
 					AlgorithmResultObject algorithmResultObject = aA.processDataRealTime(ojc);
@@ -996,7 +1019,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return ojc;
 	}
-
 	
 	//TODO get below working if even needed
 	/** Based on the SensorMap approach rather then legacy inquiry command */
@@ -2183,6 +2205,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public BT_STATE getBluetoothRadioState() {
 		return mBluetoothRadioState;
 	}
+	
+	public String getBluetoothRadioStateString() {
+		return mBluetoothRadioState.toString();
+	}
 
 	public void connect() throws DeviceException{
 		// TODO Auto-generated method stub
@@ -2528,21 +2554,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = OrientationModule9DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
 		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
 			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(algorithmDetails, samplingRate);
-			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule9DOF);
+			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule9DOF);
 		}
 		
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = OrientationModule6DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
 		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
 			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, samplingRate);
-			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule6DOF);
+			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule6DOF);
 		}
-		
+
+		if(mDataProcessing!=null){
+			mDataProcessing.updateMapOfAlgorithmModules();
+		}
+
 		// TODO load algorithm modules automatically from any included algorithm
 		// jars depending on licence?
+
 	}
 
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
 		return mMapOfAlgorithmModules;
+	}
+
+	public void addAlgorithmModule(String algorithmName, AbstractAlgorithm abstractAlgorithm) {
+		mMapOfAlgorithmModules.put(algorithmName, abstractAlgorithm);
 	}
 
 	protected void initializeAlgorithms() {
@@ -3201,6 +3236,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// TODO Auto-generated method stub
 		
 	}
+	
+	//-------------- Data processing related start --------------------------
+	/**
+	 * 
+	 * Register a callback to be invoked after buildmsg has executed (A new
+	 * packet has been successfully received -> raw bytes interpreted into Raw
+	 * and Calibrated Sensor data)
+	 * 
+	 * @param d
+	 *            The callback that will be invoked
+	 */
+	public void setDataProcessing(DataProcessingInterface dataProcessing) {
+		mDataProcessing = dataProcessing;
+	}
+
+	public DataProcessingInterface getDataProcessing() {
+		return mDataProcessing;
+	}
+
+	protected void initaliseDataProcessing() {
+		//provides a callback for users to initialize their algorithms when start streaming is called
+		if(mDataProcessing!=null){
+			mDataProcessing.initializeProcessData((int)getSamplingRateShimmer());
+		} 	
+	}
+
+	//-------------- Data processing related end --------------------------
+	
 
 	public void updateThreadName() {
 		String macId = getMacIdParsed();
@@ -3338,6 +3401,5 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			System.out.println(stringToPrint);
 		}
 	}
-
 
 }

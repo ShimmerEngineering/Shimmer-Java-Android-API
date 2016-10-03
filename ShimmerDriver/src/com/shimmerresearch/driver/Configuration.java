@@ -1197,9 +1197,9 @@ public class Configuration {
 		
 		//GUI AND EXPORT CHANNELS
 		public static class ObjectClusterSensorName{
-			public static String EULER_9DOF_Y;
-			public static String EULER_9DOF_Z;
-			public static final String SHIMMER = "Shimmer";
+//			public static String EULER_9DOF_Y;
+//			public static String EULER_9DOF_Z;
+//			public static final String SHIMMER = "Shimmer";
 			public static final String PACKET_RECEPTION_RATE_CURRENT = "Packet_Reception_Rate_Current";
 			public static final String PACKET_RECEPTION_RATE_OVERALL = "Packet_Reception_Rate_Trial";
 			
