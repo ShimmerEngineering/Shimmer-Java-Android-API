@@ -506,7 +506,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						printLogDataForDebugging("Queue Size: " + mABQPacketByeArray.size() + "\n");
 					}
 					RawBytePacketWithPCTimeStamp rbp = mABQPacketByeArray.remove();
-					buildAndSendMsg(rbp.mDataArray, FW_TYPE_BT, false, rbp.mSystemTimeStamp);
+//					buildAndSendMsg(rbp.mDataArray, FW_TYPE_BT, false, rbp.mSystemTimeStamp);
+					buildAndSendMsg(rbp.mDataArray, COMMUNICATION_TYPE.BLUETOOTH, false, rbp.mSystemTimeStamp);
 				}
 			} 
 		} 
@@ -996,7 +997,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param timeSync
 	 * @param pcTimeStamp
 	 */
-	private void buildAndSendMsg(byte[] packet, int fwType, boolean timeSync, long pcTimeStamp){
+	private void buildAndSendMsg(byte[] packet, COMMUNICATION_TYPE fwType, boolean timeSync, long pcTimeStamp){
+//	private void buildAndSendMsg(byte[] packet, int fwType, boolean timeSync, long pcTimeStamp){
 		ObjectCluster objectCluster = null;
 		try {
 			objectCluster = buildMsg(packet, fwType, timeSync, pcTimeStamp);
@@ -1057,7 +1059,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket,mListofPCTimeStamps.get(0)));
 		} 
 		else {
-			buildAndSendMsg(newPacket, FW_TYPE_BT, false, mListofPCTimeStamps.get(0));
+//			buildAndSendMsg(newPacket, FW_TYPE_BT, false, mListofPCTimeStamps.get(0));
+			buildAndSendMsg(newPacket, COMMUNICATION_TYPE.BLUETOOTH, false, mListofPCTimeStamps.get(0));
 		}
 	}
 	

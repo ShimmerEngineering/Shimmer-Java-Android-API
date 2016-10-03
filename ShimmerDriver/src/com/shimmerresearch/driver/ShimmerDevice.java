@@ -34,7 +34,9 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
@@ -51,6 +53,7 @@ import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -76,7 +79,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected static final int MAX_CALIB_DUMP_MAX = 4096;
 	
-	public static String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9_()\\[\\]]";	
+	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9_()\\[\\]]";	
 
 	
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
@@ -381,28 +384,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mConfigOptionsMapAlgorithms;
 	}
 	
-	/** If the device instance is already created use this to add a dock communication type to the instance
-	 * @param dockID
-	 * @param slotNumber
-	 */
-	public void addDOCKCoummnicationRoute(String dockId, int slotNumber) {
-		setDockInfo(dockId, slotNumber);
-		addCommunicationRoute(COMMUNICATION_TYPE.DOCK);
-	}
-	
-	
-	public void clearDockInfo(){
-		setDockInfo(DEFAULT_DOCKID, DEFAULT_SLOTNUMBER);
-	}
-	
-	public void setDockInfo(String dockId, int slotNumber){
-		mDockID = dockId;
-		parseDockType();
-		mSlotNumber = slotNumber;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
-	}
-	
-	
 	public void setBattStatusDetails(ShimmerBattStatusDetails shimmerBattStatusDetails) {
 		mShimmerBattStatusDetails = shimmerBattStatusDetails;
 	}
@@ -478,8 +459,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		infoMemByteArrayParse(shimmerInfoMemBytes);
 	}
 	
+	//------------------- Event marker code Start -------------------------------
 	public void setEventTriggered(int eventCode, int eventType){
-		
 		mEventMarkersCodeLast = eventCode;
 		
 		if(mEventMarkers > 0){
@@ -511,6 +492,36 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	public void processEventMarkerCh(ObjectCluster objectCluster) {
+		//event marker channel
+		objectCluster.addData(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers);
+		untriggerEventIfLastOneWasPulse();
+	}
+
+	//------------------- Event marker code End -------------------------------
+	
+	
+	//------------------- Communication route related Start -------------------------------
+	/** If the device instance is already created use this to add a dock communication type to the instance
+	 * @param dockID
+	 * @param slotNumber
+	 */
+	public void addDOCKCoummnicationRoute(String dockId, int slotNumber) {
+		setDockInfo(dockId, slotNumber);
+		addCommunicationRoute(COMMUNICATION_TYPE.DOCK);
+	}
+	
+	public void clearDockInfo(){
+		setDockInfo(DEFAULT_DOCKID, DEFAULT_SLOTNUMBER);
+	}
+	
+	public void setDockInfo(String dockId, int slotNumber){
+		mDockID = dockId;
+		parseDockType();
+		mSlotNumber = slotNumber;
+		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+	}
+
 	public void addCommunicationRoute(COMMUNICATION_TYPE communicationType) {
 		if(!mListOfAvailableCommunicationTypes.contains(communicationType)){
 			mListOfAvailableCommunicationTypes.add(communicationType);
@@ -542,6 +553,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		updateSensorDetailsWithCommsTypes();
 		updateSamplingRatesMapWithCommsTypes();
 	}
+	//------------------- Communication route related End -------------------------------
+
 
 	public String getDriveUsedSpaceParsed() {
 		return mShimmerSDCardDetails.getDriveUsedSpaceParsed();
@@ -957,7 +970,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 		else{
-			consolePrintLn("ERROR!!!! Parser map null");
+			consolePrintErrLn("ERROR!!!! Parser map null");
 		}
 		
 		//add in algorithm processing
