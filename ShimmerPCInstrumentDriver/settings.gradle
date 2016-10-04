@@ -1,0 +1,2 @@
+include ':ShimmerDriver'
+project(':ShimmerDriver').projectDir = new File(settingsDir, '../../Shimmer-Java-Android-API/ShimmerDriver')

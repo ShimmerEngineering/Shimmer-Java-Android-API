@@ -1,0 +1,81 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+archivesBaseName = 'shimmerbasicapi'
+
+/*Rev0.2
+* - fixes for shimmer2r and writeSensors not working after streaming
+*/
+version = '0.2' 
+
+
+
+repositories {
+    mavenCentral()
+    flatDir {
+       dirs 'libs'
+   }
+}
+
+sourceSets {
+    main {
+        java{
+        	srcDirs 'src'
+        	exclude 'com/shimmerresearch/pcDriver/testShimmer4.java'
+        	}
+       }
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.shimmerresearch.driver'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+//create a single Jar without dependencies
+task singleJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.shimmerresearch.driver'
+    }
+    baseName = project.name
+    jar {
+     from sourceSets.main.allSource
+ 	}
+    with jar
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "C:/")
+    }
+}
+
+jar {
+      manifest {
+        attributes 'Implementation-Title': 'Gradle Quickstart',
+                   'Implementation-Version': version
+    }
+}
+
+dependencies {
+   //compile name: 'jssc'
+   // https://mvnrepository.com/artifact/org.scream3r/jssc
+	compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
+   
+   compile name: 'bluecove-2.1.1-SNAPSHOT'
+   //compile name: 'jchart2d-3.2.2'
+   // https://mvnrepository.com/artifact/commons-io/commons-io
+	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+      compile project (':ShimmerDriver')
+      // https://mvnrepository.com/artifact/net.sf.jchart2d/jchart2d
+	compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
+      
+} 
