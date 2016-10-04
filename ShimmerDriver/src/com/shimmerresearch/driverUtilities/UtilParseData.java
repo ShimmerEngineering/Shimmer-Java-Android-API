@@ -1,7 +1,5 @@
 package com.shimmerresearch.driverUtilities;
 
-import org.apache.http.util.ByteArrayBuffer;
-
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
@@ -209,28 +207,11 @@ public class UtilParseData {
 			}
 		return formattedData;
 	}
-	
-	public static int calculatetwoscomplement(int signedData, int bitLength){
-		int newData=signedData;
-		if (signedData>=(1<<(bitLength-1))) {
-			newData=-((signedData^(int)(Math.pow(2, bitLength)-1))+1);
-		}
 
-		return newData;
-	}
-
-	public static long calculatetwoscomplement(long signedData, int bitLength){
-		long newData=signedData;
-		if (signedData>=(1L<<(bitLength-1))) {
-			newData=-((signedData^(long)(Math.pow(2, bitLength)-1))+1);
-		}
-
-		return newData;
-	}
-	
 	/**
 	 * Data Methods
 	 */  
+	@Deprecated // Moving to constant data type declarations rather then declaring strings in multiple classes
 	public static int[] formatDataPacketReverse(byte[] data,String[] dataType){
 		int iData=0;
 		int[] formattedData=new int[dataType.length];
@@ -261,29 +242,45 @@ public class UtilParseData {
 			}
 		return formattedData;
 	}
-	
-	  /**
-	   * <p>Reverses the order of the given array.</p>
-	   * 
-	   * <p>This method does nothing for a <code>null</code> input array.</p>
-	   * 
-	   * @param array  the array to reverse, may be <code>null</code>
-	   */
-	  public static void reverse(byte[] array) {
-	      if (array == null) {
-	          return;
-	      }
-	      int i = 0;
-	      int j = array.length - 1;
-	      byte tmp;
-	      while (j > i) {
-	          tmp = array[j];
-	          array[j] = array[i];
-	          array[i] = tmp;
-	          j--;
-	          i++;
-	      }
-	  }
-	
-	
+
+	/**
+	 * <p>Reverses the order of the given array.</p>
+	 * 
+	 * <p>This method does nothing for a <code>null</code> input array.</p>
+	 * 
+	 * @param array  the array to reverse, may be <code>null</code>
+	 */
+	public static void reverse(byte[] array) {
+		if (array == null) {
+			return;
+		}
+		int i = 0;
+		int j = array.length - 1;
+		byte tmp;
+		while (j > i) {
+			tmp = array[j];
+			array[j] = array[i];
+			array[i] = tmp;
+			j--;
+			i++;
+		}
+	}
+
+	public static int calculatetwoscomplement(int signedData, int bitLength){
+		int newData=signedData;
+		if (signedData>=(1<<(bitLength-1))) {
+			newData=-((signedData^(int)(Math.pow(2, bitLength)-1))+1);
+		}
+
+		return newData;
+	}
+
+	public static long calculatetwoscomplement(long signedData, int bitLength){
+		long newData=signedData;
+		if (signedData>=(1L<<(bitLength-1))) {
+			newData=-((signedData^(long)(Math.pow(2, bitLength)-1))+1);
+		}
+
+		return newData;
+	}
 }

@@ -28,8 +28,9 @@ import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
-import com.shimmerresearch.algorithms.orientation.OrientationModule6DOF;
-import com.shimmerresearch.algorithms.orientation.OrientationModule9DOF;
+import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
+import com.shimmerresearch.algorithms.orientation.OrientationModuleLoader6DOF;
+import com.shimmerresearch.algorithms.orientation.OrientationModuleLoader9DOF;
 import com.shimmerresearch.bluetooth.DataProcessingInterface;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
@@ -65,7 +66,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	/** * */
 	private static final long serialVersionUID = 5087199076353402591L;
-
 	
 	public static final String DEFAULT_DOCKID = "Default.01";
 	public static final int DEFAULT_SLOTNUMBER = -1;
@@ -190,6 +190,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public boolean mVerboseMode = true;
 
+	private static final List<AlgorithmLoaderInterface> ALGORITHMS_OPEN_SOURCE = Arrays.asList(
+			new OrientationModuleLoader6DOF(), 
+			new OrientationModuleLoader9DOF());
+
 	public static final class DatabaseConfigHandle{
 		public static final String SAMPLE_RATE = "Sample_Rate";
 		public static final String ENABLE_SENSORS = "Enable_Sensors";
@@ -256,11 +260,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		setupDataProcessing();
 	}
 	
-	public void setupDataProcessing() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	// --------------- Get/Set Methods Start --------------------------
 	
 	public void setShimmerVersionObject(ShimmerVerObject sVO) {
@@ -2544,25 +2543,40 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	/**
+	 * Overwritten in ShimmerPCMSS and ShimmerSDLog as they have access to
+	 * closed source algorithms. Is used to set the mDataProcessing variable
+	 */
+	public void setupDataProcessing() {
+		// TODO Auto-generated method stub
+	}
+
+
+	/**
 	 * Load general algorithm modules here. Method can be overwritten in order
 	 * to load licenced Shimmer algorithms - as done in ShimmerPCMSS
 	 */
 	protected void generateMapOfAlgorithmModules(){
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 		
-		double samplingRate = getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
-		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = OrientationModule9DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
-		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
-			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(algorithmDetails, samplingRate);
-			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule9DOF);
+//		double samplingRate = getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
+//		
+//		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = OrientationModule9DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
+//		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
+//			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(algorithmDetails, samplingRate);
+//			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule9DOF);
+//		}
+//		
+//		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = OrientationModule6DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
+//		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
+//			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, samplingRate);
+//			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule6DOF);
+//		}
+
+		for(AlgorithmLoaderInterface algorithmLoaderInterface:ALGORITHMS_OPEN_SOURCE){
+			loadAlgorithmInterface(algorithmLoaderInterface);
 		}
 		
-		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = OrientationModule6DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
-		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
-			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, samplingRate);
-			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule6DOF);
-		}
-
+		//TODO temporarily locating updateMapOfAlgorithmModules() in DataProcessing
 		if(mDataProcessing!=null){
 			mDataProcessing.updateMapOfAlgorithmModules();
 		}
@@ -2570,6 +2584,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// TODO load algorithm modules automatically from any included algorithm
 		// jars depending on licence?
 
+	}
+
+	public void loadAlgorithmInterface(AlgorithmLoaderInterface algorithmLoaderInterface) {
+		algorithmLoaderInterface.initialiseSupportedAlgorithms(this);
+	}
+
+	public void loadAlgorithmInterfaces(List<AlgorithmLoaderInterface> listOfAlgorithms) {
+		for(AlgorithmLoaderInterface algorithmLoaderInterface:listOfAlgorithms){
+			loadAlgorithmInterface(algorithmLoaderInterface);
+		}
 	}
 
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){

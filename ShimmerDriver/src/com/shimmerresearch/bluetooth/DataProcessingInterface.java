@@ -35,9 +35,10 @@ public interface DataProcessingInterface {
 	 */
 	public ObjectCluster processData(ObjectCluster ojc);
 
-	/**
-	 * 
-	 */
+	
+	
+	
+	//TODO temporarily locating updateMapOfAlgorithmModules() in DataProcessing
 	public void updateMapOfAlgorithmModules();
 
 }

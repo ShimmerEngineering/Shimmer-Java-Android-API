@@ -312,12 +312,12 @@ public class OrientationModule6DOF extends OrientationModule{
 		mAlgorithmMapRef = Collections.unmodifiableMap(aMap);
 	}
 
-	public static LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject shimmerVerObject) {
-		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
-		//TODO Filter here depending on Shimmer version
-		mapOfSupportedAlgorithms.putAll(mAlgorithmMapRef);
-		return mapOfSupportedAlgorithms;
-	}
+//	public static LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject shimmerVerObject) {
+//		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
+//		//TODO Filter here depending on Shimmer version
+//		mapOfSupportedAlgorithms.putAll(mAlgorithmMapRef);
+//		return mapOfSupportedAlgorithms;
+//	}
 
 
 	// ------------------- Algorithms grouping map start -----------------------
