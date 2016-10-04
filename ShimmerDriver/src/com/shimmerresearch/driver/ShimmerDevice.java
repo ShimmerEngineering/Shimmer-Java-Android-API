@@ -2572,9 +2572,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule6DOF);
 //		}
 
-		for(AlgorithmLoaderInterface algorithmLoaderInterface:ALGORITHMS_OPEN_SOURCE){
-			loadAlgorithmInterface(algorithmLoaderInterface);
-		}
+		loadAlgorithmInterfaces(ALGORITHMS_OPEN_SOURCE);
 		
 		//TODO temporarily locating updateMapOfAlgorithmModules() in DataProcessing
 		if(mDataProcessing!=null){
