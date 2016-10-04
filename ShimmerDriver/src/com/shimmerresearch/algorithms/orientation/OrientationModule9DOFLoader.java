@@ -9,27 +9,27 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
-public class OrientationModuleLoader6DOF implements AlgorithmLoaderInterface {
+public class OrientationModule9DOFLoader implements AlgorithmLoaderInterface {
 
 	@Override
 	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject svo, ExpansionBoardDetails eBD) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
 		
 		//TODO Filter here depending on Shimmer version
-		mapOfSupportedAlgorithms.putAll(OrientationModule6DOF.mAlgorithmMapRef);
+		mapOfSupportedAlgorithms.putAll(OrientationModule9DOF.mAlgorithmMapRef);
 		
 		return mapOfSupportedAlgorithms;
 	}
 
 	@Override
 	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice) {
-		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = getMapOfSupportedAlgorithms(shimmerDevice.getShimmerVerObject(), shimmerDevice.getExpansionBoardDetails());
-		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
-			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, shimmerDevice.getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH));
+		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = getMapOfSupportedAlgorithms(shimmerDevice.getShimmerVerObject(), shimmerDevice.getExpansionBoardDetails());
+		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
+			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(algorithmDetails, shimmerDevice.getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH));
 			
 			//TODO load any default settings here
 			
-			shimmerDevice.addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule6DOF);
+			shimmerDevice.addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule9DOF);
 		}
 	}
 

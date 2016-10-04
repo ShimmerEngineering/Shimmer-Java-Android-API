@@ -29,8 +29,8 @@ import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
-import com.shimmerresearch.algorithms.orientation.OrientationModuleLoader6DOF;
-import com.shimmerresearch.algorithms.orientation.OrientationModuleLoader9DOF;
+import com.shimmerresearch.algorithms.orientation.OrientationModule6DOFLoader;
+import com.shimmerresearch.algorithms.orientation.OrientationModule9DOFLoader;
 import com.shimmerresearch.bluetooth.DataProcessingInterface;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
@@ -191,8 +191,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean mVerboseMode = true;
 
 	private static final List<AlgorithmLoaderInterface> ALGORITHMS_OPEN_SOURCE = Arrays.asList(
-			new OrientationModuleLoader6DOF(), 
-			new OrientationModuleLoader9DOF());
+			new OrientationModule6DOFLoader(), 
+			new OrientationModule9DOFLoader());
 
 	public static final class DatabaseConfigHandle{
 		public static final String SAMPLE_RATE = "Sample_Rate";
