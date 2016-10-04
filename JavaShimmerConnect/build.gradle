@@ -1,0 +1,75 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+archivesBaseName = 'shimmerbasicapi'
+
+/*Rev0.2
+* - fixes for shimmer2r and writeSensors not working after streaming
+*/
+version = '0.2' 
+
+
+
+repositories {
+    mavenCentral()
+    flatDir {
+       dirs 'libs'
+   }
+}
+
+sourceSets {
+    main {
+        java{
+        	srcDirs 'src'
+        	srcDirs 'img'
+        	exclude 'com/shimmerresearch/pcDriver/testShimmer4.java'
+        	}
+       }
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.shimmerresearch.driver'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+//create a single Jar without dependencies
+task singleJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.shimmerresearch.driver'
+    }
+    baseName = project.name
+    jar {
+     from sourceSets.main.allSource
+ 	}
+    with jar
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "C:/")
+    }
+}
+
+jar {
+      manifest {
+        attributes 'Implementation-Title': 'Gradle Quickstart',
+                   'Implementation-Version': version
+    }
+}
+
+dependencies {
+ 
+      compile project (':ShimmerDriver')
+     compile project (':ShimmerPCInstrumentDriver')
+     compile name: 'ShimmerBiophysicalProcessingLibrary_Rev_0_11'
+      
+} 

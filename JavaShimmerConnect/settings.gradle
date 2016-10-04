@@ -1,0 +1,30 @@
+include ':ShimmerDriver'
+project(':ShimmerDriver').projectDir = new File(settingsDir, '../../Shimmer-Java-Android-API/ShimmerDriver')
+include ':ShimmerPCInstrumentDriver'
+project(':ShimmerPCInstrumentDriver').projectDir = new File(settingsDir, '../../Shimmer-Java-Android-API/ShimmerPCInstrumentDriver')
+include ':ShimmerPlatformManager'
+project(':ShimmerPlatformManager').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPlatformManager')
+include ':ShimmerBluetoothManager'
+project(':ShimmerBluetoothManager').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerBluetoothManager')
+include ':ShimmerPluginAlgorithm'
+project(':ShimmerPluginAlgorithm').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPluginAlgorithm')
+include ':ShimmerPlugin'
+project(':ShimmerPlugin').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPlugin')
+include ':ShimmerClosedLibrary'
+project(':ShimmerClosedLibrary').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerClosedLibrary')
+include ':ShimmerAdvanceLibrary'
+project(':ShimmerAdvanceLibrary').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerAdvanceLibrary')
+include ':ShimmerLicensing'
+project(':ShimmerLicensing').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerLicensing')
+include ':UtilShimmerMethods'
+project(':UtilShimmerMethods').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/UtilShimmerMethods')
+include ':ShimmerPCAdvanceAPI'
+project(':ShimmerPCAdvanceAPI').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPCAdvanceAPI')
+include ':VersionUpdateCheck'
+project(':VersionUpdateCheck').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/VersionUpdateCheck')
+include ':ConsensysCommon'
+project(':ConsensysCommon').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ConsensysCommon')
+include ':TinyOSApi'
+project(':TinyOSApi').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/TinyOSApi')
+include ':ShimmerDatabase'
+project(':ShimmerDatabase').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerDatabase')
