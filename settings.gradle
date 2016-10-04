@@ -1,0 +1,3 @@
+include ':ShimmerDriver'
+include ':ShimmerPCInstrumentDriver'
+include ':JavaShimmerConnect'
