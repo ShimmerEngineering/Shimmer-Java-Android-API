@@ -72,7 +72,6 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
@@ -92,9 +91,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	protected transient SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
 	
-//	private boolean mVerboseMode = true;
-//	private String mParentClassName = "ShimmerPC";
-	
 	double mLastSavedCalibratedTimeStamp = -1;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
 	
@@ -107,8 +103,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 */
 	public ShimmerPC(String myName, Boolean continousSync) {
 		mShimmerUserAssignedName=myName;
-		mContinousSync=continousSync;
-		mSetupDevice=false;
+		setContinuousSync(continousSync);
 		
 		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
     	setSamplingRateShimmer(128);
@@ -122,14 +117,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPC(String comPort, String myBluetoothAddress, String myName, Boolean continousSync) {
+		this(myName, continousSync);
 		setComPort(comPort);
 		mMyBluetoothAddress=myBluetoothAddress;
-		mShimmerUserAssignedName=myName;
-		mContinousSync=continousSync;
-		mSetupDevice=false;
-		
-		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
-    	setSamplingRateShimmer(128);
 	}
 
 	/**Shimmer 3 Constructor
@@ -147,26 +137,24 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param exg1 Sets the register of EXG chip 1
 	 * @param exg2 Setes the register of EXG chip 2
 	 */
-	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2) {
-//		mState = BT_STATE.NONE;
-		mBluetoothRadioState = BT_STATE.DISCONNECTED;
+	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2, int orientation) {
+		this(myName, continousSync);
+
 		setAccelRange(accelRange);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mShimmerUserAssignedName = myName;
-		mSetupDevice = true;
-		mContinousSync = continousSync;
 		mLowPowerMag = enableLowPowerMag;
 		mLowPowerAccelWR = enableLowPowerAccel;
 		mLowPowerGyro = enableLowPowerGyro;
 		setGyroRange(gyroRange);
 		setMagRange(magRange);
 		mSetupEXG = true;
-		mEXG1RegisterArray = exg1;
-		mEXG2RegisterArray = exg2;
+		setEXG1RegisterArray(exg1);
+		setEXG2RegisterArray(exg2);
 		
-		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+		mSetupDevice = true;
     	setSamplingRateShimmer(samplingRate);
+		setupOrientation(orientation, samplingRate);
 	}
 	
 	/**
@@ -179,19 +167,17 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 * @param magGain Set mag gain
 	 */
-	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain) {
-//		mState = BT_STATE.NONE;
-		mBluetoothRadioState = BT_STATE.DISCONNECTED;
+	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain, int orientation) {
+		this(myName, continousSync);
+
 		setAccelRange(accelRange);
 		setMagRange(magGain);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mShimmerUserAssignedName = myName;
+
 		mSetupDevice = true;
-		mContinousSync = continousSync;
-		
-		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
     	setSamplingRateShimmer(samplingRate);
+		setupOrientation(orientation, samplingRate);
 	}
 	
 	// Javadoc comment follows
@@ -201,14 +187,13 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
      */
     @Deprecated
 	public ShimmerPC( String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
+    	this(myName, continousSync);
+    	
     	setAccelRange(accelRange);
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
-		mShimmerUserAssignedName = myName;
-		mSetupDevice = true;
-		mContinousSync = continousSync;
 		
-		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+		mSetupDevice = true;
     	setSamplingRateShimmer(samplingRate);
 	}
     
@@ -500,6 +485,27 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			setBluetoothRadioState(BT_STATE.DISCONNECTED);
 		}			
+	}
+	
+	public void setSerialPort(SerialPort sp){
+		mSerialPort = sp;
+		getSamplingRateShimmer();
+		if (mSerialPort.isOpened()){
+			setBluetoothRadioState(BT_STATE.CONNECTING);
+		}
+		if (mSerialPort.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
+			//			if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
+			//				setState(BT_STATE.CONNECTED);
+			setIsConnected(true);
+
+			mIOThread = new IOThread();
+			mIOThread.start();
+			if(mUseProcessingThread){
+				mPThread = new ProcessingThread();
+				mPThread.start();
+			}
+			initialize();
+		}
 	}
 
 	@Override

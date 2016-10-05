@@ -28,13 +28,17 @@ import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
-import com.shimmerresearch.algorithms.orientation.OrientationModule6DOF;
-import com.shimmerresearch.algorithms.orientation.OrientationModule9DOF;
+import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
+import com.shimmerresearch.algorithms.orientation.OrientationModule6DOFLoader;
+import com.shimmerresearch.algorithms.orientation.OrientationModule9DOFLoader;
+import com.shimmerresearch.bluetooth.DataProcessingInterface;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
+import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
@@ -51,6 +55,7 @@ import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -61,7 +66,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	/** * */
 	private static final long serialVersionUID = 5087199076353402591L;
-
 	
 	public static final String DEFAULT_DOCKID = "Default.01";
 	public static final int DEFAULT_SLOTNUMBER = -1;
@@ -76,7 +80,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected static final int MAX_CALIB_DUMP_MAX = 4096;
 	
-	public static String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9_()\\[\\]]";	
+	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9_()\\[\\]]";	
 
 	
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
@@ -182,7 +186,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
 	
+	protected DataProcessingInterface mDataProcessing;
+
 	public boolean mVerboseMode = true;
+
+	private static final List<AlgorithmLoaderInterface> ALGORITHMS_OPEN_SOURCE = Arrays.asList(
+			new OrientationModule6DOFLoader(), 
+			new OrientationModule9DOFLoader());
 
 	public static final class DatabaseConfigHandle{
 		public static final String SAMPLE_RATE = "Sample_Rate";
@@ -239,6 +249,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
 	public abstract void createInfoMemLayout();
 
+
 	// --------------- Abstract Methods End --------------------------
 
 	/**
@@ -246,6 +257,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public ShimmerDevice(){
 		setThreadName("ShimmerDevice");
+		setupDataProcessing();
 	}
 	
 	// --------------- Get/Set Methods Start --------------------------
@@ -381,28 +393,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mConfigOptionsMapAlgorithms;
 	}
 	
-	/** If the device instance is already created use this to add a dock communication type to the instance
-	 * @param dockID
-	 * @param slotNumber
-	 */
-	public void addDOCKCoummnicationRoute(String dockId, int slotNumber) {
-		setDockInfo(dockId, slotNumber);
-		addCommunicationRoute(COMMUNICATION_TYPE.DOCK);
-	}
-	
-	
-	public void clearDockInfo(){
-		setDockInfo(DEFAULT_DOCKID, DEFAULT_SLOTNUMBER);
-	}
-	
-	public void setDockInfo(String dockId, int slotNumber){
-		mDockID = dockId;
-		parseDockType();
-		mSlotNumber = slotNumber;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
-	}
-	
-	
 	public void setBattStatusDetails(ShimmerBattStatusDetails shimmerBattStatusDetails) {
 		mShimmerBattStatusDetails = shimmerBattStatusDetails;
 	}
@@ -478,8 +468,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		infoMemByteArrayParse(shimmerInfoMemBytes);
 	}
 	
+	//------------------- Event marker code Start -------------------------------
 	public void setEventTriggered(int eventCode, int eventType){
-		
 		mEventMarkersCodeLast = eventCode;
 		
 		if(mEventMarkers > 0){
@@ -511,6 +501,36 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	public void processEventMarkerCh(ObjectCluster objectCluster) {
+		//event marker channel
+		objectCluster.addData(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers);
+		untriggerEventIfLastOneWasPulse();
+	}
+
+	//------------------- Event marker code End -------------------------------
+	
+	
+	//------------------- Communication route related Start -------------------------------
+	/** If the device instance is already created use this to add a dock communication type to the instance
+	 * @param dockID
+	 * @param slotNumber
+	 */
+	public void addDOCKCoummnicationRoute(String dockId, int slotNumber) {
+		setDockInfo(dockId, slotNumber);
+		addCommunicationRoute(COMMUNICATION_TYPE.DOCK);
+	}
+	
+	public void clearDockInfo(){
+		setDockInfo(DEFAULT_DOCKID, DEFAULT_SLOTNUMBER);
+	}
+	
+	public void setDockInfo(String dockId, int slotNumber){
+		mDockID = dockId;
+		parseDockType();
+		mSlotNumber = slotNumber;
+		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+	}
+
 	public void addCommunicationRoute(COMMUNICATION_TYPE communicationType) {
 		if(!mListOfAvailableCommunicationTypes.contains(communicationType)){
 			mListOfAvailableCommunicationTypes.add(communicationType);
@@ -542,6 +562,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		updateSensorDetailsWithCommsTypes();
 		updateSamplingRatesMapWithCommsTypes();
 	}
+	//------------------- Communication route related End -------------------------------
+
 
 	public String getDriveUsedSpaceParsed() {
 		return mShimmerSDCardDetails.getDriveUsedSpaceParsed();
@@ -957,18 +979,31 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 		else{
-			consolePrintLn("ERROR!!!! Parser map null");
+			consolePrintErrLn("ERROR!!!! Parser map null");
 		}
 		
-		//add in algorithm processing
-//		ojc = processAlgorithmData(ojc);
+		ojc = processData(ojc);
 		
 		return ojc;
 	}
 	
-	protected ObjectCluster processAlgorithms(ObjectCluster ojc) {
+	/** Perform any processing required on the data. E.g. time sync, filtering and algorithms
+	 * @param ojc
+	 * @return
+	 */
+	protected ObjectCluster processData(ObjectCluster ojc) {
+		if(mDataProcessing!=null){
+			ojc = mDataProcessing.processData(ojc);
+		}
+		
+		//now process the enabled algorithms
+		ojc = processAlgorithms(ojc);
+		return ojc;
+	}
+
+	public ObjectCluster processAlgorithms(ObjectCluster ojc) {
 		//TODO sort out the flow of the below structure
-		for (AbstractAlgorithm aA:mMapOfAlgorithmModules.values()) {
+		for (AbstractAlgorithm aA:getMapOfAlgorithmModules().values()) {
 			if (aA.isEnabled()) {
 				try {
 					AlgorithmResultObject algorithmResultObject = aA.processDataRealTime(ojc);
@@ -983,7 +1018,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return ojc;
 	}
-
 	
 	//TODO get below working if even needed
 	/** Based on the SensorMap approach rather then legacy inquiry command */
@@ -2170,6 +2204,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public BT_STATE getBluetoothRadioState() {
 		return mBluetoothRadioState;
 	}
+	
+	public String getBluetoothRadioStateString() {
+		return mBluetoothRadioState.toString();
+	}
 
 	public void connect() throws DeviceException{
 		// TODO Auto-generated method stub
@@ -2505,31 +2543,63 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	/**
+	 * Overwritten in ShimmerPCMSS and ShimmerSDLog as they have access to
+	 * closed source algorithms. Is used to set the mDataProcessing variable
+	 */
+	public void setupDataProcessing() {
+		// TODO Auto-generated method stub
+	}
+
+
+	/**
 	 * Load general algorithm modules here. Method can be overwritten in order
 	 * to load licenced Shimmer algorithms - as done in ShimmerPCMSS
 	 */
 	protected void generateMapOfAlgorithmModules(){
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 		
-		double samplingRate = getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
-		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = OrientationModule9DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
-		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
-			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(algorithmDetails, samplingRate);
-			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule9DOF);
-		}
+//		double samplingRate = getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
+//		
+//		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = OrientationModule9DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
+//		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
+//			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(algorithmDetails, samplingRate);
+//			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule9DOF);
+//		}
+//		
+//		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = OrientationModule6DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
+//		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
+//			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, samplingRate);
+//			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule6DOF);
+//		}
+
+		loadAlgorithmInterfaces(ALGORITHMS_OPEN_SOURCE);
 		
-		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = OrientationModule6DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
-		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
-			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, samplingRate);
-			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule6DOF);
+		//TODO temporarily locating updateMapOfAlgorithmModules() in DataProcessing
+		if(mDataProcessing!=null){
+			mDataProcessing.updateMapOfAlgorithmModules();
 		}
-		
+
 		// TODO load algorithm modules automatically from any included algorithm
 		// jars depending on licence?
+
+	}
+
+	public void loadAlgorithmInterface(AlgorithmLoaderInterface algorithmLoaderInterface) {
+		algorithmLoaderInterface.initialiseSupportedAlgorithms(this);
+	}
+
+	public void loadAlgorithmInterfaces(List<AlgorithmLoaderInterface> listOfAlgorithms) {
+		for(AlgorithmLoaderInterface algorithmLoaderInterface:listOfAlgorithms){
+			loadAlgorithmInterface(algorithmLoaderInterface);
+		}
 	}
 
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
 		return mMapOfAlgorithmModules;
+	}
+
+	public void addAlgorithmModule(String algorithmName, AbstractAlgorithm abstractAlgorithm) {
+		mMapOfAlgorithmModules.put(algorithmName, abstractAlgorithm);
 	}
 
 	protected void initializeAlgorithms() {
@@ -3188,6 +3258,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// TODO Auto-generated method stub
 		
 	}
+	
+	//-------------- Data processing related start --------------------------
+	/**
+	 * 
+	 * Register a callback to be invoked after buildmsg has executed (A new
+	 * packet has been successfully received -> raw bytes interpreted into Raw
+	 * and Calibrated Sensor data)
+	 * 
+	 * @param d
+	 *            The callback that will be invoked
+	 */
+	public void setDataProcessing(DataProcessingInterface dataProcessing) {
+		mDataProcessing = dataProcessing;
+	}
+
+	public DataProcessingInterface getDataProcessing() {
+		return mDataProcessing;
+	}
+
+	protected void initaliseDataProcessing() {
+		//provides a callback for users to initialize their algorithms when start streaming is called
+		if(mDataProcessing!=null){
+			mDataProcessing.initializeProcessData((int)getSamplingRateShimmer());
+		} 	
+	}
+
+	//-------------- Data processing related end --------------------------
+	
 
 	public void updateThreadName() {
 		String macId = getMacIdParsed();
@@ -3325,6 +3423,5 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			System.out.println(stringToPrint);
 		}
 	}
-
 
 }
