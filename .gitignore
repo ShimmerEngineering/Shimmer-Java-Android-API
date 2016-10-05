@@ -9,7 +9,7 @@ out/
 *.swp
 *~.nib
 local.properties
-.settings/
+# .settings/
 .loadpath
 
 # Built application files
