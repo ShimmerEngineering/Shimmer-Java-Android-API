@@ -44,6 +44,8 @@ dependencies {
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
+
+	compile project (':ShimmerDriver')
     
        //compile name: 'jssc'
    // https://mvnrepository.com/artifact/org.scream3r/jssc
@@ -58,10 +60,8 @@ dependencies {
    //compile name: 'jchart2d-3.2.2'
    // https://mvnrepository.com/artifact/commons-io/commons-io
 	compile group: 'commons-io', name: 'commons-io', version: '2.4'
-	compile project (':ShimmerDriver')
       // https://mvnrepository.com/artifact/net.sf.jchart2d/jchart2d
 	compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
-	
 	// https://mvnrepository.com/artifact/javax.microedition/cldc
 	compile group: 'javax.microedition', name: 'cldc', version: '1.1'
 	

@@ -16,7 +16,7 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'ShimmerPCInstrumentDriver'
+rootProject.name = 'ShimmerDriverPC'
 
 include ':ShimmerDriver'
 project(':ShimmerDriver').projectDir = new File(settingsDir, '../ShimmerDriver')

@@ -20,8 +20,8 @@ rootProject.name = 'JavaShimmerConnect'
 
 include ':ShimmerDriver'
 project(':ShimmerDriver').projectDir = new File(settingsDir, '../../Shimmer-Java-Android-API/ShimmerDriver')
-include ':ShimmerPCInstrumentDriver'
-project(':ShimmerPCInstrumentDriver').projectDir = new File(settingsDir, '../../Shimmer-Java-Android-API/ShimmerPCInstrumentDriver')
+include ':ShimmerDriverPC'
+project(':ShimmerDriverPC').projectDir = new File(settingsDir, '../../Shimmer-Java-Android-API/ShimmerDriverPC')
 include ':ShimmerPlatformManager'
 project(':ShimmerPlatformManager').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPlatformManager')
 include ':ShimmerBluetoothManager'

@@ -65,8 +65,8 @@
     </display>  
   </class>  
   <class id="7" language="java" name="com.shimmerresearch.pcSerialPort.ShimmerRadioInitializerPc" 
-    project="ShimmerPCInstrumentDriver" 
-    file="/ShimmerPCInstrumentDriver/src/com/shimmerresearch/pcSerialPort/ShimmerRadioInitializerPc.java" binary="false" 
+    project="ShimmerDriverPC" 
+    file="/ShimmerDriverPC/src/com/shimmerresearch/pcSerialPort/ShimmerRadioInitializerPc.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="-86" y="79"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -76,8 +76,8 @@
     </display>  
   </class>  
   <class id="8" language="java" name="com.shimmerresearch.pcSerialPort.SerialPortCommJssc" 
-    project="ShimmerPCInstrumentDriver" 
-    file="/ShimmerPCInstrumentDriver/src/com/shimmerresearch/pcSerialPort/SerialPortCommJssc.java" binary="false" 
+    project="ShimmerDriverPC" 
+    file="/ShimmerDriverPC/src/com/shimmerresearch/pcSerialPort/SerialPortCommJssc.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="139" y="71"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -87,8 +87,8 @@
     </display>  
   </class>  
   <class id="9" language="java" name="com.shimmerresearch.pcSerialPort.SerialPortCommJssc.ShimmerUartListener" 
-    project="ShimmerPCInstrumentDriver" 
-    file="/ShimmerPCInstrumentDriver/src/com/shimmerresearch/pcSerialPort/SerialPortCommJssc.java" binary="false" 
+    project="ShimmerDriverPC" 
+    file="/ShimmerDriverPC/src/com/shimmerresearch/pcSerialPort/SerialPortCommJssc.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="139" y="171"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

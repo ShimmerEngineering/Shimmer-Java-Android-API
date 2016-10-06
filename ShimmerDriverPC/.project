@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ShimmerPCInstrumentDriver</name>
-	<comment>Project ShimmerPCInstrumentDriver created by Buildship.</comment>
+	<name>ShimmerDriverPC</name>
+	<comment>Project ShimmerDriverPC created by Buildship.</comment>
 	<projects>
 	</projects>
 	<buildSpec>

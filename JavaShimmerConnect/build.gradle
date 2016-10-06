@@ -32,7 +32,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     
     compile project (':ShimmerDriver')
-    compile project (':ShimmerPCInstrumentDriver')
+    compile project (':ShimmerDriverPC')
     compile name: 'ShimmerBiophysicalProcessingLibrary_Rev_0_11'
     
 }
