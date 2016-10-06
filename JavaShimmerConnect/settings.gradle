@@ -26,20 +26,18 @@ include ':ShimmerPlatformManager'
 project(':ShimmerPlatformManager').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPlatformManager')
 include ':ShimmerBluetoothManager'
 project(':ShimmerBluetoothManager').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerBluetoothManager')
-include ':ShimmerPluginAlgorithm'
-project(':ShimmerPluginAlgorithm').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPluginAlgorithm')
-include ':ShimmerPlugin'
-project(':ShimmerPlugin').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPlugin')
-include ':ShimmerClosedLibrary'
-project(':ShimmerClosedLibrary').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerClosedLibrary')
-include ':ShimmerAdvanceLibrary'
-project(':ShimmerAdvanceLibrary').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerAdvanceLibrary')
+include ':ShimmerPluginManager'
+project(':ShimmerPluginManager').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPluginManager')
+include ':ShimmerAlgorithms'
+project(':ShimmerAlgorithms').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerAlgorithms')
+include ':ShimmerDriverAdvanced'
+project(':ShimmerDriverAdvanced').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerDriverAdvanced')
 include ':ShimmerLicensing'
 project(':ShimmerLicensing').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerLicensing')
 include ':UtilShimmerMethods'
 project(':UtilShimmerMethods').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/UtilShimmerMethods')
-include ':ShimmerPCAdvanceAPI'
-project(':ShimmerPCAdvanceAPI').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPCAdvanceAPI')
+include ':ShimmerDriverAdvancedPC'
+project(':ShimmerDriverAdvancedPC').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerDriverAdvancedPC')
 include ':VersionUpdateCheck'
 project(':VersionUpdateCheck').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/VersionUpdateCheck')
 include ':ConsensysCommon'
