@@ -324,5 +324,9 @@ public class ChannelDetails implements Serializable {
 	public int getLegacyChannelId() {
 		return mLegacyChannelId;
 	}
+	
+	public String getChannelObjectClusterName(){
+		return mObjectClusterName;
+	}
 
 }
