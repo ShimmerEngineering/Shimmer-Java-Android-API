@@ -26,10 +26,10 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
-import com.shimmerresearch.algorithms.AlgorithmDetails;
-import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.OrientationModule6DOF;
 import com.shimmerresearch.algorithms.OrientationModule9DOF;
+import com.shimmerresearch.algorithms.AlgorithmDetails;
+import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
@@ -62,6 +62,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** * */
 	private static final long serialVersionUID = 5087199076353402591L;
 
+	
 	public static final String DEFAULT_DOCKID = "Default.01";
 	public static final int DEFAULT_SLOTNUMBER = -1;
 	public static final String DEFAULT_SHIMMER_NAME = "Shimmer";
@@ -1471,19 +1472,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.isShimmerGen4();
 	}
 
-	
+
+	public void consolePrintErrLn(String message) {
+		if(mVerboseMode) {
+			System.err.println(assemblePrintString(message));
+		}
+	}
+
 	public void consolePrintLn(String message) {
 		if(mVerboseMode) {
-			Calendar rightNow = Calendar.getInstance();
-			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
-					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString 
-					+ " " + getClass().getSimpleName() 
-					+ ": " + getMacIdParsed() 
-					+ " " + Integer.toHexString(this.hashCode()) 
-					+ " " + message);
+			System.out.println(assemblePrintString(message));
 		}		
 	}
 	
@@ -1491,6 +1489,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mVerboseMode) {
 			System.out.print(message);
 		}		
+	}
+	
+	private String assemblePrintString(String message){
+		Calendar rightNow = Calendar.getInstance();
+		String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
+				+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
+				+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
+				+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
+		return (rightNowString 
+				+ " " + getClass().getSimpleName() 
+				+ " (Mac:" + getMacIdParsed() 
+				+ " HashCode:" + Integer.toHexString(this.hashCode()) + ")" 
+				+ ": " + message);
 	}
 
 	public void setVerboseMode(boolean verboseMode) {
@@ -2512,6 +2523,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, samplingRate);
 			mMapOfAlgorithmModules.put(algorithmDetails.mAlgorithmName, orientationModule6DOF);
 		}
+		
 		// TODO load algorithm modules automatically from any included algorithm
 		// jars depending on licence?
 	}

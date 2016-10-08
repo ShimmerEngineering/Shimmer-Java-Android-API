@@ -960,11 +960,13 @@ public class SensorEXG extends AbstractSensor{
 			ListOfExGRespirationDetectPhase32khz, 
 			ListOfExGRespirationDetectPhase32khzConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration);
-	{
-		configOptionExgRespirationDetectPhase.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, ListOfExGRespirationDetectPhase64khz);
-		configOptionExgRespirationDetectPhase.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, ListOfExGRespirationDetectPhase64khzConfigValues);
-	}
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration,
+			Arrays.asList(
+					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, ListOfExGRespirationDetectPhase64khz, ListOfExGRespirationDetectPhase64khzConfigValues)));
+//	{
+//		configOptionExgRespirationDetectPhase.setGuiValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, ListOfExGRespirationDetectPhase64khz);
+//		configOptionExgRespirationDetectPhase.setConfigValues(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, ListOfExGRespirationDetectPhase64khzConfigValues);
+//	}
 
 	@Override
 	public void generateConfigOptionsMap() {
