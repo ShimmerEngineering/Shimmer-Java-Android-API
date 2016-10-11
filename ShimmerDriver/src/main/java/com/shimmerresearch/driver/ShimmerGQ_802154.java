@@ -1,5 +1,7 @@
 package com.shimmerresearch.driver;
 
+//TODO carry any improvements that have been implemented in the Shimmer4 class over to this class
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -62,7 +64,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	public long mDerivedSensors = ALGORITHM_ECG_TO_HR_CHP1_CH1;
 	
 	//TODO tidy: carried from ShimmerObject
-	public int mInternalExpPower = 1;			// Enable external power for EXG + GSR
+//	public int mInternalExpPower = 1;			// Enable external power for EXG + GSR
 	public boolean mSyncWhenLogging = true;
 	public boolean mIsFwTestMode = false;
 //	public boolean mIsSDError = false;

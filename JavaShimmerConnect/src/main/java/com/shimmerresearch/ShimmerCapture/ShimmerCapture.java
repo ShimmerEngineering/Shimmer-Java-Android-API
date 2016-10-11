@@ -1034,7 +1034,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			firstConfiguration=false;
 		}
 
-		enabledSensorSignals = mShimmer.getListofEnabledSensorSignals();
+		enabledSensorSignals = mShimmer.getListofEnabledChannelSignals();
 		numberOfSignals = enabledSensorSignals.length;
 		if (numberOfSignals>maxTraces){
 			numberOfSignals=maxTraces;
@@ -1630,7 +1630,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	 * Setting up check boxes of enabled sensor signals on main panel
 	 */
 	public void setupListOfEnabledSensors() {
-		enabledSensorSignals = mShimmer.getListofEnabledSensorSignals();
+		enabledSensorSignals = mShimmer.getListofEnabledChannelSignals();
 		numberOfSignals = enabledSensorSignals.length;
 		for (int count=0; count<maxTraces; count++) {
 			listOfSignals[count].setVisible(false);

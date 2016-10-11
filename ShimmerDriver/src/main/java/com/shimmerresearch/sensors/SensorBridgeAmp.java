@@ -434,6 +434,17 @@ public class SensorBridgeAmp extends AbstractSensor{
 		return calData;
 	}
 	
+	
+	/** 
+	 * SEE Bridge Amplifer+ User Manual for Details
+	 * 
+	 * y = -27.42ln(x) + 56.502 
+	 * where y = temperature in degC
+	 * where x = (200*Vo)/((10.1)Pv-Vo)
+	 * where Pv = 3000mV
+	 * where Vo = Uncalibrated output of the resistance amplifier channel
+	 * 
+	*/
 	public static double calibratePhillipsSkinTemperatureData(double uncalibratedData){
 		double x = (200.0*uncalibratedData)/((10.1)*3000-uncalibratedData);
 		double y = -27.42*Math.log(x) + 56.502;

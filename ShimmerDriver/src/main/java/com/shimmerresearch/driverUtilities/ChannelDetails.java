@@ -328,5 +328,27 @@ public class ChannelDetails implements Serializable {
 	public String getChannelObjectClusterName(){
 		return mObjectClusterName;
 	}
+	
+	public List<String[]> getListOfChannelSignalsAndFormats(){
+		List<String[]> listOfChannelSignalsAndFormats = new ArrayList<String[]>();
+		for(CHANNEL_TYPE channelType:mListOfChannelTypes){
+			String[] signalProperties = new String[4];
+			signalProperties[0] = mObjectClusterName;
+			signalProperties[1] = channelType.toString();
+			
+			if(channelType==CHANNEL_TYPE.UNCAL){
+				signalProperties[2] = mDefaultUncalUnit; 
+			}
+			else if(channelType==CHANNEL_TYPE.CAL){
+				signalProperties[2] = mDefaultCalUnits; 
+			}
+			
+			//TODO
+			signalProperties[3] = "";
+//			signalProperties[3] = mIsChannelUsingDefaultCal? "*":""; 
+			listOfChannelSignalsAndFormats.add(signalProperties);
+		}
+		return listOfChannelSignalsAndFormats;
+	}
 
 }

@@ -1625,7 +1625,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledChannelsForStreaming(COMMUNICATION_TYPE commType) {
-		LinkedHashMap<String, ChannelDetails> listOfChannels = new LinkedHashMap<String, ChannelDetails>();
+		LinkedHashMap<String, ChannelDetails> mapOfChannels = new LinkedHashMap<String, ChannelDetails>();
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
 			SensorDetails sensorDetails = iterator.next();
@@ -1641,18 +1641,37 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			if(isEnabled){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if(channelDetails.mShowWhileStreaming){
-						listOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
+						mapOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
 					}
 				}
 			}
 		}
 		
-		if(listOfChannels.size()==0){
+		if(mapOfChannels.size()==0){
 			consolePrintLn(getMacIdFromUartParsed() + "\tNO SENSORS ENABLED");
 		}
 		
-		return listOfChannels;
+		return mapOfChannels;
 	}
+	
+	public String[] getListofEnabledChannelSignals(){
+		List<String> listofSignals = new ArrayList<String>(getMapOfEnabledChannelsForStreaming().keySet());
+//		return listofSignals;
+		
+		String[] enabledSignals = listofSignals.toArray(new String[listofSignals.size()]);
+		return enabledSignals;
+	}
+	
+	public List<String[]> getListofEnabledChannelSignalsandFormats(){
+		List<String[]> listofEnabledSensorSignalsandFormats = new ArrayList<String[]>();
+		Iterator<ChannelDetails> iterator = getMapOfEnabledChannelsForStreaming().values().iterator();
+		while(iterator.hasNext()){
+			ChannelDetails channelDetails = iterator.next();
+			listofEnabledSensorSignalsandFormats.addAll(channelDetails.getListOfChannelSignalsAndFormats());
+		}
+		return listofEnabledSensorSignalsandFormats;
+	}
+
 	
 	/**
 	 * @return the mSensorMap
