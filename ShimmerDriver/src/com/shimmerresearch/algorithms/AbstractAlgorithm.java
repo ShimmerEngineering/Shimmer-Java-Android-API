@@ -28,6 +28,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		DEFAULT
 	};
 	
+	
 	public enum ALGORITHM_TYPE{
 		ALGORITHM_TYPE_CONTINUOUS("ALGORITHM TYPE CONTINUOUS"),
 		ALGORITHM_TYPE_ONE_SHOT("ALGORITHM TYPE ONE SHOT"),
