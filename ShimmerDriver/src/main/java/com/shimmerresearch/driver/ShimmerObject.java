@@ -1160,12 +1160,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		}
 		
-		if (fwType == COMMUNICATION_TYPE.BLUETOOTH){ // Here so as not to mess with ShimmerSDLog
+//		if (fwType == COMMUNICATION_TYPE.BLUETOOTH){ // Here so as not to mess with ShimmerSDLog
 			//for ECG LL-LA Channel added&calculated in API
-			if(isEXGUsingDefaultECGConfiguration()){
+			if(isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultRespirationConfiguration()){
 				numAdditionalChannels += 1;
 			}
-		}
+//		}
 		
 		// adding channels from enabled algorithms details
 		//
