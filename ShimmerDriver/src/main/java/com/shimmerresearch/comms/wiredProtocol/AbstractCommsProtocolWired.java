@@ -14,10 +14,10 @@ import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortListener;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
-import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.exceptions.DeviceException;
 
 /**Driver for managing and configuring the Shimmer through the Dock using the 
  * Shimmer's dock connected UART.
