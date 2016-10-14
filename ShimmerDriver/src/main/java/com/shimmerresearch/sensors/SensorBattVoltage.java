@@ -212,7 +212,7 @@ public class SensorBattVoltage extends AbstractSensor{
 				}
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATT_PERCENTAGE)){
 					double estimatedChargePercentage = (double)mShimmerBattStatusDetails.getEstimatedChargePercentage();
-					if(Double.isFinite(estimatedChargePercentage)){
+					if(!Double.isNaN(estimatedChargePercentage) && !Double.isInfinite(estimatedChargePercentage)){
 						objectCluster.addCalData(channelDetails, estimatedChargePercentage);
 						objectCluster.incrementIndexKeeper();
 					}

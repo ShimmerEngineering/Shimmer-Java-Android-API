@@ -438,6 +438,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	@Override
 	public void disconnect() throws DeviceException {
+//		super.disconnect();
 		stopAllTimers();
 		closeConnection();
 		setBluetoothRadioState(BT_STATE.DISCONNECTED);
