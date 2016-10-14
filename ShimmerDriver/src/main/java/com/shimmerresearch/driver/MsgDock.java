@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.comms.wiredProtocol.ErrorCodesWiredProtocol;
-import com.shimmerresearch.driver.DeviceException.ExceptionLevel;
 import com.shimmerresearch.driverUtilities.DockJobDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_STATE;
+import com.shimmerresearch.exceptions.DeviceException.ExceptionLevel;
 
 
 /**

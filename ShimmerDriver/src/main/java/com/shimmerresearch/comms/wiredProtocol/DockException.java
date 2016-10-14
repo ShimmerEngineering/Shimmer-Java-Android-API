@@ -1,7 +1,7 @@
 package com.shimmerresearch.comms.wiredProtocol;
 
 import com.google.common.base.Strings;
-import com.shimmerresearch.driver.DeviceException;
+import com.shimmerresearch.exceptions.DeviceException;
 
 /**
  * @author Mark Nolan

@@ -2,7 +2,7 @@ package com.shimmerresearch.comms.radioProtocol;
 
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.driver.DeviceException;
+import com.shimmerresearch.exceptions.DeviceException;
 
 public interface RadioListener {
 

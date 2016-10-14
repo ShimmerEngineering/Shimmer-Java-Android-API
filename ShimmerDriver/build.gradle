@@ -1,12 +1,13 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
-archivesBaseName = 'shimmerbasicapi'
+archivesBaseName = 'ShimmerDriverML'
 
 /*Rev0.2
 * - fixes for shimmer2r and writeSensors not working after streaming
 */
 version = '0.2' 
+
 
 repositories {
 	jcenter()

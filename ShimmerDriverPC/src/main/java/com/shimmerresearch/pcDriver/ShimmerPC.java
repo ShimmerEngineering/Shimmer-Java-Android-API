@@ -72,8 +72,8 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.exceptions.DeviceException;
 import com.shimmerresearch.driver.CallbackObject;
-import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -438,6 +438,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	@Override
 	public void disconnect() throws DeviceException {
+//		super.disconnect();
 		stopAllTimers();
 		closeConnection();
 		setBluetoothRadioState(BT_STATE.DISCONNECTED);

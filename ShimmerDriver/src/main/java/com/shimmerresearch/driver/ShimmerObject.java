@@ -2535,7 +2535,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			if(fwType == COMMUNICATION_TYPE.BLUETOOTH){
 				double estimatedChargePercentage = (double)mShimmerBattStatusDetails.getEstimatedChargePercentage();
-				if(Double.isFinite(estimatedChargePercentage)){
+				if(!Double.isNaN(estimatedChargePercentage) && !Double.isInfinite(estimatedChargePercentage)){
 					objectCluster.addData(Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.PERCENT, estimatedChargePercentage);
 					calibratedData[additionalChannelsOffset] = estimatedChargePercentage;
 					calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
@@ -2546,7 +2546,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				additionalChannelsOffset+=1;
 
 				double packetReceptionRateCurrent = (double)getPacketReceptionRateCurrent();
-				if(Double.isFinite(packetReceptionRateCurrent)){
+				if(!Double.isNaN(packetReceptionRateCurrent) && !Double.isInfinite(packetReceptionRateCurrent)){
 					objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT, packetReceptionRateCurrent);
 					calibratedData[additionalChannelsOffset] = packetReceptionRateCurrent;
 					calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
@@ -2557,7 +2557,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				additionalChannelsOffset+=1;
 
 				double packetReceptionRateOverall = (double)getPacketReceptionRateOverall();
-				if(Double.isFinite(packetReceptionRateOverall)){
+				if(!Double.isNaN(packetReceptionRateOverall) && !Double.isInfinite(packetReceptionRateOverall)){
 					objectCluster.addData(Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.PERCENT, packetReceptionRateOverall);
 					calibratedData[additionalChannelsOffset] = packetReceptionRateOverall;
 					calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.PERCENT;
@@ -11535,3 +11535,4 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 }
+

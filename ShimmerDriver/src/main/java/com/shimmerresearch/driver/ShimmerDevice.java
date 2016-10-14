@@ -55,6 +55,7 @@ import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.exceptions.DeviceException;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;

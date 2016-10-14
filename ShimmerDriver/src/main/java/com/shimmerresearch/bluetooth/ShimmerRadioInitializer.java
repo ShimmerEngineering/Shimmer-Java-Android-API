@@ -2,8 +2,8 @@ package com.shimmerresearch.bluetooth;
 
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
-import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.exceptions.DeviceException;
 
 public abstract class ShimmerRadioInitializer {
 

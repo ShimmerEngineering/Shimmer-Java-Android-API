@@ -10,8 +10,8 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
-import com.shimmerresearch.driver.DeviceException;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.exceptions.DeviceException;
 
 
 //Core radio functions to be implemented by native radio libs , jssc, android .. etc.

@@ -26,6 +26,7 @@ import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
+import com.shimmerresearch.exceptions.DeviceException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;

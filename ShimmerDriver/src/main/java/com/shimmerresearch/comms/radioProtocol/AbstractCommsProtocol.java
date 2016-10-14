@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
-import com.shimmerresearch.driver.DeviceException;
+import com.shimmerresearch.exceptions.DeviceException;
 
 public abstract class AbstractCommsProtocol {
 	

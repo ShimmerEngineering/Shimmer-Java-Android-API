@@ -654,7 +654,7 @@ public class ShimmerClock extends AbstractSensor {
 //						objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mShimmerDevice.getPacketReceptionRateCurrent());
 						
 						double packetReceptionRateCurrent = (double)mShimmerDevice.getPacketReceptionRateCurrent();
-						if(Double.isFinite(packetReceptionRateCurrent)){
+						if(!Double.isNaN(packetReceptionRateCurrent) && !Double.isInfinite(packetReceptionRateCurrent)){
 							objectCluster.addCalData(channelReceptionRateCurrent, packetReceptionRateCurrent);
 							objectCluster.incrementIndexKeeper();
 						}
@@ -674,7 +674,7 @@ public class ShimmerClock extends AbstractSensor {
 //						objectCluster.addData(channelReceptionRateCurrent, Double.NaN, mShimmerDevice.getPacketReceptionRate());
 						
 						double packetReceptionRateOverall = (double)mShimmerDevice.getPacketReceptionRateOverall();
-						if(Double.isFinite(packetReceptionRateOverall)){
+						if(!Double.isNaN(packetReceptionRateOverall) && !Double.isInfinite(packetReceptionRateOverall)){
 							objectCluster.addCalData(channelReceptionRateTrial, packetReceptionRateOverall);
 							objectCluster.incrementIndexKeeper();
 						}
