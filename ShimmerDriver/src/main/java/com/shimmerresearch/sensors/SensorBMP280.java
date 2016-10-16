@@ -355,9 +355,9 @@ public class SensorBMP280 extends AbstractSensor{
 
 
 	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// not in this class
-		
+	public boolean processResponse(int responseCommand, Object parsedResponse, COMMUNICATION_TYPE commType) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

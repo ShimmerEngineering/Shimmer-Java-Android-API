@@ -40,6 +40,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int NONIN_ONYX_II = 1000;
 		public static final int QTI_DIRECT_TEMP = 1001;
 		public static final int KEYBOARD_AND_MOUSE = 1002;
+		public static final int ARDUINO = 1003;
 	}
 	
 	//WARNING! The name can't change because the database relies on it.

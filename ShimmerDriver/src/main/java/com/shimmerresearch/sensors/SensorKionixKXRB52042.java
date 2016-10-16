@@ -434,9 +434,9 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	}
 
 	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+	public boolean processResponse(int responseCommand, Object parsedResponse, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 	
 	@Override

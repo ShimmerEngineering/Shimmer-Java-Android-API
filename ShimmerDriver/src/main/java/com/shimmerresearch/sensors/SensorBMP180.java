@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -35,6 +36,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 //TODO add calibdetails from ShimmerObject (updateCurrentPressureCalibInUse() + generateCalibMap() + isSensorUsingDefaultCal(), refer to SensorKionix)
 
@@ -425,16 +427,22 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 
 	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
+	public boolean processResponse(int responseCommand, Object parsedResponse, COMMUNICATION_TYPE commType) {
 		if (commType==COMMUNICATION_TYPE.BLUETOOTH){
-			byte[] responseBytes = (byte[])obj;
-			if(responseBytes[0]!=LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE){
-				byte[] pressureResoRes = new byte[22]; 
-				System.arraycopy(responseBytes, 1, pressureResoRes, 0, 22);
-				retrievePressureCalibrationParametersFromPacket(pressureResoRes, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+//			byte[] responseBytes = (byte[])obj;
+//			if(responseBytes[0]!=LiteProtocolInstructionSet.InstructionsGet.GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND_VALUE){
+//				byte[] pressureResoRes = new byte[22]; 
+//				System.arraycopy(responseBytes, 1, pressureResoRes, 0, 22);
+//				retrievePressureCalibrationParametersFromPacket(pressureResoRes, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+//			}
+			
+			if(responseCommand==InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE){ 
+				retrievePressureCalibrationParametersFromPacket((byte[])parsedResponse, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+				return true;
 			}
+
 		}
+		return false;
 	}
 	
 

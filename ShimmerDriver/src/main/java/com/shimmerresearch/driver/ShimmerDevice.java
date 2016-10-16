@@ -1,5 +1,10 @@
 package com.shimmerresearch.driver;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -190,6 +195,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected DataProcessingInterface mDataProcessing;
 
 	public boolean mVerboseMode = true;
+	public static TreeMap<Integer,String> mMapOfErrorCodes = new TreeMap<Integer,String>();
 
 	private static final List<AlgorithmLoaderInterface> ALGORITHMS_OPEN_SOURCE = Arrays.asList(
 			new OrientationModule6DOFLoader(), 
@@ -3419,7 +3425,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void printMapOfConfigForDb() {
 		HashMap<String, Object> mapOfConfigForDb = getConfigMapForDb();
-		
+		printMapOfConfigForDb(mapOfConfigForDb);
+	}
+
+	public static void printMapOfConfigForDb(HashMap<String, Object> mapOfConfigForDb) {
 		System.out.println("Printing map of Config for DB, size = " + mapOfConfigForDb.keySet().size());
 		for(String configLbl:mapOfConfigForDb.keySet()){
 			String stringToPrint = configLbl + " = ";
@@ -3442,6 +3451,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 			System.out.println(stringToPrint);
 		}
+	}
+
+	public void setRadio(AbstractSerialPortComm secondarySerialPort) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void setMapOfErrorCodes(TreeMap<Integer, String> mapOfErrorCodes) {
+		mMapOfErrorCodes.putAll(mapOfErrorCodes);
 	}
 
 }

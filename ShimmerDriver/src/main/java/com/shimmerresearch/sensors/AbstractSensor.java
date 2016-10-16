@@ -104,10 +104,12 @@ public abstract class AbstractSensor implements Serializable{
 	/** TODO populate in individual AbstractSensor classes the relevant entries from ShimmerObject */
 	public abstract boolean checkConfigOptionValues(String stringKey);
 
+	@Deprecated //TODO remove below? old approach?
 	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
+	@Deprecated //TODO remove below? old approach?
 	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
 	
-	public abstract void processResponse(Object obj, COMMUNICATION_TYPE commType);
+	public abstract boolean processResponse(int responseCommand, Object parsedResponse, COMMUNICATION_TYPE commType);
 	
 	public abstract LinkedHashMap<String, Object> getConfigMapForDb();
 	public abstract void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer);

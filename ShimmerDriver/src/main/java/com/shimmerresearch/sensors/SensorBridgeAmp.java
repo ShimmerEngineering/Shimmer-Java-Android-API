@@ -413,9 +413,9 @@ public class SensorBridgeAmp extends AbstractSensor{
 
 
 	@Override
-	public void processResponse(Object obj, COMMUNICATION_TYPE commType) {
+	public boolean processResponse(int responseCommand, Object parsedResponse, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 	
 	public static double processBAAdcChannel(ChannelDetails channelDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp,

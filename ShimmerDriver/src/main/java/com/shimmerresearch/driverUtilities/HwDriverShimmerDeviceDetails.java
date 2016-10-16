@@ -24,7 +24,8 @@ public class HwDriverShimmerDeviceDetails {
 		LUMAFIT("Lumafit"),
 		NONIN_ONYX_II("Nonin_Onyx_II"),
 		QTI_DIRECTTEMP("Qti_DirectTemp"),
-		KEYBOARD_AND_MOUSE("KeyboardAndMouse");
+		KEYBOARD_AND_MOUSE("KeyboardAndMouse"),
+		ARDUINO("Arduino");
 
 		private String deviceLabel = "";
 		
@@ -145,16 +146,12 @@ public class HwDriverShimmerDeviceDetails {
 		}
         
         public static final class SERIAL_PORT {
-	        /**Used in the Shimmer Dock (Base1) and Shimmer SPAN
-	         * 
-	         */
+	        /** Used in the Shimmer Dock (Base1) and Shimmer SPAN */
 	        public static final String[] FTDI_FT2232H = new String[] {
 	    		"VID_0403&PID_6010&MI",
 	        };
 	
-	        /**Used in the Shimmer Base6 and Base15
-	         * 
-	         */
+	        /** Used in the Shimmer Base6 and Base15 */
 	        public static final String[] FTDI_FT4232H = new String[] {
 	    		"VID_0403&PID_6011&MI",
 	        };
