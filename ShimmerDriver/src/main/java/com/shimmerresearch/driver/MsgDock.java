@@ -311,6 +311,8 @@ public class MsgDock {
 	public float mFwImageWriteSpeed = 0;
 	public String mMessage = "";
 	public double mValue;
+	/** Just used for Shimmer4 BSL programming as each stage takes longer no needs more GUI feedback */
+	public String mFwImageWriteCurrentAction = "";
 	
 	public int mSessionId;
 	

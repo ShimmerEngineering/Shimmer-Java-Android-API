@@ -55,14 +55,25 @@ public class UtilShimmer implements Serializable {
 
 	public void consolePrintLn(String message) {
 		if(mVerboseMode) {
-			Calendar rightNow = Calendar.getInstance();
-			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
-					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
-					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-			System.out.println(rightNowString + " " + mParentClassName + ": " + message);
+			System.out.println(generateConsolePrintLn(message));
 		}		
 	}
+	
+	public void consolePrintErrLn(String message) {
+		if(mVerboseMode) {
+			System.err.println(generateConsolePrintLn(message));
+		}		
+	}
+	
+	private String generateConsolePrintLn(String message) {
+		Calendar rightNow = Calendar.getInstance();
+		String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
+				+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
+				+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
+				+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
+		return(rightNowString + " " + mParentClassName + ": " + message);
+	}
+
 	public void consolePrint(String message) {
 		if(mVerboseMode) {
 			System.out.print(message);
