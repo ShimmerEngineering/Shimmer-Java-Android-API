@@ -149,6 +149,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public int mFwImageWriteProgress = 0;
 	public int mFwImageTotalSize = 0;
 	public float mFwImageWriteSpeed = 0;
+	public String mFwImageWriteCurrentAction = "";
 	//BSL related end
 	public List<MsgDock> mListOfFailMsg = new ArrayList<MsgDock>();
 	
