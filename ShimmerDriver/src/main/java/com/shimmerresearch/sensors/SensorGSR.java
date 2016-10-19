@@ -160,29 +160,42 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
-	public static final ChannelDetails channelGsr = new ChannelDetails(
+	public static final ChannelDetails channelGsrKOhms = new ChannelDetails(
 			ObjectClusterSensorName.GSR,
 			ObjectClusterSensorName.GSR,
 			DatabaseChannelHandles.GSR,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.KOHMS,
-//			CHANNEL_UNITS.MICROSIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x1C);
 	{
-		
-		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
-		channelGsr.mChannelSource = CHANNEL_SOURCE.SHIMMER;
-		channelGsr.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
-		channelGsr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+		channelGsrKOhms.mChannelSource = CHANNEL_SOURCE.SHIMMER;
+		channelGsrKOhms.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
+		channelGsrKOhms.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 	}
-	
+
+	public static final ChannelDetails channelGsrMicroSiemens = new ChannelDetails(
+			ObjectClusterSensorName.GSR,
+			ObjectClusterSensorName.GSR,
+			DatabaseChannelHandles.GSR,
+			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.U_SIEMENS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+			0x1C);
+	{
+		channelGsrMicroSiemens.mChannelSource = CHANNEL_SOURCE.SHIMMER;
+		channelGsrMicroSiemens.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
+		channelGsrMicroSiemens.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
+	}
+
+	/** used for Shimmer3 */
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
         Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsr);
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrKOhms);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
+    
 	//--------- Channel info end --------------
 
     
@@ -200,7 +213,17 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap() {
-		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
+//		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
+
+		Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
+		if(calUnitToUse==CHANNEL_UNITS.U_SIEMENS){
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrMicroSiemens);
+		}
+		else if(calUnitToUse==CHANNEL_UNITS.KOHMS){
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrKOhms);
+		}
+		
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 	}
 
 	
@@ -324,10 +347,10 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 				
 //				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket!=CHANNEL_TYPE.CAL){
 				double calData = 0.0;
-				if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.KOHMS)){
+				if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.KOHMS)){
 					calData = calibrateGsrData(rawData,p1,p2);
 				}
-				else if(calUnitToUse.equals(Configuration.CHANNEL_UNITS.U_SIEMENS)){
+				else if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.U_SIEMENS)){
 					calData = calibrateGsrDataToSiemens(rawData,p1,p2);
 				}
 				objectCluster.addCalData(channelDetails, calData);
