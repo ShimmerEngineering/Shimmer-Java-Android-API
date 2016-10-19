@@ -44,8 +44,8 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 
 	//--------- Sensor info start --------------
 	public static final SensorDetailsRef sensorEcgToHr = new SensorDetailsRef(
-			0,
-			0, 
+			(0x40 << (8*1)),
+			(0x40 << (8*1)), 
 			Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			null,

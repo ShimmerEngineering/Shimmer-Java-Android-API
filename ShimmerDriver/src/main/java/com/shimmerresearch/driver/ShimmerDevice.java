@@ -948,6 +948,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public ObjectCluster buildMsg(byte[] dataPacketFormat, byte[] packetByteArray, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
+		
 		interpretDataPacketFormat(dataPacketFormat, commType);
 		return buildMsg(packetByteArray, commType, isTimeSyncEnabled, pcTimestamp);
 	}
@@ -958,12 +959,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return
 	 */
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
+		boolean debug = true;
 		
 		ObjectCluster ojc = new ObjectCluster(mShimmerUserAssignedName, getMacId());
 		ojc.mRawData = newPacket;
 		ojc.createArrayData(getNumberOfEnabledChannels(commType));
 
-//		System.out.println("\nNew Parser loop. Packet length:\t" + newPacket.length);
+		if(debug)
+			System.out.println("\nNew Parser loop. Packet length:\t" + newPacket.length);
+		
 		TreeMap<Integer, SensorDetails> parserMapPerComm = mParserMap.get(commType);
 		if(parserMapPerComm!=null){
 			int index=0;
@@ -982,7 +986,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 				sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, pcTimestamp);
 
-//				System.out.println(sensor.mSensorDetails.mGuiFriendlyLabel + "\texpectedPacketArraySize:" + length + "\tcurrentIndex:" + index);
+				if(debug)
+					System.out.println(sensor.mSensorDetailsRef.mGuiFriendlyLabel + "\texpectedPacketArraySize:" + length + "\tcurrentIndex:" + index);
 				index += length;
 			}
 		}
@@ -1514,6 +1519,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.isShimmerGen4();
 	}
 
+	public boolean isShimmerGenGq(){
+		return mShimmerVerObject.isShimmerGenGq();
+	}
+
 
 	public void consolePrintErrLn(String message) {
 		if(mVerboseMode) {
@@ -1697,7 +1706,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if((isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 0))
 			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 8, 69))
 			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 3, 17))
-			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_4_SDK, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION))){
+			||(svo.isShimmerGenGq())
+			||(svo.isShimmerGen4())){
+//			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_4_SDK, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION))){
 			return true;
 		}
 		return false;
@@ -1966,7 +1977,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //			//Debugging
 //			printSensorAndParserMaps();
 			
-			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
+			if (!mShimmerVerObject.isShimmerGen2()) {
+//			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
 				mEnabledSensors = (long)0;
 				mDerivedSensors = (long)0;
 				sensorMapCheckandCorrectHwDependencies();

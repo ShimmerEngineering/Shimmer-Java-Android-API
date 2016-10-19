@@ -11,7 +11,9 @@ import java.util.Map;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
+import com.shimmerresearch.driver.InfoMemLayout;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
+import com.shimmerresearch.driver.InfoMemLayoutShimmerGq802154;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
@@ -33,7 +35,6 @@ import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.sensors.SensorMPU9X50.DatabaseConfigHandle;
 
 public class SensorEXG extends AbstractSensor{
 
@@ -853,7 +854,14 @@ public class SensorEXG extends AbstractSensor{
 	@Override
 	public void generateSensorMap() {
 //		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
-		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
+		if(mShimmerVerObject.isShimmerGenGq()){
+			LinkedHashMap<Integer, SensorDetailsRef> sensorMapRef = new LinkedHashMap<Integer, SensorDetailsRef>();
+			sensorMapRef.put(Configuration.Shimmer3.SensorMapKey.HOST_ECG, SensorEXG.sDRefEcg);
+			super.createLocalSensorMapWithCustomParser(sensorMapRef, mChannelMapRef);
+		}
+		else{
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
+		}
 	}
 	
 	@Override
@@ -1918,13 +1926,23 @@ public class SensorEXG extends AbstractSensor{
 	}
 	
 	protected void checkExgResolutionFromEnabledSensorsVar(){
-		InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mShimmerDevice.getInfoMemLayout();
+		InfoMemLayout infoMemLayout = mShimmerDevice.getInfoMemLayout();
 		long enabledSensors = mShimmerDevice.getEnabledSensors();
-
-		mIsExg1_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_24bitFlag)>0)? true:false;
-		mIsExg2_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg2_24bitFlag)>0)? true:false;
-		mIsExg1_16bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_16bitFlag)>0)? true:false;
-		mIsExg2_16bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg2_16bitFlag)>0)? true:false;
+		
+		if(infoMemLayout instanceof InfoMemLayoutShimmer3){
+			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mShimmerDevice.getInfoMemLayout();
+			mIsExg1_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_24bitFlag)>0)? true:false;
+			mIsExg2_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg2_24bitFlag)>0)? true:false;
+			mIsExg1_16bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_16bitFlag)>0)? true:false;
+			mIsExg2_16bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg2_16bitFlag)>0)? true:false;
+		}
+		else if(infoMemLayout instanceof InfoMemLayoutShimmerGq802154){
+			InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154)mShimmerDevice.getInfoMemLayout();
+			mIsExg1_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_24bitFlag)>0)? true:false;
+			mIsExg2_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg2_24bitFlag)>0)? true:false;
+			mIsExg1_16bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_16bitFlag)>0)? true:false;
+			mIsExg2_16bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg2_16bitFlag)>0)? true:false;
+		}
 		
 		if(mIsExg1_16bitEnabled||mIsExg2_16bitEnabled){
 			mExGResolution = 0;
@@ -1935,23 +1953,45 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	private void updateEnabledSensorsFromExgResolution(){
-		InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mShimmerDevice.getInfoMemLayout();
+		InfoMemLayout infoMemLayout = mShimmerDevice.getInfoMemLayout();
 		long enabledSensors = mShimmerDevice.getEnabledSensors();
 
-		//JC: should this be here -> checkExgResolutionFromEnabledSensorsVar()
 		
-		enabledSensors &= ~infoMemLayoutCast.maskExg1_24bitFlag;
-		enabledSensors |= (mIsExg1_24bitEnabled? infoMemLayoutCast.maskExg1_24bitFlag:0);
-		
-		enabledSensors &= ~infoMemLayoutCast.maskExg2_24bitFlag;
-		enabledSensors |= (mIsExg2_24bitEnabled? infoMemLayoutCast.maskExg2_24bitFlag:0);
-		
-		enabledSensors &= ~infoMemLayoutCast.maskExg1_16bitFlag;
-		enabledSensors |= (mIsExg1_16bitEnabled? infoMemLayoutCast.maskExg1_16bitFlag:0);
-		
-		enabledSensors &= ~infoMemLayoutCast.maskExg2_16bitFlag;
-		enabledSensors |= (mIsExg2_16bitEnabled? infoMemLayoutCast.maskExg2_16bitFlag:0);
-		
+		if(infoMemLayout instanceof InfoMemLayoutShimmer3){
+			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mShimmerDevice.getInfoMemLayout();
+			
+			//JC: should this be here -> checkExgResolutionFromEnabledSensorsVar()
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg1_24bitFlag;
+			enabledSensors |= (mIsExg1_24bitEnabled? infoMemLayoutCast.maskExg1_24bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg2_24bitFlag;
+			enabledSensors |= (mIsExg2_24bitEnabled? infoMemLayoutCast.maskExg2_24bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg1_16bitFlag;
+			enabledSensors |= (mIsExg1_16bitEnabled? infoMemLayoutCast.maskExg1_16bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg2_16bitFlag;
+			enabledSensors |= (mIsExg2_16bitEnabled? infoMemLayoutCast.maskExg2_16bitFlag:0);
+		}
+		else if(infoMemLayout instanceof InfoMemLayoutShimmerGq802154){
+			InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154)mShimmerDevice.getInfoMemLayout();
+			
+			//JC: should this be here -> checkExgResolutionFromEnabledSensorsVar()
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg1_24bitFlag;
+			enabledSensors |= (mIsExg1_24bitEnabled? infoMemLayoutCast.maskExg1_24bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg2_24bitFlag;
+			enabledSensors |= (mIsExg2_24bitEnabled? infoMemLayoutCast.maskExg2_24bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg1_16bitFlag;
+			enabledSensors |= (mIsExg1_16bitEnabled? infoMemLayoutCast.maskExg1_16bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg2_16bitFlag;
+			enabledSensors |= (mIsExg2_16bitEnabled? infoMemLayoutCast.maskExg2_16bitFlag:0);
+		}
+
 		mShimmerDevice.setEnabledSensors(enabledSensors);
 	}
 	
