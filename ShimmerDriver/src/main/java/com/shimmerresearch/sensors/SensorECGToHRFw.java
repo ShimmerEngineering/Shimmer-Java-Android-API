@@ -27,7 +27,7 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 
 	//--------- Sensor specific variables start --------------
 	public static class ObjectClusterSensorName{
-		public static String ECG_TO_HR_FW_GQ = "ECGToHR_FW";
+		public static String ECG_TO_HR_FW_GQ = "ECGtoHR_FW";
 	}
 
 	public static class DatabaseChannelHandles{
