@@ -95,6 +95,17 @@ public class OrientationModule9DOF extends OrientationModule {
 		@Deprecated //need to describe axis angle 9DOF vs 9DOF
 		public static String AXIS_ANGLE_Z = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z; 
 	}
+	
+	public static class DatabaseChannelHandles{
+		public static final String QUARTENION_W_9DOF = "QUAT_MADGE_9DOF_W";
+		public static final String QUARTENION_X_9DOF = "QUAT_MADGE_9DOF_X";
+		public static final String QUARTENION_Y_9DOF = "QUAT_MADGE_9DOF_Y";
+		public static final String QUARTENION_Z_9DOF = "QUAT_MADGE_9DOF_Z";
+
+		public static final String EULER_9DOF_YAW = "EULER_9DOF_YAW";
+		public static final String EULER_9DOF_PITCH = "EULER_9DOF_PITCH";
+		public static final String EULER_9DOF_ROLL = "EULER_9DOF_ROLL";
+	}
 
 	//TODO 9DOF channal details for low noise 
 	private static final ChannelDetails channel_Euler_Yaw_9DOF_LN = new ChannelDetails(

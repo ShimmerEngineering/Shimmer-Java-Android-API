@@ -16,6 +16,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
  * @author Mark Nolan
  *
  */
+//TODO have a list of supported units. Have a second variable list stating which one(s) are currently enabled
 public class ChannelDetails implements Serializable {
 	
 	/** * */

@@ -9,22 +9,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.ShimmerDevice.DatabaseConfigHandle;
-import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
-import com.shimmerresearch.driverUtilities.SensorDetails;
-import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -33,7 +22,6 @@ import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
-import com.shimmerresearch.sensors.SensorSystemTimeStampGq;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.ShimmerClock;
 
@@ -46,15 +34,12 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	/** * */
 	private static final long serialVersionUID = 76977946997596234L;
 	
-	/** This is derived from all the sensors
-	 * 
-	 */
 	public static final int VARIABLE_NOT_SET = -1;
+	
 	public int mRadioChannel = VARIABLE_NOT_SET;
 	public int mRadioGroupId = VARIABLE_NOT_SET;
 	public int mRadioDeviceId = VARIABLE_NOT_SET;
 	public int mRadioResponseWindow = VARIABLE_NOT_SET; 
-
 	public String mSpanId = "";
 	
 	//TODO generate from Sensor classes
@@ -71,19 +56,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
-	
-	 //just use fillers for now
-	public static final ShimmerVerObject SVO_RELEASE_REV_0_1 = new ShimmerVerObject(
-			HW_ID.UNKNOWN, 
-			FW_ID.UNKNOWN,
-			FW_ID.UNKNOWN, 
-			FW_ID.UNKNOWN, 
-			FW_ID.UNKNOWN,
-			FW_ID.UNKNOWN);
-	
-	//Action Setting Checker, if cant do pass it to next layer to be handled
-	
-	//priority of comm type to know whether it is dock and radio connected, if dock connected send uart priority
 	
 	public enum GQ_STATE{
 		IDLE("Idle"),
@@ -139,8 +111,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		this(dockId, slotNumber, connectionType);
 		setMacIdFromUart(macId);
 	}
-
-
 	// ----------------- Constructors End ---------------------------------
 
 	
@@ -197,8 +167,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 				+ "\t" + "IsSDLogging = "+ mIsSDLogging
 				+ "\t" + "IsStreaming = " + mIsStreaming
 				+ "\t" + "mIsFwTestMode = " + mIsFwTestMode
-				+ "\t" + "mIsSdError = " + mIsSDError
-				);
+				+ "\t" + "mIsSdError = " + mIsSDError);
 		
 //		if(savedDockedState!=mIsDocked){
 //			dockedStateChange();
@@ -281,12 +250,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-//	@Override
-//	public void checkConfigOptionValues(String stringKey) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 
 	@Override
 	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {

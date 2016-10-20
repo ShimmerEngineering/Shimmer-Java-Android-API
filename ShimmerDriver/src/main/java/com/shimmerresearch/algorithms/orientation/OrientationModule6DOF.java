@@ -93,6 +93,18 @@ public class OrientationModule6DOF extends OrientationModule{
 		@Deprecated //need to describe axis angle 9DOF vs 6DOF
 		public static String AXIS_ANGLE_Z = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z; 
 	}
+	
+	public static class DatabaseChannelHandles{
+		public static final String QUARTENION_W_6DOF = "QUAT_MADGE_6DOF_W";
+		public static final String QUARTENION_X_6DOF = "QUAT_MADGE_6DOF_X";
+		public static final String QUARTENION_Y_6DOF = "QUAT_MADGE_6DOF_Y";
+		public static final String QUARTENION_Z_6DOF = "QUAT_MADGE_6DOF_Z";
+		
+		public static final String EULER_6DOF_YAW = "EULER_6DOF_YAW";
+		public static final String EULER_6DOF_PITCH = "EULER_6DOF_PITCH";
+		public static final String EULER_6DOF_ROLL = "EULER_6DOF_ROLL";
+	}
+
 
 	//TODO 6DOF channal details for low noise 
 	//Euler

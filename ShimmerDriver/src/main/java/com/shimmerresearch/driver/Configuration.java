@@ -1172,7 +1172,7 @@ public class Configuration {
 //			public static final String REAL_TIME_CLOCK = ShimmerClock.DatabaseChannelHandles.REAL_TIME_CLOCK;//"Real_Time_Clock";
 			public static final String FILTERED = "_Filtered"; // to create the name of the filtered signals
 			
-			//TODO: refer to OrienationModule instead
+			//TODO: refer to ECG/PPG Algorithm Modules instead
 			public static final String ECG_TO_HR = "ECGToHR";
 			public static final String PPG_TO_HR = "PPGToHR";
 			

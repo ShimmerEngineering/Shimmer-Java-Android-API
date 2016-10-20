@@ -160,6 +160,8 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
+    
+    //TODO only use one channel details for GSR and have a list of supported units inside it. Also have a variable stating which one(s) are currently selected
 	public static final ChannelDetails channelGsrKOhms = new ChannelDetails(
 			ObjectClusterSensorName.GSR,
 			ObjectClusterSensorName.GSR,
@@ -169,6 +171,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x1C);
 	{
+		//TODO add to constructor
 		channelGsrKOhms.mChannelSource = CHANNEL_SOURCE.SHIMMER;
 		channelGsrKOhms.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
 		channelGsrKOhms.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
@@ -183,12 +186,13 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x1C);
 	{
+		//TODO add to constructor
 		channelGsrMicroSiemens.mChannelSource = CHANNEL_SOURCE.SHIMMER;
 		channelGsrMicroSiemens.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
 		channelGsrMicroSiemens.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 	}
 
-	/** used for Shimmer3 */
+	/** used for Shimmer3 in Shimmer*/
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
         Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
@@ -513,7 +517,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 
 	//--------- Sensor specific methods start --------------
-	public static double calibrateGsrData(double gsrUncalibratedData,double p1, double p2){
+	public static double calibrateGsrData(double gsrUncalibratedData, double p1, double p2){
 		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
 		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
@@ -523,7 +527,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	}
 
 	
-	public static double calibrateGsrDataToSiemens(double gsrUncalibratedData,double p1, double p2){
+	public static double calibrateGsrDataToSiemens(double gsrUncalibratedData, double p1, double p2){
 		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
 		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;

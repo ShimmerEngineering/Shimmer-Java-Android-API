@@ -232,6 +232,9 @@ public class SensorEXG extends AbstractSensor{
 		public static final String EXG1_STATUS = "ADS1292R_1_STATUS";
 		public static final String EXG2_STATUS = "ADS1292R_2_STATUS";
 		
+		public static final String ECG_LL_LA_16BITS = ObjectClusterSensorName.ECG_LL_LA_16BIT.replace("-", "_");
+		public static final String ECG_LL_LA_24BITS = ObjectClusterSensorName.ECG_LL_LA_24BIT.replace("-", "_");
+
 		public static final String EXT_ADC_A7 = "F5437a_Ext_A7"; //channel
 		public static final String EXT_ADC_A6 = "F5437a_Ext_A6"; //channel
 		
