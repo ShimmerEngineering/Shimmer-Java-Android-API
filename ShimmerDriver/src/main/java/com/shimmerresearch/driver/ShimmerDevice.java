@@ -3272,6 +3272,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	public void startSDLogging() {
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.startSDLogging();
+		}
+	}
+
+	public void stopSDLogging() {
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.stopSDLogging();
+		}
+	}
+	
+	public void startDataLogAndStreaming() {
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.startDataLogAndStreaming();
+		}
+	}
+	
+	public void stopStreamingAndLogging() {
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.stopLoggingAndStreaming();
+		}
+	}
+	
 	public String getComPort() {
 		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
 			setComPort(((AbstractSerialPortComm) mCommsProtocolRadio.mRadioHal).mAddress); 

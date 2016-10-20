@@ -147,6 +147,15 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 	public void stopSDLogging() {
 		mRadioProtocol.stopSDLogging();
 	}
+	
+	public void startDataLogAndStreaming(){
+		mRadioProtocol.startDataLogAndStreaming();
+	}
+	
+	public void stopLoggingAndStreaming(){
+		mRadioProtocol.stopStreamingAndLogging();
+	}
+
 
 	/**
 	 * Transmits a command to the Shimmer device to enable the sensors. To enable multiple sensors an or operator should be used (e.g. writeEnabledSensors(SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG)). Command should not be used consecutively. Valid values are SENSOR_ACCEL, SENSOR_GYRO, SENSOR_MAG, SENSOR_ECG, SENSOR_EMG, SENSOR_GSR, SENSOR_EXP_BOARD_A7, SENSOR_EXP_BOARD_A0, SENSOR_BRIDGE_AMP and SENSOR_HEART.
