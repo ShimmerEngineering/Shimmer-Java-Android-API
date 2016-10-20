@@ -884,7 +884,7 @@ public class Shimmer4 extends ShimmerDevice {
 //			writeEnabledSensors(mSetEnabledSensors); //this should always be the last command
 //		} 
 //		else {
-		mCommsProtocolRadio.inquiry();
+			mCommsProtocolRadio.inquiry();
 //		}
 
 		if(mSendProgressReport){

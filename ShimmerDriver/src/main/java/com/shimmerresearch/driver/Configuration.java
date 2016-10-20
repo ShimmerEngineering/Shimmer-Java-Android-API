@@ -1249,8 +1249,8 @@ public class Configuration {
 			public static String PRESSURE_BMP180 = SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;
 			
 			public static String ECG_GQ = SensorEXG.ObjectClusterSensorName.ECG_GQ;
-			public static String ECG_TO_HR_FW_GQ = "ECGToHR_FW";
-			public static String ECG_TO_HR_SW_GQ = "ECGToHR_SW";
+//			public static String ECG_TO_HR_FW_GQ = SensorECGToHRFw.DatabaseChannelHandles.ECG_TO_HR_FW;//"ECGToHR_FW";
+//			public static String ECG_TO_HR_SW_GQ = "ECGToHR_SW";
 			public static String EXG1_STATUS = SensorEXG.ObjectClusterSensorName.EXG1_STATUS;
 			public static String EXG2_STATUS = SensorEXG.ObjectClusterSensorName.EXG2_STATUS;
 			public static String EXG1_CH1_24BIT = SensorEXG.ObjectClusterSensorName.EXG1_CH1_24BIT;

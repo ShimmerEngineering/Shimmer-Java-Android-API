@@ -6538,13 +6538,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mConfigOptionsMap = new HashMap<String, ConfigOptionDetailsSensor>();
 
 		if (getHardwareVersion() != -1){
-			if (getHardwareVersion() == HW_ID.SHIMMER_2R){
+			if (isShimmerGen2()){
 				Map<Integer,SensorDetailsRef> sensorMapRef = Configuration.Shimmer2.mSensorMapRef;
 				for(Integer key:sensorMapRef.keySet()){
 					mSensorMap.put(key, new SensorDetails(false, 0, sensorMapRef.get(key)));
 				}
 			} 
-			else if (getHardwareVersion() == HW_ID.SHIMMER_3) {
+			else if (isShimmerGen3() 
+					|| isShimmerGenGq()) { // need isShimmerGenGq() here for parsing GQ data through ShimmerSDLog
 				createSensorMapShimmer3();
 				
 				mChannelMap = Configuration.Shimmer3.mChannelMapRef;
@@ -6647,36 +6648,39 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		createInfoMemLayoutObjectIfNeeded();
 		InfoMemLayout infoMemLayout = getInfoMemLayout();
 		if(infoMemLayout!=null){
-			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3) infoMemLayout;
-
+			
 			Map<Integer,SensorDetailsRef> sensorMapRef = Configuration.Shimmer3.mSensorMapRef;
 			for(Integer key:sensorMapRef.keySet()){
 				
 				//Special cases for derived sensor bitmap ID
 				int derivedChannelBitmapID = 0;
-				if(key==Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP){
-					derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelResAmp;
-				}
-				else if(key==Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE){
-					derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelSkinTemp;
-				}
-				else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12){
-					derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg_ADC12ADC13;
-				}
-				else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13){
-					derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg_ADC12ADC13;
-				}
-				else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12){
-					derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg1_ADC12ADC13;
-				}
-				else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13){
-					derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg1_ADC12ADC13;
-				}
-				else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1){
-					derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg2_ADC1ADC14;
-				}
-				else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14){
-					derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg2_ADC1ADC14;
+				if(infoMemLayout instanceof InfoMemLayoutShimmer3){
+					InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3) infoMemLayout;
+					
+					if(key==Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP){
+						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelResAmp;
+					}
+					else if(key==Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE){
+						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelSkinTemp;
+					}
+					else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12){
+						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg_ADC12ADC13;
+					}
+					else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13){
+						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg_ADC12ADC13;
+					}
+					else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12){
+						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg1_ADC12ADC13;
+					}
+					else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13){
+						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg1_ADC12ADC13;
+					}
+					else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1){
+						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg2_ADC1ADC14;
+					}
+					else if(key==Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14){
+						derivedChannelBitmapID = infoMemLayoutCast.maskDerivedChannelPpg2_ADC1ADC14;
+					}
 				}
 					
 				mSensorMap.put(key, new SensorDetails(false, derivedChannelBitmapID, sensorMapRef.get(key)));
@@ -8559,39 +8563,69 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	protected void checkExgResolutionFromEnabledSensorsVar(){
-		InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mInfoMemLayout;
-		if (infoMemLayoutCast!=null){
+		InfoMemLayout infoMemLayout = getInfoMemLayout();
+		if(infoMemLayout instanceof InfoMemLayoutShimmer3){
+			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)infoMemLayout;
 			mIsExg1_24bitEnabled = ((mEnabledSensors & infoMemLayoutCast.maskExg1_24bitFlag)>0)? true:false;
 			mIsExg2_24bitEnabled = ((mEnabledSensors & infoMemLayoutCast.maskExg2_24bitFlag)>0)? true:false;
 			mIsExg1_16bitEnabled = ((mEnabledSensors & infoMemLayoutCast.maskExg1_16bitFlag)>0)? true:false;
 			mIsExg2_16bitEnabled = ((mEnabledSensors & infoMemLayoutCast.maskExg2_16bitFlag)>0)? true:false;
+		}
+		//Needs to be here just for SD parsing
+		else if(infoMemLayout instanceof InfoMemLayoutShimmerGq802154){
+			InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154)infoMemLayout;
+			mIsExg1_24bitEnabled = ((mEnabledSensors & infoMemLayoutCast.maskExg1_24bitFlag)>0)? true:false;
+			mIsExg2_24bitEnabled = ((mEnabledSensors & infoMemLayoutCast.maskExg2_24bitFlag)>0)? true:false;
+			mIsExg1_16bitEnabled = ((mEnabledSensors & infoMemLayoutCast.maskExg1_16bitFlag)>0)? true:false;
+			mIsExg2_16bitEnabled = ((mEnabledSensors & infoMemLayoutCast.maskExg2_16bitFlag)>0)? true:false;
+		}
 
-			if(mIsExg1_16bitEnabled||mIsExg2_16bitEnabled){
-				mExGResolution = 0;
-			}
-			else if(mIsExg1_24bitEnabled||mIsExg2_24bitEnabled){
-				mExGResolution = 1;
-			}
+		if(mIsExg1_16bitEnabled||mIsExg2_16bitEnabled){
+			mExGResolution = 0;
+		}
+		else if(mIsExg1_24bitEnabled||mIsExg2_24bitEnabled){
+			mExGResolution = 1;
 		}
 	}
 
 	private void updateEnabledSensorsFromExgResolution(){
-		InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)getInfoMemLayout();
 		long enabledSensors = getEnabledSensors();
-
-		//JC: should this be here -> checkExgResolutionFromEnabledSensorsVar()
-		
-		enabledSensors &= ~infoMemLayoutCast.maskExg1_24bitFlag;
-		enabledSensors |= (mIsExg1_24bitEnabled? infoMemLayoutCast.maskExg1_24bitFlag:0);
-		
-		enabledSensors &= ~infoMemLayoutCast.maskExg2_24bitFlag;
-		enabledSensors |= (mIsExg2_24bitEnabled? infoMemLayoutCast.maskExg2_24bitFlag:0);
-		
-		enabledSensors &= ~infoMemLayoutCast.maskExg1_16bitFlag;
-		enabledSensors |= (mIsExg1_16bitEnabled? infoMemLayoutCast.maskExg1_16bitFlag:0);
-		
-		enabledSensors &= ~infoMemLayoutCast.maskExg2_16bitFlag;
-		enabledSensors |= (mIsExg2_16bitEnabled? infoMemLayoutCast.maskExg2_16bitFlag:0);
+		InfoMemLayout infoMemLayout = getInfoMemLayout();
+		if(infoMemLayout instanceof InfoMemLayoutShimmer3){
+			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)infoMemLayout;
+	
+			//JC: should this be here -> checkExgResolutionFromEnabledSensorsVar()
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg1_24bitFlag;
+			enabledSensors |= (mIsExg1_24bitEnabled? infoMemLayoutCast.maskExg1_24bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg2_24bitFlag;
+			enabledSensors |= (mIsExg2_24bitEnabled? infoMemLayoutCast.maskExg2_24bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg1_16bitFlag;
+			enabledSensors |= (mIsExg1_16bitEnabled? infoMemLayoutCast.maskExg1_16bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg2_16bitFlag;
+			enabledSensors |= (mIsExg2_16bitEnabled? infoMemLayoutCast.maskExg2_16bitFlag:0);
+		}
+		//Needs to be here just for SD parsing
+		else if(infoMemLayout instanceof InfoMemLayoutShimmerGq802154){
+			InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154)infoMemLayout;
+	
+			//JC: should this be here -> checkExgResolutionFromEnabledSensorsVar()
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg1_24bitFlag;
+			enabledSensors |= (mIsExg1_24bitEnabled? infoMemLayoutCast.maskExg1_24bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg2_24bitFlag;
+			enabledSensors |= (mIsExg2_24bitEnabled? infoMemLayoutCast.maskExg2_24bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg1_16bitFlag;
+			enabledSensors |= (mIsExg1_16bitEnabled? infoMemLayoutCast.maskExg1_16bitFlag:0);
+			
+			enabledSensors &= ~infoMemLayoutCast.maskExg2_16bitFlag;
+			enabledSensors |= (mIsExg2_16bitEnabled? infoMemLayoutCast.maskExg2_16bitFlag:0);
+		}
 		
 		setEnabledSensors(enabledSensors);
 	}

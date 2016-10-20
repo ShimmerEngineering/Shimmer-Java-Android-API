@@ -15,8 +15,9 @@ public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject svo, ExpansionBoardDetails eBD) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
 		
-		//TODO Filter here depending on Shimmer version
-		mapOfSupportedAlgorithms.putAll(OrientationModule6DOF.mAlgorithmMapRef);
+		if(svo.isShimmerGen3() || svo.isShimmerGen4()){
+			mapOfSupportedAlgorithms.putAll(OrientationModule6DOF.mAlgorithmMapRef);
+		}
 		
 		return mapOfSupportedAlgorithms;
 	}

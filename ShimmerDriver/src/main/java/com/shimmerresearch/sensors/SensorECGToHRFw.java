@@ -26,8 +26,12 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	private static final long serialVersionUID = 4160314338085066414L;
 
 	//--------- Sensor specific variables start --------------
+	public static class ObjectClusterSensorName{
+		public static String ECG_TO_HR_FW_GQ = "ECGToHR_FW";
+	}
+
 	public static class DatabaseChannelHandles{
-		public static final String ECG_TO_HR_FW = "ECGToHR_FW";
+		public static final String ECG_TO_HR_FW = ObjectClusterSensorName.ECG_TO_HR_FW_GQ;
 	}
 	//--------- Sensor specific variables end --------------
 

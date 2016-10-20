@@ -162,6 +162,31 @@ public class ChannelDetails implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 	
+	public ChannelDetails(String objectClusterName, String guiName, String defaultCalibratedUnits, List<CHANNEL_TYPE> listOfChannelTypes) {
+		mObjectClusterName = objectClusterName;
+		mGuiName = guiName;
+		mDefaultCalUnits = defaultCalibratedUnits;
+		mListOfChannelTypes = listOfChannelTypes;
+	}
+
+	public ChannelDetails(String objectClusterName, String guiName, String defaultCalibratedUnits, List<CHANNEL_TYPE> listOfChannelTypes, String databaseChannelHandle) {
+		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes);
+		mDatabaseChannelHandle = databaseChannelHandle;
+	}
+
+	public ChannelDetails(String objectClusterName, 
+			String guiName, 
+			String databaseChannelHandle, 
+			CHANNEL_DATA_TYPE defaultChannelDataType, 
+			int defaultNumBytes, 
+			CHANNEL_DATA_ENDIAN channelDataEndian, 
+			String defaultCalibratedUnits, 
+			List<CHANNEL_TYPE> listOfChannelTypes,
+			int legacyChannelId) {
+		this(objectClusterName, guiName, databaseChannelHandle, defaultChannelDataType, defaultNumBytes, channelDataEndian, defaultCalibratedUnits, listOfChannelTypes);
+		mLegacyChannelId = legacyChannelId;
+	}
+	
 	public ChannelDetails(String objectClusterName, 
 			String guiName, 
 			String defaultCalibratedUnits, 
@@ -284,36 +309,6 @@ public class ChannelDetails implements Serializable {
 		checkDatabaseChannelHandle();
 	}
 
-	public ChannelDetails(String objectClusterName, String guiName, String defaultCalibratedUnits, List<CHANNEL_TYPE> listOfChannelTypes) {
-		mObjectClusterName = objectClusterName;
-		mGuiName = guiName;
-		mDefaultCalUnits = defaultCalibratedUnits;
-		mListOfChannelTypes = listOfChannelTypes;
-	}
-
-	public ChannelDetails(String objectClusterName, String guiName, String defaultCalibratedUnits, List<CHANNEL_TYPE> listOfChannelTypes, String databaseChannelHandle) {
-		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes);
-		mDatabaseChannelHandle = databaseChannelHandle;
-	}
-
-	public ChannelDetails(String objectClusterName, 
-			String guiName, 
-			String databaseChannelHandle, 
-			CHANNEL_DATA_TYPE defaultChannelDataType, 
-			int defaultNumBytes, 
-			CHANNEL_DATA_ENDIAN channelDataEndian, 
-			String defaultCalibratedUnits, 
-			List<CHANNEL_TYPE> listOfChannelTypes,
-			int legacyChannelId) {
-		this(objectClusterName, guiName, databaseChannelHandle, defaultChannelDataType, defaultNumBytes, channelDataEndian, defaultCalibratedUnits, listOfChannelTypes);
-		mLegacyChannelId = legacyChannelId;
-	}
-	
-//	public ChannelDetails(String aCCEL_WR_X, String aCCEL_WR_X2, String wrAccX,
-//			CHANNEL_DATA_TYPE int16, int i, CHANNEL_DATA_ENDIAN lsb,
-//			String meterPerSecondSquare, List<CHANNEL_TYPE> asList, int j) {
-//		// TODO Auto-generated constructor stub
-//	}
 
 	private void checkDatabaseChannelHandle(){
 		if(mDatabaseChannelHandle.isEmpty()){
