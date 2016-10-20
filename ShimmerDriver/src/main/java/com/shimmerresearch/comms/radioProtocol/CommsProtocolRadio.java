@@ -148,7 +148,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		mRadioProtocol.stopSDLogging();
 	}
 	
-	public void startLoggingAndStreaming(){
+	public void startDataLogAndStreaming(){
 		mRadioProtocol.startDataLogAndStreaming();
 	}
 	
