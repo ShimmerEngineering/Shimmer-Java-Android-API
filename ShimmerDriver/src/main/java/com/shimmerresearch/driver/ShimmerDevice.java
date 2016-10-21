@@ -2393,7 +2393,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	/** check to ensure sensors that algorithm requires haven't been switched off */
 	public void algorithmRequiredSensorCheck() {
-		//New way to handle syncing of all settings in an algorithm group 
 		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
 			// looping through algorithms to see which ones are enabled
 			for (AlgorithmDetails algorithmDetails:sGD.mListOfAlgorithmDetails) {
@@ -2411,29 +2410,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 		initializeAlgorithms();
-				
-		//Old code - works but doesn't sync settings in a algorithm group
-//		// looping through algorithms to see which ones are enabled
-//		for (AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()) {
-//			if (abstractAlgorithm.isEnabled()) { // run check to see if accompanying sensors
-//				innerLoop:
-//				for (Integer sensor:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
-//					SensorDetails sensorDetails = mSensorMap.get(sensor);
-//					if (sensorDetails!=null && !sensorDetails.isEnabled()) {
-//						abstractAlgorithm.setIsEnabled(false); // TURNS ALGORITHM OFF
-////						//turning config values off
-////						for(String configOption:abstractAlgorithm.mConfigOptionsMap.keySet()){
-////							setConfigValueUsingConfigLabel(abstractAlgorithm.mAlgorithmGroupingName, configOption, 0);
-////						}
-//						
-//						initializeAlgorithms();
-//						
-//						// refresh panels??
-//						break innerLoop;
-//					}
-//				}
-//			}
-//		}
 	}
 	
 	
@@ -2448,66 +2424,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return listAlgoSignalProperties;
 	}
-	
-//	public Map<String, AlgorithmDetails> getAlgorithmChannelsMap() {
-//		return mMapOfAlgorithmDetails;
-//	}
-
-//	public List<AlgorithmDetails> getListOfSupportedAlgorithmChannels() {
-//		
-//		List<AlgorithmDetails> listOfSupportAlgorihmChannels = new ArrayList<AlgorithmDetails>();
-//		parentLoop:
-//    	for(AlgorithmDetails algorithmDetails:mSupportedAlgorithmChannelsMap) {
-//    		if(algorithmDetails.mAlgorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ANY){
-//        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetails.mListOfRequiredSensors){
-//    				if(isSensorEnabled(sensorMapKey)){
-//    					listOfSupportAlgorihmChannels.add(algorithmDetails);
-//    					continue parentLoop;
-//    				}
-//        		}
-//    		}
-//    		else if(algorithmDetails.mAlgorithmDetails.mSensorCheckMethod == SENSOR_CHECK_METHOD.ALL){
-//        		for(Integer sensorMapKey:algorithmDetails.mAlgorithmDetails.mListOfRequiredSensors){
-//        			if(!isSensorEnabled(sensorMapKey)){
-//    					continue parentLoop;
-//        			}
-////        			if(!mSensorMap.containsKey(sensorMapKey)){
-////    					continue parentLoop;
-////        			}
-////        			else{
-////        				if(!mSensorMap.get(sensorMapKey).isEnabled()){
-////        					continue parentLoop;
-////        				}
-////        			}
-//        		
-//       			
-//      			//made it to past the last sensor
-//        			if(sensorMapKey==algorithmDetails.mAlgorithmDetails.mListOfRequiredSensors.get(algorithmDetails.mAlgorithmDetails.mListOfRequiredSensors.size()-1)){
-//    					listOfSupportAlgorihmChannels.add(algorithmDetails);
-//        			}
-//        		}
-//		
-//    		}	
-//    	}
-//
-//		// TODO Auto-generated method stub
-//		return listOfSupportAlgorihmChannels;
-//	}
-
-	
-//	public void createMapOfSupportedAlgorithmChannels() {
-//
-//		// returns list of compatible algorithms based on Shimmer hardware
-//		parentLoop:
-//			for (AlgorithmDetails aD : mAlgorithmChannelsMap.values()) {
-//			for (Integer sensorMapKey : aD.mAlgorithmDetails.mListOfRequiredSensors) {
-//				if (mSensorMap.containsKey(sensorMapKey)) {
-//					mAlgorithmChannelsMap.put(aD.mAlgorithmDetails.mAlgorithmName, aD);
-//				}
-//			}
-//		}
-//
-//	}
 	
 	/** returns list of compatible algorithms based on Shimmer hardware */
 	public Map<String, AbstractAlgorithm> getSupportedAlgorithmChannels(){
@@ -2606,20 +2522,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void generateMapOfAlgorithmModules(){
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 		
-//		double samplingRate = getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH);
-//		
-//		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = OrientationModule9DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
-//		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
-//			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(algorithmDetails, samplingRate);
-//			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule9DOF);
-//		}
-//		
-//		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = OrientationModule6DOF.getMapOfSupportedAlgorithms(mShimmerVerObject);
-//		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
-//			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, samplingRate);
-//			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule6DOF);
-//		}
-
 		loadAlgorithms(OPEN_SOURCE_ALGORITHMS);
 		
 		//TODO temporarily locating updateMapOfAlgorithmModules() in DataProcessing
