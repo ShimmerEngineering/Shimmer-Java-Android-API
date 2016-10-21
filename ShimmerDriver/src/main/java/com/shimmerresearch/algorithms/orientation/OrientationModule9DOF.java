@@ -506,7 +506,7 @@ public class OrientationModule9DOF extends OrientationModule {
 		Object returnValue = null;
 		switch(componentName){
 
-		case(GuiLabelConfigCommon.SAMPLING_RATE):
+		case(GuiLabelConfigCommon.SHIMMER_SAMPLING_RATE):
 			returnValue = getSamplingRate();
 		break;
 		//				case(GuiLabelConfig.ACCELEROMETER_9DOF):
@@ -526,7 +526,7 @@ public class OrientationModule9DOF extends OrientationModule {
 	public Object getDefaultSettings(String componentName) {
 		Object returnValue = null;
 		switch(componentName){
-		case(GuiLabelConfigCommon.SAMPLING_RATE):
+		case(GuiLabelConfigCommon.SHIMMER_SAMPLING_RATE):
 			returnValue = 512;
 		break;
 		//				case(GuiLabelConfig.ACCELEROMETER_9DOF):
@@ -546,7 +546,7 @@ public class OrientationModule9DOF extends OrientationModule {
 	public void setSettings(String componentName, Object valueToSet){
 
 		switch(componentName){
-		case(GuiLabelConfigCommon.SAMPLING_RATE):
+		case(GuiLabelConfigCommon.SHIMMER_SAMPLING_RATE):
 			if(valueToSet instanceof String){
 				if(!((String) valueToSet).isEmpty()){
 					setSamplingRate(Double.parseDouble((String) valueToSet));

@@ -1,7 +1,5 @@
 package com.shimmerresearch.driver;
 
-//TODO carry any improvements that have been implemented in the Shimmer4 class over to this class
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,9 +13,7 @@ import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
@@ -31,7 +27,6 @@ import com.shimmerresearch.sensors.ShimmerClock;
  */
 public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
-	/** * */
 	private static final long serialVersionUID = 76977946997596234L;
 	
 	public static final int VARIABLE_NOT_SET = -1;
@@ -49,10 +44,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 //	public long mDerivedSensors = ALGORITHM_ECG_TO_HR_CHP1_CH1;
 	
 	//TODO tidy: carried from ShimmerObject
-//	public int mInternalExpPower = 1;			// Enable external power for EXG + GSR
 	public boolean mSyncWhenLogging = true;
 	public boolean mIsFwTestMode = false;
-//	public boolean mIsSDError = false;
 	
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
@@ -208,13 +201,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		return getPacketReceptionRateCurrent();
 	}
 	
-
 	
-//	@Override
-//	protected void createInfoMemLayout(){
-//		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-//	}
-
 	// ----------------- Local Sets/Gets End ----------------------------
 
 
@@ -369,15 +356,8 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		}
 
 		//Check if Expansion board power is required for any of the enabled sensors
-		//TODO replace with checkIfInternalExpBrdPowerIsNeeded from ShimmerObject
-		super.checkIfInternalExpBrdPowerIsNeeded();
-//		mInternalExpPower = 0;
-//		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-//			if(abstractSensor.mIntExpBoardPowerRequired && abstractSensor.isAnySensorChannelEnabled(COMMUNICATION_TYPE.IEEE802154)){
-//				mInternalExpPower = 1;
-//				break;
-//			}
-//		}
+		checkIfInternalExpBrdPowerIsNeeded();
+
 		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
 
 		
@@ -500,34 +480,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		}
 	}
 	
-//	//TODO improve flow of below, move to ShimmerDevice also?
-//	@Override
-//	public void prepareAllAfterConfigRead() {
-//		super.prepareAllAfterConfigRead();
-//
-//		//TODO add in below when ready
-////		sensorAndConfigMapsCreate();
-//		
-////		System.err.println("Before");
-////		printSensorAndParserMaps();
-//
-//		generateSensorAndParserMaps();
-//		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.IEEE802154);
-//		
-////		//For debugging
-////		for(SensorDetails sensorDetails:mSensorMap.values()){
-////			System.out.println("SENSOR\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
-////		}
-////		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
-////			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
-////				System.out.println("ENABLED SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetails.mGuiFriendlyLabel);
-////			}
-////		}
-//		
-////		System.err.println("After");
-////		printSensorAndParserMaps();
-//	}
-
 	@Override
 	public void sensorAndConfigMapsCreate() {
 		mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(this));
@@ -591,33 +543,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 				mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensor(commType, true);
 			} 
 			else {
-//				//TODO: needs a lot of work
-//				for(AbstractSensor sensor:mMapOfSensorClasses.values()){
-//					sensor.updateStateFromEnabledSensorsVars(commType, enabledSensors, 0); 
-//				}
-				//TODO does the below work?
 				sensorMapUpdateFromEnabledSensorsVars();
-				
-//				if ((enabledSensors & SENSOR_GSR_802154_BIT) >0){
-//					mMapOfSensors.get(SENSORS.GSR).enableSensorChannels(commType);
-//				} 
-//				else {
-//					mMapOfSensors.get(SENSORS.GSR).disableSensorChannels(commType);
-//				}
-//				
-//				if ((enabledSensors & SENSOR_ECG_HEARTRATE_802154_BIT) >0){
-//					mMapOfSensors.get(SENSORS.ECG_TO_HR).enableSensorChannels(commType);
-//				} 
-//				else {
-//					mMapOfSensors.get(SENSORS.ECG_TO_HR).disableSensorChannels(commType);
-//				}
-//				
-//				if ((enabledSensors & SENSOR_CLOCK_802154_BIT) >0){
-//					mMapOfSensors.get(SENSORS.CLOCK).enableSensorChannels(commType);
-//				} 
-//				else {
-//					mMapOfSensors.get(SENSORS.CLOCK).disableSensorChannels(commType);
-//				}
 			}
 		}
 		
@@ -692,7 +618,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 
-	
+	/**This hard-coded approach is only implemented for Shimmer3 and ShimmerGQ, it has been replaced by a modular approach in Shimmer4 onwards
+	 * @return
+	 */
 	public List<Double> getShimmerConfigToInsertInDB(){
 		
 		List<Double> mConfigValues = new ArrayList<Double>();
@@ -950,7 +878,6 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		mConfigValues.add((double) 0);
 		//TRIAL_DURATION_MAXIMUM
 		mConfigValues.add((double) 0);
-
 		
 		return mConfigValues;
 	}

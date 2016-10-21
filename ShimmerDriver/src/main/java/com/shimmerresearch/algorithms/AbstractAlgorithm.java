@@ -81,7 +81,9 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	public class GuiLabelConfigCommon{
-		public final static String SAMPLING_RATE = Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE;
+		public final static String SHIMMER_SAMPLING_RATE = Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE;
+		//TODO implement support for the below across all algorithms
+		public final static String MIN_ALGO_SAMPLING_RATE = "Algo Min " + SHIMMER_SAMPLING_RATE;
 		public final static String TIMESTAMP_SIGNAL_NAME = "Time Stamp Signal Name";
 		public final static String TIMESTAMP_SIGNAL_FORMAT = "Time Stamp Signal Format";
 	}
@@ -171,7 +173,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	 * @return
 	 * @throws Exception
 	 */
-	public abstract AlgorithmResultObject processDataRealTime(ObjectCluster object) throws Exception;
+	public abstract AlgorithmResultObject processDataRealTime(ObjectCluster ojc) throws Exception;
 	
 	/** currently just used by Gait and Balance. MN: not sure if this is actually needed*/
 	public abstract AlgorithmResultObject processDataPostCapture(Object object) throws Exception;
@@ -455,6 +457,9 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public void setDefaultSetting() {
 		// TODO Auto-generated method stub
 		
+	}
+	public void setGeneralAlgorithmName(String generalAlgorithmName) {
+		mAlgorithmName = generalAlgorithmName;
 	}
 	
 	

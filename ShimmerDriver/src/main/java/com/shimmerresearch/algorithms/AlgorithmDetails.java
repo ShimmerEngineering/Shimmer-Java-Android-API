@@ -41,7 +41,9 @@ public class AlgorithmDetails implements Serializable {
 	 * @param units
 	 */
 	public AlgorithmDetails(List<Integer> listOfRequiredSensors, String units){
-		mListOfRequiredSensors = listOfRequiredSensors;
+		if(listOfRequiredSensors!=null){
+			mListOfRequiredSensors = listOfRequiredSensors;
+		}
 		mUnits = units;
 	}
 
@@ -72,7 +74,6 @@ public class AlgorithmDetails implements Serializable {
 			String objectClusterName, 
 			String guiFriendlyName, 
 			List<String> listOfAssociatedSensors, 
-//			String groupName, 
 			long derivedSensorBitmapId, 
 			List<Integer> listOfRequiredSensors, 
 			String units){

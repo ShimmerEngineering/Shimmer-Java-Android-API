@@ -78,13 +78,6 @@ public class ConfigOptionDetailsAlgorithm extends ConfigOptionDetails implements
 	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
 	 * @param guiComponentType
 	 */
-//	public ConfigOptionDetailsAlgorithm(
-//			String[] guiValues, 
-//			Integer[] configValues, 
-//			GUI_COMPONENT_TYPE guiComponentType) {
-//		super(guiValues, configValues, guiComponentType, null);
-//	}
-
 	public ConfigOptionDetailsAlgorithm(
 			String[] guiValues,
 			String guiFriendlyName,

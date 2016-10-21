@@ -198,7 +198,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean mVerboseMode = true;
 	public static TreeMap<Integer,String> mMapOfErrorCodes = new TreeMap<Integer,String>();
 
-	private static final List<AlgorithmLoaderInterface> ALGORITHMS_OPEN_SOURCE = Arrays.asList(
+	private static final List<AlgorithmLoaderInterface> OPEN_SOURCE_ALGORITHMS = Arrays.asList(
 			new OrientationModule6DOFLoader(), 
 			new OrientationModule9DOFLoader());
 
@@ -1400,7 +1400,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return returnValue;
 	}
-	
+
+	public void setAlgorithmSettings(String configLabel, Object valueToSet){
+		setAlgorithmSettings(null, configLabel, valueToSet);
+	}
+
 	public void setAlgorithmSettings(String groupName, String configLabel, Object valueToSet){
 		List<AbstractAlgorithm> listOfAlgorithms = null;
 		
@@ -1565,7 +1569,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		for(SensorDetails sensorEnabledDetails:mSensorMap.values()) {
 			if(sensorEnabledDetails.isInternalExpBrdPowerRequired()){
 				mInternalExpPower = 1;
-				break;
+				return;
 			}
 			else{
 				//TODO move to AbstractSensors
@@ -1949,12 +1953,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void prepareAllAfterConfigRead() {
+		//Debugging
+//		System.err.println("Before");
+//		printSensorAndParserMaps();
+
 		sensorAndConfigMapsCreate();
 		sensorMapUpdateFromEnabledSensorsVars();
 		algorithmMapUpdateFromEnabledSensorsVars();
 //		sensorMapCheckandCorrectSensorDependencies();
 		
 		//Debugging
+//		System.err.println("After");
 //		printSensorAndParserMaps();
 		
 		// This is to update the newly created sensor/algorithm classes (created
@@ -2611,7 +2620,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //			addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule6DOF);
 //		}
 
-		loadAlgorithmInterfaces(ALGORITHMS_OPEN_SOURCE);
+		loadAlgorithms(OPEN_SOURCE_ALGORITHMS);
 		
 		//TODO temporarily locating updateMapOfAlgorithmModules() in DataProcessing
 		if(mDataProcessing!=null){
@@ -2623,14 +2632,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	}
 
-	public void loadAlgorithmInterface(AlgorithmLoaderInterface algorithmLoaderInterface) {
-		algorithmLoaderInterface.initialiseSupportedAlgorithms(this);
+	public void loadAlgorithms(List<AlgorithmLoaderInterface> listOfAlgorithms) {
+		for(AlgorithmLoaderInterface algorithmLoader:listOfAlgorithms){
+			loadAlgorithm(algorithmLoader);
+		}
 	}
 
-	public void loadAlgorithmInterfaces(List<AlgorithmLoaderInterface> listOfAlgorithms) {
-		for(AlgorithmLoaderInterface algorithmLoaderInterface:listOfAlgorithms){
-			loadAlgorithmInterface(algorithmLoaderInterface);
-		}
+	public void loadAlgorithm(AlgorithmLoaderInterface algorithmLoader) {
+		algorithmLoader.initialiseSupportedAlgorithms(this);
 	}
 
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
@@ -2842,7 +2851,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		while(iterator.hasNext()){
 			AbstractAlgorithm abstractAlgorithm = iterator.next();
 //			if(abstractAlgorithm.isEnabled()){
-				abstractAlgorithm.setSettings(AbstractAlgorithm.GuiLabelConfigCommon.SAMPLING_RATE, samplingRateShimmer);
+				abstractAlgorithm.setSettings(AbstractAlgorithm.GuiLabelConfigCommon.SHIMMER_SAMPLING_RATE, samplingRateShimmer);
 //			}
 		}
 	}

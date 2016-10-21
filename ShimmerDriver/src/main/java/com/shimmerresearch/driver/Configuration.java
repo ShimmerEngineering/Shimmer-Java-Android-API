@@ -1038,6 +1038,7 @@ public class Configuration {
 		
 		// GUI Algorithm Grouping
 		public enum GuiLabelAlgorithmGrouping{
+			TIME_SYNC("Time Sync"),
 			ORIENTATION_9DOF("9DOF"),  
 			ORIENTATION_6DOF("6DOF"),  
 			ECG_TO_HR("ECG-to-HR"),
@@ -1203,16 +1204,14 @@ public class Configuration {
 			public static final String PACKET_RECEPTION_RATE_CURRENT = "Packet_Reception_Rate_Current";
 			public static final String PACKET_RECEPTION_RATE_OVERALL = "Packet_Reception_Rate_Trial";
 			
-			public static String TIMESTAMP = "Timestamp";
-			public static String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
-			public static String REAL_TIME_CLOCK = "RealTime";
-			public static String SYSTEM_TIMESTAMP = "System_Timestamp";
-			public static String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
-			public static String TIMESTAMP_SYNC = "Timestamp_Sync";
-			public static String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
-			public static String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
+			public static String TIMESTAMP = 			ShimmerClock.ObjectClusterSensorName.TIMESTAMP;//"Timestamp";
+			public static String REAL_TIME_CLOCK = 		ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK;//"RealTime";
+			public static String SYSTEM_TIMESTAMP = 	ShimmerClock.ObjectClusterSensorName.SYSTEM_TIMESTAMP;//"System_Timestamp";
+			public static String REAL_TIME_CLOCK_SYNC = ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;//"RealTime_Sync";
+			public static String TIMESTAMP_SYNC = 		ShimmerClock.ObjectClusterSensorName.TIMESTAMP_SYNC;//"Timestamp_Sync";
+			public static String SYSTEM_TIMESTAMP_PLOT = ShimmerClock.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT;//"System_Timestamp_plot";
 
-			public static String TIMESTAMP_OFFSET = "Offset";
+			public static String TIMESTAMP_OFFSET = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET;//"Offset";
 
 			public static String ACCEL_LN_X = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_X;
 			public static String ACCEL_LN_Y = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Y;
