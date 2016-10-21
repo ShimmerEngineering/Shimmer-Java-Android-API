@@ -2438,6 +2438,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mSupportedAlgorithmChannelsMap;
 	}
 	
+	/** This pass back a map of the Algorithm groups so that a GUI can generate configuration options
+	 * @return
+	 */
 	public TreeMap<Integer, SensorGroupingDetails> getMapOfAlgorithmGrouping() {
 		TreeMap<Integer, SensorGroupingDetails> algorithmGroupingMap = new TreeMap<Integer, SensorGroupingDetails>(); 
     	for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()) {

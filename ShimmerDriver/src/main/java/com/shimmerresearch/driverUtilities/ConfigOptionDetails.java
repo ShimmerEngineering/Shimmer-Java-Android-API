@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-
 public class ConfigOptionDetails implements Serializable {
 	
 	/** * */

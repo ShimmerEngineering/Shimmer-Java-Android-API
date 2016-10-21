@@ -405,7 +405,9 @@ public class SensorLSM303 extends AbstractSensor{
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(
-				new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, SensorLSM303.ListofLSM303DLHCAccelRateLpm, SensorLSM303.ListofLSM303DLHCAccelRateLpmConfigValues)));
+				new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM, 
+						SensorLSM303.ListofLSM303DLHCAccelRateLpm, 
+						SensorLSM303.ListofLSM303DLHCAccelRateLpmConfigValues)));
 
 	
 	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
