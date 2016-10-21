@@ -2495,7 +2495,7 @@ public class SensorEXG extends AbstractSensor{
 
 	}
 
-	public boolean isEXGUsingDefaultECGConfiguration(){
+	public boolean isEXGUsingDefaultECGGqConfiguration(){
 		if (mShimmerVerObject.getFirmwareIdentifier() == FW_ID.GQ_802154){
 //			if(((mEXG1RegisterArray[3] & 0x0F)==0)&&((mEXG1RegisterArray[4] & 0x0F)==0)){
 			if((getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.NORMAL.configValueInt)
@@ -2503,19 +2503,21 @@ public class SensorEXG extends AbstractSensor{
 				return true;
 			}
 		}
-		else {
-			if((mIsExg1_16bitEnabled && mIsExg2_16bitEnabled) || (mIsExg1_24bitEnabled && mIsExg2_24bitEnabled)){
+		return false;
+	}
+
+	public boolean isEXGUsingDefaultECGConfiguration(){
+		if((mIsExg1_16bitEnabled && mIsExg2_16bitEnabled) || (mIsExg1_24bitEnabled && mIsExg2_24bitEnabled)){
 //				if(((mEXG1RegisterArray[3] & 0x0F)==0) 
 //						&& ((mEXG1RegisterArray[4] & 0x0F)==0) 
 //						&& ((mEXG2RegisterArray[3] & 0x0F)==0) 
 //						&& ((mEXG2RegisterArray[4] & 0x0F)==7)){
-				if((getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.NORMAL.configValueInt)
-						&& (getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.NORMAL.configValueInt)
-						&& (getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.NORMAL.configValueInt)
-						&& (getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT.configValueInt)){
-					
-					return true;
-				}
+			if((getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.NORMAL.configValueInt)
+					&& (getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.NORMAL.configValueInt)
+					&& (getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.NORMAL.configValueInt)
+					&& (getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT.configValueInt)){
+				
+				return true;
 			}
 		}
 		return false;
@@ -2622,9 +2624,11 @@ public class SensorEXG extends AbstractSensor{
 	
 	private void internalCheckExgModeAndUpdateSensorMap(){
 		Map<Integer, SensorDetails> sensorMap = mShimmerDevice.getSensorMap();
-		if(sensorMap!=null){
+		if(sensorMap!=null && sensorMap.keySet().size()>0){
 			if(mShimmerVerObject.isShimmerGenGq()){
-				//TODO handle ShimmerGQ
+				if(isEXGUsingDefaultECGGqConfiguration()) {
+					sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(true);
+				}
 			}
 			else if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
 	//			if((mIsExg1_24bitEnabled||mIsExg2_24bitEnabled||mIsExg1_16bitEnabled||mIsExg2_16bitEnabled)){
@@ -2716,7 +2720,7 @@ public class SensorEXG extends AbstractSensor{
 				if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
 					nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP;
 				}
-				else if(isEXGUsingDefaultECGConfiguration()) {
+				else if(isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultECGGqConfiguration()) {
 					nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.ECG;
 				}
 				else if(isEXGUsingDefaultEMGConfiguration()) {

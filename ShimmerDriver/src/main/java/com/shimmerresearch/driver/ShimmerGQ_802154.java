@@ -232,11 +232,11 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		}
 	}
 
-	@Override
-	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+//	@Override
+//	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
 
 	@Override
 	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
@@ -493,6 +493,9 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	
 	@Override
 	public void setDefaultShimmerConfiguration() {
+		setSamplingRateShimmer(COMMUNICATION_TYPE.SD, 256);	// 256Hz is the default sampling rate
+		setSamplingRateShimmer(COMMUNICATION_TYPE.IEEE802154, 5);	// 5Hz is the default sampling rate
+
 		mMapOfSensorClasses.get(SENSORS.CLOCK).setIsEnabledSensor(COMMUNICATION_TYPE.IEEE802154, true);
 		mMapOfSensorClasses.get(SENSORS.GSR).setIsEnabledSensor(COMMUNICATION_TYPE.IEEE802154, true);
 		mMapOfSensorClasses.get(SENSORS.ECG_TO_HR).setIsEnabledSensor(COMMUNICATION_TYPE.IEEE802154, true);
@@ -505,12 +508,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		
 		AbstractSensor shimmerExgSensor = mMapOfSensorClasses.get(SENSORS.EXG);
 		if(shimmerExgSensor!=null){
-			((SensorEXG)shimmerExgSensor).setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
+			SensorEXG sensorExg = (SensorEXG)shimmerExgSensor;
+			sensorExg.setExgGq(getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
+			sensorExg.setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
 		}
-		mMapOfSensorClasses.get(SENSORS.EXG).setIsEnabledSensor(COMMUNICATION_TYPE.SD, true);
-		
-		setSamplingRateShimmer(COMMUNICATION_TYPE.SD, 256);	// 256Hz is the default sampling rate
-		setSamplingRateShimmer(COMMUNICATION_TYPE.IEEE802154, 5);	// 5Hz is the default sampling rate
 	}
 
 	/**
