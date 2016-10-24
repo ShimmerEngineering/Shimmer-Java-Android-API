@@ -82,10 +82,12 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	
 
 	//TODO Should not be here?
-	public String mMyBluetoothAddress;
-	public String mComPort;
+	public String mComPort = "";
+	public String mMyBluetoothAddress = "";
 	private int mTempChipID;
-	
+
+	public String mConnectionHandle = "";
+
 //	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
 //	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
 //	protected long mPacketLossCount = 0;		//Used by ShimmerBluetooth
@@ -109,9 +111,12 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	
 	/**
 	 * Constructor
+	 * @param connectionHandle 
 	 */
-	public LiteProtocol(){
+	public LiteProtocol(String connectionHandle){
 		super();
+		mConnectionHandle = connectionHandle;
+		mUtilShimmer.setParentClassName(getClass().getSimpleName() + "-" + mConnectionHandle);
 	}
 	
 	/** Constructor
@@ -119,7 +124,6 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	 */
 	public LiteProtocol(InterfaceSerialPortHal commsInterface) {
 		super(commsInterface);
-//		String uniqueId = mSerialPort.
 	}
 	
 	
@@ -221,12 +225,14 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 
 		mIOThread = new IOThread();
-		mIOThread.setName(getClass().getSimpleName()+"-"+mMyBluetoothAddress+"-"+mComPort);
+		mIOThread.setName(getClass().getSimpleName()+"-"+mConnectionHandle);
 		mIOThread.start();
 	}
 
 	@Override
 	public void stopProtocol() {
+		stopAllTimers();
+		
 		setIsStreaming(false);
 		setIsInitialised(false);
 
@@ -263,7 +269,6 @@ public class LiteProtocol extends AbstractCommsProtocol{
 						processBytesAvailableAndInstreamSupported();
 					}
 				} catch (DeviceException dE) {
-					// TODO Auto-generated catch block
 //					stop=true;
 					
 					killConnection(dE);
@@ -1831,7 +1836,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			mTimerCheckForAckOrResp = null;
 		}
 		printLogDataForDebugging("Waiting for ack/response for command:\t" + btCommandToString(mCurrentCommand));
-		mTimerCheckForAckOrResp = new Timer("Shimmer_" + getMacIdParsed() + "_TimerCheckForResp");
+		mTimerCheckForAckOrResp = new Timer("Shimmer_" + getConnectionHandle() + "_TimerCheckForResp");
 		mTimerCheckForAckOrResp.schedule(new checkForAckOrRespTask(), seconds*1000);
 	}
 	
@@ -1939,9 +1944,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT 
 							&& mCurrentCommand!=InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE 
 							&& !isInitialised()){
-						killConnection(); //If command fail exit device	
+						killConnection("Reached number of TX retries = " + NUMBER_OF_TX_RETRIES_LIMIT); //If command fail exit device	
 					} else if(mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && isInitialised()){
-						killConnection(); //If command fail exit device	
+						killConnection("Reached number of TX retries = " + NUMBER_OF_TX_RETRIES_LIMIT); //If command fail exit device	
 					} else {
 						mWaitForAck=false;
 						mWaitForResponse=false;
@@ -1960,12 +1965,16 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		} //End Run
 	} //End TimerTask
 	
-	private void killConnection(){
-		killConnection(null);
+	private void killConnection(String info){
+		killConnection(null, info);
 	}
 
 	private void killConnection(DeviceException dE){
-		printLogDataForDebugging("Killing Connection");
+		killConnection(dE, "");
+	}
+
+	private void killConnection(DeviceException dE, String info){
+		printLogDataForDebugging("Killing Connection" + (info.isEmpty()? "":(": " + info)));
 //		stop(); //If command fail exit device
 		mProtocolListener.eventKillConnectionRequest(dE);
 	}
@@ -1976,7 +1985,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		if((getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM) 
 				|| (getHardwareVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){
 			if(mTimerReadStatus==null){ 
-				mTimerReadStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerReadStatus");
+				mTimerReadStatus = new Timer("Shimmer_" + getConnectionHandle() + "_TimerReadStatus");
 			} else {
 				mTimerReadStatus.cancel();
 				mTimerReadStatus.purge();
@@ -2013,7 +2022,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	public void startTimerCheckIfAlive(){
 		if(mCheckIfConnectionisAlive){
 			if(mTimerCheckAlive==null){ 
-				mTimerCheckAlive = new Timer("Shimmer_" + getMacIdParsed() + "_TimerCheckAlive");
+				mTimerCheckAlive = new Timer("Shimmer_" + getConnectionHandle() + "_TimerCheckAlive");
 			}
 			//dont really need this for log and stream since we already have the get status timer
 			if((getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
@@ -2073,7 +2082,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				
 				if(mCountDeadConnection>5){
 //					setState(BT_STATE.NONE);
-					killConnection(); //If command fail exit device
+					killConnection("Keep Alive timer dead connection count > 5"); //If command fail exit device
 				}
 			} 
 		} //End Run
@@ -2086,7 +2095,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK))
 				&&(getFirmwareVersionCode()>=6)){
 			if(mTimerReadBattStatus==null){ 
-				mTimerReadBattStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerBattStatus");
+				mTimerReadBattStatus = new Timer("Shimmer_" + getConnectionHandle() + "_TimerBattStatus");
 			}
 			mTimerReadBattStatus.schedule(new readBattStatusTask(), mReadBattStatusPeriod, mReadBattStatusPeriod);
 		}
@@ -2367,8 +2376,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 	
 	//TODO TEMP HERE
-	private String getMacIdParsed() {
-		return "TEMP_MAC";
+	private String getConnectionHandle() {
+		return mConnectionHandle;
 	}
 
 	

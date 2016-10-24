@@ -39,7 +39,7 @@ public class SerialPortCommJssc extends AbstractSerialPortComm implements Serial
 	public SerialPortCommJssc(String comPort, String uniqueId, int baudToUse) {
 		mUniqueId = uniqueId;
 		mComPort = comPort;
-		mAddress = comPort;
+		mConnectionHandle = comPort;
 		mBaudToUse = baudToUse;
         mSerialPort = new SerialPort(mComPort);
 	}

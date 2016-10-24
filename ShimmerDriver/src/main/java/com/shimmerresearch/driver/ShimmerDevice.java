@@ -112,7 +112,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	/** Used in UART command through the base/dock*/
 	public String mMacIdFromUart = DEFAULT_MAC_ID;
-	public String mShimmerUserAssignedName = ""; // This stores the user assigned name
+	public String mShimmerUserAssignedName = "";//DEFAULT_SHIMMER_NAME; // This stores the user assigned name
 	public HashMap<COMMUNICATION_TYPE, Double> mMapOfSamplingRatesShimmer = new HashMap<COMMUNICATION_TYPE, Double>(); // 51.2Hz is the default sampling rate 
 //	protected double mSamplingRateShimmer; 	                                        	// 51.2Hz is the default sampling rate 
 	{
@@ -264,7 +264,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * Constructor for this class
 	 */
 	public ShimmerDevice(){
-		setThreadName("ShimmerDevice");
+		setThreadName(this.getClass().getSimpleName());
 		setupDataProcessing();
 	}
 	
@@ -418,7 +418,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public void setMacIdFromUart(String macIdFromUart) {
 		this.mMacIdFromUart = macIdFromUart;
-		this.setThreadName("Shimmer_" + mMacIdFromUart);
+		updateThreadName();
 	}
 	
 	/**
@@ -445,7 +445,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		else { 
 			this.mShimmerUserAssignedName = shimmerUserAssignedName;
 		}
-		this.setThreadName("mShimmerUserAssignedName" + getMacId());
 	}
 	
 	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
@@ -959,7 +958,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return
 	 */
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
-		boolean debug = true;
+		boolean debug = false;
 		
 		ObjectCluster ojc = new ObjectCluster(mShimmerUserAssignedName, getMacId());
 		ojc.mRawData = newPacket;
@@ -3210,16 +3209,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	/**This method will not only return the Com Port but also update it from the CommsProtocolRadio if it is in use.  
+	 * @return
+	 */
 	public String getComPort() {
 		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
-			setComPort(((AbstractSerialPortComm) mCommsProtocolRadio.mRadioHal).mAddress); 
+			setComPort(((AbstractSerialPortComm) mCommsProtocolRadio.mRadioHal).mConnectionHandle); 
 		}
 		return mComPort;
 	}
 	
 	public String getBtConnectionHandle() {
-		if(!mComPort.isEmpty()){
-			return mComPort;
+		String comPort = getComPort();
+		if(!comPort.isEmpty()){
+			return comPort;
 		}
 		else{
 			return getMacId();
@@ -3229,6 +3232,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** Only supported in ShimmerPCMSS currently*/
 	public void setComPort(String comPort){
 		mComPort = comPort;
+		updateThreadName();
 	}
 
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
@@ -3275,7 +3279,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected void consolePrintException(String message, StackTraceElement[] stackTrace) {
 		consolePrintLn("Exception!");
-		System.out.println(message);
+		System.out.println("Message: " + message);
 		
 		Exception e = new Exception();
 		e.setStackTrace(stackTrace);
@@ -3404,9 +3408,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	public void setRadio(AbstractSerialPortComm secondarySerialPort) {
+	public void setRadio(AbstractSerialPortComm commsProtocolRadio) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public static void setMapOfErrorCodes(TreeMap<Integer, String> mapOfErrorCodes) {

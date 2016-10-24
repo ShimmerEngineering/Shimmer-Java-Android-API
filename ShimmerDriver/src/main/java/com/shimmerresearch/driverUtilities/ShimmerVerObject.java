@@ -1,13 +1,12 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.SPAN_VERSION;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_LABEL;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.SensorEXG.GuiLabelSensorTiles;
 
 /**
  * Holds HW, FW and expansion board infomation. Used for docked Shimmers current
@@ -18,9 +17,6 @@ import com.shimmerresearch.sensors.SensorEXG.GuiLabelSensorTiles;
  */
 public class ShimmerVerObject implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1966526754185423783L;
 	
 	public int mHardwareVersion = HW_ID.UNKNOWN;
@@ -367,6 +363,17 @@ public class ShimmerVerObject implements Serializable {
 		}
 		return false;
 	}
+	
+	public static final List<ShimmerVerObject> getListOfCompatibleSdLoggingFW(){
+		List<ShimmerVerObject> listOfCompatibleSdLoggingFW = new ArrayList<ShimmerVerObject>();
+		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.SDLOG,0,8,69));
+		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.LOGANDSTREAM,0,5,0));
+		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.GQ_BLE,0,0,1));
+		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.GQ_802154,0,0,1));
+		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.SHIMMER4_SDK_STOCK,0,0,1));
+		return listOfCompatibleSdLoggingFW;
+	}
+
 
 	public boolean isCalibDumpSupported() {
 		return isCalibDumpSupported(this);

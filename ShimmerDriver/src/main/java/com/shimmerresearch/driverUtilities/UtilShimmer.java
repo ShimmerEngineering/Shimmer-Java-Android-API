@@ -73,6 +73,10 @@ public class UtilShimmer implements Serializable {
 				+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
 		return(rightNowString + " " + mParentClassName + ": " + message);
 	}
+	
+	public void setParentClassName(String parentClassName){
+		mParentClassName = parentClassName;
+	}
 
 	public void consolePrint(String message) {
 		if(mVerboseMode) {

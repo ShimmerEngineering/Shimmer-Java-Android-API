@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driver.shimmerGq;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,7 +11,15 @@ import java.util.List;
 
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
+import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.InfoMemLayout;
+import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driver.Configuration.Shimmer3.GuiLabelConfig;
+import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensors.AbstractSensor;

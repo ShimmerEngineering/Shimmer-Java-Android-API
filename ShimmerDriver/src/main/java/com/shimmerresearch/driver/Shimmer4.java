@@ -5,25 +5,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
-import com.shimmerresearch.bluetooth.ShimmerRadioInitializer;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
-import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
-import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
-import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -31,7 +25,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.exceptions.DeviceException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.SensorADC;
@@ -53,8 +46,6 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	private static final long serialVersionUID = 6916261534384275804L;
 	
-	private double mOffsetFirstTime;
-	private boolean mFirstPacketParsed;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
 	
 	protected boolean mSendProgressReport = true;
@@ -441,8 +432,8 @@ public class Shimmer4 extends ShimmerDevice {
 	/**
 	 * @param commsRadio
 	 */
-	public void setRadio(CommsProtocolRadio commsRadio){
-		setCommsProtocolRadio(commsRadio);
+	public void setRadio(CommsProtocolRadio commsProtocolRadio){
+		setCommsProtocolRadio(commsProtocolRadio);
 		initializeRadio();
 	}
 
@@ -482,7 +473,7 @@ public class Shimmer4 extends ShimmerDevice {
 	
 				@Override
 				public void eventNewPacket(byte[] packetByteArray, long pcTimestamp) {
-					buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
+					buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH, false, pcTimestamp);
 				}
 	
 				@Override
@@ -604,13 +595,8 @@ public class Shimmer4 extends ShimmerDevice {
 	
 					initaliseDataProcessing();
 	
+					resetShimmerClock();
 					resetPacketLossTrial();
-					mFirstPacketParsed=true;
-					//TODO do similar as done in ShimmerBluetooth for the below
-	//				mFirstTimeCalTime=true;
-	//				resetCalibratedTimeStamp();
-	//				mLastReceivedCalibratedTimeStamp = -1;
-	//				mSync=true; // a backup sync done every time you start streaming
 				}
 	
 				@Override
@@ -645,7 +631,13 @@ public class Shimmer4 extends ShimmerDevice {
 	
 				@Override
 				public void eventError(DeviceException dE) {
-					consolePrintException(dE.getMessage(), dE.getStackTrace());
+//					consolePrintException(dE.getMessage(), dE.getStackTrace());
+					if(dE!=null){
+						consolePrint(dE.getMsgDockErrString(mMapOfErrorCodes));
+					}
+					else{
+						consolePrintLn("null error from CommsProtocol");
+					}
 				}
 
 			});
@@ -665,11 +657,11 @@ public class Shimmer4 extends ShimmerDevice {
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp) {
 //		System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
 
-		ObjectCluster objectCluster = super.buildMsg(newPacket, COMMUNICATION_TYPE.BLUETOOTH, true, pcTimestamp);
+		ObjectCluster objectCluster = super.buildMsg(newPacket, commType, isTimeSyncEnabled, pcTimestamp);
 		
-		if(commType==COMMUNICATION_TYPE.BLUETOOTH){
-			processEventMarkerCh(objectCluster);
-		}
+//		if(commType==COMMUNICATION_TYPE.BLUETOOTH){
+//			processEventMarkerCh(objectCluster);
+//		}
 		
 		dataHandler(objectCluster);
 		return objectCluster;
@@ -1021,7 +1013,7 @@ public class Shimmer4 extends ShimmerDevice {
 		if(this.getFirmwareVersionCode()>=6){
 			createInfoMemLayoutObjectIfNeeded();
 //			int size = InfoMemLayoutShimmer3.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-			int size = mInfoMemLayout.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+			int size = mInfoMemLayout.calculateInfoMemByteLength();
 			mCommsProtocolRadio.readInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
 		}
 	}
@@ -1141,7 +1133,7 @@ public class Shimmer4 extends ShimmerDevice {
 		
 		// Send msg fully initialized, send notification message,  
 		// Do something here
-        setIsInitialised(true);
+//        setIsInitialised(true);
 //        prepareAllAfterConfigRead();
 
         if (mSendProgressReport){
@@ -1176,20 +1168,14 @@ public class Shimmer4 extends ShimmerDevice {
 
 	}
 	
-	
-//	/**
-//	 * Due to the nature of the Bluetooth SPP stack a delay has been added to
-//	 * ensure the buffer is filled before it is read
-//	 * 
-//	 */
-//	private void delayForBtResponse(long millis){
-//		try {
-//			Thread.sleep(millis);	
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
+	private void resetShimmerClock() {
+		AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);
+		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
+			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
+			shimmerClock.resetShimmerClock();
+		}
+	}
+
 	/**
 	 * @return the mButtonStart
 	 */

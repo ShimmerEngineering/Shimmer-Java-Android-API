@@ -53,7 +53,6 @@ public abstract void actionSettingResolver(ActionSetting ac);
  */
 public class CommsProtocolRadio extends BasicProcessWithCallBack {
 
-	/** * */
 	private static final long serialVersionUID = -5368287098255841194L;
 	
 	public int mPacketSize;
@@ -507,7 +506,9 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 
 	public void eventError(DeviceException dE){
 		for (RadioListener rl:mRadioListenerList){
-			rl.eventError(dE);
+			if(rl!=null){
+				rl.eventError(dE);
+			}
 		}
 	}
 

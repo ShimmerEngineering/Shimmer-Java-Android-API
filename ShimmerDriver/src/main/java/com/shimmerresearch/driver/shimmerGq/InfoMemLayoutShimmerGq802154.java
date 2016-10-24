@@ -1,7 +1,10 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driver.shimmerGq;
 
 import java.io.Serializable;
 
+import com.shimmerresearch.driver.InfoMemLayout;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 
 /**
@@ -483,12 +486,9 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 	 * @param firmwareVersionInternal
 	 */
 	public InfoMemLayoutShimmerGq802154(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
-		mFirmwareIdentifier = firmwareIdentifier;
-		mFirmwareVersionMajor = firmwareVersionMajor;
-		mFirmwareVersionMinor = firmwareVersionMinor;
-		mFirmwareVersionInternal = firmwareVersionInternal;
+		mShimmerVerObject = new ShimmerVerObject(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 		
-		mInfoMemSize = calculateInfoMemByteLength(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
+		mInfoMemSize = calculateInfoMemByteLength();
 
 		MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
 		MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
@@ -505,7 +505,7 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 		
 	}
 	
-	public int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease) {
+	public int calculateInfoMemByteLength(ShimmerVerObject shimmerVersionObject) {
 		
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
 //		if(Util.compareVersions(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionRelease,
@@ -531,6 +531,5 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 		
 		return 384;
 	}
-
 
 }

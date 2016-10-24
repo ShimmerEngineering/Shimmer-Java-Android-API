@@ -16,10 +16,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
  * @author Mark Nolan
  *
  */
-//TODO have a list of supported units. Have a second variable list stating which one(s) are currently enabled
 public class ChannelDetails implements Serializable {
 	
-	/** * */
 	private static final long serialVersionUID = -2662151922286820989L;
 
 	/* Channels are Right bit justified unless otherwise stated */
@@ -115,6 +113,17 @@ public class ChannelDetails implements Serializable {
 	    }
 	}
 	
+	//TODO switch to using this approach rather then all of the variables below
+	//TODO have a list of supported units. Have a second variable list stating which one(s) are currently enabled
+//	public class ChannelInfo{
+//		CHANNEL_TYPE mChannelType = CHANNEL_TYPE.CAL;
+//		String mChannelUnits = CHANNEL_UNITS.NO_UNITS;
+//		public ChannelInfo(CHANNEL_TYPE channelType, String channelUnits){
+//			mChannelType = channelType;
+//			mChannelUnits = channelUnits;
+//		}
+//	}
+//	private List<ChannelInfo> mListOfAvailableChannels = new ArrayList<ChannelInfo>(); 
 	
 	public String mGuiName = "";
 	public String mObjectClusterName = "";

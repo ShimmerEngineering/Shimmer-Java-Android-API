@@ -7,7 +7,7 @@ public abstract class AbstractSerialPortComm implements InterfaceSerialPortHal {
 	
 	//the timeout value for connecting with the port
     public int SERIAL_PORT_TIMEOUT = 500; // was 2000
-    public String mAddress="";
+    public String mConnectionHandle = "";
     
 	transient private List<ByteLevelDataCommListener> mByteLevelDataCommListener = new ArrayList<ByteLevelDataCommListener>();
     
@@ -21,7 +21,7 @@ public abstract class AbstractSerialPortComm implements InterfaceSerialPortHal {
 	}
 	
     public void setAddress(String address){
-    	mAddress = address;
+    	mConnectionHandle = address;
     }
     
 	@Override

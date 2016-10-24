@@ -3618,7 +3618,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void readConfigurationFromInfoMem(){
 		if(this.getFirmwareVersionCode()>=6){
 //			int size = InfoMemLayoutShimmer3.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-			int size = mInfoMemLayout.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+			int size = mInfoMemLayout.calculateInfoMemByteLength();
 			readInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
 		}
 	}

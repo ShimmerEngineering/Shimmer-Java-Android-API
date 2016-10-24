@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 /**
  * Hold the Shimmer3's microcontroller information memory layout. This region of
@@ -480,12 +481,9 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	 * @param firmwareVersionInternal
 	 */
 	public InfoMemLayoutShimmer3(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
-		mFirmwareIdentifier = firmwareIdentifier;
-		mFirmwareVersionMajor = firmwareVersionMajor;
-		mFirmwareVersionMinor = firmwareVersionMinor;
-		mFirmwareVersionInternal = firmwareVersionInternal;
+		mShimmerVerObject = new ShimmerVerObject(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 		
-		mInfoMemSize = calculateInfoMemByteLength(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal);
+		mInfoMemSize = calculateInfoMemByteLength();
 
 		//Include changes to mapping below in order of oldest to newest in 
 		//seperate "if statements"
@@ -494,9 +492,9 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 //			idxMplCalibration = 128+128+128+0;
 //		}
 		
-		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,8,42))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,3,4))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
+		if((compareVersions(FW_ID.SDLOG,0,8,42))
+				||(compareVersions(FW_ID.LOGANDSTREAM,0,3,4))
+				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
 			idxSensors3 =			128+0;
 			idxSensors4 =			128+1;
 			idxConfigSetupByte4 =	128+2;
@@ -507,10 +505,10 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 			idxDerivedSensors2 = 117;
 		}
 		
-		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,8,68))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,3,17))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.BTSTREAM,0,6,0))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
+		if((compareVersions(FW_ID.SDLOG,0,8,68))
+				||(compareVersions(FW_ID.LOGANDSTREAM,0,3,17))
+				||(compareVersions(FW_ID.BTSTREAM,0,6,0))
+				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
 			idxDerivedSensors0 =		    31;
 			idxDerivedSensors1 =		    32;
 			idxDerivedSensors2 =		    33;
@@ -520,16 +518,16 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 			idxLSM303DLHCAccelCalibration = 97;
 		}
 
-		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,11,3))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,5,12))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
+		if((compareVersions(FW_ID.SDLOG,0,11,3))
+				||(compareVersions(FW_ID.LOGANDSTREAM,0,5,12))
+				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
 			maskShowRwcErrorLeds =	 		0x01;
 		}
 		
-		if((UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,11,5))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.LOGANDSTREAM,0,5,16))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.BTSTREAM,0,7,4))
-				||(UtilShimmer.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
+		if((compareVersions(FW_ID.SDLOG,0,11,5))
+				||(compareVersions(FW_ID.LOGANDSTREAM,0,5,16))
+				||(compareVersions(FW_ID.BTSTREAM,0,7,4))
+				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
 
 			MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
 			MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
@@ -540,7 +538,7 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 
 	}
 	
-	public int calculateInfoMemByteLength(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionRelease) {
+	public int calculateInfoMemByteLength(ShimmerVerObject shimmerVersionObject) {
 		
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
 //		if(Util.compareVersions(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionRelease,
