@@ -185,9 +185,12 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		mRadioProtocol.writeInfoMem(startAddress, buf);
 	}
 
-	//TODO add support for Shimmer4
+	public void readCalibrationDump() {
+		mRadioProtocol.readCalibrationDump();
+	}
+
 	public void writeCalibrationDump(byte[] calibDump) {
-//		mRadioProtocol.writeCalibrationDump(calibDump);
+		mRadioProtocol.writeCalibrationDump(calibDump);
 	}
 
 	public void readPressureCalibrationCoefficients() {
@@ -349,9 +352,18 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		@Override
 		public void eventNewResponse(byte[] respB) {
 			for (RadioListener rl:mRadioListenerList){
-				rl.eventResponseReceived(respB);
+				rl.eventNewResponse(respB);
 			}
 		}
+		
+		@Override
+		public void eventResponseReceived(int responseCommand, Object parsedResponse) {
+			for (RadioListener rl:mRadioListenerList){
+				rl.eventResponseReceived(responseCommand, parsedResponse);
+			}
+		}
+
+
 
 		@Override
 		public void hasStopStreaming() {
@@ -387,13 +399,6 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		public void isNowStreaming() {
 			for (RadioListener rl:mRadioListenerList){
 				rl.isNowStreamingCallback();
-			}
-		}
-
-		@Override
-		public void eventNewResponse(int responseCommand, Object parsedResponse) {
-			for (RadioListener rl:mRadioListenerList){
-				rl.eventResponseReceived(responseCommand, parsedResponse);
 			}
 		}
 
@@ -512,5 +517,5 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		}
 	}
 
-	
+
 }

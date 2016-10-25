@@ -20,10 +20,14 @@ public abstract class AbstractSerialPortComm implements InterfaceSerialPortHal {
 		mByteLevelDataCommListener.clear();
 	}
 	
-    public void setAddress(String address){
-    	mConnectionHandle = address;
+    public void setConnectionHandle(String connectionHandle){
+    	mConnectionHandle = connectionHandle;
     }
-    
+
+    public String getConnectionHandle(){
+    	return mConnectionHandle;
+    }
+
 	@Override
 	public void eventDeviceConnected() {
 		if (mByteLevelDataCommListener.size()!=0){

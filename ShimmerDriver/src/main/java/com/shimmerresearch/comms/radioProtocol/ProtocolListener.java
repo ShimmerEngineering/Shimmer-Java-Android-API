@@ -12,7 +12,7 @@ public interface ProtocolListener {
 	public void eventAckInstruction(byte[] bs);
 	public void eventNewPacket(byte[] b, long pcTimestamp);
 	public void eventNewResponse(byte[] b);
-	public void eventNewResponse(int responseCommand, Object parsedResponse);
+	public void eventResponseReceived(int responseCommand, Object parsedResponse);
 	
 	@Deprecated
 	public void eventByteResponseWhileStreaming(byte[] b);

@@ -374,14 +374,18 @@ public class ShimmerVerObject implements Serializable {
 		return listOfCompatibleSdLoggingFW;
 	}
 
+	public boolean isBtMemoryUpdateCommandSupported() {
+		return isCalibDumpSupported(this);
+	}
 
 	public boolean isCalibDumpSupported() {
 		return isCalibDumpSupported(this);
 	}
 	
 	public static boolean isCalibDumpSupported(ShimmerVerObject shimmerVerObject) {
-		if((isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 6, 7))
-				||(isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 12, 6))){
+		if(isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 6, 7)
+				|| isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 12, 6)
+				|| shimmerVerObject.isShimmerGen4()){
 			return true;
 		}
 		return false;

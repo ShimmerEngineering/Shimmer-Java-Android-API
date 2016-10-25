@@ -13,7 +13,7 @@ public interface RadioListener {
 	//Inherited from ProtocolListener()
 	public void eventNewPacket(byte[] packetByteArray, long pcTimestamp);
 	@Deprecated
-	public void eventResponseReceived(byte[] responseBytes);
+	public void eventNewResponse(byte[] responseBytes);
 	public void eventResponseReceived(int responseCommand, Object parsedResponse);
 	public void eventAckReceived(int lastSentInstruction);
 	

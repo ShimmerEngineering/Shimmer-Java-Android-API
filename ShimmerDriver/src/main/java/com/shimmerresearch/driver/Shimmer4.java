@@ -18,6 +18,7 @@ import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -441,6 +442,7 @@ public class Shimmer4 extends ShimmerDevice {
 	 * @param commsProtocolRadio the mCommsProtocolRadio to set
 	 */
 	public void setCommsProtocolRadio(CommsProtocolRadio commsProtocolRadio) {
+		consolePrintErrLn("Setting CommsProtocolRadio");
 		this.mCommsProtocolRadio = commsProtocolRadio;
 	}
 
@@ -449,6 +451,12 @@ public class Shimmer4 extends ShimmerDevice {
 	 */
 	public CommsProtocolRadio getCommsProtocolRadio() {
 		return mCommsProtocolRadio;
+	}
+	
+	private void clearCommsProtocolRadio() throws DeviceException {
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.disconnect();
+		}
 	}
 
 	/**
@@ -469,20 +477,26 @@ public class Shimmer4 extends ShimmerDevice {
 				public void disconnected() {
 					setBluetoothRadioState(BT_STATE.DISCONNECTED);
 					mCommsProtocolRadio = null;
+//					try {
+//						clearCommsProtocolRadio();
+//					} catch (DeviceException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 				}
 	
 				@Override
 				public void eventNewPacket(byte[] packetByteArray, long pcTimestamp) {
 					buildMsg(packetByteArray, COMMUNICATION_TYPE.BLUETOOTH, false, pcTimestamp);
 				}
-	
-				@Override
-				public void eventResponseReceived(byte[] responseBytes) {
-					//Handled in LiteProtocol
-				}
-	
+
 				@Override
 				public void eventAckReceived(int lastSentInstruction) {
+					//Handled in LiteProtocol
+				}
+
+				@Override
+				public void eventNewResponse(byte[] responseBytes) {
 					//Handled in LiteProtocol
 				}
 	
@@ -511,9 +525,9 @@ public class Shimmer4 extends ShimmerDevice {
 					else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE){ 
 						setShimmerInfoMemBytes((byte[])parsedResponse);
 					}
-	//				else if(responseCommand==InstructionsResponse.RSP_CALIB_DUMP_COMMAND){
-	//					parseCalibByteDump((byte[])parsedResponse, CALIB_READ_SOURCE.RADIO_DUMP);
-	//				}
+					else if(responseCommand==InstructionsResponse.RSP_CALIB_DUMP_COMMAND_VALUE){
+						parseCalibByteDump((byte[])parsedResponse, CALIB_READ_SOURCE.RADIO_DUMP);
+					}
 					else if(responseCommand==InstructionsResponse.BLINK_LED_RESPONSE_VALUE){ 
 	//					mCurrentLEDStatus = byteled[0]&0xFF;
 					}
@@ -669,7 +683,7 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	public void connect() throws DeviceException {
-		clearShimmerVersionObject();
+//		clearShimmerVersionObject();
 		
 		setBluetoothRadioState(BT_STATE.CONNECTING);
 		if(mCommsProtocolRadio!=null){
@@ -824,6 +838,7 @@ public class Shimmer4 extends ShimmerDevice {
 		
 //		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
 			readConfigurationFromInfoMem();
+			readCalibrationDump();
 			mCommsProtocolRadio.readPressureCalibrationCoefficients();
 //		}
 //		else {
@@ -992,14 +1007,10 @@ public class Shimmer4 extends ShimmerDevice {
 	@Override
 	public void disconnect() throws DeviceException {
 		super.disconnect();
-		if(mCommsProtocolRadio!=null){
-			try {
-				mCommsProtocolRadio.disconnect();
-				mCommsProtocolRadio = null;
-			} catch (DeviceException e) {
-				throw(e);
-			}
-		}
+		clearCommsProtocolRadio();
+		
+		//Trying to get second connection working
+		setBluetoothRadioState(BT_STATE.DISCONNECTED);
 	}
 
 	public void writeConfigurationToInfoMem(byte[] shimmerInfoMemBytes) {
@@ -1027,7 +1038,7 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	public void readCalibrationDump() {
-//		mCommsProtocolRadio.readCalibrationDump();
+		mCommsProtocolRadio.readCalibrationDump();
 	}
 	
 	public void writeEnabledSensors(long enabledSensors) {

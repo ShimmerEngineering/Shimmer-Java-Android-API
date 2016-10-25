@@ -39,7 +39,7 @@ public class SerialPortCommJssc extends AbstractSerialPortComm implements Serial
 	public SerialPortCommJssc(String comPort, String uniqueId, int baudToUse) {
 		mUniqueId = uniqueId;
 		mComPort = comPort;
-		mConnectionHandle = comPort;
+		setConnectionHandle(comPort);
 		mBaudToUse = baudToUse;
         mSerialPort = new SerialPort(mComPort);
 	}
@@ -340,14 +340,12 @@ public class SerialPortCommJssc extends AbstractSerialPortComm implements Serial
 
 	@Override
 	public boolean isConnected() {
-		// TODO Auto-generated method stub
 		return mSerialPort.isOpened();
 	}
 
 	@Override
 	public boolean isDisonnected() {
-		// TODO Auto-generated method stub
-		return mSerialPort.isOpened();
+		return !mSerialPort.isOpened();
 	}
 
 	public SerialPort getSerialPort(){

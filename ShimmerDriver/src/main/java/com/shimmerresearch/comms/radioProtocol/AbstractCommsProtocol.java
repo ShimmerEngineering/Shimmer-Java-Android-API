@@ -1,6 +1,7 @@
 package com.shimmerresearch.comms.radioProtocol;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
@@ -14,13 +15,8 @@ public abstract class AbstractCommsProtocol {
 	protected int mPacketSize = 0;
 	
 	protected int mNumOfMemSetCmds;
-	protected byte[] mMemBuffer;
-	protected byte[] mCalibDumpBuffer;
-	protected int mTotalInfoMemLengthToRead = 0;
-	protected int mCurrentMemAddress = 0;
-	protected int mCurrentMemLengthToRead = 0;
-	protected int mCalibDumpSize = 0;
-
+	protected byte[] mMemBuffer = new byte[]{};
+	
 	public boolean mFirstTime=false;
 	public boolean mIamAlive = false;
 
@@ -29,7 +25,10 @@ public abstract class AbstractCommsProtocol {
 	public abstract void stopProtocol();
 	protected abstract void writeInfoMem(int startAddress, byte[] buf);
 	protected abstract void readInfoMem(int startAddress, int size);
-	
+	public abstract void readCalibrationDump();
+	public abstract void readCalibrationDump(int startAddress, int size);
+	public abstract void writeCalibrationDump(byte[] calibDump);
+
 	public abstract void readMemCommand(int command, int address, int size);
 	public abstract void writeMemCommand(int command, int address, byte[] infoMemBytes);
 	
@@ -71,6 +70,7 @@ public abstract class AbstractCommsProtocol {
 	
 	public abstract void restartTimersIfNull();
 	
+	protected HashMap<Integer, MemReadDetails> mMapOfMemReadDetails = new HashMap<Integer, MemReadDetails>();
 
 	/**When using this, it is required that the byteleveldatacomm is set using the serByteLevelDataComm
 	 * 
@@ -143,9 +143,7 @@ public abstract class AbstractCommsProtocol {
 	
 	public void readMem(int command, int address, int size, int maxMemAddress){
 //		if(this.getFirmwareVersionCode()>=6){
-//			mMemBuffer = new byte[size];
-			this.mTotalInfoMemLengthToRead = size;
-			mMemBuffer = new byte[]{};
+			mMapOfMemReadDetails.put(command, new MemReadDetails(command, address, size, maxMemAddress));
 
 			if (size > (maxMemAddress - address + 1)) {
 //				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_GET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE);
@@ -177,6 +175,51 @@ public abstract class AbstractCommsProtocol {
 			}
 //		}
 	}
+
+	protected void clearMemReadBuffers() {
+		mMapOfMemReadDetails.clear();
+		mMemBuffer = new byte[]{};
+	}
+
+	protected void clearMemReadBuffer(int command) {
+		mMapOfMemReadDetails.remove(command);
+		mMemBuffer = new byte[]{};
+	}
+
+	
+	public class MemReadDetails{
+		protected int mCommand = 0;
+//		protected byte[] mMemBuffer = new byte[]{};
+		protected int mCurrentMemAddress = 0;
+		protected int mCurrentMemLengthToRead = 0;
+		private int mTotalMemLengthToRead = 0;
+		protected int mEndMemAddress = 0;
+
+		protected int mMemAddressLimit = 0;
+		
+		public MemReadDetails(int command, int address, int size, int memAddressLimit) {
+			mCommand = command;
+			mCurrentMemAddress = address;
+//			mMemBuffer = new byte[size];
+			setTotalMemLengthToRead(size);
+			mMemAddressLimit = memAddressLimit;
+		}
+		
+		public void setTotalMemLengthToRead(int size){
+			mTotalMemLengthToRead = size;
+			updateEndAddress();
+		}
+		
+		public int getTotalMemLengthToRead(){
+			return mTotalMemLengthToRead;
+		}
+		
+		private void updateEndAddress(){
+			mEndMemAddress = mCurrentMemAddress + mTotalMemLengthToRead;
+		}
+
+	}
+
 
 	
 }

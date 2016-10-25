@@ -27,6 +27,11 @@ import com.shimmerresearch.exceptions.DeviceException;
 
 public class LiteProtocol extends AbstractCommsProtocol{
 
+	//TODO replace below with that in ShimmerLiteProtocolInstructionSet() once GRPC is run
+	public class InstructionsSetTemp{
+		private static final int UPD_CONFIG_MEMORY_COMMAND = 155;//0x9B; 
+	}
+	
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	protected int mCurrentCommand;
 	
@@ -209,7 +214,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		getListofInstructions().clear();
 		mFirstTime=true;
 
-		startThread();
+		startIoThread();
 		
 		stopTimerReadStatus();
 		stopTimerCheckForAckOrResp();
@@ -219,23 +224,25 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		readShimmerVersionNew();
 	}
 
-	private void startThread() {
-		if (mIOThread != null) { 
-			mIOThread = null;
-		}
+	@Override
+	public void stopProtocol() {
+		stopAllTimers();
+		
+		stopIoThread();
+		
+		setIsStreaming(false);
+		setIsInitialised(false);
+	}
+
+	private void startIoThread() {
+		stopIoThread();
 
 		mIOThread = new IOThread();
 		mIOThread.setName(getClass().getSimpleName()+"-"+mConnectionHandle);
 		mIOThread.start();
 	}
 
-	@Override
-	public void stopProtocol() {
-		stopAllTimers();
-		
-		setIsStreaming(false);
-		setIsInitialised(false);
-
+	private void stopIoThread() {
 		if(mIOThread!=null){
 			mIOThread.stop=true;
 			mIOThread = null;
@@ -642,7 +649,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					// the setInstructionStackLock
 					if(byteBuffer[0]==InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
 //						processFirmwareVerResponse();
-						eventNewResponse(byteBuffer[0], null);
+						eventResponseReceived(byteBuffer[0], null);
 					}
 				}
 			}
@@ -745,7 +752,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				interpretInqResponse(rxBuf);
 //				prepareAllAfterConfigRead();
 //				inquiryDone();
-				eventNewResponse(responseCommand, rxBuf);
+				eventResponseReceived(responseCommand, rxBuf);
 			}
 //			else if(responseCommand==InstructionsResponse.SAMPLING_RATE_RESPONSE_VALUE){
 //				if(!mIsStreaming) {
@@ -776,7 +783,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 
 				ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 				this.mShimmerVerObject = shimmerVerObject; // store a local copy
-				eventNewResponse(responseCommand, shimmerVerObject);
+				eventResponseReceived(responseCommand, shimmerVerObject);
 				
 				printLogDataForDebugging("FW Version Response Received. FW Code: " + shimmerVerObject.getFirmwareVersionCode());
 				printLogDataForDebugging("FW Version Response Received: " + shimmerVerObject.getFirmwareVersionParsed());
@@ -839,7 +846,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				bufferShimmerVersion = readBytes(1);
 				
 				setHardwareVersion((int)bufferShimmerVersion[0]); //Save a local copy
-				eventNewResponse(responseCommand, (int)bufferShimmerVersion[0]);
+				eventResponseReceived(responseCommand, (int)bufferShimmerVersion[0]);
 
 //				if(mShimmerVersion==HW_ID.SHIMMER_2R){
 //					initializeShimmer2R();
@@ -925,7 +932,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			else if(responseCommand==InstructionsResponse.BLINK_LED_RESPONSE_VALUE){
 				byte[] byteled = readBytes(1);
 //				mCurrentLEDStatus = byteled[0]&0xFF;
-				eventNewResponse(responseCommand, byteled[0]&0xFF);
+				eventResponseReceived(responseCommand, byteled[0]&0xFF);
 			}
 //			else if(responseCommand==InstructionsResponse.BUFFER_SIZE_RESPONSE_VALUE){
 //				byte[] byteled = readBytes(1);
@@ -954,7 +961,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
 				mPressureCalRawParams[0] = (byte) responseCommand;
 //				retrievePressureCalibrationParametersFromPacket(pressureResoRes,responseCommand);
-				eventNewResponse(responseCommand, pressureResoRes);
+				eventResponseReceived(responseCommand, pressureResoRes);
 			}
 //			else if(responseCommand==InstructionsResponse.EXG_REGS_RESPONSE_VALUE){
 //				delayForBtResponse(300); // Wait to ensure the packet has been fully received
@@ -975,38 +982,38 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
 				byte[] expBoardArraySplit = Arrays.copyOfRange(expBoardArray, 1, 4);
 //				setExpansionBoardDetails(new ExpansionBoardDetails(expBoardArraySplit));
-				eventNewResponse(responseCommand, new ExpansionBoardDetails(expBoardArraySplit));
+				eventResponseReceived(responseCommand, new ExpansionBoardDetails(expBoardArraySplit));
 			}
 			else if(responseCommand==InstructionsResponse.BAUD_RATE_RESPONSE_VALUE){
 				byte[] bufferBaud = readBytes(1);
 				int mBluetoothBaudRate=bufferBaud[0] & 0xFF;
-				eventNewResponse(responseCommand, mBluetoothBaudRate);
+				eventResponseReceived(responseCommand, mBluetoothBaudRate);
 			}
 			else if(responseCommand==InstructionsResponse.TRIAL_CONFIG_RESPONSE_VALUE){
 				rxBuf = readBytes(3);
 //				fillTrialShimmer3(data);
-				eventNewResponse(responseCommand, rxBuf);
+				eventResponseReceived(responseCommand, rxBuf);
 			}
 			else if(responseCommand==InstructionsResponse.CENTER_RESPONSE_VALUE){
 				length = readBytes(1);
 				rxBuf = readBytes(length[0]);
 				String center = new String(rxBuf);
 //				setCenter(center);
-				eventNewResponse(responseCommand, center);
+				eventResponseReceived(responseCommand, center);
 			}
 			else if(responseCommand==InstructionsResponse.SHIMMERNAME_RESPONSE_VALUE){
 				length = readBytes(1);
 				rxBuf = readBytes(length[0]);
 				String name = new String(rxBuf);
 //				setShimmerUserAssignedName(name);
-				eventNewResponse(responseCommand, name);
+				eventResponseReceived(responseCommand, name);
 			}
 			else if(responseCommand==InstructionsResponse.EXPID_RESPONSE_VALUE){
 				length = readBytes(1);
 				rxBuf = readBytes(length[0]);
 				String expId = new String(rxBuf);
 //				setTrialName(expId);
-				eventNewResponse(responseCommand, expId);
+				eventResponseReceived(responseCommand, expId);
 			}
 			else if(responseCommand==InstructionsResponse.CONFIGTIME_RESPONSE_VALUE){
 				length = readBytes(1);
@@ -1018,7 +1025,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				else {
 //					setConfigTime(Long.parseLong(time));	
 //				}
-				eventNewResponse(responseCommand, time);
+				eventResponseReceived(responseCommand, time);
 			}
 			else if(responseCommand==InstructionsResponse.RWC_RESPONSE_VALUE){
 				rxBuf = readBytes(8);
@@ -1029,7 +1036,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				long responseTime = (long)(((double)(ByteBuffer.wrap(rxBuf).getLong())/32.768)); // / 1000
 				
 //				setLastReadRealTimeClockValue(responseTime);
-				eventNewResponse(responseCommand, responseTime);
+				eventResponseReceived(responseCommand, responseTime);
 			}
 			else if(responseCommand==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){
 				processInstreamResponse();
@@ -1069,6 +1076,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				setInternalExpPower((int)(responseData[0]&0xFF));
 //			}
 			else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE){
+				MemReadDetails memReadDetails = mMapOfMemReadDetails.get(InstructionsGet.GET_INFOMEM_COMMAND_VALUE);
+				
 				// Get data length to read
 				rxBuf = readBytes(1);
 				int lengthToRead = (int)(rxBuf[0]&0xFF);
@@ -1080,13 +1089,19 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				mMemBuffer = ArrayUtils.addAll(mMemBuffer, rxBuf);
 
 				//Update configuration when all bytes received.
-				if((mCurrentMemAddress+mCurrentMemLengthToRead)==mTotalInfoMemLengthToRead){
+				int currentEndAddress = memReadDetails.mCurrentMemAddress+memReadDetails.mCurrentMemLengthToRead; 
+//				if(currentEndAddress==memReadDetails.getTotalMemLengthToRead()){
 //				if((mCurrentMemAddress+mCurrentMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
+//				if(currentEndAddress>=memReadDetails.getTotalMemLengthToRead()){
+				if(currentEndAddress>=memReadDetails.mEndMemAddress){
 //					setShimmerInfoMemBytes(mInfoMemBuffer);
-					eventNewResponse(responseCommand, mMemBuffer);
+					eventResponseReceived(responseCommand, mMemBuffer);
+					clearMemReadBuffer(InstructionsGet.GET_INFOMEM_COMMAND_VALUE);
 				}
 			}
 			else if(responseCommand==InstructionsResponse.RSP_CALIB_DUMP_COMMAND_VALUE) {
+				MemReadDetails memReadDetails = mMapOfMemReadDetails.get(InstructionsGet.GET_CALIB_DUMP_COMMAND_VALUE);
+
 				rxBuf = readBytes(3);
 				int currentMemLength = rxBuf[0]&0xFF;
 				//Memory is currently read sequentially so no need to use the below at the moment.
@@ -1096,26 +1111,30 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				byte[] rxBufFull = rxBuf;
 				
 				rxBuf = readBytes(currentMemLength);
-				mCalibDumpBuffer = ArrayUtils.addAll(mCalibDumpBuffer, rxBuf);
+				mMemBuffer = ArrayUtils.addAll(mMemBuffer, rxBuf);
 
 				//For debugging
 				rxBufFull = ArrayUtils.addAll(rxBufFull, rxBuf);
 				printLogDataForDebugging("CALIB_DUMP Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBufFull));
 				
-				if(mCurrentMemAddress==0){
+				if(memReadDetails.mCurrentMemAddress==0){
 					//First read
-					mCalibDumpSize = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
+					memReadDetails.setTotalMemLengthToRead((rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF));
 					
-					if(mCalibDumpSize>mCurrentMemLengthToRead){
-						readCalibrationDump(mCurrentMemLengthToRead, mCalibDumpSize-mCurrentMemLengthToRead);
+					if(memReadDetails.getTotalMemLengthToRead()>memReadDetails.mCurrentMemLengthToRead){
+						int nextAddress = memReadDetails.mCurrentMemLengthToRead;
+						int remainingBytes = memReadDetails.getTotalMemLengthToRead()-memReadDetails.mCurrentMemLengthToRead;
+						readCalibrationDump(nextAddress, remainingBytes);
 						rePioritiseReadCalibDumpInstructions();
 					}
 				}
 				
-				if((mCurrentMemAddress+mCurrentMemLengthToRead)>=mCalibDumpSize){
+				int currentEndAddress = memReadDetails.mCurrentMemAddress+memReadDetails.mCurrentMemLengthToRead; 
+//				if(currentEndAddress>=memReadDetails.getTotalMemLengthToRead()){
+				if(currentEndAddress>=memReadDetails.mEndMemAddress){
 //					parseCalibByteDump(mCalibDumpBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
-					eventNewResponse(responseCommand, mCalibDumpBuffer);
-					mCalibDumpBuffer = new byte[]{};
+					eventResponseReceived(responseCommand, mMemBuffer);
+					clearMemReadBuffer(InstructionsGet.GET_CALIB_DUMP_COMMAND_VALUE);
 				}
 				
 			}
@@ -1154,8 +1173,11 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			}
 			else if(currentCommand==InstructionsGet.GET_INFOMEM_COMMAND_VALUE || currentCommand==InstructionsGet.GET_CALIB_DUMP_COMMAND_VALUE){
 				// store current address/InfoMem segment
-				mCurrentMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
-				mCurrentMemLengthToRead = (insBytes[1]&0xFF);
+				MemReadDetails memReadDetails = mMapOfMemReadDetails.get(currentCommand);
+				if(memReadDetails!=null){
+					memReadDetails.mCurrentMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
+					memReadDetails.mCurrentMemLengthToRead = (insBytes[1]&0xFF);
+				}
 			}
 		}
 		else{
@@ -1185,7 +1207,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 
 	private boolean bytesAvailableToBeRead() throws DeviceException {
-		return mCommsInterface.bytesAvailableToBeRead();
+		if(mCommsInterface.isConnected()){
+			return mCommsInterface.bytesAvailableToBeRead();
+		}
+		return false;
 	}
 
 	private void writeBytes(byte[] insBytes) throws DeviceException {
@@ -1229,8 +1254,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		mProtocolListener.eventNewResponse(response);
 	}
 	
-	private void eventNewResponse(int responseCommand, Object parsedResponse) {
-		mProtocolListener.eventNewResponse(responseCommand, parsedResponse);
+	private void eventResponseReceived(int responseCommand, Object parsedResponse) {
+		mProtocolListener.eventResponseReceived(responseCommand, parsedResponse);
 	}
 
 	@Deprecated
@@ -1353,10 +1378,17 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					
 					//Sleep for Xsecs to allow Shimmer to process new configuration
 					mNumOfMemSetCmds -= 1;
-					if(mNumOfMemSetCmds==0){
-						delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
+					if(!mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
+						if(mNumOfMemSetCmds==0){
+							delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
+						}
+						else {
+							delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
+						}
 					}
-					else {
+				}
+				else if(currentCommand==InstructionsSetTemp.UPD_CONFIG_MEMORY_COMMAND){
+					if(mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
 						delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
 					}
 				}
@@ -1462,14 +1494,14 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				
 				if(!isShimmerBluetoothApproach){
 					bufferDirectoryName = ArrayUtils.addAll(responseData, bufferDirectoryName);
-					eventNewResponse(bufferDirectoryName);
+					eventResponseReceived(inStreamResponseCommand, bufferDirectoryName);
 				}
 			}
 			else if(inStreamResponseCommand==InstructionsResponse.STATUS_RESPONSE_VALUE){
 				if(isShimmerBluetoothApproach){
 					byte[] responseData = readBytes(1);
 					parseStatusByte(responseData[0]);
-//					eventNewResponse(inStreamResponseCommand, responseData[0]);
+//					eventResponseReceived(inStreamResponseCommand, responseData[0]);
 				}
 				
 				if(!isSensing()){
@@ -1489,12 +1521,12 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				if(isShimmerBluetoothApproach){
 					ShimmerBattStatusDetails battStatusDetails = new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]);
 //					setBattStatusDetails(battStatusDetails);
-					eventNewResponse(inStreamResponseCommand, battStatusDetails);
+					eventResponseReceived(inStreamResponseCommand, battStatusDetails);
 					printLogDataForDebugging("Batt data " + battStatusDetails.getBattVoltageParsed());
 				}
 				else{
 					responseData = ArrayUtils.addAll(inStreamResponseCommandArray, responseData);
-					eventNewResponse(responseData);
+					eventResponseReceived(inStreamResponseCommand, responseData);
 				}
 			}
 
@@ -1572,7 +1604,15 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 
-	private void readCalibrationDump(int address, int size){
+	@Override
+	public void readCalibrationDump(){ //This starts off the read process, request the first block = 128 bytes
+		if(this.getFirmwareVersionCode()>=7){
+			readMem(InstructionsGet.GET_CALIB_DUMP_COMMAND_VALUE, 0, 128, MAX_CALIB_DUMP_MAX); //some max number
+		}
+	}
+
+	@Override
+	public void readCalibrationDump(int address, int size){
 		if(this.getFirmwareVersionCode()>=7){
 			readMem(InstructionsGet.GET_CALIB_DUMP_COMMAND_VALUE, address, size, MAX_CALIB_DUMP_MAX); //some max number
 		}
@@ -1596,11 +1636,14 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 
-
+	//TODO add support for Shimmer4
+	@Override
 	public void writeCalibrationDump(byte[] calibDump){
 		if(this.getFirmwareVersionCode()>=7){
 			writeMem(InstructionsSet.SET_CALIB_DUMP_COMMAND_VALUE, 0, calibDump, MAX_CALIB_DUMP_MAX);
-			readCalibrationDump(0, calibDump.length);
+			writeUpdateConfigMemory();
+//			readCalibrationDump(0, calibDump.length);
+			readCalibrationDump();
 		}
 	}
 	
@@ -1612,6 +1655,13 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	@Override
 	public void writeInfoMem(int startAddress, byte[] buf) {
 		writeMem(InstructionsSet.SET_INFOMEM_COMMAND_VALUE, startAddress, buf, 512); //some max number
+		writeUpdateConfigMemory();
+	}
+
+	private void writeUpdateConfigMemory() {
+		if(mShimmerVerObject.isCalibDumpSupported()){
+			writeInstruction(InstructionsSetTemp.UPD_CONFIG_MEMORY_COMMAND);
+		}
 	}
 
 	@Override
@@ -2479,6 +2529,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			mProtocolListener.eventSetHaveAttemptedToRead(mHaveAttemptedToReadConfig);
 		}
 	}
+
 
 	//***********************************
 	// Copied from ShimmerDevice end

@@ -5,12 +5,17 @@ import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exceptions.DeviceException;
 
-public abstract class ShimmerRadioInitializer {
+public class ShimmerRadioInitializer {
 
 	protected AbstractSerialPortComm serialCommPort;
-	public abstract AbstractSerialPortComm getSerialCommPort();
 	
-	
+	public ShimmerRadioInitializer(){
+	}
+
+	public ShimmerRadioInitializer(AbstractSerialPortComm serialCommPort){
+		this.serialCommPort = serialCommPort;
+	}
+
 	public ShimmerVerObject getShimmerVerObject(){
 		try {
 			int hardwareVersion = getHardwareVersion();
@@ -64,4 +69,14 @@ public abstract class ShimmerRadioInitializer {
 		
 		return shimmerVersion;
 	}
+	
+	public AbstractSerialPortComm getSerialCommPort() {
+		return this.serialCommPort;
+	}
+
+
+	public void setSerialCommPort(AbstractSerialPortComm serialPortComm) {
+		this.serialCommPort = serialPortComm;
+	}
+
 }

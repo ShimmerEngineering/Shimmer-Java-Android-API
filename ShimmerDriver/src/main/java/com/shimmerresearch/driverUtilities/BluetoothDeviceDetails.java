@@ -3,7 +3,7 @@ package com.shimmerresearch.driverUtilities;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 
 
-public class ComPortDetails {
+public class BluetoothDeviceDetails {
 
 	public String mComPort = "";
 	public String mComPortDescription = "";
@@ -14,12 +14,12 @@ public class ComPortDetails {
 	
 	public DEVICE_TYPE mDeviceTypeDetected = DEVICE_TYPE.UNKOWN;
 
-	 public ComPortDetails(String comPort, String comPortDescription){
+	 public BluetoothDeviceDetails(String comPort, String comPortDescription){
 		 mComPort = comPort;
 		 mComPortDescription = comPortDescription;
 	 }
 	 
-	 public ComPortDetails(String comPort, String macId, String friendlyName){
+	 public BluetoothDeviceDetails(String comPort, String macId, String friendlyName){
 		 mComPort = comPort;
 		 mFriendlyName = friendlyName;
 		 setMacId(macId);
