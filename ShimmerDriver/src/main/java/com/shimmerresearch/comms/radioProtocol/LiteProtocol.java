@@ -1494,7 +1494,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				
 				if(!isShimmerBluetoothApproach){
 					bufferDirectoryName = ArrayUtils.addAll(responseData, bufferDirectoryName);
-					eventResponseReceived(inStreamResponseCommand, bufferDirectoryName);
+					eventNewResponse(bufferDirectoryName);
+				}
+				else{
+					eventResponseReceived(inStreamResponseCommand, tempDirectory);
 				}
 			}
 			else if(inStreamResponseCommand==InstructionsResponse.STATUS_RESPONSE_VALUE){
@@ -1526,7 +1529,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				}
 				else{
 					responseData = ArrayUtils.addAll(inStreamResponseCommandArray, responseData);
-					eventResponseReceived(inStreamResponseCommand, responseData);
+					eventNewResponse(responseData);
 				}
 			}
 

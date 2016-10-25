@@ -724,7 +724,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void setIsConnected(boolean state) {
 		mIsConnected = state;
-		consolePrintErrLn("mIsConnected="+mIsConnected);
+//		consolePrintErrLn("mIsConnected="+mIsConnected);
 	}
 
 	/**
