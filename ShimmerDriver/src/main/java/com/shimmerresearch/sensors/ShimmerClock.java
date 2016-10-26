@@ -133,10 +133,8 @@ public class ShimmerClock extends AbstractSensor {
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL,
 					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER
 					
-//					Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
+//					ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 //					ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE
-//					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
-//					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_TRIAL
 					));
 	{
 		sensorShimmerPacketReception.mIsApiSensor = true;
@@ -323,15 +321,15 @@ public class ShimmerClock extends AbstractSensor {
 		else if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			if(mShimmerVerObject.getFirmwareVersionCode()>=6){
 				channelMapRef.put(ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
-				channelMapRef.put(ObjectClusterSensorName.TIMESTAMP_DIFFERENCE, ShimmerClock.channelShimmerTsDiffernce);
 				mTimeStampPacketRawMaxValue = (int) Math.pow(2, 24);
-
 			}
 			else{
 				channelMapRef.put(ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
 				mTimeStampPacketRawMaxValue = (int) Math.pow(2, 16);
 			}
-			
+
+			channelMapRef.put(ObjectClusterSensorName.TIMESTAMP_DIFFERENCE, ShimmerClock.channelShimmerTsDiffernce);
+
 			channelMapRef.put(ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
 			channelMapRef.put(ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
 			

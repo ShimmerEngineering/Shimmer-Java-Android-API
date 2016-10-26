@@ -79,8 +79,8 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -92,12 +92,12 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
+import com.shimmerresearch.comms.radioProtocol.MemReadDetails;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.FormatCluster;
-import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
@@ -124,14 +124,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
-	
-	/**
-	 * LogAndStream will try to recreate the SD config. file for each block of
-	 * InfoMem that is written - need to give it time to do so.
-	 */
-	private static final int DELAY_BETWEEN_INFOMEM_WRITES = 100;
-	/** Delay to allow LogAndStream to create SD config. file and reinitialise */
-	private static final int DELAY_AFTER_INFOMEM_WRITE = 500;
 	
 	public enum BT_STATE{
 		DISCONNECTED("Disconnected"),
@@ -179,6 +171,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected int numBytesToReadFromExpBoard=0;
 	
 	private boolean mUseInfoMemConfigMethod = false;
+	private boolean mUseLegacyDelayToDelayForResponse = false;
 
 	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
 	public List<Long> mListofPCTimeStamps = new ArrayList<Long>();
@@ -221,21 +214,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected long tempEnabledSensors;											// This stores the enabled sensors
 	private int mTempChipID;
 	
-	private int mCurrentMemAddress = 0;
-	private int mCurrentMemLengthToRead = 0;
-	private int mCalibDumpSize = 0;
 	private byte[] mMemBuffer;
-	private byte[] mCalibDumpBuffer;
+	protected HashMap<Byte, MemReadDetails> mMapOfMemReadDetails = new HashMap<Byte, MemReadDetails>();
+
 
 	protected boolean mSync=true;												// Variable to keep track of sync
 	protected boolean mSetupEXG = false;
 	private byte[] cmdcalibrationParameters = new byte [22];  
 	
 	//startregion --------- TIMERS ---------
-	private int mReadStatusPeriod=5000;
-	private int mReadBattStatusPeriod=600000;	// Batt status is updated every 10 mins 
-	private int mCheckAlivePeriod=2000;
-	
 	transient protected Timer mTimerCheckForAckOrResp;								// Timer variable used when waiting for an ack or response packet
 	transient protected Timer mTimerCheckAlive;
 	transient protected Timer mTimerReadStatus;
@@ -906,8 +893,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		else if(currentCommand==GET_INFOMEM_COMMAND || currentCommand==GET_CALIB_DUMP_COMMAND){
 			// store current address/InfoMem segment
-			mCurrentMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
-			mCurrentMemLengthToRead = (insBytes[1]&0xFF);
+			MemReadDetails memReadDetails = mMapOfMemReadDetails.get(currentCommand);
+			if(memReadDetails!=null){
+				memReadDetails.mCurrentMemAddress = ((insBytes[3]&0xFF)<<8)+(insBytes[2]&0xFF);
+				memReadDetails.mCurrentMemLengthToRead = (insBytes[1]&0xFF);
+			}
 		}
 	}
 	
@@ -940,7 +930,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			byte[] responseData = readBytes(3); 
 			ShimmerBattStatusDetails battStatusDetails = new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]);
 			setBattStatusDetails(battStatusDetails);
-			consolePrintLn("Batt data " + getBattVoltage());
+			printLogDataForDebugging("Battery Status:"
+					+ "\tVoltage=" + battStatusDetails.getBattVoltageParsed()
+					+ "\tCharging status=" + battStatusDetails.getChargingStatusParsed()
+					+ "\tBatt %=" + battStatusDetails.getEstimatedChargePercentageParsed());
 		}
 	}
 
@@ -1432,11 +1425,22 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //			System.arraycopy(rxBuf, 0, mMemBuffer, mCurrentMemAddress, lengthToRead);
 			mMemBuffer = ArrayUtils.addAll(mMemBuffer, rxBuf);
 			
-			//Update configuration when all bytes received.
-			if((mCurrentMemAddress+mCurrentMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
-				setShimmerInfoMemBytes(mMemBuffer);
-				mMemBuffer = new byte[]{};
+//			//Update configuration when all bytes received.
+//			if((mCurrentMemAddress+mCurrentMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
+//				setShimmerInfoMemBytes(mMemBuffer);
+//				mMemBuffer = new byte[]{};
+//			}
+			
+			MemReadDetails memReadDetails = mMapOfMemReadDetails.get(GET_INFOMEM_COMMAND);
+			if(memReadDetails!=null){
+				int currentEndAddress = memReadDetails.mCurrentMemAddress+memReadDetails.mCurrentMemLengthToRead; 
+				//Update configuration when all bytes received.
+				if(currentEndAddress>=memReadDetails.mEndMemAddress){
+					setShimmerInfoMemBytes(mMemBuffer);
+					clearMemReadBuffer(GET_INFOMEM_COMMAND);
+				}
 			}
+
 		}
 		else if(responseCommand==RSP_CALIB_DUMP_COMMAND) {
 			byte[] rxBuf = readBytes(3);
@@ -1444,31 +1448,59 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//Memory is currently read sequentially so no need to use the below at the moment.
 			int currentMemOffset = ((rxBuf[2]&0xFF)<<8) | (rxBuf[1]&0xFF);
 			
-			//For debugging
-			byte[] rxBufFull = rxBuf;
+//			rxBuf = readBytes(currentMemLength);
+//			mCalibDumpBuffer = ArrayUtils.addAll(mCalibDumpBuffer, rxBuf);
+//
+//			//For debugging
+//			rxBufFull = ArrayUtils.addAll(rxBufFull, rxBuf);
+//			printLogDataForDebugging("CALIB_DUMP Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBufFull));
+//			
+//			if(mCurrentMemAddress==0){
+//				//First read
+//				mCalibDumpSize = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
+//				
+//				if(mCalibDumpSize>mCurrentMemLengthToRead){
+//					readCalibrationDump(mCurrentMemLengthToRead, mCalibDumpSize-mCurrentMemLengthToRead);
+//					rePioritiseReadCalibDumpInstructions();
+//				}
+//			}
+//			
+//			if((mCurrentMemAddress+mCurrentMemLengthToRead)>=mCalibDumpSize){
+//				parseCalibByteDump(mCalibDumpBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
+//				mCalibDumpBuffer = new byte[]{};
+//			}
 			
 			rxBuf = readBytes(currentMemLength);
-			mCalibDumpBuffer = ArrayUtils.addAll(mCalibDumpBuffer, rxBuf);
+			mMemBuffer = ArrayUtils.addAll(mMemBuffer, rxBuf);
 
 			//For debugging
-			rxBufFull = ArrayUtils.addAll(rxBufFull, rxBuf);
-			printLogDataForDebugging("CALIB_DUMP Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBufFull));
+			printLogDataForDebugging("CALIB_DUMP Received:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
+			printLogDataForDebugging("CALIB_DUMP concat:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mMemBuffer));
 			
-			if(mCurrentMemAddress==0){
-				//First read
-				mCalibDumpSize = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
-				
-				if(mCalibDumpSize>mCurrentMemLengthToRead){
-					readCalibrationDump(mCurrentMemLengthToRead, mCalibDumpSize-mCurrentMemLengthToRead);
-					rePioritiseReadCalibDumpInstructions();
+			MemReadDetails memReadDetails = mMapOfMemReadDetails.get(GET_CALIB_DUMP_COMMAND);
+			if(memReadDetails!=null){
+				if(memReadDetails.mCurrentMemAddress==0){
+					//First read
+					int totalCalibLength = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
+					 // +2 because calib dump length bytes are not included
+					memReadDetails.setTotalMemLengthToRead(totalCalibLength+2); 
+					
+					if(memReadDetails.getTotalMemLengthToRead()>memReadDetails.mCurrentMemLengthToRead){
+						int nextAddress = memReadDetails.mCurrentMemLengthToRead;
+						int remainingBytes = memReadDetails.getTotalMemLengthToRead()-memReadDetails.mCurrentMemLengthToRead;
+						readCalibrationDump(nextAddress, remainingBytes);
+						rePioritiseReadCalibDumpInstructions();
+					}
+				}
+			
+				int currentEndAddress = memReadDetails.mCurrentMemAddress+memReadDetails.mCurrentMemLengthToRead; 
+				//Update calibration dump when all bytes received.
+				if(currentEndAddress>=memReadDetails.mEndMemAddress){
+					parseCalibByteDump(mMemBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
+					clearMemReadBuffer(GET_CALIB_DUMP_COMMAND);
 				}
 			}
-			
-			if((mCurrentMemAddress+mCurrentMemLengthToRead)>=mCalibDumpSize){
-				parseCalibByteDump(mCalibDumpBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
-				mCalibDumpBuffer = new byte[]{};
-			}
-			
+
 		}
 		else {
 			consolePrintLn("Unhandled BT response: " + responseCommand);
@@ -1853,11 +1885,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					
 					//Sleep for Xsecs to allow Shimmer to process new configuration
 					mNumOfMemSetCmds -= 1;
-					if(mNumOfMemSetCmds==0){
-						delayForBtResponse(DELAY_BETWEEN_INFOMEM_WRITES);
+					if(!mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
+						if(mNumOfMemSetCmds==0){
+							threadSleep(LiteProtocol.DELAY_BETWEEN_INFOMEM_WRITES);
+						}
+						else {
+							threadSleep(LiteProtocol.DELAY_AFTER_INFOMEM_WRITE);
+						}
 					}
-					else {
-						delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
+				}
+				else if(currentCommand==InstructionsSet.UPD_CONFIG_MEMORY_COMMAND_VALUE){
+					if(mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
+						threadSleep(LiteProtocol.DELAY_AFTER_INFOMEM_WRITE);
 					}
 				}
 				else if(currentCommand==SET_CRC_COMMAND){
@@ -1880,7 +1919,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 */
 	private void delayForBtResponse(long millis){
-		threadSleep(millis);
+		if(mUseLegacyDelayToDelayForResponse)
+			threadSleep(millis);
 	}
 	
 	/**get accel
@@ -2466,7 +2506,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mTimerReadStatus.purge();
 				mTimerReadStatus = null;
 			}
-			mTimerReadStatus.schedule(new readStatusTask(), mReadStatusPeriod, mReadStatusPeriod);
+			mTimerReadStatus.schedule(new readStatusTask(), LiteProtocol.TIMER_READ_STATUS_PERIOD, LiteProtocol.TIMER_READ_STATUS_PERIOD);
 		}
 	}
 	
@@ -2500,9 +2540,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 			//dont really need this for log and stream since we already have the get status timer
 			if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // check if Shimmer is using LogAndStream firmware
-				mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
+				mTimerCheckAlive.schedule(new checkIfAliveTask(), LiteProtocol.TIMER_CHECK_ALIVE_PERIOD, LiteProtocol.TIMER_CHECK_ALIVE_PERIOD);
 			} else if (getFirmwareIdentifier()==FW_ID.BTSTREAM) {
-				mTimerCheckAlive.schedule(new checkIfAliveTask(), mCheckAlivePeriod, mCheckAlivePeriod);
+				mTimerCheckAlive.schedule(new checkIfAliveTask(), LiteProtocol.TIMER_CHECK_ALIVE_PERIOD, LiteProtocol.TIMER_CHECK_ALIVE_PERIOD);
 			}
 		}
 	}
@@ -2562,7 +2602,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if(mTimerReadBattStatus==null){ 
 				mTimerReadBattStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerBattStatus");
 			}
-			mTimerReadBattStatus.schedule(new readBattStatusTask(), mReadBattStatusPeriod, mReadBattStatusPeriod);
+			mTimerReadBattStatus.schedule(new readBattStatusTask(), LiteProtocol.TIMER_READ_BATT_STATUS_PERIOD, LiteProtocol.TIMER_READ_BATT_STATUS_PERIOD);
 		}
 	}
 	
@@ -3573,8 +3613,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
     
 	public void readCalibrationDump(){
 		if(this.getFirmwareVersionCode()>=7){
-			mCalibDumpSize = 0;
-			mCalibDumpBuffer = new byte[]{};
 			readCalibrationDump(0, 128);
 		}
 	}
@@ -3592,7 +3630,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		Iterator<byte[]> iterator = mListofInstructions.iterator();
 		while(iterator.hasNext()){
 			byte[] instruction = iterator.next();
-			if(instruction[0]==GET_CALIB_DUMP_COMMAND){
+			if(instruction[0]==(byte) GET_CALIB_DUMP_COMMAND){
 				listOfInstructions.add(instruction);
 				iterator.remove();
 			}
@@ -3627,10 +3665,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readMem(GET_INFOMEM_COMMAND, address, size, maxMemAddress);
 	}
 
-	public void readMem(int command, int address, int size, int maxMemAddress){
+	public void readMem(byte command, int address, int size, int maxMemAddress){
 		if(this.getFirmwareVersionCode()>=6){
-//			mMemBuffer = new byte[size];
-			mMemBuffer = new byte[]{};
+			mMapOfMemReadDetails.put(command, new MemReadDetails(command, address, size, maxMemAddress));
 
 			if (size > (maxMemAddress - address + 1)) {
 //				DockException de = new DockException(mDockID,mSlotNumber,ErrorCodesShimmerUart.SHIMMERUART_CMD_ERR_INFOMEM_GET ,ErrorCodesShimmerUart.SHIMMERUART_INFOMEM_READ_REQEST_EXCEEDS_INFO_RANGE);
@@ -3652,7 +3689,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 
 					byte[] rxBuf = new byte[] {};
-					readMemBlock(command, currentStartAddr, currentPacketNumBytes);
+					readMemCommand(command, currentStartAddr, currentPacketNumBytes);
 					
 					currentBytePointer += currentPacketNumBytes;
 					numBytesRemaining -= currentPacketNumBytes;
@@ -3663,9 +3700,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	private void readMemBlock(int command, int currentStartAddr, int currentPacketNumBytes){
-		readMemCommand(command, currentStartAddr, currentPacketNumBytes);
+	protected void clearMemReadBuffers() {
+		mMapOfMemReadDetails.clear();
+		mMemBuffer = new byte[]{};
 	}
+
+	protected void clearMemReadBuffer(int command) {
+		mMapOfMemReadDetails.remove(command);
+		mMemBuffer = new byte[]{};
+	}
+
+//	private void readMemBlock(int command, int currentStartAddr, int currentPacketNumBytes){
+//		readMemCommand(command, currentStartAddr, currentPacketNumBytes);
+//	}
 
 	
 	public void readMemCommand(int command, int address, int size) {

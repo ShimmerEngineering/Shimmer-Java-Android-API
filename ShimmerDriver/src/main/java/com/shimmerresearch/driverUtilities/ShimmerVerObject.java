@@ -375,7 +375,9 @@ public class ShimmerVerObject implements Serializable {
 	}
 
 	public boolean isBtMemoryUpdateCommandSupported() {
-		return isCalibDumpSupported(this);
+//		return isCalibDumpSupported(this);
+		//Not sure which version of LogAndStream is supported here
+		return isShimmerGen4();
 	}
 
 	public boolean isCalibDumpSupported() {

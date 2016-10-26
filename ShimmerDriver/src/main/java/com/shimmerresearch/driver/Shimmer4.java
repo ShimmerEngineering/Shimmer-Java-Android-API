@@ -39,6 +39,7 @@ import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.ShimmerClock.GuiLabelSensors;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.ShimmerClock;
@@ -503,8 +504,8 @@ public class Shimmer4 extends ShimmerDevice {
 				@Override
 				public void eventResponseReceived(int responseCommand, Object parsedResponse) {
 					if(responseCommand==InstructionsResponse.INQUIRY_RESPONSE_VALUE){ 
-						interpretInqResponse((byte[])parsedResponse);
-						prepareAllAfterConfigRead();
+//						interpretInqResponse((byte[])parsedResponse);
+//						prepareAllAfterConfigRead();
 						inquiryDone();
 					}
 					else if(responseCommand==InstructionsResponse.GET_SHIMMER_VERSION_RESPONSE_VALUE){ 
@@ -543,6 +544,7 @@ public class Shimmer4 extends ShimmerDevice {
 					
 					else if(responseCommand==InstructionsResponse.STATUS_RESPONSE_VALUE){ 
 						consolePrintLn("STATUS RESPONSE RECEIVED");
+						//Handled in LiteProtocol
 	//					parseStatusByte((byte)parsedResponse);
 					}
 					else if(responseCommand==InstructionsResponse.VBATT_RESPONSE_VALUE){ 
@@ -835,11 +837,18 @@ public class Shimmer4 extends ShimmerDevice {
 			operationPrepare();
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
-		
+
+		mCommsProtocolRadio.readExpansionBoardID();
+		mCommsProtocolRadio.readLEDCommand();
+
 //		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
 			readConfigurationFromInfoMem();
 			readCalibrationDump();
-			mCommsProtocolRadio.readPressureCalibrationCoefficients();
+			
+			//TODO improve below by putting into sensor classes
+			if(mMapOfSensorClasses.containsKey(SENSORS.BMP180)){
+				mCommsProtocolRadio.readPressureCalibrationCoefficients();
+			}
 //		}
 //		else {
 //			readSamplingRate();
@@ -862,8 +871,6 @@ public class Shimmer4 extends ShimmerDevice {
 //			}
 //		}
 		
-		mCommsProtocolRadio.readExpansionBoardID();
-		mCommsProtocolRadio.readLEDCommand();
 
 		if((isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2))
 				||(isThisVerCompatibleWith(HW_ID.SHIMMER_4_SDK, FW_ID.SHIMMER4_SDK_STOCK, 0, 0, 1))){

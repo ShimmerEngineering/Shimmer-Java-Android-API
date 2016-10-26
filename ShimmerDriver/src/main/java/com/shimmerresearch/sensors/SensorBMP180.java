@@ -440,7 +440,6 @@ public class SensorBMP180 extends AbstractSensor {
 				retrievePressureCalibrationParametersFromPacket((byte[])parsedResponse, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 				return true;
 			}
-
 		}
 		return false;
 	}
