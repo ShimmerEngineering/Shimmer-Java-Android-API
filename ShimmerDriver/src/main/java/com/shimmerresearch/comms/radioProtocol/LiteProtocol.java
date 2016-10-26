@@ -28,9 +28,9 @@ import com.shimmerresearch.exceptions.DeviceException;
 public class LiteProtocol extends AbstractCommsProtocol{
 
 	//TODO replace below with that in ShimmerLiteProtocolInstructionSet() once GRPC is run
-	public class InstructionsSetTemp{
-		private static final int UPD_CONFIG_MEMORY_COMMAND = 155;//0x9B; 
-	}
+//	public class InstructionsSetTemp{
+//		private static final int UPD_CONFIG_MEMORY_COMMAND = 155;//0x9B; 
+//	}
 	
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	protected int mCurrentCommand;
@@ -1387,7 +1387,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 						}
 					}
 				}
-				else if(currentCommand==InstructionsSetTemp.UPD_CONFIG_MEMORY_COMMAND){
+				else if(currentCommand==InstructionsSet.UPD_CONFIG_MEMORY_COMMAND_VALUE){
 					if(mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
 						delayForBtResponse(DELAY_AFTER_INFOMEM_WRITE);
 					}
@@ -1663,7 +1663,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 
 	private void writeUpdateConfigMemory() {
 		if(mShimmerVerObject.isCalibDumpSupported()){
-			writeInstruction(InstructionsSetTemp.UPD_CONFIG_MEMORY_COMMAND);
+			writeInstruction(InstructionsSet.UPD_CONFIG_MEMORY_COMMAND_VALUE);
 		}
 	}
 
