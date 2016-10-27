@@ -276,7 +276,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 
 	@Override
-	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
 		
 		InfoMemLayoutShimmerGq802154 infoMemLayout = new InfoMemLayoutShimmerGq802154(
 				getFirmwareIdentifier(), 
@@ -373,7 +373,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 
 	@Override
-	public void infoMemByteArrayParse(byte[] infoMemBytes) {
+	public void configBytesParse(byte[] infoMemBytes) {
 		String shimmerName = "";
 		mInfoMemBytesOriginal = infoMemBytes;
 
@@ -623,7 +623,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	}
 	
 	@Override
-	public void createInfoMemLayout() {
+	public void createConfigBytesLayout() {
 		mInfoMemLayout = new InfoMemLayoutShimmerGq802154(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 

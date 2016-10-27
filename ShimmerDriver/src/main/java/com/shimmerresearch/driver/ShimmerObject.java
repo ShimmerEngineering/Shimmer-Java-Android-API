@@ -5947,7 +5947,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 *            the array of InfoMem bytes.
 	 */
 	@Override
-	public void infoMemByteArrayParse(byte[] infoMemBytes) {
+	public void configBytesParse(byte[] infoMemBytes) {
 		String shimmerName = "";
 
 		mInfoMemBytesOriginal = infoMemBytes;
@@ -6283,7 +6283,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return
 	 */
 	@Override
-	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
 
 		InfoMemLayoutShimmer3 infoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 		
@@ -7459,7 +7459,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected byte[] generateInfoMemBytesForWritingToShimmer() {
 //		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
-		return infoMemByteArrayGenerate(true);
+		return configBytesGenerate(true);
 	}
 	
 	

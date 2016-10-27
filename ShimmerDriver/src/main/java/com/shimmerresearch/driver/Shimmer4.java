@@ -39,7 +39,6 @@ import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.ShimmerClock.GuiLabelSensors;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.ShimmerClock;
@@ -50,6 +49,7 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
 	
+	@Deprecated //assume always true?
 	protected boolean mSendProgressReport = true;
 
 	//TODO consider where to handle the below -> carried over from ShimmerObject
@@ -151,7 +151,7 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	@Override
-	public void createInfoMemLayout() {
+	public void createConfigBytesLayout() {
 		//TODO replace with Shimmer4?
 		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
@@ -160,7 +160,7 @@ public class Shimmer4 extends ShimmerDevice {
 	// have duplicates in ShimmerObject, ShimmerGQ and Shimmer4. Some items only
 	// copied here for example/testing purposes
 	@Override
-	public void infoMemByteArrayParse(byte[] infoMemBytes) {
+	public void configBytesParse(byte[] infoMemBytes) {
 		String shimmerName = "";
 		mInfoMemBytesOriginal = infoMemBytes;
 
@@ -260,7 +260,7 @@ public class Shimmer4 extends ShimmerDevice {
 	// have duplicates in ShimmerObject, ShimmerGQ and Shimmer4. Some items only
 	// copied here for example/testing purposes
 	@Override
-	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
 		//TODO refer to same method in ShimmerGQ/ShimmerObject
 
 		//TODO create for Shimmer4 or use Shimmer3?
@@ -524,10 +524,10 @@ public class Shimmer4 extends ShimmerDevice {
 						}
 					}
 					else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE){ 
-						setShimmerInfoMemBytes((byte[])parsedResponse);
+						configBytesParse((byte[])parsedResponse);
 					}
 					else if(responseCommand==InstructionsResponse.RSP_CALIB_DUMP_COMMAND_VALUE){
-						parseCalibByteDump((byte[])parsedResponse, CALIB_READ_SOURCE.RADIO_DUMP);
+						calibByteDumpParse((byte[])parsedResponse, CALIB_READ_SOURCE.RADIO_DUMP);
 					}
 					else if(responseCommand==InstructionsResponse.BLINK_LED_RESPONSE_VALUE){ 
 	//					mCurrentLEDStatus = byteled[0]&0xFF;
@@ -842,7 +842,7 @@ public class Shimmer4 extends ShimmerDevice {
 		mCommsProtocolRadio.readLEDCommand();
 
 //		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
-			readConfigurationFromInfoMem();
+			readConfigBytes();
 			readCalibrationDump();
 			
 			//TODO improve below by putting into sensor classes
@@ -1020,14 +1020,14 @@ public class Shimmer4 extends ShimmerDevice {
 		setBluetoothRadioState(BT_STATE.DISCONNECTED);
 	}
 
-	public void writeConfigurationToInfoMem(byte[] shimmerInfoMemBytes) {
-		if(mCommsProtocolRadio!=null){
+	public void writeConfigBytes(byte[] shimmerInfoMemBytes) {
+		if(mCommsProtocolRadio!=null && mInfoMemLayout!=null){
 			mCommsProtocolRadio.writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
-			readConfigurationFromInfoMem();
+			readConfigBytes();
 		}
 	}
 
-	public void readConfigurationFromInfoMem(){
+	public void readConfigBytes(){
 		if(this.getFirmwareVersionCode()>=6){
 			createInfoMemLayoutObjectIfNeeded();
 //			int size = InfoMemLayoutShimmer3.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
@@ -1322,24 +1322,6 @@ public class Shimmer4 extends ShimmerDevice {
 		return isConnected;
 	}
 
-	//TODO copied from ShimmerBluetooth
-	public void operationPrepare() {
-		if(mCommsProtocolRadio!=null){
-			mCommsProtocolRadio.operationPrepare();
-		}
-	}
-
-	//TODO copied from ShimmerBluetooth
-	public void operationStart(BT_STATE configuring) {
-		if(mCommsProtocolRadio!=null){
-			mCommsProtocolRadio.operationStart(configuring);
-		}
-	}
-
-	//TODO copied from ShimmerBluetooth
-	public void setSendProgressReport(boolean state) {
-		mSendProgressReport = state;
-	}
 
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {

@@ -253,9 +253,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
 	 */
 	protected abstract void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE commType);
-	public abstract void infoMemByteArrayParse(byte[] infoMemContents);
-	public abstract byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer);
-	public abstract void createInfoMemLayout();
+	public abstract void configBytesParse(byte[] infoMemContents);
+	public abstract byte[] configBytesGenerate(boolean generateForWritingToShimmer);
+	public abstract void createConfigBytesLayout();
 
 
 	// --------------- Abstract Methods End --------------------------
@@ -472,7 +472,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param shimmerInfoMemBytes the shimmerInfoMemBytes to set
 	 */
 	public void setShimmerInfoMemBytes(byte[] shimmerInfoMemBytes) {
-		infoMemByteArrayParse(shimmerInfoMemBytes);
+		configBytesParse(shimmerInfoMemBytes);
 	}
 	
 	//------------------- Event marker code Start -------------------------------
@@ -926,7 +926,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		
 		if(create){
-			createInfoMemLayout();
+			createConfigBytesLayout();
 		}
 	}
 	
@@ -1701,7 +1701,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mSensorMap;
 	}
 
-	
+	public boolean isLegacySdLog(){
+		if(isThisVerCompatibleWith(FW_ID.SDLOG, 0, 5, 0)){
+//		if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==5){
+			return true;
+		}
+		return false;
+	}
+
 	public boolean isDerivedSensorsSupported(){
 		return isDerivedSensorsSupported(mShimmerVerObject);
 	}
@@ -2196,7 +2203,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public byte[] refreshShimmerInfoMemBytes() {
 //		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
-		return infoMemByteArrayGenerate(false);
+		return configBytesGenerate(false);
 	}
 	
 	public void checkAndCorrectShimmerName(String shimmerName) {
@@ -2384,7 +2391,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		initializeAlgorithms();
 	}
 	
-	public void setAllAlgorithmsDisabled(){
+	public void disableAllAlgorithms(){
 		for(AbstractAlgorithm abstractAlgorithmToChange: getMapOfAlgorithmModules().values()){
 			setIsAlgorithmEnabled(abstractAlgorithmToChange.getAlgorithmName(), false);
 		}
@@ -3030,7 +3037,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public byte[] generateCalibDump(){
+	public byte[] calibByteDumpGenerate(){
 		byte[] calibBytesAll = new byte[]{};
 		
 //		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
@@ -3088,7 +3095,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * 
 	 * @param calibBytesAll
 	 */
-	public void parseCalibByteDump(byte[] calibBytesAll, CALIB_READ_SOURCE calibReadSource){
+	public void calibByteDumpParse(byte[] calibBytesAll, CALIB_READ_SOURCE calibReadSource){
 
 		mCalibBytes = calibBytesAll;
 		
@@ -3135,7 +3142,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //					//Debugging
 //					consolePrintLn("Calibration id Bytes - \t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(calibBytes));
 
-					parseCalibByteDumpPerSensor(sensorMapKey, rangeValue, calibTimeBytesTicks, calibBytes, calibReadSource);
+					calibByteDumpParsePerSensor(sensorMapKey, rangeValue, calibTimeBytesTicks, calibBytes, calibReadSource);
 					remainingBytes = Arrays.copyOfRange(remainingBytes, endIndex, remainingBytes.length);
 //					consolePrintLn("Remaining Bytes - " + remainingBytes);
 				}
@@ -3147,7 +3154,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	protected void parseCalibByteDumpPerSensor(int sensorMapKey, int rangeValue, byte[] calibTimeBytesTicks, byte[] calibBytes, CALIB_READ_SOURCE calibReadSource) {
+	protected void calibByteDumpParsePerSensor(int sensorMapKey, int rangeValue, byte[] calibTimeBytesTicks, byte[] calibBytes, CALIB_READ_SOURCE calibReadSource) {
 //		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 //		while(iterator.hasNext()){
 //			AbstractSensor abstractSensor = iterator.next();
@@ -3173,6 +3180,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	//*************** Sensor Calibration Related end ************************* 
 
+	
+	//*************** Radio Connection start ************************* 
+	//TODO copied from ShimmerBluetooth
+	public void operationPrepare() {
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.operationPrepare();
+		}
+	}
+
+	//TODO copied from ShimmerBluetooth
+	public void operationStart(BT_STATE configuring) {
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.operationStart(configuring);
+		}
+	}
 
 	public void startStreaming() {
 		if(mCommsProtocolRadio!=null){
@@ -3219,6 +3241,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return mComPort;
 	}
+	
+	//*************** Radio Connection end ************************* 
+
 	
 	public String getBtConnectionHandle() {
 		String comPort = getComPort();
@@ -3295,12 +3320,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		System.out.println(strStackTrace);
 	}
 
-//	public void disableAllSensors() {
-//		for(int sensorMapKey:mSensorMap.keySet()){
-//			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.shimmer)
-//			sensorDetails.setIsEnabled(false);
-//		}
-//	}
+	public void disableAllSensors() {
+		for(int sensorMapKey:mSensorMap.keySet()){
+			setSensorEnabledState(sensorMapKey, false);
+		}
+	}
 	
 	
 	public LinkedHashMap<String, Object> getConfigMapForDb(){

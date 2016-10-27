@@ -584,7 +584,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	public void createInfoMemLayout() {
+	public void createConfigBytesLayout() {
 		// TODO Auto-generated method stub
 		
 	}

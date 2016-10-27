@@ -53,9 +53,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	 * LogAndStream will try to recreate the SD config. file for each block of
 	 * InfoMem that is written - need to give it time to do so.
 	 */
-	public static final int DELAY_BETWEEN_INFOMEM_WRITES = 100;
+	public static final int DELAY_BETWEEN_CONFIG_BYTE_WRITES = 100;
 	/** Delay to allow LogAndStream to create SD config. file and reinitialise */
-	public static final int DELAY_AFTER_INFOMEM_WRITE = 500;
+	public static final int DELAY_AFTER_CONFIG_BYTE_WRITE = 500;
 
 	//startregion --------- TIMERS ---------
 	public static final int TIMER_READ_STATUS_PERIOD = 5000;
@@ -1379,16 +1379,16 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					mNumOfMemSetCmds -= 1;
 					if(!mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
 						if(mNumOfMemSetCmds==0){
-							threadSleep(DELAY_BETWEEN_INFOMEM_WRITES);
+							threadSleep(DELAY_BETWEEN_CONFIG_BYTE_WRITES);
 						}
 						else {
-							threadSleep(DELAY_AFTER_INFOMEM_WRITE);
+							threadSleep(DELAY_AFTER_CONFIG_BYTE_WRITE);
 						}
 					}
 				}
 				else if(currentCommand==InstructionsSet.UPD_CONFIG_MEMORY_COMMAND_VALUE){
 					if(mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
-						threadSleep(DELAY_AFTER_INFOMEM_WRITE);
+						threadSleep(DELAY_AFTER_CONFIG_BYTE_WRITE);
 					}
 				}
 				else{

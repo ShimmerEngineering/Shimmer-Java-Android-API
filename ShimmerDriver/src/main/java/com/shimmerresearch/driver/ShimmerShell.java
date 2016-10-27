@@ -103,13 +103,13 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public void infoMemByteArrayParse(byte[] infoMemContents) {
+	public void configBytesParse(byte[] infoMemContents) {
 		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
-	public byte[] infoMemByteArrayGenerate(boolean generateForWritingToShimmer) {
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -133,7 +133,7 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public void createInfoMemLayout() {
+	public void createConfigBytesLayout() {
 		// TODO Auto-generated method stub
 		
 	}
