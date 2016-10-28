@@ -65,7 +65,7 @@ public class ShimmerVerDetails implements Serializable {
     
 	//TODO change all to ENUMs with ints and Strings passed in
 	public static final class HW_ID_SR_CODES {
-		public static final int LOG_FILE = -2;
+		public static final int LOG_FILE = -2; //MN: don't think this should be here
 		public static final int UNKNOWN = -1;
 		public static final int NONE = 255;
 		

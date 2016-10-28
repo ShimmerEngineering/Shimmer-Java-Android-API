@@ -87,7 +87,8 @@ public class ExpansionBoardDetails implements Serializable {
 	
 	public boolean isExpansionBoardValid(){
 		if(!(mExpansionBoardId==0 && mExpansionBoardRev==0 && mExpansionBoardRevSpecial==0)
-				&& (mExpansionBoardId!=-1 && mExpansionBoardRev!=-1 && mExpansionBoardRevSpecial!=-1)){
+				&& (mExpansionBoardId!=HW_ID_SR_CODES.UNKNOWN && mExpansionBoardRev!=HW_ID_SR_CODES.UNKNOWN && mExpansionBoardRevSpecial!=HW_ID_SR_CODES.UNKNOWN)
+				&& (mExpansionBoardId!=HW_ID_SR_CODES.LOG_FILE && mExpansionBoardRev!=HW_ID_SR_CODES.LOG_FILE && mExpansionBoardRevSpecial!=HW_ID_SR_CODES.LOG_FILE)){
 			return true;
 		}
 		return false;
