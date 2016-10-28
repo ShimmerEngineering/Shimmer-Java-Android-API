@@ -8,33 +8,36 @@ public class BluetoothDeviceDetails {
 	public String mComPort = "";
 	public String mComPortDescription = "";
 	public String mFriendlyName = "";
-	
+
 	public String mShimmerMacId = "";
 	public String mShimmerMacIdParsed = "";
-	
+
 	public DEVICE_TYPE mDeviceTypeDetected = DEVICE_TYPE.UNKOWN;
 
-	 public BluetoothDeviceDetails(String comPort, String comPortDescription){
-		 mComPort = comPort;
-		 mComPortDescription = comPortDescription;
-	 }
-	 
-	 public BluetoothDeviceDetails(String comPort, String macId, String friendlyName){
-		 mComPort = comPort;
-		 mFriendlyName = friendlyName;
-		 setMacId(macId);
-		 setDeviceType();
-	 }
+	//TODO Testing for GUI feedback - shouldn't really be here 
+	public boolean mAttemptingConnection = false;
 
-	 public void setMacId(String mac){
-		 
-		 mac = mac.replace("-", "");
-		 
-		 if(mac.length()==12) {
-			 mShimmerMacId = mac.toUpperCase();
-			 mShimmerMacIdParsed = mShimmerMacId.substring(8).toUpperCase();
-		 }
-	 }
+	public BluetoothDeviceDetails(String comPort, String comPortDescription){
+		mComPort = comPort;
+		mComPortDescription = comPortDescription;
+	}
+
+	public BluetoothDeviceDetails(String comPort, String macId, String friendlyName){
+		mComPort = comPort;
+		mFriendlyName = friendlyName;
+		setMacId(macId);
+		setDeviceType();
+	}
+
+	public void setMacId(String mac){
+
+		mac = mac.replace("-", "");
+
+		if(mac.length()==12) {
+			mShimmerMacId = mac.toUpperCase();
+			mShimmerMacIdParsed = mShimmerMacId.substring(8).toUpperCase();
+		}
+	}
 
 	public String getGuiName() {
 		if(!mFriendlyName.isEmpty())
@@ -42,7 +45,7 @@ public class BluetoothDeviceDetails {
 		else
 			return mShimmerMacIdParsed;
 	}
-	
+
 	public void setDeviceType() {
 		if(!mShimmerMacId.equals(UtilShimmer.MAC_ADDRESS_ZEROS)){
 			if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER3)){
