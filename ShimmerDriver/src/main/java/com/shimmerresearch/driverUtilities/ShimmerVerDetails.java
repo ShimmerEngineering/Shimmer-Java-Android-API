@@ -133,10 +133,15 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int LOGANDSTREAM = 3;
 		public static final int DCU_SWEATSENSOR = 4;
 		public static final int GQ_BLE = 5;
-		public static final int GPIO_TEST = 6;
+		public static final int BIOSENSICS_GPIO_TEST = 6;
+//		public static final int ? = 7;
+		public static final int MOVOTEC_PSAD = 8;
 		public static final int GQ_802154 = 9;
+		public static final int EXGSTREAM = 10;
 		public static final int SPAN = 11;
-		public static final int SHIMMER4_SDK_STOCK = 12;//7
+		public static final int SHIMMER4_SDK_STOCK = 12;
+		public static final int BTSTREAM_UARTSTREAM = 13;
+		public static final int GQ_802154_CE = 14;
 		
 		public static final Map<Integer, String> mMapOfFirmwareLabels;
 	    static {
@@ -144,9 +149,9 @@ public class ShimmerVerDetails implements Serializable {
 	        aMap.put(BTSTREAM, "BtStream");
 	        aMap.put(SDLOG, "SDLog");
 	        aMap.put(LOGANDSTREAM, "LogAndStream");
-	        aMap.put(DCU_SWEATSENSOR, "Swatch");
+	        aMap.put(DCU_SWEATSENSOR, "Sweatch");
 	        aMap.put(GQ_BLE, "GQ_BLE");
-	        aMap.put(GPIO_TEST, "GPIO_TEST");
+	        aMap.put(BIOSENSICS_GPIO_TEST, "GPIO_TEST");
 	        aMap.put(GQ_802154, "GQ_802154");
 	        aMap.put(SPAN, "SPAN");
 	        aMap.put(SHIMMER4_SDK_STOCK, "Shimmer4SDK");
