@@ -286,7 +286,7 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		int idxConfigSetupByte3 = 9;
 		int bitShiftBMP180PressureResolution = 4;
 		int maskBMP180PressureResolution = 0x03;
@@ -294,7 +294,7 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		int idxConfigSetupByte3 = 9;
 		int bitShiftBMP180PressureResolution = 4;
 		int maskBMP180PressureResolution = 0x03;

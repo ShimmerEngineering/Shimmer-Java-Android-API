@@ -17,6 +17,7 @@ import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMap
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
@@ -318,8 +319,8 @@ public class ShimmerClock extends AbstractSensor {
 		if(mShimmerVerObject.isShimmerGenGq()){
 			//TODO
 		}
-		else if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			if(mShimmerVerObject.getFirmwareVersionCode()>=6){
+		else {// if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
+			if(mShimmerVerObject.getFirmwareVersionCode()>=6 || mShimmerVerObject.mHardwareVersion==HW_ID.ARDUINO){
 				channelMapRef.put(ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
 				mTimeStampPacketRawMaxValue = (int) Math.pow(2, 24);
 			}
@@ -663,12 +664,12 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		//NOT USED IN THIS CLASS
 	}
 
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		//NOT USED IN THIS CLASS
 	}
 

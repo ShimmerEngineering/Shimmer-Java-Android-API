@@ -40,7 +40,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int NONIN_ONYX_II = 1000;
 		public static final int QTI_DIRECT_TEMP = 1001;
 		public static final int KEYBOARD_AND_MOUSE = 1002;
-		public static final int ARDUINO = 1003;
+		public static final int ARDUINO = 100;
 	}
 	
 	//WARNING! The name can't change because the database relies on it.
@@ -59,7 +59,9 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_4_SDK, "Shimmer4 SDK");
+        
         aMap.put(HW_ID.KEYBOARD_AND_MOUSE, "Keyboard and Mouse");
+        aMap.put(HW_ID.ARDUINO, "Arduino");
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
     

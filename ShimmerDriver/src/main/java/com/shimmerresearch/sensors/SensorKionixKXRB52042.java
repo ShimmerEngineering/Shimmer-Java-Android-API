@@ -312,7 +312,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
 //		int idxAnalogAccelCalibration = 31;
 		//fix for newer firmware -> see InfomemLayoutShimmer3
 		int idxAnalogAccelCalibration =		34;
@@ -325,7 +325,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 	
 	
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 //		int idxAnalogAccelCalibration = 31;
 		//fix for newer firmware -> see InfomemLayoutShimmer3
 		int idxAnalogAccelCalibration =		34;

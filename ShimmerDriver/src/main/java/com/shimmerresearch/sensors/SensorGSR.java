@@ -375,7 +375,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		int idxConfigSetupByte3 =	9;
 		int bitShiftGSRRange =		1;
 		int maskGSRRange =			0x07;
@@ -385,7 +385,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		int idxConfigSetupByte3 =	9;
 		int bitShiftGSRRange =		1;
 		int maskGSRRange =			0x07;

@@ -1697,7 +1697,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 	
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		int idxConfigSetupByte4 = 128+0;
 		int idxConfigSetupByte5 = 128+1;
 		int idxConfigSetupByte6 = 128+4;	
@@ -1764,7 +1764,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 	}
 
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		int idxConfigSetupByte4 = 128+0;
 		int idxConfigSetupByte5 = 128+1;
 		int idxConfigSetupByte6 = 128+4;	

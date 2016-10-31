@@ -115,7 +115,6 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
 	
-	/** * */
 	private static final long serialVersionUID = 8439353551730215801L;
 
 	//region --------- CLASS VARIABLES AND ABSTRACT METHODS ---------
@@ -796,16 +795,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//Discard first read
 			if(mFirstTime){
 //				printLogDataForDebugging("First Time read");
-//				clearSerialBuffer();
+				clearSerialBuffer();
 				
-				while (availableBytes()!=0){
-					int available = availableBytes();
-					if (bytesAvailableToBeRead()){
-						byteBuffer=readBytes(1);
-						String msg = "First Time : " + Arrays.toString(byteBuffer);
-						printLogDataForDebugging(msg);
-					}
-				}
+//				while (availableBytes()!=0){
+//					int available = availableBytes();
+//					if (bytesAvailableToBeRead()){
+//						byteBuffer=readBytes(1);
+//						String msg = "First Time : " + UtilShimmer.bytesToHexStringWithSpacesFormatted(byteBuffer);
+//						printLogDataForDebugging(msg);
+//					}
+//				}
 				
 				//TODO: Check with JC on the below!!! Or just clear seriable buffer and remove need for mFirstTime
 				//Below added from original implementation -> doesn't wait for timeout on first command
@@ -996,7 +995,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			int available = availableBytes();
 			if (bytesAvailableToBeRead()){
 				byte[] tb=readBytes(1);
-				String msg = "First Time : " + Arrays.toString(tb);
+				String msg = "First Time : " + UtilShimmer.bytesToHexStringWithSpacesFormatted(tb);
 				printLogDataForDebugging(msg);
 			}
 		}		  		
@@ -1083,7 +1082,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//Shimmer3
 			int lengthSettings = 8;// get Sampling rate, accel range, config setup byte0, num chans and buffer size
 			int lengthChannels = 6;// read each channel type for the num channels
-			if(!(getHardwareVersion()==HW_ID.SHIMMER_3)) {
+			if(mShimmerVerObject.isShimmerGen2()) {
 				lengthSettings = 5;
 				lengthChannels = 3;
 			}
@@ -1110,7 +1109,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 		else if(responseCommand==SAMPLING_RATE_RESPONSE) {
 			if(!mIsStreaming) {
-				if(getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){    
+				if(isShimmerGen2()) {
 					byte[] bufferSR = readBytes(1);
 					if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
 						double val=(double)(bufferSR[0] & (byte) ACK_COMMAND_PROCESSED);
@@ -3716,11 +3715,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mMemBuffer = new byte[]{};
 	}
 
-//	private void readMemBlock(int command, int currentStartAddr, int currentPacketNumBytes){
-//		readMemCommand(command, currentStartAddr, currentPacketNumBytes);
-//	}
-
-	
 	public void readMemCommand(int command, int address, int size) {
 		if(this.getFirmwareVersionCode()>=6){
 	    	byte[] memLengthToRead = new byte[]{(byte) size};
@@ -3937,85 +3931,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
     //region --------- IS FUNCTIONS ---------
 	
-//	/**
-//	 * Checks if 16 bit ECG configuration is set on the Shimmer device. Do not
-//	 * use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 16 bit ECG is set
-//	 */
-//	@Override
-//	public boolean isEXGUsingECG16Configuration(){
-//		while(!getListofInstructions().isEmpty());
-//		return super.isEXGUsingECG16Configuration();
-//	}
-//	
-//	/**
-//	 * Checks if 24 bit ECG configuration is set on the Shimmer device. Do not
-//	 * use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 24 bit ECG is set
-//	 */
-//	@Override
-//	public boolean isEXGUsingECG24Configuration(){
-//		while(!getListofInstructions().isEmpty());
-//		return super.isEXGUsingECG24Configuration();
-//	}
-//	
-//	/**
-//	 * Checks if 16 bit EMG configuration is set on the Shimmer device. Do not
-//	 * use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 16 bit EMG is set
-//	 */
-//	@Override
-//	public boolean isEXGUsingEMG16Configuration(){
-//		while(!getListofInstructions().isEmpty());
-//		return super.isEXGUsingEMG16Configuration();
-//	}
-//	
-//	/**
-//	 * Checks if 24 bit EMG configuration is set on the Shimmer device. Do not
-//	 * use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 24 bit EMG is set
-//	 */
-//	@Override
-//	public boolean isEXGUsingEMG24Configuration(){
-//		while(!getListofInstructions().isEmpty());
-//		return super.isEXGUsingEMG24Configuration();
-//	}
-//	
-//	/**
-//	 * Checks if 16 bit test signal configuration is set on the Shimmer device.
-//	 * Do not use this command right after setting an EXG setting, as due to the
-//	 * execution model, the old settings might be returned, if this command is
-//	 * executed before an ack is received.
-//	 * 
-//	 * @return true if 24 bit test signal is set
-//	 */
-//	@Override
-//	public boolean isEXGUsingTestSignal16Configuration(){
-//		while(!getListofInstructions().isEmpty());
-//		return super.isEXGUsingTestSignal16Configuration();
-//	}
-//	
-//	/**
-//	 * Checks if 24 bit test signal configuration is set on the Shimmer device.
-//	 * @return true if 24 bit test signal is set
-//	 */
-//	@Override
-//	public boolean isEXGUsingTestSignal24Configuration(){
-//		while(!getListofInstructions().isEmpty());
-//		return super.isEXGUsingTestSignal24Configuration();
-//	}
 	
     //endregion --------- IS FUNCTIONS ---------
 	
@@ -4889,20 +4804,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return super.configBytesGenerate(true);
 	}
 
-//	public void clearShimmerVersionInfo() {
-//		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());
-//	}
-	
-//	public void setExpansionBoardDetails(ExpansionBoardDetails eBD){
-//		super.mExpansionBoardDetails  = eBD;
-//		super.mExpansionBoardId = eBD.mExpBoardId;
-//		super.mExpansionBoardRev = eBD.mExpBoardRev;
-//		super.mExpansionBoardRevSpecial = eBD.mExpBoardRevSpecial;
-//		super.mExpansionBoardParsed = eBD.mExpBoardParsed;
-//		super.mExpansionBoardParsedWithVer = eBD.mExpBoardParsedWithVer;
-//		super.mExpBoardArray = eBD.mExpBoardArray;
-//	}
-	
 	@Override
 	public void setBattStatusDetails(ShimmerBattStatusDetails s) {
 		super.setBattStatusDetails(s);
@@ -4938,27 +4839,4 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 
-
-//	private void consolePrintLn(String message) {
-//		if(mVerboseMode) {
-//			Calendar rightNow = Calendar.getInstance();
-//			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
-//					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
-//					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
-//					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-//			System.out.println(rightNowString + " " + mParentClassName + ": " + mComPort + " " + getMacIdFromBtParsed() + " " + message);
-//		}		
-//	}
-//	
-//	public void consolePrint(String message) {
-//		if(mVerboseMode) {
-//			System.out.print(message);
-//		}		
-//	}
-//
-//	public void setVerboseMode(boolean verboseMode) {
-//		mVerboseMode = verboseMode;
-//	}
-	
-	
 }

@@ -285,62 +285,62 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 				getFirmwareVersionInternal());
 		
 //		byte[] infoMemBackup = mInfoMemBytes.clone();
-		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray();
+		mConfigBytes = infoMemLayout.createEmptyInfoMemByteArray();
 		
 		setSamplingRateShimmer(COMMUNICATION_TYPE.SD, 256);	// 256Hz is the default sampling rate
 
 		// Sampling Rate
 		int samplingRate = (int)(32768 / getSamplingRateShimmer(COMMUNICATION_TYPE.SD));
-		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
-		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
+		mConfigBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
+		mConfigBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
 
 		//TODO loop through mapOfSensors
 		// Sensors
 //		checkExgResolutionFromEnabledSensorsVar();
 //		refreshEnabledSensorsFromSensorMap();
 		mEnabledSensors = SENSOR_ECG_TO_HR_FW + Configuration.Shimmer3.SensorBitmap.SENSOR_EXG1_24BIT + Configuration.Shimmer3.SensorBitmap.SENSOR_GSR;
-		mInfoMemBytes[infoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors0) & infoMemLayout.maskSensors);
-		mInfoMemBytes[infoMemLayout.idxSensors1] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors1) & infoMemLayout.maskSensors);
-		mInfoMemBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
+		mConfigBytes[infoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors0) & infoMemLayout.maskSensors);
+		mConfigBytes[infoMemLayout.idxSensors1] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors1) & infoMemLayout.maskSensors);
+		mConfigBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
 
 		//TODO loop through mapOfAlgorithms
 		// Derived Sensors
 		mDerivedSensors = ALGORITHM_ECG_TO_HR_CHP1_CH1;
-		mInfoMemBytes[infoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors0) & infoMemLayout.maskDerivedChannelsByte);
-		mInfoMemBytes[infoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors1) & infoMemLayout.maskDerivedChannelsByte);
-		mInfoMemBytes[infoMemLayout.idxDerivedSensors2] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors2) & infoMemLayout.maskDerivedChannelsByte);
+		mConfigBytes[infoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors0) & infoMemLayout.maskDerivedChannelsByte);
+		mConfigBytes[infoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors1) & infoMemLayout.maskDerivedChannelsByte);
+		mConfigBytes[infoMemLayout.idxDerivedSensors2] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors2) & infoMemLayout.maskDerivedChannelsByte);
 		
 		// Shimmer Name
 		for (int i = 0; i < infoMemLayout.lengthShimmerName; i++) {
 			if (i < mShimmerUserAssignedName.length()) {
-				mInfoMemBytes[infoMemLayout.idxSDShimmerName + i] = (byte) mShimmerUserAssignedName.charAt(i);
+				mConfigBytes[infoMemLayout.idxSDShimmerName + i] = (byte) mShimmerUserAssignedName.charAt(i);
 			}
 			else {
-				mInfoMemBytes[infoMemLayout.idxSDShimmerName + i] = (byte) 0xFF;
+				mConfigBytes[infoMemLayout.idxSDShimmerName + i] = (byte) 0xFF;
 			}
 		}
 		
 		// Experiment Name
 		for (int i = 0; i < infoMemLayout.lengthExperimentName; i++) {
 			if (i < mTrialName.length()) {
-				mInfoMemBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) mTrialName.charAt(i);
+				mConfigBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) mTrialName.charAt(i);
 			}
 			else {
-				mInfoMemBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) 0xFF;
+				mConfigBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) 0xFF;
 			}
 		}
 
 		//Configuration Time
-		mInfoMemBytes[infoMemLayout.idxSDConfigTime0] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime0) & 0xFF);
-		mInfoMemBytes[infoMemLayout.idxSDConfigTime1] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime1) & 0xFF);
-		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
-		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSDConfigTime0] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime0) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSDConfigTime1] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime1) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 		
-		mInfoMemBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) (((mSyncWhenLogging? infoMemLayout.maskTimeSyncWhenLogging:0)) << infoMemLayout.bitShiftTimeSyncWhenLogging);
+		mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) (((mSyncWhenLogging? infoMemLayout.maskTimeSyncWhenLogging:0)) << infoMemLayout.bitShiftTimeSyncWhenLogging);
 
 		//802.15.4 Radio config
 		byte[] radioConfig = getRadioConfigByteArray();
-		System.arraycopy(radioConfig, 0, mInfoMemBytes, infoMemLayout.idxSrRadioConfigStart, radioConfig.length);
+		System.arraycopy(radioConfig, 0, mConfigBytes, infoMemLayout.idxSrRadioConfigStart, radioConfig.length);
 
 		
 		//EXG Configuration
@@ -360,16 +360,16 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 		// Configuration from each Sensor settings
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			abstractSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
+			abstractSensor.configByteArrayGenerate(this, mConfigBytes);
 		}
 
 		//Check if Expansion board power is required for any of the enabled sensors
 		checkIfInternalExpBrdPowerIsNeeded();
 
-		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
+		mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
 
 		
-		return mInfoMemBytes;
+		return mConfigBytes;
 	}
 
 	@Override
@@ -385,10 +385,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 //			mShimmerInfoMemBytes = infoMemByteArrayGenerate();
 //			mShimmerInfoMemBytes = new byte[infoMemContents.length];
-			mInfoMemBytes = infoMemBytes;
+			mConfigBytes = infoMemBytes;
 		}
 		else {
-			mInfoMemBytes = infoMemBytes;
+			mConfigBytes = infoMemBytes;
 			
 			InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154) mInfoMemLayout;
 
@@ -472,7 +472,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 			
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
+				abstractSensor.configByteArrayParse(this, mConfigBytes);
 			}
 			
 		}

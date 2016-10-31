@@ -94,8 +94,8 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimeStamp);
 //	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
-	public abstract void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
-	public abstract void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes);
+	public abstract void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes);
+	public abstract void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes);
 	public abstract Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet);
 	public abstract Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel);
 

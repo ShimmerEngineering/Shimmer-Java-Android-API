@@ -19,6 +19,7 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -87,6 +88,7 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	public void sensorAndConfigMapsCreate() {
+
 		mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
 
 		//Example code
@@ -136,13 +138,7 @@ public class Shimmer4 extends ShimmerDevice {
 			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
 		}
 		
-		generateSensorAndParserMaps();
-		
-		generateMapOfAlgorithmModules();
-		generateMapOfAlgorithmConfigOptions();
-		generateMapOfAlgorithmGroupingMap();
-		
-		handleSpecialCasesAfterSensorMapCreate();
+		super.sensorAndConfigMapsCreateCommon();
 	}
 	
 	@Override
@@ -160,21 +156,21 @@ public class Shimmer4 extends ShimmerDevice {
 	// have duplicates in ShimmerObject, ShimmerGQ and Shimmer4. Some items only
 	// copied here for example/testing purposes
 	@Override
-	public void configBytesParse(byte[] infoMemBytes) {
+	public void configBytesParse(byte[] configBytes) {
 		String shimmerName = "";
-		mInfoMemBytesOriginal = infoMemBytes;
+		mInfoMemBytesOriginal = configBytes;
 
-		if(!InfoMemLayout.checkInfoMemValid(infoMemBytes)){
+		if(!InfoMemLayout.checkInfoMemValid(configBytes)){
 			// InfoMem not valid
 			setDefaultShimmerConfiguration();
 //			mShimmerUsingConfigFromInfoMem = false;
 
 //			mShimmerInfoMemBytes = infoMemByteArrayGenerate();
 //			mShimmerInfoMemBytes = new byte[infoMemContents.length];
-			mInfoMemBytes = infoMemBytes;
+			mConfigBytes = configBytes;
 		}
 		else {
-			mInfoMemBytes = infoMemBytes;
+			mConfigBytes = configBytes;
 
 			//TODO create for Shimmer4 or use Shimmer3?
 			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3) mInfoMemLayout;
@@ -182,41 +178,41 @@ public class Shimmer4 extends ShimmerDevice {
 			createInfoMemLayoutObjectIfNeeded();
 
 			// Sensors
-			mEnabledSensors = ((long)infoMemBytes[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
-			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors1] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors1;
-			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors2] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors2;
+			mEnabledSensors = ((long)configBytes[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
+			mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors1] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors1;
+			mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors2] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors2;
 	
-			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors3] & 0xFF) << infoMemLayoutCast.bitShiftSensors3;
-			mEnabledSensors += ((long)infoMemBytes[infoMemLayoutCast.idxSensors4] & 0xFF) << infoMemLayoutCast.bitShiftSensors4;
+			mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors3] & 0xFF) << infoMemLayoutCast.bitShiftSensors3;
+			mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors4] & 0xFF) << infoMemLayoutCast.bitShiftSensors4;
 			
 			mDerivedSensors = (long)0;
 			// Check if compatible and not equal to 0xFF
-			if((infoMemLayoutCast.idxDerivedSensors0>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors0]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)
-					&& (infoMemLayoutCast.idxDerivedSensors1>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors1]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)) { 
+			if((infoMemLayoutCast.idxDerivedSensors0>0) && (configBytes[infoMemLayoutCast.idxDerivedSensors0]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)
+					&& (infoMemLayoutCast.idxDerivedSensors1>0) && (configBytes[infoMemLayoutCast.idxDerivedSensors1]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)) { 
 				
-				mDerivedSensors |= ((long)infoMemBytes[infoMemLayoutCast.idxDerivedSensors0] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors0;
-				mDerivedSensors |= ((long)infoMemBytes[infoMemLayoutCast.idxDerivedSensors1] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors1;
+				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors0] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors0;
+				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors1] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors1;
 				
 				// Check if compatible and not equal to 0xFF
-				if((infoMemLayoutCast.idxDerivedSensors2>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors2]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)){ 
-					mDerivedSensors |= ((long)infoMemBytes[infoMemLayoutCast.idxDerivedSensors2] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors2;
+				if((infoMemLayoutCast.idxDerivedSensors2>0) && (configBytes[infoMemLayoutCast.idxDerivedSensors2]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)){ 
+					mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors2] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors2;
 				}
 			}
 
 			prepareAllAfterConfigRead();
 
-			setSamplingRateShimmer((32768/(double)((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
-					+ ((int)(infoMemBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8))));
+			setSamplingRateShimmer(32768/(double)((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
+					+ ((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8)));
 
-			mInternalExpPower = (infoMemBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
+			mInternalExpPower = (configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
 
 
-			mBluetoothBaudRate = infoMemBytes[infoMemLayoutCast.idxBtCommBaudRate] & infoMemLayoutCast.maskBaudRate;
+			mBluetoothBaudRate = configBytes[infoMemLayoutCast.idxBtCommBaudRate] & infoMemLayoutCast.maskBaudRate;
 
 			
 			// Shimmer Name
 			byte[] shimmerNameBuffer = new byte[infoMemLayoutCast.lengthShimmerName];
-			System.arraycopy(infoMemBytes, infoMemLayoutCast.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemLayoutCast.lengthShimmerName);
+			System.arraycopy(configBytes, infoMemLayoutCast.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemLayoutCast.lengthShimmerName);
 			for(byte b : shimmerNameBuffer) {
 				if(!UtilShimmer.isAsciiPrintable((char)b)) {
 					break;
@@ -226,7 +222,7 @@ public class Shimmer4 extends ShimmerDevice {
 			
 			// Experiment Name
 			byte[] experimentNameBuffer = new byte[infoMemLayoutCast.lengthExperimentName];
-			System.arraycopy(infoMemBytes, infoMemLayoutCast.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemLayoutCast.lengthExperimentName);
+			System.arraycopy(configBytes, infoMemLayoutCast.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemLayoutCast.lengthExperimentName);
 			String experimentName = "";
 			for(byte b : experimentNameBuffer) {
 				if(!UtilShimmer.isAsciiPrintable((char)b)) {
@@ -240,16 +236,16 @@ public class Shimmer4 extends ShimmerDevice {
 			int bitShift = (infoMemLayoutCast.lengthConfigTimeBytes-1) * 8;
 			mConfigTime = 0;
 			for(int x=0; x<infoMemLayoutCast.lengthConfigTimeBytes; x++ ) {
-				mConfigTime += (((long)(infoMemBytes[infoMemLayoutCast.idxSDConfigTime0+x] & 0xFF)) << bitShift);
+				mConfigTime += (((long)(configBytes[infoMemLayoutCast.idxSDConfigTime0+x] & 0xFF)) << bitShift);
 				bitShift -= 8;
 			}
 			
-			mButtonStart = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftButtonStart) & infoMemLayoutCast.maskButtonStart)>0? true:false;
-			mShowRtcErrorLeds = ((infoMemBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowRwcErrorLeds) & infoMemLayoutCast.maskShowRwcErrorLeds)>0? true:false;
+			mButtonStart = ((configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftButtonStart) & infoMemLayoutCast.maskButtonStart)>0? true:false;
+			mShowRtcErrorLeds = ((configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowRwcErrorLeds) & infoMemLayoutCast.maskShowRwcErrorLeds)>0? true:false;
 
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				abstractSensor.infoMemByteArrayParse(this, mInfoMemBytes);
+				abstractSensor.configByteArrayParse(this, mConfigBytes);
 			}
 
 		}
@@ -271,112 +267,112 @@ public class Shimmer4 extends ShimmerDevice {
 				getFirmwareVersionInternal());
 		
 //		byte[] infoMemBackup = mInfoMemBytes.clone();
-		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray();
+		mConfigBytes = infoMemLayout.createEmptyInfoMemByteArray();
 		
 		refreshEnabledSensorsFromSensorMap();
 		
 		int samplingRate = (int)(32768 / getSamplingRateShimmer());
-		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
-		mInfoMemBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
+		mConfigBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
+		mConfigBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
 
 		
-		mInfoMemBytes[infoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors0) & infoMemLayout.maskSensors);
-		mInfoMemBytes[infoMemLayout.idxSensors1] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors1) & infoMemLayout.maskSensors);
-		mInfoMemBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
+		mConfigBytes[infoMemLayout.idxSensors0] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors0) & infoMemLayout.maskSensors);
+		mConfigBytes[infoMemLayout.idxSensors1] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors1) & infoMemLayout.maskSensors);
+		mConfigBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
 
-		mInfoMemBytes[infoMemLayout.idxSensors3] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors3) & 0xFF);
-		mInfoMemBytes[infoMemLayout.idxSensors4] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors4) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSensors3] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors3) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSensors4] = (byte) ((mEnabledSensors >> infoMemLayout.bitShiftSensors4) & 0xFF);
 
-		mInfoMemBytes[infoMemLayout.idxConfigSetupByte0] = (byte) (0x00);
-		mInfoMemBytes[infoMemLayout.idxConfigSetupByte1] = (byte) (0x00);
-		mInfoMemBytes[infoMemLayout.idxConfigSetupByte2] = (byte) (0x00);
-		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] = (byte) (0x00);
+		mConfigBytes[infoMemLayout.idxConfigSetupByte0] = (byte) (0x00);
+		mConfigBytes[infoMemLayout.idxConfigSetupByte1] = (byte) (0x00);
+		mConfigBytes[infoMemLayout.idxConfigSetupByte2] = (byte) (0x00);
+		mConfigBytes[infoMemLayout.idxConfigSetupByte3] = (byte) (0x00);
 		
 		checkIfInternalExpBrdPowerIsNeeded();
-		mInfoMemBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
+		mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
 		
 		// Derived Sensors
 		if((infoMemLayout.idxDerivedSensors0>0)&&(infoMemLayout.idxDerivedSensors1>0)) { // Check if compatible
-			mInfoMemBytes[infoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors0) & infoMemLayout.maskDerivedChannelsByte);
-			mInfoMemBytes[infoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors1) & infoMemLayout.maskDerivedChannelsByte);
+			mConfigBytes[infoMemLayout.idxDerivedSensors0] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors0) & infoMemLayout.maskDerivedChannelsByte);
+			mConfigBytes[infoMemLayout.idxDerivedSensors1] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors1) & infoMemLayout.maskDerivedChannelsByte);
 			if(infoMemLayout.idxDerivedSensors2>0) { // Check if compatible
-				mInfoMemBytes[infoMemLayout.idxDerivedSensors2] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors2) & infoMemLayout.maskDerivedChannelsByte);
+				mConfigBytes[infoMemLayout.idxDerivedSensors2] = (byte) ((mDerivedSensors >> infoMemLayout.byteShiftDerivedSensors2) & infoMemLayout.maskDerivedChannelsByte);
 			}
 		}
 		
 		//TODO handle the below better
 		mBluetoothBaudRate = 9;
-		mInfoMemBytes[infoMemLayout.idxBtCommBaudRate] = (byte) (mBluetoothBaudRate & infoMemLayout.maskBaudRate);
+		mConfigBytes[infoMemLayout.idxBtCommBaudRate] = (byte) (mBluetoothBaudRate & infoMemLayout.maskBaudRate);
 
 		// Configuration from each Sensor settings
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			abstractSensor.infoMemByteArrayGenerate(this, mInfoMemBytes);
+			abstractSensor.configByteArrayGenerate(this, mConfigBytes);
 		}
 
 		// Shimmer Name
 		for (int i = 0; i < infoMemLayout.lengthShimmerName; i++) {
 			if (i < mShimmerUserAssignedName.length()) {
-				mInfoMemBytes[infoMemLayout.idxSDShimmerName + i] = (byte) mShimmerUserAssignedName.charAt(i);
+				mConfigBytes[infoMemLayout.idxSDShimmerName + i] = (byte) mShimmerUserAssignedName.charAt(i);
 			}
 			else {
-				mInfoMemBytes[infoMemLayout.idxSDShimmerName + i] = (byte) 0xFF;
+				mConfigBytes[infoMemLayout.idxSDShimmerName + i] = (byte) 0xFF;
 			}
 		}
 		
 		// Experiment Name
 		for (int i = 0; i < infoMemLayout.lengthExperimentName; i++) {
 			if (i < mTrialName.length()) {
-				mInfoMemBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) mTrialName.charAt(i);
+				mConfigBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) mTrialName.charAt(i);
 			}
 			else {
-				mInfoMemBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) 0xFF;
+				mConfigBytes[infoMemLayout.idxSDEXPIDName + i] = (byte) 0xFF;
 			}
 		}
 
 		//Configuration Time
-		mInfoMemBytes[infoMemLayout.idxSDConfigTime0] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime0) & 0xFF);
-		mInfoMemBytes[infoMemLayout.idxSDConfigTime1] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime1) & 0xFF);
-		mInfoMemBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
-		mInfoMemBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSDConfigTime0] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime0) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSDConfigTime1] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime1) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSDConfigTime2] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime2) & 0xFF);
+		mConfigBytes[infoMemLayout.idxSDConfigTime3] = (byte) ((mConfigTime >> infoMemLayout.bitShiftSDConfigTime3) & 0xFF);
 
 		
-		mInfoMemBytes[infoMemLayout.idxSDExperimentConfig0] = (byte) ((mButtonStart? infoMemLayout.maskButtonStart:0) << infoMemLayout.bitShiftButtonStart);
+		mConfigBytes[infoMemLayout.idxSDExperimentConfig0] = (byte) ((mButtonStart? infoMemLayout.maskButtonStart:0) << infoMemLayout.bitShiftButtonStart);
 		if(this.isOverrideShowRwcErrorLeds){
-			mInfoMemBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((infoMemLayout.maskShowRwcErrorLeds) << infoMemLayout.bitShiftShowRwcErrorLeds);
+			mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((infoMemLayout.maskShowRwcErrorLeds) << infoMemLayout.bitShiftShowRwcErrorLeds);
 		}
 		else {
-			mInfoMemBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mShowRtcErrorLeds? infoMemLayout.maskShowRwcErrorLeds:0) << infoMemLayout.bitShiftShowRwcErrorLeds);
+			mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mShowRtcErrorLeds? infoMemLayout.maskShowRwcErrorLeds:0) << infoMemLayout.bitShiftShowRwcErrorLeds);
 		}
 
 		if(generateForWritingToShimmer) {
 			// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
 			// (already set to 0xFF at start of method but just incase)
-			System.arraycopy(infoMemLayout.invalidMacId, 0, mInfoMemBytes, infoMemLayout.idxMacAddress, infoMemLayout.lengthMacIdBytes);
+			System.arraycopy(infoMemLayout.invalidMacId, 0, mConfigBytes, infoMemLayout.idxMacAddress, infoMemLayout.lengthMacIdBytes);
 
-			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] = 0;
+			mConfigBytes[infoMemLayout.idxSDConfigDelayFlag] = 0;
 			// Tells the Shimmer to create a new config file on undock/power cycle
 			//TODO RM enabled the two lines below (MN had the below two lines commented out.. but need them to write config successfully over UART)
 			byte configFileWriteBit = (byte) (mConfigFileCreationFlag? (infoMemLayout.maskSDCfgFileWriteFlag << infoMemLayout.bitShiftSDCfgFileWriteFlag):0x00);
-			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= configFileWriteBit;
+			mConfigBytes[infoMemLayout.idxSDConfigDelayFlag] |= configFileWriteBit;
 
-			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= infoMemLayout.bitShiftSDCfgFileWriteFlag;
+			mConfigBytes[infoMemLayout.idxSDConfigDelayFlag] |= infoMemLayout.bitShiftSDCfgFileWriteFlag;
 
 			 // Tells the Shimmer to create a new calibration files on undock/power cycle
 			byte calibFileWriteBit = (byte) (mCalibFileCreationFlag? (infoMemLayout.maskSDCalibFileWriteFlag << infoMemLayout.bitShiftSDCalibFileWriteFlag):0x00);
-			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= calibFileWriteBit;
+			mConfigBytes[infoMemLayout.idxSDConfigDelayFlag] |= calibFileWriteBit;
 		}
 		
 		if(generateForWritingToShimmer) {
 			// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
 			// (already set to 0xFF at start of method but just in case)
-			System.arraycopy(infoMemLayout.invalidMacId, 0, mInfoMemBytes, infoMemLayout.idxMacAddress, infoMemLayout.lengthMacIdBytes);
+			System.arraycopy(infoMemLayout.invalidMacId, 0, mConfigBytes, infoMemLayout.idxMacAddress, infoMemLayout.lengthMacIdBytes);
 
 			//TODO only temporarily here to deal with fake Shimmer4 (i.e., a Shimmer3)
-			mInfoMemBytes[infoMemLayout.idxSDConfigDelayFlag] |= infoMemLayout.bitShiftSDCfgFileWriteFlag;
+			mConfigBytes[infoMemLayout.idxSDConfigDelayFlag] |= infoMemLayout.bitShiftSDCfgFileWriteFlag;
 		}
 		
 		
-		return mInfoMemBytes;
+		return mConfigBytes;
 	}
 	
 	@Override
@@ -520,8 +516,11 @@ public class Shimmer4 extends ShimmerDevice {
 	//						setShimmerVersionObject(shimmerVerObject);
 						}
 						else {
-							processFirmwareVerResponse();
+							initialiseDevice();
 						}
+					}
+					else if(responseCommand==InstructionsResponse.DAUGHTER_CARD_ID_RESPONSE_VALUE){ 
+						setExpansionBoardDetails((ExpansionBoardDetails)parsedResponse);
 					}
 					else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE){ 
 						configBytesParse((byte[])parsedResponse);
@@ -532,16 +531,6 @@ public class Shimmer4 extends ShimmerDevice {
 					else if(responseCommand==InstructionsResponse.BLINK_LED_RESPONSE_VALUE){ 
 	//					mCurrentLEDStatus = byteled[0]&0xFF;
 					}
-					
-	//				//TODO move to SensorBMP180
-	//				else if(responseCommand==InstructionsResponse.BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE){ 
-	//					AbstractSensor abstractSensor = mMapOfSensorClasses.get(SENSORS.BMP180);
-	//					if(abstractSensor!=null && abstractSensor instanceof SensorBMP180){
-	//						SensorBMP180 sensorBmp180 = (SensorBMP180)abstractSensor;
-	//						sensorBmp180.retrievePressureCalibrationParametersFromPacket((byte[])parsedResponse, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
-	//					}
-	//				}
-					
 					else if(responseCommand==InstructionsResponse.STATUS_RESPONSE_VALUE){ 
 						consolePrintLn("STATUS RESPONSE RECEIVED");
 						//Handled in LiteProtocol
@@ -606,7 +595,6 @@ public class Shimmer4 extends ShimmerDevice {
 				@Override
 				public void initialiseStreamingCallback() {
 					mCommsProtocolRadio.stopTimerReadStatus();
-					
 					mCommsProtocolRadio.readRealTimeClock();
 	
 					initaliseDataProcessing();
@@ -661,17 +649,9 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 	
-	private void updateExpectedDataPacketSize() {
-		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
-//		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.ALL);
-		if(mCommsProtocolRadio!=null){
-			mCommsProtocolRadio.setPacketSize(expectedDataPacketSize);
-		}
-	}
-
 	@Override
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp) {
-//		System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packetByteArray));
+//		System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(newPacket));
 
 		ObjectCluster objectCluster = super.buildMsg(newPacket, commType, isTimeSyncEnabled, pcTimestamp);
 		
@@ -692,8 +672,8 @@ public class Shimmer4 extends ShimmerDevice {
 			try {
 				mCommsProtocolRadio.connect();
 			} catch (DeviceException dE) {
-				consolePrintException(dE.getMessage(), dE.getStackTrace());
-				dE.printStackTrace();
+				consolePrintLn("Failed to Connect");
+				consolePrintLn(dE.getMsgDockErrString(mMapOfErrorCodes));
 				
 				disconnect();
 				setBluetoothRadioState(BT_STATE.CONNECTION_FAILED);
@@ -814,23 +794,8 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	
-	private void processFirmwareVerResponse() {
-		if(getHardwareVersion()==HW_ID.SHIMMER_2R){
-//			initializeShimmer2R();
-		} 
-		else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
-//			initializeShimmer3();
-		}
-		else if(getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
-			initializeShimmer4();
-		}
-		
-		mCommsProtocolRadio.startTimerCheckIfAlive();
-	}
-
-	
-	private void initializeShimmer4() {
-		initialise(HW_ID.SHIMMER_4_SDK);
+	private void initialiseDevice() {
+//		initialise(HW_ID.SHIMMER_4_SDK);
 		setHaveAttemptedToReadConfig(true);
 		
 		if(mSendProgressReport){
@@ -906,12 +871,12 @@ public class Shimmer4 extends ShimmerDevice {
 			// this is handled in the next step, i.e., no need for
 			// operationStart() here
 			startOperation(BT_STATE.CONNECTING, mCommsProtocolRadio.mRadioProtocol.getListofInstructions().size());
-			
 			mCommsProtocolRadio.mRadioProtocol.setInstructionStackLock(false);
 		}
 		
 		mCommsProtocolRadio.startTimerReadStatus();	// if shimmer is using LogAndStream FW, read its status periodically
 		mCommsProtocolRadio.startTimerReadBattStatus(); // if shimmer is using LogAndStream FW, read its status periodically
+		mCommsProtocolRadio.startTimerCheckIfAlive();
 	}
 
 	//TODO - Copied from ShimmerObject
@@ -923,7 +888,6 @@ public class Shimmer4 extends ShimmerDevice {
 	//TODO - Copied from ShimmerPC
 	protected void hasStopStreaming() {
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
-				// Do something here
 		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STOP_STREAMING, getMacId(), getComPort());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		mCommsProtocolRadio.startTimerReadStatus();
@@ -933,7 +897,6 @@ public class Shimmer4 extends ShimmerDevice {
 	//TODO - Copied from ShimmerPC
 	protected void isNowStreaming() {
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
-		// Do something here
 		
 		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_START_STREAMING, getMacId(), getComPort());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);

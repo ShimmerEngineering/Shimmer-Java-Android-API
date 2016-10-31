@@ -678,7 +678,7 @@ public class SensorLSM303 extends AbstractSensor{
 
 	
 	@Override 
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {//XXX - What is "ShimmerDevice shimmerDevice" doing here? 
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {//XXX - What is "ShimmerDevice shimmerDevice" doing here? 
 		int idxConfigSetupByte0 =              		6; 
 		int idxConfigSetupByte2 =              		8;
 //		int idxLSM303DLHCAccelCalibration =    	   94; 
@@ -725,7 +725,7 @@ public class SensorLSM303 extends AbstractSensor{
 
 	
 	@Override 
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {//XXX - What is "ShimmerDevice shimmerDevice" doing here? 
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {//XXX - What is "ShimmerDevice shimmerDevice" doing here? 
 		int idxConfigSetupByte0 =              		6; 
 		int idxConfigSetupByte2 =              		8;
 //		int idxLSM303DLHCAccelCalibration =    	   94; 

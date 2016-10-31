@@ -113,7 +113,7 @@ public class Configuration {
 		public static final String MINUTES = "min";
 		public static final String METER = "m";
 		public static final String METER_PER_SECOND = "m/s";
-		public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";  //XXX-RS-LSM-SensorClass?
+		public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";
 		public static final String METER_SQUARE = "m^2";
 		public static final String MILLIMETER = "mm";
 		public static final String MILLIMETER_PER_SECOND = "mm/s";
@@ -121,7 +121,7 @@ public class Configuration {
 		public static final String MILLIMETER_SQUARE = "mm^2";
 		public static final String MILLIMETER_SQUARE_PER_SECOND = "mm^2/s";
 		public static final String DEGREES_PER_SECOND = "deg/s";
-		public static final String LOCAL_FLUX = "local_flux";  //XXX-RS-LSM-SensorClass?
+		public static final String LOCAL_FLUX = "local_flux";
 		public static final String KOHMS = "kOhms";
 		public static final String KOHMS_PER_SECOND = "kOhms/s";
 		public static final String KOHMS_SECONDS = "kOhm.s";
@@ -132,11 +132,11 @@ public class Configuration {
 		public static final String KPASCAL = "kPa";
 		public static final String DEGREES_CELSUIS = "Degrees Celsius";
 		public static final String DEGREES = "Degrees";
-		public static final String U_TESLA = "uT";  //XXX-RS-LSM-SensorClass?
+		public static final String U_TESLA = "uT";
 		public static final String U_SIEMENS = "uS";
 		//TODO: should be .SSS rather then .000? .000 might be required for viewing files in Microsoft Office
 		public static final String DATE_FORMAT = "yyyy/mm/dd hh:mm:ss.000";
-		public static final String GRAVITY = "g"; //XXX-RS-LSM-SensorClass?
+		public static final String GRAVITY = "g";
 		public static final String CLOCK_UNIT = "Ticks";
 		public static final String RPM = "rpm";
 		public static final String FREQUENCY = "Hz";
@@ -945,8 +945,8 @@ public class Configuration {
 			GPS("GPS"),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280),
 			STC3100_MONITORING (SensorSTC3100.GuiLabelSensorTiles.STC3100_MONITORING);
-			private String tileText = "";
 			
+			private String tileText = "";
 			GuiLabelSensorTiles(String text){
 				this.tileText = text;
 			}
@@ -1454,7 +1454,9 @@ public class Configuration {
 			private static final ShimmerVerObject svoHighGAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 
 			private static final ShimmerVerObject svoShimmer4Stock = 			new ShimmerVerObject(HW_ID.SHIMMER_4_SDK,FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-			
+
+			private static final ShimmerVerObject svoArduino = 			new ShimmerVerObject(HW_ID.ARDUINO,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
 					svoExgSdLog, svoExgBtStream, svoExgLogAndStream,  
 					svoExgUnifiedSdLog, svoExgUnifiedBtStream, svoExgUnifiedLogAndStream,
@@ -1467,7 +1469,7 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog,svoAnyIntExpBoardAndBtStream,svoAnyIntExpBoardAndLogAndStream, 
-					svoShimmer4Stock); 
+					svoShimmer4Stock, svoArduino); 
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
 					svoGsrSdLog, svoGsrBtStream, svoGsrLogAndStream, svoGsrGqBle,
@@ -2422,6 +2424,23 @@ public class Configuration {
 	    }
 	}
 
+	
+	public static final class Arduino{
+		
+		public static enum GuiLabelSensorTiles{
+			ANALOG_IN("Analog In"),//SensorArduino.GuiLabelSensorTiles.ANALOG_IN),
+			DIGITAL_IN("Digital In");//SensorArduino.GuiLabelSensorTiles.DIGITAL_IN);
+			
+			private String tileText = "";
+			GuiLabelSensorTiles(String text){
+				this.tileText = text;
+			}
+			
+			public String getTileText(){
+				return tileText;
+			}
+		}
+	}
 	
 }
 

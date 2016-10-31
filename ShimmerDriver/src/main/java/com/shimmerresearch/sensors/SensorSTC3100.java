@@ -343,14 +343,14 @@ public class SensorSTC3100 extends AbstractSensor{
 	}
 
 	@Override
-	public void infoMemByteArrayGenerate(ShimmerDevice shimmerDevice,
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice,
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void infoMemByteArrayParse(ShimmerDevice shimmerDevice,
+	public void configByteArrayParse(ShimmerDevice shimmerDevice,
 			byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 		

@@ -160,7 +160,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long mShimmerLastReadRealTimeClockValue = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
 	protected InfoMemLayout mInfoMemLayout;// = new InfoMemLayoutShimmer3(); //default
-	protected byte[] mInfoMemBytes = InfoMemLayout.createEmptyInfoMemByteArray(512);
+	protected byte[] mConfigBytes = InfoMemLayout.createEmptyInfoMemByteArray(512);
 	/**shows the original contents of the Infomem any configuration is changed */
 	protected byte[] mInfoMemBytesOriginal = InfoMemLayout.createEmptyInfoMemByteArray(512);
 	
@@ -253,7 +253,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
 	 */
 	protected abstract void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE commType);
-	public abstract void configBytesParse(byte[] infoMemContents);
+	public abstract void configBytesParse(byte[] configBytes);
 	public abstract byte[] configBytesGenerate(boolean generateForWritingToShimmer);
 	public abstract void createConfigBytesLayout();
 
@@ -830,7 +830,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return the mShimmerInfoMemBytes
 	 */
 	public byte[] getShimmerInfoMemBytes() {
-		return mInfoMemBytes;
+		return mConfigBytes;
 	}
 
 	public byte[] getShimmerInfoMemBytesOriginal() {
@@ -1968,6 +1968,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		sensorMapUpdateFromEnabledSensorsVars();
 		algorithmMapUpdateFromEnabledSensorsVars();
 //		sensorMapCheckandCorrectSensorDependencies();
+		generateParserMap();
 		
 		//Debugging
 //		System.err.println("After");
@@ -1975,7 +1976,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		// This is to update the newly created sensor/algorithm classes (created
 		// above) with the current Shimmer sampling rate
+		
 		setSamplingRateSensors(getSamplingRateShimmer());
+		
+		updateExpectedDataPacketSize();
 	}
 	
 	protected void handleSpecialCasesAfterSensorMapCreate() {
@@ -3232,6 +3236,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	public void updateExpectedDataPacketSize() {
+		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
+//		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.ALL);
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.setPacketSize(expectedDataPacketSize);
+		}
+	}
+
+	
 	/**This method will not only return the Com Port but also update it from the CommsProtocolRadio if it is in use.  
 	 * @return
 	 */
@@ -3439,6 +3452,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public static void setMapOfErrorCodes(TreeMap<Integer, String> mapOfErrorCodes) {
 		mMapOfErrorCodes.putAll(mapOfErrorCodes);
+	}
+
+	public void sensorAndConfigMapsCreateCommon() {
+		generateSensorAndParserMaps();
+		
+		generateMapOfAlgorithmModules();
+		generateMapOfAlgorithmConfigOptions();
+		generateMapOfAlgorithmGroupingMap();
+		
+		handleSpecialCasesAfterSensorMapCreate();
 	}
 
 }

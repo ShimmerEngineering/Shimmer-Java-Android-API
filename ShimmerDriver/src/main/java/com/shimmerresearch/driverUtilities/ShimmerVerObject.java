@@ -223,7 +223,8 @@ public class ShimmerVerObject implements Serializable {
 			mFirmwareVersionCode = -1;
 			
 			if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,6,5))
-					|| mHardwareVersion==HW_ID.SHIMMER_4_SDK){
+					|| mHardwareVersion==HW_ID.SHIMMER_4_SDK
+					|| mHardwareVersion==HW_ID.ARDUINO){
 				mFirmwareVersionCode = 7;
 			}
 			else if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,7,3))

@@ -179,22 +179,18 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	 * 
 	 */
 	private void clearSerialBuffer() throws DeviceException {
+		/* JC: not working well on android
 		if(bytesAvailableToBeRead()){
-			byte[] buffer;
-			try {
-				buffer = readBytes(availableBytes());
-				printLogDataForDebugging("Discarding:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(buffer));
-			} catch (DeviceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			byte[] buffer = readBytes(availableBytes());
+			printLogDataForDebugging("Discarding:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(buffer));
 		}
+		*/
 		
 		while (availableBytes()!=0){
 			int available = availableBytes();
 			if (bytesAvailableToBeRead()){
 				byte[] tb=readBytes(1);
-				String msg = "First Time : " + Arrays.toString(tb);
+				String msg = "First Time : " + UtilShimmer.bytesToHexStringWithSpacesFormatted(tb);
 				printLogDataForDebugging(msg);
 			}
 		}		
@@ -598,16 +594,16 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			//Discard first read
 			if(mFirstTime){
 //				printLogDataForDebugging("First Time read");
-//				clearSerialBuffer();
+				clearSerialBuffer();
 				
-				while (availableBytes()!=0){
-					int available = availableBytes();
-					if (bytesAvailableToBeRead()){
-						byteBuffer=readBytes(1);
-						String msg = "First Time : " + Arrays.toString(byteBuffer);
-						printLogDataForDebugging(msg);
-					}
-				}
+//				while (availableBytes()!=0){
+//					int available = availableBytes();
+//					if (bytesAvailableToBeRead()){
+//						byteBuffer=readBytes(1);
+//						String msg = "First Time : " + UtilShimmer.bytesToHexStringWithSpacesFormatted(byteBuffer);
+//						printLogDataForDebugging(msg);
+//					}
+//				}
 				
 				//TODO: Check with JC on the below!!! Or just clear seriable buffer and remove need for mFirstTime
 				//Below added from original implementation -> doesn't wait for timeout on first command
@@ -724,10 +720,13 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				//Shimmer3
 				int lengthSettings = 8;// get Sampling rate, accel range, config setup byte0, num chans and buffer size
 				int lengthChannels = 6;// read each channel type for the num channels
-				if(!(getHardwareVersion()==HW_ID.SHIMMER_3)
-						&&!(getHardwareVersion()==HW_ID.SHIMMER_4_SDK)) {
+				if(mShimmerVerObject.isShimmerGen2()) {
 					lengthSettings = 5;
 					lengthChannels = 3;
+				}
+				else if(mShimmerVerObject.getHardwareVersion()==HW_ID.ARDUINO) {
+					lengthSettings = 10;
+					lengthChannels = 0;
 				}
            	// get Sampling rate, accel range, config setup byte0, num chans and buffer size
 				for (int i = 0; i < lengthSettings; i++) {
@@ -779,10 +778,11 @@ public class LiteProtocol extends AbstractCommsProtocol{
 
 				ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 				this.mShimmerVerObject = shimmerVerObject; // store a local copy
-				eventResponseReceived(responseCommand, shimmerVerObject);
 				
 				printLogDataForDebugging("FW Version Response Received. FW Code: " + shimmerVerObject.getFirmwareVersionCode());
 				printLogDataForDebugging("FW Version Response Received: " + shimmerVerObject.getFirmwareVersionParsed());
+
+				eventResponseReceived(responseCommand, shimmerVerObject);
 			}
 
 //			else if(responseCommand==InstructionsResponse.ALL_CALIBRATION_RESPONSE_VALUE){

@@ -9,6 +9,8 @@ public class ShimmerRadioInitializer {
 
 	protected AbstractSerialPortComm serialCommPort;
 	
+	private boolean mUseLegacyDelayToDelayForResponse = false;
+	
 	public ShimmerRadioInitializer(){
 	}
 
@@ -40,7 +42,8 @@ public class ShimmerRadioInitializer {
 		byte[] instruction = {InstructionsGet.GET_SHIMMER_VERSION_COMMAND_VALUE}; 
 		
 		serialCommPort.txBytes(instruction);
-		Thread.sleep(200);
+		if(mUseLegacyDelayToDelayForResponse)
+			Thread.sleep(200);
 		byte[] response = serialCommPort.rxBytes(3);
 		int hardwareVersion = response[2];
 		
@@ -52,7 +55,8 @@ public class ShimmerRadioInitializer {
 		
 		serialCommPort.txBytes(instruction);
 		byte[] bufferInquiry = new byte[6]; 
-		Thread.sleep(200);
+		if(mUseLegacyDelayToDelayForResponse)
+			Thread.sleep(200);
 		serialCommPort.rxBytes(1);
 		serialCommPort.rxBytes(1);
 		bufferInquiry = serialCommPort.rxBytes(6);
