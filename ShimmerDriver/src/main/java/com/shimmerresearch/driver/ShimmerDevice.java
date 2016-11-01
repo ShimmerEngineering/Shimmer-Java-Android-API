@@ -1702,8 +1702,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public boolean isLegacySdLog(){
-		if(isThisVerCompatibleWith(FW_ID.SDLOG, 0, 5, 0)){
-//		if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==5){
+		if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==5){
 			return true;
 		}
 		return false;
