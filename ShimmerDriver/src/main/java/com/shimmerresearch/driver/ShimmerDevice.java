@@ -335,14 +335,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
 		for(COMMUNICATION_TYPE commType:COMMUNICATION_TYPE.values()){
-			for(Entry<Integer, SensorDetails> sensorEntry:mSensorMap.entrySet()){
-				if(sensorEntry.getValue().isEnabled(commType)){
+			for(Integer sensorMapKey:mSensorMap.keySet()){
+				SensorDetails SensorDetails = mSensorMap.get(sensorMapKey);
+				if(SensorDetails.isEnabled(commType)){
 					TreeMap<Integer, SensorDetails> parserMapPerComm = mParserMap.get(commType);
 					if(parserMapPerComm==null){
 						parserMapPerComm = new TreeMap<Integer, SensorDetails>();
 						mParserMap.put(commType, parserMapPerComm);
 					}
-					parserMapPerComm.put(sensorEntry.getKey(), sensorEntry.getValue());
+					parserMapPerComm.put(sensorMapKey, SensorDetails);
 				}
 			}
 		}
@@ -948,7 +949,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public ObjectCluster buildMsg(byte[] dataPacketFormat, byte[] packetByteArray, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
-		
 		interpretDataPacketFormat(dataPacketFormat, commType);
 		return buildMsg(packetByteArray, commType, isTimeSyncEnabled, pcTimestamp);
 	}
@@ -959,7 +959,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return
 	 */
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
-		boolean debug = false;
+		boolean debug = true;
+		
+		if(debug)
+			consolePrintLn("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(newPacket));
 		
 		ObjectCluster ojc = new ObjectCluster(mShimmerUserAssignedName, getMacId());
 		ojc.mRawData = newPacket;
@@ -980,7 +983,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 						System.arraycopy(newPacket, index, sensorByteArray, 0, sensorByteArray.length);
 					}
 					else{
-						//TODO replace with consolePrintSystem
 						consolePrintLn(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetailsRef.mGuiFriendlyLabel);
 					}
 				}
@@ -1971,14 +1973,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		//Debugging
 //		System.err.println("After");
-//		printSensorAndParserMaps();
+		printSensorAndParserMaps();
 		
 		// This is to update the newly created sensor/algorithm classes (created
 		// above) with the current Shimmer sampling rate
 		
 		setSamplingRateSensors(getSamplingRateShimmer());
-		
-		updateExpectedDataPacketSize();
 	}
 	
 	protected void handleSpecialCasesAfterSensorMapCreate() {
@@ -2023,10 +2023,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		consolePrintLn("Derived Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mDerivedSensors, 3));
 		for(SensorDetails sensorDetails:mSensorMap.values()){
 			consolePrintLn("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
+			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				consolePrintLn("\t\tChannel:\t" + channelDetails.mObjectClusterName);
+			}
 		}
 		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
 			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
 				consolePrintLn("PARSER SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					consolePrintLn("\t\tChannel:\t" + channelDetails.mObjectClusterName);
+				}
 			}
 		}
 		consolePrintLn("");
@@ -2076,6 +2082,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * 
 	 */
 	public void sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE commType) {
+		//TODO should this be done afterwards (as well?)?
 		handleSpecCasesBeforeSensorMapUpdateGeneral();
 
 		if(mSensorMap==null){
@@ -3200,6 +3207,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void startStreaming() {
+		updateExpectedDataPacketSize();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.startStreaming();
 		}
@@ -3236,6 +3244,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void updateExpectedDataPacketSize() {
+		generateParserMap();
 		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.BLUETOOTH);
 //		int expectedDataPacketSize = getExpectedDataPacketSize(COMMUNICATION_TYPE.ALL);
 		if(mCommsProtocolRadio!=null){

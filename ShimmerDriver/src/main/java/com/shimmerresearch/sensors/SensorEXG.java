@@ -280,39 +280,47 @@ public class SensorEXG extends AbstractSensor{
 	private static List<String> listOfChannels_Chip1Ch1_24Bit = Arrays.asList(
 			ObjectClusterSensorName.ECG_LL_RA_24BIT,
 			ObjectClusterSensorName.EMG_CH1_24BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT);
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT,
+			ObjectClusterSensorName.EXG1_CH1_24BIT);
 	private static List<String> listOfChannels_Chip1Ch1_16Bit = Arrays.asList(
 			ObjectClusterSensorName.ECG_LL_RA_16BIT,
 			ObjectClusterSensorName.EMG_CH1_16BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT);
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT,
+			ObjectClusterSensorName.EXG1_CH1_16BIT);
 	
 	//Chip 1 - 16-bit
 	private static List<String> listOfChannels_Chip1Ch2_24Bit = Arrays.asList(
 			ObjectClusterSensorName.ECG_LA_RA_24BIT,
 			ObjectClusterSensorName.EMG_CH2_24BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT);
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT,
+			ObjectClusterSensorName.EXG1_CH2_24BIT);
 	private static List<String> listOfChannels_Chip1Ch2_16Bit = Arrays.asList(
 			ObjectClusterSensorName.ECG_LA_RA_16BIT,
 			ObjectClusterSensorName.EMG_CH2_16BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT);
+			ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT,
+			ObjectClusterSensorName.EXG1_CH2_16BIT);
 	
 	//Chip 2 - 24-bit
 	private static List<String> listOfChannels_Chip2Ch1_24Bit = Arrays.asList(
 			ObjectClusterSensorName.ECG_RESP_24BIT,
 			ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_24BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT);
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT,
+			ObjectClusterSensorName.EXG2_CH1_24BIT);
 	private static List<String> listOfChannels_Chip2Ch1_16Bit = Arrays.asList(
 			ObjectClusterSensorName.ECG_RESP_16BIT,
 			ObjectClusterSensorName.ECG_CHIP2_CH1_DUMMY_16BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT);
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT,
+			ObjectClusterSensorName.EXG2_CH1_16BIT);
 	
 	//Chip 1 - 16-bit
 	private static List<String> listOfChannels_Chip2Ch2_24Bit = Arrays.asList(
 			ObjectClusterSensorName.ECG_VX_RL_24BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT);
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT,
+			ObjectClusterSensorName.EXG2_CH2_24BIT);
 	private static List<String> listOfChannels_Chip2Ch2_16Bit = Arrays.asList(
 			ObjectClusterSensorName.ECG_VX_RL_16BIT,
-			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT);
+			ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT,
+			ObjectClusterSensorName.EXG2_CH2_16BIT);
 
 	//Not parsed from Shimmer data packet, calculated afterwards
 	private static List<String> listOfChannels_Derived_24Bit = Arrays.asList(
@@ -1534,6 +1542,8 @@ public class SensorEXG extends AbstractSensor{
 			System.arraycopy(infoMemBytes, idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
 		}
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+		
+		handleSpecCasesAfterSensorMapUpdateFromEnabledSensors();
 	}
 	
 
@@ -3085,6 +3095,7 @@ public class SensorEXG extends AbstractSensor{
 	@Override
 	public void handleSpecCasesAfterSensorMapUpdateFromEnabledSensors() {
 		internalCheckExgModeAndUpdateSensorMap();
+		updateEnabledSensorsFromExgResolution();
 	}
 	
 	

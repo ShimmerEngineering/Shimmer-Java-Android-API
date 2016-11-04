@@ -247,6 +247,9 @@ public class Shimmer4 extends ShimmerDevice {
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 				abstractSensor.configByteArrayParse(this, mConfigBytes);
 			}
+			
+			//need to update parser map here as ExG config bytes change which of ECG/EMG/Resp etc. is enabled
+			generateParserMap();
 
 		}
 		checkAndCorrectShimmerName(shimmerName);
@@ -651,8 +654,6 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp) {
-//		System.out.println("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(newPacket));
-
 		ObjectCluster objectCluster = super.buildMsg(newPacket, commType, isTimeSyncEnabled, pcTimestamp);
 		
 //		if(commType==COMMUNICATION_TYPE.BLUETOOTH){
