@@ -366,9 +366,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 			index = index + channelDetails.mDefaultNumBytes;
 		}
 		//Debugging
-		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
-				new String[]{ObjectClusterSensorName.GSR_CONDUCTANCE, CHANNEL_TYPE.UNCAL.toString()},
-				new String[]{ObjectClusterSensorName.GSR, CHANNEL_TYPE.UNCAL.toString()})); 
+//		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+//				new String[]{ObjectClusterSensorName.GSR_CONDUCTANCE, CHANNEL_TYPE.UNCAL.toString()},
+//				new String[]{ObjectClusterSensorName.GSR, CHANNEL_TYPE.UNCAL.toString()})); 
 		
 		return objectCluster;
 	}

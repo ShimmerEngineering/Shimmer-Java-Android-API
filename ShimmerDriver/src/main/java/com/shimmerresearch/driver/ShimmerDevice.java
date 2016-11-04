@@ -959,7 +959,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return
 	 */
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
-		boolean debug = true;
+		boolean debug = false;
 		
 		if(debug)
 			consolePrintLn("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(newPacket));
@@ -1973,7 +1973,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		//Debugging
 //		System.err.println("After");
-		printSensorAndParserMaps();
+//		printSensorAndParserMaps();
 		
 		// This is to update the newly created sensor/algorithm classes (created
 		// above) with the current Shimmer sampling rate
