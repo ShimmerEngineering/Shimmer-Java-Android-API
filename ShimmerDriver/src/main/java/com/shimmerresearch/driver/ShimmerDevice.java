@@ -1965,15 +1965,26 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		System.err.println("Before");
 //		printSensorAndParserMaps();
 
+		//TODO ideally this line shouldn't be here
 		sensorAndConfigMapsCreate();
-		sensorMapUpdateFromEnabledSensorsVars();
-		algorithmMapUpdateFromEnabledSensorsVars();
-//		sensorMapCheckandCorrectSensorDependencies();
-		generateParserMap();
+		
+		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors);
+		
+//		sensorMapUpdateFromEnabledSensorsVars();
+//		algorithmMapUpdateFromEnabledSensorsVars();
+////		sensorMapCheckandCorrectSensorDependencies();
+//		generateParserMap();
 		
 		//Debugging
 //		System.err.println("After");
 //		printSensorAndParserMaps();
+		
+		//TODO include this here after testing
+//		// Configuration from each Sensor settings
+//		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
+//			abstractSensor.configByteArrayParse(this, mConfigBytes);
+//		}
+//
 		
 		// This is to update the newly created sensor/algorithm classes (created
 		// above) with the current Shimmer sampling rate
