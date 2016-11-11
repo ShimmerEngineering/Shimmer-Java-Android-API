@@ -16,6 +16,7 @@ import com.shimmerresearch.sensors.AbstractSensor;
  * @author Lim
  *
  */
+@Deprecated
 public class ShimmerByteDataProcessor implements Serializable {
 
 	protected String[] mSignalDataTypeArray;

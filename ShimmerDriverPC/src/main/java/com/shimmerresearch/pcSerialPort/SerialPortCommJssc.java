@@ -9,7 +9,7 @@ import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
 import com.shimmerresearch.comms.serialPortInterface.ErrorCodesSerialPort;
-import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortListener;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.DeviceException;
@@ -18,7 +18,7 @@ import com.shimmerresearch.exceptions.DeviceException;
  * @author Mark Nolan
  *
  */
-public class SerialPortCommJssc extends AbstractSerialPortComm implements SerialPortListener {
+public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialPortListener {
 
 	protected transient SerialPort mSerialPort = null;
 	public String mUniqueId = "";

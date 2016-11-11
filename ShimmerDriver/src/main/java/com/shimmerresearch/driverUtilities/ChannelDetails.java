@@ -34,6 +34,7 @@ public class ChannelDetails implements Serializable {
 		
 		INT8(8, 1, true),
 		INT12(12, 2, true),
+		INT14(14, 2, true),
 //		INT12_LBJ(2, true), //Left bit justified 
 		INT16(16, 2, true),
 		INT24(24, 3, true),
@@ -56,7 +57,11 @@ public class ChannelDetails implements Serializable {
 	    public int getNumBytes(){
 	    	return numBytes;
 	    }
-	    
+
+	    public int getNumBits(){
+	    	return numBits;
+	    }
+
 	    public boolean isSigned(){
 	    	return isSigned;
 	    }

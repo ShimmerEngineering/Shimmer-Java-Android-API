@@ -69,6 +69,10 @@ public abstract class AbstractCommsProtocol {
 	public abstract void stopStreaming();
 	public abstract void stopStreamingAndLogging();
 	
+	/** only used for the STC3100 chip in the Shimmer4*/
+	public abstract void writeBattStatusPeriod(int periodInSec);
+	public abstract void readBattStatusPeriod();
+
 	public abstract void restartTimersIfNull();
 	
 
@@ -185,7 +189,5 @@ public abstract class AbstractCommsProtocol {
 		mMapOfMemReadDetails.remove(command);
 		mMemBuffer = new byte[]{};
 	}
-
-
 	
 }

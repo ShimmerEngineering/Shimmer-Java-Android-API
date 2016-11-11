@@ -39,7 +39,7 @@ import com.shimmerresearch.algorithms.orientation.OrientationModule9DOFLoader;
 import com.shimmerresearch.bluetooth.DataProcessingInterface;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
-import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -3269,7 +3269,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public String getComPort() {
 		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
-			setComPort(((AbstractSerialPortComm) mCommsProtocolRadio.mRadioHal).mConnectionHandle); 
+			setComPort(((AbstractSerialPortHal) mCommsProtocolRadio.mRadioHal).getConnectionHandle()); 
 		}
 		return mComPort;
 	}
@@ -3465,7 +3465,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	public void setRadio(AbstractSerialPortComm commsProtocolRadio) {
+	public void setRadio(AbstractSerialPortHal commsProtocolRadio) {
 		// TODO Auto-generated method stub
 	}
 

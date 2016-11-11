@@ -24,8 +24,22 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.sensors.SensorSTC3100;
+import com.shimmerresearch.sensors.SensorSTC3100Details;
 
 public class LiteProtocol extends AbstractCommsProtocol{
+
+	public class Temp{
+		public class InstructionsSet{
+			 public static final int SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE = 0x9C;
+		}
+		public class InstructionsResponse{
+			 public static final int RSP_I2C_BATT_STATUS_COMMAND_VALUE = 0x9D;
+		}
+		public class InstructionsGet{
+			 public static final int GET_I2C_BATT_STATUS_COMMAND_VALUE = 0x9E;
+		}
+	}
 
 	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	protected int mCurrentCommand;
@@ -187,10 +201,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		*/
 		
 		while (availableBytes()!=0){
-			int available = availableBytes();
 			if (bytesAvailableToBeRead()){
-				byte[] tb=readBytes(1);
-				String msg = "First Time : " + UtilShimmer.bytesToHexStringWithSpacesFormatted(tb);
+				int available = availableBytes();
+				byte[] tb=readBytes(available);
+				String msg = "Clearing Serial Buffer : " + UtilShimmer.bytesToHexStringWithSpacesFormatted(tb);
 				printLogDataForDebugging(msg);
 			}
 		}		
@@ -430,6 +444,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 							mTransactionCompleted = true;
 							setInstructionStackLock(false);
 						}
+						else{
+							printLogDataForDebugging("Unknown SET command = " + mCurrentCommand);	
+						}
 						printLogDataForDebugging("Ack Received for Command: \t\t\t\t" + btCommandToString(mCurrentCommand));
 					}
 					
@@ -657,19 +674,21 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				
 				byteBuffer=readBytes(1);
 				if(byteBuffer != null){
-					if(byteBuffer[0]==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE) {
+					if((byteBuffer[0]&0xFF)==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE) {
 						printLogDataForDebugging("ACK RECEIVED , Connected State!!");
 						byteBuffer = readBytes(1);
 						if (byteBuffer!=null){ //an android fix. not fully investigated (JC)
-							if(byteBuffer[0]==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
+							if((byteBuffer[0]&0xFF)==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
 								byteBuffer = readBytes(1);
-							}
-							if(byteBuffer[0]==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){
-								processInstreamResponse();
 							}
 						}
 					}
+					
+					if((byteBuffer[0]&0xFF)==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){
+						processInstreamResponse();
+					}
 				}
+				
 				
 				clearSerialBuffer();
 			}
@@ -1134,8 +1153,12 @@ public class LiteProtocol extends AbstractCommsProtocol{
 						clearMemReadBuffer(InstructionsGet.GET_CALIB_DUMP_COMMAND_VALUE);
 					}
 				}
-				
 			}
+			else if(responseCommand==Temp.InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
+				byte[] responseData = readBytes(10); 
+				System.err.println("STC3100 response = " + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseData));
+			}
+
 			else{
 				printLogDataForDebugging("Unhandled BT response: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(new byte[]{(byte) responseCommand}));
 			}
@@ -1534,6 +1557,11 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					eventNewResponse(responseData);
 				}
 			}
+			else if(inStreamResponseCommand==Temp.InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
+				byte[] responseData = readBytes(10); 
+				SensorSTC3100Details sensorSTC3100Details = new SensorSTC3100Details(responseData); 
+				eventResponseReceived(inStreamResponseCommand, sensorSTC3100Details);
+			}
 
 		} catch (DeviceException e) {
 			// TODO Auto-generated catch block
@@ -1641,7 +1669,6 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 
-	//TODO add support for Shimmer4
 	@Override
 	public void writeCalibrationDump(byte[] calibDump){
 		if(this.getFirmwareVersionCode()>=7){
@@ -1862,7 +1889,28 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			stopTimerReadStatus();
 		}
 	}
-	
+
+	/**Set battery status (STC3100 chip) auto-transmission Period (in sec) 
+	 */
+	@Override
+	public void writeBattStatusPeriod(int periodInSec) {
+		if(getShimmerVersion()==HW_ID.SHIMMER_4_SDK){
+			byte[] buf = new byte[2];
+			buf[0] = (byte) (periodInSec&0xFF);
+			buf[1] = (byte) ((periodInSec>>8)&0xFF);
+			writeInstruction(new byte[]{(byte) (Temp.InstructionsSet.SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE&0xFF), buf[0], buf[1]});
+		}
+	}
+
+	/**Get battery status (STC3100 chip) auto-transmission Period (in sec) 
+	 */
+	@Override
+	public void readBattStatusPeriod() {
+		if(getShimmerVersion()==HW_ID.SHIMMER_4_SDK){
+			writeInstruction(Temp.InstructionsGet.GET_I2C_BATT_STATUS_COMMAND_VALUE);
+		}
+	}
+
 	//endregion
 	
 	//region --------- TIMERS --------- 
@@ -2353,7 +2401,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		if((getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
 				||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){ // check if Shimmer is using LogAndStream firmware
 			writeInstruction(InstructionsGet.GET_STATUS_COMMAND_VALUE);
-			printLogDataForDebugging("Instruction added to the list");
+			printLogDataForDebugging("Instruction added to th e list");
 		}
 	}
 

@@ -14,10 +14,10 @@ import java.util.List;
 
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.driver.Shimmer4;
 import com.shimmerresearch.driver.ShimmerDevice;
 //import com.shimmerresearch.bluetooth.ShimmerBluetooth.CURRENT_OPERATION;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driver.shimmer4sdk.Shimmer4;
 
 /** Hold all progress details for Bluetooth activity.
  * @author mnolan

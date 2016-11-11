@@ -2,9 +2,9 @@ package com.shimmerresearch.comms.serialPortInterface;
 
 import com.shimmerresearch.exceptions.DeviceException;
 
-/**
+/** Hardware abstraction layer
+ * 
  * @author Mark Nolan
- *
  */
 public interface InterfaceSerialPortHal {
 

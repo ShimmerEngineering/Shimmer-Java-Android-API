@@ -66,7 +66,7 @@ message LiteProtocolInstructionSet {
 		STOP_SDBT_COMMAND 						= 0x97;
 		SET_CALIB_DUMP_COMMAND					= 0x98;
 		UPD_CONFIG_MEMORY_COMMAND				= 0x9B;
-		UPD_SDLOG_CFG_COMMAND					= 0x9C;
+		SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE	= 0x9C;
   	}
   	
    enum InstructionsGet {
@@ -117,6 +117,7 @@ message LiteProtocolInstructionSet {
 		GET_RWC_COMMAND                        = 0x91;		
 		GET_VBATT_COMMAND                      = 0x95;
 		GET_CALIB_DUMP_COMMAND					= 0x9A;
+		GET_I2C_BATT_STATUS_COMMAND_VALUE 		= 0x9E;
 	}
   
   	enum InstructionsResponse {
@@ -167,5 +168,6 @@ message LiteProtocolInstructionSet {
 		RWC_RESPONSE                           = 0x90 [(response_size) = 8];
 		VBATT_RESPONSE                         = 0x94 [(response_size) = 3];
 		RSP_CALIB_DUMP_COMMAND					= 0x99 [(response_size) = -1];
+		RSP_I2C_BATT_STATUS_COMMAND_VALUE		= 0x9D [(response_size) = 10];
   	}
 }

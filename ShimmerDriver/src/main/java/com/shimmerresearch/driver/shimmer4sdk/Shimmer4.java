@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driver.shimmer4sdk;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,10 +13,18 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
+import com.shimmerresearch.comms.radioProtocol.LiteProtocol.Temp;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
+import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.InfoMemLayout;
+import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
+import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
@@ -29,6 +37,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.SensorSTC3100Details;
 import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorBMP280;
@@ -545,6 +554,9 @@ public class Shimmer4 extends ShimmerDevice {
 					else if(responseCommand==InstructionsResponse.RWC_RESPONSE_VALUE){ 
 						setLastReadRealTimeClockValue((long)parsedResponse);
 					}
+					else if(responseCommand==Temp.InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE){ 
+						System.err.println(((SensorSTC3100Details)parsedResponse).getDebugString());
+					}
 					else{
 						Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 						while(iterator.hasNext()){
@@ -810,7 +822,10 @@ public class Shimmer4 extends ShimmerDevice {
 //		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
 			readConfigBytes();
 			readCalibrationDump();
-			
+
+//			((CommsProtocolRadio)mCommsProtocolRadio).mRadioProtocol.readBattStatusPeriod();
+			((CommsProtocolRadio)mCommsProtocolRadio).mRadioProtocol.writeBattStatusPeriod(2);
+
 			//TODO improve below by putting into sensor classes
 			if(mMapOfSensorClasses.containsKey(SENSORS.BMP180)){
 				mCommsProtocolRadio.readPressureCalibrationCoefficients();

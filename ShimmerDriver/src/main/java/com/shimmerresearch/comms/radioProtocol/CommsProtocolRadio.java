@@ -8,7 +8,7 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
-import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -60,9 +60,9 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 	public transient List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
 	public transient AbstractCommsProtocol mRadioProtocol = null; //pass the radio controls to the protocol, lite protocol can be replaced by any protocol
 	/** Hardware abstraction layer */
-	public AbstractSerialPortComm mRadioHal;
+	public InterfaceSerialPortHal mRadioHal;
 	
-	public CommsProtocolRadio(AbstractSerialPortComm radioHal, AbstractCommsProtocol radioProtocol){
+	public CommsProtocolRadio(InterfaceSerialPortHal radioHal, AbstractCommsProtocol radioProtocol){
 		if(radioHal!=null){
 			mRadioHal = radioHal;
 			mRadioHal.clearByteLevelDataCommListener();

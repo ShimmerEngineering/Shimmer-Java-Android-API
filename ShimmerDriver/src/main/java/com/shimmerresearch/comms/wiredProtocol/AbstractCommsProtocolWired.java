@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm.SHIMMER_UART_BAUD_RATES;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal.SHIMMER_UART_BAUD_RATES;
 import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.SerialPortListener;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;

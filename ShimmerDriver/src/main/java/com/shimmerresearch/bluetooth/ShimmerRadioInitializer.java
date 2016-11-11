@@ -1,20 +1,20 @@
 package com.shimmerresearch.bluetooth;
 
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
-import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortComm;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exceptions.DeviceException;
 
 public class ShimmerRadioInitializer {
 
-	protected AbstractSerialPortComm serialCommPort;
+	protected AbstractSerialPortHal serialCommPort;
 	
 	private boolean mUseLegacyDelayToDelayForResponse = false;
 	
 	public ShimmerRadioInitializer(){
 	}
 
-	public ShimmerRadioInitializer(AbstractSerialPortComm serialCommPort){
+	public ShimmerRadioInitializer(AbstractSerialPortHal serialCommPort){
 		this.serialCommPort = serialCommPort;
 	}
 
@@ -74,12 +74,12 @@ public class ShimmerRadioInitializer {
 		return shimmerVersion;
 	}
 	
-	public AbstractSerialPortComm getSerialCommPort() {
+	public AbstractSerialPortHal getSerialCommPort() {
 		return this.serialCommPort;
 	}
 
 
-	public void setSerialCommPort(AbstractSerialPortComm serialPortComm) {
+	public void setSerialCommPort(AbstractSerialPortHal serialPortComm) {
 		this.serialCommPort = serialPortComm;
 	}
 

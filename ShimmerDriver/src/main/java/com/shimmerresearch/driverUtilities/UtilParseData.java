@@ -55,6 +55,10 @@ public class UtilParseData {
 				maskToApply = (maskToApply << 8) | 0xFF;
 			}
 			consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
+			
+			//TODO get below working
+//			maskToApply = (long)Math.pow(2, dataType.getNumBits());
+			
 			formattedData &= maskToApply;
 		}
 		else if(dataType.getNumBytes()==1){
@@ -63,7 +67,8 @@ public class UtilParseData {
 
 		//3) an if statement to calculate the twos complement if required
 		if(dataType.isSigned()){
-			formattedData=calculatetwoscomplement(formattedData,data.length*8);
+//			formattedData=calculatetwoscomplement(formattedData,data.length*8);
+			formattedData=calculatetwoscomplement(formattedData,dataType.getNumBits());
 		}
 
 		//4) handle special cases like bit shifting for the LSM303
