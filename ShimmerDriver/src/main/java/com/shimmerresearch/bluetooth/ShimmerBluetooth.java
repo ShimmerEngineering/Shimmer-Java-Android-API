@@ -1052,7 +1052,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mByteArrayOutputStream.reset();
 		mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
 		mListofPCTimeStamps.remove(0);
-		consolePrintLn("Throw Byte" + UtilShimmer.byteToHexStringFormatted(bTemp[0]));
+		consolePrintLn("Throw Byte" + UtilShimmer.bytesToHexStringWithSpacesFormatted(bTemp));
 	}
 	
 	/**

@@ -70,7 +70,7 @@ public class ShimmerClock extends AbstractSensor {
 		public static String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
 		public static String REAL_TIME_CLOCK = "RealTime";
 		public static String SYSTEM_TIMESTAMP = "System_Timestamp";
-		public static String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
+//		public static String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 		public static String TIMESTAMP_SYNC = "Timestamp_Sync";
 		public static String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
 		public static String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
@@ -86,7 +86,7 @@ public class ShimmerClock extends AbstractSensor {
 		
 		public static final String TIMESTAMP_SYNC = "TimeStampSync";
 		public static final String TIMESTAMP_SYNC_EXPORT = "TimestampSync";
-		public static final String REAL_TIME_CLOCK_SYNC = "RealTimeSync";
+//		public static final String REAL_TIME_CLOCK_SYNC = "RealTimeSync";
 		public static final String REAL_TIME_CLOCK = "Real_Time_Clock";
 		
 		public static final String EVENT_CHANNEL = "Event";
@@ -113,8 +113,10 @@ public class ShimmerClock extends AbstractSensor {
 			Arrays.asList(ObjectClusterSensorName.TIMESTAMP,
 					ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 					ObjectClusterSensorName.REAL_TIME_CLOCK,
-					ObjectClusterSensorName.TIMESTAMP_OFFSET,
-					ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC));
+					ObjectClusterSensorName.TIMESTAMP_OFFSET
+//					,
+//					ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC
+					));
 	{
 		sensorShimmerClock.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
 	}
@@ -245,16 +247,16 @@ public class ShimmerClock extends AbstractSensor {
 		channelRealTimeClock.mChannelSource = CHANNEL_SOURCE.API;
 	}
 
-	public static final ChannelDetails channelRealTimeClockSync = new ChannelDetails(
-			ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-			ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-			DatabaseChannelHandles.REAL_TIME_CLOCK_SYNC,
-			CHANNEL_UNITS.MILLISECONDS,
-			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
-	{
-		//TODO put into above constructor
-		channelRealTimeClockSync.mChannelSource = CHANNEL_SOURCE.API;
-	}
+//	public static final ChannelDetails channelRealTimeClockSync = new ChannelDetails(
+//			ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+//			ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
+//			DatabaseChannelHandles.REAL_TIME_CLOCK_SYNC,
+//			CHANNEL_UNITS.MILLISECONDS,
+//			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
+//	{
+//		//TODO put into above constructor
+//		channelRealTimeClockSync.mChannelSource = CHANNEL_SOURCE.API;
+//	}
 
 	public static final ChannelDetails channelBattPercentage = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
@@ -334,7 +336,7 @@ public class ShimmerClock extends AbstractSensor {
 			channelMapRef.put(ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
 			channelMapRef.put(ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
 			
-			channelMapRef.put(ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, ShimmerClock.channelRealTimeClockSync);
+//			channelMapRef.put(ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, ShimmerClock.channelRealTimeClockSync);
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, ShimmerClock.channelBattPercentage);
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
 			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, ShimmerClock.channelReceptionRateTrial);
