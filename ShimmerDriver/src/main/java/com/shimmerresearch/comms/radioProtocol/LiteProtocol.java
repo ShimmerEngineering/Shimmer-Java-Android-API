@@ -1581,10 +1581,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		setIsStreaming(((statusByte & 0x10) > 0)? true:false); 
 		
 		printLogDataForDebugging("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
-				+ "\t" + "IsDocked = " + isDocked()
-				+ "\t" + "IsSensing = " + isSensing()
-				+ "\t" + "IsSDLogging = "+ isSDLogging()
-				+ "\t" + "IsStreaming = " + isStreaming()
+				+ " | IsDocked = " + isDocked()
+				+ " | IsSensing = " + isSensing()
+				+ " | IsSDLogging = "+ isSDLogging()
+				+ " | IsStreaming = " + isStreaming()
 				);
 		
 		if(savedDockedState!=isDocked()){

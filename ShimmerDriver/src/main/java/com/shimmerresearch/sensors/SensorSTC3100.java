@@ -34,24 +34,31 @@ import com.shimmerresearch.sensors.SensorBattVoltage.ObjectClusterSensorName;
  * 
  * 
  * @author Ronan McCormack
+ * @author Mark Nolan
  *
  */
-
+//TODO switch over to using (SensorSTC3100Details mStc3100Details) rather then the individual variables declared and parsed in this class 
 public class SensorSTC3100 extends AbstractSensor{
 
 	/****/
 	private static final long serialVersionUID = 9001303055918168581L;
 	
 	//--------- Sensor specific variables start --------------
+	private SensorSTC3100Details mStc3100Details = new SensorSTC3100Details();
+
 	public static final double BATT_CHARGE_CAPACITY = 0.45;        //Ah
 	public static final double BATT_MAX_VOLTAGE = 4.167;
 	public double mBattInitialCharge = 0;            //mAh
 	
 	//RAW channels
+	@Deprecated // No longer a streaming channel
 	public double mBattCurrentVoltage = 0;           //mV
+	@Deprecated // No longer a streaming channel
 	public double mBattCurrent = 0;                  //mA
+	@Deprecated // No longer a streaming channel
 	public double mBattTemperature = 0;				// degrees C
 
+	@Deprecated // No longer a streaming channel
 	public double mBattCurrentCharge = 0;            //mAh
 
 	public double mBattPercentage = 0;
@@ -461,5 +468,12 @@ public class SensorSTC3100 extends AbstractSensor{
 		return mBattPercentageParsed;
 	}
 
+	public void setStc3100Details(SensorSTC3100Details sensorSTC3100Details) {
+		mStc3100Details = sensorSTC3100Details;
+	}
+
+	public SensorSTC3100Details setStc3100Details() {
+		return mStc3100Details;
+	}
 
 }

@@ -52,13 +52,14 @@ public class UtilParseData {
 					formattedData = (formattedData << 8) | (((long)(data[i])) & 0xFF);
 				}
 
-				maskToApply = (maskToApply << 8) | 0xFF;
+				//Old 2016-11-12
+//				maskToApply = (maskToApply << 8) | 0xFF;
 			}
+			
+			//New 2016-11-12
+			maskToApply = (long)Math.pow(2, dataType.getNumBits())-1;
+			
 			consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
-			
-			//TODO get below working
-//			maskToApply = (long)Math.pow(2, dataType.getNumBits());
-			
 			formattedData &= maskToApply;
 		}
 		else if(dataType.getNumBytes()==1){
@@ -67,7 +68,9 @@ public class UtilParseData {
 
 		//3) an if statement to calculate the twos complement if required
 		if(dataType.isSigned()){
+			//Old 2016-11-12
 //			formattedData=calculatetwoscomplement(formattedData,data.length*8);
+			//New 2016-11-12
 			formattedData=calculatetwoscomplement(formattedData,dataType.getNumBits());
 		}
 

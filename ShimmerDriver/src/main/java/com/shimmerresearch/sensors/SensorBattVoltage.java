@@ -156,6 +156,7 @@ public class SensorBattVoltage extends AbstractSensor{
     //--------- Constructors for this class start --------------  	
 	public SensorBattVoltage(ShimmerDevice shimmerDevice) {
 		super(SENSORS.Battery, shimmerDevice);
+		mShimmerBattStatusDetails = shimmerDevice.mShimmerBattStatusDetails;
 		initialise();
 	}
 
@@ -211,7 +212,7 @@ public class SensorBattVoltage extends AbstractSensor{
 					getShimmerBattStatusDetails().calculateBattPercentage(calData/1000);
 				}
 				else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATT_PERCENTAGE)){
-					double estimatedChargePercentage = (double)mShimmerBattStatusDetails.getEstimatedChargePercentage();
+					double estimatedChargePercentage = (double)getShimmerBattStatusDetails().getEstimatedChargePercentage();
 					if(!Double.isNaN(estimatedChargePercentage) && !Double.isInfinite(estimatedChargePercentage)){
 						objectCluster.addCalData(channelDetails, estimatedChargePercentage);
 						objectCluster.incrementIndexKeeper();
