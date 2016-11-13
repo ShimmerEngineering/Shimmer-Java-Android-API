@@ -681,9 +681,14 @@ public class LiteProtocol extends AbstractCommsProtocol{
 							if((byteBuffer[0]&0xFF)==InstructionsSet.ACK_COMMAND_PROCESSED_VALUE){
 								byteBuffer = readBytes(1);
 							}
+							//2016-11-13 Old code
+//							if((byteBuffer[0]&0xFF)==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){
+//								processInstreamResponse();
+//							}
 						}
 					}
 					
+					//2016-11-13 New code
 					if((byteBuffer[0]&0xFF)==InstructionsResponse.INSTREAM_CMD_RESPONSE_VALUE){
 						processInstreamResponse();
 					}

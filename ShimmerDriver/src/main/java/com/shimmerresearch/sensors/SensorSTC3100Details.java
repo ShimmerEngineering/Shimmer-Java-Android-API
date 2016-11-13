@@ -50,7 +50,7 @@ public class SensorSTC3100Details {
 				+ " | Voltage=" + String.format("%1$.2f", mBattVoltage) + " mV"
 				+ " | Temp=" + String.format("%1$.2f", mBattTemperature) + " C";
 		
-		debugString += "\n" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mRegBytes);
+//		debugString += "\n" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mRegBytes);
 		
 		return debugString;
 	}

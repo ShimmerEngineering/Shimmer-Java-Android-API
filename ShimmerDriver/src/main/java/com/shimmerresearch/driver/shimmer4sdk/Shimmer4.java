@@ -832,7 +832,7 @@ public class Shimmer4 extends ShimmerDevice {
 			readCalibrationDump();
 
 //			((CommsProtocolRadio)mCommsProtocolRadio).mRadioProtocol.readBattStatusPeriod();
-//			((CommsProtocolRadio)mCommsProtocolRadio).mRadioProtocol.writeBattStatusPeriod(1);
+			((CommsProtocolRadio)mCommsProtocolRadio).mRadioProtocol.writeBattStatusPeriod(1);
 
 			//TODO improve below by putting into sensor classes
 			if(mMapOfSensorClasses.containsKey(SENSORS.BMP180)){
