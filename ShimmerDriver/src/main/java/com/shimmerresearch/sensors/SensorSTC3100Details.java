@@ -1,7 +1,8 @@
 package com.shimmerresearch.sensors;
 
+import java.io.Serializable;
+
 import com.shimmerresearch.driverUtilities.UtilParseData;
-import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
@@ -9,8 +10,10 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
  * @author Mark Nolan
  *
  */
-public class SensorSTC3100Details {
+public class SensorSTC3100Details implements Serializable {
 	
+	private static final long serialVersionUID = 3566114309466948096L;
+
 	private static double R_SENSE = 33; // mOhms
 	
 	/**Gas gauge charge data (mA.h)*/
