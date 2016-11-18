@@ -511,7 +511,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void processEventMarkerCh(ObjectCluster objectCluster) {
 		//event marker channel
-		objectCluster.addData(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers);
+		objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers);
 		untriggerEventIfLastOneWasPulse();
 	}
 

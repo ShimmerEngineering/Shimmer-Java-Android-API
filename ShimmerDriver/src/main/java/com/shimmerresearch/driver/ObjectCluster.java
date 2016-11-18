@@ -96,7 +96,6 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 	public boolean mIsValidObjectCluster = true;
 
-
 	
 	public enum OBJECTCLUSTER_TYPE{
 		ARRAYS,
@@ -131,7 +130,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			FormatCluster2 fc=ojc2.getDataMap().get(channelName);
 			for (String formatName:fc.getFormatMap().keySet()){
 				DataCluster2 data = fc.getFormatMap().get(formatName);
-				addData(channelName,formatName,data.getUnit(),data.getData(),data.getDataArrayList());
+				addDataToMap(channelName,formatName,data.getUnit(),data.getData(),data.getDataArrayList());
 			}
 		}
 		mBluetoothAddress = ojc2.getBluetoothAddress();
@@ -371,35 +370,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		addUncalData(channelDetails, uncalData, indexKeeper);
 	}
 
-	public void addData(String channelName, String channelType, String units, double data){
-		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data));
-	}
-	
-	@Deprecated
-	public void addData(String channelName,String channelType, String units, List<Double> data){
-		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data));
-		
-	}
-	
-	@Deprecated
-	public void addData(String channelName,String channelType, String units, double data, List<Double> dataArray){
-		mPropertyCluster.put(channelName,new FormatCluster(channelType,units,data,dataArray));
-	}
-	
-	public void addData(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
-		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
-		
-	}
-	
-	@Deprecated
-	public void removeAll(String channelName){
-		mPropertyCluster.removeAll(channelName);
-	}
-	
 	public void addUncalData(ChannelDetails channelDetails, double uncalData, int index) {
 		addData(channelDetails.mObjectClusterName, CHANNEL_TYPE.UNCAL, channelDetails.mDefaultUncalUnit, uncalData, index);
 	}
-	
 	
 	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data) {
 		addData(objectClusterName, channelType, units, data, indexKeeper);
@@ -433,7 +406,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		}
 		
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)){
-			addData(objectClusterName, channelType.toString(), units, data, isUsingDefaultCalib);
+			addDataToMap(objectClusterName, channelType.toString(), units, data, isUsingDefaultCalib);
 		}
 		
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.PROTOBUF)){
@@ -455,6 +428,37 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 	public void setIndexKeeper(int indexKeeper) {
 		this.indexKeeper = indexKeeper;
+	}
+	
+	public void addCalDataToMap(ChannelDetails channelDetails, double data){
+		mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(),channelDetails.mDefaultCalUnits,data));
+	}
+
+	public void addUncalDataToMap(ChannelDetails channelDetails, double data){
+		mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),channelDetails.mDefaultUncalUnit,data));
+	}
+
+	public void addDataToMap(String channelName, String channelType, String units, double data){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data));
+	}
+	
+	@Deprecated
+	public void addDataToMap(String channelName, String channelType, String units, List<Double> data){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data));
+	}
+	
+	@Deprecated
+	public void addDataToMap(String channelName,String channelType, String units, double data, List<Double> dataArray){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, dataArray));
+	}
+	
+	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
+	}
+	
+	@Deprecated
+	public void removeAll(String channelName){
+		mPropertyCluster.removeAll(channelName);
 	}
 	
 	public Collection<FormatCluster> getCollectionOfFormatClusters(String channelName){

@@ -972,7 +972,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			
 			double calTimestamp = objectCluster.getShimmerCalibratedTimeStamp();
 			double systemTimestampPlot = calTimestamp+mOffsetFirstTime;
-			objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, systemTimestampPlot);
+			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, systemTimestampPlot);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

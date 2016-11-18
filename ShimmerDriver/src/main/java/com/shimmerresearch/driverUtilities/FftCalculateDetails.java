@@ -129,7 +129,7 @@ public class FftCalculateDetails{
 				ObjectCluster ojc = new ObjectCluster(mShimmerName);
 				ojc.createArrayData(2);
 
-				ojc.addData(mTraceName[1], mTraceName[2], mTraceName[3], d);
+				ojc.addDataToMap(mTraceName[1], mTraceName[2], mTraceName[3], d);
 				ojc.incrementIndexKeeper();
 				
 				ojc.addData(Configuration.Shimmer3.ObjectClusterSensorName.FREQUENCY, CHANNEL_TYPE.CAL, CHANNEL_UNITS.FREQUENCY, index);

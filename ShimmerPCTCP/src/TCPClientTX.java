@@ -21,9 +21,9 @@ public class TCPClientTX
 		ObjectCluster ojc = new ObjectCluster();
 		ojc.setMacAddress("Shimmer:Research");
 		ojc.setShimmerName("ShimmerDev1");
-		ojc.addData(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,"CAL",CHANNEL_UNITS.NO_UNITS,9.81);
-		ojc.addData(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,"CAL",CHANNEL_UNITS.NO_UNITS,0.81);
-		ojc.addData(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,"CAL",CHANNEL_UNITS.NO_UNITS,0.1);
+		ojc.addDataToMap(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,"CAL",CHANNEL_UNITS.NO_UNITS,9.81);
+		ojc.addDataToMap(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,"CAL",CHANNEL_UNITS.NO_UNITS,0.81);
+		ojc.addDataToMap(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,"CAL",CHANNEL_UNITS.NO_UNITS,0.1);
 		byte[] dataByte = ojc.serialize();
 		while (true)
 		{

@@ -1,93 +1,65 @@
 package com.shimmerresearch.sensors;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
-import com.shimmerresearch.sensors.SensorMPU9X50.DatabaseConfigHandle;
 
-public class SensorGSR extends AbstractSensor implements Serializable{
+public class SensorGSR extends AbstractSensor {
 
-	/**	 */
 	private static final long serialVersionUID = 1773291747371088953L;
 
 	//--------- Sensor specific variables start --------------
+	/** Shimmer3 Values have been reverted to 2r values */
+	public static boolean isShimmer3and4UsingShimmer2rVal = true;
+	
 	public int mGSRRange = 4; 					// 4 = Auto
-	
-	/*XXX - RS (25/5/2016):
-	 * Like this in ChannelDetails channelGsr:
-	 * 			CHANNEL_UNITS.KOHMS,
-	 * //			CHANNEL_UNITS.MICROSIEMENS,
-	 * 
-	 * What is the story with the two options for GSR units?
-	 *  - Add a method to toggle the unit?
-	 * 
-	 */
-	public static String calUnitToUse = Configuration.CHANNEL_UNITS.U_SIEMENS;
-//	private static String calUnitToUse = Configuration.CHANNEL_UNITS.KOHMS;
-	
 	
 	public class GuiLabelConfig{
 		public static final String GSR_RANGE = "GSR Range";
 		public static final String SAMPLING_RATE_DIVIDER_GSR = "GSR Divider";
 	}
-
 	
 	public class GuiLabelSensors{
 		public static final String GSR = "GSR";
 	}
 	
-	
 	public class GuiLabelSensorTiles{
 		public static final String GSR = "GSR+";
 	}
 	
-	
 	public static class DatabaseChannelHandles{
 		public static final String GSR = "F5437a_Int_A1_GSR";
-		
 	}
 	
 	public static final class DatabaseConfigHandle{
 		public static final String GSR_RANGE = "F5437a_Int_A1_GSR_Range";
 	}
 	
-	
 	public static class ObjectClusterSensorName{
 		public static String GSR = "GSR";
 		public static String GSR_CONDUCTANCE = "GSR_Conductance";
+		public static String GSR_RANGE_CURRENT = "GSR_Range";
+		public static String GSR_ADC_VALUE = "GSR_ADC_Value";
 	}	
 	//--------- Sensor specific variables end --------------
 	
@@ -148,7 +120,15 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP),
 			Arrays.asList(GuiLabelConfig.GSR_RANGE),
-			Arrays.asList(ObjectClusterSensorName.GSR),
+			Arrays.asList(
+					//Comment in/out channel you want to appear as normal Shimmer channels
+					ObjectClusterSensorName.GSR,
+					ObjectClusterSensorName.GSR_CONDUCTANCE,
+					//Only internal at the moment
+					ObjectClusterSensorName.GSR_RANGE_CURRENT,
+					//Only internal at the moment
+					ObjectClusterSensorName.GSR_ADC_VALUE
+					),
 			true);
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
@@ -177,7 +157,7 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		channelGsrKOhms.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 	}
 
-	public static final ChannelDetails channelGsrMicroSiemens = new ChannelDetails(
+	public static final ChannelDetails channelGsrMicroSiemensGq = new ChannelDetails(
 			ObjectClusterSensorName.GSR,
 			ObjectClusterSensorName.GSR,
 			DatabaseChannelHandles.GSR,
@@ -192,11 +172,46 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 		channelGsrMicroSiemens.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
 	}
 
+	public static final ChannelDetails channelGsrMicroSiemens = new ChannelDetails(
+			ObjectClusterSensorName.GSR_CONDUCTANCE,
+			ObjectClusterSensorName.GSR_CONDUCTANCE,
+			ObjectClusterSensorName.GSR_CONDUCTANCE,
+			CHANNEL_UNITS.U_SIEMENS,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	{
+		//TODO add to constructor
+		channelGsrMicroSiemens.mChannelSource = CHANNEL_SOURCE.API;
+	}
+
+	public static final ChannelDetails channelGsrRangeCurrent = new ChannelDetails(
+			ObjectClusterSensorName.GSR_RANGE_CURRENT,
+			ObjectClusterSensorName.GSR_RANGE_CURRENT,
+			CHANNEL_UNITS.NO_UNITS,
+			Arrays.asList(CHANNEL_TYPE.CAL));
+	{
+		//TODO add to constructor
+		channelGsrMicroSiemens.mChannelSource = CHANNEL_SOURCE.API;
+	}
+	
+	public static final ChannelDetails channelGsrAdc = new ChannelDetails(
+			ObjectClusterSensorName.GSR_ADC_VALUE,
+			ObjectClusterSensorName.GSR_ADC_VALUE,
+			DatabaseChannelHandles.GSR,
+			CHANNEL_UNITS.MILLIVOLTS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	{
+		//TODO add to constructor
+		channelGsrMicroSiemens.mChannelSource = CHANNEL_SOURCE.API;
+	}
+
 	/** used for Shimmer3 in Shimmer*/
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
         Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrKOhms);
+		aMap.put(ObjectClusterSensorName.GSR, SensorGSR.channelGsrKOhms);
+		aMap.put(ObjectClusterSensorName.GSR_CONDUCTANCE, SensorGSR.channelGsrMicroSiemens);
+		aMap.put(ObjectClusterSensorName.GSR_RANGE_CURRENT, SensorGSR.channelGsrRangeCurrent);
+		aMap.put(ObjectClusterSensorName.GSR_ADC_VALUE, SensorGSR.channelGsrAdc);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
     
@@ -217,17 +232,15 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap() {
-//		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
-
-		Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
-		if(calUnitToUse==CHANNEL_UNITS.U_SIEMENS){
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrMicroSiemens);
+		//Allow NeuroLynQ to just use a single GSR channel based on MicroSiemens
+		if(mShimmerVerObject.isShimmerGenGq()){
+			Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrMicroSiemensGq);
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 		}
-		else if(calUnitToUse==CHANNEL_UNITS.KOHMS){
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrKOhms);
+		else{
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		}
-		
-		super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 	}
 
 	
@@ -280,45 +293,36 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 				}
 				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
 					// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-					if (mShimmerVerObject.isShimmerGen2()){
+					if (mShimmerVerObject.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 						p1 = 0.0373;
 						p2 = -24.9915;
-
-					} else { //Values have been reverted to 2r values
-						//p1 = 0.0363;
-						//p2 = -24.8617;
-						p1 = 0.0373;
-						p2 = -24.9915;
+					} else {
+						p1 = 0.0363;
+						p2 = -24.8617;
 					}
 				} else if (mGSRRange==1 || newGSRRange==1) {
-					if (mShimmerVerObject.isShimmerGen2()){
+					if (mShimmerVerObject.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 						p1 = 0.0054;
 						p2 = -3.5194;
 					} else {
-						//p1 = 0.0051;
-						//p2 = -3.8357;
-						p1 = 0.0054;
-						p2 = -3.5194;
+						p1 = 0.0051;
+						p2 = -3.8357;
 					}
 				} else if (mGSRRange==2 || newGSRRange==2) {
-					if (mShimmerVerObject.isShimmerGen2()){
+					if (mShimmerVerObject.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 						p1 = 0.0015;
 						p2 = -1.0163;
 					} else {
-						//p1 = 0.0015;
-						//p2 = -1.0067;
 						p1 = 0.0015;
-						p2 = -1.0163;
+						p2 = -1.0067;
 					}
 				} else if (mGSRRange==3 || newGSRRange==3) {
-					if (mShimmerVerObject.isShimmerGen2()){
+					if (mShimmerVerObject.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 						p1 = 4.5580e-04;
 						p2 = -0.3014;
 					} else {
-						//p1 = 4.4513e-04;
-						//p2 = -0.3193;
-						p1 = 4.5580e-04;
-						p2 = -0.3014;
+						p1 = 4.4513e-04;
+						p2 = -0.3193;
 					}
 				}
 
@@ -347,10 +351,9 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 
 				// ----- Method 3 - Approaching dynamic object based approach  -----------
-				//TODO: Doesn't support having both units
 				
-//				if(channelDetails.mChannelFormatDerivedFromShimmerDataPacket!=CHANNEL_TYPE.CAL){
 				double calData = 0.0;
+				//This section is needed for GQ since the primary GSR KOHMS channel is replaced by U_SIEMENS 
 				if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.KOHMS)){
 					calData = calibrateGsrData(rawData,p1,p2);
 				}
@@ -359,12 +362,33 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 				}
 				objectCluster.addCalData(channelDetails, calData);
 				objectCluster.incrementIndexKeeper();
-//				}
-//				System.err.println(String.format("%16s", Integer.toBinaryString((int) rawData)).replace(' ', '0') + "\t" + calData + " " + channelDetails.mDefaultCalibratedUnits);
 
+				
+				if(sensorDetails.mListOfChannels.contains(channelGsrMicroSiemens)){
+					double calDatauS = calibrateGsrDataToSiemens(rawData,p1,p2);
+					objectCluster.addCalData(channelGsrMicroSiemens, calDatauS);
+					objectCluster.incrementIndexKeeper();
+				}
+				if(sensorDetails.mListOfChannels.contains(channelGsrRangeCurrent)){
+					objectCluster.addCalData(channelGsrRangeCurrent, newGSRRange);
+					objectCluster.incrementIndexKeeper();
+				}
+				if(sensorDetails.mListOfChannels.contains(channelGsrAdc)){
+					objectCluster.addUncalData(channelGsrAdc, rawData);
+					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannel(rawData));
+					objectCluster.incrementIndexKeeper();
+				}
+				
 			}
 			index = index + channelDetails.mDefaultNumBytes;
+			
+			
+			// All GSR channels are calculated after the
+			// ObjectClusterSensorName.GSR channel is process (shown above) -
+			// therefore no need to cycle through the rest of the channels.
+			continue;
 		}
+		
 		//Debugging
 //		super.consolePrintChannelsCal(objectCluster, Arrays.asList(
 //				new String[]{ObjectClusterSensorName.GSR_CONDUCTANCE, CHANNEL_TYPE.UNCAL.toString()},
@@ -518,21 +542,25 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 
 	//--------- Sensor specific methods start --------------
 	public static double calibrateGsrData(double gsrUncalibratedData, double p1, double p2){
-		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
-		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
-		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
-		//the following is the new linear method see user GSR user guide for further details
-		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
+//		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
+//		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
+//		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
+//		//the following is the new linear method see user GSR user guide for further details
+//		double gsrCalibratedData = (1/((p1*gsrUncalibratedData)+p2)*1000); //kohms 
+		
+		double gsrCalibratedDatauS = calibrateGsrDataToSiemens(gsrUncalibratedData, p1, p2);
+		double gsrCalibratedData = (1/(gsrCalibratedDatauS)*1000); //kohms 
+
 		return gsrCalibratedData;  
 	}
 
 	
 	public static double calibrateGsrDataToSiemens(double gsrUncalibratedData, double p1, double p2){
-		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
+		double gsrUncalibratedDataLcl = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
 		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
 		//the following is the new linear method see user GSR user guide for further details
-		double gsrCalibratedData = (((p1*gsrUncalibratedData)+p2)); //microsiemens 
+		double gsrCalibratedData = (((p1*gsrUncalibratedDataLcl)+p2)); //microsiemens 
 		return gsrCalibratedData;  
 	}
 	
@@ -564,3 +592,4 @@ public class SensorGSR extends AbstractSensor implements Serializable{
 	//--------- Optional methods to override in Sensor Class end --------
 
 }
+	

@@ -2443,7 +2443,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				if (heartRate == INVALID_RESULT){
 					heartRate = Double.NaN;
 				}
-				objc.addData("Heart Rate","CAL","beats per minute",heartRate);
+				objc.addDataToMap("Heart Rate","CAL","beats per minute",heartRate);
 				if (chckbxHeartRate.isSelected()) {
 					chart.addTrace(traceHR);
 				}
@@ -2471,7 +2471,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				} else {
 					//System.out.println("Heart Rate: " + heartRate);
 				}
-				objc.addData("Heart Rate","CAL","beats per minute",heartRate);
+				objc.addDataToMap("Heart Rate","CAL","beats per minute",heartRate);
 				if (chckbxHeartRate.isSelected()) {
 					chart.addTrace(traceHR);
 				}

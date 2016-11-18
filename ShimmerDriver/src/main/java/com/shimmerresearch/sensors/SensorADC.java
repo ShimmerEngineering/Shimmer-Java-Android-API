@@ -409,17 +409,22 @@ public class SensorADC extends AbstractSensor {
 		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
 		
 		if(mEnableCalibration){
-			double offset = 0; double vRefP = 3; double gain = 1; 
 			int index = sensorDetails.mListOfChannels.size();
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 				double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				double calData = calibrateU12AdcValue(unCalData, offset, vRefP, gain);
+				double calData = calibrateMspAdcChannel(unCalData);
 				objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-index);
 				index--;
 			}
 		}
 
 		return objectCluster;
+	}
+	
+	public static double calibrateMspAdcChannel(double unCalData){
+		double offset = 0; double vRefP = 3; double gain = 1; 
+		double calData = calibrateU12AdcValue(unCalData, offset, vRefP, gain);
+		return calData;
 	}
 	
 
