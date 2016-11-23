@@ -25,7 +25,8 @@ public class HwDriverShimmerDeviceDetails {
 		NONIN_ONYX_II("Nonin_Onyx_II"),
 		QTI_DIRECTTEMP("Qti_DirectTemp"),
 		KEYBOARD_AND_MOUSE("KeyboardAndMouse"),
-		ARDUINO("Arduino");
+		ARDUINO("Arduino"),
+		WII_BALANCE_BOARD("Wii_BalanceBoard");
 
 		private String deviceLabel = "";
 		
