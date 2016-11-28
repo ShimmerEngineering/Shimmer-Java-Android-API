@@ -263,7 +263,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		// ----------------------------------------------------------		
 		public final static int EMG_PROCESSING_CHAN2 = 1<<9;
 		public final static int EMG_PROCESSING_CHAN1 = 1<<8;
-				
+
+		//TODO find a place for the below
+		public final static int ACTIVITY_MODULE = EMG_PROCESSING_CHAN1;
+		//TODO find a place for the below
+		public final static int GSR_METRICS = EMG_PROCESSING_CHAN2;
+		
 // ----------- Now implemented in SensorPPG -------------------------		
 		public final static int PPG_TO_HR2_1_14 = 1<<7;
 		public final static int PPG_TO_HR1_12_13 = 1<<6;

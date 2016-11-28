@@ -990,7 +990,8 @@ public class Configuration {
 			PPG_TO_HR("PPG-to-HR"),
 			HRV_ECG("HRV"),
 			EMG("EMG Processing"),
-			ACTIVITY("Activity");
+			ACTIVITY("Activity"),
+			GSR_METRICS("GSR Metrics");
 
 			private String tileText = "";
 			
