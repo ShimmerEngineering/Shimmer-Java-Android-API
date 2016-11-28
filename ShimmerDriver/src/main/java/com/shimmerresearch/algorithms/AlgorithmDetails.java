@@ -8,18 +8,16 @@ import java.util.ArrayList;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
-//TODO merge with ChannelDetails?
+//TODO merge/replace with SensorDetails?
 public class AlgorithmDetails implements Serializable {
 	
-	/** * */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -8249918413235100868L;
 	
-	/** AKA ObjectClusterName */
+	/** AKA mObjectClusterName */
 	public String mAlgorithmName = "";
-	public List<ChannelDetails> mListOfChannelDetails = new ArrayList<ChannelDetails>();
-	//TODO implement mGuiFriendlyName below across algorithms
 	public String mGuiFriendlyName = "";
 	public String mDatabaseChannelHandle = "";
+	public List<ChannelDetails> mListOfChannelDetails = new ArrayList<ChannelDetails>();
 
 	public String mUnits = "";
 	public CHANNEL_TYPE mChannelType = CHANNEL_TYPE.CAL;
@@ -30,6 +28,7 @@ public class AlgorithmDetails implements Serializable {
 	@Deprecated //TODO replace with compatible versions list
 	public List<Integer> mListOfCompatableExpBoards = new ArrayList<Integer>();
 
+	//TODO implement below - first stop -> activity module for determining if any accel is enabled
 	public SENSOR_CHECK_METHOD mSensorCheckMethod = SENSOR_CHECK_METHOD.ALL;
 	public enum SENSOR_CHECK_METHOD{
 		ALL,
@@ -104,9 +103,21 @@ public class AlgorithmDetails implements Serializable {
 			String units,
 			List<ChannelDetails> listOfAlgortihmChannels){
 		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, derivedSensorBitmapId, listOfRequiredSensors, units);
-		mListOfChannelDetails.addAll(listOfAlgortihmChannels);
+		
+		//2016-11-28 MN changed below to override mListOfChannelDetails as this() above attempts to create one from this class
+//		mListOfChannelDetails.addAll(listOfAlgortihmChannels);
+		mListOfChannelDetails = listOfAlgortihmChannels;
 	}
 	
+	/** Just used in PPGtoHR
+	 * @param objectClusterName
+	 * @param guiFriendlyName
+	 * @param listOfAssociatedSensors
+	 * @param derivedSensorBitmapId
+	 * @param listOfCompatibleExpBoards
+	 * @param listOfRequiredSensors
+	 * @param units
+	 */
 	public AlgorithmDetails(
 			String objectClusterName, 
 			String guiFriendlyName, 
