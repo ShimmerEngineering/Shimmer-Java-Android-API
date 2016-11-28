@@ -6712,10 +6712,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						}
 
 			        }
-			        else if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)) {
+			        else if(stringKey.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)) {
 			        	checkWhichExgRespPhaseValuesToUse();
 			        }
-			        else if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE)) {
+			        else if(stringKey.equals(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE)) {
 			        	checkWhichExgRefElectrodeValuesToUse();
 			        }
 				}
@@ -9287,7 +9287,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	private void checkWhichExgRespPhaseValuesToUse(){
-		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
+		String stringKey = SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
 		if(mConfigOptionsMap!=null){
 			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
 			if(configOptions!=null){
@@ -9316,7 +9316,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	private void checkWhichExgRefElectrodeValuesToUse(){
-		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
+		String stringKey = SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
 		if(mConfigOptionsMap!=null){
 			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
 			if(configOptions!=null){
@@ -10531,8 +10531,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		Object returnValue = null;
 		
         if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)) 
-        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);
         }
         
@@ -10631,11 +10631,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
 	        	break;
 	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+			case(SensorEXG.GuiLabelConfig.EXG_RESOLUTION):
 				returnValue = getExGResolution();
 	    		break;
 	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+			case(SensorEXG.GuiLabelConfig.EXG_GAIN):
 				returnValue = getExGGainSetting();
 				//consolePrintLn("Get " + configValue);
 	        	break;
@@ -10676,26 +10676,26 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = getMPU9150MagSamplingRate();
             	break;
             	
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+			case(SensorEXG.GuiLabelConfig.EXG_RATE):
 				returnValue = getEXG1RateSetting();
 				//returnValue = getEXG2RateSetting();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+			case(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
 				returnValue = getEXGReferenceElectrode();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+			case(SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
 				returnValue = getEXGLeadOffCurrentMode();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+			case(SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
 				returnValue = getEXGLeadOffDetectionCurrent();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+			case(SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
 				returnValue = getEXGLeadOffComparatorTreshold();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+			case(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
 				returnValue = getEXG2RespirationDetectFreq();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+			case(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
 				returnValue = getEXG2RespirationDetectPhase();
             	break;
 //			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
@@ -10812,7 +10812,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = getMapOfSensorCalibrationAll();
 	        	break;
 ////List<Byte[]>
-//    		case(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES):
+//    		case(SensorEXG.GuiLabelConfig.EXG_BYTES):
 //    			List<byte[]> listOFExGBytes = new ArrayList<byte[]>();
 //    			listOFExGBytes.add(getEXG1RegisterArray());
 //    			listOFExGBytes.add(getEXG2RegisterArray());
@@ -10914,11 +10914,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	    		setGSRRange((int)valueToSet);
 	        	break;
 	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+			case(SensorEXG.GuiLabelConfig.EXG_RESOLUTION):
 				setExGResolution((int)valueToSet);
 	    		break;
 	    		
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+			case(SensorEXG.GuiLabelConfig.EXG_GAIN):
 				//consolePrintLn("before set " + getExGGain());
 				setExGGainSetting((int)valueToSet);
 				//consolePrintLn("after set " + getExGGain());
@@ -10950,29 +10950,29 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	        
 	        //TODO: regenerate EXG register bytes on each change (just in case)
 	        	
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+			case(SensorEXG.GuiLabelConfig.EXG_RATE):
 //				setEXG1RateSetting((int)valueToSet);
 //				setEXG2RateSetting((int)valueToSet);
 				
 				setEXGRateSetting((int)valueToSet);
 
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+			case(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
 				setEXGReferenceElectrode((int)valueToSet);
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+			case(SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
 				setEXGLeadOffCurrentMode((int)valueToSet);
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+			case(SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
 				setEXGLeadOffDetectionCurrent((int)valueToSet);
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+			case(SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
 				setEXGLeadOffComparatorTreshold((int)valueToSet);
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+			case(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
 				setEXG2RespirationDetectFreq((int)valueToSet);
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+			case(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
 				setEXG2RespirationDetectPhase((int)valueToSet);
             	break;	        	
 			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER):
@@ -11113,7 +11113,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	        	
 	        	
 ////List<Byte[]>
-//			case(Configuration.Shimmer3.GuiLabelConfig.EXG_BYTES):
+//			case(SensorEXG.GuiLabelConfig.EXG_BYTES):
 ////				if(valueToSet instanceof List<?>){
 //					setEXG1RegisterArray(((List<byte[]>)valueToSet).get(0));
 //					setEXG2RegisterArray(((List<byte[]>)valueToSet).get(1));
@@ -11136,8 +11136,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		
         if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))
-        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);
         }
 			
