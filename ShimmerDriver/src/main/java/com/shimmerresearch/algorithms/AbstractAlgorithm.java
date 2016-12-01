@@ -194,13 +194,16 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	public AbstractAlgorithm(AlgorithmDetails algorithmDetails) {
+		setAlgorithmDetails(algorithmDetails);
+		setupAlgorithm();
+	}
+	
+	private void setAlgorithmDetails(AlgorithmDetails algorithmDetails) {
 		mAlgorithmDetails = algorithmDetails;
 //		setSignalName(algorithmDetails.mAlgorithmName);
 		mAlgorithmName = algorithmDetails.mAlgorithmName;
 		mAlgorithmGroupingName = algorithmDetails.mAlgorithmName;
 		mAlgorithmChannelsMap.put(mAlgorithmName, mAlgorithmDetails);
-		
-		setupAlgorithm();
 	}
 	
 	private void setupAlgorithm() {

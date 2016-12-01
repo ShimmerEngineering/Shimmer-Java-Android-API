@@ -160,27 +160,36 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	 * @return FormatCluster
 	 */
 	public static FormatCluster returnFormatCluster(Collection<FormatCluster> collectionFormatCluster, String format){
-		Iterator<FormatCluster> iFormatCluster=collectionFormatCluster.iterator();
-		FormatCluster formatCluster;
 		FormatCluster returnFormatCluster = null;
 
+		Iterator<FormatCluster> iFormatCluster=collectionFormatCluster.iterator();
 		while(iFormatCluster.hasNext()){
-			formatCluster=(FormatCluster)iFormatCluster.next();
+			FormatCluster formatCluster = iFormatCluster.next();
 			if (formatCluster.mFormat.equals(format)){
 				returnFormatCluster=formatCluster;
 			}
 		}
 		return returnFormatCluster;
 	}
+
+	public double getFormatClusterValueDefaultFormat(ChannelDetails channelDetails){
+		return getFormatClusterValue(channelDetails.mObjectClusterName, channelDetails.mListOfChannelTypes.get(0).toString());
+	}
+
+	public double getFormatClusterValue(ChannelDetails channelDetails, CHANNEL_TYPE channelType){
+		return getFormatClusterValue(channelDetails.mObjectClusterName, channelType.toString());
+	}
 	
+//	public double getFormatClusterValue(ChannelDetails channelDetails, String format){
+//		return getFormatClusterValue(channelDetails.mObjectClusterName, format);
+//	}
+
 	public double getFormatClusterValue(String channelName, String format){
 		Collection<FormatCluster> formatClusterCollection = mPropertyCluster.get(channelName);
+		
 		if(formatClusterCollection != null){
-			for(FormatCluster formatCluster: formatClusterCollection){
-				if(formatCluster.mFormat.equals(format)){
-					return formatCluster.mData;
-				}
-			}
+			FormatCluster formatCluster = ObjectCluster.returnFormatCluster(formatClusterCollection, format);
+			return formatCluster.mData;
 		}
 		
 		return Double.NaN;
