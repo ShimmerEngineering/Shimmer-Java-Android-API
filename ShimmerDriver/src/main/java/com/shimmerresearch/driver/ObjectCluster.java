@@ -189,10 +189,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		
 		if(formatClusterCollection != null){
 			FormatCluster formatCluster = ObjectCluster.returnFormatCluster(formatClusterCollection, format);
-			if(formatCluster != null){
+			if(formatCluster!=null){
 				return formatCluster.mData;
 			}
-			return Double.NaN;
 		}
 		
 		return Double.NaN;
