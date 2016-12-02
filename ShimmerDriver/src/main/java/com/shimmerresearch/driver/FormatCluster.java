@@ -39,9 +39,7 @@ import java.util.List;
 
 
 public class FormatCluster  implements Serializable{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -5291610942413655763L;
 	
 	public String mFormat;
@@ -50,42 +48,29 @@ public class FormatCluster  implements Serializable{
 	public List<Double> mDataObject = new ArrayList<Double>();
 	public boolean mIsUsingDefaultCalibration = false;
 
-	public FormatCluster(String format, String units, double data){
-		mFormat = format;
-		mUnits = units;
-		mData = data;
-	}
-
-//	public FormatCluster(String format, String units, double[] data){
-//		mFormat = format;
-//		mUnits = units;
-//		double[] mData = data;
-//	}
-	
-	public FormatCluster(String format, String units, double data, List<Double> dataObject){
-		mFormat = format;
-		mUnits = units;
-		mDataObject = dataObject;
-		mData = data;
-	}
-	
-	public FormatCluster(String format, String units, List<Double> dataObject){
-		mFormat = format;
-		mUnits = units;
-		mDataObject = dataObject;
-	}
-
-	public FormatCluster(String format, String units, double data, boolean isUsingDefaultCalibration){
-		mFormat = format;
-		mUnits = units;
-		mData = data;
-		mIsUsingDefaultCalibration = isUsingDefaultCalibration;
-	}
-	
 	public FormatCluster(String format,String units){
 		mFormat = format;
 		mUnits = units;
 	}
+
+	public FormatCluster(String format, String units, double data){
+		this(format, units);
+		mData = data;
+	}
+
+	public FormatCluster(String format, String units, double data, List<Double> dataObject){
+		this(format, units, data);
+		mDataObject = dataObject;
+	}
 	
+	public FormatCluster(String format, String units, List<Double> dataObject){
+		this(format, units);
+		mDataObject = dataObject;
+	}
+
+	public FormatCluster(String format, String units, double data, boolean isUsingDefaultCalibration){
+		this(format, units, data);
+		mIsUsingDefaultCalibration = isUsingDefaultCalibration;
+	}
 	
 }
