@@ -80,7 +80,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public String[] mSensorNames;
 	public String[] mUnitCal;
 	public String[] mUnitUncal;
-	private Builder mObjectClusterBuilder = ObjectCluster2.newBuilder();
+	private Builder mObjectClusterBuilder; // = ObjectCluster2.newBuilder(); -- comented out to avoid crash when connecting on Android
 	
 	private int indexKeeper = 0;
 	

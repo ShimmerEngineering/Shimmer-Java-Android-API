@@ -1922,6 +1922,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			threadSleep(millis);
 	}
 	
+	public void setDelayForBtRespone(boolean delay){
+		mUseLegacyDelayToDelayForResponse = delay;
+	}
+	
+	public boolean setDelayForBtResponse(){
+		return mUseLegacyDelayToDelayForResponse;
+	}
+	
 	/**get accel
 	 * 
 	 */

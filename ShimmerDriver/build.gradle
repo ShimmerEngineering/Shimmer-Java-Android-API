@@ -6,7 +6,7 @@ archivesBaseName = 'ShimmerDriverML'
 /*Rev0.2
 * - fixes for shimmer2r and writeSensors not working after streaming
 */
-version = '0.2' 
+version = '0.3' 
 
 
 repositories {
