@@ -3279,7 +3279,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public String getBtConnectionHandle() {
 		String comPort = getComPort();
-		if(!comPort.isEmpty()){
+		if(comPort!=null && !comPort.isEmpty()){
 			return comPort;
 		}
 		else{
