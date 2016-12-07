@@ -46,16 +46,6 @@ public abstract class InfoMemLayout implements Serializable {
 		return calculateInfoMemByteLength(mShimmerVerObject);
 	}
 
-	public boolean isDifferent(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
-		if((mShimmerVerObject.mFirmwareIdentifier!=firmwareIdentifier)
-				||(mShimmerVerObject.mFirmwareVersionMajor!=firmwareVersionMajor)
-				||(mShimmerVerObject.mFirmwareVersionMinor!=firmwareVersionMinor)
-				||(mShimmerVerObject.mFirmwareVersionInternal!=firmwareVersionInternal)){
-			return true;
-		}
-		return false;
-	}
-
 	/**
 	 * Creates an empty byte array for the purposes of generating the
 	 * configuration bytes to write to the Shimmer (default all bytes = 0xFF).
@@ -93,11 +83,21 @@ public abstract class InfoMemLayout implements Serializable {
 		return true;
 	}
 	
+	public boolean isDifferent(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+		if((mShimmerVerObject.mFirmwareIdentifier!=firmwareIdentifier)
+				||(mShimmerVerObject.mFirmwareVersionMajor!=firmwareVersionMajor)
+				||(mShimmerVerObject.mFirmwareVersionMinor!=firmwareVersionMinor)
+				||(mShimmerVerObject.mFirmwareVersionInternal!=firmwareVersionInternal)){
+			return true;
+		}
+		return false;
+	}
+
 	protected boolean compareVersions(int compFwIdent, int compMajor, int compMinor, int compInternal){
-		return UtilShimmer.compareVersions(mShimmerVerObject.mFirmwareIdentifier,mShimmerVerObject.mFirmwareVersionMajor,mShimmerVerObject.mFirmwareVersionMinor,mShimmerVerObject.mFirmwareVersionInternal,
-				compFwIdent,compMajor,compMinor,compInternal);
+//		return UtilShimmer.compareVersions(mShimmerVerObject.mFirmwareIdentifier,mShimmerVerObject.mFirmwareVersionMajor,mShimmerVerObject.mFirmwareVersionMinor,mShimmerVerObject.mFirmwareVersionInternal,
+//				compFwIdent,compMajor,compMinor,compInternal);
 		
-//		return mShimmerVerObject.isVerCompatibleWith(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal)
+		return mShimmerVerObject.compareVersions(compFwIdent, compMajor, compMinor, compInternal);
 	}
 
 }

@@ -9,20 +9,12 @@ import java.util.Map;
 
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
-import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_RESULT_TYPE;
-import com.shimmerresearch.algorithms.AbstractAlgorithm.ALGORITHM_TYPE;
-import com.shimmerresearch.algorithms.AbstractAlgorithm.GuiLabelConfigCommon;
-import com.shimmerresearch.algorithms.orientation.OrientationModule.GuiFriendlyLabelConfig;
-import com.shimmerresearch.algorithms.orientation.OrientationModule.ORIENTATION_TYPE;
-import com.shimmerresearch.algorithms.orientation.OrientationModule9DOF.AlgorithmName;
-import com.shimmerresearch.algorithms.orientation.OrientationModule9DOF.ObjectClusterSensorName;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
-import com.shimmerresearch.driver.ShimmerObject.DerivedSensorsBitMask;
+import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 

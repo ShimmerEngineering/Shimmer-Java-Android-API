@@ -7,10 +7,7 @@ import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
-import com.shimmerresearch.driver.ShimmerObject.DerivedSensorsBitMask;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -23,11 +20,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelSensors;
-import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
 
 /**
  * Sensor class for the Bridge Amplifier which includes the BridgeAm High & Low
