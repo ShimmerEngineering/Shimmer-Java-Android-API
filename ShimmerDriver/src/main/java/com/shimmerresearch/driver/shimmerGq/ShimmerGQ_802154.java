@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
+import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.InfoMemLayout;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -54,7 +55,7 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 	//TODO tidy: carried from ShimmerObject
 	public boolean mSyncWhenLogging = true;
 	public boolean mIsFwTestMode = false;
-	
+	BasicProcessWithCallBack mMasterRadio; //Radio of which is used to communicate with the ShimmerGQ device
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
 	
@@ -116,6 +117,10 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	
 	// ----------------- Local Sets/Gets Start ----------------------------
+
+	public ShimmerGQ_802154() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @param radioConfigArray
@@ -217,7 +222,14 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		//NOT USED IN THIS CLASS
+		
+		if (shimmerMSG.mB instanceof MsgGQ){
+			MsgGQ msg =(MsgGQ)shimmerMSG.mB;
+			ObjectCluster objectCluster = buildMsg(msg.mEnabledSensorsArray, msg.mPacketByteArray, COMMUNICATION_TYPE.IEEE802154, false, msg.mSystemTime);
+			msg.mB = objectCluster;
+			msg.mShimmerRadioID = mRadioDeviceId;
+			mMasterRadio.queueMethod(0,msg);
+		}
 	}
 
 	@Override
@@ -956,5 +968,16 @@ public class ShimmerGQ_802154 extends ShimmerDevice implements Serializable {
 		this.mLastSyncSuccessTime = mLastSyncSuccessTime;
 	}
 
+	public void setMasterRadio(BasicProcessWithCallBack masterRadio){
+		mMasterRadio = masterRadio;
+	}
 
+	public class MsgGQ {
+		public int mShimmerRadioID;
+		public Object mB;
+		public byte[] mPacketByteArray;
+		public byte[] mEnabledSensorsArray;
+		public long mSystemTime;
+		
+	}
 }

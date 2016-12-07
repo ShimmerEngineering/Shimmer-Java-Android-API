@@ -22,6 +22,25 @@ public abstract class BasicProcessWithCallBack {
 		
 	}
 	
+	public void queueMethod(ShimmerMsg smsg){
+		try {
+			mQueue.put(smsg);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void startConsumerThread(){
+		if (mGUIConsumerThread==null){
+			mGUIConsumerThread = new ConsumerThread();
+			if(!threadName.isEmpty()){
+				mGUIConsumerThread.setName(threadName);
+			}
+			mGUIConsumerThread.start();
+		}
+	}
+	
 	public void queueMethod(int i,Object ojc){
 		try {
 			mQueue.put(new ShimmerMsg(i,ojc));
