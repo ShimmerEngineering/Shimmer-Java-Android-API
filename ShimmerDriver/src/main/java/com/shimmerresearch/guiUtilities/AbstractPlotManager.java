@@ -254,6 +254,10 @@ public abstract class AbstractPlotManager {
 		return mListOfTraceColorsCurrentlyUsed;
 	}
 	
+	public void setPlotLineStyle(PLOT_LINE_STYLE plotLineStyle) {
+		mSelectedLineStyle = plotLineStyle;
+	}
+	
 	public PLOT_LINE_STYLE getPlotLineStyle() {
 		return mSelectedLineStyle;
 	}
