@@ -1666,7 +1666,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 			
 			if(isEnabled){
-				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+				for(ChannelDetails channelDetails :sensorDetails.mListOfChannels){
 					if(channelDetails.mShowWhileStreaming){
 						mapOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
 					}
