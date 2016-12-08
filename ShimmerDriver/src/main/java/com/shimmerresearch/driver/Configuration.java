@@ -875,12 +875,15 @@ public class Configuration {
 			// public static final int SHIMMER_STC3100_BATTERY_PERCENTAGE = 66;
 			// public static final int SHIMMER_STC3100_TIME_REMAINING = 67;
 
+			//TODO sort out order of numbers below
+			
 			// Sensors channels modified or created on the host side
 			// Combination Channels
 			public static final int HOST_ECG = 100;
 			public static final int HOST_EMG = 101;
 			public static final int HOST_EXG_TEST = 102;
 			public static final int HOST_EXG_CUSTOM = 116;
+			public static final int HOST_EXG_THREE_UNIPOLAR = 106;
 
 			// Derived Channels
 			public static final int HOST_EXG_RESPIRATION = 103;
@@ -896,6 +899,7 @@ public class Configuration {
 
 			public static final int SHIMMER_ECG_TO_HR_FW = 150;
 
+			// Third party devices @ 1000+
 			public static final int THIRD_PARTY_NONIN = 1000;
 			public static final int HOST_KEYBOARD_LISTENER = 1001;
 			public static final int HOST_MOUSE_LISTENER = 1002;
@@ -1075,22 +1079,14 @@ public class Configuration {
 
 			public static final String MPL_HEADING = SensorMPU9X50.GuiLabelSensors.MPL_HEADING;
 			public static final String MPL_TEMPERATURE = SensorMPU9X50.GuiLabelSensors.MPL_TEMPERATURE;
-			public static final String MPL_PEDOM_CNT = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_CNT; // not
-																									// currently
-																									// supported
-			public static final String MPL_PEDOM_TIME = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_TIME; // not
-																										// currently
-																										// supported
-			public static final String MPL_TAPDIRANDTAPCNT = SensorMPU9X50.GuiLabelSensors.MPL_TAPDIRANDTAPCNT; // "TapDirAndTapCnt";
-																												// //
-																												// not
-																												// currently
-																												// supported
-			public static final String MPL_MOTIONANDORIENT = SensorMPU9X50.GuiLabelSensors.MPL_MOTIONANDORIENT; // "MotionAndOrient";
-																												// //
-																												// not
-																												// currently
-																												// supported
+			// not currently supported
+			public static final String MPL_PEDOM_CNT = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_CNT;
+			// not currently supported
+			public static final String MPL_PEDOM_TIME = SensorMPU9X50.GuiLabelSensors.MPL_PEDOM_TIME;
+			// not currently supported
+			public static final String MPL_TAPDIRANDTAPCNT = SensorMPU9X50.GuiLabelSensors.MPL_TAPDIRANDTAPCNT;
+			// not currently supported
+			public static final String MPL_MOTIONANDORIENT = SensorMPU9X50.GuiLabelSensors.MPL_MOTIONANDORIENT;
 
 			public static final String ECG_TO_HR = "ECG To HR";
 			public static final String PPG_TO_HR = "PPG To HR";
@@ -1099,12 +1095,8 @@ public class Configuration {
 			public static final String ORIENTATION_3D_6DOF = "3D Orientation (6DOF)";
 			public static final String ORIENTATION_3D_9DOF = "3D Orientation (9DOF)";
 			public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)";
-			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)"; // needed
-																					// in
-																					// both
-																					// MPU
-																					// and
-																					// Algorithm???
+			// needed in both MPU and Algorithm ????
+			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)";
 
 			public static final String HIGH_G_ACCEL = "200g Accel";
 
@@ -1711,7 +1703,8 @@ public class Configuration {
 									Configuration.Shimmer3.SensorMapKey.HOST_EMG,
 									Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 									Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-									Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)));
+									Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+									Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI.ordinal(),
 					new SensorGroupingDetails(SensorADC.GuiLabelSensorTiles.PROTO3_MINI,
 							Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
@@ -2134,10 +2127,8 @@ public class Configuration {
 			aMap.put(Configuration.ShimmerGqBle.SensorMapKey.PPG,
 					new SensorDetailsRef(0, 0, Configuration.ShimmerGqBle.GuiLabelSensors.PPG));
 
-			aMap.get(
-					Configuration.ShimmerGqBle.SensorMapKey.VBATT).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
-			aMap.get(
-					Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq; // XXX-RS-LSM-SensorClass?
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.VBATT).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
+			aMap.get(Configuration.ShimmerGqBle.SensorMapKey.LSM303DLHC_ACCEL).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq; // XXX-RS-LSM-SensorClass?
 			aMap.get(
 					Configuration.ShimmerGqBle.SensorMapKey.GSR).mListOfCompatibleVersionInfo = Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq;
 			aMap.get(

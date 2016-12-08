@@ -151,7 +151,8 @@ public class SensorADC extends AbstractSensor {
 					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR
 //					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -178,6 +179,7 @@ public class SensorADC extends AbstractSensor {
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -205,6 +207,7 @@ public class SensorADC extends AbstractSensor {
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -230,6 +233,7 @@ public class SensorADC extends AbstractSensor {
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
