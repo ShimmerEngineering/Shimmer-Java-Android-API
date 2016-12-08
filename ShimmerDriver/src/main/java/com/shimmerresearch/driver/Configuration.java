@@ -824,41 +824,42 @@ public class Configuration {
 		}
 		
 		public class DerivedSensorsBitMask {
-			public final static int ORIENTATION_6DOF_LN_EULER = 1 << 23;
-			public final static int ORIENTATION_6DOF_LN_QUAT = 1 << 22;
-			public final static int ORIENTATION_9DOF_LN_EULER = 1 << 21;
-			public final static int ORIENTATION_9DOF_LN_QUAT = 1 << 20;
-			public final static int ORIENTATION_6DOF_WR_EULER = 1 << 19;
-			public final static int ORIENTATION_6DOF_WR_QUAT = 1 << 18;
-			public final static int ORIENTATION_9DOF_WR_EULER = 1 << 17;
-			public final static int ORIENTATION_9DOF_WR_QUAT = 1 << 16;
+			public final static int ORIENTATION_6DOF_LN_EULER 	= 1 << 23;
+			public final static int ORIENTATION_6DOF_LN_QUAT 	= 1 << 22;
+			public final static int ORIENTATION_9DOF_LN_EULER 	= 1 << 21;
+			public final static int ORIENTATION_9DOF_LN_QUAT 	= 1 << 20;
+			public final static int ORIENTATION_6DOF_WR_EULER 	= 1 << 19;
+			public final static int ORIENTATION_6DOF_WR_QUAT 	= 1 << 18;
+			public final static int ORIENTATION_9DOF_WR_EULER 	= 1 << 17;
+			public final static int ORIENTATION_9DOF_WR_QUAT 	= 1 << 16;
 			// ------------------------------------------------------------------
-			public final static int ECG2HR_CHIP1_CH1 = 1 << 15;
-			public final static int ECG2HR_CHIP1_CH2 = 1 << 14;
-			public final static int ECG2HR_CHIP2_CH1 = 1 << 13;
-			public final static int ECG2HR_CHIP2_CH2 = 1 << 12;
-			public final static int ECG2HR_HRV_TIME_DOMAIN = 1 << 11;
-			public final static int ECG2HR_HRV_FREQ_DOMAIN = 1 << 10;
+			public final static int ECG2HR_CHIP1_CH1 			= 1 << 15;
+			public final static int ECG2HR_CHIP1_CH2 			= 1 << 14;
+			public final static int ECG2HR_CHIP2_CH1 			= 1 << 13;
+			public final static int ECG2HR_CHIP2_CH2 			= 1 << 12;
+			public final static int ECG2HR_HRV_TIME_DOMAIN 		= 1 << 11;
+			public final static int ECG2HR_HRV_FREQ_DOMAIN 		= 1 << 10;
 
 			// ----------------------------------------------------------
-			public final static int ACTIVITY_MODULE = 1 << 8;
-			public final static int GSR_METRICS = 1 << 9;
+			public final static int ACTIVITY_MODULE 			= 1 << 8;
+			public final static int GSR_METRICS 				= 1 << 9;
+			public final static int GSR_BASELINE 				= 1 << 26;
 
 			// ----------------------------------------------------------
-			public final static int EMG_PROCESSING_CHAN2 = 1 << 24;
-			public final static int EMG_PROCESSING_CHAN1 = 1 << 25;
+			public final static int EMG_PROCESSING_CHAN2 		= 1 << 24;
+			public final static int EMG_PROCESSING_CHAN1 		= 1 << 25;
 
 			// ----------- Now implemented in SensorPPG
 			// -------------------------
-			public final static int PPG_TO_HR2_1_14 = 1 << 7;
-			public final static int PPG_TO_HR1_12_13 = 1 << 6;
-			public final static int PPG_TO_HR_12_13 = 1 << 5;
-			public final static int PPG2_1_14 = 1 << 4;
-			public final static int PPG1_12_13 = 1 << 3;
-			public final static int PPG_12_13 = 1 << 2;
+			public final static int PPG_TO_HR2_1_14 			= 1 << 7;
+			public final static int PPG_TO_HR1_12_13 			= 1 << 6;
+			public final static int PPG_TO_HR_12_13 			= 1 << 5;
+			public final static int PPG2_1_14 					= 1 << 4;
+			public final static int PPG1_12_13 					= 1 << 3;
+			public final static int PPG_12_13 					= 1 << 2;
 			// ------------------------------------------------------------------
-			public final static int SKIN_TEMP = 1 << 1;
-			public final static int RES_AMP = 1 << 0;
+			public final static int SKIN_TEMP 					= 1 << 1;
+			public final static int RES_AMP 					= 1 << 0;
 		}
 
 		// Config Options Map
