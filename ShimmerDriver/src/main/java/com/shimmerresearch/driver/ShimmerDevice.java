@@ -1,10 +1,5 @@
 package com.shimmerresearch.driver;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -20,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,7 +81,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected static final int MAX_CALIB_DUMP_MAX = 4096;
 	
 	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9_()\\[\\]]";	
-
 	
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
@@ -294,10 +287,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	//TODO draft code
 	private void updateSamplingRatesMapWithCommsTypes() {
-		// TODO Auto-generated method stub
+		//Add if not there
+		for(COMMUNICATION_TYPE commType:mListOfAvailableCommunicationTypes){
+			if(!mMapOfSamplingRatesShimmer.containsKey(commType)){
+				mMapOfSamplingRatesShimmer.containsKey(getSamplingRateShimmer());
+			}
+		}
 		
-//		mMapOfSamplingRatesShimmer
-		
+		//Remove if not supported
+		for(COMMUNICATION_TYPE commType:mMapOfSamplingRatesShimmer.keySet()){
+			if(!mListOfAvailableCommunicationTypes.contains(commType)){
+				mMapOfSamplingRatesShimmer.remove(getSamplingRateShimmer());
+			}
+		}
+
 	}
 
 
@@ -334,9 +337,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		HashMap<COMMUNICATION_TYPE, List<Integer>> parseMap = new HashMap<COMMUNICATION_TYPE, List<Integer>>(); 
 
 		mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
-		for(COMMUNICATION_TYPE commType:COMMUNICATION_TYPE.values()){
+//		for(COMMUNICATION_TYPE commType:COMMUNICATION_TYPE.values()){
+		for(COMMUNICATION_TYPE commType:mListOfAvailableCommunicationTypes){
 			for(Integer sensorMapKey:mSensorMap.keySet()){
-				SensorDetails SensorDetails = mSensorMap.get(sensorMapKey);
+				SensorDetails SensorDetails = getSensorDetails(sensorMapKey);
 				if(SensorDetails.isEnabled(commType)){
 					TreeMap<Integer, SensorDetails> parserMapPerComm = mParserMap.get(commType);
 					if(parserMapPerComm==null){
@@ -1199,7 +1203,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public boolean isSensorEnabled(int sensorMapKey){
 		if(mSensorMap!=null) {
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+			SensorDetails sensorDetails = getSensorDetails(sensorMapKey);
 			if(sensorDetails!=null){
 				return sensorDetails.isEnabled();
 			}
@@ -1208,7 +1212,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public boolean isSensorEnabled(COMMUNICATION_TYPE commType, int sensorKey) {
-		SensorDetails sensorDetails = mSensorMap.get(sensorKey);
+		SensorDetails sensorDetails = getSensorDetails(sensorKey);
 		if(sensorDetails!=null){
 			return sensorDetails.isEnabled(commType);
 		}
@@ -1228,7 +1232,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public List<ShimmerVerObject> getListOfCompatibleVersionInfoForSensor(int sensorMapKey) {
-		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+		SensorDetails sensorDetails = getSensorDetails(sensorMapKey);
 		if(sensorDetails!=null){
 			return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
 		}
@@ -1792,43 +1796,25 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return a boolean indicating if the sensors state was successfully changed
 	 */
 	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
-		
 		if(mSensorMap!=null) {
-			
 			sensorMapKey = handleSpecCasesBeforeSetSensorState(sensorMapKey,state);
 			
-			//Automatically handle required channels for each sensor
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+			SensorDetails sensorDetails = getSensorDetails(sensorMapKey);
 			//System.err.println("sensorDetails.mSensorDetailsRef: " +sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
-			
 			if(sensorDetails!=null){
+				//Automatically handle required channels for each sensor
 				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
 				if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
 					for(Integer i:listOfRequiredKeys) {
-						mSensorMap.get(i).setIsEnabled(state);
+						getSensorDetails(i).setIsEnabled(state);
 					}
 				}
 				
 				//Set sensor state
 				sensorDetails.setIsEnabled(state);
-				
-				sensorMapConflictCheckandCorrect(sensorMapKey);
-				setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
-				
-				// Automatically control internal expansion board power
-				checkIfInternalExpBrdPowerIsNeeded();
 
-//				printSensorAndParserMaps();
-				refreshEnabledSensorsFromSensorMap();
-//				printSensorAndParserMaps();
-				
-				generateParserMap();
-				//refresh algorithms
-				algorithmRequiredSensorCheck();
+				setSensorEnabledStateCommon(sensorMapKey, sensorDetails.isEnabled());
 
-//				//Debugging
-//				printSensorAndParserMaps();
-				
 				boolean result = sensorDetails.isEnabled();
 				return (result==state? true:false);
 			}
@@ -1839,6 +1825,62 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			return false;
 		}
 	}
+	
+	public boolean setSensorEnabledState(int sensorMapKey, boolean state, COMMUNICATION_TYPE commType) {
+		if(mSensorMap!=null) {
+			sensorMapKey = handleSpecCasesBeforeSetSensorState(sensorMapKey,state);
+			
+			SensorDetails sensorDetails = getSensorDetails(sensorMapKey);
+			//System.err.println("sensorDetails.mSensorDetailsRef: " +sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+			if(sensorDetails!=null){
+				//Testing
+//				if(sensorDetails.hashCode()!=getSensorDetailsFromMapOfSensorClasses(sensorMapKey).hashCode())
+//					System.err.println("SENSOR DETAILS HASHCODES NOT EQUAL");
+
+				//Automatically handle required channels for each sensor
+				List<Integer> listOfRequiredKeys = sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired;
+				if(listOfRequiredKeys != null && listOfRequiredKeys.size()>0) {
+					for(Integer i:listOfRequiredKeys) {
+						getSensorDetails(i).setIsEnabled(commType, state);
+					}
+				}
+				
+				//Set sensor state
+				sensorDetails.setIsEnabled(commType, state);
+
+				setSensorEnabledStateCommon(sensorMapKey, sensorDetails.isEnabled());
+
+				boolean result = sensorDetails.isEnabled();
+				return (result==state? true:false);
+			}
+			return false;
+		}
+		else {
+			consolePrintLn("setSensorEnabledState:\t SensorMap=null");
+			return false;
+		}
+	}
+
+	
+	private void setSensorEnabledStateCommon(int sensorMapKey, boolean state) {
+		sensorMapConflictCheckandCorrect(sensorMapKey);
+		setDefaultConfigForSensor(sensorMapKey, state);
+		
+		// Automatically control internal expansion board power
+		checkIfInternalExpBrdPowerIsNeeded();
+
+//		printSensorAndParserMaps();
+		refreshEnabledSensorsFromSensorMap();
+//		printSensorAndParserMaps();
+		
+		generateParserMap();
+		//refresh algorithms
+		algorithmRequiredSensorCheck();
+
+//		//Debugging
+//		printSensorAndParserMaps();
+	}
+
 	
 	
 	public int handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
@@ -1854,7 +1896,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public boolean isTimestampEnabled(){
-		SensorDetails sensorDetails = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP);
+		SensorDetails sensorDetails = getSensorDetails(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP);
 		if(sensorDetails!=null){
 			return sensorDetails.isEnabled();
 		}
@@ -1868,11 +1910,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 *  
 	 */
 	protected void sensorMapConflictCheckandCorrect(int originalSensorMapkey){
-		SensorDetails sdOriginal = mSensorMap.get(originalSensorMapkey); 
+		SensorDetails sdOriginal = getSensorDetails(originalSensorMapkey); 
 		if(sdOriginal != null) {
 			if(sdOriginal.mSensorDetailsRef.mListOfSensorMapKeysConflicting != null) {
 				for(Integer sensorMapKeyConflicting:sdOriginal.mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
-					SensorDetails sdConflicting = mSensorMap.get(sensorMapKeyConflicting); 
+					SensorDetails sdConflicting = getSensorDetails(sensorMapKeyConflicting); 
 					if(sdConflicting != null) {
 						sdConflicting.setIsEnabled(false);
 						if(sdConflicting.isDerivedChannel()) {
@@ -1892,10 +1934,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void sensorMapCheckandCorrectSensorDependencies() {
 		//Cycle through any required sensors and update sensorMap channel enable values
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey); 
+			SensorDetails sensorDetails = getSensorDetails(sensorMapKey); 
 			if(sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired != null) {
 				for(Integer requiredSensorKey:sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysRequired) {
-					if(!mSensorMap.get(requiredSensorKey).isEnabled()) {
+					if(!getSensorDetails(requiredSensorKey).isEnabled()) {
 						sensorDetails.setIsEnabled(false);
 						if(sensorDetails.isDerivedChannel()) {
 							mDerivedSensors &= ~sensorDetails.mDerivedSensorBitmapID;
@@ -1910,7 +1952,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected void sensorMapCheckandCorrectHwDependencies() {
 		for(Integer sensorMapKey:mSensorMap.keySet()) {
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey); 
+			SensorDetails sensorDetails = getSensorDetails(sensorMapKey); 
 			if(sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo != null) {
 				if(!isVerCompatibleWithAnyOf(sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo)) {
 					sensorDetails.setIsEnabled(false);
@@ -2032,19 +2074,25 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		consolePrintLn("");
 		consolePrintLn("Enabled Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mEnabledSensors, 5));
 		consolePrintLn("Derived Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mDerivedSensors, 3));
+		
+		consolePrintLn("SENSOR MAP");
 		for(SensorDetails sensorDetails:mSensorMap.values()){
-			consolePrintLn("SENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
+			consolePrintLn("\tSENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 				consolePrintLn("\t\tChannel:\t" + channelDetails.mObjectClusterName);
 			}
 		}
+		consolePrintLn("");
+		
 		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
+			consolePrintLn("PARSER MAP\tCOMM TYPE:\t" + commType);
 			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
-				consolePrintLn("PARSER SENSOR\tCOMM TYPE:\t" + commType + "\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+				consolePrintLn("\tSENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					consolePrintLn("\t\tChannel:\t" + channelDetails.mObjectClusterName);
 				}
 			}
+			consolePrintLn("");
 		}
 		consolePrintLn("");
 	}
@@ -2108,28 +2156,28 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 					
 				// Process remaining channels
-				SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+				SensorDetails sensorDetails = getSensorDetails(sensorMapKey);
 				sensorDetails.updateFromEnabledSensorsVars(mEnabledSensors, mDerivedSensors);
 				
 //				setDefaultConfigForSensor(sensorMapKey, sensorDetails.isEnabled());
 
 //				// Process remaining channels
-//				mSensorMap.get(sensorMapKey).setIsEnabled(false);
+//				getSensorDetails(sensorMapKey).setIsEnabled(false);
 //				// Check if this sensor is a derived sensor
-//				if(mSensorMap.get(sensorMapKey).isDerivedChannel()) {
+//				if(getSensorDetails(sensorMapKey).isDerivedChannel()) {
 //					//Check if associated derived channels are enabled 
-//					if((mDerivedSensors&mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) == mSensorMap.get(sensorMapKey).mDerivedSensorBitmapID) {
+//					if((mDerivedSensors&getSensorDetails(sensorMapKey).mDerivedSensorBitmapID) == getSensorDetails(sensorMapKey).mDerivedSensorBitmapID) {
 //						//TODO add comment
-//						if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-//							mSensorMap.get(sensorMapKey).setIsEnabled(true);
+//						if((mEnabledSensors&getSensorDetails(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == getSensorDetails(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
+//							getSensorDetails(sensorMapKey).setIsEnabled(true);
 //						}
 //					}
 //				}
 //				// This is not a derived sensor
 //				else {
 //					//Check if sensor's bit in sensor bitmap is enabled
-//					if((mEnabledSensors&mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == mSensorMap.get(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
-//						mSensorMap.get(sensorMapKey).setIsEnabled(true);
+//					if((mEnabledSensors&getSensorDetails(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) == getSensorDetails(sensorMapKey).mSensorDetailsRef.mSensorBitmapIDSDLogHeader) {
+//						getSensorDetails(sensorMapKey).setIsEnabled(true);
 //					}
 //				}
 			}
@@ -2181,8 +2229,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-			if(mSensorMap.get(key).mSensorDetailsRef.mListOfSensorMapKeysConflicting != null) {
-				for(Integer sensorMapKey:mSensorMap.get(key).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
+			if(getSensorDetails(key).mSensorDetailsRef.mListOfSensorMapKeysConflicting != null) {
+				for(Integer sensorMapKey:getSensorDetails(key).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
 					if(isSensorEnabled(sensorMapKey)) {
 						listOfChannelConflicts.add(sensorMapKey);
 					}
@@ -2262,7 +2310,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			SensorDetails sensorDetails = abstractSensor.mSensorMap.get(sensorMapKey);
+			SensorDetails sensorDetails = abstractSensor.getSensorDetails(sensorMapKey);
 			if(sensorDetails!=null){
 				return abstractSensor.isSensorUsingDefaultCal(sensorMapKey);
 			}
@@ -2297,10 +2345,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean ignoreAndDisable(Integer sensorMapKey) {
 		//Check if a derived channel is enabled, if it is ignore disable and skip 
 //		innerloop:
-		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+		SensorDetails sensorDetails = getSensorDetails(sensorMapKey);
 		if(sensorDetails!=null){
 			for(Integer conflictKey:sensorDetails.mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
-				SensorDetails conflictingSensor = mSensorMap.get(conflictKey);
+				SensorDetails conflictingSensor = getSensorDetails(conflictKey);
 				if(conflictingSensor!=null){
 					if(conflictingSensor.isDerivedChannel()) {
 						if((mDerivedSensors&conflictingSensor.mDerivedSensorBitmapID)>0) {
@@ -2428,7 +2476,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				if (abstractAlgorithm!=null && abstractAlgorithm.isEnabled()) { // run check to see if accompanying sensors
 					innerLoop:
 					for (Integer sensor:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
-						SensorDetails sensorDetails = mSensorMap.get(sensor);
+						SensorDetails sensorDetails = getSensorDetails(sensor);
 						if (sensorDetails!=null && !sensorDetails.isEnabled()) {
 							setIsAlgorithmEnabledAndSyncGroup(abstractAlgorithm.mAlgorithmName, sGD.mGroupName, false);
 							break innerLoop;
@@ -2714,14 +2762,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return maxSetRate;
 	}
 
-	public double getSamplingRateShimmer(COMMUNICATION_TYPE communicationType){
-		double samplingRate = mMapOfSamplingRatesShimmer.get(communicationType);
-		if(!Double.isNaN(samplingRate)){
-			return samplingRate;
+	public double getSamplingRateShimmer(COMMUNICATION_TYPE commsType){
+		if(mMapOfSamplingRatesShimmer!=null && mMapOfSamplingRatesShimmer.containsKey(commsType)){
+			double samplingRate = mMapOfSamplingRatesShimmer.get(commsType);
+			if(!Double.isNaN(samplingRate)){
+				return samplingRate;
+			}
 		}
-		else {
-			return 0.0;
-		}
+		
+		return 0.0;
 	}
 
 	/** This is valid for Shimmers that use a 32.768kHz crystal as the basis for their sampling rate
@@ -2942,6 +2991,38 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return null;
 	}
 
+	public void putSensorClass(AbstractSensor.SENSORS sensorClassKey, AbstractSensor abstractSensor){
+		mMapOfSensorClasses.put(sensorClassKey, abstractSensor);
+	}
+
+	public AbstractSensor getSensorClass(AbstractSensor.SENSORS sensorClassKey){
+		if(mMapOfSensorClasses!=null && mMapOfSensorClasses.containsKey(sensorClassKey)){
+			return mMapOfSensorClasses.get(sensorClassKey);
+		}
+		return null;
+	}
+
+	@Deprecated
+	public AbstractSensor getSensorClass(long sensorClassKeyInt){
+		if(mMapOfSensorClasses!=null){
+			for(AbstractSensor.SENSORS sensorClassKey:mMapOfSensorClasses.keySet()){
+				if(sensorClassKey.ordinal()==sensorClassKeyInt){
+					return getSensorClass(sensorClassKey);
+				}
+			}
+		}
+		return null;
+	}
+
+	//Testing
+//	public SensorDetails getSensorDetailsFromMapOfSensorClasses(Integer sensorMapKey) {
+//		for(AbstractSensor aS:mMapOfSensorClasses.values()){
+//			SensorDetails sD = aS.getSensorDetails(sensorMapKey);
+//			if(sD!=null)
+//				return sD;
+//		}
+//		return null;
+//	}
 	
 	public void threadSleep(long millis){
 		try {
@@ -3051,7 +3132,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		Iterator<Integer> iterator = mapOfKinematicSensorCalibration.keySet().iterator();
 		while(iterator.hasNext()){
 			Integer sensorMapKey = iterator.next();
-			AbstractSensor abstractSensor = mMapOfSensorClasses.get(sensorMapKey);
+			AbstractSensor abstractSensor = getSensorClass(sensorMapKey);
 			if(abstractSensor!=null){
 				abstractSensor.setConfigValueUsingConfigLabel(AbstractSensor.GuiLabelConfigCommon.CALIBRATION_PER_SENSOR, mapOfKinematicSensorCalibration.get(sensorMapKey));
 			}

@@ -1317,7 +1317,8 @@ public class Configuration {
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(svoAnyIntExpBoardAndFw);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
-					svoAnyIntExpBoardAndSdlog,svoAnyIntExpBoardAndBtStream,svoAnyIntExpBoardAndLogAndStream, 
+					svoAnyIntExpBoardAndSdlog,svoAnyIntExpBoardAndBtStream,svoAnyIntExpBoardAndLogAndStream,
+					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq,
 					svoShimmer4Stock, svoArduino); 
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
@@ -1767,10 +1768,10 @@ public class Configuration {
 	}
 	
 	public static class ShimmerGq802154{
-		public class SensorMapKey{
-			public static final int GSR = 1;
-			public static final int ECGtoHR = 2;
-		}
+//		public class SensorMapKey{
+//			public static final int GSR = 1;
+//			public static final int ECGtoHR = 2;
+//		}
 		
 		//GUI AND EXPORT CHANNELS
 		public static class ObjectClusterSensorName{

@@ -129,6 +129,12 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 	public int idxDerivedSensors1 =		    		32;
 	public int idxDerivedSensors2 =		    		33;
 	
+	public int idxDerivedSensors3 =		    		0;
+	public int idxDerivedSensors4 =		    		0;
+	public int idxDerivedSensors5 =		    		0;
+	public int idxDerivedSensors6 =		    		0;
+	public int idxDerivedSensors7 =		    		0;
+
 //	public int idxConfigSetupByte4 =              	128+0;
 //	public int idxConfigSetupByte5 =              	128+1;
 //	public int idxSensors3 =                        128+2;
@@ -206,9 +212,15 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 	
 	// Derived Channels - used by SW not FW
 	public int maskDerivedChannelsByte =				0xFF;
-	public int byteShiftDerivedSensors0 =				0;
-	public int byteShiftDerivedSensors1 =				8;
-	public int byteShiftDerivedSensors2 =				16;
+	public int byteShiftDerivedSensors0 =				8*0;
+	public int byteShiftDerivedSensors1 =				8*1;
+	public int byteShiftDerivedSensors2 =				8*2;
+
+	public int byteShiftDerivedSensors3 =				8*3;
+	public int byteShiftDerivedSensors4 =				8*4;
+	public int byteShiftDerivedSensors5 =				8*5;
+	public int byteShiftDerivedSensors6 =				8*6;
+	public int byteShiftDerivedSensors7 =				8*7;
 	
 ////	public int maskDerivedChannel = 					0x01;
 ////	public int bitShiftDerivedChannelResAmp = 			0;
@@ -495,9 +507,16 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 		MSP430_5XX_INFOMEM_B_ADDRESS = 256;
 		MSP430_5XX_INFOMEM_A_ADDRESS = 384; 
 		MSP430_5XX_INFOMEM_LAST_ADDRESS = 511;
-		
-		//Include changes to mapping below in order of oldest to newest in 
-		//seperate "if statements"
+
+		//Include changes to mapping below in order of oldest to newest in seperate "if statements"
+
+		if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
+			idxDerivedSensors3 =		    		118;
+			idxDerivedSensors4 =		    		119;
+			idxDerivedSensors5 =		    		120;
+			idxDerivedSensors6 =		    		121;
+			idxDerivedSensors7 =		    		122;
+		}
 		
 //		if(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,10,1)){
 //			idxMplCalibration = 128+128+128+0;

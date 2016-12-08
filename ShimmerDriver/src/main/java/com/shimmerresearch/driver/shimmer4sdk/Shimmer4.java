@@ -97,36 +97,35 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	public void sensorAndConfigMapsCreate() {
-
 		mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
 
 		//Example code
 //		if(UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 //				HW_ID.SHIMMER_4_SDK, FW_ID.LOGANDSTREAM, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION)){
-//			mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
+//			putSensorClass(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 //		}
 		
-		mMapOfSensorClasses.put(SENSORS.CLOCK, new ShimmerClock(this));
+		putSensorClass(SENSORS.CLOCK, new ShimmerClock(this));
 		
-		mMapOfSensorClasses.put(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.ADC, new SensorADC(mShimmerVerObject));
-		mMapOfSensorClasses.put(SENSORS.Battery, new SensorBattVoltage(this));
-		mMapOfSensorClasses.put(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
+		putSensorClass(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
+		putSensorClass(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
+		putSensorClass(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
+		putSensorClass(SENSORS.ADC, new SensorADC(mShimmerVerObject));
+		putSensorClass(SENSORS.Battery, new SensorBattVoltage(this));
+		putSensorClass(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
 		
 		//TODO push version checking into the sensor classes
 		
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-			mMapOfSensorClasses.put(SENSORS.EXG, new SensorEXG(this));
+			putSensorClass(SENSORS.EXG, new SensorEXG(this));
 		}
 
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-			mMapOfSensorClasses.put(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+			putSensorClass(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
 		}
 
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
@@ -134,17 +133,17 @@ public class Shimmer4 extends ShimmerDevice {
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
 			if(isDerivedSensorsSupported()){
-				mMapOfSensorClasses.put(SENSORS.PPG, new SensorPPG(this));
+				putSensorClass(SENSORS.PPG, new SensorPPG(this));
 			}
 		}
 
 		//Shimmer4 enhancements - Only available on the SDK
 		if(getExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_4_SDK){
-			mMapOfSensorClasses.put(SENSORS.BMP280, new SensorBMP280(mShimmerVerObject));
-			mMapOfSensorClasses.put(SENSORS.STC3100, new SensorSTC3100(mShimmerVerObject));
+			putSensorClass(SENSORS.BMP280, new SensorBMP280(mShimmerVerObject));
+			putSensorClass(SENSORS.STC3100, new SensorSTC3100(mShimmerVerObject));
 		}
 		else{
-			mMapOfSensorClasses.put(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
+			putSensorClass(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
 		}
 		
 		super.sensorAndConfigMapsCreateCommon();
@@ -409,20 +408,15 @@ public class Shimmer4 extends ShimmerDevice {
 	@Override
 	public void prepareAllAfterConfigRead() {
 		super.prepareAllAfterConfigRead();
-		//Can't create again because any sensor configuration that was read from InfoMem will be over written
-//		sensorAndConfigMapsCreate();
-		
-//		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.ALL);
-//		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.BLUETOOTH);
-//		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors, COMMUNICATION_TYPE.SD);
-//		setEnabledAndDerivedSensors(mEnabledSensors, mDerivedSensors);
 
-		//Override Shimmer4 sensors
+		//Overrides - needed because there are no enabled/derived sensor bits for these
 		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
 		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true);
 		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, true);
 
-//		sensorMapUpdateFromEnabledSensorsVars(COMMUNICATION_TYPE.BLUETOOTH);
+		//TODO
+//		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
+//		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
 
 		updateExpectedDataPacketSize();
 		
@@ -578,7 +572,7 @@ public class Shimmer4 extends ShimmerDevice {
 						
 						consolePrintLn(sensorSTC3100Details.getDebugString());
 						
-						AbstractSensor sensor = mMapOfSensorClasses.get(SENSORS.STC3100);
+						AbstractSensor sensor = getSensorClass(SENSORS.STC3100);
 						if(sensor!=null && sensor instanceof SensorSTC3100){
 							SensorSTC3100 sensorSTC3100 = (SensorSTC3100)sensor;
 							sensorSTC3100.setStc3100Details(sensorSTC3100Details);
@@ -954,7 +948,7 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Deprecated //TODO remove below? old approach?
 	public void setSetting(long sensorID, String componentName, Object valueToSet, COMMUNICATION_TYPE commType){
-		ActionSetting actionSetting = mMapOfSensorClasses.get(sensorID).setSettings(componentName, valueToSet, commType);
+		ActionSetting actionSetting = getSensorClass(sensorID).setSettings(componentName, valueToSet, commType);
 		if (actionSetting.mCommType == COMMUNICATION_TYPE.BLUETOOTH){
 			//mShimmerRadio.actionSettingResolver(actionSetting);
 		}
@@ -1182,7 +1176,7 @@ public class Shimmer4 extends ShimmerDevice {
 	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 
-		AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);
+		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
 		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
 			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
 			setPacketReceptionRateCurrent(shimmerClock.calculatePacketReceptionRateCurrent(intervalMs));
@@ -1193,7 +1187,7 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	private void resetShimmerClock() {
-		AbstractSensor abstractSensor = mMapOfSensorClasses.get(AbstractSensor.SENSORS.CLOCK);
+		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
 		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
 			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
 			shimmerClock.resetShimmerClock();
