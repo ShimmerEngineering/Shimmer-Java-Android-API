@@ -30,7 +30,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @author Jong Chern Lim, Ruaidhri Molloy
+ * @author Jong Chern Lim, Ruaidhri Molloy, Mark Nolan
  * @date   May, 2014
  * 
  * The purpose of this code is to maintain the configurations of BTSTREAM
@@ -55,9 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.shimmerresearch.algorithms.AlgorithmDetails;
-import com.shimmerresearch.algorithms.orientation.OrientationModule;
-import com.shimmerresearch.algorithms.orientation.OrientationModule6DOF;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -65,14 +62,11 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorADC;
-//import com.shimmerresearch.pluginalgo.ECGAdaptiveModule.ObjectClusterSensorName;
 import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorBMP280;
 import com.shimmerresearch.sensors.SensorBattVoltage;
@@ -85,11 +79,7 @@ import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
-import com.shimmerresearch.sensors.SensorSystemTimeStamp;
-import com.shimmerresearch.sensors.SensorSystemTimeStampGq;
 import com.shimmerresearch.sensors.ShimmerClock;
-import com.shimmerresearch.sensors.SensorSTC3100.GuiLabelSensors;
-import com.shimmerresearch.sensors.SensorSTC3100.ObjectClusterSensorName;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a
@@ -811,6 +801,7 @@ public class Configuration {
 			public static final int HOST_EMG = 101;
 			public static final int HOST_EXG_TEST = 102;
 			public static final int HOST_EXG_CUSTOM = 116;
+			public static final int HOST_EXG_THREE_UNIPOLAR = 106;
 			
 			// Derived Channels
 			public static final int HOST_EXG_RESPIRATION = 103;
@@ -824,12 +815,51 @@ public class Configuration {
 			public static final int HOST_REAL_TIME_CLOCK = 152;
 			public static final int HOST_REAL_TIME_CLOCK_SYNC = 153;
 			
-			
 			public static final int SHIMMER_ECG_TO_HR_FW = 150;
 			
+			// Third party devices @ 1000+
 			public static final int THIRD_PARTY_NONIN = 1000;
 			public static final int HOST_KEYBOARD_LISTENER = 1001;
 			public static final int HOST_MOUSE_LISTENER = 1002;
+		}
+		
+		public class DerivedSensorsBitMask {
+			public final static int ORIENTATION_6DOF_LN_EULER 	= 1 << 23;
+			public final static int ORIENTATION_6DOF_LN_QUAT 	= 1 << 22;
+			public final static int ORIENTATION_9DOF_LN_EULER 	= 1 << 21;
+			public final static int ORIENTATION_9DOF_LN_QUAT 	= 1 << 20;
+			public final static int ORIENTATION_6DOF_WR_EULER 	= 1 << 19;
+			public final static int ORIENTATION_6DOF_WR_QUAT 	= 1 << 18;
+			public final static int ORIENTATION_9DOF_WR_EULER 	= 1 << 17;
+			public final static int ORIENTATION_9DOF_WR_QUAT 	= 1 << 16;
+			// ------------------------------------------------------------------
+			public final static int ECG2HR_CHIP1_CH1 			= 1 << 15;
+			public final static int ECG2HR_CHIP1_CH2 			= 1 << 14;
+			public final static int ECG2HR_CHIP2_CH1 			= 1 << 13;
+			public final static int ECG2HR_CHIP2_CH2 			= 1 << 12;
+			public final static int ECG2HR_HRV_TIME_DOMAIN 		= 1 << 11;
+			public final static int ECG2HR_HRV_FREQ_DOMAIN 		= 1 << 10;
+
+			// ----------------------------------------------------------
+			public final static int ACTIVITY_MODULE 			= 1 << 8;
+			public final static int GSR_METRICS 				= 1 << 9;
+			public final static int GSR_BASELINE 				= 1 << 26;
+
+			// ----------------------------------------------------------
+			public final static int EMG_PROCESSING_CHAN2 		= 1 << 24;
+			public final static int EMG_PROCESSING_CHAN1 		= 1 << 25;
+
+			// ----------- Now implemented in SensorPPG
+			// -------------------------
+			public final static int PPG_TO_HR2_1_14 			= 1 << 7;
+			public final static int PPG_TO_HR1_12_13 			= 1 << 6;
+			public final static int PPG_TO_HR_12_13 			= 1 << 5;
+			public final static int PPG2_1_14 					= 1 << 4;
+			public final static int PPG1_12_13 					= 1 << 3;
+			public final static int PPG_12_13 					= 1 << 2;
+			// ------------------------------------------------------------------
+			public final static int SKIN_TEMP 					= 1 << 1;
+			public final static int RES_AMP 					= 1 << 0;
 		}
 
 		// Config Options Map
@@ -1488,7 +1518,8 @@ public class Configuration {
 								Configuration.Shimmer3.SensorMapKey.HOST_EMG,
 								Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 								Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-								Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)));
+								Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+								Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR)));
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI.ordinal(), new SensorGroupingDetails(
 					SensorADC.GuiLabelSensorTiles.PROTO3_MINI,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
@@ -2033,5 +2064,6 @@ public class Configuration {
 	}
 	
 }
+
 
 

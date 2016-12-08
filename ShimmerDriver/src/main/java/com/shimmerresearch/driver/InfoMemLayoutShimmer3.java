@@ -130,12 +130,12 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	public int idxDerivedSensors0 =		    		0;
 	public int idxDerivedSensors1 =		    		0;
 	public int idxDerivedSensors2 =		    		0;
-	
-	//			mDerivedSensors = 1 (Resistance Amp - BAMP)
-	//			mDerivedSensors = 2 (Skin Temp - BAMP)
-	//			mDerivedSensors = 4 (PPG - GSR+)
-	//			mDerivedSensors = 8 (PPG1 - P3D)
-	//			mDerivedSensors = 16 (PPG2 - P3D)
+
+	public int idxDerivedSensors3 =		    		0;
+	public int idxDerivedSensors4 =		    		0;
+	public int idxDerivedSensors5 =		    		0;
+	public int idxDerivedSensors6 =		    		0;
+	public int idxDerivedSensors7 =		    		0;
 	
 	public int idxConfigSetupByte4 =              	128+0;
 	public int idxConfigSetupByte5 =              	128+1;
@@ -213,10 +213,16 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	
 	// Derived Channels - used by SW not FW
 	public int maskDerivedChannelsByte =				0xFF;
-	public int byteShiftDerivedSensors0 =				0;
-	public int byteShiftDerivedSensors1 =				8;
-	public int byteShiftDerivedSensors2 =				16;
-	
+	public int byteShiftDerivedSensors0 =				8*0;
+	public int byteShiftDerivedSensors1 =				8*1;
+	public int byteShiftDerivedSensors2 =				8*2;
+
+	public int byteShiftDerivedSensors3 =				8*3;
+	public int byteShiftDerivedSensors4 =				8*4;
+	public int byteShiftDerivedSensors5 =				8*5;
+	public int byteShiftDerivedSensors6 =				8*6;
+	public int byteShiftDerivedSensors7 =				8*7;
+
 //	public int maskDerivedChannel = 					0x01;
 //	public int bitShiftDerivedChannelResAmp = 			0;
 //	public int bitShiftDerivedChannelSkinTemp =			1;
@@ -485,12 +491,7 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 		
 		mInfoMemSize = calculateInfoMemByteLength();
 
-		//Include changes to mapping below in order of oldest to newest in 
-		//seperate "if statements"
-		
-//		if(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,10,1)){
-//			idxMplCalibration = 128+128+128+0;
-//		}
+		//Include changes to mapping below in order of oldest to newest in seperate "if statements"
 		
 		if((compareVersions(FW_ID.SDLOG,0,8,42))
 				||(compareVersions(FW_ID.LOGANDSTREAM,0,3,4))
@@ -528,13 +529,24 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 				||(compareVersions(FW_ID.LOGANDSTREAM,0,5,16))
 				||(compareVersions(FW_ID.BTSTREAM,0,7,4))
 				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
-
 			MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
 			MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
 			MSP430_5XX_INFOMEM_B_ADDRESS = 256;
 			MSP430_5XX_INFOMEM_A_ADDRESS = 384; 
 			MSP430_5XX_INFOMEM_LAST_ADDRESS = 511;
 		}
+		
+		if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
+			idxDerivedSensors3 =		    		118;
+			idxDerivedSensors4 =		    		119;
+			idxDerivedSensors5 =		    		120;
+			idxDerivedSensors6 =		    		121;
+			idxDerivedSensors7 =		    		122;
+		}
+
+//		if(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,10,1)){
+//			idxMplCalibration = 128+128+128+0;
+//		}
 
 	}
 	

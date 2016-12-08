@@ -1185,6 +1185,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==DERIVED_CHANNEL_BYTES_RESPONSE) {
 			byte[] byteArray = readBytes(3);
 			mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
+			
+			if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
+				byteArray = readBytes(5);
+				
+				mDerivedSensors |= ((long)(byteArray[0] & 0xFF)) << (8*3); 
+				mDerivedSensors |= ((long)(byteArray[1] & 0xFF)) << (8*4); 
+				mDerivedSensors |= ((long)(byteArray[2] & 0xFF)) << (8*5); 
+				mDerivedSensors |= ((long)(byteArray[3] & 0xFF)) << (8*6); 
+				mDerivedSensors |= ((long)(byteArray[4] & 0xFF)) << (8*7); 
+			}
+
 			if (mEnabledSensors!=0){
 				prepareAllAfterConfigRead();
 				inquiryDone();
@@ -1803,6 +1814,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(currentCommand==SET_DERIVED_CHANNEL_BYTES){
 					byte[] instruction = getListofInstructions().get(0);
 					mDerivedSensors = (long)(((instruction[3]&0xFF)<<16) + ((instruction[2]&0xFF)<<8) + (instruction[1]&0xFF));
+					
+					if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
+						mDerivedSensors |= ((long)(instruction[4] & 0xFF)) << (8*3); 
+						mDerivedSensors |= ((long)(instruction[5] & 0xFF)) << (8*4); 
+						mDerivedSensors |= ((long)(instruction[6] & 0xFF)) << (8*5); 
+						mDerivedSensors |= ((long)(instruction[7] & 0xFF)) << (8*6); 
+						mDerivedSensors |= ((long)(instruction[8] & 0xFF)) << (8*7); 
+					}
+					
 					if (mEnabledSensors!=0){
 						prepareAllAfterConfigRead();
 						inquiryDone();
@@ -2914,7 +2934,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void writeDerivedChannelBytes(byte[] channel) {
 		if(getFirmwareVersionCode()>=6){
-			writeInstruction(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2]});
+			if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
+				writeInstruction(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2], 
+						channel[3], channel[4], channel[5], channel[6], channel[7]});
+			}
+			else{
+				writeInstruction(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2]});
+			}
 		}
 	}
 	
@@ -2923,11 +2949,25 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void writeDerivedChannels(long channels) {
 		if(getFirmwareVersionCode()>=6){
-			byte[] channel = new byte[3];
-			channel[2] = (byte) ((channels >> 16) & 0xFF);
-			channel[1] = (byte) ((channels >> 8) & 0xFF);
-			channel[0] = (byte) ((channels >> 0) & 0xFF);
-			writeInstruction(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2]});
+			if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
+				byte[] channel = new byte[8];
+				channel[7] = (byte) ((channels >> (8*7)) & 0xFF);
+				channel[6] = (byte) ((channels >> (8*6)) & 0xFF);
+				channel[5] = (byte) ((channels >> (8*5)) & 0xFF);
+				channel[4] = (byte) ((channels >> (8*4)) & 0xFF);
+				channel[3] = (byte) ((channels >> (8*3)) & 0xFF);
+				channel[2] = (byte) ((channels >> (8*2)) & 0xFF);
+				channel[1] = (byte) ((channels >> (8*1)) & 0xFF);
+				channel[0] = (byte) ((channels >> (8*0)) & 0xFF);
+				writeInstruction(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2], channel[3], channel[4], channel[5], channel[6], channel[7]});
+			}
+			else{
+				byte[] channel = new byte[3];
+				channel[2] = (byte) ((channels >> 16) & 0xFF);
+				channel[1] = (byte) ((channels >> 8) & 0xFF);
+				channel[0] = (byte) ((channels >> 0) & 0xFF);
+				writeInstruction(new byte[]{SET_DERIVED_CHANNEL_BYTES, channel[0], channel[1], channel[2]});
+			}
 		}
 	}
 	

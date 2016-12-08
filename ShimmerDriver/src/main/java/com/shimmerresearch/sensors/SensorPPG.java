@@ -10,23 +10,18 @@ import java.util.Map;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.ShimmerObject;
-import com.shimmerresearch.driver.ShimmerObject.DerivedSensorsBitMask;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.SensorGSR.GuiLabelSensorTiles;
-import com.shimmerresearch.sensors.SensorMPU9X50.DatabaseConfigHandle;
 
 /**
  * @author Ronan McCormack
@@ -139,6 +134,7 @@ public static class DatabaseConfigHandle{
 		Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 		Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
 		Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, 
+		Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
 		Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
 		Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP};
 
@@ -279,6 +275,7 @@ public static class DatabaseConfigHandle{
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -306,6 +303,7 @@ public static class DatabaseConfigHandle{
 					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -345,6 +343,7 @@ public static class DatabaseConfigHandle{
 					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
@@ -373,6 +372,7 @@ public static class DatabaseConfigHandle{
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
 //					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,

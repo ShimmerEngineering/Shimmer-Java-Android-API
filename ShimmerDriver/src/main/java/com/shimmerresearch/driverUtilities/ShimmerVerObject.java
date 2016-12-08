@@ -306,7 +306,7 @@ public class ShimmerVerObject implements Serializable {
 	}
 
 	public static boolean isMplSupported(ShimmerVerObject svo, int hwVer, int fwId) {
-		if (isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 7, 0)
+		if (compareVersions(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 7, 0)
 //				|| (hwVer==HW_ID.SHIMMER_4_SDK)
 				){
 			return true;
@@ -364,7 +364,26 @@ public class ShimmerVerObject implements Serializable {
 		}
 		return false;
 	}
-	
+
+	public boolean isSupportedEightByteDerivedSensors() {
+		if((compareVersions(this, FW_ID.SDLOG,0,13,1))
+				|| (compareVersions(this, FW_ID.LOGANDSTREAM,0,7,2))
+				|| (compareVersions(this, FW_ID.GQ_802154,0,3,2))
+				|| (compareVersions(this, FW_ID.SHIMMER4_SDK_STOCK,0,0,23))) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isSupportedExpansionBrdIdInSdHeader() {
+		if(compareVersions(FW_ID.SDLOG, 0, 12, 4)
+				|| compareVersions(FW_ID.LOGANDSTREAM, 0, 6, 13)
+				|| compareVersions(FW_ID.GQ_802154, 0, 3, 2)){
+			return true;
+		}
+		return false;
+	}
+
 	public static final List<ShimmerVerObject> getListOfCompatibleSdLoggingFW(){
 		List<ShimmerVerObject> listOfCompatibleSdLoggingFW = new ArrayList<ShimmerVerObject>();
 		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.SDLOG,0,8,69));
@@ -386,8 +405,8 @@ public class ShimmerVerObject implements Serializable {
 	}
 	
 	public static boolean isCalibDumpSupported(ShimmerVerObject shimmerVerObject) {
-		if(isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 6, 7)
-				|| isVerCompatibleWith(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 12, 6)
+		if(compareVersions(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 6, 7)
+				|| compareVersions(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 12, 6)
 				|| shimmerVerObject.isShimmerGen4()){
 			return true;
 		}
@@ -455,11 +474,20 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 
-	public boolean isVerCompatibleWith(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
-		return isVerCompatibleWith(this, hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	public boolean compareVersions(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+		return compareVersions(this, hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
+
+	public boolean compareVersions(int compFwIdent, int compMajor, int compMinor, int compInternal){
+		return compareVersions(this, compFwIdent,compMajor,compMinor,compInternal);
 	}
 	
-	public static boolean isVerCompatibleWith(ShimmerVerObject svo, int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+	public static boolean compareVersions(ShimmerVerObject svo, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+		return UtilShimmer.compareVersions(svo.getFirmwareIdentifier(), svo.getFirmwareVersionMajor(), svo.getFirmwareVersionMinor(), svo.getFirmwareVersionInternal(),
+				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
+	
+	public static boolean compareVersions(ShimmerVerObject svo, int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 		return UtilShimmer.compareVersions(svo.getFirmwareIdentifier(), svo.getFirmwareVersionMajor(), svo.getFirmwareVersionMinor(), svo.getFirmwareVersionInternal(),
 				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}

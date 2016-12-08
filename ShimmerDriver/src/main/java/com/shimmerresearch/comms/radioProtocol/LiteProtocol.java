@@ -855,6 +855,17 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //			else if(responseCommand==InstructionsResponse.DERIVED_CHANNEL_BYTES_RESPONSE_VALUE){
 //				byte[] byteArray = readBytes(3);
 //				mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
+//				
+//				if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
+//					byteArray = readBytes(5);
+//					
+//					mDerivedSensors |= ((long)(byteArray[0] & 0xFF)) << (8*3); 
+//					mDerivedSensors |= ((long)(byteArray[1] & 0xFF)) << (8*4); 
+//					mDerivedSensors |= ((long)(byteArray[2] & 0xFF)) << (8*5); 
+//					mDerivedSensors |= ((long)(byteArray[3] & 0xFF)) << (8*6); 
+//					mDerivedSensors |= ((long)(byteArray[4] & 0xFF)) << (8*7); 
+//				}
+//
 //				if (mEnabledSensors!=0){
 //					prepareAllAfterConfigRead();
 //					inquiryDone();
