@@ -991,7 +991,8 @@ public class Configuration {
 			HRV_ECG("HRV"),
 			EMG("EMG Processing"),
 			ACTIVITY("Activity"),
-			GSR_METRICS("GSR Metrics");
+			GSR_METRICS("GSR Metrics"),
+			GSR_BASELINE("GSR Baseline");
 
 			private String tileText = "";
 			
