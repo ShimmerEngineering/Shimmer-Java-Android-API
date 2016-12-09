@@ -143,7 +143,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SPAN = 11;
 		public static final int SHIMMER4_SDK_STOCK = 12;
 		public static final int BTSTREAM_UARTSTREAM = 13;
-		public static final int GQ_802154_CE = 14;
+		public static final int BTSTREAM_CE = 14;
 		
 		public static final Map<Integer, String> mMapOfFirmwareLabels;
 	    static {
