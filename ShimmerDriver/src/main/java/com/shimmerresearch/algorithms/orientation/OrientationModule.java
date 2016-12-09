@@ -243,7 +243,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		
 	}
 	
-	public double getSamplingRate(){
+	public double getShimmerSamplingRate(){
 		return samplingRate;
 	}
 	
@@ -251,7 +251,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		return accelerometerSensor;
 	}
 	
-	public void setSamplingRate(double sampleRate){
+	public void setShimmerSamplingRate(double sampleRate){
 		this.samplingRate = sampleRate;
 		try {
 			initialize();

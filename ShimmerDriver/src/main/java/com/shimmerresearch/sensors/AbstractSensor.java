@@ -201,7 +201,7 @@ public abstract class AbstractSensor implements Serializable{
 		return (getNumberOfEnabledChannels(commType)>0? true:false);
 	}
 
-	public void setIsEnabledSensor(COMMUNICATION_TYPE commType, boolean state){
+	public void setIsEnabledAllSensors(COMMUNICATION_TYPE commType, boolean state){
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
 			SensorDetails sensorDetails = iterator.next();

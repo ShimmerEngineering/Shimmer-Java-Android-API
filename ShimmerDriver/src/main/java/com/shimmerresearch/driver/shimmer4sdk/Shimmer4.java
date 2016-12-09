@@ -105,27 +105,27 @@ public class Shimmer4 extends ShimmerDevice {
 //			putSensorClass(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 //		}
 		
-		putSensorClass(SENSORS.CLOCK, new ShimmerClock(this));
+		addSensorClass(SENSORS.CLOCK, new ShimmerClock(this));
 		
-		putSensorClass(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
-		putSensorClass(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
-		putSensorClass(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
-		putSensorClass(SENSORS.ADC, new SensorADC(mShimmerVerObject));
-		putSensorClass(SENSORS.Battery, new SensorBattVoltage(this));
-		putSensorClass(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
+		addSensorClass(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
+		addSensorClass(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
+		addSensorClass(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
+		addSensorClass(SENSORS.ADC, new SensorADC(mShimmerVerObject));
+		addSensorClass(SENSORS.Battery, new SensorBattVoltage(this));
+		addSensorClass(SENSORS.Bridge_Amplifier, new SensorBridgeAmp(mShimmerVerObject));
 		
 		//TODO push version checking into the sensor classes
 		
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG 
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-			putSensorClass(SENSORS.EXG, new SensorEXG(this));
+			addSensorClass(SENSORS.EXG, new SensorEXG(this));
 		}
 
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-			putSensorClass(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+			addSensorClass(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
 		}
 
 		if(getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR
@@ -133,17 +133,17 @@ public class Shimmer4 extends ShimmerDevice {
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
 			if(isDerivedSensorsSupported()){
-				putSensorClass(SENSORS.PPG, new SensorPPG(this));
+				addSensorClass(SENSORS.PPG, new SensorPPG(this));
 			}
 		}
 
 		//Shimmer4 enhancements - Only available on the SDK
 		if(getExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_4_SDK){
-			putSensorClass(SENSORS.BMP280, new SensorBMP280(mShimmerVerObject));
-			putSensorClass(SENSORS.STC3100, new SensorSTC3100(mShimmerVerObject));
+			addSensorClass(SENSORS.BMP280, new SensorBMP280(mShimmerVerObject));
+			addSensorClass(SENSORS.STC3100, new SensorSTC3100(mShimmerVerObject));
 		}
 		else{
-			putSensorClass(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
+			addSensorClass(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
 		}
 		
 		super.sensorAndConfigMapsCreateCommon();

@@ -1816,7 +1816,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				setSensorEnabledStateCommon(sensorMapKey, sensorDetails.isEnabled());
 
 				boolean result = sensorDetails.isEnabled();
-				return (result==state? true:false);
+				boolean successfullySet = result==state? true:false; 
+				if(!successfullySet){
+					consolePrintErrLn("Failed to setSensorEnabledState for sensor:\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+				}
+				return successfullySet;
 			}
 			return false;
 		}
@@ -1851,7 +1855,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				setSensorEnabledStateCommon(sensorMapKey, sensorDetails.isEnabled());
 
 				boolean result = sensorDetails.isEnabled();
-				return (result==state? true:false);
+				boolean successfullySet = result==state? true:false; 
+				if(!successfullySet){
+					consolePrintErrLn("Failed to setSensorEnabledState for sensor:\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+				}
+				return successfullySet;
 			}
 			return false;
 		}
@@ -2991,7 +2999,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return null;
 	}
 
-	public void putSensorClass(AbstractSensor.SENSORS sensorClassKey, AbstractSensor abstractSensor){
+	public void addSensorClass(AbstractSensor.SENSORS sensorClassKey, AbstractSensor abstractSensor){
 		mMapOfSensorClasses.put(sensorClassKey, abstractSensor);
 	}
 

@@ -108,6 +108,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	protected boolean mIsEnabled = false;
 	public AlgorithmDetails mAlgorithmDetails;
 	protected double mMinSamplingRateForAlgorithhm = 0.0;
+	protected double mShimmerSamplingRate = 0.0;
 	
 	/** this is to specify what fw version/hardware should be allowed to use the algorithm */
 	public static final List<ShimmerVerObject> mListOfCompatibleSVO = new ArrayList<ShimmerVerObject>(); 
@@ -463,6 +464,22 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	public void setGeneralAlgorithmName(String generalAlgorithmName) {
 		mAlgorithmName = generalAlgorithmName;
+	}
+	
+	public void setShimmerSamplingRate(double samplingRate){
+		mShimmerSamplingRate = samplingRate;
+		if(isEnabled()){
+			try {
+				initialize();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public double getShimmerSamplingRate(){
+		return mShimmerSamplingRate;
 	}
 	
 	

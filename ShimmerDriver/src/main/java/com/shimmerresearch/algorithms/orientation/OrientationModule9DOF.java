@@ -499,7 +499,7 @@ public class OrientationModule9DOF extends OrientationModule {
 		switch(componentName){
 
 		case(GuiLabelConfigCommon.SHIMMER_SAMPLING_RATE):
-			returnValue = getSamplingRate();
+			returnValue = getShimmerSamplingRate();
 		break;
 		//				case(GuiLabelConfig.ACCELEROMETER_9DOF):
 		//					returnValue = getAccelerometer();
@@ -541,11 +541,11 @@ public class OrientationModule9DOF extends OrientationModule {
 		case(GuiLabelConfigCommon.SHIMMER_SAMPLING_RATE):
 			if(valueToSet instanceof String){
 				if(!((String) valueToSet).isEmpty()){
-					setSamplingRate(Double.parseDouble((String) valueToSet));
+					setShimmerSamplingRate(Double.parseDouble((String) valueToSet));
 				}
 			}
 			else if(valueToSet instanceof Double){
-				setSamplingRate((Double) valueToSet);
+				setShimmerSamplingRate((Double) valueToSet);
 			}
 		break;
 		//				case(GuiLabelConfig.ACCELEROMETER_9DOF):
