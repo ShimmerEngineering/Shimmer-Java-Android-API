@@ -2077,7 +2077,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	/** For use when debugging */
-	protected void printSensorAndParserMaps(){
+	public void printSensorParserAndAlgoMaps(){
 		//For debugging
 		consolePrintLn("");
 		consolePrintLn("Enabled Sensors\t" + UtilShimmer.longToHexStringWithSpacesFormatted(mEnabledSensors, 5));
@@ -2101,6 +2101,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 			}
 			consolePrintLn("");
+		}
+		consolePrintLn("");
+		
+		consolePrintLn("ALGO MAP");
+		List<AbstractAlgorithm> mapOfEnabledAlgoModules = getListOfAlgorithmModules();
+		for(AbstractAlgorithm abstractAlgorithm:mapOfEnabledAlgoModules){
+			consolePrintLn("\tALGO\t" + abstractAlgorithm.mAlgorithmName + "\tIsEnabled:\t" + abstractAlgorithm.isEnabled());
+			List<ChannelDetails> listOfChannelDetails = abstractAlgorithm.getChannelDetails();
+			for(ChannelDetails channelDetails:listOfChannelDetails){
+				consolePrintLn("\t\tChannel:\t" + channelDetails.mObjectClusterName);
+			}
 		}
 		consolePrintLn("");
 	}

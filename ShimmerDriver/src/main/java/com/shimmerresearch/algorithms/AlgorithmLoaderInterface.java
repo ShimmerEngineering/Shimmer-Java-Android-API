@@ -7,13 +7,13 @@ import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 /** This interface allows dynamic loading of algorithms based on Shimmer version information. It also serves as a good location to load default settings into an  
- * @author mnolan
+ * @author Mark Nolan
  *
  */
 public interface AlgorithmLoaderInterface {
 	
-	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject svo, ExpansionBoardDetails eBD);
-
 	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice);
+	
+	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject svo, ExpansionBoardDetails eBD);
 
 }
