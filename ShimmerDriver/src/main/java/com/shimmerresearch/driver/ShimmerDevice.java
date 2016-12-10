@@ -2660,6 +2660,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mMapOfAlgorithmModules;
 	}
 
+	public AbstractAlgorithm getAlgorithmModule(String algorithmName){
+		return mMapOfAlgorithmModules.get(algorithmName);
+	}
+
 	public void addAlgorithmModule(String algorithmName, AbstractAlgorithm abstractAlgorithm) {
 		mMapOfAlgorithmModules.put(algorithmName, abstractAlgorithm);
 	}
