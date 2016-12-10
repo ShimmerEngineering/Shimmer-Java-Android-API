@@ -1653,12 +1653,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledChannelsForStreaming(COMMUNICATION_TYPE commType) {
 		LinkedHashMap<String, ChannelDetails> mapOfChannels = new LinkedHashMap<String, ChannelDetails>();
-		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
-		while(iterator.hasNext()){
-			SensorDetails sensorDetails = iterator.next();
+		Iterator<SensorDetails> iteratorSensors = mSensorMap.values().iterator();
+		while(iteratorSensors.hasNext()){
+			SensorDetails sensorDetails = iteratorSensors.next();
 			
 			boolean isEnabled = false;
-			if(commType==null){
+			if(commType == null){
 				isEnabled = sensorDetails.isEnabled();
 			}
 			else{
@@ -1666,8 +1666,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 			
 			if(isEnabled){
-				for(ChannelDetails channelDetails :sensorDetails.mListOfChannels){
-					if(channelDetails.mShowWhileStreaming){
+				for(ChannelDetails channelDetails : sensorDetails.getListOfChannels()){
+					if(channelDetails.isShowWhileStreaming()){
+						mapOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
+					}
+				}
+			}
+		}
+		
+		Iterator<AbstractAlgorithm> iteratorAlgorithms = getMapOfAlgorithmModules().values().iterator();
+		while(iteratorAlgorithms.hasNext()){
+			AbstractAlgorithm abstractAlgorithm = iteratorAlgorithms.next();
+			if(abstractAlgorithm.isEnabled()){
+				for(ChannelDetails channelDetails : abstractAlgorithm.getChannelDetails()){
+					if(channelDetails.isShowWhileStreaming()){
 						mapOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
 					}
 				}

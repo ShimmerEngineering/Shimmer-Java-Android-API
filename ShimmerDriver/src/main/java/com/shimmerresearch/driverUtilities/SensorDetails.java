@@ -106,6 +106,10 @@ public class SensorDetails implements Serializable{
 		return dataPacketSize;
 	}
 
+	public List<ChannelDetails> getListOfChannels(){
+		return mListOfChannels;
+	}
+	
 	public int getNumberOfChannels() {
 		return mListOfChannels.size();
 	}

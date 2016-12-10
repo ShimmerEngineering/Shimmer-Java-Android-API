@@ -339,6 +339,10 @@ public class ChannelDetails implements Serializable {
 		return mObjectClusterName;
 	}
 	
+	public boolean isShowWhileStreaming(){
+		return mShowWhileStreaming;
+	}
+	
 	public List<String[]> getListOfChannelSignalsAndFormats(){
 		List<String[]> listOfChannelSignalsAndFormats = new ArrayList<String[]>();
 		for(CHANNEL_TYPE channelType:mListOfChannelTypes){
