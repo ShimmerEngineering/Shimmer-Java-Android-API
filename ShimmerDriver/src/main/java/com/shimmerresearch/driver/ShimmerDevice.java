@@ -2465,15 +2465,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setIsAlgorithmEnabled(String algorithmName, boolean state){
 		AbstractAlgorithm abstractAlgorithm = mMapOfAlgorithmModules.get(algorithmName);
 
-		if(abstractAlgorithm!=null){
+		if(abstractAlgorithm!=null && abstractAlgorithm.mAlgorithmDetails!=null){
 			if(state){ 
 				//switch on the required sensors
 				for (Integer sensorMapKey:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
 					setSensorEnabledState(sensorMapKey, true);
 				}
 			}
-
 			abstractAlgorithm.setIsEnabled(state);
+		}
+		else{
+			consolePrintErrLn(algorithmName + " doesn't exist in this device");
 		}
 		updateDerivedSensors();
 		initializeAlgorithms();
