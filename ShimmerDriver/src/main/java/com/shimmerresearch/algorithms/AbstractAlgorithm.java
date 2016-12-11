@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -113,22 +112,13 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	/** this is to specify what fw version/hardware should be allowed to use the algorithm */
 	public static final List<ShimmerVerObject> mListOfCompatibleSVO = new ArrayList<ShimmerVerObject>(); 
 
-	/**
-     * @deprecated
-     * This method is to be replaced by the channeldetails object, see mListofChannelDetails
-     */
+	/** @deprecated This method is to be replaced by the channeldetails object, see mListofChannelDetails */
 	@Deprecated
 	protected String[] mSignalOutputNameArray;
-	/**
-     * @deprecated
-     * This method is to be replaced by the channeldetails object, see mListofChannelDetails
-     */
+	/** @deprecated This method is to be replaced by the channeldetails object, see mListofChannelDetails */
 	@Deprecated
 	protected String[] mSignalOutputFormatArray;
-	/**
-     * @deprecated
-     * This method is to be replaced by the channeldetails object, see mListofChannelDetails
-     */
+	/** @deprecated This method is to be replaced by the channeldetails object, see mListofChannelDetails */
 	@Deprecated
 	protected String[] mSignalOutputUnitArray;
 	
@@ -376,22 +366,18 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	public ALGORITHM_TYPE getAlgorithmType() {
-		// TODO Auto-generated method stub
 		return mAlgorithmType;
 	}
 
 	public ALGORITHM_INPUT_TYPE getAlgorithmInputType() {
-		// TODO Auto-generated method stub
 		return mAlgorithmInputType;
 	}
 	
 	public ALGORITHM_RESULT_TYPE getAlgorithmResultType() {
-		// TODO Auto-generated method stub
 		return mAlgorithmResultType;
 	}
 	
 	public void setFiltering(FILTERING_OPTION option) {
-		// TODO Auto-generated method stub
 		mFilteringOptions = option;
 	}
 
@@ -408,7 +394,6 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		// TODO Auto-generated method stub
 		if (shimmerMSG.mIdentifier == MsgDock.MSG_ID_DATA_TO_ALGO){
 			eventDataReceived(shimmerMSG);
 		}

@@ -30,7 +30,7 @@ public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 			
 			//TODO load any default settings here
 			
-			shimmerDevice.addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule6DOF);
+			shimmerDevice.addAlgorithmModule(orientationModule6DOF);
 		}
 	}
 

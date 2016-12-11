@@ -6228,15 +6228,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 //			}
 			
-			prepareAllAfterConfigRead();
+			prepareAllMapsAfterConfigRead();
 		}
 		
 		checkAndCorrectShimmerName(shimmerName);
 	}
 	
 	@Override
-	public void prepareAllAfterConfigRead() {
-		super.prepareAllAfterConfigRead();
+	public void prepareAllMapsAfterConfigRead() {
+		super.prepareAllMapsAfterConfigRead();
 		
 		updateCurrentAccelLnCalibInUse();
 		updateCurrentAccelWrCalibInUse();
