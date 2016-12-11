@@ -6530,7 +6530,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					|| isShimmerGenGq()) { // need isShimmerGenGq() here for parsing GQ data through ShimmerSDLog
 				createSensorMapShimmer3();
 				
-				mChannelMap = Configuration.Shimmer3.mChannelMapRef;
+				mChannelMap.putAll(Configuration.Shimmer3.mChannelMapRef);
+				//Hack for GSR parsing in GQ from SD files
+				if(isShimmerGenGq()){
+					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR);
+					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE);
+					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE);
+					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_RANGE_CURRENT);
+					
+					mChannelMap.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrMicroSiemensGq);
+				}
+				
 				mSensorGroupingMap.putAll(Configuration.Shimmer3.mSensorGroupingMapRef);
 				mConfigOptionsMap.putAll(Configuration.Shimmer3.mConfigOptionsMapRef);
 				

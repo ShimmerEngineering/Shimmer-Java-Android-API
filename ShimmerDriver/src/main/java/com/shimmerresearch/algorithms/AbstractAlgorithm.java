@@ -14,6 +14,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 public abstract class AbstractAlgorithm extends BasicProcessWithCallBack implements Serializable{
 	
@@ -287,6 +288,11 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	public void setIsEnabled(boolean isEnabled) {
+//		if(isEnabled){
+//			System.out.print(mAlgorithmName + " is being set to " + isEnabled);
+//			System.out.print(UtilShimmer.convertStackTraceToString(Thread.currentThread().getStackTrace()));
+//		}
+		
 		mIsEnabled = isEnabled;
 		if(!isEnabled){
 			setIsInitialized(false);
@@ -296,7 +302,8 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	/** Override if needed for special cases (e.g., OrientationModule, ECGAdaptiveModule etc. */
 	public void algorithmMapUpdateFromEnabledSensorsVars(long derivedSensorBitmapID){
 		if(mAlgorithmDetails!=null){
-			setIsEnabled((mAlgorithmDetails.mDerivedSensorBitmapID&derivedSensorBitmapID)>0? true:false);
+			boolean state = (mAlgorithmDetails.mDerivedSensorBitmapID&derivedSensorBitmapID)>0? true:false; 
+			setIsEnabled(state);
 		}
 	}
 	
