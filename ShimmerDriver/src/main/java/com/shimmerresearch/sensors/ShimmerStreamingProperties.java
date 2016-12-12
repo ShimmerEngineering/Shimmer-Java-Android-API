@@ -18,7 +18,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
  *
  */
 //TODO add further support for this class
-public class ShimmerProperties extends AbstractSensor {
+public class ShimmerStreamingProperties extends AbstractSensor {
 	
 	private static final long serialVersionUID = 3069449933266283483L;
 
@@ -55,7 +55,7 @@ public class ShimmerProperties extends AbstractSensor {
 		channelSensorDistance.mChannelSource = CHANNEL_SOURCE.API;
 	}
 	
-	public ShimmerProperties(SENSORS sensorType, ShimmerDevice shimmerDevice) {
+	public ShimmerStreamingProperties(SENSORS sensorType, ShimmerDevice shimmerDevice) {
 		super(sensorType, shimmerDevice);
 		// TODO Auto-generated constructor stub
 	}
@@ -166,18 +166,17 @@ public class ShimmerProperties extends AbstractSensor {
 	/**
 	 * @param objectCluster
 	 * @param rssi
+	 * @param txPower 
 	 * @return
 	 */
-	public static ObjectCluster calculateRssiChannels(ObjectCluster objectCluster, double rssi) {
+	public static ObjectCluster calculateRssiChannels(ObjectCluster objectCluster, double rssi, int txPower) {
 		if(Double.isNaN(rssi)){
 			rssi = -100.0;
 		}
 
-		double txPower = 0.0; //ShimmerGQ tx power is currently set to 0dB
-
-		objectCluster.addCalDataToMap(ShimmerProperties.channelRssi, rssi);
+		objectCluster.addCalDataToMap(ShimmerStreamingProperties.channelRssi, rssi);
 		double distance = UtilShimmer.calculateDistanceFromRssi((long) rssi, txPower);
-		objectCluster.addCalDataToMap(ShimmerProperties.channelSensorDistance, distance);
+		objectCluster.addCalDataToMap(ShimmerStreamingProperties.channelSensorDistance, distance);
 //		consolePrintErrLn("RSSI=" + Double.toString(rssi) + "\tDistance=" + Double.toString(distance));
 		return objectCluster;
 	}

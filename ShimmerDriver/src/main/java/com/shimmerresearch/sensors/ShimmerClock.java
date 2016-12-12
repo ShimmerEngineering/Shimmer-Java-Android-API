@@ -136,8 +136,8 @@ public class ShimmerClock extends AbstractSensor {
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL,
 					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
-					ShimmerProperties.ObjectClusterSensorName.RSSI,
-					ShimmerProperties.ObjectClusterSensorName.SENSOR_DISTANCE
+					ShimmerStreamingProperties.ObjectClusterSensorName.RSSI,
+					ShimmerStreamingProperties.ObjectClusterSensorName.SENSOR_DISTANCE
 					
 //					ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 //					ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE
@@ -322,8 +322,8 @@ public class ShimmerClock extends AbstractSensor {
 		channelMapRef.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, ShimmerClock.channelSystemTimestampDiff);
 
 		if(mShimmerVerObject.isShimmerGenGq()){
-			channelMapRef.put(ShimmerProperties.ObjectClusterSensorName.RSSI, ShimmerProperties.channelRssi);
-			channelMapRef.put(ShimmerProperties.ObjectClusterSensorName.SENSOR_DISTANCE, ShimmerProperties.channelSensorDistance);
+			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.RSSI, ShimmerStreamingProperties.channelRssi);
+			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.SENSOR_DISTANCE, ShimmerStreamingProperties.channelSensorDistance);
 		}
 		else {// if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			if(mShimmerVerObject.getFirmwareVersionCode()>=6 || mShimmerVerObject.mHardwareVersion==HW_ID.ARDUINO){
