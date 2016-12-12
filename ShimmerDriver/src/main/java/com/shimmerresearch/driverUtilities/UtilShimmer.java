@@ -849,6 +849,16 @@ public class UtilShimmer implements Serializable {
 		}
 	}
 
+    /**
+     * RSSI = TxPower - 10 * n * lg(d)
+     * n = 2 (in free space)
+     * 
+     * d = 10 ^ ((TxPower - RSSI) / (10 * n))
+     */
+	public static double calculateDistanceFromRssi(long rssi, double txPower) {
+	    return Math.pow(10d, (txPower - rssi) / (10.0 * 2.0));
+	}
+
 
 	
 }

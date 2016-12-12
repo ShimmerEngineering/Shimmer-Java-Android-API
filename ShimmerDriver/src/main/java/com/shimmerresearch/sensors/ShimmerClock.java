@@ -59,30 +59,29 @@ public class ShimmerClock extends AbstractSensor {
 
 	//--------- Sensor info start --------------
 	public static class GuiLabelSensors{
-		public static String SYSTEM_TIMESTAMP = ObjectClusterSensorName.SYSTEM_TIMESTAMP; 
-		public static String TIMESTAMP = ObjectClusterSensorName.TIMESTAMP; 
+		public static final String SYSTEM_TIMESTAMP = ObjectClusterSensorName.SYSTEM_TIMESTAMP; 
+		public static final String TIMESTAMP = ObjectClusterSensorName.TIMESTAMP; 
 		public static final String DEVICE_PROPERTIES = "Device Properties"; 
 	}
 
 	public static class ObjectClusterSensorName{
-		public static String TIMESTAMP = "Timestamp";
+		public static final String TIMESTAMP = "Timestamp";
 		
-		public static String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
-		public static String REAL_TIME_CLOCK = "RealTime";
-		public static String SYSTEM_TIMESTAMP = "System_Timestamp";
-//		public static String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
-		public static String TIMESTAMP_SYNC = "Timestamp_Sync";
-		public static String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
-		public static String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
+		public static final String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
+		public static final String REAL_TIME_CLOCK = "RealTime";
+		public static final String SYSTEM_TIMESTAMP = "System_Timestamp";
+//		public static final String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
+		public static final String TIMESTAMP_SYNC = "Timestamp_Sync";
+		public static final String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
+		public static final String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
 
-		public static String TIMESTAMP_OFFSET = "Offset";
+		public static final String TIMESTAMP_OFFSET = "Offset";
 	}
 	
 	public static class DatabaseChannelHandles{
 		public static final String TIMESTAMP = "TimeStamp";
 		public static final String TIMESTAMP_EXPORT = "Timestamp";
 		public static final String OFFSET_TIMESTAMP = "Offset";
-		
 		
 		public static final String TIMESTAMP_SYNC = "TimeStampSync";
 		public static final String TIMESTAMP_SYNC_EXPORT = "TimestampSync";
@@ -131,10 +130,14 @@ public class ShimmerClock extends AbstractSensor {
 //					ObjectClusterSensorName.REAL_TIME_CLOCK,
 //					ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 					ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+					
+					//TODO move to different class?
 					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
 					Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL,
-					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER
+					Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
+					ShimmerProperties.ObjectClusterSensorName.RSSI,
+					ShimmerProperties.ObjectClusterSensorName.SENSOR_DISTANCE
 					
 //					ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 //					ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE
@@ -301,7 +304,7 @@ public class ShimmerClock extends AbstractSensor {
 		//TODO put into above constructor
 		channelEventMarker.mChannelSource = CHANNEL_SOURCE.API;
 	}
-	
+
 	
 	//--------- Channel info end --------------
 
@@ -319,7 +322,8 @@ public class ShimmerClock extends AbstractSensor {
 		channelMapRef.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, ShimmerClock.channelSystemTimestampDiff);
 
 		if(mShimmerVerObject.isShimmerGenGq()){
-			//TODO
+			channelMapRef.put(ShimmerProperties.ObjectClusterSensorName.RSSI, ShimmerProperties.channelRssi);
+			channelMapRef.put(ShimmerProperties.ObjectClusterSensorName.SENSOR_DISTANCE, ShimmerProperties.channelSensorDistance);
 		}
 		else {// if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			if(mShimmerVerObject.getFirmwareVersionCode()>=6 || mShimmerVerObject.mHardwareVersion==HW_ID.ARDUINO){
@@ -821,7 +825,6 @@ public class ShimmerClock extends AbstractSensor {
 		mFirstTimeCalTime = true;
 		mCurrentTimeStampCycle = 0;
 	}
-
 
 	//--------- Optional methods to override in Sensor Class start --------
 	//--------- Optional methods to override in Sensor Class end --------
