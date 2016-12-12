@@ -108,7 +108,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	protected boolean mIsEnabled = false;
 	public AlgorithmDetails mAlgorithmDetails;
 	protected double mMinSamplingRateForAlgorithhm = 0.0;
-	protected double mShimmerSamplingRate = 0.0;
+	protected double mShimmerSamplingRate = 128.0;
 	
 	/** this is to specify what fw version/hardware should be allowed to use the algorithm */
 	public static final List<ShimmerVerObject> mListOfCompatibleSVO = new ArrayList<ShimmerVerObject>(); 
