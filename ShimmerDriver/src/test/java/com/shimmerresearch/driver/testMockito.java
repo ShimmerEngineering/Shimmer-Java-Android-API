@@ -8,10 +8,10 @@ import org.mockito.Mockito;
 
 import static org.mockito.Mockito.*;
 
-import com.shimmerresearch.driver.shimmerGq.ShimmerGQ_802154;
+//import com.shimmerresearch.driver.shimmerGq.ShimmerGQ_802154;
 
 public class testMockito {
-
+/*
 	@Mock
 	ShimmerGQ_802154 s;
 	
@@ -30,5 +30,5 @@ public class testMockito {
 	public void moretest() {
 		
 	}
-	
+	*/
 }
