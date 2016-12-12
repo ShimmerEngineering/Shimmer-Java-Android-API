@@ -2205,7 +2205,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						}
 					}
 					
-					if(SensorGSR.sensorGsrRef.mListOfChannelsRef.contains(SensorGSR.ObjectClusterSensorName.GSR_RANGE_CURRENT)){
+					if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_RANGE_CURRENT)!=null){
 						objectCluster.addCalDataToMap(SensorGSR.channelGsrRangeCurrent,(double)newGSRRange);
 					}
 				}
@@ -2223,13 +2223,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
 						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.GSR,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]);
 						
-						
-						if(SensorGSR.sensorGsrRef.mListOfChannelsRef.contains(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE)){
+						if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE)!=null){
 							int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 							objectCluster.addUncalDataToMap(SensorGSR.channelGsrAdc, gsrUncalibratedData);
 							objectCluster.addCalDataToMap(SensorGSR.channelGsrAdc, SensorADC.calibrateMspAdcChannel(gsrUncalibratedData));
 						}
-						if(SensorGSR.sensorGsrRef.mListOfChannelsRef.contains(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE)){
+						if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE)!=null){
 							objectCluster.addCalDataToMap(SensorGSR.channelGsrMicroSiemens,SensorGSR.calibrateGsrDataToSiemens(tempData[0],p1,p2));
 						}
 					}
