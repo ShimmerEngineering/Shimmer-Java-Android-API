@@ -151,12 +151,6 @@ public class SensorGSR extends AbstractSensor {
 			CHANNEL_UNITS.KOHMS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x1C);
-	{
-		//TODO add to constructor
-		channelGsrKOhms.mChannelSource = CHANNEL_SOURCE.SHIMMER;
-		channelGsrKOhms.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
-		channelGsrKOhms.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
-	}
 
 	public static final ChannelDetails channelGsrMicroSiemensGq = new ChannelDetails(
 			ObjectClusterSensorName.GSR,
@@ -166,12 +160,6 @@ public class SensorGSR extends AbstractSensor {
 			CHANNEL_UNITS.U_SIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x1C);
-	{
-		//TODO add to constructor
-		channelGsrMicroSiemens.mChannelSource = CHANNEL_SOURCE.SHIMMER;
-		channelGsrMicroSiemens.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
-		channelGsrMicroSiemens.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.UNCAL;
-	}
 
 	public static final ChannelDetails channelGsrMicroSiemens = new ChannelDetails(
 			ObjectClusterSensorName.GSR_CONDUCTANCE,

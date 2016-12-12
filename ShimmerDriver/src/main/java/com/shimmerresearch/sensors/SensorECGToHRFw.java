@@ -49,7 +49,7 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			null,
 			null,
-			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR),
+			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW),
 			true);
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
@@ -61,23 +61,23 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
-	public static final ChannelDetails channelEcgToHr  = new ChannelDetails(
-			Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
-			Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR,
+	public static final ChannelDetails channelEcgToHrFw  = new ChannelDetails(
+			Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW,
+			Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW,
 			DatabaseChannelHandles.ECG_TO_HR_FW,
 			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.BEATS_PER_MINUTE,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	{
 		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
-		channelEcgToHr.mDefaultUncalUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
-		channelEcgToHr.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+		channelEcgToHrFw.mDefaultUncalUnit = CHANNEL_UNITS.BEATS_PER_MINUTE;
+		channelEcgToHrFw.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
 	
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
         Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR, channelEcgToHr);
+		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW, channelEcgToHrFw);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Channel info end --------------

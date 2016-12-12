@@ -2408,8 +2408,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			
 			if ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR_FW) > 0){
-				int sigIndex = getSignalIndex(Shimmer3.ObjectClusterSensorName.ECG_TO_HR);
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_TO_HR,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,(double)newPacketInt[sigIndex]);
+				int sigIndex = getSignalIndex(Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW);
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,(double)newPacketInt[sigIndex]);
 //				uncalibratedData[sigIndex]=(double)newPacketInt[sigIndex];
 //				uncalibratedDataUnits[sigIndex]=CHANNEL_UNITS.BEATS_PER_MINUTE;
 				calibratedData[sigIndex]=(double)newPacketInt[sigIndex];
@@ -6927,7 +6927,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			
 			//This will fill a default trial name if the current one is invalid
-			setTrialName(getTrialName());
+			setTrialNameAndCheck(getTrialName());
 
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
 				setDefaultLsm303dlhcAccelSensorConfig(false);

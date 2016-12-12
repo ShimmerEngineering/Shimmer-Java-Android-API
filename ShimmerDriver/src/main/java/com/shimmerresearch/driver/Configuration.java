@@ -457,7 +457,7 @@ public class Configuration {
 		Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_X = "Quat_DMP_6DOF_X";
 		Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Y = "Quat_DMP_6DOF_Y";
 		Shimmer3.ObjectClusterSensorName.QUAT_DMP_6DOF_Z = "Quat_DMP_6DOF_Z";
-		Shimmer3.ObjectClusterSensorName.ECG_TO_HR = "ECGtoHR";
+		Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW = "ECGtoHR";
 		Shimmer3.ObjectClusterSensorName.PPG_TO_HR = "PPGtoHR";
 		Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W = "Quaternion 0";
 		Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X = "Quaternion 1";
@@ -1233,7 +1233,7 @@ public class Configuration {
 //			public static String ECG_TO_HR_VX_RL = "ECGtoHR_VX-RL";
 
 			//TODO: remove two old channels names below
-			public static String ECG_TO_HR = "ECGtoHR";
+			public static String ECG_TO_HR_FW = SensorECGToHRFw.ObjectClusterSensorName.ECG_TO_HR_FW_GQ;//"ECGtoHR";
 
 			public static  String PPG_TO_HR = "PPGtoHR";
 			public static  String PPG_TO_HR1 = "PPGtoHR1";
@@ -1461,7 +1461,7 @@ public class Configuration {
 			aMap.putAll(SensorPPG.mChannelMapRef);
 
 			// Algorithm Channels
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR, SensorECGToHRFw.channelEcgToHr);
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW, SensorECGToHRFw.channelEcgToHrFw);
 			
 			//TODO remove below
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR,

@@ -80,7 +80,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected static final int MAX_CALIB_DUMP_MAX = 4096;
 	
-	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9_()\\[\\]]";	
+	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9._()\\[\\]]";	
 	
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
@@ -1124,6 +1124,32 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mMacIdFromUart;
 	}
 	
+	/** Sets the Shimmer Trial name but filters out invalid characters and maintains a maximum character length of 12. 
+	 * @param trialName the trialName to set
+	 */
+	public void setTrialNameAndCheck(String trialName) {
+		trialName = trialName.replaceAll(INVALID_TRIAL_NAME_CHAR, "");
+
+		if(trialName.isEmpty()){
+			trialName = DEFAULT_EXPERIMENT_NAME;
+		}
+		
+		//Limit the name to 12 Char
+		if(trialName.length()>12){
+			trialName = trialName.substring(0, 11);
+		}
+		
+		setTrialName(trialName);
+	}
+
+	/** Sets the Shimmer Trial name but bypasses all safety checks. Preferred use is setTrialNameAndCheck().
+	 * @param trialName
+	 * @see setTrialNameAndCheck
+	 */
+	public void setTrialName(String trialName) {
+		this.mTrialName = trialName;
+	}
+
 	/**
 	 * @return the mTrialName
 	 */
@@ -1150,24 +1176,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	/**
-	 * @param trialName the trialName to set
-	 */
-
-	public void setTrialName(String trialName) {
-		trialName = trialName.replaceAll(INVALID_TRIAL_NAME_CHAR, "");
-
-		if(trialName.isEmpty()){
-			trialName = DEFAULT_EXPERIMENT_NAME;
-		}
-		
-		//Limit the name to 12 Char
-		if(trialName.length()>12)
-			this.mTrialName = trialName.substring(0, 11);
-		else
-			this.mTrialName = trialName;
-	}
-	
-	/**
 	 * @param mConfigTime the trialConfigTime to set
 	 */
 	public void setConfigTime(long trialConfigTime) {
@@ -1175,7 +1183,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void setTrialConfig(String trialName, long trialConfigTime) {
-		mTrialName = trialName;
+		setTrialName(trialName);
 		mConfigTime = trialConfigTime;
 	}
 
@@ -1289,7 +1297,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
         		setShimmerUserAssignedName((String)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
-        		setTrialName((String)valueToSet);
+        		setTrialNameAndCheck((String)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 //			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
@@ -3483,12 +3491,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
 		setShimmerVersionObject(svo);
-
-		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ENABLE_SENSORS)
-				&&mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DERIVED_SENSORS)){
-			setEnabledSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.ENABLE_SENSORS)).longValue());
-			setDerivedSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.DERIVED_SENSORS)).longValue());
-		}
 		
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_ID)
 				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_REV)
@@ -3498,6 +3500,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV)).intValue(), 
 					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)).intValue());
 			setExpansionBoardDetails(eBD);
+		}
+
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ENABLE_SENSORS)
+				&&mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DERIVED_SENSORS)){
+			setEnabledSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.ENABLE_SENSORS)).longValue());
+			setDerivedSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.DERIVED_SENSORS)).longValue());
 		}
 
 //		printSensorParserAndAlgoMaps();
