@@ -215,7 +215,14 @@ public class SensorGSR extends AbstractSensor {
 		aMap.put(ObjectClusterSensorName.GSR_ADC_VALUE, SensorGSR.channelGsrAdc);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
-    
+
+    public static final Map<String, ChannelDetails> mChannelMapRefGq;
+    static {
+        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+		aMap.put(ObjectClusterSensorName.GSR, SensorGSR.channelGsrMicroSiemensGq);
+		mChannelMapRefGq = Collections.unmodifiableMap(aMap);
+    }
+
 	//--------- Channel info end --------------
 
     

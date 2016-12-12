@@ -218,7 +218,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 			}
 
-			prepareAllAfterConfigRead();
+			prepareAllMapsAfterConfigRead();
 
 			setSamplingRateShimmer(32768/(double)((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
 					+ ((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8)));
@@ -406,8 +406,8 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	@Override
-	public void prepareAllAfterConfigRead() {
-		super.prepareAllAfterConfigRead();
+	public void prepareAllMapsAfterConfigRead() {
+		super.prepareAllMapsAfterConfigRead();
 
 		//Overrides - needed because there are no enabled/derived sensor bits for these
 		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);

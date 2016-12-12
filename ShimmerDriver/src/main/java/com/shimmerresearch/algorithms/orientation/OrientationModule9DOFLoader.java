@@ -30,7 +30,7 @@ public class OrientationModule9DOFLoader implements AlgorithmLoaderInterface {
 			
 			//TODO load any default settings here
 			
-			shimmerDevice.addAlgorithmModule(algorithmDetails.mAlgorithmName, orientationModule9DOF);
+			shimmerDevice.addAlgorithmModule(orientationModule9DOF);
 		}
 	}
 

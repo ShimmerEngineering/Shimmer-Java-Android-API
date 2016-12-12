@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -15,6 +14,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 public abstract class AbstractAlgorithm extends BasicProcessWithCallBack implements Serializable{
 	
@@ -113,22 +113,13 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	/** this is to specify what fw version/hardware should be allowed to use the algorithm */
 	public static final List<ShimmerVerObject> mListOfCompatibleSVO = new ArrayList<ShimmerVerObject>(); 
 
-	/**
-     * @deprecated
-     * This method is to be replaced by the channeldetails object, see mListofChannelDetails
-     */
+	/** @deprecated This method is to be replaced by the channeldetails object, see mListofChannelDetails */
 	@Deprecated
 	protected String[] mSignalOutputNameArray;
-	/**
-     * @deprecated
-     * This method is to be replaced by the channeldetails object, see mListofChannelDetails
-     */
+	/** @deprecated This method is to be replaced by the channeldetails object, see mListofChannelDetails */
 	@Deprecated
 	protected String[] mSignalOutputFormatArray;
-	/**
-     * @deprecated
-     * This method is to be replaced by the channeldetails object, see mListofChannelDetails
-     */
+	/** @deprecated This method is to be replaced by the channeldetails object, see mListofChannelDetails */
 	@Deprecated
 	protected String[] mSignalOutputUnitArray;
 	
@@ -297,6 +288,11 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	public void setIsEnabled(boolean isEnabled) {
+//		if(isEnabled){
+//			System.out.print(mAlgorithmName + " is being set to " + isEnabled);
+//			System.out.print(UtilShimmer.convertStackTraceToString(Thread.currentThread().getStackTrace()));
+//		}
+		
 		mIsEnabled = isEnabled;
 		if(!isEnabled){
 			setIsInitialized(false);
@@ -306,7 +302,8 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	/** Override if needed for special cases (e.g., OrientationModule, ECGAdaptiveModule etc. */
 	public void algorithmMapUpdateFromEnabledSensorsVars(long derivedSensorBitmapID){
 		if(mAlgorithmDetails!=null){
-			setIsEnabled((mAlgorithmDetails.mDerivedSensorBitmapID&derivedSensorBitmapID)>0? true:false);
+			boolean state = (mAlgorithmDetails.mDerivedSensorBitmapID&derivedSensorBitmapID)>0? true:false; 
+			setIsEnabled(state);
 		}
 	}
 	
@@ -376,22 +373,18 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	}
 	
 	public ALGORITHM_TYPE getAlgorithmType() {
-		// TODO Auto-generated method stub
 		return mAlgorithmType;
 	}
 
 	public ALGORITHM_INPUT_TYPE getAlgorithmInputType() {
-		// TODO Auto-generated method stub
 		return mAlgorithmInputType;
 	}
 	
 	public ALGORITHM_RESULT_TYPE getAlgorithmResultType() {
-		// TODO Auto-generated method stub
 		return mAlgorithmResultType;
 	}
 	
 	public void setFiltering(FILTERING_OPTION option) {
-		// TODO Auto-generated method stub
 		mFilteringOptions = option;
 	}
 
@@ -408,7 +401,6 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		// TODO Auto-generated method stub
 		if (shimmerMSG.mIdentifier == MsgDock.MSG_ID_DATA_TO_ALGO){
 			eventDataReceived(shimmerMSG);
 		}

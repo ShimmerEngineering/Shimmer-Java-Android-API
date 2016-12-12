@@ -467,8 +467,9 @@ public class ShimmerVerObject implements Serializable {
 	 * @return
 	 */
 	public boolean isShimmerGenGq(int hwVer, int fwId) {
-		if(((hwVer==HW_ID.SHIMMER_GQ_802154_LR) || (hwVer==HW_ID.SHIMMER_GQ_802154_NR) || (hwVer==HW_ID.SHIMMER_2R_GQ))
-				&& (fwId==FW_ID.GQ_802154 || fwId==FW_ID.GQ_BLE)){
+		if((hwVer==HW_ID.SHIMMER_GQ_802154_LR) || (hwVer==HW_ID.SHIMMER_GQ_802154_NR) || (hwVer==HW_ID.SHIMMER_2R_GQ)){
+//		if(((hwVer==HW_ID.SHIMMER_GQ_802154_LR) || (hwVer==HW_ID.SHIMMER_GQ_802154_NR) || (hwVer==HW_ID.SHIMMER_2R_GQ))
+//				&& (fwId==FW_ID.GQ_802154 || fwId==FW_ID.GQ_BLE)){
 			return true;
 		}
 		return false;
