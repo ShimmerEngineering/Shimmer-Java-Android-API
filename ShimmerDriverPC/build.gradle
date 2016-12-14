@@ -36,6 +36,13 @@ repositories {
 //	}
 }
 
+//TODO change this to specify Vava v1.7
+//compileJava{
+//	options.fork = true
+//	//options.forkOptions.executable = 'C:/Program Files (x86)/Java/jdk1.7/bin/javac'
+//	options.forkOptions.executable = 'C:/Program Files (x86)/Java/jdk1.8.0_101/bin/javac'
+//}
+	
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
 	manifest {
@@ -78,5 +85,4 @@ dependencies {
 	compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
 	// https://mvnrepository.com/artifact/javax.microedition/cldc
 	compile group: 'javax.microedition', name: 'cldc', version: '1.1'
-	
 }

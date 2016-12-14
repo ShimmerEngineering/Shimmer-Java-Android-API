@@ -93,12 +93,21 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	double mLastSavedCalibratedTimeStamp = -1;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
-	
+
+	/**
+	 * Constructor. Prepares a new Bluetooth session. Upon Connection the configuration of the device is read back and used. No device setup is done. To setup device see other Constructors. 
+	 * This constructor was created as a simple constructor for use with MATLAB.
+	 * @param comPort The COM port of the Shimmer Device
+	 */
+	public ShimmerPC(String comPort) {
+		setComPort(comPort);
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+    	setSamplingRateShimmer(128);
+	}
+
 	/**
 	 * Constructor. Prepares a new Bluetooth session. Upon Connection the configuration of the device is read back and used. No device setup is done. To setup device see other Constructors.
-	 * @param context  The UI Activity Context
-	 * @param handler  A Handler to send messages back to the UI Activity
-	 * @param myname  To allow the user to set a unique identifier for each Shimmer device
+	 * @param myName  To allow the user to set a unique identifier for each Shimmer device
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPC(String myName, Boolean continousSync) {
@@ -111,9 +120,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	/**
 	 * Constructor. Prepares a new Bluetooth session. Upon Connection the configuration of the device is read back and used. No device setup is done. To setup device see other Constructors.
-	 * @param context  The UI Activity Context
-	 * @param handler  A Handler to send messages back to the UI Activity
-	 * @param myname  To allow the user to set a unique identifier for each Shimmer device
+	 * @param comPort The COM port of the Shimmer Device
+	 * @param myBluetoothAddress
+	 * @param myName  To allow the user to set a unique identifier for each Shimmer device
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
 	public ShimmerPC(String comPort, String myBluetoothAddress, String myName, Boolean continousSync) {
