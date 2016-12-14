@@ -531,7 +531,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mCurrentLEDStatus=0;
 
 	private double mLastKnownHeartRate=0;
-	protected DescriptiveStatistics mVSenseBattMA= new DescriptiveStatistics(1024); //YYY -BattVolt-SensorClass
+	protected DescriptiveStatistics mVSenseBattMA = new DescriptiveStatistics(1024); //YYY -BattVolt-SensorClass
 	Quat4d mQ = new Quat4d();	
 	transient GradDes3DOrientation9DoF mOrientationAlgo;	
 	private boolean mIsOrientationEnabled = false;	
