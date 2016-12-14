@@ -70,6 +70,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	private static final long serialVersionUID = -7601464501144773539L;
 	
 	private Multimap<String, FormatCluster> mPropertyCluster = HashMultimap.create();
+	//TODO implement below to remove the need for the Guava library?
+//	private HashMap<String, HashMap<CHANNEL_TYPE, FormatCluster>> mPropertyClusterProposed = new HashMap<String, HashMap<CHANNEL_TYPE, FormatCluster>>();
+	
 	private String mMyName;
 	private String mBluetoothAddress;
 	public byte[] mRawData;
@@ -78,15 +81,13 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public String[] mSensorNames;
 	public String[] mUnitCal;
 	public String[] mUnitUncal;
-	private Builder mObjectClusterBuilder; // = ObjectCluster2.newBuilder(); -- comented out to avoid crash when connecting on Android
+	/** mObjectClusterBuilder needs to be uninitialized to avoid crash when connecting on Android */
+	private Builder mObjectClusterBuilder; 
 	
 	private int indexKeeper = 0;
 	
+	//TODO remove this variable? unused in PC applications
 	public BT_STATE mState;
-	
-	String[] mSensorFormats;
-	String[] mSensorUnits;
-	String[] mSensorIsUsingDefaultCal;
 	
 	public byte[] mSystemTimeStamp = new byte[8];
 	
@@ -117,6 +118,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mBluetoothAddress=myBlueAdd;
 	}
 
+	//TODO remove this constructor? unused in PC applications
 	public ObjectCluster(String myName, String myBlueAdd, BT_STATE state){
 		this(myName, myBlueAdd);
 		mState = state;
@@ -223,16 +225,6 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		}
 	}
 	
-	private List<String[]> getListofEnabledSensorSignalsandFormats(){
-		List<String[]> listofSignals = new ArrayList<String[]>();
-		for (int i=0;i<mSensorNames.length;i++){
-			String[] channel = new String[]{mMyName,mSensorNames[i],mSensorFormats[i],mSensorUnits[i],mSensorIsUsingDefaultCal[i]};
-			listofSignals.add(channel);
-		}
-		
-		return listofSignals;
-	}
-	
 	public List<String[]> generateArrayOfChannelsSorted(){
 		List<String[]> listofSignals = new ArrayList<String[]>();
 		int size=0;
@@ -301,9 +293,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		int size = m.size();
 		System.out.print(size);
 		mSensorNames=new String[size];
-		mSensorFormats=new String[size];
-		mSensorUnits=new String[size];
-		mSensorIsUsingDefaultCal=new String[size];
+		String[] sensorFormats=new String[size];
+		String[] sensorUnits=new String[size];
+		String[] sensorIsUsingDefaultCal=new String[size];
 		int i=0;
 		int p=0;
 		for(String key : m.keys()) {
@@ -311,9 +303,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 			if(compareStringArray(mSensorNames, key) == true) {
 				for(FormatCluster formatCluster : m.get(key)) {
-					mSensorFormats[p]=formatCluster.mFormat;
-					mSensorUnits[p]=formatCluster.mUnits;
-					mSensorIsUsingDefaultCal[p]=(formatCluster.mIsUsingDefaultCalibration? "*":"");
+					sensorFormats[p]=formatCluster.mFormat;
+					sensorUnits[p]=formatCluster.mUnits;
+					sensorIsUsingDefaultCal[p]=(formatCluster.mIsUsingDefaultCalibration? "*":"");
 					//Log.d("Shimmer",key + " " + mSensorFormats[p] + " " + mSensorUnits[p]);
 					p++;
 				}
@@ -323,7 +315,17 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			mSensorNames[i]=key;
 			i++;				 
 		}
-		return getListofEnabledSensorSignalsandFormats();
+		return getListofEnabledSensorSignalsandFormats(mMyName, mSensorNames, sensorFormats, sensorUnits, sensorIsUsingDefaultCal);
+	}
+	
+	private static List<String[]> getListofEnabledSensorSignalsandFormats(String myName, String[] sensorNames, String[] sensorFormats, String[] sensorUnits, String[] sensorIsUsingDefaultCal){
+		List<String[]> listofSignals = new ArrayList<String[]>();
+		for (int i=0;i<sensorNames.length;i++){
+			String[] channel = new String[]{myName,sensorNames[i],sensorFormats[i],sensorUnits[i],sensorIsUsingDefaultCal[i]};
+			listofSignals.add(channel);
+		}
+		
+		return listofSignals;
 	}
 	
 	private boolean compareStringArray(String[] stringArray, String string){
@@ -492,7 +494,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 				if (fc.mData!=Double.NaN){
 					dcb.setData(fc.mData);	
 				}
-				if (fc.mDataObject.size()>0){
+				if (fc.mDataObject!=null && fc.mDataObject.size()>0){
 					dcb.addAllDataArray(fc.mDataObject);
 				}
 				dcb.setUnit(fc.mUnits);
