@@ -61,8 +61,6 @@ import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.Builder;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2;
-import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
