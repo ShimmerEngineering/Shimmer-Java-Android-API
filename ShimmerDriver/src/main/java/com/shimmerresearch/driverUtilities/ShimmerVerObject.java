@@ -33,32 +33,10 @@ public class ShimmerVerObject implements Serializable {
 
 	//TODO MNtoMN: below is a bad implementation, consider using ExpansionBoardDetails 
 	public int mShimmerExpansionBoardId = 0;
+//	public ExpansionBoardDetails ExpansionBoardDetails = 
 	
 	//TODO handle SPAN_VERSION for SPANs? It is obtained from the PlatformHwManager
 	//public SPAN_VERSION hardwareVersion = SPAN_VERSION.UNKNOWN;
-	
-//    /** byte order of the Version Response Data Packet for a 7 byte ver response */
-//   private enum VerReponsePacketOrderLegacy {
-//       hwVer,
-//       fwVerLSB,
-//       fwVerMSB,
-//       fwMajorLSB,
-//       fwMajorMSB,
-//       fwMinor,
-//       fwRevision
-//   }
-//   
-//   /** byte order of the Version Response Data Packet for an 8 byte ver response */
-//   private enum VerReponsePacketOrder {
-//       hwVerLSB,
-//       hwVerMSB,
-//       fwVerLSB,
-//       fwVerMSB,
-//       fwMajorLSB,
-//       fwMajorMSB,
-//       fwMinor,
-//       fwRevision
-//   }
    
 	public ShimmerVerObject() {
 		// TODO Auto-generated constructor stub
