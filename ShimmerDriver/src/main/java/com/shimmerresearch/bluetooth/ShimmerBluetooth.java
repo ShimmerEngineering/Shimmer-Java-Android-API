@@ -4173,7 +4173,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
             stop();
             threadSleep(300);
             connect(mMyBluetoothAddress,"default");
-            mUniqueID = this.mMacIdFromUart; 
+            setUniqueID(this.mMacIdFromUart); 
         }
     }
 

@@ -3389,6 +3389,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mComPort = comPort;
 		updateThreadName();
 	}
+	
+	public void setUniqueId(String uniqueId){
+		mUniqueID = uniqueId;
+	}
+
+	public String getUniqueId(){
+		return mUniqueID;
+	}
 
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 		// TODO Auto-generated method stub

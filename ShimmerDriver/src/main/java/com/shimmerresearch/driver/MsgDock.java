@@ -24,13 +24,14 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_SPAN_MANAGER = 1000;
 	public final static int MSG_ID_SOURCE_PLOT_MANAGER = 1001;
 	public final static int MSG_ID_SOURCE_BLUETOOTH_MANAGER = 1002;
-	public static final int MSG_ID_SOURCE_DOCK_MANAGER = 1003;
-	public static final int MSG_ID_SOURCE_PLATFORM_MANAGER = 1004;
-	public static final int MSG_ID_SOURCE_ALGORITHM = 1005;
-	public static final int MSG_ID_SOURCE_ALGORITHM_MANAGER = 1006;
-	public static final int MSG_ID_SOURCE_EVENT_MARKERS = 1007;
-	public static final int MSG_ID_SOURCE_RESULT_AGGREGATOR = 1008;
-	
+	public final static int MSG_ID_SOURCE_DOCK_MANAGER = 1003;
+	public final static int MSG_ID_SOURCE_PLATFORM_MANAGER = 1004;
+	public final static int MSG_ID_SOURCE_ALGORITHM = 1005;
+	public final static int MSG_ID_SOURCE_ALGORITHM_MANAGER = 1006;
+	public final static int MSG_ID_SOURCE_EVENT_MARKERS = 1007;
+	public final static int MSG_ID_SOURCE_RESULT_AGGREGATOR = 1008;
+	public final static int MSG_ID_SOURCE_DATABASE_MANAGER = 1009;
+
 	 
 	//Device Info
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
@@ -177,13 +178,13 @@ public class MsgDock {
 	public final static int MSG_ID_READING_DB_START = 181;
 	public final static int MSG_ID_READING_DB_END = 182;
 	public final static int MSG_ID_DB_MANAGER_LOADED_SUCCESS = 183;
+	public final static int MSG_ID_DB_PLAYBACK_TIMER_UPDATE = 184;
 	
 	//AlgorithmManager
 	public final static int MSG_ID_DATA_TO_ALGO = 190;
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
 
-	
 
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
@@ -280,6 +281,8 @@ public class MsgDock {
         aMap.put(MSG_ID_BT_TO_DB_FINISHED, "MSG_ID_BT_TO_DB_FINISHED");
         aMap.put(MSG_ID_BT_TO_DB_BUFFER_FILLED, "MSG_ID_BT_TO_DB_BUFFER_FILLED");
         aMap.put(MSG_ID_BT_TO_DB_FAIL, "MSG_ID_BT_TO_DB_FAIL");
+        
+        aMap.put(MSG_ID_DB_PLAYBACK_TIMER_UPDATE, "MSG_ID_DB_PLAYBACK_TIMER_UPDATE");
         
         aMap.put(MSG_ID_SOURCE_BLUETOOTH_MANAGER, "MSG_ID_SOURCE_BLUETOOTH_MANAGER");
         aMap.put(MSG_ID_SOURCE_DOCK_MANAGER, "MSG_ID_SOURCE_DOCK_MANAGER");
