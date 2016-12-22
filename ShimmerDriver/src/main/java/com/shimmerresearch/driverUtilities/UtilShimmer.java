@@ -439,9 +439,14 @@ public class UtilShimmer implements Serializable {
 	}
 	
 	public static String fromMilToDateExcelCompatible(String miliseconds, Boolean showMillis){
+		return fromMilToDataExcelCompatible(miliseconds, showMillis, null);
+	}
+	
+	public static String fromMilToDataExcelCompatible(String miliseconds, boolean showMillis, String timeZoneId){
 		if (miliseconds==null){
 			return "null";
 		} else {
+			TimeZone timeZone;
 			double miliInDouble = Double.parseDouble(miliseconds);
 			long mili = (long) miliInDouble;
 			Date date = new Date(mili);
@@ -452,11 +457,18 @@ public class UtilShimmer implements Serializable {
 			else{
 				formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			}
+			
+			if(timeZoneId == null){
+				timeZone = TimeZone.getDefault();
+			}
+			else{
+				timeZone = TimeZone.getTimeZone(timeZoneId);
+			}
+			
+			formatter.setTimeZone(timeZone);
 
 			return formatter.format(date);
 		}
-		
-		
 	}
 	
 	public static File[] getArrayOfFilesWithFileType(File directory, final String fileType){
