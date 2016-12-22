@@ -457,6 +457,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(shimmerUserAssignedName.length()==0 || UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
 			shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
 		}
+		
+		//Remove any invalid characters
+		shimmerUserAssignedName = shimmerUserAssignedName.replaceAll(INVALID_TRIAL_NAME_CHAR, "");
 			
 		//Limit the name to 12 Char
 		String addition = "_" + getMacIdParsed();
