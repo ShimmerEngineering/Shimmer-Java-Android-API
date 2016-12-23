@@ -843,6 +843,7 @@ public class Configuration {
 
 			// ----------------------------------------------------------
 			public final static int ACTIVITY_MODULE 			= 1 << 8;
+			public final static int GAIT_MODULE 				= 1 << 8;
 			public final static int GSR_METRICS_GENERAL			= 1 << 9;
 			public final static int GSR_BASELINE 				= 1 << 26;
 			public final static int GSR_METRICS_TREND_PEAK		= 1 << 27;
@@ -1023,6 +1024,7 @@ public class Configuration {
 			HRV_ECG("HRV"),
 			EMG("EMG Processing"),
 			ACTIVITY("Activity"),
+			GAIT("Gait"),
 			GSR_METRICS("GSR Metrics"),
 			GSR_BASELINE("GSR Baseline");
 
