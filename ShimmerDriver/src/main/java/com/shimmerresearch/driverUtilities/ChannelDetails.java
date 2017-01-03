@@ -132,7 +132,7 @@ public class ChannelDetails implements Serializable {
 	
 	public String mGuiName = "";
 	public String mObjectClusterName = "";
-	public String mDatabaseChannelHandle = "";
+	private String mDatabaseChannelHandle = "";
 	public int mChannelId = -1;
 	public int mDefaultNumBytes = 0;
 	public int mLegacyChannelId = -1;
@@ -211,8 +211,6 @@ public class ChannelDetails implements Serializable {
 		
 		mShowWhileStreaming = showWhileStreaming;
 		mStoreToDatabase = storeToDatabase;
-		
-		checkDatabaseChannelHandle();
 	}
 	
 	public ChannelDetails(String objectClusterName, 
@@ -221,7 +219,6 @@ public class ChannelDetails implements Serializable {
 			String defaultCalibratedUnits, 
 			List<CHANNEL_TYPE> listOfChannelTypes) {
 		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes, databaseChannelHandle);
-		checkDatabaseChannelHandle();
 	}
 
 	public ChannelDetails(String objectClusterName, 
@@ -235,8 +232,6 @@ public class ChannelDetails implements Serializable {
 		
 		mShowWhileStreaming = showWhileStreaming;
 		mStoreToDatabase = storeToDatabase;
-		
-		checkDatabaseChannelHandle();
 	}
 	
 	/**
@@ -261,8 +256,6 @@ public class ChannelDetails implements Serializable {
 		mDefaultChannelDataType = defaultChannelDataType;
 		mDefaultNumBytes = defaultNumBytes;
 		mDefaultChannelDataEndian = channelDataEndian;
-		
-		checkDatabaseChannelHandle();
 	}
 	
 	public ChannelDetails(String objectClusterName, 
@@ -319,16 +312,6 @@ public class ChannelDetails implements Serializable {
 				listOfChannelTypes);
 
 		mChannelId = channelId;
-		
-		checkDatabaseChannelHandle();
-	}
-
-
-	private void checkDatabaseChannelHandle(){
-		if(mDatabaseChannelHandle.isEmpty()){
-//			mStoreToDatabase = false;
-			mDatabaseChannelHandle = mObjectClusterName;
-		}
 	}
 
 	public int getLegacyChannelId() {
@@ -337,6 +320,15 @@ public class ChannelDetails implements Serializable {
 	
 	public String getChannelObjectClusterName(){
 		return mObjectClusterName;
+	}
+
+	public String getDatabaseChannelHandle(){
+		if(!mDatabaseChannelHandle.isEmpty()){
+			return mDatabaseChannelHandle;
+		}
+		else{
+			return getChannelObjectClusterName();
+		}
 	}
 	
 	public boolean isShowWhileStreaming(){
