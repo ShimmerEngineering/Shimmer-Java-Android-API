@@ -80,7 +80,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected static final int MAX_CALIB_DUMP_MAX = 4096;
 	
-	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9._()\\[\\]]";	
+	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9._]";
 	
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
