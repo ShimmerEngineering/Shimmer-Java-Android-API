@@ -33,6 +33,7 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_DATABASE_MANAGER = 1009;
 	public final static int MSG_ID_SOURCE_DATA_IMPORT_MANAGER = 1010;
 	public final static int MSG_ID_SOURCE_DATA_PROCESS_MANAGER = 1011;
+	public final static int MSG_ID_SOURCE_VIDEO_MANAGER = 1012;
 	 
 	//Device Info
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
@@ -299,6 +300,7 @@ public class MsgDock {
         aMap.put(MSG_ID_SOURCE_DATABASE_MANAGER, "MSG_ID_SOURCE_DATABASE_MANAGER");
         aMap.put(MSG_ID_SOURCE_DATA_IMPORT_MANAGER, "MSG_ID_SOURCE_DATA_IMPORT_MANAGER");
         aMap.put(MSG_ID_SOURCE_DATA_PROCESS_MANAGER, "MSG_ID_SOURCE_DATA_PROCESS_MANAGER");
+        aMap.put(MSG_ID_SOURCE_VIDEO_MANAGER, "MSG_ID_SOURCE_VIDEO_MANAGER");
     	
     	mMapOfMsgCodes = Collections.unmodifiableMap(aMap);
     }

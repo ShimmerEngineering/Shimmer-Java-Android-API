@@ -52,7 +52,8 @@ public abstract class AbstractSensor implements Serializable{
 		QTI_DIRECT_TEMP("QTI DirectTemp"),
 		KEYBOARD_MOUSE("Keyboard/Mouse Listener"),
 		BMP280("BMP280"),
-		STC3100("STC3100");
+		STC3100("STC3100"),
+		WEBCAM_FRAME_NUMBER("Frame Number");
 		
 	    private final String text;
 
