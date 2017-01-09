@@ -12,7 +12,9 @@ public abstract class AbstractPlotManager {
 	/** keeps a list of signals to plot */
 	public List<String[]> mListofPropertiestoPlot = new ArrayList<String[]>(); //this is used to identify he signals coming into the filter
 	
+	/** TODO do this based on x-axis data per Signal rather then Shimmer in the keySet */ 
 	protected HashMap<String,String[]> mMapofXAxis = new HashMap<String,String[]>();
+	/** TODO do this based on x-axis data per Signal rather then Shimmer in the keySet */ 
 	protected HashMap<String,Double> mMapofXAxisGeneratedValue = new HashMap<String,Double>();
 	
 	public List<int[]> mListOfTraceColorsCurrentlyUsed = new ArrayList<int[]>();
@@ -185,25 +187,6 @@ public abstract class AbstractPlotManager {
 		mMapofXAxis.put(deviceName, channelStringArray);
 	}
 
-	public int[] generateRandomColor(){
-		Random rand = new Random();
-		int min = 0;
-		int max = 255;
-		int[] rgb = new int[3];
-		rgb[0] = rand.nextInt((max - min) + 1) + min;
-		rgb[1] = rand.nextInt((max - min) + 1) + min;
-		rgb[2] = rand.nextInt((max - min) + 1) + min;
-		return rgb;
-	}
-
-	protected List<int[]> generateRandomColorList(int size){
-		List<int[]> listofSignalColors = new ArrayList<int[]>();
-		for (int i =0; i<size;i++){
-			listofSignalColors.add(generateRandomColor());
-		}
-		return listofSignalColors;
-	}
-
 	/** Checks if the property already exist in the plot manager, there can only be one property
 	 * @param channelStringArray A string array containing property/signal details
 	 * @return false if the property does not exist in the plot manager
@@ -231,6 +214,25 @@ public abstract class AbstractPlotManager {
 		return false;
 	}
 	
+	public static int[] generateRandomColor(){
+		Random rand = new Random();
+		int min = 0;
+		int max = 255;
+		int[] rgb = new int[3];
+		rgb[0] = rand.nextInt((max - min) + 1) + min;
+		rgb[1] = rand.nextInt((max - min) + 1) + min;
+		rgb[2] = rand.nextInt((max - min) + 1) + min;
+		return rgb;
+	}
+
+	protected static List<int[]> generateRandomColorList(int size){
+		List<int[]> listofSignalColors = new ArrayList<int[]>();
+		for (int i =0; i<size;i++){
+			listofSignalColors.add(generateRandomColor());
+		}
+		return listofSignalColors;
+	}
+
 	public static String joinChannelStringArray(String[] a){
 		String js="";
 		int lengthToUse = a.length>4? 4:a.length;
