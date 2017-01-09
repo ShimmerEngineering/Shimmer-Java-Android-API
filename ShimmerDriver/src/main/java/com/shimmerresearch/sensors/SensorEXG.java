@@ -157,7 +157,7 @@ public class SensorEXG extends AbstractSensor{
 		public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
 		public static final String EXG_LEAD_OFF_DETECTION = "Lead-Off Detection";
 		public static final String EXG_LEAD_OFF_CURRENT = "Lead-Off Current";
-		public static final String EXG_LEAD_OFF_COMPARATOR = "Lead-Off Compartor Threshold";
+		public static final String EXG_LEAD_OFF_COMPARATOR = "Lead-Off Comparator Threshold";
 		public static final String EXG_RESPIRATION_DETECT_FREQ = "Respiration Detection Freq";
 		public static final String EXG_RESPIRATION_DETECT_PHASE = "Respiration Detection Phase";
 	}
