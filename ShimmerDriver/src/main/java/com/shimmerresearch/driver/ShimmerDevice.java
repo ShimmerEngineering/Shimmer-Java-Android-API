@@ -267,8 +267,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mShimmerVerObject = sVO;
 	}
 	
-	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject hwfw) {
-		setShimmerVersionObject(hwfw);
+	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject sVO) {
+		setShimmerVersionObject(sVO);
 		sensorAndConfigMapsCreate();
 	}
 
