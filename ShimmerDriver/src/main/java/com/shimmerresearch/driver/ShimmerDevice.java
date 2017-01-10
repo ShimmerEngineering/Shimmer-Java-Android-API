@@ -2114,6 +2114,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		consolePrintLn("");
 		
+		consolePrintLn("PARSER MAP" + "\tSize=" + mParserMap.keySet().size());
 		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
 			consolePrintLn("PARSER MAP\tCOMM TYPE:\t" + commType);
 			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){

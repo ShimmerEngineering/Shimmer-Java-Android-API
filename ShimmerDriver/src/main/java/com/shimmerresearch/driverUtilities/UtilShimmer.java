@@ -313,6 +313,26 @@ public class UtilShimmer implements Serializable {
 		return Integer.toString(b&0x00FF);
 	}
 
+	
+	public static byte[] convertLongToByteArray(long longNumber){
+		byte[] returnVal = ByteBuffer.allocate(8).putLong(longNumber).array();
+
+//		byte[] returnVal = new byte[8];
+//		returnVal = ByteBuffer.allocate(8).putLong(longNumber).array();
+		
+		return returnVal;
+	}
+
+	public static long convertByteArrayToLong(byte[] byteArray){
+		byte[] bSystemTS = byteArray;
+		ByteBuffer bb = ByteBuffer.allocate(8);
+    	bb.put(bSystemTS);
+    	bb.flip();
+    	long returnVal = bb.getLong();
+		return returnVal;
+	}
+
+	
 	/**Returns true if FW ID and HW_ID are the same and "this" version is greater or equal then comparison version
 	 * @param thisFwIdent
 	 * @param thisMajor

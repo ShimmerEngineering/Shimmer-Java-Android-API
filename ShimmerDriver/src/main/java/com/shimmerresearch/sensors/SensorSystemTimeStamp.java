@@ -25,6 +25,7 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
@@ -130,7 +131,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
-				objectCluster.mSystemTimeStamp = ByteBuffer.allocate(8).putLong(pcTimestamp).array();;
+				objectCluster.mSystemTimeStamp = UtilShimmer.convertLongToByteArray(pcTimestamp);
 				objectCluster.addCalData(channelDetails, pcTimestamp);
 				objectCluster.incrementIndexKeeper();
 			}
@@ -142,7 +143,6 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		
 		return objectCluster;
 	}
-
 
 	@Override
 	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {

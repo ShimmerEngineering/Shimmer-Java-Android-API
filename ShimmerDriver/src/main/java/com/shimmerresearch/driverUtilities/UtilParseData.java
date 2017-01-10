@@ -5,7 +5,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 public class UtilParseData {
 	
-	private static boolean mIsDebugEnabled = false;
+	public static boolean mIsDebugEnabled = false;
 
 	/**
 	 * Converts the raw packet byte values, into the corresponding calibrated and uncalibrated sensor values, the Instruction String determines the output 
@@ -57,7 +57,7 @@ public class UtilParseData {
 			}
 			
 			//New 2016-11-12
-			maskToApply = (long)Math.pow(2, dataType.getNumBits())-1;
+			maskToApply = (long)Math.pow(2, dataType.getNumBits());
 			
 			consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
 			formattedData &= maskToApply;

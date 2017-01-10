@@ -39,7 +39,8 @@ public class ChannelDetails implements Serializable {
 		INT16(16, 2, true),
 		INT24(24, 3, true),
 		INT32(32, 4, true),
-		INT72(72, 9, true);
+		INT64(64, 8, true),
+		INT72(72, 9, true); 
 
 		private final int numBits;
 		private final int numBytes;
