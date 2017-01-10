@@ -1216,6 +1216,15 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		LinkedHashMap<String, Object> configMapForDb = super.getConfigMapForDb();
+		
+		//TODO need to complete this for the config review in Consensys -> Manage Data
+		
+		return configMapForDb;
+	}
+
+	@Override
 	public Object setConfigValueUsingConfigLabel(String groupName, String componentName, Object valueToSet) {
 		Object returnValue = null;
 		int buf = 0;
@@ -1320,16 +1329,6 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 		setIsConnected(isConnected);
 		return isConnected;
-	}
-
-
-	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
-		LinkedHashMap<String, Object> configMapForDb = super.getConfigMapForDb();
-		
-		//TODO need to complete this for the config review in Consensys -> Manage Data
-		
-		return configMapForDb;
 	}
 	
 }

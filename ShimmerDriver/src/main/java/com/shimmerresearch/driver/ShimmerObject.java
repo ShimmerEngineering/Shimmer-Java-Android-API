@@ -9021,6 +9021,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
 
+			setExgPropertyBothChips(ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.LEAD_OFF_CURRENT.CURRENT_22NA);
+			setExgPropertyBothChips(ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.COMPARATOR_THRESHOLD.POS90NEG10);
+			
 			if(isEXGUsingDefaultEMGConfiguration()){
 				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG5.CH2_POWER_DOWN.NORMAL_OPERATION);
 			}
@@ -10991,9 +10994,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(SensorEXG.GuiLabelConfig.EXG_RATE):
 //				setEXG1RateSetting((int)valueToSet);
 //				setEXG2RateSetting((int)valueToSet);
-				
 				setEXGRateSetting((int)valueToSet);
-
             	break;
 			case(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
 				setEXGReferenceElectrode((int)valueToSet);

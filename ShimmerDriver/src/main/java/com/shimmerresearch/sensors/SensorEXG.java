@@ -2477,6 +2477,9 @@ public class SensorEXG extends AbstractSensor{
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
 
+			setExgPropertyBothChips(ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.LEAD_OFF_CURRENT.CURRENT_22NA);
+			setExgPropertyBothChips(ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.COMPARATOR_THRESHOLD.POS90NEG10);
+
 			if(isEXGUsingDefaultEMGConfiguration()){
 				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG5.CH2_POWER_DOWN.NORMAL_OPERATION);
 			}
@@ -2888,26 +2891,34 @@ public class SensorEXG extends AbstractSensor{
 				//consolePrintLn("after set " + getExGGain());
 	        	break;
 			case(GuiLabelConfig.EXG_RATE):
-				returnValue = getEXG1RateSetting();
-				//returnValue = getEXG2RateSetting();
+//				setEXG1RateSetting((int)valueToSet);
+//				setEXG2RateSetting((int)valueToSet);
+				setEXGRateSetting((int)valueToSet);
+				returnValue = valueToSet;
             	break;
 			case(GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
-				returnValue = getEXGReferenceElectrode();
+				setEXGReferenceElectrode((int)valueToSet);
+				returnValue = valueToSet;
             	break;
 			case(GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
-				returnValue = getEXGLeadOffCurrentMode();
+				setEXGLeadOffCurrentMode((int)valueToSet);
+				returnValue = valueToSet;
             	break;
 			case(GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
-				returnValue = getEXGLeadOffDetectionCurrent();
+				setEXGLeadOffDetectionCurrent((int)valueToSet);
+				returnValue = valueToSet;
             	break;
 			case(GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
-				returnValue = getEXGLeadOffComparatorTreshold();
+				setEXGLeadOffComparatorTreshold((int)valueToSet);
+				returnValue = valueToSet;
             	break;
 			case(GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
-				returnValue = getEXG2RespirationDetectFreq();
+				setEXG2RespirationDetectFreq((int)valueToSet);
+				returnValue = valueToSet;
             	break;
 			case(GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
-				returnValue = getEXG2RespirationDetectPhase();
+				setEXG2RespirationDetectPhase((int)valueToSet);
+				returnValue = valueToSet;
             	break;
 
 	        default:
