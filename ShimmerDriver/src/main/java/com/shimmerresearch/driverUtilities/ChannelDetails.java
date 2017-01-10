@@ -31,6 +31,7 @@ public class ChannelDetails implements Serializable {
 //		UINT32_SIGNED(4, true),
 		UINT48(48, 6, false),
 		UINT64(64, 8, false),
+		//TODO UtilParseData.parseData currently can not handle over 64 bits
 		
 		INT8(8, 1, true),
 		INT12(12, 2, true),
@@ -39,8 +40,9 @@ public class ChannelDetails implements Serializable {
 		INT16(16, 2, true),
 		INT24(24, 3, true),
 		INT32(32, 4, true),
-		INT64(64, 8, true),
-		INT72(72, 9, true); 
+		INT64(64, 8, true);
+		//TODO UtilParseData.parseData currently can not handle over 64 bits
+//		INT72(72, 9, true); 
 
 		private final int numBits;
 		private final int numBytes;

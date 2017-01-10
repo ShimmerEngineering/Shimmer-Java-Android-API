@@ -58,6 +58,11 @@ public class UtilParseData {
 			
 			//New 2016-11-12
 			maskToApply = (long)Math.pow(2, dataType.getNumBits());
+			int numBits = dataType.getNumBits();
+			//TODO will not handle over 64 bits
+			if(numBits<64){
+				maskToApply-=1;
+			}
 			
 			consolePrintLnDebugging("Mask to apply:\t" + Long.toHexString(maskToApply));
 			formattedData &= maskToApply;
