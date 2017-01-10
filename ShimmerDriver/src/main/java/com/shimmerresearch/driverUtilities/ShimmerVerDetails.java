@@ -61,8 +61,12 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_4_SDK, "Shimmer4 SDK");
         
+        aMap.put(HW_ID.NONIN_ONYX_II, "Nonin Onyx II");
+        aMap.put(HW_ID.QTI_DIRECT_TEMP, "QTI Direct Temp");
         aMap.put(HW_ID.KEYBOARD_AND_MOUSE, "Keyboard and Mouse");
         aMap.put(HW_ID.ARDUINO, "Arduino");
+        aMap.put(HW_ID.WEBCAM, "Webcam");
+        
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
     
