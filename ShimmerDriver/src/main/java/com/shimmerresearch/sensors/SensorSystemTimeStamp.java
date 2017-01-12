@@ -1,37 +1,30 @@
 package com.shimmerresearch.sensors;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.Configuration.Shimmer3.DatabaseChannelHandles;
-import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
-import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
+//TODO I've only started on this class. I need to extract any old code from ShimmerClock and put it in here
+/** 
+ * @author Mark Nolan
+ *
+ */
 public class SensorSystemTimeStamp extends AbstractSensor {
 
 	/** * */
@@ -39,6 +32,11 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 
 	//--------- Sensor specific variables start --------------
+	public static class ObjectClusterSensorName{
+		public static  String SYSTEM_TIMESTAMP = "System_Timestamp";
+		public static  String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
+		public static final String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
+	}
 	//--------- Sensor specific variables end --------------
 
 	//--------- Bluetooth commands start --------------
@@ -69,33 +67,33 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
-	public static final ChannelDetails cDSystemTimestamp = new ChannelDetails(
+	public static final ChannelDetails channelSystemTimestamp = new ChannelDetails(
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 		DatabaseChannelHandlesCommon.TIMESTAMP_SYSTEM,
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
-		cDSystemTimestamp.mChannelSource = CHANNEL_SOURCE.API;
-		cDSystemTimestamp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+		channelSystemTimestamp.mChannelSource = CHANNEL_SOURCE.API;
+		channelSystemTimestamp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
 	
-	public static final ChannelDetails cDSystemTimestampPlot = new ChannelDetails(
+	public static final ChannelDetails channelSystemTimestampPlot = new ChannelDetails(
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 		DatabaseChannelHandlesCommon.NONE,
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
-		cDSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;
-		cDSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+		channelSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;
+		channelSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
 	
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
         Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, SensorSystemTimeStamp.cDSystemTimestamp);
-		aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorSystemTimeStamp.cDSystemTimestampPlot);
+		aMap.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP, channelSystemTimestamp);
+		aMap.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, channelSystemTimestampPlot);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
 

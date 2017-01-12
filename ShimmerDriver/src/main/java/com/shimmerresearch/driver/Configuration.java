@@ -79,6 +79,7 @@ import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
+import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 
@@ -1060,10 +1061,10 @@ public class Configuration {
 			
 			public static String TIMESTAMP = 			ShimmerClock.ObjectClusterSensorName.TIMESTAMP;//"Timestamp";
 			public static String REAL_TIME_CLOCK = 		ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK;//"RealTime";
-			public static String SYSTEM_TIMESTAMP = 	ShimmerClock.ObjectClusterSensorName.SYSTEM_TIMESTAMP;//"System_Timestamp";
 //			public static String REAL_TIME_CLOCK_SYNC = ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;//"RealTime_Sync";
 			public static String TIMESTAMP_SYNC = 		ShimmerClock.ObjectClusterSensorName.TIMESTAMP_SYNC;//"Timestamp_Sync";
-			public static String SYSTEM_TIMESTAMP_PLOT = ShimmerClock.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT;//"System_Timestamp_plot";
+			public static String SYSTEM_TIMESTAMP = 	SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP;//"System_Timestamp";
+			public static String SYSTEM_TIMESTAMP_PLOT = SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT;//"System_Timestamp_plot";
 
 			public static String TIMESTAMP_OFFSET = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET;//"Offset";
 

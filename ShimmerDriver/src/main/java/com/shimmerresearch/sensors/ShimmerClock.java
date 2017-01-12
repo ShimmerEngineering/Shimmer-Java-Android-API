@@ -59,7 +59,7 @@ public class ShimmerClock extends AbstractSensor {
 
 	//--------- Sensor info start --------------
 	public static class GuiLabelSensors{
-		public static final String SYSTEM_TIMESTAMP = ObjectClusterSensorName.SYSTEM_TIMESTAMP; 
+		public static final String SYSTEM_TIMESTAMP = SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP; 
 		public static final String TIMESTAMP = ObjectClusterSensorName.TIMESTAMP; 
 		public static final String DEVICE_PROPERTIES = "Device Properties"; 
 	}
@@ -69,11 +69,12 @@ public class ShimmerClock extends AbstractSensor {
 		
 		public static final String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
 		public static final String REAL_TIME_CLOCK = "RealTime";
-		public static final String SYSTEM_TIMESTAMP = "System_Timestamp";
 //		public static final String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
 		public static final String TIMESTAMP_SYNC = "Timestamp_Sync";
-		public static final String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
-		public static final String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
+		
+//		public static final String SYSTEM_TIMESTAMP = "System_Timestamp";
+//		public static final String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
+//		public static final String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
 
 		public static final String TIMESTAMP_OFFSET = "Offset";
 	}
@@ -98,9 +99,9 @@ public class ShimmerClock extends AbstractSensor {
 	public static final SensorDetailsRef sensorSystemTimeStampRef = new SensorDetailsRef(
 			GuiLabelSensors.SYSTEM_TIMESTAMP,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-					ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
-					ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE
+			Arrays.asList(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+					SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+					SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE
 					));
 	{
 		sensorSystemTimeStampRef.mIsApiSensor = true;
@@ -129,7 +130,7 @@ public class ShimmerClock extends AbstractSensor {
 					//temp only! JC: delete after db sync works
 //					ObjectClusterSensorName.REAL_TIME_CLOCK,
 //					ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-					ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+					SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					
 					//TODO move to different class?
 					Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
@@ -157,9 +158,10 @@ public class ShimmerClock extends AbstractSensor {
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
+    //TODO move to SensorSystemTimeStamp class
 	public static final ChannelDetails channelSystemTimestamp = new ChannelDetails(
-			ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-			ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 			DatabaseChannelHandlesCommon.TIMESTAMP_SYSTEM,
 			CHANNEL_UNITS.MILLISECONDS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
@@ -169,9 +171,10 @@ public class ShimmerClock extends AbstractSensor {
 //		channelSystemTimestamp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
 		
+    //TODO move to SensorSystemTimeStamp class
 	public static final ChannelDetails channelSystemTimestampPlot = new ChannelDetails(
-			ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
-			ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.MILLISECONDS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
@@ -181,9 +184,10 @@ public class ShimmerClock extends AbstractSensor {
 //		channelSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
 
+    //TODO move to SensorSystemTimeStamp class
 	public static final ChannelDetails channelSystemTimestampDiff = new ChannelDetails(
-			ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
-			ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
 			DatabaseChannelHandlesCommon.NONE,
 			CHANNEL_UNITS.MILLISECONDS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
@@ -317,9 +321,9 @@ public class ShimmerClock extends AbstractSensor {
 	public void generateSensorMap() {
 		Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
 		
-		channelMapRef.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
-		channelMapRef.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
-		channelMapRef.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, ShimmerClock.channelSystemTimestampDiff);
+		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
+		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
+		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, ShimmerClock.channelSystemTimestampDiff);
 
 		if(mShimmerVerObject.isShimmerGenGq()){
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.RSSI, ShimmerStreamingProperties.channelRssi);
@@ -568,7 +572,7 @@ public class ShimmerClock extends AbstractSensor {
 			else if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.SYSTEM_TIMESTAMP)){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 
-					if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
+					if(channelDetails.mObjectClusterName.equals(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
 						long systemTime = pcTimestamp;
 						if(commType==COMMUNICATION_TYPE.SD){
 							systemTime = System.currentTimeMillis();
@@ -578,7 +582,7 @@ public class ShimmerClock extends AbstractSensor {
 						objectCluster.addData(channelDetails, Double.NaN, systemTime);
 						objectCluster.incrementIndexKeeper();
 					}
-					else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
+					else if(channelDetails.mObjectClusterName.equals(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
 						if(mShimmerVerObject.isShimmerGenGq()){
 							//TODO: Hack -> just copying from elsewhere (forgotten where exactly)
 							double systemTime = 0;
@@ -610,8 +614,8 @@ public class ShimmerClock extends AbstractSensor {
 							objectCluster.incrementIndexKeeper();
 						}
 					}
-					else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE)){
-						FormatCluster fCal = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT), CHANNEL_TYPE.CAL.toString());
+					else if(channelDetails.mObjectClusterName.equals(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE)){
+						FormatCluster fCal = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT), CHANNEL_TYPE.CAL.toString());
 //						FormatCluster fCal = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.SYSTEM_TIMESTAMP), CHANNEL_TYPE.CAL.toString());
 
 						objectCluster.addCalData(channelDetails, fCal.mData - mSystemTimeStampPrevious);
