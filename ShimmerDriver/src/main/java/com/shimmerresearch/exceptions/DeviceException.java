@@ -1,5 +1,7 @@
 package com.shimmerresearch.exceptions;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
@@ -44,6 +46,7 @@ public class DeviceException extends ExecutionException {
 		HIGH
 	}
 
+	public static HashMap<Integer,String> mMapOfErrorCodes = new HashMap<Integer,String>();
 	
 	public DeviceException() {
 	}
@@ -60,8 +63,12 @@ public class DeviceException extends ExecutionException {
 		mErrorCodeLowLevel = lowLevelErrorCode;
 	}
 
-	
-	public String getMsgDockErrString(TreeMap<Integer, String> mMapOfErrorCodes) {
+
+	public String getShimmerDeviceExceptionErrString() {
+		return getShimmerDeviceExceptionErrString(mMapOfErrorCodes);
+	}
+
+	public String getShimmerDeviceExceptionErrString(Map<Integer, String> mapOfErrorCodes) {
 		String errorString = "";
 
 		String id = mUniqueID;
@@ -70,12 +77,12 @@ public class DeviceException extends ExecutionException {
 //		}
 		String errorCode = "Unknown Error";
 		String lowLevelErrorCode = "Unknown Error";
-		if(mMapOfErrorCodes!=null){
-			if(mMapOfErrorCodes.containsKey(mErrorCode)) {
-				errorCode = mMapOfErrorCodes.get(mErrorCode);
+		if(mapOfErrorCodes!=null){
+			if(mapOfErrorCodes.containsKey(mErrorCode)) {
+				errorCode = mapOfErrorCodes.get(mErrorCode);
 			}
-			if(mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
-				lowLevelErrorCode = mMapOfErrorCodes.get(mErrorCodeLowLevel);
+			if(mapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
+				lowLevelErrorCode = mapOfErrorCodes.get(mErrorCodeLowLevel);
 			}
 		}
 		String exceptionInfo = "";
@@ -83,7 +90,7 @@ public class DeviceException extends ExecutionException {
 			exceptionInfo = "Further info: " + mExceptionMsg;
 		}
 
-		errorString += ("CAUGHT MSGDOCK EXCEPTION\n");
+		errorString += ("CAUGHT SHIMMER DEVICE EXCEPTION\n");
 		errorString += ("\t" + "UniqueID: " + id
 				+ "\n\t" + "Action: " + "(" + mErrorCode + ") " + errorCode 
 				+ "\n\t" + "LowLevelError: " + "(" + mErrorCodeLowLevel + ") " + lowLevelErrorCode
@@ -110,6 +117,14 @@ public class DeviceException extends ExecutionException {
 	public void updateDeviceException(String exceptionMsg, StackTraceElement[] exceptionStacktrace) {
 		mExceptionMsg = exceptionMsg;
 		mExceptionStackTrace = exceptionStacktrace;
+	}
+
+	public void updateDeviceException(Exception e) {
+		updateDeviceException(e.getMessage(), e.getStackTrace());
+	}
+
+	public static void addToMapOfErrorCodes(Map<Integer, String> mapOfErrorCodes) {
+		mMapOfErrorCodes.putAll(mapOfErrorCodes);
 	}
 
 }

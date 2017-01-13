@@ -143,9 +143,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public int mFwImageTotalSize = 0;
 	public float mFwImageWriteSpeed = 0;
 	public String mFwImageWriteCurrentAction = "";
-	//BSL related end
 	public List<MsgDock> mListOfFailMsg = new ArrayList<MsgDock>();
+	//BSL related end
 	
+	public List<DeviceException> mListOfDeviceExceptions = new ArrayList<DeviceException>();
 	
 
 	//TODO: are these variables too specific to different versions of Shimmer HW?
@@ -3581,6 +3582,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public static void setMapOfErrorCodes(TreeMap<Integer, String> mapOfErrorCodes) {
 		mMapOfErrorCodes.putAll(mapOfErrorCodes);
 	}
+	
+	public void addDeviceException(DeviceException dE) {
+		mListOfDeviceExceptions.add(dE);
+		consolePrint(dE.getShimmerDeviceExceptionErrString());
+	}
 
 	public void sensorAndConfigMapsCreateCommon() {
 		generateSensorAndParserMaps();
@@ -3591,5 +3597,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		handleSpecialCasesAfterSensorMapCreate();
 	}
+
 
 }
