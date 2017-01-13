@@ -452,6 +452,17 @@ public class ShimmerVerObject implements Serializable {
 		}
 		return false;
 	}
+	
+	public boolean isShimmerVideoDevice(){
+		return isShimmerVideoDevice(getHardwareVersion());
+	}
+
+	public static boolean isShimmerVideoDevice(int hardwareVersion) {
+		if(hardwareVersion==HW_ID.WEBCAM){
+				return true;
+			}
+			return false;
+	}
 
 	public boolean compareVersions(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 		return compareVersions(this, hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
