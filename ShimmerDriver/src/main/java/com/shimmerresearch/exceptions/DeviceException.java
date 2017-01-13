@@ -75,6 +75,15 @@ public class DeviceException extends ExecutionException {
 	}
 
 
+	/** Currently used in VideoManager
+	 * @param errorCode
+	 * @param message
+	 */
+	public DeviceException(int errorCode, String message) {
+		mErrorCode = errorCode;
+		mMessage = message;
+	}
+
 	public String getShimmerDeviceExceptionErrString() {
 		return getShimmerDeviceExceptionErrString(mMapOfErrorCodes);
 	}
