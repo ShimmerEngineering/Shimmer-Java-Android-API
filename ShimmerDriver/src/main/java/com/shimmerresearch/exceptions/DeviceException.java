@@ -1,8 +1,8 @@
 package com.shimmerresearch.exceptions;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
 import com.shimmerresearch.driverUtilities.UtilShimmer;
@@ -13,9 +13,6 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
  */
 public class DeviceException extends ExecutionException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8040452709544630044L;
 
 	public int mErrorCode;
@@ -46,6 +43,20 @@ public class DeviceException extends ExecutionException {
 		HIGH
 	}
 
+	/** ERROR_CODES_ID reference list
+	 * 
+	 * 0-999 = MsgDock
+	 * 1000+ = ErrorCodesMspBsl
+	 * 2000+ = ErrorCodesSerialPort
+	 * 3000+ = ErrorCodesDock
+	 * 4000+ = DockJobDetails
+	 * 5000+ = ErrorCodesSpan
+	 * 6000+ = ErrorCodesUpdateCheck
+	 * 7000+ = ErrorCodesWiredProtocol
+	 * 8000+ = SpanJobDetails
+	 * 9000+ = ErrorCodesVideoManager
+	 * 
+	 */
 	public static HashMap<Integer,String> mMapOfErrorCodes = new HashMap<Integer,String>();
 	
 	public DeviceException() {
@@ -124,7 +135,15 @@ public class DeviceException extends ExecutionException {
 	}
 
 	public static void addToMapOfErrorCodes(Map<Integer, String> mapOfErrorCodes) {
+//		System.out.println("Adding to ErrorMap.\t Was size = " + mMapOfErrorCodes.size());
 		mMapOfErrorCodes.putAll(mapOfErrorCodes);
+//		System.out.println("Adding to ErrorMap.\t Now size = " + mMapOfErrorCodes.size());
+	}
+
+	public static void addToMapOfErrorCodes(List<Map<Integer, String>> errorMapsToLoad) {
+		for(Map<Integer, String> mapOfErrorCodes:errorMapsToLoad){
+			addToMapOfErrorCodes(mapOfErrorCodes);
+		}
 	}
 
 }

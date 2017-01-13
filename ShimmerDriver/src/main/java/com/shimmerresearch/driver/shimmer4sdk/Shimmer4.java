@@ -673,7 +673,7 @@ public class Shimmer4 extends ShimmerDevice {
 				public void eventError(DeviceException dE) {
 //					consolePrintException(dE.getMessage(), dE.getStackTrace());
 					if(dE!=null){
-						consolePrint(dE.getShimmerDeviceExceptionErrString(mMapOfErrorCodes));
+						consolePrint(dE.getShimmerDeviceExceptionErrString());
 					}
 					else{
 						consolePrintLn("null error from CommsProtocol");
@@ -707,7 +707,7 @@ public class Shimmer4 extends ShimmerDevice {
 				mCommsProtocolRadio.connect();
 			} catch (DeviceException dE) {
 				consolePrintLn("Failed to Connect");
-				consolePrintLn(dE.getShimmerDeviceExceptionErrString(mMapOfErrorCodes));
+				consolePrintLn(dE.getShimmerDeviceExceptionErrString());
 				
 				disconnect();
 				setBluetoothRadioState(BT_STATE.CONNECTION_FAILED);

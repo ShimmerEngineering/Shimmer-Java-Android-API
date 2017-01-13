@@ -9,6 +9,7 @@ import com.shimmerresearch.driverUtilities.DockJobDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_STATE;
+import com.shimmerresearch.exceptions.DeviceException;
 import com.shimmerresearch.exceptions.DeviceException.ExceptionLevel;
 
 
@@ -187,8 +188,6 @@ public class MsgDock {
 	public final static int MSG_ID_DATA_TO_ALGO = 190;
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
-
-
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
         aMap.put(MSG_ID_UNKNOWN, "MSG_ID_UNKNOWN");
@@ -456,8 +455,8 @@ public class MsgDock {
 	public static String convertDockIdAndSlotNumberToUniqueId(String dockId, int slotNumber){
 		return (dockId + "." + String.format("%02d",slotNumber));
 	}
-	
-	public String getMsgDockErrString(TreeMap<Integer, String> mMapOfErrorCodes) {
+
+	public String getMsgDockErrString() {
 		String errorString = "";
 
 		String id = mUniqueID;
@@ -465,16 +464,16 @@ public class MsgDock {
 			id = mDockID;
 		}
 		String msgID = "Unknown Error";
-		if(mMapOfErrorCodes.containsKey(mMsgID)) {
-			msgID = mMapOfErrorCodes.get(mMsgID);
+		if(DeviceException.mMapOfErrorCodes.containsKey(mMsgID)) {
+			msgID = DeviceException.mMapOfErrorCodes.get(mMsgID);
 		}
 		String errorCode = "Unknown Error";
-		if(mMapOfErrorCodes.containsKey(mErrorCode)) {
-			errorCode = mMapOfErrorCodes.get(mErrorCode);
+		if(DeviceException.mMapOfErrorCodes.containsKey(mErrorCode)) {
+			errorCode = DeviceException.mMapOfErrorCodes.get(mErrorCode);
 		}
 		String lowLevelErrorCode = "Unknown Error";
-		if(mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
-			lowLevelErrorCode = mMapOfErrorCodes.get(mErrorCodeLowLevel);
+		if(DeviceException.mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
+			lowLevelErrorCode = DeviceException.mMapOfErrorCodes.get(mErrorCodeLowLevel);
 		}
 		String exceptionInfo = "";
 		if(mExceptionMsg!=null && !mExceptionMsg.isEmpty()) {

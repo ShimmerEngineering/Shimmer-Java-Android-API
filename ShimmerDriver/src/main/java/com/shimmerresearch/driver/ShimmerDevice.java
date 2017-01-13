@@ -190,7 +190,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected DataProcessingInterface mDataProcessing;
 
 	public boolean mVerboseMode = true;
-	public static TreeMap<Integer,String> mMapOfErrorCodes = new TreeMap<Integer,String>();
+//	public static TreeMap<Integer,String> mMapOfErrorCodes = new TreeMap<Integer,String>();
 
 	private static final List<AlgorithmLoaderInterface> OPEN_SOURCE_ALGORITHMS = Arrays.asList(
 			new OrientationModule6DOFLoader(), 
@@ -3579,9 +3579,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// TODO Auto-generated method stub
 	}
 
-	public static void setMapOfErrorCodes(TreeMap<Integer, String> mapOfErrorCodes) {
-		mMapOfErrorCodes.putAll(mapOfErrorCodes);
-	}
+//	public static void addToMapOfErrorCodes(TreeMap<Integer, String> mapOfErrorCodes) {
+//		mMapOfErrorCodes.putAll(mapOfErrorCodes);
+//	}
 	
 	public void addDeviceException(DeviceException dE) {
 		mListOfDeviceExceptions.add(dE);
