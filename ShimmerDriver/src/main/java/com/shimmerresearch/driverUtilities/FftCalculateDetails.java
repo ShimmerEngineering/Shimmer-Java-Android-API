@@ -28,6 +28,7 @@ public class FftCalculateDetails{
 	private double[][] psdResults; 
 	public double meanFreq;
 	public double medianFreq; 
+	public double[] maxFreq; 
 	
 	//TODO add support for the below
 	private int mFftOverlapPercent = 0;
@@ -245,6 +246,17 @@ public class FftCalculateDetails{
 		}
 	}
 	
+	private void setMaxFreq(){
+		maxFreq[0] = psdResults[1][0];	// Max PSD value
+		maxFreq[1] = psdResults[0][0];	// Respective Frequency
+		for(int i=1; i < psdResults[0].length; i++){
+			if(maxFreq[0] < psdResults[1][i]){
+				maxFreq[0] = psdResults[1][i];
+				maxFreq[1] = psdResults[0][i];
+			}
+		}
+	}
+	
 	public double[][] getPSDResults(){
 		return psdResults; 
 	}
@@ -273,6 +285,10 @@ public class FftCalculateDetails{
 
 	public void setFftOverlapPercent(int fftOverlapPercent) {
 		mFftOverlapPercent = UtilShimmer.nudgeInteger(fftOverlapPercent, 0, 100);
+	}
+	
+	public double getMaxFreq(){
+		return maxFreq[1]; // Just the index
 	}
 	
 }
