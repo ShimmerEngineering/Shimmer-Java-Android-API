@@ -823,8 +823,7 @@ public class Configuration {
 			public static final int THIRD_PARTY_NONIN = 1000;
 			public static final int HOST_KEYBOARD_LISTENER = 1001;
 			public static final int HOST_MOUSE_LISTENER = 1002;
-			public static final int HOST_WEBCAM_FRAME_NUMBER = 1003;
-			public static final int HOST_WEBCAM_FRAME_TIMESTAMP = 1004;
+			public static final int HOST_WEBCAM = 1003;
 		}
 		
 		public class DerivedSensorsBitMask {
