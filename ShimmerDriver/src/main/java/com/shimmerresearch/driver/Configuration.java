@@ -156,6 +156,7 @@ public class Configuration {
 		IEEE802154,
 		SD,
 		HID,
+		USB,
 		CLASS, //this is to read the value of the class for clones etc. e.g. if you do a getsettings(accelRange,CLASS) and getsettings(accelRange,Bluetooth), the results are different. One returns the value in the object while the other should generate a read command to be sent to the shimmer device
 	}
 	
@@ -1312,7 +1313,7 @@ public class Configuration {
 
 			private static final ShimmerVerObject svoArduino = 			new ShimmerVerObject(HW_ID.ARDUINO,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
-			private static final ShimmerVerObject svoWebcam = 			new ShimmerVerObject(HW_ID.WEBCAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			private static final ShimmerVerObject svoWebcamGeneric = 			new ShimmerVerObject(HW_ID.WEBCAM_GENERIC,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
 					svoExgSdLog, svoExgBtStream, svoExgLogAndStream,  
@@ -1406,7 +1407,7 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoShimmer4 = Arrays.asList(svoShimmer4Stock);
 			
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoWebcam = Arrays.asList(svoWebcam);
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoWebcam = Arrays.asList(svoWebcamGeneric);
 			
 		}
 
