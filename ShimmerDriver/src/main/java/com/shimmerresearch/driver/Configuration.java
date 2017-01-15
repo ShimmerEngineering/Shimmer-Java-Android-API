@@ -1314,6 +1314,7 @@ public class Configuration {
 			private static final ShimmerVerObject svoArduino = 			new ShimmerVerObject(HW_ID.ARDUINO,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
 			private static final ShimmerVerObject svoWebcamGeneric = 			new ShimmerVerObject(HW_ID.WEBCAM_GENERIC,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			private static final ShimmerVerObject svoWebcamLogitech = 			new ShimmerVerObject(HW_ID.WEBCAM_LOGITECH_HD_C920,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
 					svoExgSdLog, svoExgBtStream, svoExgLogAndStream,  
@@ -1407,7 +1408,8 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoShimmer4 = Arrays.asList(svoShimmer4Stock);
 			
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoWebcam = Arrays.asList(svoWebcamGeneric);
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoWebcam = Arrays.asList(
+					svoWebcamGeneric, svoWebcamLogitech);
 			
 		}
 
