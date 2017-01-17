@@ -1546,6 +1546,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.isShimmerGenGq();
 	}
 
+	public boolean isShimmerVideoDevice(){
+		return mShimmerVerObject.isShimmerVideoDevice();
+	}
 
 	public void consolePrintErrLn(String message) {
 		if(mVerboseMode) {
