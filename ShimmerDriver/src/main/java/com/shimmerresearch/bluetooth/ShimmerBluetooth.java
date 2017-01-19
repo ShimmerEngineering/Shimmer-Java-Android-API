@@ -133,7 +133,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		SDLOGGING("SD Logging"),
 		CONFIGURING("Configuring"), // The class is now initiating an outgoing connection 
 		CONNECTION_LOST("Lost connection"),
-		CONNECTION_FAILED("Connection Failed");
+		CONNECTION_FAILED("Connection Failed"),
+		RECORDING("Recording");
 		
 	    private final String text;
 
@@ -439,10 +440,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//	private String mParentClassName = "ShimmerPC";
 		
 	public static final int MSG_IDENTIFIER_STATE_CHANGE = 0;
+
+	public static final int MSG_IDENTIFIER_DEVICE_ERROR = 10;
+
 	public static final int NOTIFICATION_SHIMMER_FULLY_INITIALIZED = 2;
 	public static final int NOTIFICATION_SHIMMER_START_STREAMING = 1;
 	public static final int NOTIFICATION_SHIMMER_STATE_CHANGE = 3;
-	public static final int NOTIFICATION_SHIMMER_STOP_STREAMING = 0;
+	public static final int NOTIFICATION_SHIMMER_STOP_STREAMING = 0; //<--????
 
 	
 	public class ProcessingThread extends Thread {
