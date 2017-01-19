@@ -810,7 +810,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mHaveAttemptedToReadConfig = haveAttemptedToRead;
 	}
 
-	
 	/**
 	 * @return the mMacIdFromUart
 	 */
@@ -3587,8 +3586,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	}
 	
 	public void addDeviceException(DeviceException dE) {
+		dE.mUniqueID = mUniqueID;
 		mListOfDeviceExceptions.add(dE);
-		consolePrint(dE.getShimmerDeviceExceptionErrString());
+		consolePrintLn(dE.getShimmerDeviceExceptionErrString());
 	}
 
 	public void sensorAndConfigMapsCreateCommon() {

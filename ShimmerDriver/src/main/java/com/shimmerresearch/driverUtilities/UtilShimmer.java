@@ -522,15 +522,19 @@ public class UtilShimmer implements Serializable {
 	    }
 	    return false;
 	}
-	
+
+	public void threadSleep(long millis) {
+		millisecondDelay(millis);
+	}
+
 	public void millisecondDelay(long millis) {
 		try {
 			Thread.sleep(millis);
 		} catch (InterruptedException e) {
 			consolePrintLn("Thread sleep FAIL");
 		//	e.printStackTrace();
+		}
 	}
-}
 
 	/**Used by the RTC sent over Bluetooth/Dock comms and calibration Dump file
 	 * @param milliseconds
