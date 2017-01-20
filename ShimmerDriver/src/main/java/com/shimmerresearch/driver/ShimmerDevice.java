@@ -2345,8 +2345,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	//TODO tidy up implementation of below, overwritten and handled differently in Shimmer4, ShimmerPC, NoninOnyxII
 	protected void setBluetoothRadioState(BT_STATE state){
-		consolePrintLn("State change: " + mBluetoothRadioState.toString());
+		BT_STATE stateStored = mBluetoothRadioState;
 		mBluetoothRadioState = state;
+		consolePrintLn("State change: Was:" + stateStored.toString() + "\tIs now:" + mBluetoothRadioState);
 	}
 	
 	

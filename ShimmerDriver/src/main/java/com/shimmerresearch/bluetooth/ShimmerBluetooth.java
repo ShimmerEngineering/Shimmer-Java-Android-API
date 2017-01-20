@@ -133,8 +133,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		SDLOGGING("SD Logging"),
 		CONFIGURING("Configuring"), // The class is now initiating an outgoing connection 
 		CONNECTION_LOST("Lost connection"),
-		CONNECTION_FAILED("Connection Failed"),
-		RECORDING("Recording");
+		CONNECTION_FAILED("Connection Failed");
+//		RECORDING("Recording");
 		
 	    private final String text;
 
