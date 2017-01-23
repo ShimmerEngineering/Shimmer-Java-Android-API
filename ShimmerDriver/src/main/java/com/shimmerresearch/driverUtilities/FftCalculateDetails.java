@@ -1,6 +1,7 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jtransforms.fft.DoubleFFT_1D;
@@ -21,14 +22,17 @@ public class FftCalculateDetails{
 	
 	private String[] mTraceName = null;
 	private String mShimmerName = null;
-	private double mSamplingRate = 1024; //Double.NaN;
+	public double mSamplingRate = 1024; //Double.NaN;
 	private int mDivider = 2;
 	private List<Double> mTimeBuffer = new ArrayList<Double>();
 	private List<Double> mDataBuffer = new ArrayList<Double>();
-	private double[][] psdResults; 
-	public double meanFreq;
-	public double medianFreq; 
-	public double[] maxFreq; 
+	private double[][] fftResults; 
+	private double[][] psdFrequenciesAndAmplitudes; 
+	private double maxPSDFrequency;
+	private double meanPSDFreq;
+	private double medianPSDFreq; 
+	private double sumProductFreqPsd = 0;
+	private double sumPsdAmplitude = 0;
 	
 	//TODO add support for the below
 	private int mFftOverlapPercent = 0;
@@ -76,6 +80,17 @@ public class FftCalculateDetails{
 		}
 	}
 
+	public double[] calculateFFT(double[] data){
+	
+		DoubleFFT_1D fftDo = new DoubleFFT_1D(data.length);
+        double[] fft = new double[data.length * 2];
+        System.arraycopy(data, 0, fft, 0, data.length);
+        fftDo.realForwardFull(fft);
+     
+        fft = rectifyFFT(fft);
+        
+        return fft;
+	}
 	
 	//TODO calculate FFT on data buffers
 	public double[] calculateFft(int timeDiffMs){
@@ -152,46 +167,23 @@ public class FftCalculateDetails{
 		}
 
 		double[] fft = calculateFft(periodMs);
-		
-		double sumProductFreqPsd = 0.00;
-		double sumPsd = 0.00;
-		boolean isMedianValueReached = false;
-		int count = 0; 
 
 		if(fft.length>0){
 			if(mIsShowingTwoSidedFFT){
 				mDivider = 1;
 			}
 			
-			double[][] results = new double[2][fft.length/mDivider];
-			double[][] psdResults = new double[2][fft.length/mDivider];
+			fftResults = new double[2][fft.length/mDivider];
 			double multiplier = mSamplingRate/fft.length;
 			
-			for(int i=0;i<fft.length/mDivider;i++){
-				if(mSamplingRate==Double.NaN){
-					//Use index
-					results[0][i] = i;
-				}
-				else{
-					//Use freq
-					results[0][i] = i*multiplier;
-					psdResults[0][i] = i*multiplier;
-				}
-				results[1][i] = fft[i];
-				
-				psdResults[1][i] = 2 * ((Math.abs(Math.pow(fft[i], 2))) / mSamplingRate * fft.length); // psd = |fft|^2/(fs*N)
-				//psdResults[1][i] = 10 * Math.log10(psdResults[1][i]); Optional to display in dB - 
-				
-				sumProductFreqPsd = sumProductFreqPsd + (psdResults[1][i]) * (psdResults[0][i]);
-				sumPsd = sumPsd + psdResults[1][i];
-				
-				count = i; 
+			for(int index=0; index<fft.length/mDivider; index++){
+				setFFTFrequency(index, multiplier);
+				setFFTAmplitude(fft, index);
 			}	
-		//	meanFreq = sumProductFreqPsd/sumPsd; // Calculate Mean [2]
 			
 			calculatePSDAndGenerateArray(fft);
 			
-			return results;
+			return fftResults;
 		}
 		
 		return new double[][]{};
@@ -204,61 +196,125 @@ public class FftCalculateDetails{
 	 */
 	public void calculatePSDAndGenerateArray(double[] fft) {
 
-		double[][] psdResults = new double[2][fft.length/mDivider];
-		//psdResults = new double[2][fft.length];
-		
-		double sumProductFreqPsd = 0;
-		double sumPsd = 0;
-		boolean isMedianValueReached = false;
-		
+		int numElements = fft.length/mDivider;
 		double multiplier = mSamplingRate/fft.length; 
+		
+		psdFrequenciesAndAmplitudes = new double[2][numElements];
+		sumProductFreqPsd = 0;
+		sumPsdAmplitude = 0;
 
-		for (int i = 0; i < fft.length / mDivider; i++) { //is divided by divider right? instead of just fft - half? 
-			if (mSamplingRate == Double.NaN) {
-				// Use index
-				psdResults[0][i] = i;
-			} else {
-				// Use freq
-				psdResults[0][i] = i*multiplier; //problem i = 0; 
-			}
+		for (int index = 0; index < numElements; index++) { //is divided by divider right? instead of just fft - half? 
 
-			psdResults[1][i] = 2*((Math.abs(Math.pow(fft[i], 2)))/mSamplingRate*fft.length); // psd = |fft|^2/(fs*N)
-			//psdResults[1][i] = 10 * Math.log10(psdResults[1][i]); // Convert to DB - Madeleine doesn't use 
-
-			sumProductFreqPsd = sumProductFreqPsd + (psdResults[1][i]) * (psdResults[0][i]);
-			sumPsd = sumPsd + psdResults[1][i];
+			setPSDFrequency(index, multiplier);
+			setPSDAmplitude(fft, index);
+			//setPSDAmplitudeInDbs(fft, index);
+			
+			sumPSDproductFreq(index);
+			sumPSDAmplitude(index);
 		}
 
-		meanFreq = sumProductFreqPsd/sumPsd; // Calculate Mean [2]
-
+		setMeanPSDFrequency();
+		setMedianPSDFrequency();
+		setMaxPSDFrequency();
+		
+	}
+	
+	private void setFFTFrequency(int index, double multiplier){
+		if(Double.isNaN(mSamplingRate)){
+			//Use index
+			fftResults[0][index] = index;
+		}
+		else{
+			//Use freq
+			fftResults[0][index] = index*multiplier;
+		}
+	}
+	
+	private void setFFTAmplitude(double[] fft, int index){
+		fftResults[1][index] = fft[index];
+	}
+	
+	private void setPSDFrequency(int index, double multiplier){
+		if (mSamplingRate == Double.NaN) {
+			// Use index
+			psdFrequenciesAndAmplitudes[0][index] = index;
+		} 
+		else{
+			// Use freq
+			psdFrequenciesAndAmplitudes[0][index] = index * multiplier; //problem i = 0; 
+		}
+	}
+	
+	private void setPSDAmplitude(double[] fft, int index){
+		psdFrequenciesAndAmplitudes[1][index] = 2*((Math.abs(Math.pow(fft[index], 2)))/mSamplingRate*fft.length); // psd = |fft|^2/(fs*N)
+	}
+	
+	private void setPSDAmplitudeInDbs(double[] fft, int index){
+		psdFrequenciesAndAmplitudes[1][index] = 10 * Math.log10(2*((Math.abs(Math.pow(fft[index], 2)))/mSamplingRate*fft.length)); // Convert to DB - Madeleine doesn't use 
+	}
+	
+	private void sumPSDproductFreq(int index){
+		sumProductFreqPsd = sumProductFreqPsd + (psdFrequenciesAndAmplitudes[1][index]) * (psdFrequenciesAndAmplitudes[0][index]);
+	}
+	
+	private void sumPSDAmplitude(int index){
+		sumPsdAmplitude = sumPsdAmplitude + psdFrequenciesAndAmplitudes[1][index];
+	}
+	
+	private void setMeanPSDFrequency(){
+		meanPSDFreq = sumProductFreqPsd/sumPsdAmplitude; 
+	}
+	
+	public double getMeanPSDFrequnecy(){
+		return meanPSDFreq;
+	}
+	
+	private void setMedianPSDFrequency(){
 		// Calculate Median [1]
 		// TODO: Better check?
-		if (psdResults.length > 1 & !isMedianValueReached) {
-
-			for (int i = 0; i < fft.length / mDivider; i++) {
-
-				if (psdResults[1][i] > sumPsd / 2) {
-					medianFreq = psdResults[0][i];
-					isMedianValueReached = true;
-					break;
-				}
+		for (int index = 0; index < psdFrequenciesAndAmplitudes[0].length; index++) {
+			if (psdFrequenciesAndAmplitudes[1][index] > sumPsdAmplitude / 2) {
+				medianPSDFreq = psdFrequenciesAndAmplitudes[0][index];
+				break;
 			}
 		}
+		
+//	    int middle = psdFrequenciesAndAmplitudes[0].length/2;
+//	    if (psdFrequenciesAndAmplitudes[0].length%2 == 1) {
+//	    	medianPSDFreq = psdFrequenciesAndAmplitudes[0][middle];
+//	    } else {
+//	    	medianPSDFreq = (psdFrequenciesAndAmplitudes[0][middle-1] + psdFrequenciesAndAmplitudes[0][middle]) / 2.0;
+//	    }
 	}
 	
-	private void setMaxFreq(){
-		maxFreq[0] = psdResults[1][0];	// Max PSD value
-		maxFreq[1] = psdResults[0][0];	// Respective Frequency
-		for(int i=1; i < psdResults[0].length; i++){
-			if(maxFreq[0] < psdResults[1][i]){
-				maxFreq[0] = psdResults[1][i];
-				maxFreq[1] = psdResults[0][i];
+	public double getMedianPSDFrequency(){
+		return medianPSDFreq;
+	}
+	
+	private void setMaxPSDFrequency(){
+		
+		double[] frequency = psdFrequenciesAndAmplitudes[0];
+		double[] amplitude = psdFrequenciesAndAmplitudes[1];
+		
+		double maxAmplitude = 0.0;
+		int indexOfMaxAmplitude = 0;
+		
+		for(int index=0; index<amplitude.length; index++){
+			if(amplitude[index] > maxAmplitude){
+				maxAmplitude = amplitude[index];
+				indexOfMaxAmplitude = index;
 			}
 		}
+		
+		maxPSDFrequency = frequency[indexOfMaxAmplitude];
 	}
 	
-	public double[][] getPSDResults(){
-		return psdResults; 
+	public double getMaxPSDFrequency(){
+		return maxPSDFrequency; 
+	}
+	
+	public double[][] getPSDFrequenciesAndAmplitudes(){
+		return psdFrequenciesAndAmplitudes; 
 	}
 	
 	public static double[] toPrimitive(Double[] array) {
@@ -278,7 +334,6 @@ public class FftCalculateDetails{
 //		double[] arr = frameList.stream().mapToDouble(d -> d).toArray(); //identity function, Java unboxes automatically to get the double value
 	}
 
-
 	public String getTraceNameJoined(){
 		return AbstractPlotManager.joinChannelStringArray(mTraceName);
 	}
@@ -286,9 +341,4 @@ public class FftCalculateDetails{
 	public void setFftOverlapPercent(int fftOverlapPercent) {
 		mFftOverlapPercent = UtilShimmer.nudgeInteger(fftOverlapPercent, 0, 100);
 	}
-	
-	public double getMaxFreq(){
-		return maxFreq[1]; // Just the index
-	}
-	
 }
