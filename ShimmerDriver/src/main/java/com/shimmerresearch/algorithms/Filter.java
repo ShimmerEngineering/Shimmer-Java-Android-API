@@ -217,7 +217,6 @@ public class Filter implements Serializable{
         	 if(bufferedX == null){
         		 bufferedX = new double[bufferSize + nSamples]; // buffers are initiliazed to 0 by default
         		 Arrays.fill(bufferedX, data); // fill the buffer X with the first data       
-        		 System.err.println("bufferedX");
         	 }
         	 else{
         		 System.arraycopy(bufferedX, 1, bufferedX, 0, bufferedX.length-1); //all the elements in the buffer are shifted one position to the left
