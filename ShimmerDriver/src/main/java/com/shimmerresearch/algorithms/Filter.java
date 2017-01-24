@@ -88,7 +88,7 @@ public class Filter implements Serializable{
     private double[] bufferedX;
 
     // filter coefficients {h}
-    private double[] coefficients;
+    public double[] coefficients;
 
     // input parameters are invalid
     private boolean validparameters = false;
@@ -129,7 +129,7 @@ public class Filter implements Serializable{
     public void SetFilterParameters(int LoHi, double samplingRate, double[] cornerFrequency, int nTaps) throws Exception{
     	
     	//reset the buffers
-    	this.bufferedX = null; 
+    	resetBuffer(); 
     	
     	if(cornerFrequency.length!=1){
     		if(cornerFrequency[0] > cornerFrequency[1]){
@@ -214,9 +214,10 @@ public class Filter implements Serializable{
          {
         	 int nSamples = 1;
              int bufferSize = this.nTaps; 
-        	 if(bufferedX==null){
-        		 bufferedX = new double[bufferSize+nSamples]; // buffers are initiliazed to 0 by default
-        		 Arrays.fill(bufferedX, data); // fill the buffer X with the first data        		 
+        	 if(bufferedX == null){
+        		 bufferedX = new double[bufferSize + nSamples]; // buffers are initiliazed to 0 by default
+        		 Arrays.fill(bufferedX, data); // fill the buffer X with the first data       
+        		 System.err.println("bufferedX");
         	 }
         	 else{
         		 System.arraycopy(bufferedX, 1, bufferedX, 0, bufferedX.length-1); //all the elements in the buffer are shifted one position to the left
@@ -244,6 +245,9 @@ public class Filter implements Serializable{
         		 dataFiltered[i] = individualDataFiltered;
         	 }
         	 
+        	 //reset the buffers
+        	 resetBuffer();
+        	 
         	 return dataFiltered;
          }
     }
@@ -261,20 +265,23 @@ public class Filter implements Serializable{
         		 double individualDataFiltered = filterData(data.get(i));
         		 dataFiltered.add(i, individualDataFiltered);
         	 }
+         	 
+        	 //reset the buffers
+        	 resetBuffer();
         	 
         	 return dataFiltered;
          }
     }
     
-    private double filter(double[] X)
-    {
+    private double filter(double[] X){
     	
     	int nTaps = coefficients.length;
     	double Y = 0;
     	
-    	for(int i=0; i<nTaps; i++)
+    	for(int i=0; i<nTaps; i++){
     		Y += X[nTaps-i]*coefficients[i];
-    	
+    	}
+    
     	return Y;
     }
     
@@ -343,8 +350,7 @@ public class Filter implements Serializable{
 		return array;
 	}
     
-    public void resetBuffers(){
-    	
+    public void resetBuffer(){
     	bufferedX = null;
     }
     
