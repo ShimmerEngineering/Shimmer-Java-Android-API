@@ -345,7 +345,7 @@ public class ShimmerVerObject implements Serializable {
 
 	public boolean isSupportedEightByteDerivedSensors() {
 		if((compareVersions(this, FW_ID.SDLOG,0,13,1))
-				|| (compareVersions(this, FW_ID.LOGANDSTREAM,0,7,2))
+				|| (compareVersions(this, FW_ID.LOGANDSTREAM,0,7,1))
 				|| (compareVersions(this, FW_ID.GQ_802154,0,3,2))
 				|| (compareVersions(this, FW_ID.SHIMMER4_SDK_STOCK,0,0,23))) {
 			return true;
