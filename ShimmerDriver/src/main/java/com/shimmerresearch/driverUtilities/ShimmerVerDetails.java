@@ -43,6 +43,8 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int ARDUINO 				= 1003;
 		public static final int WEBCAM_GENERIC 			= 1004;
 		public static final int WEBCAM_LOGITECH_HD_C920	= 1005;
+		
+		public static final int RESULT_AGGREGATOR		= 2000;
 	}
 	
 	//WARNING! The name can't change because the database relies on it.
