@@ -95,10 +95,10 @@ public class UtilShimmer implements Serializable {
 	}
 
 	public static String convertSecondsToDateString(long seconds) {
-		return convertMilliSecondsToDateString(seconds * 1000);
+		return convertMilliSecondsToDateString(seconds * 1000, false);
 	}
 	
-	public static String convertMilliSecondsToDateString(long milliSeconds) {
+	public static String convertMilliSecondsToDateString(long milliSeconds, boolean showMillis) {
 		Calendar cal = Calendar.getInstance();
 		
 		cal.setTimeInMillis(milliSeconds);
@@ -108,7 +108,9 @@ public class UtilShimmer implements Serializable {
 		int monthIndex = cal.get(Calendar.MONTH);
 		String monthString = getMonthString(monthIndex);
 		
-    	DateFormat dfLocal = new SimpleDateFormat("//yyyy HH:mm:ss");
+		String simpleDateFormat = showMillis ? "//yyyy HH:mm:ss.SSS" : "//yyyy HH:mm:ss";
+		
+    	DateFormat dfLocal = new SimpleDateFormat(simpleDateFormat);
     	String timeString = dfLocal.format(new Date(milliSeconds));
     	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
 		return timeString;
