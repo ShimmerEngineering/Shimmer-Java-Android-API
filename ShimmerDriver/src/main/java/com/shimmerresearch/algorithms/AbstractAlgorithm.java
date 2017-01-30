@@ -10,6 +10,7 @@ import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -109,7 +110,9 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public AlgorithmDetails mAlgorithmDetails;
 	protected double mMinSamplingRateForAlgorithhm = 0.0;
 	protected double mShimmerSamplingRate = 128.0;
-	
+
+	protected ShimmerDevice mShimmerDevice = null;
+
 	/** this is to specify what fw version/hardware should be allowed to use the algorithm */
 	public static final List<ShimmerVerObject> mListOfCompatibleSVO = new ArrayList<ShimmerVerObject>(); 
 
@@ -474,5 +477,31 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return mShimmerSamplingRate;
 	}
 	
+	protected void consolePrintLn(String message) {
+		if(mShimmerDevice!=null){
+			mShimmerDevice.consolePrintLn(message);
+		}
+		else{
+			System.out.println(message);
+		}
+	}
+
+	protected void consolePrintErrLn(String message) {
+		if(mShimmerDevice!=null){
+			mShimmerDevice.consolePrintErrLn(message);
+		}
+		else{
+			System.out.println(message);
+		}
+	}
+
+	protected void consolePrintException(String message, StackTraceElement[] stackTrace) {
+		if(mShimmerDevice!=null){
+			mShimmerDevice.consolePrintExeptionLn(message, stackTrace);
+		}
+		else{
+			System.out.println(message);
+		}
+	}
 	
 }

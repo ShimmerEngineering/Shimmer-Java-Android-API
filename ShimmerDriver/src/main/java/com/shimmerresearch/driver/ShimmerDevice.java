@@ -1549,6 +1549,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.isShimmerVideoDevice();
 	}
 
+	public void consolePrintExeptionLn(String message, StackTraceElement[] stackTrace) {
+		if(mVerboseMode) {
+			consolePrintErrLn(message + "\n" + UtilShimmer.convertStackTraceToString(stackTrace));
+			
+		}
+	}
+
 	public void consolePrintErrLn(String message) {
 		if(mVerboseMode) {
 			System.err.println(assemblePrintString(message));
@@ -2674,8 +2681,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					}
 				}
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				consolePrintException("Error initialising algorithm module\t" + aa.getAlgorithmName(), e1.getStackTrace());
 			}
 		}
 	}

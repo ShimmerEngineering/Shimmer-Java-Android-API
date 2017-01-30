@@ -44,6 +44,9 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int WEBCAM_GENERIC 			= 1004;
 		public static final int WEBCAM_LOGITECH_HD_C920	= 1005;
 		
+		// Any other 'devices' that don't have a ShimmerDevice instance should
+		// go in at >=2000 (currently used in the database for the results
+		// aggregators)
 		public static final int RESULT_AGGREGATOR		= 2000;
 	}
 	
