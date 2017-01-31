@@ -138,7 +138,7 @@ public class UtilShimmer implements Serializable {
 	}
 	
 	
-	public static String convertBytes(double bytes){
+	public static String convertBytesToReadableString(double bytes){
 		
 		bytes = (double)((bytes) / 1024 / 1024 / 1024);
 	    
