@@ -23,6 +23,7 @@ public class SensorDetails implements Serializable{
 	{
 		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.BLUETOOTH, false);
 		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.SD, false);
+		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.DOCK, false);
 //		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.IEEE802154, false);
 	}
 //	public boolean mIsEnabled = false;

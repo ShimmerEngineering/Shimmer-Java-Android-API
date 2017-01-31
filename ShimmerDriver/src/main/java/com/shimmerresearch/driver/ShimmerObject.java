@@ -6540,6 +6540,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mChannelMap.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrMicroSiemensGq);
 				}
 				
+				if(getFirmwareVersionCode()>=6){
+					mChannelMap.remove(ShimmerClock.ObjectClusterSensorName.TIMESTAMP);
+					mChannelMap.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
+				}
+				
 				mSensorGroupingMap.putAll(Configuration.Shimmer3.mSensorGroupingMapRef);
 				mConfigOptionsMap.putAll(Configuration.Shimmer3.mConfigOptionsMapRef);
 				
@@ -11219,7 +11224,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mTimeStampPacketRawMaxValue = 65536;
 		}
 	}
-	
 	
 	// --------------- Database related start --------------------------
 	

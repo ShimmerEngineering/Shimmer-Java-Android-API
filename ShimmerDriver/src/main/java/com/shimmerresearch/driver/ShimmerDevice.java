@@ -1072,7 +1072,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		mSignalDataTypeArray=signalDataTypeArray;
 //		mPacketSize=packetSize;
 	}
-	
+
+	// TODO this is a hack. I'm just picking off the first item from the
+	// mListOfAvailableCommunicationTypes as all comms routes currently have the
+	// same sampling rate.
+	public int getExpectedDataPacketSize(){
+		if(mListOfAvailableCommunicationTypes.size()==0){
+			return 0;
+		}
+		generateParserMap();
+		return getExpectedDataPacketSize(mListOfAvailableCommunicationTypes.get(0));
+	}
+
 	public int getExpectedDataPacketSize(COMMUNICATION_TYPE commsType){
 		int dataPacketSize = 0;
 		TreeMap<Integer, SensorDetails> parserMapPerCommType = mParserMap.get(commsType);
