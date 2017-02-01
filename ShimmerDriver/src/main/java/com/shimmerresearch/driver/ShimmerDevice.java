@@ -1651,100 +1651,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 
-	public Map<String, ChannelDetails> getListOfEnabledChannelsForStoringToDb() {
-		return getListOfEnabledChannelsForStoringToDb(null);
-	}
-
-	public Map<String, ChannelDetails> getListOfEnabledChannelsForStoringToDb(COMMUNICATION_TYPE commType) {
-		HashMap<String, ChannelDetails> listOfChannels = new HashMap<String, ChannelDetails>();
-		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
-		while(iterator.hasNext()){
-			SensorDetails sensorDetails = iterator.next();
-			
-			boolean isEnabled = false;
-			if(commType==null){
-				isEnabled = sensorDetails.isEnabled();
-			}
-			else{
-				isEnabled = sensorDetails.isEnabled(commType);
-			}
-			
-			if(isEnabled && !sensorDetails.mSensorDetailsRef.mIsDummySensor){
-				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-					if(channelDetails.mStoreToDatabase){
-						listOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
-					}
-				}
-			}
-		}
-		return listOfChannels;
-	}
-
-	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledChannelsForStreaming() {
-		return getMapOfEnabledChannelsForStreaming(null);
-	}
-
-	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledChannelsForStreaming(COMMUNICATION_TYPE commType) {
-		LinkedHashMap<String, ChannelDetails> mapOfChannels = new LinkedHashMap<String, ChannelDetails>();
-		Iterator<SensorDetails> iteratorSensors = mSensorMap.values().iterator();
-		while(iteratorSensors.hasNext()){
-			SensorDetails sensorDetails = iteratorSensors.next();
-			
-			boolean isEnabled = false;
-			if(commType == null){
-				isEnabled = sensorDetails.isEnabled();
-			}
-			else{
-				isEnabled = sensorDetails.isEnabled(commType);
-			}
-			
-			if(isEnabled){
-				for(ChannelDetails channelDetails : sensorDetails.getListOfChannels()){
-					if(channelDetails.isShowWhileStreaming()){
-						mapOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
-					}
-				}
-			}
-		}
-		
-		Iterator<AbstractAlgorithm> iteratorAlgorithms = getMapOfAlgorithmModules().values().iterator();
-		while(iteratorAlgorithms.hasNext()){
-			AbstractAlgorithm abstractAlgorithm = iteratorAlgorithms.next();
-			if(abstractAlgorithm.isEnabled()){
-				for(ChannelDetails channelDetails : abstractAlgorithm.getChannelDetails()){
-					if(channelDetails.isShowWhileStreaming()){
-						mapOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
-					}
-				}
-			}
-		}
-		
-		if(mapOfChannels.size()==0){
-			consolePrintLn(getMacIdFromUartParsed() + "\tNO SENSORS ENABLED");
-		}
-		
-		return mapOfChannels;
-	}
-	
-	public String[] getListofEnabledChannelSignals(){
-		List<String> listofSignals = new ArrayList<String>(getMapOfEnabledChannelsForStreaming().keySet());
-//		return listofSignals;
-		
-		String[] enabledSignals = listofSignals.toArray(new String[listofSignals.size()]);
-		return enabledSignals;
-	}
-	
-	public List<String[]> getListofEnabledChannelSignalsandFormats(){
-		List<String[]> listofEnabledSensorSignalsandFormats = new ArrayList<String[]>();
-		Iterator<ChannelDetails> iterator = getMapOfEnabledChannelsForStreaming().values().iterator();
-		while(iterator.hasNext()){
-			ChannelDetails channelDetails = iterator.next();
-			listofEnabledSensorSignalsandFormats.addAll(channelDetails.getListOfChannelSignalsAndFormats());
-		}
-		return listofEnabledSensorSignalsandFormats;
-	}
-
-	
 	/**
 	 * @return the mSensorMap
 	 */
@@ -2964,10 +2870,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledAlgorthimsPerGroup;
 	}
 
+	public List<String> getSensorsAndAlgorithmChannelsToStoreInDB(){
+		return getSensorsAndAlgorithmChannelsToStoreInDB(null);
+	}
 	
-	public List<String> getSensorsAndAlgorithmToStoreInDB(){
-		Set<String> setOfSensorsAndAlgorithms = getSensorChannelsToStoreInDB();
-		setOfSensorsAndAlgorithms.addAll(getAlgortihmChannelsToStoreInDB());
+	public List<String> getSensorsAndAlgorithmChannelsToStoreInDB(COMMUNICATION_TYPE commType){
+		Set<String> setOfSensorsAndAlgorithms = getSensorChannelsToStoreInDB(commType);
+		Set<String> setOfAlgorithms = getAlgortihmChannelsToStoreInDB(commType);
+		setOfSensorsAndAlgorithms.addAll(setOfAlgorithms);
 		
 		List<String> listOfObjectClusterSensors = new ArrayList<String>(setOfSensorsAndAlgorithms.size());
 		listOfObjectClusterSensors.addAll(setOfSensorsAndAlgorithms);
@@ -2975,26 +2885,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfObjectClusterSensors;
 	}
 	
-	private Set<String> getSensorChannelsToStoreInDB(){
-		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
-		for(SensorDetails sensorEnabled: mSensorMap.values()){
-			if(sensorEnabled.isEnabled() && !sensorEnabled.mSensorDetailsRef.mIsDummySensor){
-    			for(ChannelDetails channelDetails:sensorEnabled.mListOfChannels) {
-    					if(channelDetails.mStoreToDatabase){
-        					setOfObjectClusterSensors.add(channelDetails.mObjectClusterName);
-    					}
-    			}
-			}
-		}
-		
-		return setOfObjectClusterSensors;
-	}
+	//2017-02-01 MN: Old code
+//	private Set<String> getAlgortihmChannelsToStoreInDB(){
+//		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
+//		for(AbstractAlgorithm algortihm: getListOfEnabledAlgorithmModules()){
+//			List<ChannelDetails> listOfDetails = algortihm.getChannelDetails();
+//			for(ChannelDetails details:listOfDetails){
+//				if(details.mStoreToDatabase){
+//					setOfObjectClusterChannels.add(details.mObjectClusterName);
+////					setOfObjectClusterSensors.add(details.mDatabaseChannelHandle); AS: use this one better??
+//				}
+//			}
+//		}
+//		return setOfObjectClusterChannels;
+//	}
 	
-	private Set<String> getAlgortihmChannelsToStoreInDB(){
+	//2017-02-01 MN: New code
+	//TODO get algorithm isenabled per commType
+	private Set<String> getAlgortihmChannelsToStoreInDB(COMMUNICATION_TYPE commType){
 		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
-		for(AbstractAlgorithm algortihm: getListOfEnabledAlgorithmModules()){
-			List<ChannelDetails> listOfDetails = algortihm.getChannelDetails();
-			for(ChannelDetails details: listOfDetails){
+		Iterator<AbstractAlgorithm> iteratorAlgorithms = getListOfEnabledAlgorithmModules().iterator();
+		while(iteratorAlgorithms.hasNext()){
+			AbstractAlgorithm algorithm = iteratorAlgorithms.next();
+			List<ChannelDetails> listOfDetails = algorithm.getChannelDetails();
+			for(ChannelDetails details:listOfDetails){
 				if(details.mStoreToDatabase){
 					setOfObjectClusterChannels.add(details.mObjectClusterName);
 //					setOfObjectClusterSensors.add(details.mDatabaseChannelHandle); AS: use this one better??
@@ -3002,6 +2916,119 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 		return setOfObjectClusterChannels;
+	}
+	
+	private Set<String> getSensorChannelsToStoreInDB(COMMUNICATION_TYPE commType){
+//		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
+//		for(SensorDetails sensorEnabled: mSensorMap.values()){
+//			if(sensorEnabled.isEnabled() && !sensorEnabled.mSensorDetailsRef.mIsDummySensor){
+//    			for(ChannelDetails channelDetails:sensorEnabled.mListOfChannels) {
+//					if(channelDetails.mStoreToDatabase){
+//    					setOfObjectClusterSensors.add(channelDetails.mObjectClusterName);
+//					}
+//    			}
+//			}
+//		}
+
+		Map<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDb(commType);
+		
+		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
+		setOfObjectClusterSensors.addAll(mapOfEnabledChannelsForStoringToDb.keySet());
+		
+		return setOfObjectClusterSensors;
+	}
+
+	public Map<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb() {
+		return getMapOfEnabledSensorChannelsForStoringToDb(null);
+	}
+
+	public Map<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb(COMMUNICATION_TYPE commType) {
+		HashMap<String, ChannelDetails> listOfChannels = new HashMap<String, ChannelDetails>();
+		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
+		while(iterator.hasNext()){
+			SensorDetails sensorDetails = iterator.next();
+			
+			boolean isEnabled = false;
+			if(commType==null){
+				isEnabled = sensorDetails.isEnabled();
+			}
+			else{
+				isEnabled = sensorDetails.isEnabled(commType);
+			}
+			
+			if(isEnabled && !sensorDetails.mSensorDetailsRef.mIsDummySensor){
+				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					if(channelDetails.mStoreToDatabase){
+						listOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
+					}
+				}
+			}
+		}
+		return listOfChannels;
+	}
+
+	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledChannelsForStreaming() {
+		return getMapOfEnabledChannelsForStreaming(null);
+	}
+
+	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledChannelsForStreaming(COMMUNICATION_TYPE commType) {
+		LinkedHashMap<String, ChannelDetails> mapOfChannels = new LinkedHashMap<String, ChannelDetails>();
+		Iterator<SensorDetails> iteratorSensors = mSensorMap.values().iterator();
+		while(iteratorSensors.hasNext()){
+			SensorDetails sensorDetails = iteratorSensors.next();
+			
+			boolean isEnabled = false;
+			if(commType == null){
+				isEnabled = sensorDetails.isEnabled();
+			}
+			else{
+				isEnabled = sensorDetails.isEnabled(commType);
+			}
+			
+			if(isEnabled){
+				for(ChannelDetails channelDetails : sensorDetails.getListOfChannels()){
+					if(channelDetails.isShowWhileStreaming()){
+						mapOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
+					}
+				}
+			}
+		}
+		
+		Iterator<AbstractAlgorithm> iteratorAlgorithms = getMapOfAlgorithmModules().values().iterator();
+		while(iteratorAlgorithms.hasNext()){
+			AbstractAlgorithm abstractAlgorithm = iteratorAlgorithms.next();
+			if(abstractAlgorithm.isEnabled()){
+				for(ChannelDetails channelDetails : abstractAlgorithm.getChannelDetails()){
+					if(channelDetails.isShowWhileStreaming()){
+						mapOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
+					}
+				}
+			}
+		}
+		
+		if(mapOfChannels.size()==0){
+			consolePrintLn(getMacIdFromUartParsed() + "\tNO SENSORS ENABLED");
+		}
+		
+		return mapOfChannels;
+	}
+	
+	public String[] getListofEnabledChannelSignals(){
+		List<String> listofSignals = new ArrayList<String>(getMapOfEnabledChannelsForStreaming().keySet());
+//		return listofSignals;
+		
+		String[] enabledSignals = listofSignals.toArray(new String[listofSignals.size()]);
+		return enabledSignals;
+	}
+	
+	public List<String[]> getListofEnabledChannelSignalsandFormats(){
+		List<String[]> listofEnabledSensorSignalsandFormats = new ArrayList<String[]>();
+		Iterator<ChannelDetails> iterator = getMapOfEnabledChannelsForStreaming().values().iterator();
+		while(iterator.hasNext()){
+			ChannelDetails channelDetails = iterator.next();
+			listofEnabledSensorSignalsandFormats.addAll(channelDetails.getListOfChannelSignalsAndFormats());
+		}
+		return listofEnabledSensorSignalsandFormats;
 	}
 
 	public double getMinAllowedSamplingRate() {
