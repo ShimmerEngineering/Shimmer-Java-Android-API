@@ -811,6 +811,7 @@ public class Configuration {
 			public static final int HOST_EMG = 101;
 			public static final int HOST_EXG_TEST = 102;
 			public static final int HOST_EXG_CUSTOM = 116;
+			public static final int HOST_EXG_THREE_UNIPOLAR = 106;  
 			
 			// Derived Channels
 			public static final int HOST_EXG_RESPIRATION = 103;
@@ -831,6 +832,8 @@ public class Configuration {
 			public static final int HOST_KEYBOARD_LISTENER = 1001;
 			public static final int HOST_MOUSE_LISTENER = 1002;
 		}
+		
+				
 
 		// Sensor Options Map
 		public class GuiLabelConfig{
@@ -1733,7 +1736,8 @@ public class Configuration {
 								Configuration.Shimmer3.SensorMapKey.HOST_EMG,
 								Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 								Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-								Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)));
+								Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
+								Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR))); 
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PROTO3_MINI.ordinal(), new SensorGroupingDetails(
 					SensorADC.GuiLabelSensorTiles.PROTO3_MINI,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
