@@ -2938,9 +2938,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return setOfObjectClusterSensors;
 	}
 
-	public Map<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb() {
-		return getMapOfEnabledSensorChannelsForStoringToDb(null);
-	}
+//	public Map<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb() {
+//		return getMapOfEnabledSensorChannelsForStoringToDb(null);
+//	}
 
 	public Map<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb(COMMUNICATION_TYPE commType) {
 		HashMap<String, ChannelDetails> listOfChannels = new HashMap<String, ChannelDetails>();
