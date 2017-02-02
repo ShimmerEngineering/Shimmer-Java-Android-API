@@ -2885,6 +2885,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfObjectClusterSensors;
 	}
 	
+	//get the enabled sensors
+//	Map<String, ChannelDetails> mapOfChannels = shimmerDevice.getMapOfEnabledSensorChannelsForStoringToDb(commType);
+//	listOfObjectClusterSensors = new ArrayList<String>(mapOfChannels.keySet());
+	
+
+	
 	//2017-02-01 MN: Old code
 //	private Set<String> getAlgortihmChannelsToStoreInDB(){
 //		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
