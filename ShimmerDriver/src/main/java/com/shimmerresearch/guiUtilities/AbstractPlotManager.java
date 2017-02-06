@@ -138,6 +138,11 @@ public abstract class AbstractPlotManager {
 		mListOfTraceColorsCurrentlyUsed.add(generateRandomColor());
 	}
 	
+	protected void addSignalAndUseFixedColor(String [] channelStringArray, int[] rgb){
+		mListofPropertiestoPlot.add(channelStringArray);
+		mListOfTraceColorsCurrentlyUsed.add(rgb);
+	}
+	
 	/** If all default colors are used a random color will be used
 	 * @param channelStringArray
 	 */
@@ -146,30 +151,28 @@ public abstract class AbstractPlotManager {
 		mListofPropertiestoPlot.add(channelStringArray);
 		boolean mFound = false;
 		int[] newColorToAdd = null;
-		if (mListOfTraceColorsCurrentlyUsed.size()>0){
-			for (int[] rgbdefaultC: mListofTraceColorsDefault){
+		if (mListOfTraceColorsCurrentlyUsed.size() > 0){
+			for (int[] rgbdefaultC : mListofTraceColorsDefault){
 				mFound = false;
 				for (int[] rgbp : mListOfTraceColorsCurrentlyUsed){
 					if (rgbdefaultC[0] == rgbp[0] && rgbdefaultC[1] == rgbp[1] && rgbdefaultC[2] == rgbp[2]){
 						mFound = true;
 					}
 				}
-				if (mFound!=true){
-					newColorToAdd=rgbdefaultC;
+				if (mFound != true){
+					newColorToAdd = rgbdefaultC;
 				}
-				
 			}
-		} else {
+		} 
+		else {
 			newColorToAdd = mListofTraceColorsDefault.get(0);
 		}
-		//
-		if (newColorToAdd!=null){
+
+		if (newColorToAdd != null){
 			mListOfTraceColorsCurrentlyUsed.add(newColorToAdd);
 		} else {
 			mListOfTraceColorsCurrentlyUsed.add(generateRandomColor());
 		}
-		
-
 	}
 
 	protected void addSignal(String[] channelStringArray){
