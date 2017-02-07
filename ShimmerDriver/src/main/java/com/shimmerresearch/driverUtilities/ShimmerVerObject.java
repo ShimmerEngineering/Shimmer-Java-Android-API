@@ -458,7 +458,9 @@ public class ShimmerVerObject implements Serializable {
 	}
 
 	public static boolean isShimmerVideoDevice(int hardwareVersion) {
-		if(hardwareVersion==HW_ID.WEBCAM_GENERIC || hardwareVersion==HW_ID.WEBCAM_LOGITECH_HD_C920){
+		if(hardwareVersion==HW_ID.WEBCAM_GENERIC 
+				|| hardwareVersion==HW_ID.WEBCAM_LOGITECH_HD_C920
+				|| hardwareVersion==HW_ID.WEBCAM_LOGITECH_HD_C930E){
 				return true;
 			}
 			return false;

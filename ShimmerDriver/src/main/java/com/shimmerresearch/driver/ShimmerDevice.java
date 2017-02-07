@@ -2287,8 +2287,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void disconnect() throws DeviceException {
+		//TODO
+//		stopRecording();
 		stopStreaming();
-		// TODO Auto-generated method stub
 	}
 
 	public boolean ignoreAndDisable(Integer sensorMapKey) {

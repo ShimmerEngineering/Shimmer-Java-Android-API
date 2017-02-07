@@ -43,6 +43,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int ARDUINO 				= 1003;
 		public static final int WEBCAM_GENERIC 			= 1004;
 		public static final int WEBCAM_LOGITECH_HD_C920	= 1005;
+		public static final int WEBCAM_LOGITECH_HD_C930E	= 1006;
 		
 		// Any other 'devices' that don't have a ShimmerDevice instance should
 		// go in at >=2000 (currently used in the database for the results
@@ -73,6 +74,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.ARDUINO, "Arduino");
         aMap.put(HW_ID.WEBCAM_GENERIC, "Webcam");
         aMap.put(HW_ID.WEBCAM_LOGITECH_HD_C920, "Webcam");
+        aMap.put(HW_ID.WEBCAM_LOGITECH_HD_C930E, "Webcam");
         
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
