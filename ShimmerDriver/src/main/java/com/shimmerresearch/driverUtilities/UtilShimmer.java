@@ -893,6 +893,10 @@ public class UtilShimmer implements Serializable {
 	    return Math.pow(10d, (txPower - rssi) / (10.0 * 2.0));
 	}
 
+	public static void consolePrintCurrentStackTrace() {
+		System.out.println(UtilShimmer.convertStackTraceToString(Thread.currentThread().getStackTrace()));
+	}
+
 
 	
 }
