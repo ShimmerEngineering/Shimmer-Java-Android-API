@@ -106,6 +106,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** Used in UART command through the base/dock*/
 	public String mMacIdFromUart = DEFAULT_MAC_ID;
 	public String mShimmerUserAssignedName = "";//DEFAULT_SHIMMER_NAME; // This stores the user assigned name
+	public String mAlternativeName = "";
 	public HashMap<COMMUNICATION_TYPE, Double> mMapOfSamplingRatesShimmer = new HashMap<COMMUNICATION_TYPE, Double>(); // 51.2Hz is the default sampling rate 
 //	protected double mSamplingRateShimmer; 	                                        	// 51.2Hz is the default sampling rate 
 	{
@@ -3650,6 +3651,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		generateMapOfAlgorithmGroupingMap();
 		
 		handleSpecialCasesAfterSensorMapCreate();
+	}
+
+	public void setAlternativeName(String alternativeName) {
+		mAlternativeName = alternativeName;
+	}
+
+	public String getAlternativeName() {
+		return mAlternativeName;
 	}
 
 

@@ -897,6 +897,9 @@ public class UtilShimmer implements Serializable {
 		System.out.println(UtilShimmer.convertStackTraceToString(Thread.currentThread().getStackTrace()));
 	}
 
-
+	public static boolean doesFileExist(String filePath){ 
+		File file = new File(filePath);
+		return file.exists();
+	}
 	
 }
