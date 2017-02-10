@@ -2283,10 +2283,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mBluetoothRadioState.toString();
 	}
 
+	/** Generic method that can be overwritten in instances of ShimmerDevice
+	 * @throws DeviceException
+	 */
 	public void connect() throws DeviceException{
-		// TODO Auto-generated method stub
+		
 	}
 
+	/** Generic method that can be overwritten in instances of ShimmerDevice
+	 * @throws DeviceException
+	 */
 	public void disconnect() throws DeviceException {
 		//TODO
 //		stopRecording();
