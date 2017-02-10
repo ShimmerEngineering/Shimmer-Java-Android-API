@@ -156,7 +156,7 @@ public class SensorEXG extends AbstractSensor{
 		public static final String EXG_REFERENCE_ELECTRODE = "Reference Electrode";
 		public static final String EXG_LEAD_OFF_DETECTION = "Lead-Off Detection";
 		public static final String EXG_LEAD_OFF_CURRENT = "Lead-Off Current";
-		public static final String EXG_LEAD_OFF_COMPARATOR = "Lead-Off Compartor Threshold";
+		public static final String EXG_LEAD_OFF_COMPARATOR = "Lead-Off Comparator Threshold";
 		public static final String EXG_RESPIRATION_DETECT_FREQ = "Respiration Detection Freq";
 		public static final String EXG_RESPIRATION_DETECT_PHASE = "Respiration Detection Phase";
 	}
@@ -232,6 +232,9 @@ public class SensorEXG extends AbstractSensor{
 		public static final String EXG2_CH2_16BITS = "ADS1292R_2_CH2_16BIT";
 		public static final String EXG1_STATUS = "ADS1292R_1_STATUS";
 		public static final String EXG2_STATUS = "ADS1292R_2_STATUS";
+		
+		public static final String ECG_LL_LA_16BITS = ObjectClusterSensorName.ECG_LL_LA_16BIT.replace("-", "_");
+		public static final String ECG_LL_LA_24BITS = ObjectClusterSensorName.ECG_LL_LA_24BIT.replace("-", "_");
 		
 		public static final String EXT_ADC_A7 = "F5437a_Ext_A7"; //channel
 		public static final String EXT_ADC_A6 = "F5437a_Ext_A6"; //channel
@@ -1577,6 +1580,8 @@ public class SensorEXG extends AbstractSensor{
 			System.arraycopy(infoMemBytes, idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
 		}
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+		
+		handleSpecCasesAfterSensorMapUpdateFromEnabledSensors();
 	}
 	
 
@@ -1720,6 +1725,10 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG6.RLD_POS_INPUTS_CH1.RLD_CONNECTED_TO_IN1P);
 		
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG10.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
+		
+		if(isTwoChipClocksConnected()){
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
+		}
 	
 		setExGRateFromFreq(shimmerSamplingRate);
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
@@ -1754,6 +1763,10 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG6.RLD_BUFFER_POWER.ENABLED);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG10.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
 		
+		if(isTwoChipClocksConnected()){
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
+		}
+		
 		setExGRateFromFreq(shimmerSamplingRate);
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
@@ -1779,6 +1792,10 @@ public class SensorEXG extends AbstractSensor{
 
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.TEST_SIGNAL);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.TEST_SIGNAL);
+		
+		if(isTwoChipClocksConnected()){
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
+		}
 		
 		setExGRateFromFreq(shimmerSamplingRate);
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
@@ -1813,6 +1830,10 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.REG9.RESPIRATION_DEMOD_CIRCUITRY.ON);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.REG9.RESPIRATION_MOD_CIRCUITRY.ON);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.REG9.RESPIRATION_PHASE_AT_32KHZ.PHASE_112_5);
+		
+		if(isTwoChipClocksConnected()){
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
+		}
 		
 		setExGRateFromFreq(shimmerSamplingRate);
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
@@ -1858,6 +1879,10 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 		
+		if(isTwoChipClocksConnected()){
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
+		}
+		
 		setExGRateFromFreq(shimmerSamplingRate);
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
@@ -1894,6 +1919,10 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.NORMAL);
 		
 		setExGRateFromFreq(shimmerSamplingRate);
+		
+		if(isTwoChipClocksConnected()){
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
+		}
 		
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
@@ -2049,7 +2078,7 @@ public class SensorEXG extends AbstractSensor{
 			chip1Enabled = false;
 			chip2Enabled = false;
 		}
-		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG
+		else if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
 				|| (sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)
 				|| (sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
 				|| (sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
@@ -2061,18 +2090,7 @@ public class SensorEXG extends AbstractSensor{
 			chip1Enabled = true;
 			chip2Enabled = false;
 		}
-//		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION){
-//			chip1Enabled = true;
-//			chip2Enabled = true;
-//		}
-//		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM){
-//			chip1Enabled = true;
-//			chip2Enabled = true;
-//		}
-//		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST){
-//			chip1Enabled = true;
-//			chip2Enabled = true;
-//		}
+
 		
 		if(mExGResolution==1){
 			mIsExg1_24bitEnabled = chip1Enabled;
@@ -2681,7 +2699,7 @@ public class SensorEXG extends AbstractSensor{
 	
 	private void internalCheckExgModeAndUpdateSensorMap(){
 		Map<Integer, SensorDetails> sensorMap = mShimmerDevice.getSensorMap();
-		if(sensorMap!=null){
+		if(sensorMap!=null && sensorMap.keySet().size()>0){
 			if(mShimmerVerObject.isShimmerGenGq()){
 				//TODO handle ShimmerGQ
 			}
@@ -2746,6 +2764,7 @@ public class SensorEXG extends AbstractSensor{
 							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
 							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
 							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
+							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
 						}
 					}
 				}
@@ -2819,51 +2838,59 @@ public class SensorEXG extends AbstractSensor{
 	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
-				setExGResolution((int)valueToSet);
-				returnValue = valueToSet;
-	    		break;
-	    		
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
-				//consolePrintLn("before set " + getExGGain());
-				setExGGainSetting((int)valueToSet);
-				returnValue = valueToSet;
-				//consolePrintLn("after set " + getExGGain());
-	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
-				returnValue = getEXG1RateSetting();
-				//returnValue = getEXG2RateSetting();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
-				returnValue = getEXGReferenceElectrode();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
-				returnValue = getEXGLeadOffCurrentMode();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
-				returnValue = getEXGLeadOffDetectionCurrent();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
-				returnValue = getEXGLeadOffComparatorTreshold();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
-				returnValue = getEXG2RespirationDetectFreq();
-            	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
-				returnValue = getEXG2RespirationDetectPhase();
-            	break;
+		case(GuiLabelConfig.EXG_RESOLUTION):
+			setExGResolution((int)valueToSet);
+		returnValue = valueToSet;
+		break;
 
-	        default:
-	        	//TODO not needed here - only a ShimmerObject thing or do we want to set properties in AbstractSensor?
-//	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
-	        	break;
+		case(GuiLabelConfig.EXG_GAIN):
+			//consolePrintLn("before set " + getExGGain());
+			setExGGainSetting((int)valueToSet);
+		returnValue = valueToSet;
+		//consolePrintLn("after set " + getExGGain());
+		break;
+		case(GuiLabelConfig.EXG_RATE):
+			//			setEXG1RateSetting((int)valueToSet);
+			//			setEXG2RateSetting((int)valueToSet);
+			setEXGRateSetting((int)valueToSet);
+		returnValue = valueToSet;
+		break;
+		case(GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+			setEXGReferenceElectrode((int)valueToSet);
+		returnValue = valueToSet;
+		break;
+		case(GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+			setEXGLeadOffCurrentMode((int)valueToSet);
+		returnValue = valueToSet;
+		break;
+		case(GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+			setEXGLeadOffDetectionCurrent((int)valueToSet);
+		returnValue = valueToSet;
+		break;
+		case(GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+			setEXGLeadOffComparatorTreshold((int)valueToSet);
+		returnValue = valueToSet;
+		break;
+		case(GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+			setEXG2RespirationDetectFreq((int)valueToSet);
+		returnValue = valueToSet;
+		break;
+		case(GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+			setEXG2RespirationDetectPhase((int)valueToSet);
+		returnValue = valueToSet;
+		break;
+
+		default:
+			//TODO not needed here - only a ShimmerObject thing or do we want to set properties in AbstractSensor?
+			//	        	returnValue = super.setConfigValueUsingConfigLabel(componentName, valueToSet);
+			break;
 		}
-		
-        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
-        	checkConfigOptionValues(configLabel);
-        }
-			
+
+		if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+				||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+			checkConfigOptionValues(configLabel);
+		}
+
 		return returnValue;
 	}
 
@@ -3118,12 +3145,12 @@ public class SensorEXG extends AbstractSensor{
 	
 	@Override
 	public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(ShimmerDevice shimmerDevice, Integer sensorMapKey){
-		if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)
-				||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR)) {
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG
+				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG
+				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST
+				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM
+				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION
+				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR) {
 			mShimmerDevice.getSensorMap().get(sensorMapKey).setIsEnabled(false);
 			return true;
 		}
