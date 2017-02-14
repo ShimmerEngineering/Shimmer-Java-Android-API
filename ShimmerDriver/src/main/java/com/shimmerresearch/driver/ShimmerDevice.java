@@ -447,15 +447,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		//Limit the name to 12 Char
 		if(shimmerUserAssignedName.length()>12) {
-			setShimmerUserAssignedNameWithoutCheck(shimmerUserAssignedName.substring(0, 12));
+			setShimmerUserAssignedNameNoLengthCheck(shimmerUserAssignedName.substring(0, 12));
 		}
 		else { 
-			setShimmerUserAssignedNameWithoutCheck(shimmerUserAssignedName);
+			setShimmerUserAssignedNameNoLengthCheck(shimmerUserAssignedName);
 		}
 	}
 	
-	public void setShimmerUserAssignedNameWithoutCheck(String shimmerUserAssignedName) {
-		mShimmerUserAssignedName = shimmerUserAssignedName;
+	public void setShimmerUserAssignedNameNoLengthCheck(String shimmerUserAssignedName) {
+		String nameToSet = shimmerUserAssignedName.replace(" ", "_");
+		mShimmerUserAssignedName = nameToSet; 
 	}
 	
 	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
@@ -470,10 +471,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//Limit the name to 12 Char
 		String addition = "_" + getMacIdParsed();
 		if((shimmerUserAssignedName.length()+addition.length())>12) {
-			setShimmerUserAssignedNameWithoutCheck(shimmerUserAssignedName.substring(0, (12-addition.length())) + addition);
+			setShimmerUserAssignedNameNoLengthCheck(shimmerUserAssignedName.substring(0, (12-addition.length())) + addition);
 		}
 		else { 
-			setShimmerUserAssignedNameWithoutCheck(shimmerUserAssignedName + addition);
+			setShimmerUserAssignedNameNoLengthCheck(shimmerUserAssignedName + addition);
 		}
 	}
 	
