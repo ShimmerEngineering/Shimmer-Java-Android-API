@@ -893,8 +893,12 @@ public class UtilShimmer implements Serializable {
 	    return Math.pow(10d, (txPower - rssi) / (10.0 * 2.0));
 	}
 
+	public static StackTraceElement[] getCurrentStackTrace() {
+		return Thread.currentThread().getStackTrace();
+	}
+
 	public static void consolePrintCurrentStackTrace() {
-		System.out.println(UtilShimmer.convertStackTraceToString(Thread.currentThread().getStackTrace()));
+		System.out.println(UtilShimmer.convertStackTraceToString(getCurrentStackTrace()));
 	}
 
 	public static boolean doesFileExist(String filePath){ 

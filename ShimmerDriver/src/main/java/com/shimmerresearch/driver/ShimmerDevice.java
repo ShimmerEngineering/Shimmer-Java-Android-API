@@ -419,7 +419,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setShimmerDriveInfo(ShimmerSDCardDetails shimmerSDCardDetails) {
 		mShimmerSDCardDetails = shimmerSDCardDetails;
 	}
-	
+
 	/**
 	 * @param macIdFromUart the mMacIdFromUart to set
 	 */
@@ -447,11 +447,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		//Limit the name to 12 Char
 		if(shimmerUserAssignedName.length()>12) {
-			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, 12);
+			setShimmerUserAssignedNameWithoutCheck(shimmerUserAssignedName.substring(0, 12));
 		}
 		else { 
-			this.mShimmerUserAssignedName = shimmerUserAssignedName;
+			setShimmerUserAssignedNameWithoutCheck(shimmerUserAssignedName);
 		}
+	}
+	
+	public void setShimmerUserAssignedNameWithoutCheck(String shimmerUserAssignedName) {
+		mShimmerUserAssignedName = shimmerUserAssignedName;
 	}
 	
 	public void setShimmerUserAssignedNameWithMac(String shimmerUserAssignedName) {
@@ -466,10 +470,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//Limit the name to 12 Char
 		String addition = "_" + getMacIdParsed();
 		if((shimmerUserAssignedName.length()+addition.length())>12) {
-			this.mShimmerUserAssignedName = shimmerUserAssignedName.substring(0, (12-addition.length())) + addition;
+			setShimmerUserAssignedNameWithoutCheck(shimmerUserAssignedName.substring(0, (12-addition.length())) + addition);
 		}
 		else { 
-			this.mShimmerUserAssignedName = shimmerUserAssignedName + addition;
+			setShimmerUserAssignedNameWithoutCheck(shimmerUserAssignedName + addition);
 		}
 	}
 	
@@ -821,8 +825,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return the mMacIdFromUartParsed
 	 */
 	public String getMacIdFromUartParsed() {
-		if(this.mMacIdFromUart.length()>=12) {
-			return this.mMacIdFromUart.substring(8, 12);
+		int length = mMacIdFromUart.length();
+		if(length>=12) {
+//			return this.mMacIdFromUart.substring(8, 12);
+			return this.mMacIdFromUart.substring(length-4, length);
 		}		
 		return "0000";
 	}

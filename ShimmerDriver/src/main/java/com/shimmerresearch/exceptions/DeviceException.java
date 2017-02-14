@@ -60,10 +60,12 @@ public class DeviceException extends ExecutionException {
 	public static HashMap<Integer,String> mMapOfErrorCodes = new HashMap<Integer,String>();
 	
 	public DeviceException() {
+		mExceptionStackTrace = UtilShimmer.getCurrentStackTrace();
 	}
 
 	public DeviceException(String message) {
 		super(message);
+		mExceptionStackTrace = UtilShimmer.getCurrentStackTrace();
 	}
 	
 	
@@ -72,6 +74,7 @@ public class DeviceException extends ExecutionException {
 		mComPort = comPort;
 		mErrorCode = errorType;
 		mErrorCodeLowLevel = lowLevelErrorCode;
+		mExceptionStackTrace = UtilShimmer.getCurrentStackTrace();
 	}
 
 
@@ -82,6 +85,7 @@ public class DeviceException extends ExecutionException {
 	public DeviceException(int errorCode, String message) {
 		mErrorCode = errorCode;
 		mMessage = message;
+		mExceptionStackTrace = UtilShimmer.getCurrentStackTrace();
 	}
 
 	public String getShimmerDeviceExceptionErrString() {
@@ -109,12 +113,17 @@ public class DeviceException extends ExecutionException {
 		if(mExceptionMsg!=null && !mExceptionMsg.isEmpty()) {
 			exceptionInfo = "Further info: " + mExceptionMsg;
 		}
+		String messageInfo = "";
+		if(mMessage!=null && !mMessage.isEmpty()) {
+			messageInfo = "Further info: " + mMessage;
+		}
 
 		errorString += ("CAUGHT SHIMMER DEVICE EXCEPTION\n");
 		errorString += ("\t" + "UniqueID: " + id
 				+ "\n\t" + "Action: " + "(" + mErrorCode + ") " + errorCode 
 				+ "\n\t" + "LowLevelError: " + "(" + mErrorCodeLowLevel + ") " + lowLevelErrorCode
 				+ "\n\t" + exceptionInfo
+				+ "\n\t" + messageInfo
 				+ "\n");
 		
 		String stackTraceString = convertStackTraceToString();
