@@ -162,11 +162,11 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public static FormatCluster returnFormatCluster(Collection<FormatCluster> collectionFormatCluster, String format){
 		FormatCluster returnFormatCluster = null;
 
-		Iterator<FormatCluster> iFormatCluster=collectionFormatCluster.iterator();
+		Iterator<FormatCluster> iFormatCluster = collectionFormatCluster.iterator();
 		while(iFormatCluster.hasNext()){
 			FormatCluster formatCluster = iFormatCluster.next();
 			if (formatCluster.mFormat.equals(format)){
-				returnFormatCluster=formatCluster;
+				returnFormatCluster = formatCluster;
 			}
 		}
 		return returnFormatCluster;
