@@ -27,7 +27,8 @@ public class HwDriverShimmerDeviceDetails {
 		KEYBOARD_AND_MOUSE("KeyboardAndMouse"),
 		ARDUINO("Arduino"),
 		WII_BALANCE_BOARD("Wii_BalanceBoard"),
-		WEBCAM("Webcam");
+		WEBCAM("Webcam"),
+		HOST_CPU_USAGE("CPU Usage");
 
 		private String deviceLabel = "";
 		
