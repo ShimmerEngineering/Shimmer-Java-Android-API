@@ -825,6 +825,7 @@ public class Configuration {
 			public static final int HOST_KEYBOARD_LISTENER = 1001;
 			public static final int HOST_MOUSE_LISTENER = 1002;
 			public static final int HOST_WEBCAM = 1003;
+			public static final int HOST_CPU_USAGE = 1004;
 		}
 		
 		public class DerivedSensorsBitMask {

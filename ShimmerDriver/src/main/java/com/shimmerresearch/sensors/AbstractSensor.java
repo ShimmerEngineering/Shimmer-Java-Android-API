@@ -53,7 +53,8 @@ public abstract class AbstractSensor implements Serializable{
 		KEYBOARD_MOUSE("Keyboard/Mouse Listener"),
 		BMP280("BMP280"),
 		STC3100("STC3100"),
-		WEBCAM_FRAME_NUMBER("Frame Number");
+		WEBCAM_FRAME_NUMBER("Frame Number"),
+		HOST_CPU_USAGE("Cpu Usage");
 		
 	    private final String text;
 
