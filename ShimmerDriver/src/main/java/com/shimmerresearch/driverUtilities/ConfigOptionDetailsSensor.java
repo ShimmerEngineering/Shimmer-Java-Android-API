@@ -28,12 +28,14 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 			public static final int PHASE_32KHZ = 0;
 			public static final int PHASE_64KHZ = 1;
 		}
+		/** Used for providing different reference electrode options for individual ExG operation modes */
 		public static final class EXG_REFERENCE_ELECTRODE{
 			public static final int ECG = 0;
 			public static final int EMG = 1;
 			public static final int RESP = 2;
 			public static final int TEST = 3;
 			public static final int CUSTOM = 4;
+			public static final int UNIPOLAR = 5;
 		}
 	}
 	
@@ -46,6 +48,10 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 	private Integer[] mConfigValuesAlt3;
 	private String[] mGuiValuesAlt4;
 	private Integer[] mConfigValuesAlt4;
+	private String[] mGuiValuesAlt5;
+	private Integer[] mConfigValuesAlt5;
+	private String[] mGuiValuesAlt6;
+	private Integer[] mConfigValuesAlt6;
 	private int mIndexValuesToUse = 0;
 	private COMMUNICATION_TYPE mCommunicationType;
 	
@@ -170,6 +176,12 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 		else if(mIndexValuesToUse==4){
 			return mGuiValuesAlt4;
 		}
+		else if(mIndexValuesToUse==5){
+			return mGuiValuesAlt5;
+		}
+		else if(mIndexValuesToUse==6){
+			return mGuiValuesAlt6;
+		}
 		else{
 			return mGuiValues;
 		}
@@ -191,6 +203,12 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 		}
 		else if(mIndexValuesToUse==4){
 			return mConfigValuesAlt4;
+		}
+		else if(mIndexValuesToUse==5){
+			return mConfigValuesAlt5;
+		}
+		else if(mIndexValuesToUse==6){
+			return mConfigValuesAlt6;
 		}
 		else{
 			return mConfigValues;
@@ -223,6 +241,12 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 		else if(index==4){
 			this.mGuiValuesAlt4 = guiValues; 			
 		}
+		else if(index==5){
+			this.mGuiValuesAlt5 = guiValues; 			
+		}
+		else if(index==6){
+			this.mGuiValuesAlt6 = guiValues; 			
+		}
 	}
 
 	/**
@@ -243,6 +267,12 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 		}
 		else if(index==4){
 			this.mConfigValuesAlt4 = configValues; 			
+		}
+		else if(index==5){
+			this.mConfigValuesAlt5 = configValues; 			
+		}
+		else if(index==6){
+			this.mConfigValuesAlt6 = configValues; 			
 		}
 	}
 
