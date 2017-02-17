@@ -125,6 +125,8 @@ public class SensorEXG extends AbstractSensor{
 	public static final Integer[] ListOfRespReferenceElectrodeConfigValues = {0};
 	public static final String[] ListOfTestReferenceElectrode = {"Test Signal"};
 	public static final Integer[] ListOfTestReferenceElectrodeConfigValues = {0};
+	public static final String[] ListOfUnipolarReferenceElectrode = {"Fixed Potential","Inverse of Ch1+Ch2"};
+	public static final Integer[] ListOfUnipolarReferenceElectrodeConfigValues = {0,5};
 	
 	public static final String[] ListOfExGLeadOffDetection = {"Off","DC Current"};
 	public static final Integer[] ListOfExGLeadOffDetectionConfigValues = {0,1};
@@ -329,7 +331,7 @@ public class SensorEXG extends AbstractSensor{
 			ObjectClusterSensorName.ECG_LL_LA_16BIT);
 
 	
-	public static final SensorDetailsRef sDRefEcg = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.ECG,
+	public static final SensorDetailsRef sDRefEcg = new SensorDetailsRef(0, 0, GuiLabelSensors.ECG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
@@ -345,14 +347,14 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
+					GuiLabelConfig.EXG_GAIN,
+					GuiLabelConfig.EXG_RESOLUTION,
+					GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+					GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+					GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+					GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+					GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+					GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
 			Arrays.asList(
 					//TODO sort
 					ObjectClusterSensorName.EXG1_STATUS,
@@ -375,7 +377,7 @@ public class SensorEXG extends AbstractSensor{
 					),
 					true);
 	
-	public static final SensorDetailsRef sDRefExgRespiration = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_RESPIRATION,
+	public static final SensorDetailsRef sDRefExgRespiration = new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_RESPIRATION,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration,
 			Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
@@ -391,11 +393,11 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
+					GuiLabelConfig.EXG_GAIN,
+					GuiLabelConfig.EXG_RESOLUTION,
+					GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+					GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+					GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
 			Arrays.asList(
 					//TODO sort
 					ObjectClusterSensorName.EXG1_STATUS,
@@ -415,7 +417,7 @@ public class SensorEXG extends AbstractSensor{
 					ObjectClusterSensorName.ECG_RESP_24BIT),
 			true);
 
-	public static final SensorDetailsRef sDRefExgTest = new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_TEST,
+	public static final SensorDetailsRef sDRefExgTest = new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_TEST,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
@@ -431,8 +433,8 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION),
+					GuiLabelConfig.EXG_GAIN,
+					GuiLabelConfig.EXG_RESOLUTION),
 			Arrays.asList(
 					ObjectClusterSensorName.EXG1_STATUS,
 					ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT,
@@ -447,7 +449,7 @@ public class SensorEXG extends AbstractSensor{
 					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT),
 			true);
 	
-	public static final SensorDetailsRef sDRefEmg =  new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EMG,
+	public static final SensorDetailsRef sDRefEmg =  new SensorDetailsRef(0, 0, GuiLabelSensors.EMG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
@@ -465,12 +467,12 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR),
+					GuiLabelConfig.EXG_GAIN,
+					GuiLabelConfig.EXG_RESOLUTION,
+					GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+					GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+					GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+					GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR),
 			Arrays.asList(
 					ObjectClusterSensorName.EXG1_STATUS,
 					ObjectClusterSensorName.EMG_CH1_16BIT,
@@ -479,7 +481,7 @@ public class SensorEXG extends AbstractSensor{
 					ObjectClusterSensorName.EMG_CH2_24BIT),
 			true);
 	
-	public static final SensorDetailsRef sDRefExgCustom =  new SensorDetailsRef(0, 0, Configuration.Shimmer3.GuiLabelSensors.EXG_CUSTOM,
+	public static final SensorDetailsRef sDRefExgCustom =  new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_CUSTOM,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
@@ -495,14 +497,14 @@ public class SensorEXG extends AbstractSensor{
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
 					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
-					Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
-					Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
+					GuiLabelConfig.EXG_GAIN,
+					GuiLabelConfig.EXG_RESOLUTION,
+					GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+					GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+					GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+					GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+					GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+					GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE),
 			Arrays.asList(
 					ObjectClusterSensorName.EXG1_STATUS,
 					ObjectClusterSensorName.EXG1_CH1_16BIT,
@@ -978,7 +980,8 @@ public class SensorEXG extends AbstractSensor{
 					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, ListOfEMGReferenceElectrode, ListOfEMGReferenceElectrodeConfigValues),
 					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, ListOfExGReferenceElectrodeAll, ListOfExGReferenceElectrodeConfigValuesAll),
 					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP, ListOfRespReferenceElectrode, ListOfRespReferenceElectrodeConfigValues),
-					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, ListOfTestReferenceElectrode, ListOfTestReferenceElectrodeConfigValues)));
+					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST, ListOfTestReferenceElectrode, ListOfTestReferenceElectrodeConfigValues),
+					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.UNIPOLAR, ListOfUnipolarReferenceElectrode, ListOfUnipolarReferenceElectrodeConfigValues))); 
 
 	public static final ConfigOptionDetailsSensor configOptionExgBytes = new ConfigOptionDetailsSensor(
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.JPANEL,
@@ -1450,7 +1453,7 @@ public class SensorEXG extends AbstractSensor{
 		
 		ActionSetting actionSetting = new ActionSetting(commType);
 		switch(componentName){
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+			case(GuiLabelConfig.EXG_GAIN):
 				if (commType == COMMUNICATION_TYPE.BLUETOOTH){
 					//consolePrintLn("before set " + getExGGain());
 					setExGGainSetting((int)valueToSet);
@@ -2430,11 +2433,23 @@ public class SensorEXG extends AbstractSensor{
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.LEAD_OFF_COMPARATORS.ON);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG6.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
 			
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
+			//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
 
+			if(isEXGUsingDefaultThreeUnipolarConfiguration()){
+				//TODO check if these are correct for the Three Unipolar Lead input option
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+			} else {
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+			}
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
@@ -2443,6 +2458,7 @@ public class SensorEXG extends AbstractSensor{
 			setExgPropertyBothChips(ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.LEAD_OFF_CURRENT.CURRENT_22NA);
 			setExgPropertyBothChips(ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.COMPARATOR_THRESHOLD.POS90NEG10);
 
+			//For EMG the second chip needs to be powered up in order to support lead-off detection
 			if(isEXGUsingDefaultEMGConfiguration()){
 				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG5.CH2_POWER_DOWN.NORMAL_OPERATION);
 			}
@@ -2452,16 +2468,29 @@ public class SensorEXG extends AbstractSensor{
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.LEAD_OFF_COMPARATORS.ON);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG6.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
 			
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
 
+			if(isEXGUsingDefaultThreeUnipolarConfiguration()){
+				//TODO check if these are correct for the Three Unipolar Lead input option
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+			} else {
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.ON);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
+			}
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
 
+			//For EMG the second chip needs to be powered up in order to support lead-off detection
 			if(isEXGUsingDefaultEMGConfiguration()){
 				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG5.CH2_POWER_DOWN.NORMAL_OPERATION);
 			}
@@ -2773,7 +2802,7 @@ public class SensorEXG extends AbstractSensor{
 	}
 	
 	private void checkWhichExgRespPhaseValuesToUse(){
-		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
+		String stringKey = GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
 		if(mConfigOptionsMap!=null){
 			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
 			if(configOptions!=null){
@@ -2799,7 +2828,7 @@ public class SensorEXG extends AbstractSensor{
 	}
 	
 	private void checkWhichExgRefElectrodeValuesToUse(){
-		String stringKey = Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
+		String stringKey = GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
 		if(mConfigOptionsMap!=null){
 			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
 			if(configOptions!=null){
@@ -2815,6 +2844,9 @@ public class SensorEXG extends AbstractSensor{
 				}
 				else if(isEXGUsingDefaultTestSignalConfiguration()) {
 					nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.TEST;
+				}
+				else if(isEXGUsingDefaultThreeUnipolarConfiguration()) {
+					nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.UNIPOLAR;
 				}
 				else {
 					nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM;
@@ -2886,8 +2918,8 @@ public class SensorEXG extends AbstractSensor{
 			break;
 		}
 
-		if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-				||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+		if((configLabel.equals(GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+				||(configLabel.equals(GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
 			checkConfigOptionValues(configLabel);
 		}
 
@@ -2897,40 +2929,40 @@ public class SensorEXG extends AbstractSensor{
 	@Override
 	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
 		
-        if((configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        if((configLabel.equals(GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		||(configLabel.equals(GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);
         }
 		
 		Object returnValue = null;
 		switch(configLabel){
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_GAIN):
+			case(GuiLabelConfig.EXG_GAIN):
 				returnValue = getExGGainSetting();
 				//consolePrintLn("Get " + configValue);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESOLUTION):
+			case(GuiLabelConfig.EXG_RESOLUTION):
 				returnValue = getExGResolution();
 	    		break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RATE):
+			case(GuiLabelConfig.EXG_RATE):
 				returnValue = getEXG1RateSetting();
 				//returnValue = getEXG2RateSetting();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
+			case(GuiLabelConfig.EXG_REFERENCE_ELECTRODE):
 				returnValue = getEXGReferenceElectrode();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
+			case(GuiLabelConfig.EXG_LEAD_OFF_DETECTION):
 				returnValue = getEXGLeadOffCurrentMode();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
+			case(GuiLabelConfig.EXG_LEAD_OFF_CURRENT):
 				returnValue = getEXGLeadOffDetectionCurrent();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
+			case(GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR):
 				returnValue = getEXGLeadOffComparatorTreshold();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
+			case(GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ):
 				returnValue = getEXG2RespirationDetectFreq();
             	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
+			case(GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE):
 				returnValue = getEXG2RespirationDetectPhase();
             	break;
 	        default:
@@ -2996,10 +3028,10 @@ public class SensorEXG extends AbstractSensor{
 		if(mConfigOptionsMap!=null){
 			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
 			if(configOptions!=null){
-		        if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)) {
+		        if(stringKey.equals(GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)) {
 		        	checkWhichExgRespPhaseValuesToUse();
 		        }
-		        else if(stringKey.equals(Configuration.Shimmer3.GuiLabelConfig.EXG_REFERENCE_ELECTRODE)) {
+		        else if(stringKey.equals(GuiLabelConfig.EXG_REFERENCE_ELECTRODE)) {
 		        	checkWhichExgRefElectrodeValuesToUse();
 		        }
 		        return true;
