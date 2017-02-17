@@ -2004,7 +2004,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedDataUnits[iexg2ch1]=CHANNEL_UNITS.MILLIVOLTS;
 					calibratedDataUnits[iexg2ch2]=CHANNEL_UNITS.MILLIVOLTS;
 					
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXG2_STATUS,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,iexg2sta);
+					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXG2_STATUS,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2sta);
 
 					
 					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
