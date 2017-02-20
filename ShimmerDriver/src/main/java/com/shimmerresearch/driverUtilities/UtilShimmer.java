@@ -461,15 +461,19 @@ public class UtilShimmer implements Serializable {
 	}
 	
 	public static String fromMilToDateExcelCompatible(String miliseconds, Boolean showMillis){
-		return fromMilToDataExcelCompatible(miliseconds, showMillis, 0);
+		return fromMilToDataExcelCompatible(miliseconds, showMillis, Integer.MAX_VALUE);
 	}
 	
 	public static String fromMilToDataExcelCompatible(String miliseconds, boolean showMillis, int timezoneOffset){
 		if (miliseconds==null){
 			return "null";
 		} else {
-//			TimeZone timeZone;
-			double miliInDouble = Double.parseDouble(miliseconds) + timezoneOffset;
+			double miliInDouble = Double.parseDouble(miliseconds);
+			if(timezoneOffset != Integer.MAX_VALUE){
+				miliInDouble += timezoneOffset;
+				TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+			}
+			
 			long mili = (long) miliInDouble;
 			Date date = new Date(mili);
 			DateFormat formatter;
@@ -480,11 +484,6 @@ public class UtilShimmer implements Serializable {
 				formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			}
 			
-//			if(timeZoneId != null){
-//				timeZone = TimeZone.getTimeZone(timeZoneId);
-//				formatter.setTimeZone(timeZone);
-//			}
-
 			return formatter.format(date);
 		}
 	}
