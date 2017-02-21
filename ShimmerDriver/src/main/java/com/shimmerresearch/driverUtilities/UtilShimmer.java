@@ -42,6 +42,12 @@ public class UtilShimmer implements Serializable {
 	public static final String STRING_CONSTANT_FOR_UNKNOWN = "Unknown";
 	public static final String MAC_ADDRESS_ZEROS = "000000000000";
 	public static final String MAC_ADDRESS_FFFFS = "FFFFFFFFFFFF";
+	
+	public static final String UNICODE_PLUS_MINUS = "\u00B1";
+	public static final String UNICODE_CHECK_MARK = "\u2713";
+	public static final String UNICODE_CROSS_MARK = "\u274C";
+	public static final String CHECK_MARK_STRING = " " + UNICODE_CHECK_MARK;
+	public static final String CROSS_MARK_STRING = " " + UNICODE_CROSS_MARK;
 
 	public UtilShimmer(String parentClassName, Boolean verboseMode){
 		this.mParentClassName = parentClassName;
