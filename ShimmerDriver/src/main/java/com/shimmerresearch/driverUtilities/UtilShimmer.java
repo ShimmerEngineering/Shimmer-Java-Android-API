@@ -806,9 +806,6 @@ public class UtilShimmer implements Serializable {
 	}
 
 	public static double nudgeDouble(double valToNudge, double minVal, double maxVal) {
-//		valToNudge = (valToNudge>maxVal? maxVal:valToNudge);
-//		valToNudge = (valToNudge<minVal? minVal:valToNudge);
-//		return valToNudge;
 	    return Math.max(minVal, Math.min(maxVal, valToNudge));
 	}
 	
