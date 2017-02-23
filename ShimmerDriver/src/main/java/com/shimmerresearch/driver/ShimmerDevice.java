@@ -1141,6 +1141,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return "";
 	}
 	
+	/**
+	 * @return the MAC address
+	 */
 	public String getMacId() {
 		return mMacIdFromUart;
 	}
@@ -1483,7 +1486,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return returnValue;		
 	}
 	
-	public HashMap<String, Object> getEnabledAlgorithmSettings(String groupName) {
+	public HashMap<String, Object> getEnabledAlgorithmSettingsPerGroup(String groupName) {
 		List<AbstractAlgorithm> listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
 		HashMap<String, Object> mapOfAlgorithmSettings = new HashMap<String, Object>();
 		for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){
@@ -1492,6 +1495,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfAlgorithmSettings;
 	}
 
+	public HashMap<String, Object> getEnabledAlgorithmSettings() {
+		List<AbstractAlgorithm> listOfAlgorithms = getListOfEnabledAlgorithmModules();
+		HashMap<String, Object> mapOfAlgorithmSettings = new HashMap<String, Object>();
+		for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){
+			mapOfAlgorithmSettings.putAll(abstractAlgorithm.getAlgorithmSettings());
+		}
+		return mapOfAlgorithmSettings;
+	}
 	
 	public void incrementPacketExpectedCount() {
 		mPacketExpectedCount += 1;
@@ -2884,6 +2895,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledAlgorthimsPerGroup;
 	}
 
+	//---------- Storing to Database related - start --------------------
+	
 	public List<String> getSensorsAndAlgorithmChannelsToStoreInDB(){
 		return getSensorsAndAlgorithmChannelsToStoreInDB(null);
 	}
@@ -2939,17 +2952,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	private Set<String> getSensorChannelsToStoreInDB(COMMUNICATION_TYPE commType){
-//		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
-//		for(SensorDetails sensorEnabled: mSensorMap.values()){
-//			if(sensorEnabled.isEnabled() && !sensorEnabled.mSensorDetailsRef.mIsDummySensor){
-//    			for(ChannelDetails channelDetails:sensorEnabled.mListOfChannels) {
-//					if(channelDetails.mStoreToDatabase){
-//    					setOfObjectClusterSensors.add(channelDetails.mObjectClusterName);
-//					}
-//    			}
-//			}
-//		}
-
 		Map<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDb(commType);
 		
 		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
@@ -2986,6 +2988,135 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return listOfChannels;
 	}
+	
+	public LinkedHashMap<String, Object> getConfigMapForDb(){
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+		
+		//General Shimmer configuration
+		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
+		mapOfConfig.put(DatabaseConfigHandle.ENABLE_SENSORS, getEnabledSensors());
+		mapOfConfig.put(DatabaseConfigHandle.DERIVED_SENSORS, getDerivedSensors());
+		
+		mapOfConfig.put(DatabaseConfigHandle.SHIMMER_VERSION, getHardwareVersion());
+		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION, getFirmwareVersionCode()); // getFirmwareIdentifier()?
+		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MAJOR, getFirmwareVersionMajor());
+		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MINOR, getFirmwareVersionMinor());
+		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_INTERNAL, getFirmwareVersionInternal());
+
+		mapOfConfig.put(DatabaseConfigHandle.EXP_BOARD_ID, getExpansionBoardId());
+		mapOfConfig.put(DatabaseConfigHandle.EXP_BOARD_REV, getExpansionBoardRev());
+		mapOfConfig.put(DatabaseConfigHandle.EXP_BOARD_REV_SPEC, getExpansionBoardRevSpecial());
+
+		mapOfConfig.put(DatabaseConfigHandle.EXP_PWR, getInternalExpPower());
+		mapOfConfig.put(DatabaseConfigHandle.CONFIG_TIME, getConfigTime());
+
+		//Sensor configuration
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			LinkedHashMap<String, Object> configMapPerSensor = abstractSensor.getConfigMapForDb();
+			if(configMapPerSensor!=null){
+				mapOfConfig.putAll(configMapPerSensor);
+			}
+		}
+		
+		//TODO Algorithm configuration
+//		HashMap<String, Object> algorithmsConfig = getEnabledAlgorithmSettings();
+//		mapOfConfig.putAll(algorithmsConfig);
+		
+		//Useful for debugging
+//		printMapOfConfigForDb();
+		
+		return mapOfConfig;
+	}
+	
+	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		
+		setShimmerVersionObject(svo);
+		
+		//General Shimmer configuration
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_ID)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_REV)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)){
+			ExpansionBoardDetails eBD = new ExpansionBoardDetails(
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_ID)).intValue(), 
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV)).intValue(), 
+					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)).intValue());
+			setExpansionBoardDetails(eBD);
+		}
+
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ENABLE_SENSORS)
+				&&mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DERIVED_SENSORS)){
+			setEnabledSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.ENABLE_SENSORS)).longValue());
+			setDerivedSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.DERIVED_SENSORS)).longValue());
+		}
+
+//		printSensorParserAndAlgoMaps();
+		prepareAllMapsAfterConfigRead();
+		
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.SAMPLE_RATE)){
+			setSamplingRateShimmer((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE));
+		}
+		
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_PWR)){
+			setInternalExpPower(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_PWR)).intValue());
+		}
+		
+		//Configuration Time
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.CONFIG_TIME)){
+			setConfigTime(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.CONFIG_TIME)).longValue());
+		}
+		
+		//Sensor configuration
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.parseConfigMapFromDb(mapOfConfigPerShimmer);
+		}
+		
+		//TODO Algorithm configuration
+//		Iterator<AbstractAlgorithm> iteratorAlgo = getListOfAlgorithmModules().iterator();
+//		while(iteratorAlgo.hasNext()){
+//			AbstractAlgorithm abstractAlgorithm = iteratorAlgo.next();
+//			abstractAlgorithm.setAlgorithmSettings(mapOfConfigPerShimmer);
+//		}
+		
+		//Useful for debugging
+//		printMapOfConfigForDb();
+	}
+
+	public void printMapOfConfigForDb() {
+		HashMap<String, Object> mapOfConfigForDb = getConfigMapForDb();
+		printMapOfConfigForDb(mapOfConfigForDb);
+	}
+
+	public static void printMapOfConfigForDb(HashMap<String, Object> mapOfConfigForDb) {
+		System.out.println("Printing map of Config for DB, size = " + mapOfConfigForDb.keySet().size());
+		for(String configLbl:mapOfConfigForDb.keySet()){
+			String stringToPrint = configLbl + " = ";
+			Object val = mapOfConfigForDb.get(configLbl);
+			
+			if(val instanceof String){
+				stringToPrint += (String)val; 
+			}
+			else if(val instanceof Boolean){
+				stringToPrint += Boolean.toString((boolean) val); 
+			}
+			else if(val instanceof Double){
+				stringToPrint += Double.toString((double) val); 
+			}
+			else if(val instanceof Integer){
+				stringToPrint += Integer.toString((int) val); 
+			}
+			else if(val instanceof Long){
+				stringToPrint += Long.toString((long) val); 
+			}
+			System.out.println(stringToPrint);
+		}
+	}
+	
+	//---------- Storing to Database related - end --------------------
+
 
 	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledChannelsForStreaming() {
 		return getMapOfEnabledChannelsForStreaming(null);
@@ -3535,113 +3666,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	
-	public LinkedHashMap<String, Object> getConfigMapForDb(){
-		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		
-		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
-		mapOfConfig.put(DatabaseConfigHandle.ENABLE_SENSORS, getEnabledSensors());
-		mapOfConfig.put(DatabaseConfigHandle.DERIVED_SENSORS, getDerivedSensors());
-		
-		mapOfConfig.put(DatabaseConfigHandle.SHIMMER_VERSION, getHardwareVersion());
-		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION, getFirmwareVersionCode()); // getFirmwareIdentifier()?
-		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MAJOR, getFirmwareVersionMajor());
-		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_MINOR, getFirmwareVersionMinor());
-		mapOfConfig.put(DatabaseConfigHandle.FW_VERSION_INTERNAL, getFirmwareVersionInternal());
-
-		mapOfConfig.put(DatabaseConfigHandle.EXP_BOARD_ID, getExpansionBoardId());
-		mapOfConfig.put(DatabaseConfigHandle.EXP_BOARD_REV, getExpansionBoardRev());
-		mapOfConfig.put(DatabaseConfigHandle.EXP_BOARD_REV_SPEC, getExpansionBoardRevSpecial());
-
-		mapOfConfig.put(DatabaseConfigHandle.EXP_PWR, getInternalExpPower());
-		mapOfConfig.put(DatabaseConfigHandle.CONFIG_TIME, getConfigTime());
-
-		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
-		while(iterator.hasNext()){
-			AbstractSensor abstractSensor = iterator.next();
-			LinkedHashMap<String, Object> configMapPerSensor = abstractSensor.getConfigMapForDb();
-			if(configMapPerSensor!=null){
-				mapOfConfig.putAll(configMapPerSensor);
-			}
-		}
-		
-		return mapOfConfig;
-	}
-	
-	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-		
-		setShimmerVersionObject(svo);
-		
-		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_ID)
-				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_REV)
-				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)){
-			ExpansionBoardDetails eBD = new ExpansionBoardDetails(
-					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_ID)).intValue(), 
-					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV)).intValue(), 
-					((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_BOARD_REV_SPEC)).intValue());
-			setExpansionBoardDetails(eBD);
-		}
-
-		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ENABLE_SENSORS)
-				&&mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DERIVED_SENSORS)){
-			setEnabledSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.ENABLE_SENSORS)).longValue());
-			setDerivedSensors(((Double)mapOfConfigPerShimmer.get(DatabaseConfigHandle.DERIVED_SENSORS)).longValue());
-		}
-
-//		printSensorParserAndAlgoMaps();
-		prepareAllMapsAfterConfigRead();
-		
-		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.SAMPLE_RATE)){
-			setSamplingRateShimmer((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE));
-		}
-		
-		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_PWR)){
-			setInternalExpPower(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.EXP_PWR)).intValue());
-		}
-		
-		//Configuration Time
-		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.CONFIG_TIME)){
-			setConfigTime(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.CONFIG_TIME)).longValue());
-		}
-		
-		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
-		while(iterator.hasNext()){
-			AbstractSensor abstractSensor = iterator.next();
-			abstractSensor.parseConfigMapFromDb(mapOfConfigPerShimmer);
-		}
-		
-	}
-
-	public void printMapOfConfigForDb() {
-		HashMap<String, Object> mapOfConfigForDb = getConfigMapForDb();
-		printMapOfConfigForDb(mapOfConfigForDb);
-	}
-
-	public static void printMapOfConfigForDb(HashMap<String, Object> mapOfConfigForDb) {
-		System.out.println("Printing map of Config for DB, size = " + mapOfConfigForDb.keySet().size());
-		for(String configLbl:mapOfConfigForDb.keySet()){
-			String stringToPrint = configLbl + " = ";
-			Object val = mapOfConfigForDb.get(configLbl);
-			
-			if(val instanceof String){
-				stringToPrint += (String)val; 
-			}
-			else if(val instanceof Boolean){
-				stringToPrint += Boolean.toString((boolean) val); 
-			}
-			else if(val instanceof Double){
-				stringToPrint += Double.toString((double) val); 
-			}
-			else if(val instanceof Integer){
-				stringToPrint += Integer.toString((int) val); 
-			}
-			else if(val instanceof Long){
-				stringToPrint += Long.toString((long) val); 
-			}
-			System.out.println(stringToPrint);
-		}
-	}
-
 	public void setRadio(AbstractSerialPortHal commsProtocolRadio) {
 		// TODO Auto-generated method stub
 	}

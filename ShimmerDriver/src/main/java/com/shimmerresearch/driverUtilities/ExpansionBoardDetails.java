@@ -16,8 +16,11 @@ public class ExpansionBoardDetails implements Serializable {
 	/** * */
 	private static final long serialVersionUID = 1104467341565122266L;
 	
+	/** Stores the SR number for a specific Shimmer version */
 	public int mExpansionBoardId = HW_ID_SR_CODES.UNKNOWN;
+	/** Stores the revision of the board */
 	public int mExpansionBoardRev = HW_ID_SR_CODES.UNKNOWN;
+	/** Stores the special revision number - for custom modifications to standard Shimmers */
 	public int mExpansionBoardRevSpecial = HW_ID_SR_CODES.UNKNOWN;
 	
 	public byte[] mExpBoardArray = new byte[]{}; 
