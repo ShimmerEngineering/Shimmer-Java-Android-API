@@ -474,10 +474,12 @@ public class UtilShimmer implements Serializable {
 		if (miliseconds==null){
 			return "null";
 		} else {
+			String defaultTimeZoneId = null;
 			double miliInDouble = Double.parseDouble(miliseconds);
 			if(timezoneOffset != Integer.MAX_VALUE){
-				miliInDouble += timezoneOffset;
+				defaultTimeZoneId = TimeZone.getDefault().getID();
 				TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+				miliInDouble += timezoneOffset;
 			}
 			
 			long mili = (long) miliInDouble;
@@ -490,7 +492,13 @@ public class UtilShimmer implements Serializable {
 				formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			}
 			
-			return formatter.format(date);
+			String dateFormatted = formatter.format(date);
+			
+			if(defaultTimeZoneId != null){
+				TimeZone.setDefault(TimeZone.getTimeZone(defaultTimeZoneId));
+			}
+			
+			return dateFormatted;
 		}
 	}
 	
