@@ -915,5 +915,30 @@ public class UtilShimmer implements Serializable {
 		File file = new File(filePath);
 		return file.exists();
 	}
+
+	public static byte[] interleaveByteArrays(byte[] bytes, byte[] bytes2) {
+		byte[] interleave = new byte[ bytes.length + bytes2.length];
+		int count1=0;
+		int count2=0;
+		int curPos=0;
+		for (int i=0;i<interleave.length/2;i++){
+			if (i%2==0){
+				interleave[curPos]=bytes[count1];
+				count1++;
+				curPos++;
+				interleave[curPos]=bytes[count1];
+				count1++;
+				curPos++;
+			} else {
+				interleave[curPos]=bytes2[count2];
+				count2++;
+				curPos++;
+				interleave[curPos]=bytes2[count2];
+				count2++;
+				curPos++;
+			}
+		}
+		return interleave;
+	}
 	
 }
