@@ -1136,7 +1136,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public String getMacIdParsed() {
 		String macToUse = getMacId();
 		if(macToUse.length()>=12) {
-			return macToUse.substring(8, 12);
+//			return macToUse.substring(8, 12);
+			return macToUse.substring(macToUse.length()-4, macToUse.length());
 		}
 		return "";
 	}
