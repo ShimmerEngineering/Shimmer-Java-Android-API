@@ -11419,6 +11419,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			configValues.add((double) shimmerObject.getTrialDurationMaximum());
 //			configValues.add((double) shimmerObject.getSyncBroadcastInterval());
 			
+			// This is for the GSR_Peak_Hold GSRMetricModule algorithm as
+			// ShimmerObject is currently used for importing GQ SD data via
+			// ShimmerSDLog. This approach is improved from Shimmer4 onwards.
+			if(shimmerObject.isShimmerGenGq()){
+				configValues.add((double) 0);
+			}
+			
 			return configValues;
 		} 
 		return null;
