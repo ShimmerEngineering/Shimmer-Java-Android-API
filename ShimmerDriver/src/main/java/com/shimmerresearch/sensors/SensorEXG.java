@@ -26,6 +26,7 @@ import com.shimmerresearch.driverUtilities.ConfigOptionObject;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -1932,6 +1933,9 @@ public class SensorEXG extends AbstractSensor{
 		if(isTwoChipClocksConnected()){
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
 		}
+		
+//		System.out.println(UtilShimmer.bytesToHexStringWithSpacesFormatted(mEXG1RegisterArray));
+//		System.out.println(UtilShimmer.bytesToHexStringWithSpacesFormatted(mEXG2RegisterArray));
 		
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
