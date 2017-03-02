@@ -416,10 +416,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		setBattStatusDetails(new ShimmerBattStatusDetails());
 	}
 
-	public void setShimmerDriveInfo(ShimmerSDCardDetails shimmerSDCardDetails) {
-		mShimmerSDCardDetails = shimmerSDCardDetails;
-	}
-
 	/**
 	 * @param macIdFromUart the mMacIdFromUart to set
 	 */
@@ -586,6 +582,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	//------------------- Communication route related End -------------------------------
 
+	public void setShimmerDriveInfo(ShimmerSDCardDetails shimmerSDCardDetails) {
+		mShimmerSDCardDetails = shimmerSDCardDetails;
+	}
+	
+	public long getDriveTotalSpace() {
+		return mShimmerSDCardDetails.getDriveTotalSpace();
+	}
 
 	public String getDriveUsedSpaceParsed() {
 		return mShimmerSDCardDetails.getDriveUsedSpaceParsed();
@@ -601,6 +604,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public long getDriveFreeSpace() {
 		return mShimmerSDCardDetails.getDriveFreeSpace();
+	}
+	
+	public void setDriveUsedSpaceKB(long driveUsedSpaceKB) {
+		mShimmerSDCardDetails.setSdUsedSpaceKB(driveUsedSpaceKB);
+	}
+
+	public void setDriveUsedSpace(long driveUsedSpace) {
+		mShimmerSDCardDetails.setSdUsedSpace(driveUsedSpace);
 	}
 
 	public ShimmerVerObject getShimmerVerObject() {
@@ -1212,10 +1223,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mConfigTime = trialConfigTime;
 	}
 
-	public long getDriveTotalSpace() {
-		return mShimmerSDCardDetails.getDriveTotalSpace();
-	}
-	
 	public void setFirstDockRead() {
 		mFirstSdAccess = true;
 		mConfigurationReadSuccess = false;

@@ -29,7 +29,7 @@ public class ShimmerSDCardDetails implements Serializable {
 		mDriveTotalSpace = drivePath.getTotalSpace(); //total disk space in bytes.
 		mDriveUsableSpace = drivePath.getUsableSpace(); ///unallocated / free disk space in bytes.
 		mDriveFreeSpace = drivePath.getFreeSpace(); //unallocated / free disk space in bytes.
-		mDriveUsedSpace = mDriveTotalSpace - mDriveFreeSpace;
+		updateDriveUsedSpace();
 	}
 
 	public long getDriveUsableSpace() {
@@ -48,10 +48,15 @@ public class ShimmerSDCardDetails implements Serializable {
 		return spaceToString(mDriveTotalSpace);
 	}
 	
-	private String spaceToString(long space){
-	    double spaceTotal = (double)space / 1024 / 1024 / 1024;
+	private String spaceToString(long spaceBytes){
+	    double spaceTotal = (double)spaceBytes / 1024 / 1024 / 1024;
 	    String spaceTotalTxt = " GB";
-	    if (spaceTotal < 1.0) {
+//	    if (spaceTotal < 0.1) {
+//	        spaceTotal = spaceTotal * 1024 * 1024;
+//	        spaceTotalTxt = " KB";
+//	    }
+//	    else
+	    	if (spaceTotal < 1.0) {
 	        spaceTotal = spaceTotal * 1024;
 	        spaceTotalTxt = " MB";
 	    }
@@ -62,5 +67,18 @@ public class ShimmerSDCardDetails implements Serializable {
 		return mDriveTotalSpace;
 	}
 
+	private void updateDriveUsedSpace() {
+		mDriveUsedSpace = mDriveTotalSpace - mDriveFreeSpace;
+	}
+
+	public void setSdUsedSpaceKB(long driveUsedSpace) {
+		setSdUsedSpace(driveUsedSpace*1024);
+	}
+
+	public void setSdUsedSpace(long driveUsedSpace) {
+		mDriveUsedSpace = driveUsedSpace;
+		
+		System.err.println("Drive used space received = " + driveUsedSpace + " Bytes" + "\tor\t" + spaceToString(driveUsedSpace));
+	}
 
 }
