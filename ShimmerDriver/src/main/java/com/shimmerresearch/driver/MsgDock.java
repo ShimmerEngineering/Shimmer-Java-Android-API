@@ -31,11 +31,12 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_ALGORITHM_MANAGER = 1006;
 	public final static int MSG_ID_SOURCE_EVENT_MARKERS = 1007;
 	public final static int MSG_ID_SOURCE_RESULT_AGGREGATOR = 1008;
-	public final static int MSG_ID_SOURCE_DATABASE_MANAGER = 1009;
-	public final static int MSG_ID_SOURCE_DATA_IMPORT_MANAGER = 1010;
-	public final static int MSG_ID_SOURCE_DATA_PROCESS_MANAGER = 1011;
-	public final static int MSG_ID_SOURCE_VIDEO_MANAGER = 1012;
-	 
+	public final static int MSG_ID_SOURCE_RESULT_AGGREGATOR_STOP = 1009;
+	public final static int MSG_ID_SOURCE_DATABASE_MANAGER = 1010;
+	public final static int MSG_ID_SOURCE_DATA_IMPORT_MANAGER = 1011;
+	public final static int MSG_ID_SOURCE_DATA_PROCESS_MANAGER = 1012;
+	public final static int MSG_ID_SOURCE_VIDEO_MANAGER = 1013;
+	
 	//Device Info
 	public final static int MSG_ID_DEVICEINFO_CHANGE_IN_SYSTEM_SETTINGS_DETECTED = 80;
 
