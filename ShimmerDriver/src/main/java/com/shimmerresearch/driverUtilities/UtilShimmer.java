@@ -122,11 +122,17 @@ public class UtilShimmer implements Serializable {
 		return timeString;
 	}
 	
-	public static String convertMilliSecondsToHrMinSecString(long milliSeconds) {
+	public static String convertMilliSecondsToHrMinSecUTC(long milliSeconds) {
 		DateFormat dfLocal = new SimpleDateFormat("HH:mm:ss");
 		dfLocal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		// int style = DateFormat.MEDIUM;
 		// dfLocal = DateFormat.getDateInstance("HH:mm:ss", Locale.UK);
+		String timeString = dfLocal.format(new Date(milliSeconds));
+		return timeString;
+	}
+	
+	public static String convertMilliSecondsToHrMinSecLocal(long milliSeconds) {
+		DateFormat dfLocal = new SimpleDateFormat("HH:mm:ss");
 		String timeString = dfLocal.format(new Date(milliSeconds));
 		return timeString;
 	}
