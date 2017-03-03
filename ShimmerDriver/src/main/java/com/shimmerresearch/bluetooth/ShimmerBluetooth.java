@@ -558,7 +558,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							|| mCurrentCommand==STOP_SDBT_COMMAND){
 						mIsStreaming=false;
 						if (mCurrentCommand==STOP_SDBT_COMMAND){
-							mIsSDLogging = false;
+							setIsSDLogging(false);
 						}
 						getListofInstructions().removeAll(Collections.singleton(null));
 					} 
@@ -1537,7 +1537,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				if(currentCommand==START_STREAMING_COMMAND || currentCommand==START_SDBT_COMMAND) {
 					mIsStreaming=true;
 					if(currentCommand==START_SDBT_COMMAND){
-						mIsSDLogging = true;
+						setIsSDLogging(true);
 						eventLogAndStreamStatusChanged(mCurrentCommand);
 					}
 					byteStack.clear();
@@ -1546,7 +1546,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if((currentCommand==STOP_STREAMING_COMMAND)||(currentCommand==STOP_SDBT_COMMAND)){
 					mIsStreaming=false;
 					if(currentCommand==STOP_SDBT_COMMAND) {
-						mIsSDLogging=false;
+						setIsSDLogging(false);
 						eventLogAndStreamStatusChanged(mCurrentCommand);
 					}
 					
@@ -1558,11 +1558,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					getListofInstructions().removeAll(Collections.singleton(null));
 				}
 				else if(currentCommand==START_LOGGING_ONLY_COMMAND) {
-					mIsSDLogging = true;
+					setIsSDLogging(true);
 					eventLogAndStreamStatusChanged(mCurrentCommand);
 				}
 				else if(currentCommand==STOP_LOGGING_ONLY_COMMAND) {
-					mIsSDLogging = false;
+					setIsSDLogging(false);
 					eventLogAndStreamStatusChanged(mCurrentCommand);
 				}
 
@@ -2046,7 +2046,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
 				+ "\t" + "IsDocked = " + mIsDocked
 				+ "\t" + "IsSensing = " + mIsSensing
-				+ "\t" + "IsSDLogging = "+ mIsSDLogging
+				+ "\t" + "IsSDLogging = "+ isSDLogging()
 				+ "\t" + "IsStreaming = " + mIsStreaming
 				);
 		
@@ -2434,7 +2434,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					
 					printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
 					
-					mIsSDLogging = true;
+					setIsSDLogging(true);
 					eventLogAndStreamStatusChanged(mCurrentCommand);
 					mWaitForAck=false;
 					mWaitForResponse=false;
@@ -2449,7 +2449,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					
 					printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
 					
-					mIsSDLogging = false;
+					setIsSDLogging(false);
 					eventLogAndStreamStatusChanged(mCurrentCommand);
 					mWaitForAck=false;
 					mWaitForResponse=false;

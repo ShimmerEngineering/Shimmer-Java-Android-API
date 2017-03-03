@@ -76,6 +76,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public static final String STRING_CONSTANT_PENDING = "Pending";
 	public static final String STRING_CONSTANT_UNKNOWN = "Unknown";
+	public static final String STRING_CONSTANT_NOT_AVAILABLE = "N/A";
 	public static final String STRING_CONSTANT_SD_ERROR = "SD Error";
 	
 	protected static final int MAX_CALIB_DUMP_MAX = 4096;
@@ -122,17 +123,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails();
 	public ShimmerBattStatusDetails mShimmerBattStatusDetails = new ShimmerBattStatusDetails(); 
 	public ShimmerSDCardDetails mShimmerSDCardDetails = new ShimmerSDCardDetails(); 
-	
+
 	public boolean mReadHwFwSuccess = false;
 	public boolean mConfigurationReadSuccess = false;
 	public boolean mReadDaughterIDSuccess = false;
 	public boolean writeRealWorldClockFromPcTimeSuccess = false;
-	public boolean mFirstSdAccess = true;
-	public boolean mIsSDError = false;
 	
 	protected boolean mIsConnected = false;
 	protected boolean mIsSensing = false;
-	protected boolean mIsSDLogging = false;											// This is used to monitor whether the device is in sd log mode
 	protected boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
 	protected boolean mIsInitialised = false;
 	protected boolean mIsDocked = false;
@@ -582,6 +580,31 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	//------------------- Communication route related End -------------------------------
 
+	//------------------- SD card related Start -------------------------------
+	public boolean isFirstSdAccess() {
+		return mShimmerSDCardDetails.isFirstSdAccess();
+	}
+
+	public void setFirstSdAccess(boolean state) {
+		this.mShimmerSDCardDetails.setFirstSdAccess(state);
+	}
+
+	public boolean isSDError() {
+		return mShimmerSDCardDetails.isSDError();
+	}
+
+	public void setIsSDError(boolean state) {
+		this.mShimmerSDCardDetails.setIsSDError(state);
+	}
+
+	public boolean isSDLogging(){
+		return mShimmerSDCardDetails.isSDLogging();
+	}	
+
+	public void setIsSDLogging(boolean state){
+		mShimmerSDCardDetails.setIsSDLogging(state);
+	}	
+
 	public void setShimmerDriveInfo(ShimmerSDCardDetails shimmerSDCardDetails) {
 		mShimmerSDCardDetails = shimmerSDCardDetails;
 	}
@@ -594,6 +617,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerSDCardDetails.getDriveUsedSpaceParsed();
 	}
 
+	public long getDriveUsedSpace() {
+		return mShimmerSDCardDetails.getDriveUsedSpace();
+	}
+	
 	public String getDriveTotalSpaceParsed() {
 		return mShimmerSDCardDetails.getDriveTotalSpaceParsed();
 	}
@@ -607,13 +634,44 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void setDriveUsedSpaceKB(long driveUsedSpaceKB) {
-		mShimmerSDCardDetails.setSdUsedSpaceKB(driveUsedSpaceKB);
+		mShimmerSDCardDetails.setDriveUsedSpaceKB(driveUsedSpaceKB);
 	}
 
 	public void setDriveUsedSpace(long driveUsedSpace) {
-		mShimmerSDCardDetails.setSdUsedSpace(driveUsedSpace);
+		mShimmerSDCardDetails.setDriveUsedSpace(driveUsedSpace);
 	}
 
+	public String getSdCapacityParsed() {
+		String strPending = STRING_CONSTANT_PENDING;
+		
+		if(!isSdCardAccessSupported()){
+			return STRING_CONSTANT_UNKNOWN;
+		}
+
+		if(isSDError()){
+			return STRING_CONSTANT_SD_ERROR;
+		}
+		else {
+			String driveUsedSpaceParsed = getDriveUsedSpaceParsed();
+			if (!driveUsedSpaceParsed.isEmpty()) {
+				// The extra check below was added for NeuroLynQ in order to
+				// increase the granularity of the reported used space while
+				// logging. 
+				if(this.isShimmerGenGq() && isSDLogging()){
+					driveUsedSpaceParsed = Long.toString(getDriveUsedSpace()) + " B";
+				}
+				
+				return (driveUsedSpaceParsed + " / " + getDriveTotalSpaceParsed());
+			}
+			else{
+				return (isHaveAttemptedToRead() ? STRING_CONSTANT_UNKNOWN : (isFirstSdAccess() ? strPending: STRING_CONSTANT_UNKNOWN));
+			}
+		}
+	}
+	
+	//------------------- SD card related End -------------------------------
+
+	
 	public ShimmerVerObject getShimmerVerObject() {
 		return mShimmerVerObject;
 	}
@@ -781,15 +839,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setIsSensing(boolean state) {
 		mIsSensing = state;
 	}
-	
-	public boolean isSDLogging(){
-		return mIsSDLogging;
-	}	
-
-	public void setIsSDLogging(boolean state){
-		mIsSDLogging = state;
-	}	
-
 	
 	/**
 	 * @param isInitialized the mSuccessfullyInitialized to set
@@ -1224,12 +1273,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void setFirstDockRead() {
-		mFirstSdAccess = true;
+		setFirstSdAccess(true);
 		mConfigurationReadSuccess = false;
 		mReadHwFwSuccess = false;
 		mReadDaughterIDSuccess = false;
 		writeRealWorldClockFromPcTimeSuccess = false;
-		mIsSDError = false;
+		setIsSDError(false);
 	}
 	
 	// ----------------- Overrides from ShimmerDevice end -------------
@@ -1529,27 +1578,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mPacketReceivedCount = i;
 	}
 	
-	
-	public String getSdCapacityParsed() {
-		String strPending = STRING_CONSTANT_PENDING;
-		
-		if(!isSdCardAccessSupported()){
-			return STRING_CONSTANT_UNKNOWN;
-		}
-
-		if(mIsSDError){
-			return STRING_CONSTANT_SD_ERROR;
-		}
-		else {
-			if (!getDriveUsedSpaceParsed().isEmpty()) {
-				return (getDriveUsedSpaceParsed() + " / " + getDriveTotalSpaceParsed());
-			}
-			else{
-				return (isHaveAttemptedToRead() ? STRING_CONSTANT_UNKNOWN : (mFirstSdAccess ? strPending: STRING_CONSTANT_UNKNOWN));
-			}
-		}
-	}
-
 	public boolean isRtcConfigViaUartSupported() {
 		return mShimmerVerObject.isRtcConfigViaUartSupported();
 	}

@@ -810,7 +810,7 @@ public class Shimmer4 extends ShimmerDevice {
 			}
 			else{
 //				if(!isStreaming() && !isSDLogging() && isConnected()){
-				if(!mIsStreaming && !mIsSDLogging && isConnected() && mBluetoothRadioState!=BT_STATE.CONNECTED){
+				if(!mIsStreaming && !isSDLogging() && isConnected() && mBluetoothRadioState!=BT_STATE.CONNECTED){
 					setBluetoothRadioState(BT_STATE.CONNECTED);	
 				}
 //				if(getBTState() == BT_STATE.INITIALISED){

@@ -615,7 +615,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_START_STREAMING, getMacId(), getComPort());
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
-		if (mIsSDLogging){
+		if (isSDLogging()){
 			setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
 		} else {
 			setBluetoothRadioState(BT_STATE.STREAMING);
@@ -644,18 +644,18 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			}
 		}
 		else{
-			if(mIsStreaming && mIsSDLogging){
+			if(mIsStreaming && isSDLogging()){
 				setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
 			}
 			else if(mIsStreaming){
 				setBluetoothRadioState(BT_STATE.STREAMING);
 			}
-			else if(mIsSDLogging){
+			else if(isSDLogging()){
 				setBluetoothRadioState(BT_STATE.SDLOGGING);
 			}
 			else{
 //				if(!isStreaming() && !isSDLogging() && isConnected()){
-				if(!mIsStreaming && !mIsSDLogging && isConnected() && mBluetoothRadioState!=BT_STATE.CONNECTED){
+				if(!mIsStreaming && !isSDLogging() && isConnected() && mBluetoothRadioState!=BT_STATE.CONNECTED){
 					setBluetoothRadioState(BT_STATE.CONNECTED);	
 				}
 //				if(getBTState() == BT_STATE.INITIALISED){

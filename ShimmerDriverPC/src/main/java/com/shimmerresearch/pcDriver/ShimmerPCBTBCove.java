@@ -289,7 +289,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_START_STREAMING, getBluetoothAddress(), mUniqueID);
 		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
 		
-		if (mIsSDLogging){
+		if (isSDLogging()){
 			setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
 		} else {
 			setBluetoothRadioState(BT_STATE.STREAMING);
@@ -491,17 +491,17 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 			}
 		}
 		else{
-			if(mIsStreaming && mIsSDLogging){
+			if(mIsStreaming && isSDLogging()){
 				setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
 			}
 			else if(mIsStreaming){
 				setBluetoothRadioState(BT_STATE.STREAMING);
 			}
-			else if(mIsSDLogging){
+			else if(isSDLogging()){
 				setBluetoothRadioState(BT_STATE.SDLOGGING);
 			}
 			else{
-				if(!mIsStreaming && !mIsSDLogging && isConnected()){
+				if(!mIsStreaming && !isSDLogging() && isConnected()){
 					setBluetoothRadioState(BT_STATE.CONNECTED);	
 				}
 //				if(getBTState() == BT_STATE.INITIALISED){
