@@ -641,7 +641,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mShimmerSDCardDetails.setDriveUsedSpace(driveUsedSpace);
 	}
 
-	public String getSdCapacityParsed() {
+	public String getDriveCapacityParsed() {
 		String strPending = STRING_CONSTANT_PENDING;
 		
 		if(!isSdCardAccessSupported()){
