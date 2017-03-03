@@ -1,6 +1,7 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
@@ -97,4 +98,22 @@ public class ExpansionBoardDetails implements Serializable {
 		return false;
 	}
 
+	public HashMap<Integer, String> getMapOfByteDescriptions(){
+		HashMap<Integer, String> mapOfByteDescriptions = new HashMap<Integer, String>();
+		
+		mapOfByteDescriptions.put(0, "SR number");
+		mapOfByteDescriptions.put(1, "Revision");
+		mapOfByteDescriptions.put(2, "Special Revision");
+		
+		if(mExpansionBoardId==HW_ID_SR_CODES.SHIMMER_GQ_802154_NR || mExpansionBoardId==HW_ID_SR_CODES.SHIMMER_GQ_802154_LR){
+			mapOfByteDescriptions.put(5, "MAC_ID_1");
+			mapOfByteDescriptions.put(6, "MAC_ID_2");
+			mapOfByteDescriptions.put(7, "MAC_ID_3");
+			mapOfByteDescriptions.put(8, "MAC_ID_4");
+			mapOfByteDescriptions.put(9, "MAC_ID_5");
+			mapOfByteDescriptions.put(10, "MAC_ID_6");
+		}
+		
+		return mapOfByteDescriptions;
+	}
 }
