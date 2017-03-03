@@ -158,6 +158,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected byte[] mInfoMemBytesOriginal = InfoMemLayout.createEmptyInfoMemByteArray(512);
 	
 	public byte[] mCalibBytes = new byte[]{};
+	public HashMap<Integer, String> mCalibBytesDescriptions = new HashMap<Integer, String>();
 
 	protected String mTrialName = "";
 	protected long mConfigTime; //this is in milliseconds, utc
@@ -3461,6 +3462,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public void calibByteDumpParse(byte[] calibBytesAll, CALIB_READ_SOURCE calibReadSource){
 
+		mCalibBytesDescriptions = new HashMap<Integer, String>();
 		mCalibBytes = calibBytesAll;
 		
 		if(UtilShimmer.isAllZeros(calibBytesAll)){
@@ -3469,26 +3471,51 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		if(calibBytesAll.length>2){
 			//1) Packet lENGTH -> don't need here
+			mCalibBytesDescriptions.put(0, "PacketLength_LSB");
+			mCalibBytesDescriptions.put(1, "PacketLength_MSB");
 			byte[] packetLength = Arrays.copyOfRange(calibBytesAll, 0, 2);
+			
 			byte[] svoBytes = Arrays.copyOfRange(calibBytesAll, 2, 10);
 			ShimmerVerObject svo = new ShimmerVerObject(svoBytes);
-	
+
+			mCalibBytesDescriptions.put(2, "HwID_LSB (" + svo.mHardwareVersionParsed + ")");
+			mCalibBytesDescriptions.put(3, "HwID_MSB");
+			mCalibBytesDescriptions.put(4, "FwID_LSB (" + svo.mFirmwareIdentifierParsed + ")");
+			mCalibBytesDescriptions.put(5, "FwID_MSB");
+			mCalibBytesDescriptions.put(6, "FWVerMjr_LSB");
+			mCalibBytesDescriptions.put(7, "FWVerMjr_MSB");
+			mCalibBytesDescriptions.put(8, "FWVerMinor");
+			mCalibBytesDescriptions.put(9, "FWVerInternal");
+
+			int currentOffset = 10;
 			byte[] remainingBytes = Arrays.copyOfRange(calibBytesAll, 10, calibBytesAll.length);;
 			while(remainingBytes.length>12){
 				//2) parse sensorMapKey (2 bytes LSB)
 				byte[] sensorIdBytes = Arrays.copyOfRange(remainingBytes, 0, 2);
 				int sensorMapKey = ((sensorIdBytes[1]<<8) | sensorIdBytes[0])&0xFFFF;
 				
+				String sensorName = "";
+				SensorDetails sensorDetails = getSensorDetails(sensorMapKey);
+				if(sensorDetails!=null && sensorDetails.mSensorDetailsRef!=null){
+					sensorName = sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel;
+				}
+				mCalibBytesDescriptions.put(currentOffset, "SensorMapKey_LSB (" + sensorName + ")");
+				mCalibBytesDescriptions.put(currentOffset+1, "SensorMapKey_MSB");
+				
 				//3) parse range (1 byte)
+				mCalibBytesDescriptions.put(currentOffset+2, "SensorRange");
 				byte[] rangeIdBytes = Arrays.copyOfRange(remainingBytes, 2, 3);
 				int rangeValue = (rangeIdBytes[0]&0xFF);
 	
 				//4) parse calib byte length (1 byte)
+				mCalibBytesDescriptions.put(currentOffset+3, "CalibByteLength");
 	//			byte[] calibLength = Arrays.copyOfRange(remainingBytes, 3, 4);
 				int calibLength = (remainingBytes[3]&0xFF);
 	//			int calibLength = parseCalibrationLength(sensorMapKey);
 				
 				//5) parse timestamp (8 bytes MSB/LSB?)
+				mCalibBytesDescriptions.put(currentOffset+4, "CalibTimeTicks_LSB");
+				mCalibBytesDescriptions.put(currentOffset+11, "CalibTimeTicks_MSB");
 				byte[] calibTimeBytesTicks = Arrays.copyOfRange(remainingBytes, 4, 12);
 				
 //				//Debugging
@@ -3501,6 +3528,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				int endIndex = 12+calibLength;
 				//6) parse calibration bytes (X bytes)
 				if(remainingBytes.length>=endIndex){
+					mCalibBytesDescriptions.put(currentOffset+12, "Calib_Start");
+					mCalibBytesDescriptions.put(currentOffset+endIndex-1, "Calib_End");
 					byte[] calibBytes = Arrays.copyOfRange(remainingBytes, 12, endIndex);
 					
 //					//Debugging
@@ -3509,6 +3538,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					calibByteDumpParsePerSensor(sensorMapKey, rangeValue, calibTimeBytesTicks, calibBytes, calibReadSource);
 					remainingBytes = Arrays.copyOfRange(remainingBytes, endIndex, remainingBytes.length);
 //					consolePrintLn("Remaining Bytes - " + remainingBytes);
+					
+					currentOffset += endIndex;
 				}
 				else {
 					break;
