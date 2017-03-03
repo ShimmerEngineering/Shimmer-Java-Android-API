@@ -2,6 +2,7 @@ package com.shimmerresearch.driver;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -98,6 +99,12 @@ public abstract class InfoMemLayout implements Serializable {
 //				compFwIdent,compMajor,compMinor,compInternal);
 		
 		return mShimmerVerObject.compareVersions(compFwIdent, compMajor, compMinor, compInternal);
+	}
+
+
+	public HashMap<Integer, String> getMapOfByteDescriptions() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

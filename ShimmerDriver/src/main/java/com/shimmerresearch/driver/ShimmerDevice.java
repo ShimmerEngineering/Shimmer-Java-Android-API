@@ -911,7 +911,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public byte[] getShimmerInfoMemBytesOriginal() {
 		return mInfoMemBytesOriginal;
 	}
-	
+
+	public HashMap<Integer, String> getMapOfConfigByteDescriptions() {
+		if(mInfoMemLayout!=null){
+			return mInfoMemLayout.getMapOfByteDescriptions();
+		}
+		return null;
+	}
+
 	protected void resetPacketLossTrial() {
 		mPacketLossCountPerTrial = 0;
 		setPacketReceptionRateOverall(100.0);

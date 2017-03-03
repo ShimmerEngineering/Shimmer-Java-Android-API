@@ -1,6 +1,7 @@
 package com.shimmerresearch.driver;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
@@ -577,5 +578,92 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 		return 384;
 	}
 
+	
+	
+	@Override
+	public HashMap<Integer, String> getMapOfByteDescriptions(){
+		HashMap<Integer, String> mapOfByteDescriptions = new HashMap<Integer, String>();
+		
+		mapOfByteDescriptions.put(idxShimmerSamplingRate, "SamplingRate_LSB");
+		mapOfByteDescriptions.put(idxShimmerSamplingRate+1, "SamplingRate_MSB");
+		mapOfByteDescriptions.put(idxBufferSize, "BufferSize");
+		mapOfByteDescriptions.put(idxSensors0, "Sensors0");
+		mapOfByteDescriptions.put(idxSensors1, "Sensors1");
+		mapOfByteDescriptions.put(idxSensors2, "Sensors2");
+		mapOfByteDescriptions.put(idxConfigSetupByte0, "ConfigSetupByte0");
+		mapOfByteDescriptions.put(idxConfigSetupByte1, "ConfigSetupByte1");
+		mapOfByteDescriptions.put(idxConfigSetupByte2, "ConfigSetupByte2");
+		mapOfByteDescriptions.put(idxConfigSetupByte3, "ConfigSetupByte3");
+		
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1Config1, "EXGADS1292RChip1Config1");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1Config2, "EXGADS1292RChip1Config2");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1LOff, "EXGADS1292RChip1LOff");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1Ch1Set, "EXGADS1292RChip1Ch1Set");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1Ch2Set, "EXGADS1292RChip1Ch2Set");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1RldSens, "EXGADS1292RChip1RldSens");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1LOffSens, "EXGADS1292RChip1LOffSens");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1LOffStat, "EXGADS1292RChip1LOffStat");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1Resp1, "EXGADS1292RChip1Resp1");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip1Resp2, "EXGADS1292RChip1Resp2");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2Config1, "EXGADS1292RChip2Config1");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2Config2, "EXGADS1292RChip2Config2");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2LOff, "EXGADS1292RChip2LOff");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2Ch1Set, "EXGADS1292RChip2Ch1Set");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2Ch2Set, "EXGADS1292RChip2Ch2Set");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2RldSens, "EXGADS1292RChip2RldSens");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2LOffSens, "EXGADS1292RChip2LOffSens");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2LOffStat, "EXGADS1292RChip2LOffStat");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2Resp1, "EXGADS1292RChip2Resp1");
+		mapOfByteDescriptions.put(idxEXGADS1292RChip2Resp2, "EXGADS1292RChip2Resp2");
 
+		mapOfByteDescriptions.put(idxBtCommBaudRate, "idxBtCommBaudRate");
+		mapOfByteDescriptions.put(idxAnalogAccelCalibration, "idxAnalogAccelCalibration");
+		mapOfByteDescriptions.put(idxMPU9150GyroCalibration, "idxMPU9150GyroCalibration");
+		mapOfByteDescriptions.put(idxLSM303DLHCMagCalibration, "idxLSM303DLHCMagCalibration");
+		mapOfByteDescriptions.put(idxLSM303DLHCAccelCalibration, "idxLSM303DLHCAccelCalibration");
+
+		mapOfByteDescriptions.put(idxDerivedSensors0, "DerivedSensors0");
+		mapOfByteDescriptions.put(idxDerivedSensors1, "DerivedSensors1");
+		mapOfByteDescriptions.put(idxDerivedSensors2, "DerivedSensors2");
+		mapOfByteDescriptions.put(idxDerivedSensors3, "DerivedSensors3");
+		mapOfByteDescriptions.put(idxDerivedSensors4, "DerivedSensors4");
+		mapOfByteDescriptions.put(idxDerivedSensors5, "DerivedSensors5");
+		mapOfByteDescriptions.put(idxDerivedSensors6, "DerivedSensors6");
+		mapOfByteDescriptions.put(idxDerivedSensors7, "DerivedSensors7");
+
+		mapOfByteDescriptions.put(idxConfigSetupByte4, "idxConfigSetupByte4");
+		mapOfByteDescriptions.put(idxConfigSetupByte5, "idxConfigSetupByte5");
+		mapOfByteDescriptions.put(idxSensors3, "idxSensors3");
+		mapOfByteDescriptions.put(idxSensors4, "idxSensors4");
+		mapOfByteDescriptions.put(idxConfigSetupByte6, "idxConfigSetupByte6");
+		mapOfByteDescriptions.put(idxMPLAccelCalibration, "idxMPLAccelCalibration");
+		mapOfByteDescriptions.put(idxMPLMagCalibration, "idxMPLMagCalibration");
+		mapOfByteDescriptions.put(idxMPLGyroCalibration, "idxMPLGyroCalibration");
+
+		mapOfByteDescriptions.put(idxSDShimmerName, "SDShimmerName");
+		mapOfByteDescriptions.put(idxSDEXPIDName, "SDEXPIDName");
+		mapOfByteDescriptions.put(idxSDConfigTime0, "SDConfigTime0");
+		mapOfByteDescriptions.put(idxSDConfigTime1, "SDConfigTime1");
+		mapOfByteDescriptions.put(idxSDConfigTime2, "SDConfigTime2");
+		mapOfByteDescriptions.put(idxSDConfigTime3, "SDConfigTime3");
+		
+		mapOfByteDescriptions.put(idxSDMyTrialID, "idxSDMyTrialID");
+		mapOfByteDescriptions.put(idxSDNumOfShimmers, "idxSDNumOfShimmers");
+		mapOfByteDescriptions.put(idxSDExperimentConfig0, "idxSDExperimentConfig0");
+		mapOfByteDescriptions.put(idxSDExperimentConfig1, "idxSDExperimentConfig1");
+		mapOfByteDescriptions.put(idxSDBTInterval, "idxSDBTInterval");
+		mapOfByteDescriptions.put(idxEstimatedExpLengthMsb, "idxEstimatedExpLengthMsb");
+
+		mapOfByteDescriptions.put(idxEstimatedExpLengthLsb, "idxEstimatedExpLengthLsb");
+		mapOfByteDescriptions.put(idxMaxExpLengthMsb, "idxMaxExpLengthMsb");
+		mapOfByteDescriptions.put(idxMaxExpLengthLsb, "idxMaxExpLengthLsb");
+		mapOfByteDescriptions.put(idxMacAddress, "idxMacAddress");
+		mapOfByteDescriptions.put(idxSDConfigDelayFlag, "idxSDConfigDelayFlag");
+		mapOfByteDescriptions.put(idxMacAddress, "MacAddress");
+
+		mapOfByteDescriptions.put(idxNode0, "Node0");
+		
+		return mapOfByteDescriptions;
+	}
+	
 }
