@@ -621,7 +621,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long getDriveUsedSpace() {
 		return mShimmerSDCardDetails.getDriveUsedSpace();
 	}
-	
+
+	public long getDriveUsedSpaceKB() {
+		return mShimmerSDCardDetails.getDriveUsedSpaceKB();
+	}
+
 	public String getDriveTotalSpaceParsed() {
 		return mShimmerSDCardDetails.getDriveTotalSpaceParsed();
 	}
@@ -659,7 +663,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				// increase the granularity of the reported used space while
 				// logging. 
 				if(this.isShimmerGenGq() && isSDLogging()){
-					driveUsedSpaceParsed = Long.toString(getDriveUsedSpace()) + " B";
+//					driveUsedSpaceParsed = Long.toString(getDriveUsedSpace()) + " B";
+					driveUsedSpaceParsed = Long.toString(getDriveUsedSpaceKB()) + " KB";
 				}
 				
 				return (driveUsedSpaceParsed + " / " + getDriveTotalSpaceParsed());

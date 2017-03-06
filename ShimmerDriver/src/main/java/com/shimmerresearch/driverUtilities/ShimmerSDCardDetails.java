@@ -63,6 +63,10 @@ public class ShimmerSDCardDetails implements Serializable {
 		return mDriveUsedSpace;
 	}
 
+	public long getDriveUsedSpaceKB() {
+		return mDriveUsedSpace/1024;
+	}
+
 	public String getDriveUsedSpaceParsed() {
 		if(mDriveUsedSpace==0){
 			return ShimmerDevice.STRING_CONSTANT_NOT_AVAILABLE;
