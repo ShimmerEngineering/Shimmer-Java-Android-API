@@ -227,7 +227,7 @@ public class ShimmerBattStatusDetails implements Serializable {
 		if(percentageBattery <= 0.0){
 			return BATTERY_LEVEL.UNKNOWN;
 		}
-		else if(percentageBattery < 33){ // 50 on PanelSetup, 25 on LiveData, firmware is 
+		else if(percentageBattery < 33){ // 50 on PanelSetup, 25 on LiveData, firmware is below 
 			return BATTERY_LEVEL.LOW;
 		}
 		else if(percentageBattery < 66){ //Software was set to 75, now 65 to match firmware
