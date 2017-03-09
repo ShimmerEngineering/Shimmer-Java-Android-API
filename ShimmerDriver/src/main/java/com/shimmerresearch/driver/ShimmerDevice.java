@@ -146,7 +146,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public List<DeviceException> mListOfDeviceExceptions = new ArrayList<DeviceException>();
 	
-
 	//TODO: are these variables too specific to different versions of Shimmer HW?
 	public long mShimmerRealTimeClockConFigTime = 0;
 	public long mShimmerLastReadRealTimeClockValue = 0;
