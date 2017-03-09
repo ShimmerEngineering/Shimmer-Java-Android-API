@@ -64,7 +64,6 @@ import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
-	/** * */
 	private static final long serialVersionUID = 5087199076353402591L;
 	
 	public static final String DEFAULT_DOCKID = "Default.01";
