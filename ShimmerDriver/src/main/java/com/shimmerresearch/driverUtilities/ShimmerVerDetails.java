@@ -32,9 +32,15 @@ public class ShimmerVerDetails implements Serializable {
 //		public static final int BIOSENSICS = 6;
 		public static final int SPAN = 7;
 		public static final int SHIMMER_2R_GQ = 9; // Used for testing GQ
+		
+		// For older devices the was a 'new' HW id given in firmware/software
+		// for each device. For newer devices from GQ onwards, we decided to just
+		// use the already defined SR number for the board.	
+		
 		public static final int SHIMMER_GQ_802154_LR = HW_ID_SR_CODES.SHIMMER_GQ_802154_LR; // Long Range
 		public static final int SHIMMER_GQ_802154_NR = HW_ID_SR_CODES.SHIMMER_GQ_802154_NR; // Normal Range
 		public static final int SHIMMER_4_SDK = HW_ID_SR_CODES.SHIMMER_4_SDK;
+		public static final int SHIMMER_3_EXG_EXTENDED = HW_ID_SR_CODES.SHIMMER_3_EXG_EXTENDED;
 
 		//Third party devices
 		public static final int NONIN_ONYX_II 			= 1000;
@@ -68,7 +74,8 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_4_SDK, "Shimmer4 SDK");
-        
+        aMap.put(HW_ID.SHIMMER_3_EXG_EXTENDED, "Shimmer3 ExG Extended");
+                
         aMap.put(HW_ID.NONIN_ONYX_II, "Nonin Onyx II");
         aMap.put(HW_ID.QTI_DIRECT_TEMP, "QTI Direct Temp");
         aMap.put(HW_ID.KEYBOARD_AND_MOUSE, "Keyboard and Mouse");
@@ -100,6 +107,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_GQ_802154_LR = 56;
 		public static final int SHIMMER_GQ_802154_NR = 57;
 		public static final int SHIMMER_4_SDK = 58;
+		public static final int SHIMMER_3_EXG_EXTENDED = 59;
 
 		public static final int SHIMMER3 = 31;
 		public static final int BASE15U = 41;
@@ -127,6 +135,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_LR, "ShimmerGQ 802.15.4");
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_NR, "ShimmerGQ 802.15.4");
         aMap.put(HW_ID_SR_CODES.SHIMMER_4_SDK, "Shimmer4 SDK");
+        aMap.put(HW_ID_SR_CODES.SHIMMER_3_EXG_EXTENDED, "ExG Extended");
         
         aMap.put(HW_ID_SR_CODES.SHIMMER3, "Shimmer3");//not used
         aMap.put(HW_ID_SR_CODES.BASE15U, "Base15U");

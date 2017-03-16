@@ -1588,7 +1588,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setPacketReceivedCount(int i) {
 		mPacketReceivedCount = i;
 	}
-	
+
 	public boolean isRtcConfigViaUartSupported() {
 		return mShimmerVerObject.isRtcConfigViaUartSupported();
 	}
