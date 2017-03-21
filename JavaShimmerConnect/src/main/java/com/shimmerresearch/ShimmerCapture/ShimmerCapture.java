@@ -91,7 +91,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.sensors.SensorBMP180;
@@ -365,7 +365,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					mShimmer.disconnect();
-				} catch (DeviceException e) {
+				} catch (ShimmerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -484,7 +484,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					mShimmer.disconnect();
-				} catch (DeviceException e) {
+				} catch (ShimmerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

@@ -15,7 +15,7 @@ import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 
 /**
  * @author Mark Nolan
@@ -53,7 +53,7 @@ public class ShimmerShell extends ShimmerDevice {
 	public void connect() {
 		try {
 			super.connect();
-		} catch (DeviceException e) {
+		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

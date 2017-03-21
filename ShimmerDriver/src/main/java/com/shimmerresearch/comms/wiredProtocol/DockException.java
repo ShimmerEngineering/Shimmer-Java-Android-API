@@ -1,13 +1,13 @@
 package com.shimmerresearch.comms.wiredProtocol;
 
 import com.google.common.base.Strings;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 
 /**
  * @author Mark Nolan
  *
  */
-public class DockException extends DeviceException {
+public class DockException extends ShimmerException {
 	
 	/**
 	 * 
@@ -103,7 +103,7 @@ public class DockException extends DeviceException {
 	
 	
 	// TODO 2016-04-21 Mark currently working on
-	public DockException(DeviceException dE) {
+	public DockException(ShimmerException dE) {
 		this(dE.mComPort, dE.mErrorCode, dE.mErrorCodeLowLevel, dE.mUniqueID, dE.mExceptionMsg, dE.mExceptionStackTrace);
 	}
 

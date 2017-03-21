@@ -9,8 +9,8 @@ import com.shimmerresearch.driverUtilities.DockJobDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_STATE;
-import com.shimmerresearch.exceptions.DeviceException;
-import com.shimmerresearch.exceptions.DeviceException.ExceptionLevel;
+import com.shimmerresearch.exceptions.ShimmerException;
+import com.shimmerresearch.exceptions.ShimmerException.ExceptionLevel;
 
 
 /**
@@ -465,16 +465,16 @@ public class MsgDock {
 			id = mDockID;
 		}
 		String msgID = "Unknown Error";
-		if(DeviceException.mMapOfErrorCodes.containsKey(mMsgID)) {
-			msgID = DeviceException.mMapOfErrorCodes.get(mMsgID);
+		if(ShimmerException.mMapOfErrorCodes.containsKey(mMsgID)) {
+			msgID = ShimmerException.mMapOfErrorCodes.get(mMsgID);
 		}
 		String errorCode = "Unknown Error";
-		if(DeviceException.mMapOfErrorCodes.containsKey(mErrorCode)) {
-			errorCode = DeviceException.mMapOfErrorCodes.get(mErrorCode);
+		if(ShimmerException.mMapOfErrorCodes.containsKey(mErrorCode)) {
+			errorCode = ShimmerException.mMapOfErrorCodes.get(mErrorCode);
 		}
 		String lowLevelErrorCode = "Unknown Error";
-		if(DeviceException.mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
-			lowLevelErrorCode = DeviceException.mMapOfErrorCodes.get(mErrorCodeLowLevel);
+		if(ShimmerException.mMapOfErrorCodes.containsKey(mErrorCodeLowLevel)) {
+			lowLevelErrorCode = ShimmerException.mMapOfErrorCodes.get(mErrorCodeLowLevel);
 		}
 		String exceptionInfo = "";
 		if(mExceptionMsg!=null && !mExceptionMsg.isEmpty()) {

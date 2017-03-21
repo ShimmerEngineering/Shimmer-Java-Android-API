@@ -2,7 +2,7 @@ package com.shimmerresearch.driver;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 
 public class ShimmerDeviceCallbackAdapter {
 
@@ -65,7 +65,7 @@ public class ShimmerDeviceCallbackAdapter {
 		shimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET, ojc);
 	}
 	
-	public void sendCallBackDeviceException(DeviceException dE) {
+	public void sendCallBackDeviceException(ShimmerException dE) {
 		shimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DEVICE_ERROR, dE);
 	}
 

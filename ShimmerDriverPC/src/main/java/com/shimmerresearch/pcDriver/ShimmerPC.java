@@ -72,7 +72,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -265,7 +265,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 						} else {
 							try {
 								disconnect();
-							} catch (DeviceException e) {
+							} catch (ShimmerException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
@@ -367,7 +367,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public void stop() {
 		try {
 			disconnect();
-		} catch (DeviceException e) {
+		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -446,7 +446,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 	@Override
-	public void disconnect() throws DeviceException {
+	public void disconnect() throws ShimmerException {
 //		super.disconnect();
 		stopAllTimers();
 		closeConnection();

@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 
 public abstract class AbstractCommsProtocol {
 	
@@ -90,11 +90,11 @@ public abstract class AbstractCommsProtocol {
 		mCommsInterface = commsInterface;
 	}
 	
-	public void setProtocolListener(ProtocolListener protocolListener) throws DeviceException{
+	public void setProtocolListener(ProtocolListener protocolListener) throws ShimmerException{
 		if (mProtocolListener==null){
 			mProtocolListener = protocolListener;
 		} else {
-			throw new DeviceException("Only One Listener Allowed");
+			throw new ShimmerException("Only One Listener Allowed");
 		}
 	}
 

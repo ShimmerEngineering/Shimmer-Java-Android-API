@@ -12,7 +12,7 @@ import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.ShimmerMsg;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 
 
 //Core radio functions to be implemented by native radio libs , jssc, android .. etc.
@@ -96,17 +96,17 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 	}
 
 	
-	public void connect() throws DeviceException{
+	public void connect() throws ShimmerException{
 		try{
 			mRadioHal.connect();
 		}
-		catch (DeviceException dE) {
+		catch (ShimmerException dE) {
 			disconnect();
 			throw(dE);
         }
 	};
 	
-	public void disconnect() throws DeviceException{
+	public void disconnect() throws ShimmerException{
 		if(mRadioProtocol!=null){
 			mRadioProtocol.stopProtocol();
 		}
@@ -114,7 +114,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 			try{
 				mRadioHal.disconnect();
 			}
-			catch (DeviceException e) {
+			catch (ShimmerException e) {
 				//TODO
 				eventError(e);
 				throw(e);
@@ -317,7 +317,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 
 			try {
 				mRadioProtocol.setProtocolListener(new CommsProtocolListener());
-			} catch (DeviceException e) {
+			} catch (ShimmerException e) {
 				//TODO
 				eventError(e);
 			}
@@ -497,12 +497,12 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		}
 
 		@Override
-		public void eventKillConnectionRequest(DeviceException dE) {
+		public void eventKillConnectionRequest(ShimmerException dE) {
 			eventError(dE);
 			
 			try {
 				disconnect();
-			} catch (DeviceException e) {
+			} catch (ShimmerException e) {
 				//TODO
 				eventError(e);
 			}
@@ -510,7 +510,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 
 	}
 
-	public void eventError(DeviceException dE){
+	public void eventError(ShimmerException dE){
 		for (RadioListener rl:mRadioListenerList){
 			if(rl!=null){
 				rl.eventError(dE);

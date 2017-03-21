@@ -11,7 +11,7 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
  * @author Mark Nolan
  *
  */
-public class DeviceException extends ExecutionException {
+public class ShimmerException extends ExecutionException {
 
 	private static final long serialVersionUID = -8040452709544630044L;
 
@@ -55,21 +55,27 @@ public class DeviceException extends ExecutionException {
 	 * 7000+ = ErrorCodesWiredProtocol
 	 * 8000+ = SpanJobDetails
 	 * 9000+ = ErrorCodesVideoManager
+	 * 10000+ = 
 	 * 
 	 */
 	public static HashMap<Integer,String> mMapOfErrorCodes = new HashMap<Integer,String>();
 	
-	public DeviceException() {
+	public ShimmerException() {
 		mExceptionStackTrace = UtilShimmer.getCurrentStackTrace();
 	}
 
-	public DeviceException(String message) {
+	public ShimmerException(String message) {
 		super(message);
 		mExceptionStackTrace = UtilShimmer.getCurrentStackTrace();
 	}
 	
+	public ShimmerException(Exception e) {
+		setStackTrace(e.getStackTrace());
+		mMessage = e.getLocalizedMessage();
+		mExceptionMsg = e.getMessage();
+	}
 	
-	public DeviceException(String uniqueId, String comPort, int errorType, int lowLevelErrorCode) {
+	public ShimmerException(String uniqueId, String comPort, int errorType, int lowLevelErrorCode) {
 		mUniqueID = uniqueId;
 		mComPort = comPort;
 		mErrorCode = errorType;
@@ -82,17 +88,17 @@ public class DeviceException extends ExecutionException {
 	 * @param errorCode
 	 * @param message
 	 */
-	public DeviceException(int errorCode, String message) {
+	public ShimmerException(int errorCode, String message) {
 		mErrorCode = errorCode;
 		mMessage = message;
 		mExceptionStackTrace = UtilShimmer.getCurrentStackTrace();
 	}
 
-	public String getShimmerDeviceExceptionErrString() {
-		return getShimmerDeviceExceptionErrString(mMapOfErrorCodes);
+	public String getErrStringFormatted() {
+		return getErrStringFormatted(mMapOfErrorCodes);
 	}
 
-	private String getShimmerDeviceExceptionErrString(Map<Integer, String> mapOfErrorCodes) {
+	private String getErrStringFormatted(Map<Integer, String> mapOfErrorCodes) {
 		String errorString = "";
 
 		String id = mUniqueID;

@@ -54,7 +54,7 @@ import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -144,7 +144,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public List<MsgDock> mListOfFailMsg = new ArrayList<MsgDock>();
 	//BSL related end
 	
-	public List<DeviceException> mListOfDeviceExceptions = new ArrayList<DeviceException>();
+	public List<ShimmerException> mListOfDeviceExceptions = new ArrayList<ShimmerException>();
 	
 	//TODO: are these variables too specific to different versions of Shimmer HW?
 	public long mShimmerRealTimeClockConFigTime = 0;
@@ -2349,16 +2349,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	/** Generic method that can be overwritten in instances of ShimmerDevice
-	 * @throws DeviceException
+	 * @throws ShimmerException
 	 */
-	public void connect() throws DeviceException{
+	public void connect() throws ShimmerException{
 		
 	}
 
 	/** Generic method that can be overwritten in instances of ShimmerDevice
-	 * @throws DeviceException
+	 * @throws ShimmerException
 	 */
-	public void disconnect() throws DeviceException {
+	public void disconnect() throws ShimmerException {
 		//TODO
 //		stopRecording();
 		stopStreaming();
@@ -3751,10 +3751,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		mMapOfErrorCodes.putAll(mapOfErrorCodes);
 //	}
 	
-	public void addDeviceException(DeviceException dE) {
+	public void addDeviceException(ShimmerException dE) {
 		dE.mUniqueID = mUniqueID;
 		mListOfDeviceExceptions.add(dE);
-		consolePrintLn(dE.getShimmerDeviceExceptionErrString());
+		consolePrintLn(dE.getErrStringFormatted());
 	}
 
 	public void sensorAndConfigMapsCreateCommon() {

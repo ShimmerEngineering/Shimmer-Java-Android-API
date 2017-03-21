@@ -23,7 +23,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.SensorSTC3100Details;
 
@@ -189,10 +189,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 	
 	/**this is to clear the buffer
-	 * @throws DeviceException 
+	 * @throws ShimmerException 
 	 * 
 	 */
-	private void clearSerialBuffer() throws DeviceException {
+	private void clearSerialBuffer() throws ShimmerException {
 		/* JC: not working well on android
 		if(bytesAvailableToBeRead()){
 			byte[] buffer = readBytes(availableBytes());
@@ -281,7 +281,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 						
 						processBytesAvailableAndInstreamSupported();
 					}
-				} catch (DeviceException dE) {
+				} catch (ShimmerException dE) {
 //					stop=true;
 					
 					killConnection(dE);
@@ -291,7 +291,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			} 
 		} 
 		
-		private void processNextInstruction() throws DeviceException {
+		private void processNextInstruction() throws ShimmerException {
 			// check instruction stack, are there any other instructions left to be executed?
 			if(!getListofInstructions().isEmpty()) {
 				if(getListofInstructions().get(0)==null) {
@@ -395,7 +395,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			}
 		}
 
-		private void processWhileStreaming() throws DeviceException {
+		private void processWhileStreaming() throws ShimmerException {
 			byteBuffer = readBytes(1);
 			if(byteBuffer!=null){
 				mByteArrayOutputStream.write(byteBuffer[0]);
@@ -497,7 +497,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 
 		/** Process ACK from a GET or SET command while not streaming */ 
-		private void processNotStreamingWaitForAck() throws DeviceException {
+		private void processNotStreamingWaitForAck() throws ShimmerException {
 			//JC TEST:: IMPORTANT TO REMOVE // This is to simulate packet loss 
 			/*
 			if (Math.random()>0.9 && mIsInitialised==true){
@@ -607,7 +607,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 
 		/** Process RESPONSE while not streaming */ 
-		private void processNotStreamingWaitForResp() throws DeviceException {
+		private void processNotStreamingWaitForResp() throws ShimmerException {
 			//Discard first read
 			if(mFirstTime){
 //				printLogDataForDebugging("First Time read");
@@ -665,7 +665,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 
 		/** Process LogAndStream INSTREAM_CMD_RESPONSE while not streaming */ 
-		private void processBytesAvailableAndInstreamSupported() throws DeviceException {
+		private void processBytesAvailableAndInstreamSupported() throws ShimmerException {
 			if(((getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM) 
 					|| (getHardwareVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK))
 					&& !mWaitForAck 
@@ -1179,7 +1179,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				printLogDataForDebugging("Unhandled BT response: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(new byte[]{(byte) responseCommand}));
 			}
 
-		} catch(DeviceException dE){
+		} catch(ShimmerException dE){
 			
 		}
 
@@ -1243,27 +1243,27 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		return ((InstructionsSet.valueOf(setCmd&0xff)==null)? false:true);
 	}
 
-	private boolean bytesAvailableToBeRead() throws DeviceException {
+	private boolean bytesAvailableToBeRead() throws ShimmerException {
 		if(mCommsInterface.isConnected()){
 			return mCommsInterface.bytesAvailableToBeRead();
 		}
 		return false;
 	}
 
-	private void writeBytes(byte[] insBytes) throws DeviceException {
+	private void writeBytes(byte[] insBytes) throws ShimmerException {
 		mCommsInterface.txBytes(insBytes);
 	}
 
-	private byte[] readBytes(int i) throws DeviceException {
+	private byte[] readBytes(int i) throws ShimmerException {
 		return mCommsInterface.rxBytes(i);
 	}
 
-	private byte readByte() throws DeviceException {
+	private byte readByte() throws ShimmerException {
 		byte[] rxBytes = readBytes(1);
 		return rxBytes[0];
 	}
 
-	private int availableBytes() throws DeviceException {
+	private int availableBytes() throws ShimmerException {
 		return mCommsInterface.availableBytes();
 	}
 	
@@ -1394,7 +1394,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					//TODO try statement is not used in ShimmerBluetooth
 					try {
 						clearSerialBuffer();
-					} catch (DeviceException e) {
+					} catch (ShimmerException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -1579,7 +1579,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				eventResponseReceived(inStreamResponseCommand, sensorSTC3100Details);
 			}
 
-		} catch (DeviceException e) {
+		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -2074,7 +2074,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 						//this is needed because if u dc the shimmer the write call gets stuck
 						startTimerCheckForAckOrResp(ACK_TIMER_DURATION+3);
 					}
-				} catch (DeviceException e) {
+				} catch (ShimmerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -2088,11 +2088,11 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		killConnection(null, info);
 	}
 
-	private void killConnection(DeviceException dE){
+	private void killConnection(ShimmerException dE){
 		killConnection(dE, "");
 	}
 
-	private void killConnection(DeviceException dE, String info){
+	private void killConnection(ShimmerException dE, String info){
 		printLogDataForDebugging("Killing Connection" + (info.isEmpty()? "":(": " + info)));
 //		stop(); //If command fail exit device
 		mProtocolListener.eventKillConnectionRequest(dE);

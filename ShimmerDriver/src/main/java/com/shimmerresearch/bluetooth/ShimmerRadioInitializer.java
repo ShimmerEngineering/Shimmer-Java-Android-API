@@ -3,7 +3,7 @@ package com.shimmerresearch.bluetooth;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 
 public class ShimmerRadioInitializer {
 
@@ -25,7 +25,7 @@ public class ShimmerRadioInitializer {
 			ShimmerVerObject shimmerVersion = createShimmerVerObject(hardwareVersion, bufferFWVersion);
 			
 			return shimmerVersion;
-		} catch (DeviceException e) {
+		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
@@ -37,7 +37,7 @@ public class ShimmerRadioInitializer {
 	}
 	
 	
-	protected int getHardwareVersion() throws DeviceException, InterruptedException{
+	protected int getHardwareVersion() throws ShimmerException, InterruptedException{
 		//every radio should have a method to get the version object, the command value should be the same across all byte radios
 		byte[] instruction = {InstructionsGet.GET_SHIMMER_VERSION_COMMAND_VALUE}; 
 		
@@ -50,7 +50,7 @@ public class ShimmerRadioInitializer {
 		return hardwareVersion;
 	}
 	
-	protected byte[] getFirmwareVersion() throws DeviceException, InterruptedException{
+	protected byte[] getFirmwareVersion() throws ShimmerException, InterruptedException{
 		byte[] instruction = {InstructionsGet.GET_FW_VERSION_COMMAND_VALUE};
 		
 		serialCommPort.txBytes(instruction);

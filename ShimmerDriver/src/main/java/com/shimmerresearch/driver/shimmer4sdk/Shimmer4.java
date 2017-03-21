@@ -32,7 +32,7 @@ import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor;
@@ -475,7 +475,7 @@ public class Shimmer4 extends ShimmerDevice {
 		return mCommsProtocolRadio;
 	}
 	
-	private void clearCommsProtocolRadio() throws DeviceException {
+	private void clearCommsProtocolRadio() throws ShimmerException {
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.disconnect();
 		}
@@ -670,10 +670,10 @@ public class Shimmer4 extends ShimmerDevice {
 				}
 	
 				@Override
-				public void eventError(DeviceException dE) {
+				public void eventError(ShimmerException dE) {
 //					consolePrintException(dE.getMessage(), dE.getStackTrace());
 					if(dE!=null){
-						consolePrint(dE.getShimmerDeviceExceptionErrString());
+						consolePrint(dE.getErrStringFormatted());
 					}
 					else{
 						consolePrintLn("null error from CommsProtocol");
@@ -698,16 +698,16 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	@Override
-	public void connect() throws DeviceException {
+	public void connect() throws ShimmerException {
 //		clearShimmerVersionObject();
 		
 		setBluetoothRadioState(BT_STATE.CONNECTING);
 		if(mCommsProtocolRadio!=null){
 			try {
 				mCommsProtocolRadio.connect();
-			} catch (DeviceException dE) {
+			} catch (ShimmerException dE) {
 				consolePrintLn("Failed to Connect");
-				consolePrintLn(dE.getShimmerDeviceExceptionErrString());
+				consolePrintLn(dE.getErrStringFormatted());
 				
 				disconnect();
 				setBluetoothRadioState(BT_STATE.CONNECTION_FAILED);
@@ -1012,7 +1012,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 	
 	@Override
-	public void disconnect() throws DeviceException {
+	public void disconnect() throws ShimmerException {
 		super.disconnect();
 		clearCommsProtocolRadio();
 		

@@ -1,6 +1,6 @@
 package com.shimmerresearch.comms.serialPortInterface;
 
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 
 /** Hardware abstraction layer
  * 
@@ -12,21 +12,21 @@ public interface InterfaceSerialPortHal {
 //	int GET_SHIMMER_VERSION_COMMAND = 36;
 //	int GET_FW_VERSION_COMMAND = 46;
 	
-    public void connect() throws DeviceException;
+    public void connect() throws ShimmerException;
 //	public void connect(ShimmerSerialEventCallback shimmerSerialEventCallback) throws DeviceException;
-	public void disconnect() throws DeviceException;
-	public void closeSafely() throws DeviceException;
-	public void clearSerialPortRxBuffer() throws DeviceException;
-	public void txBytes(byte[] buf) throws DeviceException;
-	public byte[] rxBytes(int numBytes) throws DeviceException;
+	public void disconnect() throws ShimmerException;
+	public void closeSafely() throws ShimmerException;
+	public void clearSerialPortRxBuffer() throws ShimmerException;
+	public void txBytes(byte[] buf) throws ShimmerException;
+	public byte[] rxBytes(int numBytes) throws ShimmerException;
   
 	public boolean isSerialPortReaderStarted();
 //	public void sendRxCallback(byte[] packet, long timestampMs);
 	public void setVerboseMode(boolean verboseMode, boolean isDebugMode);
 	
-	public boolean bytesAvailableToBeRead() throws DeviceException;
+	public boolean bytesAvailableToBeRead() throws ShimmerException;
 	
-	public int availableBytes() throws DeviceException;
+	public int availableBytes() throws ShimmerException;
 	
 	public boolean isConnected();
 	public boolean isDisonnected();

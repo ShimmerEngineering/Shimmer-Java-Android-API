@@ -17,7 +17,7 @@ import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
-import com.shimmerresearch.exceptions.DeviceException;
+import com.shimmerresearch.exceptions.ShimmerException;
 
 /**Driver for managing and configuring the Shimmer through the Dock using the 
  * Shimmer's dock connected UART.
@@ -173,7 +173,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	public void openSafely() throws DockException {
 		try {
 			mSerialPortInterface.connect();
-		} catch (DeviceException devE) {
+		} catch (ShimmerException devE) {
 			DockException de = new DockException(devE);
 			closeSafely();
 			throw(de);
@@ -188,7 +188,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	public void closeSafely() throws DockException {
 		try {
 			mSerialPortInterface.closeSafely();
-		} catch (DeviceException devE) {
+		} catch (ShimmerException devE) {
 			DockException de = new DockException(devE);
 			throw(de);
 		} finally{
@@ -356,7 +356,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
     	byte[] txPacket = assembleTxPacket(packetCmd.toCmdByte(), msgArg, valueBuffer);
     	try {
     		mSerialPortInterface.txBytes(txPacket);
-		} catch (DeviceException devE) {
+		} catch (ShimmerException devE) {
 			DockException de = new DockException(devE);
 			throw(de);
 		} 
@@ -524,7 +524,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	}
 
 	//TODO not setup to handle streaming via dock connector -> add additional capability?
-	private void processRxBuf(byte[] rxBuf) throws DeviceException {
+	private void processRxBuf(byte[] rxBuf) throws ShimmerException {
 		
 		byte headerByte = rxBuf[0];
     	if(headerByte==UartPacketDetails.PACKET_HEADER.toCharArray()[0]){
