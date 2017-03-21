@@ -279,11 +279,11 @@ public class ShimmerVerObject implements Serializable {
 	}
 	
 	
-	public boolean isMplSupported() {
-		return isMplSupported(this, getHardwareVersion(), getFirmwareIdentifier());
+	public boolean isSupportedMpl() {
+		return isSupportedMpl(this, getHardwareVersion(), getFirmwareIdentifier());
 	}
 
-	public static boolean isMplSupported(ShimmerVerObject svo, int hwVer, int fwId) {
+	public static boolean isSupportedMpl(ShimmerVerObject svo, int hwVer, int fwId) {
 		if (compareVersions(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 7, 0)
 //				|| (hwVer==HW_ID.SHIMMER_4_SDK)
 				){
@@ -293,11 +293,11 @@ public class ShimmerVerObject implements Serializable {
 	}
 	
 
-	public boolean isRtcConfigViaUartSupported() {
-		return isRtcConfigViaUartSupported(getHardwareVersion(), getFirmwareIdentifier());
+	public boolean isSupportedRtcConfigViaUart() {
+		return isSupportedRtcConfigViaUart(getHardwareVersion(), getFirmwareIdentifier());
 	}
 
-	public static boolean isRtcConfigViaUartSupported(int hwVer, int fwId) {
+	public static boolean isSupportedRtcConfigViaUart(int hwVer, int fwId) {
 		if (((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.SDLOG))
 				|| ((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.LOGANDSTREAM))
 				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE)&&(fwId == FW_ID.GQ_BLE))
@@ -310,11 +310,11 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 	
-	public boolean isConfigViaUartSupported() {
-		return isConfigViaUartSupported(getHardwareVersion(), getFirmwareIdentifier());
+	public boolean isSupportedConfigViaUart() {
+		return isSupportedConfigViaUart(getHardwareVersion(), getFirmwareIdentifier());
 	}
 	
-	public static boolean isConfigViaUartSupported(int hwVer, int fwId) {
+	public static boolean isSupportedConfigViaUart(int hwVer, int fwId) {
 		if((hwVer==HW_ID.SHIMMER_3)
 				||(hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				||(hwVer==HW_ID.SHIMMER_GQ_802154_LR)
@@ -325,11 +325,11 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 
-	public boolean isSdCardAccessSupported() {
-		return isSdCardAccessSupported(getHardwareVersion(), getFirmwareIdentifier());
+	public boolean isSupportedSdCardAccess() {
+		return isSupportedSdCardAccess(getHardwareVersion(), getFirmwareIdentifier());
 	}
 	
-	public static boolean isSdCardAccessSupported(int hwVer, int fwId) {
+	public static boolean isSupportedSdCardAccess(int hwVer, int fwId) {
 		if (((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.SDLOG))
 				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.LOGANDSTREAM))
 				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE) && (fwId == FW_ID.GQ_BLE))
@@ -378,11 +378,11 @@ public class ShimmerVerObject implements Serializable {
 		return isShimmerGen4();
 	}
 
-	public boolean isCalibDumpSupported() {
-		return isCalibDumpSupported(this);
+	public boolean isSupportedCalibDump() {
+		return isSupportedCalibDump(this);
 	}
 	
-	public static boolean isCalibDumpSupported(ShimmerVerObject shimmerVerObject) {
+	public static boolean isSupportedCalibDump(ShimmerVerObject shimmerVerObject) {
 		if(compareVersions(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 6, 7)
 				|| compareVersions(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 12, 6)
 				|| shimmerVerObject.isShimmerGen4()){

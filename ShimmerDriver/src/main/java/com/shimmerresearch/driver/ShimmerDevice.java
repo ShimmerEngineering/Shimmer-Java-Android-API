@@ -647,7 +647,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public String getDriveCapacityParsed() {
 		String strPending = STRING_CONSTANT_PENDING;
 		
-		if(!isSdCardAccessSupported()){
+		if(!isSupportedSdCardAccess()){
 			return STRING_CONSTANT_UNKNOWN;
 		}
 
@@ -1589,20 +1589,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mPacketReceivedCount = i;
 	}
 
-	public boolean isRtcConfigViaUartSupported() {
-		return mShimmerVerObject.isRtcConfigViaUartSupported();
+	public boolean isSupportedRtcConfigViaUart() {
+		return mShimmerVerObject.isSupportedRtcConfigViaUart();
 	}
 	
-	public boolean isConfigViaUartSupported() {
-		return mShimmerVerObject.isConfigViaUartSupported();
+	public boolean isSupportedConfigViaUart() {
+		return mShimmerVerObject.isSupportedConfigViaUart();
 	}
 
-	public boolean isSdCardAccessSupported() {
-		return mShimmerVerObject.isSdCardAccessSupported();
+	public boolean isSupportedSdCardAccess() {
+		return mShimmerVerObject.isSupportedSdCardAccess();
 	}
 
-	public boolean isCalibDumpSupported() {
-		return mShimmerVerObject.isCalibDumpSupported();
+	public boolean isSupportedCalibDump() {
+		return mShimmerVerObject.isSupportedCalibDump();
 	}
 
 	public boolean isShimmerGen2(){

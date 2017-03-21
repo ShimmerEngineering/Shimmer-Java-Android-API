@@ -1707,7 +1707,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 
 	private void writeUpdateConfigMemory() {
-		if(mShimmerVerObject.isCalibDumpSupported()){
+		if(mShimmerVerObject.isSupportedCalibDump()){
 			writeInstruction(InstructionsSet.UPD_CONFIG_MEMORY_COMMAND_VALUE);
 		}
 	}

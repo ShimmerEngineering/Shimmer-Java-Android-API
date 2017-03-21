@@ -6072,7 +6072,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			if(((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SDLOG))&&(mInfoMemBytes.length >=384)) {
 				
 				// InfoMem C - Start - used by SdLog and LogAndStream
-				if(mShimmerVerObject.isMplSupported()) {
+				if(mShimmerVerObject.isSupportedMpl()) {
 					mMPU9150DMP = (configBytes[infoMemLayoutCast.idxConfigSetupByte4] >> infoMemLayoutCast.bitShiftMPU9150DMP) & infoMemLayoutCast.maskMPU9150DMP;
 					mMPU9150LPF = (configBytes[infoMemLayoutCast.idxConfigSetupByte4] >> infoMemLayoutCast.bitShiftMPU9150LPF) & infoMemLayoutCast.maskMPU9150LPF;
 					mMPU9150MotCalCfg =  (configBytes[infoMemLayoutCast.idxConfigSetupByte4] >> infoMemLayoutCast.bitShiftMPU9150MotCalCfg) & infoMemLayoutCast.maskMPU9150MotCalCfg;
@@ -8022,7 +8022,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
 					Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL);
 			
-			if(mShimmerVerObject.isMplSupported() && isMPLEnable()){
+			if(mShimmerVerObject.isSupportedMpl() && isMPLEnable()){
 				listOfSensorMapKeys = new ArrayList<Integer>(listOfSensorMapKeys);
 				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO);
 				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL);
@@ -8070,7 +8070,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 				return mCalibMapGyroShimmer3;
 			}
-			if(mShimmerVerObject.isMplSupported() && isMPLEnable()){
+			if(mShimmerVerObject.isSupportedMpl() && isMPLEnable()){
 				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO){
 					return mCalibMapMplGyro;
 				}

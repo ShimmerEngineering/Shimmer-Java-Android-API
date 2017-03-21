@@ -1364,7 +1364,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			}
 
-			if(mShimmerVerObject.isMplSupported()){
+			if(mShimmerVerObject.isSupportedMpl()){
 				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG.ordinal(), new SensorGroupingDetails(
 						GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG,
 						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL,
@@ -2180,7 +2180,7 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 
 		setMPU9150GyroAccelRateFromFreq(samplingRateHz);
 		setMPU9150MagRateFromFreq(samplingRateHz);
-		if(mShimmerVerObject.isMplSupported()){
+		if(mShimmerVerObject.isSupportedMpl()){
 			setMPU9150MplRateFromFreq(samplingRateHz);
 		}
 		
