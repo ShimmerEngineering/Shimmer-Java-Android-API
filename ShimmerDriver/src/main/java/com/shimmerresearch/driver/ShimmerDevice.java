@@ -72,7 +72,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public static final String DEFAULT_EXPERIMENT_NAME = "DefaultTrial";
 	public static final String DEFAULT_MAC_ID = "";
 	public static final String DEVICE_ID = "Device_ID";
-	
 	public static final String STRING_CONSTANT_PENDING = "Pending";
 	public static final String STRING_CONSTANT_UNKNOWN = "Unknown";
 	public static final String STRING_CONSTANT_NOT_AVAILABLE = "N/A";
