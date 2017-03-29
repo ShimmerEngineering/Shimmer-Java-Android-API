@@ -790,6 +790,14 @@ public class UtilShimmer implements Serializable {
 		return bytesToHexStringWithSpacesFormatted(bytesArray);
 	}
 
+	public static String longToHexString(long number, int numBytes) {
+		byte[] bytesArray = new byte[numBytes];
+		for(int i=0;i<numBytes;i++){
+			bytesArray[i] = (byte) ((number >> (i*8)) & 0xFF);
+		}
+		return bytesToHexString(bytesArray);
+	}
+
 	public static String doubleArrayToString(double[][] doubleArray) {
 		String returnString = "";
 		for(int x=0;x<doubleArray.length;x++){
