@@ -1,6 +1,7 @@
 when using bintray please include your username and key via
 
-bintray_username=bintray-examples
-bintray_api_key= #Configure here or by using gradle command line arg: -Pbintray_api_key=<api_key>
+bintray_username= '_ _ _'
+
+bintray_api_key=  '_ _ _'
 
 in a gradle.properties file, dont commit the gradle.properties file!!
