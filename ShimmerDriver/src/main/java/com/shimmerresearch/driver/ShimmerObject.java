@@ -7745,10 +7745,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				SensorEXG.DatabaseConfigHandle.EXG1_LEAD_OFF_STATUS,
 				SensorEXG.DatabaseConfigHandle.EXG1_RESPIRATION_1,
 				SensorEXG.DatabaseConfigHandle.EXG1_RESPIRATION_2);
-		if(exg1Bytes!=null){
-			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1, exg1Bytes);
-		}
-		
+//		if(exg1Bytes!=null){
+//			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP1, exg1Bytes);
+//		}
 		byte[] exg2Bytes = SensorEXG.parseExgConfigFromDb(mapOfConfigPerShimmer, EXG_CHIP_INDEX.CHIP2, 
 				SensorEXG.DatabaseConfigHandle.EXG2_CONFIG_1,
 				SensorEXG.DatabaseConfigHandle.EXG2_CONFIG_2,
@@ -7760,9 +7759,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				SensorEXG.DatabaseConfigHandle.EXG2_LEAD_OFF_STATUS,
 				SensorEXG.DatabaseConfigHandle.EXG2_RESPIRATION_1,
 				SensorEXG.DatabaseConfigHandle.EXG2_RESPIRATION_2);
-		if(exg2Bytes!=null){
-			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP2, exg2Bytes);
-		}
+//		if(exg2Bytes!=null){
+//			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP2, exg2Bytes);
+//		}
+		exgBytesGetConfigFrom(exg1Bytes, exg2Bytes);
 		
 		//Digital Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
@@ -8298,8 +8298,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public void exgBytesGetConfigFrom(byte[] EXG1RegisterArray, byte[] EXG2RegisterArray){
-		setEXG1RegisterArray(EXG1RegisterArray);
-		setEXG2RegisterArray(EXG2RegisterArray);
+		if(EXG1RegisterArray!=null){
+			setEXG1RegisterArray(EXG1RegisterArray);
+		}
+		if(EXG2RegisterArray!=null){
+			setEXG2RegisterArray(EXG2RegisterArray);
+		}
 		internalCheckExgModeAndUpdateSensorMap();
 	}
 	
