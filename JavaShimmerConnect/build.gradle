@@ -34,9 +34,9 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
     
-    //compile project (':ShimmerDriver')
-    //compile project (':ShimmerDriverPC')
+    compile project (':ShimmerDriver')
+    compile project (':ShimmerDriverPC')
     compile name: 'ShimmerBiophysicalProcessingLibrary_Rev_0_11'
-    compile 'com.shimmerresearch.driver:ShimmerDriver:0.4'
-    compile 'com.shimmerresearch.pcdriver:ShimmerDriverPC:1.0'
+    //compile 'com.shimmerresearch.driver:ShimmerDriver:0.4'
+    //compile 'com.shimmerresearch.pcdriver:ShimmerDriverPC:1.0'
 }
