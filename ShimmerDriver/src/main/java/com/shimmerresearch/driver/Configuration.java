@@ -1025,6 +1025,7 @@ public class Configuration {
 			ORIENTATION_6DOF("6DOF"),  
 			ECG_TO_HR("ECG-to-HR"),
 			PPG_TO_HR("PPG-to-HR"),
+			PPG_TO_HR_NEW("PPG-to-HR-New"),
 			HRV_ECG("HRV"),
 			EMG("EMG Processing"),
 			ACTIVITY("Activity"),
