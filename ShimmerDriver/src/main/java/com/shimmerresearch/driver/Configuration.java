@@ -828,45 +828,71 @@ public class Configuration {
 			public static final int HOST_CPU_USAGE = 1004;
 		}
 		
+		/**
+		 * The bit mask must not change for each algorithm as this is what is
+		 * stored in the Shimmer's infomem and the SD file configuration header.
+		 * 
+		 * 3 bytes for derived channels were introduced in LogAndStream v0.3.15 and SDLog v0.8.69.
+		 * 5 bytes in GQ firmware.
+		 * 8 bytes in LogAndStream v0.7.1 and SDLog v0.13.1 onwards
+		 */
 		public class DerivedSensorsBitMask {
-			public final static int ORIENTATION_6DOF_LN_EULER 	= 1 << 23;
-			public final static int ORIENTATION_6DOF_LN_QUAT 	= 1 << 22;
-			public final static int ORIENTATION_9DOF_LN_EULER 	= 1 << 21;
-			public final static int ORIENTATION_9DOF_LN_QUAT 	= 1 << 20;
-			public final static int ORIENTATION_6DOF_WR_EULER 	= 1 << 19;
-			public final static int ORIENTATION_6DOF_WR_QUAT 	= 1 << 18;
-			public final static int ORIENTATION_9DOF_WR_EULER 	= 1 << 17;
-			public final static int ORIENTATION_9DOF_WR_QUAT 	= 1 << 16;
-			// ------------------------------------------------------------------
-			public final static int ECG2HR_CHIP1_CH1 			= 1 << 15;
-			public final static int ECG2HR_CHIP1_CH2 			= 1 << 14;
-			public final static int ECG2HR_CHIP2_CH1 			= 1 << 13;
-			public final static int ECG2HR_CHIP2_CH2 			= 1 << 12;
-			public final static int ECG2HR_HRV_TIME_DOMAIN 		= 1 << 11;
-			public final static int ECG2HR_HRV_FREQ_DOMAIN 		= 1 << 10;
+			// -------------- Derived Channels Byte 0 -------------------
+			public final static int RES_AMP 					= 1 << 0; // (0*8 + 0);
+			public final static int SKIN_TEMP 					= 1 << 1; // (0*8 + 1);
+			
+			// TODO: Now implemented in SensorPPG -> decide where best these
+			// bits belong, Configuration.Shimmer3 or sensor/algorithm classes
+			public final static int PPG_12_13 					= 1 << 2; // (0*8 + 2);
+			public final static int PPG1_12_13 					= 1 << 3; // (0*8 + 3);
+			public final static int PPG2_1_14 					= 1 << 4; // (0*8 + 4);
+			public final static int PPG_TO_HR_12_13 			= 1 << 5; // (0*8 + 5);
+			public final static int PPG_TO_HR1_12_13 			= 1 << 6; // (0*8 + 6);
+			public final static int PPG_TO_HR2_1_14 			= 1 << 7; // (0*8 + 7);
+			
+			// -------------- Derived Channels Byte 1 -------------------
+			public final static int ACTIVITY_MODULE 			= 1 << 8; // (1*8 + 0);
+			
+			public final static int GSR_METRICS_GENERAL			= 1 << 9; // (1*8 + 1);
 
-			// ----------------------------------------------------------
-			public final static int ACTIVITY_MODULE 			= 1 << 8;
-			public final static int GAIT_MODULE 				= 1 << 9;
-			public final static int GSR_METRICS_GENERAL			= 1 << 9;
-			public final static int GSR_BASELINE 				= 1 << 26;
-			public final static int GSR_METRICS_TREND_PEAK		= 1 << 27;
+			public final static int ECG2HR_HRV_FREQ_DOMAIN 		= 1 << 10; // (1*8 + 2);
+			public final static int ECG2HR_HRV_TIME_DOMAIN 		= 1 << 11; // (1*8 + 3);
+			public final static int ECG2HR_CHIP2_CH2 			= 1 << 12; // (1*8 + 4);
+			public final static int ECG2HR_CHIP2_CH1 			= 1 << 13; // (1*8 + 5);
+			public final static int ECG2HR_CHIP1_CH2 			= 1 << 14; // (1*8 + 6);
+			public final static int ECG2HR_CHIP1_CH1 			= 1 << 15; // (1*8 + 7);
 
-			// ----------------------------------------------------------
-			public final static int EMG_PROCESSING_CHAN2 		= 1 << 24;
-			public final static int EMG_PROCESSING_CHAN1 		= 1 << 25;
+			// -------------- Derived Channels Byte 2 -------------------
+			public final static int ORIENTATION_9DOF_WR_QUAT 	= 1 << 16; // (2*8 + 0);
+			public final static int ORIENTATION_9DOF_WR_EULER 	= 1 << 17; // (2*8 + 1);
+			public final static int ORIENTATION_6DOF_WR_QUAT 	= 1 << 18; // (2*8 + 2);
+			public final static int ORIENTATION_6DOF_WR_EULER 	= 1 << 19; // (2*8 + 3);
+			public final static int ORIENTATION_9DOF_LN_QUAT 	= 1 << 20; // (2*8 + 4);
+			public final static int ORIENTATION_9DOF_LN_EULER 	= 1 << 21; // (2*8 + 5);
+			public final static int ORIENTATION_6DOF_LN_QUAT 	= 1 << 22; // (2*8 + 6);
+			public final static int ORIENTATION_6DOF_LN_EULER 	= 1 << 23; // (2*8 + 7);
 
-			// ----------- Now implemented in SensorPPG
-			// -------------------------
-			public final static int PPG_TO_HR2_1_14 			= 1 << 7;
-			public final static int PPG_TO_HR1_12_13 			= 1 << 6;
-			public final static int PPG_TO_HR_12_13 			= 1 << 5;
-			public final static int PPG2_1_14 					= 1 << 4;
-			public final static int PPG1_12_13 					= 1 << 3;
-			public final static int PPG_12_13 					= 1 << 2;
-			// ------------------------------------------------------------------
-			public final static int SKIN_TEMP 					= 1 << 1;
-			public final static int RES_AMP 					= 1 << 0;
+			// -------------- Derived Channels Byte 3 -------------------
+			public final static int EMG_PROCESSING_CHAN2 		= 1 << 24; // (3*8 + 0);
+			public final static int EMG_PROCESSING_CHAN1 		= 1 << 25; // (3*8 + 1);
+			
+			public final static int GSR_BASELINE 				= 1 << 26; // (3*8 + 2);
+			public final static int GSR_METRICS_TREND_PEAK		= 1 << 27; // (3*8 + 3);
+			
+			public final static int GAIT_MODULE 				= 1 << 28; // (3*8 + 4);
+
+//			public final static int UNUSED		 				= 1 << 29; // (3*8 + 5);
+//			public final static int UNUSED 						= 1 << 30; // (3*8 + 6);
+//			public final static int UNUSED 						= 1 << 31; // (3*8 + 7);
+
+			// -------------- Derived Channels Byte 4 -------------------
+			// Currently Unused
+			// -------------- Derived Channels Byte 5 -------------------
+			// Currently Unused
+			// -------------- Derived Channels Byte 6 -------------------
+			// Currently Unused
+			// -------------- Derived Channels Byte 7 -------------------
+			// Currently Unused
 		}
 
 		// Config Options Map
