@@ -906,6 +906,27 @@ public class UtilShimmer implements Serializable {
 			return format.format(d);
 		}
 	}
+	
+	public static String formatDoubleToNdecimalPlaces(double doubleToFormat, int n){
+		
+		StringBuilder sb = new StringBuilder();
+		for(int i=0; i<n; i++){ //number of digits to right hand side of decimal point
+			sb.append("0"); 
+		}
+		
+		DecimalFormat df = new DecimalFormat("#." + sb.toString()); 
+		String formatted = df.format(doubleToFormat);
+		
+		int index = formatted.indexOf("."); 
+		
+		if(index == 0){ // left pad with zero if required e.g .34 -> 0.34
+			formatted =  "0" + formatted; 
+		}
+		else if(formatted.charAt(index-1) == '-'){ // left pad with zero if required e.g -.34 -> -0.34
+			formatted = new StringBuilder(formatted).insert(1, "0").toString();
+		}
+		return formatted;
+	}
 
     /**
      * RSSI = TxPower - 10 * n * lg(d)
