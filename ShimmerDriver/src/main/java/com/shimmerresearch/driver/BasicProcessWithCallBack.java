@@ -161,9 +161,16 @@ public abstract class BasicProcessWithCallBack {
     	if (mThread!=null){
     		mThread.callBackMethod( i, ojc);
     	}
-    	for (Callable c:mListOfThreads){
-    		c.callBackMethod(i,ojc);
-    	}
+    	
+    	// April 2017: RM changed for loop to iterator as concurrentmodification with for loop from time to time (this solution may not resolve concurrentmodification, monitor over time)
+		Iterator <Callable> entries = mListOfThreads.iterator();
+		while (entries.hasNext()) {
+			Callable c = entries.next();
+			c.callBackMethod(i,ojc);
+		}
+//    	for (Callable c:mListOfThreads){
+//    		c.callBackMethod(i,ojc);
+//    	}
     }
     
     //this is for the upper layer
