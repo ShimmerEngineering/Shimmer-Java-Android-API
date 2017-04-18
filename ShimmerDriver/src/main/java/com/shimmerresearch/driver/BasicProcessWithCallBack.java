@@ -1,6 +1,7 @@
 package com.shimmerresearch.driver;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -143,9 +144,17 @@ public abstract class BasicProcessWithCallBack {
     	if (mThread!=null){
     		mThread.callBackMethod(s);
     	} 
-    	for (Callable c:mListOfThreads){
-    		c.callBackMethod(s);
-    	}
+    	
+    	// April 2017: RM changed for loop to iterator as concurrentmodification with for loop from time to time (this solution may not resolve concurrentmodification, monitor over time)
+		Iterator <Callable> entries = mListOfThreads.iterator();
+		while (entries.hasNext()) {
+			Callable c = entries.next();
+			c.callBackMethod(s);
+		}
+    	
+//    	for (Callable c: mListOfThreads){
+//    		c.callBackMethod(s);
+//    	}
     }
     
     public void sendCallBackMsg(int i, Object ojc){
