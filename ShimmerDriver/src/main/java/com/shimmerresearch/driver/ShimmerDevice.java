@@ -3428,6 +3428,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		for(Integer sensorMapKey:mapOfAllCalib.keySet()){
 			TreeMap<Integer, CalibDetails> calibMapPerSensor = mapOfAllCalib.get(sensorMapKey);
 			for(CalibDetails calibDetailsPerRange:calibMapPerSensor.values()){
+				
 				byte[] calibBytesPerSensor = calibDetailsPerRange.generateCalibDump();
 				if(calibBytesPerSensor!=null){
 					byte[] calibSensorKeyBytes = new byte[2];
@@ -3437,6 +3438,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					
 					byte[] newCalibBytesAll = ArrayUtils.addAll(calibBytesAll, calibBytesPerSensor);
 					calibBytesAll = newCalibBytesAll;
+				}
+				
+				if(calibDetailsPerRange.mRangeValue == 7){
+					System.err.println("MAG RANGE 7");
 				}
 				
 				//Debugging
