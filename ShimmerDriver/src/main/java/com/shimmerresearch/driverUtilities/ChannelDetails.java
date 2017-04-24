@@ -186,7 +186,11 @@ public class ChannelDetails implements Serializable {
 		mListOfChannelTypes = listOfChannelTypes;
 	}
 
-	public ChannelDetails(String objectClusterName, String guiName, String defaultCalibratedUnits, List<CHANNEL_TYPE> listOfChannelTypes, String databaseChannelHandle) {
+	public ChannelDetails(String objectClusterName, 
+			String guiName, 
+			String defaultCalibratedUnits, 
+			List<CHANNEL_TYPE> listOfChannelTypes, 
+			String databaseChannelHandle) {
 		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes);
 		mDatabaseChannelHandle = databaseChannelHandle;
 	}
