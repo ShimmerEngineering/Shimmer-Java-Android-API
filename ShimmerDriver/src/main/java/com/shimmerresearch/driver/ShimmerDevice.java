@@ -2951,12 +2951,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//---------- Storing to Database related - start --------------------
 	
 	public List<String> getSensorsAndAlgorithmChannelsToStoreInDB(){
-		return getSensorsAndAlgorithmChannelsToStoreInDB(null);
+		return getSensorsAndAlgorithmChannelsToStoreInDB(null, null);
 	}
 	
-	public List<String> getSensorsAndAlgorithmChannelsToStoreInDB(COMMUNICATION_TYPE commType){
-		Set<String> setOfSensorsAndAlgorithms = getSensorChannelsToStoreInDB(commType);
-		Set<String> setOfAlgorithms = getAlgortihmChannelsToStoreInDB(commType);
+	public List<String> getSensorsAndAlgorithmChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
+		Set<String> setOfSensorsAndAlgorithms = getSensorChannelsToStoreInDB(commType, channelType);
+		Set<String> setOfAlgorithms = getAlgortihmChannelsToStoreInDB(commType, channelType);
 		setOfSensorsAndAlgorithms.addAll(setOfAlgorithms);
 		
 		List<String> listOfObjectClusterSensors = new ArrayList<String>(setOfSensorsAndAlgorithms.size());
@@ -2988,36 +2988,38 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	//2017-02-01 MN: New code
 	//TODO get algorithm isenabled per commType
-	private Set<String> getAlgortihmChannelsToStoreInDB(COMMUNICATION_TYPE commType){
+	private Set<String> getAlgortihmChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
 		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
 		Iterator<AbstractAlgorithm> iteratorAlgorithms = getListOfEnabledAlgorithmModules().iterator();
 		while(iteratorAlgorithms.hasNext()){
 			AbstractAlgorithm algorithm = iteratorAlgorithms.next();
 			List<ChannelDetails> listOfDetails = algorithm.getChannelDetails();
-			for(ChannelDetails details:listOfDetails){
-				if(details.mStoreToDatabase){
-					setOfObjectClusterChannels.add(details.mObjectClusterName);
-//					setOfObjectClusterSensors.add(details.mDatabaseChannelHandle); AS: use this one better??
+			for(ChannelDetails channelDetails:listOfDetails){
+				if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
+					continue;
+				}
+
+				if(channelDetails.mStoreToDatabase){
+					setOfObjectClusterChannels.add(channelDetails.mObjectClusterName);
+					//TODO AS: use this one better?? MN: yes it is so I don't know why it isn't like the one below and if we change will it mess anything up  
+//					setOfObjectClusterSensors.add(channelDetails.mDatabaseChannelHandle);
 				}
 			}
 		}
 		return setOfObjectClusterChannels;
 	}
 	
-	private Set<String> getSensorChannelsToStoreInDB(COMMUNICATION_TYPE commType){
-		Map<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDb(commType);
+	private Set<String> getSensorChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
+		Map<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDb(commType, channelType);
 		
 		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
+		//TODO MN&AS: shouldn't this be using the mDatabaseChannelHandle rather then the mObjectClusterName??
 		setOfObjectClusterSensors.addAll(mapOfEnabledChannelsForStoringToDb.keySet());
 		
 		return setOfObjectClusterSensors;
 	}
 
-//	public Map<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb() {
-//		return getMapOfEnabledSensorChannelsForStoringToDb(null);
-//	}
-
-	public Map<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb(COMMUNICATION_TYPE commType) {
+	public Map<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType) {
 		HashMap<String, ChannelDetails> listOfChannels = new HashMap<String, ChannelDetails>();
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
@@ -3033,6 +3035,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			
 			if(isEnabled && !sensorDetails.mSensorDetailsRef.mIsDummySensor){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
+						continue;
+					}
+					
 					if(channelDetails.mStoreToDatabase){
 						listOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
 					}
