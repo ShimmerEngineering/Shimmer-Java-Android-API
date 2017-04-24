@@ -483,6 +483,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	//------------------- Event marker code Start -------------------------------
+	/**
+	 * @param eventCode
+	 * @param eventType //2 is the code for the pulse event, 1 is the code for the toggle event
+	 */
 	public void setEventTriggered(int eventCode, int eventType){
 		mEventMarkersCodeLast = eventCode;
 		
