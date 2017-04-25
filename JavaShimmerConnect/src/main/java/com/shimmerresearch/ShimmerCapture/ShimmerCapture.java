@@ -292,7 +292,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				try {
 					
 					
-					Configuration.setTooLegacyObjectClusterSensorNames();
+					//Configuration.setTooLegacyObjectClusterSensorNames();
 					ShimmerCapture window = new ShimmerCapture();
 					window.frame.setVisible(true);
 					/*SerialPort serialPort = new SerialPort("COM155");
