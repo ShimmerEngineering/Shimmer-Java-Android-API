@@ -112,6 +112,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	protected double mShimmerSamplingRate = 128.0;
 
 	protected ShimmerDevice mShimmerDevice = null;
+	protected UtilShimmer mUtilShimmer = new UtilShimmer(this.getClass().getSimpleName(), true);
 
 	/** this is to specify what fw version/hardware should be allowed to use the algorithm */
 	public static final List<ShimmerVerObject> mListOfCompatibleSVO = new ArrayList<ShimmerVerObject>(); 
@@ -439,7 +440,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		for(String configOptionKey:mConfigOptionsMap.keySet()){
 			Object configValue = getSettings(configOptionKey);
 			if(configValue!=null){
-				System.out.println("getEnabledAlgorithmSettings\t" + configOptionKey);
+				consolePrintLn("getEnabledAlgorithmSettings\t" + configOptionKey);
 				mapOfAlgorithmSettings.put(configOptionKey, configValue);
 			}
 		}
@@ -482,7 +483,8 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 			mShimmerDevice.consolePrintLn(message);
 		}
 		else{
-			System.out.println(message);
+//			System.out.println(message);
+			mUtilShimmer.consolePrintLn(message);			
 		}
 	}
 
@@ -491,7 +493,8 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 			mShimmerDevice.consolePrintErrLn(message);
 		}
 		else{
-			System.out.println(message);
+//			System.out.println(message);
+			mUtilShimmer.consolePrintErrLn(message);			
 		}
 	}
 
@@ -500,7 +503,8 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 			mShimmerDevice.consolePrintExeptionLn(message, stackTrace);
 		}
 		else{
-			System.out.println(message);
+//			System.out.println(message);
+			mUtilShimmer.consolePrintExeptionLn(message, stackTrace);			
 		}
 	}
 	
