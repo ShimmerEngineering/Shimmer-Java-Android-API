@@ -115,9 +115,11 @@ public abstract class BasicProcessWithCallBack {
 				found = true;
 			}
 			if (!found){
-				for (WaitForData wfd:mListWaitForData){
-					if (wfd.returnBasicProcessWithCallBack().equals(b)){
-						found = true;
+				for (WaitForData wfd: mListWaitForData){
+					if(wfd != null && wfd.returnBasicProcessWithCallBack() != null){
+						if (wfd.returnBasicProcessWithCallBack().equals(b)){
+							found = true;
+						}
 					}
 				}
 			}
