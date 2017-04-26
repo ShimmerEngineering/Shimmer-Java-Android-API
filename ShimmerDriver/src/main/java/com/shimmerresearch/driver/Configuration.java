@@ -358,7 +358,7 @@ public class Configuration {
 	    }
 	}
 
-	
+	@Deprecated
 	public static void setTooLegacyObjectClusterSensorNames(){
 
 		Shimmer3.ObjectClusterSensorName.TIMESTAMP = "Timestamp";
