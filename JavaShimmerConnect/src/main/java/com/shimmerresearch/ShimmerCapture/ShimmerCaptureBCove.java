@@ -291,8 +291,6 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 			public void run() {
 				try {
 					
-					
-					//Configuration.setTooLegacyObjectClusterSensorNames();
 					ShimmerCaptureBCove window = new ShimmerCaptureBCove();
 					window.frame.setVisible(true);
 					/*SerialPort serialPort = new SerialPort("COM155");
