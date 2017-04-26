@@ -94,8 +94,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.MemReadDetails;
-import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
-import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -995,14 +993,22 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			printLogDataForDebugging("Discarding:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(buffer));
 		}
 		*/
+		
+		
+		List<Byte> buffer = new ArrayList<Byte>();
 		while (availableBytes()!=0){
 			int available = availableBytes();
 			if (bytesAvailableToBeRead()){
 				byte[] tb=readBytes(1);
-				String msg = "First Time : " + UtilShimmer.bytesToHexStringWithSpacesFormatted(tb);
-				printLogDataForDebugging(msg);
+				buffer.add(tb[0]);
 			}
 		}		  		
+		
+		if(buffer.size()>0){
+			byte[] newBuf = ArrayUtils.toPrimitive(buffer.toArray(new Byte[buffer.size()]));
+			String msg = "Clearing Buffer:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(newBuf);
+			printLogDataForDebugging(msg);
+		}
 	}
 	
 	/**

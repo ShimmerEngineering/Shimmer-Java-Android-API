@@ -71,6 +71,12 @@ public class UtilShimmer implements Serializable {
 		}		
 	}
 	
+	public void consolePrintExeptionLn(String message, StackTraceElement[] stackTrace) {
+		if(mVerboseMode) {
+			consolePrintErrLn(message + "\n" + UtilShimmer.convertStackTraceToString(stackTrace));
+		}
+	}
+	
 	private String generateConsolePrintLn(String message) {
 		Calendar rightNow = Calendar.getInstance();
 		String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
