@@ -1638,7 +1638,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void consolePrintExeptionLn(String message, StackTraceElement[] stackTrace) {
 		if(mVerboseMode) {
 			consolePrintErrLn(message + "\n" + UtilShimmer.convertStackTraceToString(stackTrace));
-			
 		}
 	}
 
