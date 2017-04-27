@@ -180,11 +180,13 @@ public class HwDriverShimmerDeviceDetails {
 	        public static final String SHIMMER3 = "Shimmer3";
 	        public static final String SHIMMER4 = "Shimmer4";
 	        public static final String RN42 = "RN42";
+	        public static final String RNBT = "RNBT";
 
             public static final String[] SHIMMER_DEVICE = new String[] {
             	SHIMMER3,
             	SHIMMER4,
             	RN42,
+            	RNBT
             };
             
 	        public static final String MANUFACTURER_NONIN = "Nonin";
