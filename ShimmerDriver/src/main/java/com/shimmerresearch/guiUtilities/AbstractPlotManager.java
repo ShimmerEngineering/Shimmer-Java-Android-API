@@ -134,12 +134,12 @@ public abstract class AbstractPlotManager {
 	}
 	
 	protected void addSignalGenerateRandomColor(String [] channelStringArray){
-		mListofPropertiestoPlot.add(channelStringArray);
+		addSignal(channelStringArray);
 		mListOfTraceColorsCurrentlyUsed.add(generateRandomColor());
 	}
 	
 	protected void addSignalAndUseFixedColor(String [] channelStringArray, int[] rgb){
-		mListofPropertiestoPlot.add(channelStringArray);
+		addSignal(channelStringArray);
 		mListOfTraceColorsCurrentlyUsed.add(rgb);
 	}
 	
@@ -148,7 +148,7 @@ public abstract class AbstractPlotManager {
 	 */
 	protected void addSignalUseDefaultColors(String [] channelStringArray){
 		
-		mListofPropertiestoPlot.add(channelStringArray);
+		addSignal(channelStringArray);
 		boolean mFound = false;
 		int[] newColorToAdd = null;
 		if (mListOfTraceColorsCurrentlyUsed.size() > 0){
@@ -180,7 +180,7 @@ public abstract class AbstractPlotManager {
 	}
 	
 	protected void addSignalandColor(String[] channelStringArray, int[] color){
-		mListofPropertiestoPlot.add(channelStringArray);
+		addSignal(channelStringArray);
 		mListOfTraceColorsCurrentlyUsed.add(color);
 	}
 	
