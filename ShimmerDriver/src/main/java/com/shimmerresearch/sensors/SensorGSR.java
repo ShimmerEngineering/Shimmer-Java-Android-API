@@ -166,7 +166,7 @@ public class SensorGSR extends AbstractSensor {
 			ObjectClusterSensorName.GSR_CONDUCTANCE,
 			ObjectClusterSensorName.GSR_CONDUCTANCE,
 			CHANNEL_UNITS.U_SIEMENS,
-			Arrays.asList(CHANNEL_TYPE.CAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
 		//TODO add to constructor
 		channelGsrMicroSiemens.mChannelSource = CHANNEL_SOURCE.API;
@@ -176,7 +176,7 @@ public class SensorGSR extends AbstractSensor {
 			ObjectClusterSensorName.GSR_RANGE_CURRENT,
 			ObjectClusterSensorName.GSR_RANGE_CURRENT,
 			CHANNEL_UNITS.NO_UNITS,
-			Arrays.asList(CHANNEL_TYPE.CAL));
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
 		//TODO add to constructor
 		channelGsrMicroSiemens.mChannelSource = CHANNEL_SOURCE.API;
@@ -270,6 +270,7 @@ public class SensorGSR extends AbstractSensor {
 
 
 	@Override
+	//TODO needs to be updated to match ShimmerObject
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		int index = 0;
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -362,16 +363,19 @@ public class SensorGSR extends AbstractSensor {
 				
 				if(sensorDetails.mListOfChannels.contains(channelGsrMicroSiemens)){
 					double calDatauS = calibrateGsrDataToSiemens(rawData,p1,p2);
+					objectCluster.addUncalData(channelGsrMicroSiemens, rawData);
 					objectCluster.addCalData(channelGsrMicroSiemens, calDatauS);
 					objectCluster.incrementIndexKeeper();
 				}
 				if(sensorDetails.mListOfChannels.contains(channelGsrRangeCurrent)){
+					objectCluster.addUncalData(channelGsrRangeCurrent, rawData);
 					objectCluster.addCalData(channelGsrRangeCurrent, newGSRRange);
 					objectCluster.incrementIndexKeeper();
 				}
 				if(sensorDetails.mListOfChannels.contains(channelGsrAdc)){
-					objectCluster.addUncalData(channelGsrAdc, rawData);
-					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannel(rawData));
+					int adcUncal = ((int)rawData & 4095); 
+					objectCluster.addUncalData(channelGsrAdc, adcUncal);
+					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannel(adcUncal));
 					objectCluster.incrementIndexKeeper();
 				}
 				
