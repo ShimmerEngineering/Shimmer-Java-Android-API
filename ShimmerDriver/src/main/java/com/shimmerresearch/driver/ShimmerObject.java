@@ -9338,61 +9338,61 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
 //						||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
 					if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(true);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_ECG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EMG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, true);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR, false);
 					}
 					else if(isEXGUsingDefaultECGConfiguration()) {
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(true);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_ECG, true);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EMG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR, false);
 					}
 					else if(isEXGUsingDefaultEMGConfiguration()) {
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(true);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_ECG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EMG, true);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR, false);
 					}
 					else if(isEXGUsingDefaultTestSignalConfiguration()){
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(true);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_ECG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EMG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST, true);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR, false);
 					}
 					else if(isEXGUsingDefaultThreeUnipolarConfiguration()){
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(true);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_ECG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EMG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR, true);
 					}
 					else if(isEXGUsingCustomSignalConfiguration()){
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(true);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_ECG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EMG, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM, true);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, false);
+						setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR, false);
 					}
 					else {
 						if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG)!=null){
-							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-							mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+							setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_ECG, false);
+							setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EMG, false);
+							setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST, false);
+							setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM, false);
+							setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, false);
+							setSensorEnabledStateBasic(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR, false);
 						}
 					}
 				}

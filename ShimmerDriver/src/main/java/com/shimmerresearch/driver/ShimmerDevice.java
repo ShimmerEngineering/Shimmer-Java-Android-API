@@ -1961,7 +1961,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		printSensorParserAndAlgoMaps();
 	}
 
-	
+	/**
+	 * This method just changes the isEnabled boolean state in the specific
+	 * SensorDetails inside the SensorMap. It doesn't do any of the usual checks
+	 * before or after enabling a sensor (such as checking for
+	 * conflicts/required sensors/expansion board power etc.)
+	 * 
+	 * @param sensorMapKey
+	 * @param state
+	 */
+	protected void setSensorEnabledStateBasic(int sensorMapKey, boolean state) {
+		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+		if (sensorDetails!=null){
+			sensorDetails.setIsEnabled(state);
+		}
+	}
 	
 	public int handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
