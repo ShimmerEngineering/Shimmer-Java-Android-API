@@ -2339,7 +2339,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		mFirstPacketParsed=true;
 		resetCalibratedTimeStamp();
-		resetPacketLossTrial();
+		resetPacketLossVariables();
 		mSync=true; // a backup sync done every time you start streaming
 	}
 	
@@ -4808,16 +4808,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void resetCalibratedTimeStamp(){
 		mLastReceivedTimeStamp = 0;
 		mLastReceivedCalibratedTimeStamp = -1;
-		mFirstTimeCalTime = true;
+		
+		mStreamingStartTimeSaved = false;
+		mStreamingStartTimeMs = -1;
+		
 		mCurrentTimeStampCycle = 0;
 	}
 	
 	//endregion
-
-//	@Override
-//	public Object setValueUsingGuiComponent(String componentName, Object valueToSet) {
-//		return super.setValueUsingGuiComponent(componentName, valueToSet);
-//	}
 
 
 	/**

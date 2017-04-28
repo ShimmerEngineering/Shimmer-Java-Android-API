@@ -160,11 +160,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected String mTrialName = "";
 	protected long mConfigTime; //this is in milliseconds, utc
 
-	public long mPacketReceivedCount = 0; 	//Used by ShimmerGQ
-	public long mPacketExpectedCount = 0; 	//Used by ShimmerGQ
+	//-------- Packet reception rate start --------------
+	public static final double DEFAULT_RECEPTION_RATE = 0.0;//100.0;
+	public long mPacketReceivedCountCurrent = 0;
+	public long mPacketExpectedCountCurrent = 0;
+	private double mPacketReceptionRateCurrent = DEFAULT_RECEPTION_RATE;
+	
+	public long mPacketReceivedCountOverall = 0;
+	public long mPacketExpectedCountOverall = 0;
+	private double mPacketReceptionRateOverall = DEFAULT_RECEPTION_RATE;
+	
 	private long mPacketLossCountPerTrial = 0;		//Used by ShimmerBluetooth
-	private double mPacketReceptionRateOverall = 100.0;
-	private double mPacketReceptionRateCurrent = 100.0;
+	//-------- Packet reception rate end --------------
 	
 	//Events markers
 	protected int mEventMarkersCodeLast = 0;
@@ -932,10 +939,49 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return null;
 	}
+	
+	
+	/** Use getPacketReceptionRateOverall() instead
+	 * @return
+	 */
+	@Deprecated
+	public double getPacketReceptionRate(){
+		return getPacketReceptionRateOverall();
+	}
 
-	protected void resetPacketLossTrial() {
+	public double getPacketReceptionRateOverall(){
+		return mPacketReceptionRateOverall;
+	}
+
+	
+	public void incrementPacketsReceivedCounters(){
+		incrementPacketReceivedCountCurrent();
+		incrementPacketReceivedCountOverall();
+	}
+
+	protected void resetPacketLossVariables() {
 		mPacketLossCountPerTrial = 0;
-		setPacketReceptionRateOverall(100.0);
+		resetPacketReceptionOverallVariables();
+		resetPacketReceptionCurrentVariables();
+	}
+	
+
+	public void setPacketExpectedCountOverall(long packetReceivedCountOverall) {
+		mPacketExpectedCountOverall = packetReceivedCountOverall;
+	}
+	
+	public long getPacketReceivedCountOverall() {
+		return mPacketReceivedCountOverall;
+	}
+	
+	private void incrementPacketReceivedCountOverall() {
+		mPacketReceivedCountOverall += 1;
+	}
+
+	public void resetPacketReceptionOverallVariables(){
+		mPacketExpectedCountOverall = 0;
+		mPacketReceivedCountOverall = 0;
+		setPacketReceptionRateOverall(DEFAULT_RECEPTION_RATE);
 	}
 
 	public void setPacketReceptionRateOverall(double packetReceptionRateTrial){
@@ -943,13 +989,27 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		mPacketReceptionRateOverall = packetReceptionRateTrial;
 	}
 
-	public double getPacketReceptionRateOverall(){
-		return mPacketReceptionRateOverall;
+
+	public long getPacketReceivedCountCurrent() {
+		return mPacketReceivedCountCurrent;
 	}
 
-	@Deprecated
-	public double getPacketReceptionRate(){
-		return getPacketReceptionRateOverall();
+	public void incrementPacketReceivedCountCurrent() {
+		mPacketReceivedCountCurrent += 1;
+	}
+
+	public void incrementPacketExpectedCountCurrent() {
+		mPacketExpectedCountCurrent += 1;
+	}
+
+	public void resetPacketReceptionCurrentCounters(){
+		mPacketExpectedCountCurrent = 0;
+		mPacketReceivedCountCurrent = 0;
+	}
+
+	public void resetPacketReceptionCurrentVariables(){
+		resetPacketReceptionCurrentCounters();
+		setPacketReceptionRateCurrent(DEFAULT_RECEPTION_RATE); 
 	}
 
 	public void setPacketReceptionRateCurrent(double packetReceptionRateCurrent){
@@ -964,6 +1024,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mPacketReceptionRateCurrent;
 	}
 
+	
 	public void setPacketLossCountPerTrial(long packetLossCountPerTrial){
 		mPacketLossCountPerTrial = packetLossCountPerTrial;
 	}
@@ -971,6 +1032,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long getPacketLossCountPerTrial(){
 		return mPacketLossCountPerTrial;
 	}
+
 	
 	
 	 /**
@@ -1062,6 +1124,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		ObjectCluster ojc = new ObjectCluster(mShimmerUserAssignedName, getMacId());
 		ojc.mRawData = newPacket;
 		ojc.createArrayData(getNumberOfEnabledChannels(commType));
+
+		incrementPacketsReceivedCounters();
 
 		if(debug)
 			System.out.println("\nNew Parser loop. Packet length:\t" + newPacket.length);
@@ -1582,23 +1646,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfAlgorithmSettings;
 	}
 	
-	public void incrementPacketExpectedCount() {
-		mPacketExpectedCount += 1;
-	}
-
-	public void incrementPacketReceivedCount() {
-		mPacketReceivedCount += 1;
-	}
-
-	public void clearPacketReceptionCounters(){
-		mPacketExpectedCount = 0;
-		mPacketReceivedCount = 0;
-	}
-	
-	public void setPacketReceivedCount(int i) {
-		mPacketReceivedCount = i;
-	}
-
 	public boolean isSupportedRtcConfigViaUart() {
 		return mShimmerVerObject.isSupportedRtcConfigViaUart();
 	}
@@ -3615,6 +3662,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void startStreaming() {
+		resetPacketLossVariables();
 		updateExpectedDataPacketSize();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.startStreaming();
@@ -3622,6 +3670,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void stopStreaming() {
+		resetPacketLossVariables();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.stopStreaming();
 		}
@@ -3699,8 +3748,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
-		// TODO Auto-generated method stub
+		//Old code -> not functioning well because it only takes into account the mLastSavedCalibratedTimeStamp and not all packets lost in the interval
+//		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
+//		
+//		if (mLastReceivedCalibratedTimeStamp!=-1 && mLastSavedCalibratedTimeStamp!=-1){
+//			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
+//			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
+//			setPacketReceptionRateCurrent((numPacketsReceived/numPacketsShouldHaveReceived)*100.0);
+//		}	
+//
+//		if (mLastReceivedCalibratedTimeStamp!=-1){
+//			mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
+//		}
+
+		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
+		double packetsReceivedSinceLastRequest = getPacketReceivedCountCurrent();
+		setPacketReceptionRateCurrent((packetsReceivedSinceLastRequest/numPacketsShouldHaveReceived)*100.0);
 		
+		resetPacketReceptionCurrentCounters();
 	}
 	
 	//-------------- Data processing related start --------------------------
