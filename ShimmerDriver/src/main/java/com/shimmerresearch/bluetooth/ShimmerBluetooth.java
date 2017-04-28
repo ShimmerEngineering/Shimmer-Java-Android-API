@@ -235,6 +235,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //	private boolean mVerboseMode = true;
 //	private String mParentClassName = "ShimmerBluetooth";
 	
+	public boolean mIsRedLedOn = false;
+
 	protected boolean mUseProcessingThread = false;
 	
     public static final Map<Byte, BtCommandDetails> mBtCommandMapOther;
@@ -2045,21 +2047,38 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		setIsDocked(((statusByte & 0x01) > 0)? true:false);
 		setIsSensing(((statusByte & 0x02) > 0)? true:false);
-//		reserved = ((statusByte & 0x03) > 0)? true:false;
+//		reserved = ((statusByte & 0x04) > 0)? true:false;
 		setIsSDLogging(((statusByte & 0x08) > 0)? true:false);
 		setIsStreaming(((statusByte & 0x10) > 0)? true:false); 
 
+		if(isSupportedSdErrorInStatus()){
+			setIsSDError(((statusByte & (0x01 << 6)) > 0)? true:false);
+		}
+		if(isSupportedRedLedStateInStatus()){
+			mIsRedLedOn = ((statusByte & (0x01 << 7)) > 0)? true:false;
+		}
+		
 		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
 				+ "\t" + "IsDocked = " + mIsDocked
 				+ "\t" + "IsSensing = " + mIsSensing
 				+ "\t" + "IsSDLogging = "+ isSDLogging()
 				+ "\t" + "IsStreaming = " + mIsStreaming
-				);
+				+ "\t" + "mIsSdError = " + isSDError()
+				+ "\t" + "mIsRedLedOn = " + mIsRedLedOn);
 		
 		if(savedDockedState!=mIsDocked){
 			dockedStateChange();
 		}
 	}
+	
+	public boolean isSupportedRedLedStateInStatus() {
+		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 10);
+	}
+	
+	public boolean isSupportedSdErrorInStatus() {
+		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 10);
+	}
+
 	
 	private byte[] convertStackToByteArray(Stack<Byte> b,int packetSize) {
 		byte[] returnByte=new byte[packetSize];
