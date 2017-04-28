@@ -91,7 +91,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	protected transient SerialPort mSerialPort=null;
 	ObjectCluster objectClusterTemp = null;
 	
-	double mLastSavedCalibratedTimeStamp = -1;
+//	double mLastSavedCalibratedTimeStamp = -1;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
 
 	/**
@@ -407,18 +407,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
-		
-		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
-		
-		if (mLastReceivedCalibratedTimeStamp!=-1 && mLastSavedCalibratedTimeStamp!=-1){
-			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
-			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
-			setPacketReceptionRateCurrent((numPacketsReceived/numPacketsShouldHaveReceived)*100.0);
-		}	
-
-		if (mLastReceivedCalibratedTimeStamp!=-1){
-			mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
-		}
+		super.calculatePacketReceptionRateCurrent(intervalMs);
 
 		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
 		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);

@@ -40,8 +40,9 @@ public class ShimmerClock extends AbstractSensor {
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	protected double mLastReceivedTimeStamp=0;
 	protected double mCurrentTimeStampCycle=0;
-	protected boolean mFirstTimeCalTime=true;	
-	protected double mCalTimeStart;	
+	
+	protected boolean mStreamingStartTimeSaved = false;	
+	protected double mStreamingStartTimeMs;	
 	
 	private boolean mFirstPacketParsed=true;
 	private double mOffsetFirstTime=-1;
@@ -400,6 +401,8 @@ public class ShimmerClock extends AbstractSensor {
 						double timestampCalToSave = calibratedTS;
 						double timestampUnCalToSave = newTimestamp; 
 
+						calculateTrialPacketLoss(calibratedTS);
+
 						if(commType==COMMUNICATION_TYPE.SD){
 							//TIMESTAMP
 							// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
@@ -752,31 +755,51 @@ public class ShimmerClock extends AbstractSensor {
 
 		mLastReceivedTimeStamp = (timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
 		calibratedTimeStamp = mLastReceivedTimeStamp/32768*1000;   // to convert into mS
-		if (mFirstTimeCalTime){
-			mFirstTimeCalTime=false;
-			mCalTimeStart = calibratedTimeStamp;
+		if (!mStreamingStartTimeSaved){
+			mStreamingStartTimeSaved=true;
+			mStreamingStartTimeMs = calibratedTimeStamp;
 		}
 
-		//Calculate packet loss
-		if (mLastReceivedCalibratedTimeStamp!=-1){
-			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
-			double expectedTimeDifference = (1/mShimmerDevice.getSamplingRateShimmer())*1000;
-			double expectedTimeDifferenceLimit = expectedTimeDifference * 1.1; // 10% limit? 
-			if (timeDifference>expectedTimeDifferenceLimit){
-				long packetLossCountPerTrial = mShimmerDevice.getPacketLossCountPerTrial() + (long) (timeDifference/expectedTimeDifference);
-				mShimmerDevice.setPacketLossCountPerTrial(packetLossCountPerTrial);
-			}
-		}
-		
-		Long totalNumberofPackets = (long) ((calibratedTimeStamp-mCalTimeStart)/(1/mShimmerDevice.getSamplingRateShimmer()*1000));
-		if(totalNumberofPackets>0){
-			double packetReceptionRateTrial = (double)((totalNumberofPackets-mShimmerDevice.getPacketLossCountPerTrial())/(double)totalNumberofPackets)*100;
-			mShimmerDevice.setPacketReceptionRateOverall(packetReceptionRateTrial);
-		}
-		
-		mLastReceivedCalibratedTimeStamp = calibratedTimeStamp;
 		return calibratedTimeStamp;
 	}
+
+	private void calculateTrialPacketLoss(double currentTimeStampMs) {
+//		if (mLastReceivedCalibratedTimeStamp!=-1){
+//			double timeDifference = currentTimeStampMs - mLastReceivedCalibratedTimeStamp;
+//			double expectedTimeDifference = (1/mShimmerDevice.getSamplingRateShimmer())*1000;
+//			double expectedTimeDifferenceLimit = expectedTimeDifference * 1.1; // 10% limit? 
+//			if (timeDifference>expectedTimeDifferenceLimit){
+//				long packetLossCountPerTrial = mShimmerDevice.getPacketLossCountPerTrial() + (long) (timeDifference/expectedTimeDifference);
+//				mShimmerDevice.setPacketLossCountPerTrial(packetLossCountPerTrial);
+//			}
+//		}
+//		
+//		Long totalNumberOfPackets = (long) ((currentTimeStampMs-mCalTimeStart)/(1/mShimmerDevice.getSamplingRateShimmer()*1000));
+//		if(totalNumberOfPackets>0){
+//			double packetReceptionRateTrial = (double)((totalNumberOfPackets-mShimmerDevice.getPacketLossCountPerTrial())/(double)totalNumberOfPackets)*100;
+//			mShimmerDevice.setPacketReceptionRateOverall(packetReceptionRateTrial);
+//		}
+//		
+//		mLastReceivedCalibratedTimeStamp = currentTimeStampMs;
+		
+		if(mStreamingStartTimeMs>0){
+			double timeDifference = currentTimeStampMs - mStreamingStartTimeMs;
+			double expectedTimeDifference = (1/mShimmerDevice.getSamplingRateShimmer())*1000;
+	
+			long packetExpectedCount = (long) (timeDifference/expectedTimeDifference);
+			mShimmerDevice.setPacketExpectedCountOverall(packetExpectedCount);
+			
+			long packetReceivedCount = mShimmerDevice.getPacketReceivedCountOverall();
+	
+			//For legacy support
+			long packetLossCountPerTrial = packetExpectedCount + packetReceivedCount;
+			mShimmerDevice.setPacketLossCountPerTrial(packetLossCountPerTrial);
+	
+			double packetReceptionRateTrial = ((double)packetReceivedCount/(double)packetExpectedCount)*100; 
+			mShimmerDevice.setPacketReceptionRateOverall(packetReceptionRateTrial);
+		}
+	}
+	
 
 	@Override
 	public boolean processResponse(int responseCommand, Object parsedResponse, COMMUNICATION_TYPE commType) {
@@ -796,6 +819,12 @@ public class ShimmerClock extends AbstractSensor {
 //	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	double mLastSavedCalibratedTimeStamp = 0.0;
 	
+	
+	/**Replaced by simpler approach in ShimmerDevice
+	 * @param intervalMs
+	 * @return
+	 */
+	@Deprecated 
 	public double calculatePacketReceptionRateCurrent(int intervalMs) {
 		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * mMaxSetShimmerSamplingRate;
 //		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
@@ -826,7 +855,9 @@ public class ShimmerClock extends AbstractSensor {
 	public void resetCalibratedTimeStamp(){
 		mLastReceivedTimeStamp = 0;
 		mLastReceivedCalibratedTimeStamp = -1;
-		mFirstTimeCalTime = true;
+		
+		mStreamingStartTimeSaved = false;
+		
 		mCurrentTimeStampCycle = 0;
 	}
 

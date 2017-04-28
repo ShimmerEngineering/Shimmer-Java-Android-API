@@ -636,7 +636,7 @@ public class Shimmer4 extends ShimmerDevice {
 					initaliseDataProcessing();
 	
 					resetShimmerClock();
-					resetPacketLossTrial();
+					resetPacketLossVariables();
 				}
 	
 				@Override
@@ -1176,14 +1176,19 @@ public class Shimmer4 extends ShimmerDevice {
 	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 
-		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
-		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
-			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
-			setPacketReceptionRateCurrent(shimmerClock.calculatePacketReceptionRateCurrent(intervalMs));
-			CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
-			sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
-		}
+		//Old code -> not functioning well because it only takes into account the mLastSavedCalibratedTimeStamp and not all packets lost in the interval
+//		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
+//		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
+//			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
+//			setPacketReceptionRateCurrent(shimmerClock.calculatePacketReceptionRateCurrent(intervalMs));
+//			CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
+//			sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
+//		}
 
+		super.calculatePacketReceptionRateCurrent(intervalMs);
+
+		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
+		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
 	}
 	
 	private void resetShimmerClock() {

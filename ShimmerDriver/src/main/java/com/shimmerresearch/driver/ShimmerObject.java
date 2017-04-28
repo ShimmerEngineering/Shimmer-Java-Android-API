@@ -573,9 +573,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double mLastReceivedTimeStamp=0;
 	protected double mCurrentTimeStampCycle=0;
 	protected long mInitialTimeStamp = 0;
+	@Deprecated //not needed any more
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
-	protected boolean mFirstTimeCalTime=true;	
-	protected double mCalTimeStart;
+	
+	protected boolean mStreamingStartTimeSaved = false;	
+	protected double mStreamingStartTimeMs;
+	
 	protected int mTimeStampPacketByteSize = 2;
 	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
 	//-------- Timestamp end --------
@@ -1172,6 +1175,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mFirstTime = false;
 			}
 			double calibratedTS = calibrateTimeStamp((double)newPacketInt[iTimeStamp]);
+			
+			incrementPacketsReceivedCounters();
+			calculateTrialPacketLoss(calibratedTS);
 
 			//TIMESTAMP
 			if (fwType == COMMUNICATION_TYPE.SD){
@@ -2593,6 +2599,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			int iTimeStamp=getSignalIndex(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP); //find index
 			double calibratedTS = calibrateTimeStamp((double)newPacketInt[iTimeStamp]);
+			
+			incrementPacketsReceivedCounters();
+			calculateTrialPacketLoss(calibratedTS);
+
 
 			//TIMESTAMP
 			if (fwType == COMMUNICATION_TYPE.BLUETOOTH){
@@ -4614,34 +4624,60 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 		mLastReceivedTimeStamp=(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
 		calibratedTimeStamp=mLastReceivedTimeStamp/32768*1000;   // to convert into mS
-		if (mFirstTimeCalTime){
-			mFirstTimeCalTime=false;
-			mCalTimeStart = calibratedTimeStamp;
+		if (!mStreamingStartTimeSaved){
+			mStreamingStartTimeSaved=true;
+			mStreamingStartTimeMs = calibratedTimeStamp;
 		}
 		
-		//Calculate packet loss
-		if (mLastReceivedCalibratedTimeStamp!=-1){
-			double timeDifference=calibratedTimeStamp-mLastReceivedCalibratedTimeStamp;
+		return calibratedTimeStamp;
+	}
+
+//	@Override
+	private void calculateTrialPacketLoss(double currentTimeStampMs) {
+//		if (mLastReceivedCalibratedTimeStamp!=-1){
+//			//Time difference between current packet and last received packet
+//			double timeDifference = currentTimeStampMs - mLastReceivedCalibratedTimeStamp;
+//			//The expected time difference (in milliseconds) based on the device's sampling rate
+//			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
+//			double expectedTimeDifferenceLimit = expectedTimeDifference * 1.1; // 10% limit? 
+//			if (timeDifference>expectedTimeDifferenceLimit){
+//				long packetLossSinceLastPacket = (long) (timeDifference/expectedTimeDifference);
+//				long packetLossCountPerTrial = getPacketLossCountPerTrial() + packetLossSinceLastPacket;
+//				setPacketLossCountPerTrial(packetLossCountPerTrial);
+//			}
+//		}
+//		
+//		Long totalNumberOfPackets = (long) ((currentTimeStampMs-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
+//		if(totalNumberOfPackets>0){
+//			double packetReceptionRateTrial = (double)((totalNumberOfPackets-getPacketLossCountPerTrial())/(double)totalNumberOfPackets)*100; 
+//			setPacketReceptionRateOverall(packetReceptionRateTrial);
+//		}
+//		
+//		if (mLastReceivedCalibratedTimeStamp!=-1){
+//			sendStatusMsgPacketLossDetected();
+//		}
+//
+//		mLastReceivedCalibratedTimeStamp = currentTimeStampMs;
+
+
+		if(mStreamingStartTimeMs>0){
+			double timeDifference = currentTimeStampMs - mStreamingStartTimeMs;
+			
+			//The expected time difference (in milliseconds) based on the device's sampling rate
 			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
-			double expectedTimeDifferenceLimit = expectedTimeDifference * 1.1; // 10% limit? 
-			if (timeDifference>expectedTimeDifferenceLimit){
-				long packetLossCountPerTrial = getPacketLossCountPerTrial() + (long) (timeDifference/expectedTimeDifference);
-				setPacketLossCountPerTrial(packetLossCountPerTrial);
-			}
-		}
-		
-		Long totalNumberofPackets = (long) ((calibratedTimeStamp-mCalTimeStart)/(1/getSamplingRateShimmer()*1000));
-		if(totalNumberofPackets>0){
-			double packetReceptionRateTrial = (double)((totalNumberofPackets-getPacketLossCountPerTrial())/(double)totalNumberofPackets)*100; 
+
+			long packetExpectedCount = (long) (timeDifference/expectedTimeDifference);
+			setPacketExpectedCountOverall(packetExpectedCount);
+			
+			long packetReceivedCount = getPacketReceivedCountOverall();
+
+			//For legacy support
+			long packetLossCountPerTrial = packetExpectedCount + packetReceivedCount;
+			setPacketLossCountPerTrial(packetLossCountPerTrial);
+
+			double packetReceptionRateTrial = ((double)packetReceivedCount/(double)packetExpectedCount)*100; 
 			setPacketReceptionRateOverall(packetReceptionRateTrial);
 		}
-		
-		if (mLastReceivedCalibratedTimeStamp!=-1){
-			sendStatusMsgPacketLossDetected();
-		}
-		
-		mLastReceivedCalibratedTimeStamp=calibratedTimeStamp;
-		return calibratedTimeStamp;
 	}
 
 
