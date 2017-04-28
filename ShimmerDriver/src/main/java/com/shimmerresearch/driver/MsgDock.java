@@ -172,6 +172,7 @@ public class MsgDock {
 	public final static int MSG_ID_EVENT_PULSE = 160;
 	public final static int MSG_ID_EVENT_TOGGLE_START = 161;
 	public final static int MSG_ID_EVENT_TOGGLE_END = 162;
+	public final static int MSG_ID_EVENT_TRIAL_AND_CONFIG_TIME = 163;
 	
 	//DatabaseManager
 	public final static int MSG_ID_BT_TO_DB_FINISHED = 170;
