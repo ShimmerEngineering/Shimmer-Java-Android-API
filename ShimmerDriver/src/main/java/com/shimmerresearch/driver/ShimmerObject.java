@@ -5911,7 +5911,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mPacketSize=0; 
 			mConfigByte0=0;
 			mNChannels=0; 
-			mBufferSize=0;                   							
+			mBufferSize=0;
 			mSyncBroadcastInterval = 0;
 			mInitialTimeStamp = 0;
 			
