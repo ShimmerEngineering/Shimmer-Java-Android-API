@@ -46,6 +46,10 @@ public class UtilShimmer implements Serializable {
 	public static final String UNICODE_PLUS_MINUS = "\u00B1";
 	public static final String UNICODE_CHECK_MARK = "\u2713";
 	public static final String UNICODE_CROSS_MARK = "\u274C";
+	public static final String UNICODE_APPROX_EQUAL = "\u2248";
+	public static final String UNICODE_MICRO = "\u00B5";
+	public static final String UNICODE_OHMS = "\u2126";
+	
 	public static final String CHECK_MARK_STRING = " " + UNICODE_CHECK_MARK;
 	public static final String CROSS_MARK_STRING = "  x"; //unicode for cross wasn't working on all PCs " " + UNICODE_CROSS_MARK;
 
