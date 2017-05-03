@@ -17,6 +17,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -48,7 +49,8 @@ public class SensorGSR extends AbstractSensor {
 	}
 	
 	public static class DatabaseChannelHandles{
-		public static final String GSR = "F5437a_Int_A1_GSR";
+		public static final String GSR_RESISTANCE = "F5437a_Int_A1_GSR";
+		public static final String GSR_CONDUCTANCE = "GSR_Conductance";
 	}
 	
 	public static final class DatabaseConfigHandle{
@@ -56,9 +58,12 @@ public class SensorGSR extends AbstractSensor {
 	}
 	
 	public static class ObjectClusterSensorName{
-		public static String GSR = "GSR";
-		public static String GSR_CONDUCTANCE = "GSR_Conductance";
-		public static String GSR_RANGE_CURRENT = "GSR_Range";
+		//2017-05-03 MN changed from "GSR" to "GSR_Resistance"
+		@Deprecated
+		public static String GSR_LEGACY = "GSR";
+		public static String GSR_RESISTANCE = "GSR_Skin_Resistance";
+		public static String GSR_CONDUCTANCE = "GSR_Skin_Conductance";
+		public static String GSR_RANGE = "GSR_Range";
 		public static String GSR_ADC_VALUE = "GSR_ADC_Value";
 	}	
 	//--------- Sensor specific variables end --------------
@@ -84,16 +89,22 @@ public class SensorGSR extends AbstractSensor {
 	//--------- Bluetooth commands end --------------
 
 	//--------- Configuration options start --------------
-	public static final String[] ListofGSRRange = {
+	public static final String[] ListofGSRRangeResistance = {
 		"10k\u2126 to 56k\u2126",
 		"56k\u2126 to 220k\u2126",
 		"220k\u2126 to 680k\u2126",
 		"680k\u2126 to 4.7M\u2126",
-		"Auto"};
+		"Auto Range"};
+	public static final String[] ListofGSRRangeConductance = {
+		"100\u00B5S to 17.9\u00B5S",
+		"17.9\u00B5S to 4.5\u00B5S",
+		"4.5\u00B5S to 1.5\u00B5S",
+		"1.5\u00B5S to 0.2\u00B5S",
+		"Auto Range"};
 	public static final Integer[] ListofGSRRangeConfigValues = {0,1,2,3,4};
 
 	public static final ConfigOptionDetailsSensor configOptionGsrRange = new ConfigOptionDetailsSensor(
-			ListofGSRRange, 
+			ListofGSRRangeResistance, 
 			ListofGSRRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
@@ -123,12 +134,10 @@ public class SensorGSR extends AbstractSensor {
 			Arrays.asList(GuiLabelConfig.GSR_RANGE),
 			Arrays.asList(
 					//Comment in/out channel you want to appear as normal Shimmer channels
-					ObjectClusterSensorName.GSR,
+					ObjectClusterSensorName.GSR_RESISTANCE,
 					ObjectClusterSensorName.GSR_CONDUCTANCE,
-					//Only internal at the moment
-					ObjectClusterSensorName.GSR_RANGE_CURRENT,
-					//Only internal at the moment
-					ObjectClusterSensorName.GSR_ADC_VALUE
+					ObjectClusterSensorName.GSR_RANGE
+					//ObjectClusterSensorName.GSR_ADC_VALUE
 					),
 			true);
 	
@@ -144,18 +153,18 @@ public class SensorGSR extends AbstractSensor {
     
     //TODO only use one channel details for GSR and have a list of supported units inside it. Also have a variable stating which one(s) are currently selected
 	public static final ChannelDetails channelGsrKOhms = new ChannelDetails(
-			ObjectClusterSensorName.GSR,
-			ObjectClusterSensorName.GSR,
-			DatabaseChannelHandles.GSR,
+			ObjectClusterSensorName.GSR_RESISTANCE,
+			ObjectClusterSensorName.GSR_RESISTANCE,
+			DatabaseChannelHandles.GSR_RESISTANCE,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.KOHMS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x1C);
 
 	public static final ChannelDetails channelGsrMicroSiemensGq = new ChannelDetails(
-			ObjectClusterSensorName.GSR,
-			ObjectClusterSensorName.GSR,
-			DatabaseChannelHandles.GSR,
+			ObjectClusterSensorName.GSR_RESISTANCE,
+			ObjectClusterSensorName.GSR_RESISTANCE,
+			DatabaseChannelHandles.GSR_RESISTANCE,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.U_SIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -164,7 +173,7 @@ public class SensorGSR extends AbstractSensor {
 	public static final ChannelDetails channelGsrMicroSiemens = new ChannelDetails(
 			ObjectClusterSensorName.GSR_CONDUCTANCE,
 			ObjectClusterSensorName.GSR_CONDUCTANCE,
-			ObjectClusterSensorName.GSR_CONDUCTANCE,
+			DatabaseChannelHandles.GSR_CONDUCTANCE,
 			CHANNEL_UNITS.U_SIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
@@ -172,9 +181,9 @@ public class SensorGSR extends AbstractSensor {
 		channelGsrMicroSiemens.mChannelSource = CHANNEL_SOURCE.API;
 	}
 
-	public static final ChannelDetails channelGsrRangeCurrent = new ChannelDetails(
-			ObjectClusterSensorName.GSR_RANGE_CURRENT,
-			ObjectClusterSensorName.GSR_RANGE_CURRENT,
+	public static final ChannelDetails channelGsrRange = new ChannelDetails(
+			ObjectClusterSensorName.GSR_RANGE,
+			ObjectClusterSensorName.GSR_RANGE,
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
@@ -185,7 +194,7 @@ public class SensorGSR extends AbstractSensor {
 	public static final ChannelDetails channelGsrAdc = new ChannelDetails(
 			ObjectClusterSensorName.GSR_ADC_VALUE,
 			ObjectClusterSensorName.GSR_ADC_VALUE,
-			DatabaseChannelHandles.GSR,
+			ObjectClusterSensorName.GSR_ADC_VALUE,
 			CHANNEL_UNITS.MILLIVOLTS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
@@ -197,9 +206,9 @@ public class SensorGSR extends AbstractSensor {
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
         Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-		aMap.put(ObjectClusterSensorName.GSR, SensorGSR.channelGsrKOhms);
+		aMap.put(ObjectClusterSensorName.GSR_RESISTANCE, SensorGSR.channelGsrKOhms);
 		aMap.put(ObjectClusterSensorName.GSR_CONDUCTANCE, SensorGSR.channelGsrMicroSiemens);
-		aMap.put(ObjectClusterSensorName.GSR_RANGE_CURRENT, SensorGSR.channelGsrRangeCurrent);
+		aMap.put(ObjectClusterSensorName.GSR_RANGE, SensorGSR.channelGsrRange);
 		aMap.put(ObjectClusterSensorName.GSR_ADC_VALUE, SensorGSR.channelGsrAdc);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
@@ -207,7 +216,7 @@ public class SensorGSR extends AbstractSensor {
     public static final Map<String, ChannelDetails> mChannelMapRefGq;
     static {
         Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-		aMap.put(ObjectClusterSensorName.GSR, SensorGSR.channelGsrMicroSiemensGq);
+		aMap.put(ObjectClusterSensorName.GSR_RESISTANCE, SensorGSR.channelGsrMicroSiemensGq);
 		mChannelMapRefGq = Collections.unmodifiableMap(aMap);
     }
 
@@ -231,7 +240,7 @@ public class SensorGSR extends AbstractSensor {
 		//Allow NeuroLynQ to just use a single GSR channel based on MicroSiemens
 		if(mShimmerVerObject.isShimmerGenGq()){
 			Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR, SensorGSR.channelGsrMicroSiemensGq);
+			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE, SensorGSR.channelGsrMicroSiemensGq);
 			super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 		}
 		else{
@@ -275,16 +284,23 @@ public class SensorGSR extends AbstractSensor {
 		int index = 0;
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			//first process the data originating from the Shimmer sensor
-			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
-			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
+//			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+//			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+//			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
 			
 			//next process other data
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GSR)){
-//				ObjectCluster objectCluster = (ObjectCluster) object;
-				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GSR_RESISTANCE)){
+
+				byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
+				System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
+				double rawData = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
+				int gsrAdcValueUnCal = ((int)rawData & 4095); 
+				objectCluster.addUncalData(channelDetails, gsrAdcValueUnCal);
+				
+//				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 				double p1=0,p2=0;
+				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+
 				if (mGSRRange==4){
 					newGSRRange=(49152 & (int)rawData)>>14; 
 				}
@@ -352,30 +368,29 @@ public class SensorGSR extends AbstractSensor {
 				double calData = 0.0;
 				//This section is needed for GQ since the primary GSR KOHMS channel is replaced by U_SIEMENS 
 				if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.KOHMS)){
-					calData = calibrateGsrData(rawData,p1,p2);
+					calData = calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
 				}
 				else if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.U_SIEMENS)){
-					calData = calibrateGsrDataToSiemens(rawData,p1,p2);
+					calData = calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
 				}
 				objectCluster.addCalData(channelDetails, calData);
 				objectCluster.incrementIndexKeeper();
 
 				
 				if(sensorDetails.mListOfChannels.contains(channelGsrMicroSiemens)){
-					double calDatauS = calibrateGsrDataToSiemens(rawData,p1,p2);
-					objectCluster.addUncalData(channelGsrMicroSiemens, rawData);
-					objectCluster.addCalData(channelGsrMicroSiemens, calDatauS);
+					objectCluster.addUncalData(channelGsrMicroSiemens, gsrAdcValueUnCal);
+					objectCluster.addCalData(channelGsrMicroSiemens, calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2));
 					objectCluster.incrementIndexKeeper();
 				}
-				if(sensorDetails.mListOfChannels.contains(channelGsrRangeCurrent)){
-					objectCluster.addUncalData(channelGsrRangeCurrent, rawData);
-					objectCluster.addCalData(channelGsrRangeCurrent, newGSRRange);
+				if(sensorDetails.mListOfChannels.contains(channelGsrRange)){
+					double rangeToSave = newGSRRange>=0? newGSRRange:mGSRRange;
+					objectCluster.addUncalData(channelGsrRange, rangeToSave);
+					objectCluster.addCalData(channelGsrRange, rangeToSave);
 					objectCluster.incrementIndexKeeper();
 				}
 				if(sensorDetails.mListOfChannels.contains(channelGsrAdc)){
-					int adcUncal = ((int)rawData & 4095); 
-					objectCluster.addUncalData(channelGsrAdc, adcUncal);
-					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannel(adcUncal));
+					objectCluster.addUncalData(channelGsrAdc, gsrAdcValueUnCal);
+					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannel(gsrAdcValueUnCal));
 					objectCluster.incrementIndexKeeper();
 				}
 				
@@ -541,7 +556,7 @@ public class SensorGSR extends AbstractSensor {
 
 
 	//--------- Sensor specific methods start --------------
-	public static double calibrateGsrData(double gsrUncalibratedData, double p1, double p2){
+	public static double calibrateGsrDataToResistance(double gsrUncalibratedData, double p1, double p2){
 //		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 //		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
 //		//double gsrCalibratedData = (p1*Math.pow(gsrUncalibratedData,4)+p2*Math.pow(gsrUncalibratedData,3)+p3*Math.pow(gsrUncalibratedData,2)+p4*gsrUncalibratedData+p5)/1000;
