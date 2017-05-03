@@ -18,6 +18,7 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -90,16 +91,16 @@ public class SensorGSR extends AbstractSensor {
 
 	//--------- Configuration options start --------------
 	public static final String[] ListofGSRRangeResistance = {
-		"10k\u2126 to 56k\u2126",
-		"56k\u2126 to 220k\u2126",
-		"220k\u2126 to 680k\u2126",
-		"680k\u2126 to 4.7M\u2126",
+		"10k" + UtilShimmer.UNICODE_OHMS + " to 56k" + UtilShimmer.UNICODE_OHMS,
+		"56k" + UtilShimmer.UNICODE_OHMS + " to 220k" + UtilShimmer.UNICODE_OHMS,
+		"220k" + UtilShimmer.UNICODE_OHMS + " to 680k" + UtilShimmer.UNICODE_OHMS,
+		"680k" + UtilShimmer.UNICODE_OHMS + " to 4.7M" + UtilShimmer.UNICODE_OHMS,
 		"Auto Range"};
 	public static final String[] ListofGSRRangeConductance = {
-		"100\u00B5S to 17.9\u00B5S",
-		"17.9\u00B5S to 4.5\u00B5S",
-		"4.5\u00B5S to 1.5\u00B5S",
-		"1.5\u00B5S to 0.2\u00B5S",
+		"100" + UtilShimmer.UNICODE_MICRO + "S to 17.9" + UtilShimmer.UNICODE_MICRO + "S",
+		"17.9" + UtilShimmer.UNICODE_MICRO + "S to 4.5" + UtilShimmer.UNICODE_MICRO + "S",
+		"4.5" + UtilShimmer.UNICODE_MICRO + "S to 1.5" + UtilShimmer.UNICODE_MICRO + "S",
+		"1.5" + UtilShimmer.UNICODE_MICRO + "S to 0.2" + UtilShimmer.UNICODE_MICRO + "S",
 		"Auto Range"};
 	public static final Integer[] ListofGSRRangeConfigValues = {0,1,2,3,4};
 
