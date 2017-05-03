@@ -998,8 +998,8 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				for (int l=0; l<SensorLSM303.ListofMagRange.length; l++) {
 					comboBoxMagRange.addItem(SensorLSM303.ListofMagRange[l]);
 				}
-				for (int m=0; m<SensorGSR.ListofGSRRange.length; m++) {
-					comboBoxGsrRange.addItem(SensorGSR.ListofGSRRange[m]);
+				for (int m=0; m<SensorGSR.ListofGSRRangeResistance.length; m++) {
+					comboBoxGsrRange.addItem(SensorGSR.ListofGSRRangeResistance[m]);
 				}
 				for (int n=0; n<SensorBMP180.ListofPressureResolution.length; n++) {
 					comboBoxPressureResolution.addItem(SensorBMP180.ListofPressureResolution[n]);

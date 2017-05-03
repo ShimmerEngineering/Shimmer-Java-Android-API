@@ -375,7 +375,7 @@ public class Configuration {
 		Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14 = "Internal ADC A14";
 		Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH = "Bridge Amplifier High";
 		Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_LOW = "Bridge Amplifier Low";
-		Shimmer3.ObjectClusterSensorName.GSR = "GSR";
+		Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE = "GSR";
 		Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1 = "Internal ADC A1";
 		Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP = "Resistance Amp";
 		Shimmer3.ObjectClusterSensorName.GYRO_X = "Gyroscope X";
@@ -1118,7 +1118,7 @@ public class Configuration {
 			public static final String SKIN_TEMPERATURE_PROBE = SensorBridgeAmp.ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE;
 			public static final String FREQUENCY = ShimmerGq802154.ObjectClusterSensorName.FREQUENCY;
 
-			public static String GSR = SensorGSR.ObjectClusterSensorName.GSR;
+			public static String GSR_RESISTANCE = SensorGSR.ObjectClusterSensorName.GSR_RESISTANCE;
 			public static String GSR_CONDUCTANCE = SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE;
 
 			public static String ACCEL_WR_X = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
