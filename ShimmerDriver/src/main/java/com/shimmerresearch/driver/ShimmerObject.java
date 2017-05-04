@@ -2228,7 +2228,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.addCalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
 					objectCluster.addUncalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
 				}
-				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE)!=null){
+				if(SensorGSR.sensorGsrRef.mListOfChannelsRef.contains(SensorGSR.channelGsrAdc.mObjectClusterName)){
+//				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE)!=null){
 					objectCluster.addUncalDataToMap(SensorGSR.channelGsrAdc, gsrAdcValueUnCal);
 					objectCluster.addCalDataToMap(SensorGSR.channelGsrAdc, SensorADC.calibrateMspAdcChannel(gsrAdcValueUnCal));
 				}
