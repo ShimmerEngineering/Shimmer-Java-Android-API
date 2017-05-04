@@ -882,7 +882,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mHaveAttemptedToReadConfig;
 	}
 	
-	public boolean isShimmerSDError(){
+	public boolean isShimmerError(){
 		if(isSDError()){
 			return true;
 		}
