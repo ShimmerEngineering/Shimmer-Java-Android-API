@@ -1002,7 +1002,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			int available = availableBytes();
 			if (bytesAvailableToBeRead()){
 				byte[] tb=readBytes(1);
-				buffer.add(tb[0]);
+				if(buffer!=null && tb.length>0){
+					buffer.add(tb[0]);
+				}
 			}
 		}		  		
 		
