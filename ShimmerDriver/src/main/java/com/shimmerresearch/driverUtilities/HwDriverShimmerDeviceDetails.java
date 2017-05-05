@@ -18,6 +18,7 @@ public class HwDriverShimmerDeviceDetails {
 		SPAN("Span"),
 		
 		RN42("RN42"),
+		RNBT("RNBT"),
 		SHIMMER3("Shimmer3"),
 		SHIMMER4("Shimmer4"),
 		
