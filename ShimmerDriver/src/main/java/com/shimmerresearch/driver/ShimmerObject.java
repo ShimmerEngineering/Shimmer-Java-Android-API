@@ -2185,6 +2185,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				} else {
 
 					if (mGSRRange==4){
+						//Mask upper 2 bits of the 16-bit packet and then bit shift down
 						newGSRRange=(49152 & (int)tempData[0])>>14; 
 					}
 					if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
@@ -2235,7 +2236,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				
 				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,gsrAdcValueUnCal);
-				uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
+//				uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
+				uncalibratedData[iGSR] = gsrAdcValueUnCal;
 				uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
 					//If ShimmerGQ we only want to have one GSR channel and it's units should be 'uS'
@@ -2252,6 +2254,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE)!=null){
 							objectCluster.addUncalDataToMap(SensorGSR.channelGsrMicroSiemens,gsrAdcValueUnCal);
 							objectCluster.addCalDataToMap(SensorGSR.channelGsrMicroSiemens,SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2));
+
+//							System.out.println("mGSRRange:" + mGSRRange + "\tnewGSRRange" + newGSRRange + "\tp1:" + p1 + "\tp2" + p2);
+//							System.out.println("p1:" + p1 + "\tp2" + p2 + "\tADC:" + gsrAdcValueUnCal + "\tRes:" + calibratedData[iGSR] + "\tSie:" + SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2));
 						}
 					}
 				}
