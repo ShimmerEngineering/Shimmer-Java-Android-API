@@ -303,6 +303,7 @@ public class SensorGSR extends AbstractSensor {
 				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 
 				if (mGSRRange==4){
+					//Mask upper 2 bits of the 16-bit packet and then bit shift down
 					newGSRRange=(49152 & (int)rawData)>>14; 
 				}
 				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
