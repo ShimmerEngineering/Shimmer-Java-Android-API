@@ -1,8 +1,10 @@
 package com.shimmerresearch.driver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -15,7 +17,9 @@ public abstract class BasicProcessWithCallBack {
 	protected LinkedBlockingDeque<ShimmerMsg> mQueue = new LinkedBlockingDeque<ShimmerMsg>(1024);
 	protected ConsumerThread mGUIConsumerThread = null;
 	WaitForData mWaitForData = null;
-	List<Callable> mListOfThreads = new ArrayList<Callable>();
+	//List<Callable> mListOfThreads = new ArrayList<Callable>();
+	List<Callable> mListOfThreads = Collections.synchronizedList(new ArrayList<Callable>());
+	
 	List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
 	String threadName = "";
 	
@@ -136,7 +140,8 @@ public abstract class BasicProcessWithCallBack {
 		// TODO Auto-generated method stub
 		if (mThread!=null){
 			mListOfThreads.add(c);
-		} else {
+		} 
+		else {
 			mThread = c;
 		}
 	}
@@ -147,12 +152,15 @@ public abstract class BasicProcessWithCallBack {
     		mThread.callBackMethod(s);
     	} 
     	
-    	// April 2017: RM changed for loop to iterator as concurrentmodification with for loop from time to time (this solution may not resolve concurrentmodification, monitor over time)
-		Iterator <Callable> entries = mListOfThreads.iterator();
-		while (entries.hasNext()) {
-			Callable c = entries.next();
-			c.callBackMethod(s);
-		}
+    	// April 2017: RM changed for loop to iterator and added synchronisation block  as concurrentmodification with for loop from time to time (this solution may not resolve concurrentmodification, monitor over time)
+    	synchronized (mListOfThreads) {
+        	Iterator <Callable> entries = mListOfThreads.iterator();
+    		while (entries.hasNext()) {
+    			Callable c = entries.next();
+    			c.callBackMethod(s);
+    		}
+    	}
+
     	
 //    	for (Callable c: mListOfThreads){
 //    		c.callBackMethod(s);
@@ -164,12 +172,15 @@ public abstract class BasicProcessWithCallBack {
     		mThread.callBackMethod( i, ojc);
     	}
     	
-    	// April 2017: RM changed for loop to iterator as concurrentmodification with for loop from time to time (this solution may not resolve concurrentmodification, monitor over time)
-		Iterator <Callable> entries = mListOfThreads.iterator();
-		while (entries.hasNext()) {
-			Callable c = entries.next();
-			c.callBackMethod(i,ojc);
-		}
+    	// May 2017: RM changed for loop to iterator and added synchronisation block as concurrentmodification with for loop from time to time (this solution may not resolve concurrentmodification, monitor over time)
+    	synchronized (mListOfThreads) {
+        	Iterator <Callable> entries = mListOfThreads.iterator();
+    		while (entries.hasNext()) {
+    			Callable c = entries.next();
+    			c.callBackMethod(i,ojc);
+    		}
+    	}
+
 //    	for (Callable c:mListOfThreads){
 //    		c.callBackMethod(i,ojc);
 //    	}
