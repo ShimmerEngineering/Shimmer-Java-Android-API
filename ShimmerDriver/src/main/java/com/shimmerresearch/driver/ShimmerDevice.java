@@ -3155,7 +3155,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
-		setShimmerVersionObject(svo);
+		if(svo!=null){
+			setShimmerVersionObject(svo);
+		}
 		
 		//General Shimmer configuration
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_BOARD_ID)
