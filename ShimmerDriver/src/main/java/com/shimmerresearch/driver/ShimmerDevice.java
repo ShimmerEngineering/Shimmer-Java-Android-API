@@ -2403,7 +2403,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	//TODO tidy up implementation of below, overwritten and handled differently in Shimmer4, ShimmerPC, NoninOnyxII
-	protected void setBluetoothRadioState(BT_STATE state){
+	public void setBluetoothRadioState(BT_STATE state){
 		BT_STATE stateStored = mBluetoothRadioState;
 		mBluetoothRadioState = state;
 		consolePrintLn("State change: Was:" + stateStored.toString() + "\tIs now:" + mBluetoothRadioState);
@@ -3663,6 +3663,27 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	
 	//*************** Radio Connection start ************************* 
+	/**
+	 * @param commsProtocolRadio the mCommsProtocolRadio to set
+	 */
+	public void setCommsProtocolRadio(CommsProtocolRadio commsProtocolRadio) {
+		consolePrintErrLn("Setting CommsProtocolRadio");
+		this.mCommsProtocolRadio = commsProtocolRadio;
+	}
+
+	/**
+	 * @return the mCommsProtocolRadio
+	 */
+	public CommsProtocolRadio getCommsProtocolRadio() {
+		return mCommsProtocolRadio;
+	}
+	
+	public void clearCommsProtocolRadio() throws ShimmerException {
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.disconnect();
+		}
+	}
+
 	//TODO copied from ShimmerBluetooth
 	public void operationPrepare() {
 		if(mCommsProtocolRadio!=null){
@@ -3734,6 +3755,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			setComPort(((AbstractSerialPortHal) mCommsProtocolRadio.mRadioHal).getConnectionHandle()); 
 		}
 		return mComPort;
+	}
+	
+	public boolean isReadyToConnect() {
+		if (mCommsProtocolRadio==null 
+				||mCommsProtocolRadio.mRadioHal==null
+				||!mCommsProtocolRadio.mRadioHal.isConnected()){
+			return true;
+		}
+		return false;
 	}
 	
 	//*************** Radio Connection end ************************* 

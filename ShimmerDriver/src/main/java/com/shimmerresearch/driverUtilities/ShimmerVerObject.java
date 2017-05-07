@@ -185,6 +185,7 @@ public class ShimmerVerObject implements Serializable {
 				|| ((mHardwareVersion==HW_ID.SHIMMER_2R_GQ)&&(mFirmwareIdentifier==FW_ID.GQ_802154))
 				|| (mHardwareVersion==HW_ID.SPAN)
 				|| (mHardwareVersion==HW_ID.SHIMMER_4_SDK)
+				|| (mHardwareVersion==HW_ID.SWEATCH)
 				){
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
@@ -202,7 +203,9 @@ public class ShimmerVerObject implements Serializable {
 			
 			if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,6,5))
 					|| mHardwareVersion==HW_ID.SHIMMER_4_SDK
-					|| mHardwareVersion==HW_ID.ARDUINO){
+					|| mHardwareVersion==HW_ID.ARDUINO
+//					|| mHardwareVersion==HW_ID.SWEATCH
+					){
 				mFirmwareVersionCode = 7;
 			}
 			else if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,7,3))
@@ -443,6 +446,13 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 
+	public boolean isSweatchDevice(){
+		if(getHardwareVersion()==HW_ID.SWEATCH && getFirmwareIdentifier()==FW_ID.SWEATCH){
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * This needs to be performed before a check for Gen3/Gen4 etc. as they
 	 * share some entries in common.

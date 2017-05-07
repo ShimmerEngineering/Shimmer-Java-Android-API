@@ -425,7 +425,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	protected void setBluetoothRadioState(BT_STATE state) {
+	public void setBluetoothRadioState(BT_STATE state) {
 
 		
 		//TODO: below not needed any more?

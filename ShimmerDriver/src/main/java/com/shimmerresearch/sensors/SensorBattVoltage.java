@@ -182,7 +182,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4() || mShimmerVerObject.isSweatchDevice()){
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING.ordinal(), sensorBattVoltage);
 		}
 		super.updateSensorGroupingMap();
@@ -266,8 +266,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey,
-			boolean isSensorEnabled) {
+	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		// //Not in this class
 		return false;
 	}
@@ -297,8 +296,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 	
 	@Override
-	public void parseConfigMapFromDb(
-			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -27,7 +27,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_2R = 2;
 		public static final int SHIMMER_3 = 3;
 		public static final int SHIMMER_SR30 = 4;
-//		public static final int DCU_SWEATSENSOR = 4;
+		public static final int SWEATCH = 4;
 		public static final int SHIMMER_GQ_BLE = 5;
 //		public static final int BIOSENSICS = 6;
 		public static final int SPAN = 7;
@@ -69,7 +69,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_3, "Shimmer3");
         aMap.put(HW_ID.SHIMMER_SR30, "Shimmer_SR30");
         aMap.put(HW_ID.SHIMMER_GQ_BLE, "ShimmerGQBle");
-//        aMap.put(HW_ID.DCU_SWEATSENSOR, "DCU_SWEATSENSOR");
+        aMap.put(HW_ID.SWEATCH, "SWEATCH");
         aMap.put(HW_ID.SHIMMER_2R_GQ, "Shimmer2rGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
@@ -157,7 +157,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int BTSTREAM = 1;
 		public static final int SDLOG = 2;
 		public static final int LOGANDSTREAM = 3;
-		public static final int DCU_SWEATSENSOR = 4;
+		public static final int SWEATCH = 4;
 		public static final int GQ_BLE = 5;
 		public static final int BIOSENSICS_GPIO_TEST = 6;
 //		public static final int ? = 7;
@@ -175,7 +175,7 @@ public class ShimmerVerDetails implements Serializable {
 	        aMap.put(BTSTREAM, "BtStream");
 	        aMap.put(SDLOG, "SDLog");
 	        aMap.put(LOGANDSTREAM, "LogAndStream");
-	        aMap.put(DCU_SWEATSENSOR, "Sweatch");
+	        aMap.put(SWEATCH, "Sweatch");
 	        aMap.put(GQ_BLE, "GQ_BLE");
 	        aMap.put(BIOSENSICS_GPIO_TEST, "GPIO_TEST");
 	        aMap.put(GQ_802154, "GQ_802154");
@@ -197,7 +197,7 @@ public class ShimmerVerDetails implements Serializable {
 //		public static final String BTSTREAM = "BtStream";
 //		public static final String SDLOG = "SDLog";
 //		public static final String LOGANDSTREAM = "LogAndStream";
-//		public static final String DCU_SWEATSENSOR = "Swatch";
+//		public static final String SWEATCH = "Sweatch";
 //		public static final String GQ_BLE = "GQ_BLE";
 //		public static final String GPIO_TEST = "GPIO_TEST";
 //		public static final String GQ_802154 = "GQ_802154";
