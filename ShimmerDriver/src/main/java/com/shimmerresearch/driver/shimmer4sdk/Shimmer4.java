@@ -12,12 +12,14 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.bluetooth.ShimmerDeviceCommsProtocolAdaptor;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol.Temp;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.InfoMemLayout;
@@ -455,30 +457,11 @@ public class Shimmer4 extends ShimmerDevice {
 	/**
 	 * @param commsRadio
 	 */
-	public void setRadio(CommsProtocolRadio commsProtocolRadio){
-		setCommsProtocolRadio(commsProtocolRadio);
+	@Override
+//	public void setRadio(AbstractSerialPortHal commsProtocolRadio) {
+	public void setCommsProtocolRadio(CommsProtocolRadio commsProtocolRadio){
+		super.setCommsProtocolRadio(commsProtocolRadio);
 		initializeRadio();
-	}
-
-	/**
-	 * @param commsProtocolRadio the mCommsProtocolRadio to set
-	 */
-	public void setCommsProtocolRadio(CommsProtocolRadio commsProtocolRadio) {
-		consolePrintErrLn("Setting CommsProtocolRadio");
-		this.mCommsProtocolRadio = commsProtocolRadio;
-	}
-
-	/**
-	 * @return the mCommsProtocolRadio
-	 */
-	public CommsProtocolRadio getCommsProtocolRadio() {
-		return mCommsProtocolRadio;
-	}
-	
-	private void clearCommsProtocolRadio() throws ShimmerException {
-		if(mCommsProtocolRadio!=null){
-			mCommsProtocolRadio.disconnect();
-		}
 	}
 
 	/**
@@ -699,6 +682,8 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	public void connect() throws ShimmerException {
+//		ShimmerDeviceCommsProtocolAdaptor.connect(this);
+		
 //		clearShimmerVersionObject();
 		
 		setBluetoothRadioState(BT_STATE.CONNECTING);
@@ -963,7 +948,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 	//TODO copied from ShimmerPC
 	@Override
-	protected void setBluetoothRadioState(BT_STATE state){
+	public void setBluetoothRadioState(BT_STATE state){
 		super.setBluetoothRadioState(state);
 
 //		if (mBluetoothRadioState.equals(BT_STATE.CONNECTED)){
@@ -1266,15 +1251,6 @@ public class Shimmer4 extends ShimmerDevice {
 		
 		return returnValue;
 
-	}
-
-	public boolean isReadyToConnect() {
-		if (mCommsProtocolRadio==null 
-				||mCommsProtocolRadio.mRadioHal==null
-				||!mCommsProtocolRadio.mRadioHal.isConnected()){
-			return true;
-		}
-		return false;
 	}
 
 	//TODO TEMP here to sync booleans in ShimmerDevice with mCommsProtocolRadio

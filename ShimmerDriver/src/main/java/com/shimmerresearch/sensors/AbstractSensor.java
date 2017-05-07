@@ -54,7 +54,8 @@ public abstract class AbstractSensor implements Serializable{
 		BMP280("BMP280"),
 		STC3100("STC3100"),
 		WEBCAM_FRAME_NUMBER("Frame Number"),
-		HOST_CPU_USAGE("Cpu Usage");
+		HOST_CPU_USAGE("Cpu Usage"),
+		SWEATCH_ADC("Sweatch ADC");
 		
 	    private final String text;
 

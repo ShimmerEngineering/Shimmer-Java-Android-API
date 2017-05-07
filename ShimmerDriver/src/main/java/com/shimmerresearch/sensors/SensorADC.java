@@ -513,6 +513,10 @@ public class SensorADC extends AbstractSensor {
 		double calibratedData = (uncalibratedData-offset) * (((vRefP*1000)/gain)/4095);
 		return calibratedData;
 	}
+	public static double calibrateAdcValue(double uncalibratedData, double offset, double vRefP, double gain, CHANNEL_DATA_TYPE channelDataType){
+		double calibratedData = (uncalibratedData-offset) * (((vRefP*1000)/gain)/channelDataType.getMaxVal());
+		return calibratedData;
+	}
 	//--------- Sensor specific methods end --------------
 
 	public static int uncalibrateU12AdcValue(double uncalibratedData, double offset, double vRefP, double gain) {

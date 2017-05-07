@@ -78,7 +78,7 @@ public class ChannelDetails implements Serializable {
 	    		return UtilParseData.calculatetwoscomplement(mask, numBits);
 	    	}
 	    	else{
-	    		return (long) Math.pow(2, numBits);
+	    		return (long) (Math.pow(2, numBits)-1);
 	    	}
 	    }
 
