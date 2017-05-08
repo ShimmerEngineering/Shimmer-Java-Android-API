@@ -17,6 +17,7 @@ public abstract class BasicProcessWithCallBack {
 	protected LinkedBlockingDeque<ShimmerMsg> mQueue = new LinkedBlockingDeque<ShimmerMsg>(1024);
 	protected ConsumerThread mGUIConsumerThread = null;
 	WaitForData mWaitForData = null;
+	
 	//List<Callable> mListOfThreads = new ArrayList<Callable>();
 	List<Callable> mListOfThreads = Collections.synchronizedList(new ArrayList<Callable>());
 	
