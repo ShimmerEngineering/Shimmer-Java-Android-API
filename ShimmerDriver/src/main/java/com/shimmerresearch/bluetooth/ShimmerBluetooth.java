@@ -2536,11 +2536,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						readBytes(availableBytes());
 					}
 					stopTimerCheckForAckOrResp(); //Terminate the timer thread
-					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
+					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount) + " left of " + NUMBER_OF_TX_RETRIES_LIMIT);
 					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && mCurrentCommand!=GET_SHIMMER_VERSION_COMMAND_NEW && !mIsInitialised){
-						killConnection(); //If command fail exit device	
+//						killConnection(); //If command fail exit device	
+						connectionLost();
 					} else if(mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && mIsInitialised){
-						killConnection(); //If command fail exit device	
+//						killConnection(); //If command fail exit device	
+						connectionLost();
 					} else {
 						mWaitForAck=false;
 						mWaitForResponse=false;
@@ -2658,8 +2660,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					writeLEDCommand(0);
 				}
 				if(mCountDeadConnection>5){
-//					setState(BT_STATE.NONE);
-					killConnection(); //If command fail exit device
+					//If command fail exit device
+////					setState(BT_STATE.NONE);
+//					killConnection(); 
+					connectionLost();
 				}
 			} 
 		} //End Run
