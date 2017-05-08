@@ -16,12 +16,14 @@ public abstract class BasicProcessWithCallBack {
 	//protected BlockingQueue<ShimmerMSG> mQueue = new ArrayBlockingQueue<ShimmerMSG>(1024);
 	protected LinkedBlockingDeque<ShimmerMsg> mQueue = new LinkedBlockingDeque<ShimmerMsg>(1024);
 	protected ConsumerThread mGUIConsumerThread = null;
-	WaitForData mWaitForData = null;
-	//List<Callable> mListOfThreads = new ArrayList<Callable>();
-	List<Callable> mListOfThreads = Collections.synchronizedList(new ArrayList<Callable>());
+	private WaitForData mWaitForData = null;
+	//private List<Callable> mListOfThreads = new ArrayList<Callable>();
+	private List<Callable> mListOfThreads = Collections.synchronizedList(new ArrayList<Callable>());
 	
-	List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
-	String threadName = "";
+	private List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
+	private String threadName = "";
+	
+	private boolean mIsDebug = false;
 	
 	public BasicProcessWithCallBack(){
 		
@@ -102,8 +104,59 @@ public abstract class BasicProcessWithCallBack {
 			mWaitForData = new WaitForData(b);
 		}
 		
+		printListOfThreads();
 	};
+
+	/** TODO needs work to include all cases in "setWaitForData" */
+	public void removeSetWaitForData(BasicProcessWithCallBack b){
+		
+		if(mWaitForData!=null){
+			BasicProcessWithCallBack bpwc = mWaitForData.returnBasicProcessWithCallBack();
+			if(bpwc.equals(b)){
+				consolePrintLn("Removing thread\tHashCode: " + mWaitForData.hashCode());
+				mWaitForData = null;
+			}
+		}
+		
+    	synchronized (mListWaitForData) {
+        	Iterator<WaitForData> entries = mListWaitForData.iterator();
+    		while (entries.hasNext()) {
+    			WaitForData wFD = entries.next();
+    			BasicProcessWithCallBack bpwc = wFD.returnBasicProcessWithCallBack();
+    			if(bpwc.equals(b)){
+    				consolePrintLn("Removing thread\tHashCode: " + wFD.hashCode());
+    				entries.remove();
+    				return;
+    			}
+    		}
+    	}
+	}
 	
+	private void printListOfThreads() {
+		consolePrintLn("BasicProcessWithCallBack:\t" + threadName);
+		
+		if (mWaitForData!=null){
+			consolePrintLn("\tSimple Name: " + mWaitForData.getClass().getSimpleName() + "\t" + mWaitForData.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + mWaitForData.hashCode());
+		}
+
+    	synchronized (mListOfThreads) {
+        	Iterator <Callable> entries = mListOfThreads.iterator();
+    		while (entries.hasNext()) {
+    			Callable c = entries.next();
+    			consolePrintLn("\tSimple Name: " + c.getClass().getSimpleName() + "\tHashCode: " + c.hashCode());
+    		}
+    	}
+    	
+    	synchronized (mListWaitForData) {
+        	Iterator<WaitForData> entries = mListWaitForData.iterator();
+    		while (entries.hasNext()) {
+    			WaitForData c = entries.next();
+    			consolePrintLn("\tSimple Name: " + c.getClass().getSimpleName() + "\t" + c.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + c.hashCode());
+    		}
+    	}
+		consolePrintLn("");
+	}
+
 	public void setWaitForDataWithSingleInstanceCheck(BasicProcessWithCallBack b){
 		if (mGUIConsumerThread==null){
 			mGUIConsumerThread = new ConsumerThread();
@@ -137,7 +190,6 @@ public abstract class BasicProcessWithCallBack {
 	};
 	
 	public void passCallback(Callable c) {
-		// TODO Auto-generated method stub
 		if (mThread!=null){
 			mListOfThreads.add(c);
 		} 
@@ -195,8 +247,7 @@ public abstract class BasicProcessWithCallBack {
 			return track;
 		}
 		
-		public WaitForData(BasicProcessWithCallBack bpwcb)  
-		{  
+		public WaitForData(BasicProcessWithCallBack bpwcb) {  
 			track = bpwcb;
 			bpwcb.passCallback(this);
 		} 
@@ -225,6 +276,13 @@ public abstract class BasicProcessWithCallBack {
 		threadName = name;
 		if(mGUIConsumerThread!=null){
 			mGUIConsumerThread.setName(name);
+		}
+	}
+	
+	
+	private void consolePrintLn(String toPrint){
+		if(mIsDebug){
+			System.out.println(toPrint);
 		}
 	}
 
