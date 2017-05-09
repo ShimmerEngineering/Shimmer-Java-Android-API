@@ -263,19 +263,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							}
 							initialize();
 						} else {
-							try {
-								disconnect();
-							} catch (ShimmerException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							disconnectNoException();
 						}
 					}
 					catch (SerialPortException ex){
 						consolePrintException(ex.getMessage(), ex.getStackTrace());
 						
-						connectionLost();
-						closeConnection();
+//						connectionLost();
+//						closeConnection();
+						disconnectNoException();
 						setBluetoothRadioState(BT_STATE.CONNECTION_FAILED);
 					}
 				} 
@@ -363,17 +359,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	@Deprecated //Use disconnect() instead
-	public void stop() {
-		try {
-			disconnect();
-		} catch (ShimmerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override
 	protected byte readByte() {
 		byte[] b = readBytes(1);
 		return b[0];
@@ -435,6 +420,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 	@Override
+	@Deprecated //Use disconnect() instead
+	public void stop() {
+		disconnectNoException();
+	}
+
+	@Override
 	public void disconnect() throws ShimmerException {
 //		super.disconnect();
 		stopAllTimers();
@@ -442,15 +433,19 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		setBluetoothRadioState(BT_STATE.DISCONNECTED);
 	}
 
-	@Override
-	protected void sendStatusMsgPacketLossDetected() {
-		// TODO Auto-generated method stub
-		
+	public void disconnectNoException()  {
+		try {
+			disconnect();
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	protected void connectionLost() {
-		closeConnection();
+		disconnectNoException();
+//		closeConnection();
 //		consolePrintLn("Connection Lost");
 		setBluetoothRadioState(BT_STATE.CONNECTION_LOST);
 	}
@@ -513,6 +508,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		
 	}
 
+	@Override
+	protected void sendStatusMsgPacketLossDetected() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	public String message;
 	@Override
