@@ -3515,9 +3515,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					calibBytesAll = newCalibBytesAll;
 				}
 				
-				if(calibDetailsPerRange.mRangeValue == 7){
-					System.err.println("MAG RANGE 7");
-				}
+				//Debugging
+//				if(calibDetailsPerRange.mRangeValue == 7){
+//					System.err.println("MAG RANGE 7");
+//				}
 				
 				//Debugging
 //				if(calibDetailsPerRange instanceof CalibDetailsKinematic){
