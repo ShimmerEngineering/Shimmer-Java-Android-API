@@ -21,9 +21,10 @@ public abstract class BasicProcessWithCallBack {
 	//private List<Callable> mListOfThreads = new ArrayList<Callable>();
 	private List<Callable> mListOfThreads = Collections.synchronizedList(new ArrayList<Callable>());
 	
-	private List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
+//	private List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
+	private List<WaitForData> mListWaitForData = Collections.synchronizedList(new ArrayList<WaitForData>());
+	
 	private String threadName = "";
-
 	private boolean mIsDebug = false;
 
 	/**This is a seperate thread running on the callback msgs from lower layer
@@ -48,16 +49,6 @@ public abstract class BasicProcessWithCallBack {
 		}
 	}
 	
-	public void startConsumerThread(){
-		if (mGUIConsumerThread==null){
-			mGUIConsumerThread = new ConsumerThread();
-			if(!threadName.isEmpty()){
-				mGUIConsumerThread.setName(threadName);
-			}
-			mGUIConsumerThread.start();
-		}
-	}
-	
 	public void queueMethod(int i,Object ojc){
 		try {
 			mQueue.put(new ShimmerMsg(i,ojc));
@@ -70,9 +61,20 @@ public abstract class BasicProcessWithCallBack {
 	public int getQueueSize(){
 		return mQueue.size();
 	}
-	
+
+	public void startConsumerThreadIfNull(){
+		if (mGUIConsumerThread==null){
+			mGUIConsumerThread = new ConsumerThread();
+			if(!threadName.isEmpty()){
+				mGUIConsumerThread.setName(threadName);
+			}
+			mGUIConsumerThread.start();
+		}
+	}
+
 	public class ConsumerThread extends Thread {
 		public boolean stop = false;
+		
 		public void run() {
 			while (!stop) {
 				try {
@@ -88,16 +90,12 @@ public abstract class BasicProcessWithCallBack {
 	}
 	
 	public void setWaitForData(BasicProcessWithCallBack b){
-		if (mGUIConsumerThread==null){
-			mGUIConsumerThread = new ConsumerThread();
-			if(!threadName.isEmpty()){
-				mGUIConsumerThread.setName(threadName);
-			}
-			mGUIConsumerThread.start();
-		}
+		startConsumerThreadIfNull();
 		
 		if (mWaitForData!=null){
-			mListWaitForData.add(new WaitForData(b));
+			synchronized (mListWaitForData){
+				mListWaitForData.add(new WaitForData(b));
+			}
 		} else {
 			mWaitForData = new WaitForData(b);
 		}
@@ -131,30 +129,30 @@ public abstract class BasicProcessWithCallBack {
 	}
 	
 	public void setWaitForDataWithSingleInstanceCheck(BasicProcessWithCallBack b){
-		if (mGUIConsumerThread==null){
-			mGUIConsumerThread = new ConsumerThread();
-			if(!threadName.isEmpty()){
-				mGUIConsumerThread.setName(threadName);
-			}
-			mGUIConsumerThread.start();
-		}
-		
+		startConsumerThreadIfNull();
+
 		if (mWaitForData!=null){
 			boolean found = false;
 			if (mWaitForData.returnBasicProcessWithCallBack().equals(b)){
 				found = true;
 			}
 			if (!found){
-				for (WaitForData wfd: mListWaitForData){
-					if(wfd != null && wfd.returnBasicProcessWithCallBack() != null){
-						if (wfd.returnBasicProcessWithCallBack().equals(b)){
-							found = true;
+		    	synchronized (mListWaitForData) {
+		        	Iterator<WaitForData> entries = mListWaitForData.iterator();
+		    		while (entries.hasNext()) {
+		    			WaitForData wfd = entries.next();
+						if(wfd != null && wfd.returnBasicProcessWithCallBack() != null){
+							if (wfd.returnBasicProcessWithCallBack().equals(b)){
+								found = true;
+							}
 						}
-					}
-				}
+		    		}
+		    	}
 			}
 			if(!found){
-				mListWaitForData.add(new WaitForData(b));
+				synchronized (mListWaitForData){
+					mListWaitForData.add(new WaitForData(b));
+				}
 			}
 		} else {
 			mWaitForData = new WaitForData(b);
@@ -164,7 +162,9 @@ public abstract class BasicProcessWithCallBack {
 	
 	public void passCallback(Callable c) {
 		if (mThread!=null){
-			mListOfThreads.add(c);
+	    	synchronized (mListOfThreads) {
+	    		mListOfThreads.add(c);
+	    	}
 		} 
 		else {
 			mThread = c;
