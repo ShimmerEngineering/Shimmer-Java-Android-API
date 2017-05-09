@@ -176,8 +176,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//Events markers
 	protected int mEventMarkersCodeLast = 0;
 	protected boolean mEventMarkersIsPulse = false;
-	protected int mEventMarkerDefault = -1; // using -1 as the default event marker value as as a value of 0 was hanging the plots and the software
-	public int mEventMarkers = mEventMarkerDefault;
+	public final static int EVENT_MARKER_DEFAULT = -1; // using -1 as the default event marker value as as a value of 0 was hanging the plots and the software
+	public int mEventMarkers = EVENT_MARKER_DEFAULT;
 	
 	public transient ObjectCluster mLastProcessedObjectCluster = null;
 	public List<ShimmerLogDetails> mListofLogs = new ArrayList<ShimmerLogDetails>();
@@ -501,7 +501,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			mEventMarkers = mEventMarkers + eventCode; 
 		}
 		else{
-			mEventMarkers = mEventMarkers + eventCode + (-mEventMarkerDefault); 
+			mEventMarkers = mEventMarkers + eventCode + (-EVENT_MARKER_DEFAULT); 
 		}
 		
 		//TOGGLE(1),
@@ -515,7 +515,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setEventUntrigger(int eventCode){
 		mEventMarkers = mEventMarkers - eventCode;
 		if(mEventMarkers == 0){
-			mEventMarkers = mEventMarkerDefault; // using -1 as the default event marker value as as a value of 0 was hanging the plots and the software
+			mEventMarkers = EVENT_MARKER_DEFAULT; // using -1 as the default event marker value as as a value of 0 was hanging the plots and the software
 		}
 	}
 	
@@ -954,7 +954,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void resetEventMarkerValuetoDefault(){
-		mEventMarkers = mEventMarkerDefault;
+		mEventMarkers = EVENT_MARKER_DEFAULT;
 	}
 	
 	public void incrementPacketsReceivedCounters(){
