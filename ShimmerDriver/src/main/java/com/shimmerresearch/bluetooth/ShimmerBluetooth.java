@@ -2245,6 +2245,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				writeEXGConfiguration();
 				mSetupEXG = false;
 			}
+			if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
+				writeShimmerUserAssignedName(getShimmerUserAssignedName());
+			}
 			writeGSRRange(mGSRRange);
 			writeAccelRange(getAccelRange());
 			writeGyroRange(getGyroRange());
