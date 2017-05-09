@@ -553,7 +553,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mDockID = dockId;
 		parseDockType();
 		mSlotNumber = slotNumber;
-		mUniqueID = mDockID + "." + String.format("%02d",mSlotNumber);
+		mUniqueID = mDockID + "." + String.format("%02d", mSlotNumber);
 	}
 
 	public void addCommunicationRoute(COMMUNICATION_TYPE communicationType) {
