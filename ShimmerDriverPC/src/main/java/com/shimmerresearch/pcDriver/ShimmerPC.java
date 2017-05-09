@@ -69,10 +69,12 @@ import java.util.Set;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exceptions.ShimmerException;
+import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -80,6 +82,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import jssc.SerialPortTimeoutException;
 
 
 public class ShimmerPC extends ShimmerBluetooth implements Serializable{
@@ -236,7 +239,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				if (mSerialPort==null){
 					setComPort(address);
 					mSerialPort = new SerialPort(address);
-					
+
 					try {
 						consolePrintLn("Connecting to Shimmer on " + address);
 						consolePrintLn("Port open: " + mSerialPort.openPort());
@@ -350,13 +353,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		try {
 			if(mSerialPort != null){
 				if (mSerialPort.isOpened()){
-					return(mSerialPort.readBytes(numberofBytes));
+					return(mSerialPort.readBytes(numberofBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_500));
 				} else {
 					System.out.println("ALERT!!");
 				}
 			}
 		} catch (SerialPortException | NullPointerException e) {
 			connectionLost();
+			e.printStackTrace();
+		} catch (SerialPortTimeoutException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

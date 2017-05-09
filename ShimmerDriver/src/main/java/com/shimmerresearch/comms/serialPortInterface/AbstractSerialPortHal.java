@@ -6,7 +6,9 @@ import java.util.List;
 public abstract class AbstractSerialPortHal implements InterfaceSerialPortHal {
 	
 	//the timeout value for connecting with the port
-    public int SERIAL_PORT_TIMEOUT = 500; // was 2000
+    public static int SERIAL_PORT_TIMEOUT_500 = 500; // was 2000
+    public static int SERIAL_PORT_TIMEOUT_2000 = 2000; // was 2000
+    public int mSerialPortTimeout = SERIAL_PORT_TIMEOUT_500;
     private String mConnectionHandle = "";
     
 	transient private List<ByteLevelDataCommListener> mByteLevelDataCommListener = new ArrayList<ByteLevelDataCommListener>();
@@ -53,6 +55,6 @@ public abstract class AbstractSerialPortHal implements InterfaceSerialPortHal {
 	
 	@Override
 	public void setTimeout(int timeout) {
-		SERIAL_PORT_TIMEOUT = timeout;
+		mSerialPortTimeout = timeout;
 	}
 }
