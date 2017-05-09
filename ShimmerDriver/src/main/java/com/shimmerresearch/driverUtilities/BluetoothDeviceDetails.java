@@ -1,5 +1,6 @@
 package com.shimmerresearch.driverUtilities;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 
 
@@ -16,6 +17,7 @@ public class BluetoothDeviceDetails {
 
 	//TODO Testing for GUI feedback - shouldn't really be here 
 	public boolean mAttemptingConnection = false;
+	public BT_STATE mLastConnectionSate = BT_STATE.DISCONNECTED;
 
 	public BluetoothDeviceDetails(String comPort, String comPortDescription){
 		mComPort = comPort;
@@ -26,7 +28,7 @@ public class BluetoothDeviceDetails {
 		mComPort = comPort;
 		mFriendlyName = friendlyName;
 		setMacId(macId);
-		setDeviceType();
+		checkDeviceType();
 	}
 
 	public void setMacId(String mac){
@@ -49,7 +51,7 @@ public class BluetoothDeviceDetails {
 			return mShimmerMacIdParsed;
 	}
 
-	public void setDeviceType() {
+	public void checkDeviceType() {
 		if(!mShimmerMacId.equals(UtilShimmer.MAC_ADDRESS_ZEROS)){
 			if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER3)){
 				mDeviceTypeDetected = DEVICE_TYPE.SHIMMER3;
@@ -68,7 +70,20 @@ public class BluetoothDeviceDetails {
 			}
 			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.MANUFACTURER_NONIN)){
 				mDeviceTypeDetected = DEVICE_TYPE.NONIN_ONYX_II;
+			} else {
+				mDeviceTypeDetected = DEVICE_TYPE.UNKOWN;
 			}
+		} else {
+			mDeviceTypeDetected = DEVICE_TYPE.UNKOWN;
 		}
+	}
+
+	public void update(BluetoothDeviceDetails bluetoothDeviceDetails) {
+		mComPort = bluetoothDeviceDetails.mComPort;
+		setMacId(bluetoothDeviceDetails.mShimmerMacId);
+		mFriendlyName = bluetoothDeviceDetails.mFriendlyName;
+		mComPortDescription = bluetoothDeviceDetails.mComPortDescription;
+
+		checkDeviceType();
 	}
 }
