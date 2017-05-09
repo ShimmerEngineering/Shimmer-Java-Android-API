@@ -1001,7 +1001,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		List<Byte> buffer = new ArrayList<Byte>();
 		while (availableBytes()!=0){
-			int available = availableBytes();
+//			int available = availableBytes();
 			if (bytesAvailableToBeRead()){
 				byte[] tb=readBytes(1);
 				if(buffer!=null && tb.length>0){
@@ -2049,15 +2049,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void parseStatusByte(byte statusByte){
 		Boolean savedDockedState = mIsDocked;
 		
-//		setIsDocked(((statusByte & 0x01) > 0)? true:false);
 		setIsDocked(((statusByte & (0x01 << 0)) > 0)? true:false);
-//		setIsSensing(((statusByte & 0x02) > 0)? true:false);
 		setIsSensing(((statusByte & (0x01 << 1)) > 0)? true:false);
-		//reserved = ((statusByte & 0x04) > 0)? true:false;
 		//reserved(((statusByte & (0x01 << 2)) > 0)? true:false);
-//		setIsSDLogging(((statusByte & 0x08) > 0)? true:false);
 		setIsSDLogging(((statusByte & (0x01 << 3)) > 0)? true:false);
-//		setIsStreaming(((statusByte & 0x10) > 0)? true:false); 
 		setIsStreaming(((statusByte & (0x01 << 4)) > 0)? true:false);
 		//unused(((statusByte & (0x01 << 5)) > 0)? true:false);
 		if(isSupportedSdErrorInStatus()){
@@ -2197,6 +2192,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(mSendProgressReport){
 			operationPrepare();
 			setBluetoothRadioState(BT_STATE.CONNECTING);
+		}
+		
+		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2) && mSetupDevice){
+			writeShimmerUserAssignedName(getShimmerUserAssignedName());
 		}
 		
 		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
@@ -2534,15 +2533,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					// assume that the connection has been lost and close the
 					// serial port cleanly.
 					
-					if (bytesAvailableToBeRead()){
-						readBytes(availableBytes());
-					}
+//					if (bytesAvailableToBeRead()){
+//						readBytes(availableBytes());
+//					}
+					clearSerialBuffer();
 					stopTimerCheckForAckOrResp(); //Terminate the timer thread
-					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount));
+					printLogDataForDebugging("RETRY TX COUNT: " + Integer.toString(mNumberofTXRetriesCount) + " left of " + NUMBER_OF_TX_RETRIES_LIMIT);
 					if (mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && mCurrentCommand!=GET_SHIMMER_VERSION_COMMAND_NEW && !mIsInitialised){
-						killConnection(); //If command fail exit device	
+//						killConnection(); //If command fail exit device	
+						connectionLost();
 					} else if(mNumberofTXRetriesCount>=NUMBER_OF_TX_RETRIES_LIMIT && mIsInitialised){
-						killConnection(); //If command fail exit device	
+//						killConnection(); //If command fail exit device	
+						connectionLost();
 					} else {
 						mWaitForAck=false;
 						mWaitForResponse=false;
@@ -2660,8 +2662,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					writeLEDCommand(0);
 				}
 				if(mCountDeadConnection>5){
-//					setState(BT_STATE.NONE);
-					killConnection(); //If command fail exit device
+					//If command fail exit device
+////					setState(BT_STATE.NONE);
+//					killConnection(); 
+					connectionLost();
 				}
 			} 
 		} //End Run

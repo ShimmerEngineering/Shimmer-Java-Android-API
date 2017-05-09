@@ -89,30 +89,29 @@ public class ShimmerVerDetails implements Serializable {
     
 	//TODO change all to ENUMs with ints and Strings passed in
 	public static final class HW_ID_SR_CODES {
-		public static final int LOG_FILE = -2; //MN: don't think this should be here
-		public static final int UNKNOWN = -1;
-		public static final int NONE = 255;
+		public static final int LOG_FILE 				= -2; //MN: here for testing
+		public static final int UNKNOWN 				= -1;
+		public static final int NONE 					= 255;
 		
-		public static final int EXP_BRD_BR_AMP = 8;
-		public static final int EXP_BRD_BR_AMP_UNIFIED = 49;
-		public static final int EXP_BRD_GSR = 14;
-		public static final int EXP_BRD_GSR_UNIFIED = 48;
-		public static final int EXP_BRD_PROTO3_MINI = 36;
-		public static final int EXP_BRD_EXG = 37;
-		public static final int EXP_BRD_EXG_UNIFIED = 47;
-		public static final int EXP_BRD_PROTO3_DELUXE = 38;
-		public static final int EXP_BRD_HIGH_G_ACCEL = 44;
-		public static final int EXP_BRD_GPS = 46;
+		public static final int EXP_BRD_BR_AMP 			= 8;
+		public static final int SPAN 					= 9;
+		public static final int EXP_BRD_GSR 			= 14;
+		public static final int SHIMMER3 				= 31;
+		public static final int EXP_BRD_PROTO3_MINI 	= 36;
+		public static final int EXP_BRD_EXG 			= 37;
+		public static final int EXP_BRD_PROTO3_DELUXE 	= 38;
+		public static final int BASE15U 				= 41;
+		public static final int BASE6U 					= 42;
+		public static final int EXP_BRD_HIGH_G_ACCEL 	= 44;
+		public static final int EXP_BRD_GPS 			= 46;
+		public static final int EXP_BRD_EXG_UNIFIED 	= 47;
+		public static final int EXP_BRD_GSR_UNIFIED 	= 48;
+		public static final int EXP_BRD_BR_AMP_UNIFIED 	= 49;
 		
-		public static final int SHIMMER_GQ_802154_LR = 56;
-		public static final int SHIMMER_GQ_802154_NR = 57;
-		public static final int SHIMMER_4_SDK = 58;
-		public static final int SHIMMER_3_EXG_EXTENDED = 59;
-
-		public static final int SHIMMER3 = 31;
-		public static final int BASE15U = 41;
-		public static final int BASE6U = 42;
-		public static final int SPAN = 9;
+		public static final int SHIMMER_GQ_802154_LR 	= 56;
+		public static final int SHIMMER_GQ_802154_NR 	= 57;
+		public static final int SHIMMER_4_SDK 			= 58;
+		public static final int SHIMMER_3_EXG_EXTENDED 	= 59;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerHardware;
@@ -122,25 +121,24 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.UNKNOWN, "Unknown");
         
         aMap.put(HW_ID_SR_CODES.EXP_BRD_BR_AMP, "Bridge Amplifier+");
-        aMap.put(HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED, "Bridge Amplifier+");
+        aMap.put(HW_ID_SR_CODES.SPAN, "Span");//not used
         aMap.put(HW_ID_SR_CODES.EXP_BRD_GSR, "GSR+");
-        aMap.put(HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, "GSR+");
+        aMap.put(HW_ID_SR_CODES.SHIMMER3, "Shimmer3");//not used
         aMap.put(HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI, "PROTO3 Mini");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_EXG, "ECG/EMG");
-        aMap.put(HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED, "ECG/EMG/Resp");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, "PROTO3 Deluxe");
+        aMap.put(HW_ID_SR_CODES.BASE15U, "Base15U");
+        aMap.put(HW_ID_SR_CODES.BASE6U, "Base6U");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL, "High-g Accel");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_GPS, "GPS");
+        aMap.put(HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED, "ECG/EMG/Resp");
+        aMap.put(HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, "GSR+");
+        aMap.put(HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED, "Bridge Amplifier+");
         
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_LR, "ShimmerGQ 802.15.4");
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_NR, "ShimmerGQ 802.15.4");
         aMap.put(HW_ID_SR_CODES.SHIMMER_4_SDK, "Shimmer4 SDK");
         aMap.put(HW_ID_SR_CODES.SHIMMER_3_EXG_EXTENDED, "ExG Extended");
-        
-        aMap.put(HW_ID_SR_CODES.SHIMMER3, "Shimmer3");//not used
-        aMap.put(HW_ID_SR_CODES.BASE15U, "Base15U");
-        aMap.put(HW_ID_SR_CODES.BASE6U, "Base6U");
-        aMap.put(HW_ID_SR_CODES.SPAN, "Span");//not used
         
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
     }
@@ -193,14 +191,6 @@ public class ShimmerVerDetails implements Serializable {
 	
 	public static final class FW_LABEL {
 		public static final String UNKNOWN = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
-//		public static final String BOILERPLATE = "BoilerPlate";
-//		public static final String BTSTREAM = "BtStream";
-//		public static final String SDLOG = "SDLog";
-//		public static final String LOGANDSTREAM = "LogAndStream";
-//		public static final String SWEATCH = "Sweatch";
-//		public static final String GQ_BLE = "GQ_BLE";
-//		public static final String GPIO_TEST = "GPIO_TEST";
-//		public static final String GQ_802154 = "GQ_802154";
 	}
 
 
