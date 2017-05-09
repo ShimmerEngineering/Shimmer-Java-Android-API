@@ -171,7 +171,7 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 	@Override
 	public byte[] rxBytes(int numBytes) throws ShimmerException {
 		try {
-			byte[] rxBuf = mSerialPort.readBytes(numBytes, SERIAL_PORT_TIMEOUT);
+			byte[] rxBuf = mSerialPort.readBytes(numBytes, mSerialPortTimeout);
 			if(this.mIsDebugMode){
 				consolePrintLn("Serial Port RX(" + rxBuf.length + ")" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
 			}

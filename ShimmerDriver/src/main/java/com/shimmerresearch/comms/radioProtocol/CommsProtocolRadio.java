@@ -66,7 +66,7 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		if(radioHal!=null){
 			mRadioHal = radioHal;
 			mRadioHal.clearByteLevelDataCommListener();
-			mRadioHal.setTimeout(2000);
+			mRadioHal.setTimeout(AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_2000);
 			
 			if(radioProtocol!=null){
 				mRadioProtocol = radioProtocol;
