@@ -7810,6 +7810,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP2, exg2Bytes);
 //		}
 		exgBytesGetConfigFrom(exg1Bytes, exg2Bytes);
+		checkExgResolutionFromEnabledSensorsVar();
 		
 		//Digital Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
@@ -7905,7 +7906,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExperimentDurationMaximum(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)).intValue());
 		}
 
-		
+		prepareAllMapsAfterConfigRead();
+
 	}
 
 	private void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles) {
