@@ -953,6 +953,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mPacketReceptionRateOverall;
 	}
 
+	public void resetEventMarkerValuetoDefault(){
+		mEventMarkers = mEventMarkerDefault;
+	}
 	
 	public void incrementPacketsReceivedCounters(){
 		incrementPacketReceivedCountCurrent();
