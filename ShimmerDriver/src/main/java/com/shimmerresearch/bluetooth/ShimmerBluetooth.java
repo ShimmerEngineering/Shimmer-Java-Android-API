@@ -2197,6 +2197,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
 		
+		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2) && mSetupDevice){
+			writeShimmerUserAssignedName(getShimmerUserAssignedName());
+		}
+		
 		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
 			readConfigBytes();
 			readPressureCalibrationCoefficients();
@@ -2244,9 +2248,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if(mSetupEXG){
 				writeEXGConfiguration();
 				mSetupEXG = false;
-			}
-			if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
-				writeShimmerUserAssignedName(getShimmerUserAssignedName());
 			}
 			writeGSRRange(mGSRRange);
 			writeAccelRange(getAccelRange());
