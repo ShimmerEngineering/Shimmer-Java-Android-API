@@ -2047,15 +2047,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void parseStatusByte(byte statusByte){
 		Boolean savedDockedState = mIsDocked;
 		
-//		setIsDocked(((statusByte & 0x01) > 0)? true:false);
 		setIsDocked(((statusByte & (0x01 << 0)) > 0)? true:false);
-//		setIsSensing(((statusByte & 0x02) > 0)? true:false);
 		setIsSensing(((statusByte & (0x01 << 1)) > 0)? true:false);
-		//reserved = ((statusByte & 0x04) > 0)? true:false;
 		//reserved(((statusByte & (0x01 << 2)) > 0)? true:false);
-//		setIsSDLogging(((statusByte & 0x08) > 0)? true:false);
 		setIsSDLogging(((statusByte & (0x01 << 3)) > 0)? true:false);
-//		setIsStreaming(((statusByte & 0x10) > 0)? true:false); 
 		setIsStreaming(((statusByte & (0x01 << 4)) > 0)? true:false);
 		//unused(((statusByte & (0x01 << 5)) > 0)? true:false);
 		if(isSupportedSdErrorInStatus()){
