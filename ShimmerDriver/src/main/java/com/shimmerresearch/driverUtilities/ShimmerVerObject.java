@@ -374,6 +374,23 @@ public class ShimmerVerObject implements Serializable {
 		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.SHIMMER4_SDK_STOCK,0,0,1));
 		return listOfCompatibleSdLoggingFW;
 	}
+	
+	public static boolean isSupportedSdDataImport(int hwVer) {
+		if(hwVer == HW_ID.SHIMMER_1 
+				|| hwVer == HW_ID.SHIMMER_2 
+				|| hwVer == HW_ID.SHIMMER_2R
+				|| hwVer == HW_ID.SHIMMER_3 
+				|| hwVer == HW_ID.SHIMMER_GQ_BLE 
+				|| hwVer == HW_ID.SHIMMER_GQ_802154_LR 
+				|| hwVer == HW_ID.SHIMMER_GQ_802154_NR 
+				|| hwVer == HW_ID.SHIMMER_2R_GQ 
+				|| hwVer == HW_ID.SHIMMER_SR30){
+//				|| hwVer == HW_ID.SHIMMER_4_SDK){
+			return true;
+		}
+		return false;
+	}
+
 
 	public boolean isBtMemoryUpdateCommandSupported() {
 //		return isCalibDumpSupported(this);
