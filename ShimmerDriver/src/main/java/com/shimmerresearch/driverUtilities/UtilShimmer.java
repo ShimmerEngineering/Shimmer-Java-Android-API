@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -993,5 +994,24 @@ public class UtilShimmer implements Serializable {
 		}
 		return interleave;
 	}
+	
+	public static byte[] my_int_to_bb_le(int myInteger) {
+		return ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(myInteger).array();
+	}
+
+	public static int my_bb_to_int_le(byte[] byteBarray) {
+		return ByteBuffer.wrap(byteBarray).order(ByteOrder.LITTLE_ENDIAN).getInt();
+	}
+
+	public static byte[] my_int_to_bb_be(int myInteger) {
+		return ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN).putInt(myInteger).array();
+	}
+
+	public static int my_bb_to_int_be(byte[] byteBarray) {
+		return ByteBuffer.wrap(byteBarray).order(ByteOrder.BIG_ENDIAN).getInt();
+	}
+
+
+
 	
 }
