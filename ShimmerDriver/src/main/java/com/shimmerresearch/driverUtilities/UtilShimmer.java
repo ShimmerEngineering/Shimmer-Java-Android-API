@@ -25,6 +25,8 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.exceptions.ShimmerException;
+
 /** Utility class with commonly useful methods
  * 
  * @author Mark Nolan
@@ -80,7 +82,13 @@ public class UtilShimmer implements Serializable {
 			consolePrintErrLn(message + "\n" + UtilShimmer.convertStackTraceToString(stackTrace));
 		}
 	}
-	
+
+	public void consolePrintShimmerExeption(ShimmerException shimmerException) {
+		if(mVerboseMode) {
+			consolePrintErrLn(shimmerException.getErrStringFormatted());
+		}
+	}
+
 	private String generateConsolePrintLn(String message) {
 		Calendar rightNow = Calendar.getInstance();
 		String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 

@@ -16,17 +16,29 @@ public abstract class BasicProcessWithCallBack {
 	//protected BlockingQueue<ShimmerMSG> mQueue = new ArrayBlockingQueue<ShimmerMSG>(1024);
 	protected LinkedBlockingDeque<ShimmerMsg> mQueue = new LinkedBlockingDeque<ShimmerMsg>(1024);
 	protected ConsumerThread mGUIConsumerThread = null;
-	WaitForData mWaitForData = null;
-	//List<Callable> mListOfThreads = new ArrayList<Callable>();
-	List<Callable> mListOfThreads = Collections.synchronizedList(new ArrayList<Callable>());
+	private WaitForData mWaitForData = null;
 	
-	List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
-	String threadName = "";
+	//private List<Callable> mListOfThreads = new ArrayList<Callable>();
+	private List<Callable> mListOfThreads = Collections.synchronizedList(new ArrayList<Callable>());
+	
+	private List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
+	private String threadName = "";
+
+	private boolean mIsDebug = false;
+
+	/**This is a seperate thread running on the callback msgs from lower layer
+	 * @param shimmerMSG
+	 */
+	protected abstract void processMsgFromCallback(ShimmerMsg shimmerMSG);
 	
 	public BasicProcessWithCallBack(){
 		
 	}
 	
+	public BasicProcessWithCallBack(BasicProcessWithCallBack b){
+		mWaitForData = new WaitForData(b);
+	}
+
 	public void queueMethod(ShimmerMsg smsg){
 		try {
 			mQueue.put(smsg);
@@ -59,11 +71,6 @@ public abstract class BasicProcessWithCallBack {
 		return mQueue.size();
 	}
 	
-	/**This is a seperate thread running on the callback msgs from lower layer
-	 * @param shimmerMSG
-	 */
-	protected abstract void processMsgFromCallback(ShimmerMsg shimmerMSG);
-	
 	public class ConsumerThread extends Thread {
 		public boolean stop = false;
 		public void run() {
@@ -78,13 +85,6 @@ public abstract class BasicProcessWithCallBack {
 				}
 			}
 		};
-		
-	}
-	
-	
-	
-	public BasicProcessWithCallBack(BasicProcessWithCallBack b){
-		mWaitForData = new WaitForData(b);
 	}
 	
 	public void setWaitForData(BasicProcessWithCallBack b){
@@ -102,7 +102,33 @@ public abstract class BasicProcessWithCallBack {
 			mWaitForData = new WaitForData(b);
 		}
 		
+		printListOfThreads();
 	};
+
+	/** TODO needs work to include all cases in "setWaitForData" */
+	public void removeSetWaitForData(BasicProcessWithCallBack b){
+		
+		if(mWaitForData!=null){
+			BasicProcessWithCallBack bpwc = mWaitForData.returnBasicProcessWithCallBack();
+			if(bpwc.equals(b)){
+				consolePrintLn("Removing thread\tHashCode: " + mWaitForData.hashCode());
+				mWaitForData = null;
+			}
+		}
+		
+    	synchronized (mListWaitForData) {
+        	Iterator<WaitForData> entries = mListWaitForData.iterator();
+    		while (entries.hasNext()) {
+    			WaitForData wFD = entries.next();
+    			BasicProcessWithCallBack bpwc = wFD.returnBasicProcessWithCallBack();
+    			if(bpwc.equals(b)){
+    				consolePrintLn("Removing thread\tHashCode: " + wFD.hashCode());
+    				entries.remove();
+    				return;
+    			}
+    		}
+    	}
+	}
 	
 	public void setWaitForDataWithSingleInstanceCheck(BasicProcessWithCallBack b){
 		if (mGUIConsumerThread==null){
@@ -137,7 +163,6 @@ public abstract class BasicProcessWithCallBack {
 	};
 	
 	public void passCallback(Callable c) {
-		// TODO Auto-generated method stub
 		if (mThread!=null){
 			mListOfThreads.add(c);
 		} 
@@ -195,8 +220,7 @@ public abstract class BasicProcessWithCallBack {
 			return track;
 		}
 		
-		public WaitForData(BasicProcessWithCallBack bpwcb)  
-		{  
+		public WaitForData(BasicProcessWithCallBack bpwcb) {  
 			track = bpwcb;
 			bpwcb.passCallback(this);
 		} 
@@ -227,6 +251,40 @@ public abstract class BasicProcessWithCallBack {
 			mGUIConsumerThread.setName(name);
 		}
 	}
+	
+	public void processMsgFromCallbackFromUpperLevel(ShimmerMsg shimmerMSG){
+		processMsgFromCallback(shimmerMSG);
+	}
+	
+	private void printListOfThreads() {
+		consolePrintLn("BasicProcessWithCallBack:\t" + threadName);
+		
+		if (mWaitForData!=null){
+			consolePrintLn("\tSimple Name: " + mWaitForData.getClass().getSimpleName() + "\t" + mWaitForData.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + mWaitForData.hashCode());
+		}
 
+    	synchronized (mListOfThreads) {
+        	Iterator <Callable> entries = mListOfThreads.iterator();
+    		while (entries.hasNext()) {
+    			Callable c = entries.next();
+    			consolePrintLn("\tSimple Name: " + c.getClass().getSimpleName() + "\tHashCode: " + c.hashCode());
+    		}
+    	}
+    	
+    	synchronized (mListWaitForData) {
+        	Iterator<WaitForData> entries = mListWaitForData.iterator();
+    		while (entries.hasNext()) {
+    			WaitForData c = entries.next();
+    			consolePrintLn("\tSimple Name: " + c.getClass().getSimpleName() + "\t" + c.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + c.hashCode());
+    		}
+    	}
+		consolePrintLn("");
+	}
+	
+	private void consolePrintLn(String toPrint){
+		if(mIsDebug){
+			System.out.println(toPrint);
+		}
+	}
 	
 }

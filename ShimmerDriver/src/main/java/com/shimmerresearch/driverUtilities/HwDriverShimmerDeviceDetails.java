@@ -30,7 +30,7 @@ public class HwDriverShimmerDeviceDetails {
 		WII_BALANCE_BOARD("Wii_BalanceBoard"),
 		WEBCAM("Webcam"),
 		HOST_CPU_USAGE("CPU Usage"),
-		SWEATCH("RNBT");//"Sweatch");
+		SWEATCH("Sweatch");
 
 		private String deviceLabel = "";
 		

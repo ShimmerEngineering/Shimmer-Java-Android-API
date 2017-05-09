@@ -1,5 +1,6 @@
 package com.shimmerresearch.driverUtilities;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 
 
@@ -16,6 +17,7 @@ public class BluetoothDeviceDetails {
 
 	//TODO Testing for GUI feedback - shouldn't really be here 
 	public boolean mAttemptingConnection = false;
+	public BT_STATE mLastConnectionSate = BT_STATE.DISCONNECTED;
 
 	public BluetoothDeviceDetails(String comPort, String comPortDescription){
 		mComPort = comPort;
