@@ -2059,12 +2059,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			mIsRedLedOn = ((statusByte & (0x01 << 7)) > 0)? true:false;
 		}
 		
-		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
+		consolePrintLn("\nStatus Response = \n" + UtilShimmer.byteToHexStringFormatted(statusByte) 
 				+ "\t" + "IsDocked = " + mIsDocked
 				+ "\t" + "IsSensing = " + mIsSensing
 				+ "\t" + "IsSDLogging = "+ isSDLogging()
 				+ "\t" + "IsStreaming = " + mIsStreaming
 				+ "\t" + "mIsSdError = " + isSDError()
+				+ "\t" + "mIsSdPresent = " + isSDPresent()
 				+ "\t" + "mIsRedLedOn = " + mIsRedLedOn);
 		
 		if(savedDockedState!=mIsDocked){

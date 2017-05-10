@@ -10724,7 +10724,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START):
 				returnValue = isSingleTouch();
 				break;
-			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RWC):
+			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC):
 				returnValue = isShowErrorLedsRtc();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD):
@@ -11023,7 +11023,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER):
 				setMasterShimmer((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RWC):
+			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC):
 				setShowErrorLedsRtc((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD):

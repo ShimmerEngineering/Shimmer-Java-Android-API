@@ -598,12 +598,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		this.mShimmerSDCardDetails.setFirstSdAccess(state);
 	}
 
+	public boolean isSDErrorOrNotPresent() {
+		return (mShimmerSDCardDetails.isSDError() || !mShimmerSDCardDetails.isSDPresent());
+	}
+
 	public boolean isSDError() {
 		return mShimmerSDCardDetails.isSDError();
 	}
 
 	public void setIsSDError(boolean state) {
 		this.mShimmerSDCardDetails.setIsSDError(state);
+	}
+
+	public boolean isSDPresent() {
+		return this.mShimmerSDCardDetails.isSDPresent();
 	}
 
 	public void setIsSDPresent(boolean state) {
@@ -665,7 +673,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			return STRING_CONSTANT_UNKNOWN;
 		}
 
-		if(isSDError()){
+		if(isSDErrorOrNotPresent()){
 			return STRING_CONSTANT_SD_ERROR;
 		}
 		else {
@@ -887,7 +895,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public boolean isShimmerError(){
-		if(isSDError()){
+		if(isSDErrorOrNotPresent()){
 			return true;
 		}
 		return false;
