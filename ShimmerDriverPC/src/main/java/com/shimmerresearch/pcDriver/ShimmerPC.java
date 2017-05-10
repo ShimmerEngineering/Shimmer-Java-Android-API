@@ -339,6 +339,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				mSerialPort.writeBytes(data);
 			}
 		} catch (SerialPortException | NullPointerException ex) {
+			consolePrintLn("Tried to writeBytes but port is closed");
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
 		}
@@ -351,14 +352,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				if (mSerialPort.isOpened()){
 					return(mSerialPort.readBytes(numberofBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_500));
 				} else {
-					System.out.println("ALERT!!");
+					consolePrintLn("Tried to readBytes but port is closed");
 				}
 			}
 		} catch (SerialPortException | NullPointerException e) {
 			connectionLost();
+			consolePrintLn("Tried to readBytes but serial port error");
 			e.printStackTrace();
 		} catch (SerialPortTimeoutException e) {
-			// TODO Auto-generated catch block
+			consolePrintLn("Tried to readBytes but serial port timed out");
 			e.printStackTrace();
 		}
 		return null;
