@@ -22,6 +22,7 @@ public class ShimmerSDCardDetails implements Serializable {
 	protected long mDriveUsedSpace = 0;
 	
 	protected boolean mFirstSdAccess = true;
+	protected boolean mIsSDPresent = true;
 	protected boolean mIsSDError = false;
 	protected boolean mIsSDLogging = false;											// This is used to monitor whether the device is in sd log mode
 
@@ -99,6 +100,14 @@ public class ShimmerSDCardDetails implements Serializable {
 
 	public void setIsSDError(boolean state) {
 		this.mIsSDError = state;
+	}
+
+	public boolean isSDPresent() {
+		return mIsSDPresent;
+	}
+
+	public void setIsSDPresent(boolean state) {
+		this.mIsSDPresent = state;
 	}
 
 	public boolean isSDLogging(){
