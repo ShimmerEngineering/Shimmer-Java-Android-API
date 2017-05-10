@@ -32,7 +32,7 @@ public class ShimmerVerObject implements Serializable {
 	public String mFirmwareVersionParsedJustVersionNumber = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 
 	//TODO MNtoMN: below is a bad implementation, consider using ExpansionBoardDetails 
-	public int mShimmerExpansionBoardId = 0;
+	public int mShimmerExpansionBoardId = ShimmerVerDetails.ANY_VERSION;//0;
 //	public ExpansionBoardDetails ExpansionBoardDetails = 
 	
 	//TODO handle SPAN_VERSION for SPANs? It is obtained from the PlatformHwManager

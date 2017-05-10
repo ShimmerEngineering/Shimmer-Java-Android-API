@@ -1811,7 +1811,8 @@ public class Configuration {
 	        
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC,  
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
-							Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
+							Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12),
+									new ShimmerVerObject(FW_ID.SDLOG, 0, 11, 3))));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD,  
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 							Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
