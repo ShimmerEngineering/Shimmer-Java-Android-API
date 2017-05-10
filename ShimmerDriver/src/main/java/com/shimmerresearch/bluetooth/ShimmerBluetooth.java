@@ -2160,6 +2160,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * By default once connected no low power modes will be enabled. Low power modes should be enabled post connection once the MSG_STATE_FULLY_INITIALIZED is sent 
 	 */
 	private void initializeShimmer2R(){ 
+		if(mSendProgressReport){
+			operationPrepare();
+			setBluetoothRadioState(BT_STATE.CONNECTING);
+		}
 		readSamplingRate();
 		readMagSamplingRate();
 		writeBufferSize(1);
@@ -2183,6 +2187,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 			inquiry();
 		}
+		if(mSendProgressReport){
+			// Just unlock instruction stack and leave logAndStream timer as
+			// this is handled in the next step, i.e., no need for
+			// operationStart() here
+			startOperation(BT_STATE.CONNECTING, getListofInstructions().size());
+			
+			setInstructionStackLock(false);
+		}
 	}
 
 	private void initializeShimmer3(){
@@ -2193,11 +2205,22 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			operationPrepare();
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
-		
-		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2) && mSetupDevice){
-			writeShimmerUserAssignedName(getShimmerUserAssignedName());
+		if (mSetupDevice){
+			if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
+				writeShimmerUserAssignedName(getShimmerUserAssignedName());
+			}
+			if(mSetupEXG){
+				writeEXGConfiguration();
+				mSetupEXG = false;
+			}
+			writeGSRRange(mGSRRange);
+			writeAccelRange(getAccelRange());
+			writeGyroRange(getGyroRange());
+			writeMagRange(getMagRange());
+			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
+			writeInternalExpPower(1);
+			//		setContinuousSync(mContinousSync);
 		}
-		
 		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
 			readConfigBytes();
 			readPressureCalibrationCoefficients();
@@ -2242,17 +2265,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		if(mSetupDevice){
 			//writeAccelRange(mDigitalAccelRange);
-			if(mSetupEXG){
-				writeEXGConfiguration();
-				mSetupEXG = false;
-			}
-			writeGSRRange(mGSRRange);
-			writeAccelRange(getAccelRange());
-			writeGyroRange(getGyroRange());
-			writeMagRange(getMagRange());
-			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
-			writeInternalExpPower(1);
-//			setContinuousSync(mContinousSync);
 			writeEnabledSensors(mSetEnabledSensors); //this should always be the last command
 		} 
 		else {
@@ -3227,7 +3239,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param rate Defines the sampling rate to be set (e.g.51.2 sets the sampling rate to 51.2Hz). User should refer to the document Sampling Rate Table to see all possible values.
 	 */
 	public void writeShimmerAndSensorsSamplingRate(double rate) {
-		if(mIsInitialised) {
+		if(mIsInitialised || mSetupDevice) {
 			setShimmerAndSensorsSamplingRate(rate);
 			if(getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 
