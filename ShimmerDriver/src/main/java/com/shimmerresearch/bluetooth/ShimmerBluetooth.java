@@ -4860,6 +4860,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		try {
 			getListofInstructions().remove(index);
 		} catch (IndexOutOfBoundsException e){
+			consolePrintLn("Tried to remove BT instruction but it was already gone.");
 			consolePrintException(e.getMessage(), e.getStackTrace());
 		}
 	}
