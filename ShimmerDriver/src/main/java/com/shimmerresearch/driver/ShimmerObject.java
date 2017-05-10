@@ -6804,14 +6804,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			//Check if a derived channel is enabled, if it is ignore disable and skip 
 			innerloop:
-			for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
-				if(mSensorMap.get(conflictKey).isDerivedChannel()) {
-					if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
-						mSensorMap.get(sensorMapKey).setIsEnabled(false);
-						return true;
+				if (mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting!=null){
+					for(Integer conflictKey:mSensorMap.get(sensorMapKey).mSensorDetailsRef.mListOfSensorMapKeysConflicting) {
+						if(mSensorMap.get(conflictKey).isDerivedChannel()) {
+							if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
+								mSensorMap.get(sensorMapKey).setIsEnabled(false);
+								return true;
+							}
+						}
 					}
+				} else {
+					System.out.println("2r:null");
 				}
-			}
 		}
 //		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP_SYNC 
 ////				|| sensorMapKey == Configuration.Shimmer3.SensorMapKey.TIMESTAMP
@@ -6854,7 +6858,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else {
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(false);
+				if (mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY)!=null){
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY).setIsEnabled(false);
+				} else {
+					System.out.println("2r:null");
+				}
 	
 			}
 		}
@@ -6870,7 +6878,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else {
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(false);
+				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY)!=null){
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY).setIsEnabled(false);
+				} else {
+					System.out.println("2r:null");
+				}
 			}
 		}
 		//Used for Shimmer Proto3 Deluxe hardware
@@ -6885,7 +6897,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else {
-				mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
+				if(mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY)!=null){
+					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY).setIsEnabled(false);
+				} else {
+					System.out.println("2r:null");
+				}
 			}
 		}
 		
