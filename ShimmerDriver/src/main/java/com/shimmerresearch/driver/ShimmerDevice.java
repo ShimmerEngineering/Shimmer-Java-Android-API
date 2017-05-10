@@ -606,6 +606,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		this.mShimmerSDCardDetails.setIsSDError(state);
 	}
 
+	public void setIsSDPresent(boolean state) {
+		this.mShimmerSDCardDetails.setIsSDPresent(state);
+	}
+
 	public boolean isSDLogging(){
 		return mShimmerSDCardDetails.isSDLogging();
 	}	
@@ -1664,7 +1668,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean isSupportedCalibDump() {
 		return mShimmerVerObject.isSupportedCalibDump();
 	}
-
+	
 	public boolean isShimmerGen2(){
 		return mShimmerVerObject.isShimmerGen2();
 	}

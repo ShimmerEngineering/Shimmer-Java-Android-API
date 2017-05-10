@@ -315,8 +315,11 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	public int bitShiftButtonStart = 			5;
 	public int maskButtonStart = 				0x01;
 
-	public int bitShiftShowRwcErrorLeds = 		4;
-	public int maskShowRwcErrorLeds =	 		0; // Only applicable for certain FW
+	public int bitShiftShowErrorLedsRwc = 		4;
+	public int maskShowErrorLedsRwc =	 		0; // Only applicable for certain FW
+
+	public int bitShiftShowErrorLedsSd = 		0;
+	public int maskShowErrorLedsSd =	 		0; // Only applicable for certain FW
 
 	public int bitShiftTimeSyncWhenLogging =	2;
 	public int maskTimeSyncWhenLogging = 		0x01;
@@ -523,7 +526,7 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 		if((compareVersions(FW_ID.SDLOG,0,11,3))
 				||(compareVersions(FW_ID.LOGANDSTREAM,0,5,12))
 				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
-			maskShowRwcErrorLeds =	 		0x01;
+			maskShowErrorLedsRwc =	 		0x01;
 		}
 		
 		if((compareVersions(FW_ID.SDLOG,0,11,5))
@@ -543,6 +546,10 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 			idxDerivedSensors5 =		    		120;
 			idxDerivedSensors6 =		    		121;
 			idxDerivedSensors7 =		    		122;
+		}
+
+		if(compareVersions(FW_ID.LOGANDSTREAM,0,7,12)) {
+			maskShowErrorLedsSd = 0x01;
 		}
 
 //		if(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,10,1)){
