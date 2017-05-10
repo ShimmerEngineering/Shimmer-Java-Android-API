@@ -922,8 +922,8 @@ public class Configuration {
 			public static final String TCX0 = "TCX0";
 			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
-			public static final String ENABLE_ERROR_LEDS_RWC = "Error LEDs RWC";
-			public static final String ENABLE_ERROR_LEDS_SD = "Error LEDs SD";
+			public static final String ENABLE_ERROR_LEDS_RTC = "RTC Error LEDs";
+			public static final String ENABLE_ERROR_LEDS_SD = "SD Error LEDs";
 
 			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
 			public static final String CALIBRATION_ALL = AbstractSensor.GuiLabelConfigCommon.CALIBRATION_ALL;
@@ -1809,7 +1809,7 @@ public class Configuration {
 			aMap.put(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION, SensorPPG.configOptionPpg1AdcSelection);
 			aMap.put(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION, SensorPPG.configOptionPpg2AdcSelection);
 	        
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RWC,  
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC,  
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 							Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD,  
