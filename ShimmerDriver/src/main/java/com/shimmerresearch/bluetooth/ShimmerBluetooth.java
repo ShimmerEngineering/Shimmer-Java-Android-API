@@ -480,21 +480,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				if(!isInstructionStackLock()){
 					processNextInstruction();
 				}
-				
-				if(bytesAvailableToBeRead()){
-					if(mIsStreaming){
-						processWhileStreaming();
-					}
-					else {
-						if(mWaitForAck) {
-							processNotStreamingWaitForAck();
-						} 
-						else if(mWaitForResponse) {
-							processNotStreamingWaitForResp();
-						} 
-						
-						processBytesAvailableAndInstreamSupported();
-					}
+
+				if(mIsStreaming){
+					processWhileStreaming();
+				}
+				else if(bytesAvailableToBeRead()){
+					if(mWaitForAck) {
+						processNotStreamingWaitForAck();
+					} 
+					else if(mWaitForResponse) {
+						processNotStreamingWaitForResp();
+					} 
+					
+					processBytesAvailableAndInstreamSupported();
+
 				}
 			}
 		}
