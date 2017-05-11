@@ -365,6 +365,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		} catch (SerialPortTimeoutException e) {
 			consolePrintLn("Tried to readBytes but serial port timed out");
 			e.printStackTrace();
+			
+			//TODO if in the middle of connecting or configuring trigger a connectionLost()? 
 		}
 		return null;
 	}
