@@ -712,61 +712,61 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			
 			if(bytesAvailableToBeRead()){
 				byteBuffer=readBytes(1);
-				mNumberofTXRetriesCount = 0;
-				mIamAlive = true;
-				
-				//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
-				if(mCurrentCommand==STOP_STREAMING_COMMAND 
-						|| mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
-					stopTimerCheckForAckOrResp();
-					mIsStreaming=false;
-					mTransactionCompleted=true;
-					mWaitForAck=false;
+				if(byteBuffer!=null){
+					mNumberofTXRetriesCount = 0;
+					mIamAlive = true;
 					
-					delayForBtResponse(200); // Wait to ensure the packet has been fully received
-					byteStack.clear();
-
-					clearSerialBuffer();
-					
-					hasStopStreaming();					
-					removeInstruction(0);
-					getListofInstructions().removeAll(Collections.singleton(null));
-					if (mCurrentCommand==STOP_SDBT_COMMAND){
-						eventLogAndStreamStatusChanged(mCurrentCommand);	
+					//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
+					if(mCurrentCommand==STOP_STREAMING_COMMAND 
+							|| mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
+						stopTimerCheckForAckOrResp();
+						mIsStreaming=false;
+						mTransactionCompleted=true;
+						mWaitForAck=false;
+						
+						delayForBtResponse(200); // Wait to ensure the packet has been fully received
+						byteStack.clear();
+	
+						clearSerialBuffer();
+						
+						hasStopStreaming();					
+						removeInstruction(0);
+						getListofInstructions().removeAll(Collections.singleton(null));
+						if (mCurrentCommand==STOP_SDBT_COMMAND){
+							eventLogAndStreamStatusChanged(mCurrentCommand);	
+						}
+						setInstructionStackLock(false);
 					}
-					setInstructionStackLock(false);
-				}
-//				//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
-//				if(mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
-//					stopTimerCheckForAckOrResp();
-//					mIsStreaming=false;
-//					mIsSDLogging=false;
-//					mTransactionCompleted=true;
-//					mWaitForAck=false;
-//					
-//					delayForBtResponse(200); // Wait to ensure the packet has been fully received
-//					byteStack.clear();
-//
-//					clearSerialBuffer();
-//					
-//					hasStopStreaming();					
-//					removeInstruction(0);
-//					getListofInstructions().removeAll(Collections.singleton(null));
-//					setInstructionStackLock(false);
-//				}
-				if(byteBuffer != null){
+	//				//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
+	//				if(mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
+	//					stopTimerCheckForAckOrResp();
+	//					mIsStreaming=false;
+	//					mIsSDLogging=false;
+	//					mTransactionCompleted=true;
+	//					mWaitForAck=false;
+	//					
+	//					delayForBtResponse(200); // Wait to ensure the packet has been fully received
+	//					byteStack.clear();
+	//
+	//					clearSerialBuffer();
+	//					
+	//					hasStopStreaming();					
+	//					removeInstruction(0);
+	//					getListofInstructions().removeAll(Collections.singleton(null));
+	//					setInstructionStackLock(false);
+	//				}
 					if((byte)byteBuffer[0]==ACK_COMMAND_PROCESSED) {
-
+	
 						mWaitForAck=false;
 						printLogDataForDebugging("Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand));
-
+	
 						// Send status report if needed by the
 						// application and is not one of the below
 						// commands that are triggered by timers
 						if(mCurrentCommand!=GET_STATUS_COMMAND 
 								&& mCurrentCommand!=TEST_CONNECTION_COMMAND 
 								&& mCurrentCommand!=SET_BLINK_LED 
-//								&& mCurrentCommand!=GET_CALIB_DUMP_COMMAND 
+	//								&& mCurrentCommand!=GET_CALIB_DUMP_COMMAND 
 								//&& mCurrentCommand!= GET_VBATT_COMMAND
 								&& mOperationUnderway){
 							sendProgressReport(new BluetoothProgressReportPerCmd(mCurrentCommand, getListofInstructions().size(), mMyBluetoothAddress, getComPort()));
@@ -789,7 +789,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							mWaitForResponse=true;
 							removeInstruction(0);
 						}
-						
+					
 					}
 				}
 			}
@@ -823,25 +823,27 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			
 			else if(bytesAvailableToBeRead()){
 				byteBuffer=readBytes(1);
-				mIamAlive = true;
-				
-				//Check to see whether it is a response byte
-				if(isKnownResponse(byteBuffer[0])){
-					byte responseCommand = byteBuffer[0];
+				if(byteBuffer!=null){
+					mIamAlive = true;
 					
-					processResponseCommand(responseCommand);
-					//JD: only stop timer after process because there are readbyte opeartions in the processresponsecommand
-					stopTimerCheckForAckOrResp(); //cancel the ack timer
-					mWaitForResponse=false;
-					mTransactionCompleted=true;
-					setInstructionStackLock(false);
-					printLogDataForDebugging("Response Received:\t\t\t" + btCommandToString(responseCommand));
-					
-					// Special case for FW_VERSION_RESPONSE because it
-					// needs to initialize the Shimmer after releasing
-					// the setInstructionStackLock
-					if(byteBuffer[0]==FW_VERSION_RESPONSE){
-						processFirmwareVerResponse();
+					//Check to see whether it is a response byte
+					if(isKnownResponse(byteBuffer[0])){
+						byte responseCommand = byteBuffer[0];
+						
+						processResponseCommand(responseCommand);
+						//JD: only stop timer after process because there are readbyte opeartions in the processresponsecommand
+						stopTimerCheckForAckOrResp(); //cancel the ack timer
+						mWaitForResponse=false;
+						mTransactionCompleted=true;
+						setInstructionStackLock(false);
+						printLogDataForDebugging("Response Received:\t\t\t" + btCommandToString(responseCommand));
+						
+						// Special case for FW_VERSION_RESPONSE because it
+						// needs to initialize the Shimmer after releasing
+						// the setInstructionStackLock
+						if(byteBuffer[0]==FW_VERSION_RESPONSE){
+							processFirmwareVerResponse();
+						}
 					}
 				}
 			}
@@ -855,7 +857,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					&& bytesAvailableToBeRead()) {
 				
 				byteBuffer=readBytes(1);
-				if(byteBuffer != null){
+				if(byteBuffer!=null){
 					if(byteBuffer[0]==ACK_COMMAND_PROCESSED) {
 						printLogDataForDebugging("ACK RECEIVED , Connected State!!");
 						byteBuffer = readBytes(1);
@@ -905,37 +907,48 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	/** process responses to in-stream response */
 	private void processInstreamResponse() {
-		byte inStreamResponseCommand = readBytes(1)[0];
-		consolePrintLn("In-stream received = " + btCommandToString(inStreamResponseCommand));
-
-		if(inStreamResponseCommand==DIR_RESPONSE){ 
-			byte[] responseData = readBytes(1);
-			int directoryNameLength = responseData[0];
-			byte[] bufferDirectoryName = new byte[directoryNameLength];
-			bufferDirectoryName = readBytes(directoryNameLength);
-			String tempDirectory = new String(bufferDirectoryName);
-			mDirectoryName = tempDirectory;
-			printLogDataForDebugging("Directory Name = " + mDirectoryName);
-		}
-		else if(inStreamResponseCommand==STATUS_RESPONSE){
-			byte[] responseData = readBytes(1);
-			parseStatusByte(responseData[0]);
-
-			if(!mIsSensing){
-				if(!isInitialised()){
-					writeRealTimeClock();
+		byte[] inStreamResponseCommandBuffer = readBytes(1);
+		if(inStreamResponseCommandBuffer!=null){
+			byte inStreamResponseCommand = inStreamResponseCommandBuffer[0];
+			consolePrintLn("In-stream received = " + btCommandToString(inStreamResponseCommand));
+	
+			if(inStreamResponseCommand==DIR_RESPONSE){ 
+				byte[] responseData = readBytes(1);
+				if(responseData!=null){
+					int directoryNameLength = responseData[0];
+					byte[] bufferDirectoryName = new byte[directoryNameLength];
+					bufferDirectoryName = readBytes(directoryNameLength);
+					if(bufferDirectoryName!=null){
+						String tempDirectory = new String(bufferDirectoryName);
+						mDirectoryName = tempDirectory;
+						printLogDataForDebugging("Directory Name = " + mDirectoryName);
+					}
 				}
 			}
-			eventLogAndStreamStatusChanged(mCurrentCommand);
-		} 
-		else if(inStreamResponseCommand==VBATT_RESPONSE) {
-			byte[] responseData = readBytes(3); 
-			ShimmerBattStatusDetails battStatusDetails = new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]);
-			setBattStatusDetails(battStatusDetails);
-			printLogDataForDebugging("Battery Status:"
-					+ "\tVoltage=" + battStatusDetails.getBattVoltageParsed()
-					+ "\tCharging status=" + battStatusDetails.getChargingStatusParsed()
-					+ "\tBatt %=" + battStatusDetails.getEstimatedChargePercentageParsed());
+			else if(inStreamResponseCommand==STATUS_RESPONSE){
+				byte[] responseData = readBytes(1);
+				if(responseData!=null){
+					parseStatusByte(responseData[0]);
+		
+					if(!mIsSensing){
+						if(!isInitialised()){
+							writeRealTimeClock();
+						}
+					}
+					eventLogAndStreamStatusChanged(mCurrentCommand);
+				}
+			} 
+			else if(inStreamResponseCommand==VBATT_RESPONSE) {
+				byte[] responseData = readBytes(3);
+				if(responseData!=null){
+					ShimmerBattStatusDetails battStatusDetails = new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]);
+					setBattStatusDetails(battStatusDetails);
+					printLogDataForDebugging("Battery Status:"
+							+ "\tVoltage=" + battStatusDetails.getBattVoltageParsed()
+							+ "\tCharging status=" + battStatusDetails.getChargingStatusParsed()
+							+ "\tBatt %=" + battStatusDetails.getEstimatedChargePercentageParsed());
+				}
+			}
 		}
 	}
 
@@ -988,20 +1001,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 */
 	private void clearSerialBuffer() {
-		/* JC: not working well on android
-		if(bytesAvailableToBeRead()){
-			byte[] buffer = readBytes(availableBytes());
-			printLogDataForDebugging("Discarding:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(buffer));
-		}
-		*/
-		
-		
 		List<Byte> buffer = new ArrayList<Byte>();
 		while (availableBytes()!=0){
 //			int available = availableBytes();
 			if (bytesAvailableToBeRead()){
-				byte[] tb=readBytes(1);
-				if(buffer!=null && tb.length>0){
+				//JC: not working well on android
+				//byte[] buffer = readBytes(availableBytes());
+				byte[] tb = readBytes(1);
+				if(tb!=null){
 					buffer.add(tb[0]);
 				}
 			}
@@ -1094,19 +1101,26 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			
 			//Shimmer3
 			int lengthSettings = 8;// get Sampling rate, accel range, config setup byte0, num chans and buffer size
-			int lengthChannels = 6;// read each channel type for the num channels
+			int idxLengthChannels = 6;// read each channel type for the num channels
 			if(mShimmerVerObject.isShimmerGen2()) {
 				lengthSettings = 5;
-				lengthChannels = 3;
+				idxLengthChannels = 3;
 			}
         	// get Sampling rate, accel range, config setup byte0, num chans and buffer size
-			for (int i = 0; i < lengthSettings; i++) {
-                buffer.add(readByte());
-            }
+			byte[] settings = readBytes(lengthSettings);
+			if(settings!=null){
+				for(byte b:settings){
+	                buffer.add(b);
+	            }
+			}
             // read each channel type for the num channels
-            for (int i = 0; i < (int)buffer.get(lengthChannels); i++) {
-            	buffer.add(readByte());
-            }
+			int lengthChannels = (int)buffer.get(idxLengthChannels);
+			byte[] channels = readBytes(lengthChannels);
+			if(channels!=null){
+				for(byte b:channels){
+	                buffer.add(b);
+	            }
+			}
 
 			byte[] bufferInquiry = new byte[buffer.size()];
 			for (int i = 0; i < bufferInquiry.length; i++) {
@@ -1124,14 +1138,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if(!mIsStreaming) {
 				if(isShimmerGen2()) {
 					byte[] bufferSR = readBytes(1);
-					if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
-						double val=(double)(bufferSR[0] & (byte) ACK_COMMAND_PROCESSED);
-						setSamplingRateShimmer(1024/val);
+					if(bufferSR!=null){
+						if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
+							double val=(double)(bufferSR[0] & (byte) ACK_COMMAND_PROCESSED);
+							setSamplingRateShimmer(1024/val);
+						}
 					}
 				} 
 				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					byte[] bufferSR = readBytes(2); //read the sampling rate
-					setSamplingRateShimmer(32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
+					if(bufferSR!=null){
+						setSamplingRateShimmer(32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
+					}
 				}
 			}
 
@@ -1139,17 +1157,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} 
 		else if(responseCommand==FW_VERSION_RESPONSE){
 			delayForBtResponse(200); // Wait to ensure the packet has been fully received
-			byte[] bufferInquiry = new byte[6]; 
-			bufferInquiry = readBytes(6);
-			int firmwareIdentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
-			int firmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
-			int firmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
-			int firmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
-			ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
-			setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
-
-			printLogDataForDebugging("FW Version Response Received. FW Code: " + getFirmwareVersionCode());
-			printLogDataForDebugging("FW Version Response Received: " + getFirmwareVersionParsed());
+			byte[] bufferInquiry = readBytes(6);
+			if(bufferInquiry!=null){
+				int firmwareIdentifier=(int)((bufferInquiry[1]&0xFF)<<8)+(int)(bufferInquiry[0]&0xFF);
+				int firmwareVersionMajor = (int)((bufferInquiry[3]&0xFF)<<8)+(int)(bufferInquiry[2]&0xFF);
+				int firmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
+				int firmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
+				ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+				setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
+	
+				printLogDataForDebugging("FW Version Response Received. FW Code: " + getFirmwareVersionCode());
+				printLogDataForDebugging("FW Version Response Received: " + getFirmwareVersionParsed());
+			}
 		} 
 
 		else if(responseCommand==ALL_CALIBRATION_RESPONSE) {
@@ -1188,25 +1207,32 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==CONFIG_BYTE0_RESPONSE) {
 			if(getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){    
 				byte[] bufferConfigByte0 = readBytes(1);
-				mConfigByte0 = bufferConfigByte0[0] & 0xFF;
+				if(bufferConfigByte0!=null){
+					mConfigByte0 = bufferConfigByte0[0] & 0xFF;
+				}
 			} 
 			else {
 				byte[] bufferConfigByte0 = readBytes(4);
-				mConfigByte0 = ((long)(bufferConfigByte0[0] & 0xFF) +((long)(bufferConfigByte0[1] & 0xFF) << 8)+((long)(bufferConfigByte0[2] & 0xFF) << 16) +((long)(bufferConfigByte0[3] & 0xFF) << 24));
+				if(bufferConfigByte0!=null){
+					mConfigByte0 = ((long)(bufferConfigByte0[0] & 0xFF) +((long)(bufferConfigByte0[1] & 0xFF) << 8)+((long)(bufferConfigByte0[2] & 0xFF) << 16) +((long)(bufferConfigByte0[3] & 0xFF) << 24));
+				}
 			}
 		} 
 		else if(responseCommand==DERIVED_CHANNEL_BYTES_RESPONSE) {
 			byte[] byteArray = readBytes(3);
-			mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
+			if(byteArray!=null){
+				mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
+			}
 			
 			if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
 				byteArray = readBytes(5);
-				
-				mDerivedSensors |= ((long)(byteArray[0] & 0xFF)) << (8*3); 
-				mDerivedSensors |= ((long)(byteArray[1] & 0xFF)) << (8*4); 
-				mDerivedSensors |= ((long)(byteArray[2] & 0xFF)) << (8*5); 
-				mDerivedSensors |= ((long)(byteArray[3] & 0xFF)) << (8*6); 
-				mDerivedSensors |= ((long)(byteArray[4] & 0xFF)) << (8*7); 
+				if(byteArray!=null){
+					mDerivedSensors |= ((long)(byteArray[0] & 0xFF)) << (8*3); 
+					mDerivedSensors |= ((long)(byteArray[1] & 0xFF)) << (8*4); 
+					mDerivedSensors |= ((long)(byteArray[2] & 0xFF)) << (8*5); 
+					mDerivedSensors |= ((long)(byteArray[3] & 0xFF)) << (8*6); 
+					mDerivedSensors |= ((long)(byteArray[4] & 0xFF)) << (8*7); 
+				}
 			}
 
 			if (mEnabledSensors!=0){
@@ -1218,214 +1244,215 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			delayForBtResponse(100); // Wait to ensure the packet has been fully received
 			byte[] bufferShimmerVersion = new byte[1]; 
 			bufferShimmerVersion = readBytes(1);
-			setHardwareVersion((int)bufferShimmerVersion[0]);
+			if(bufferShimmerVersion!=null){
+				setHardwareVersion((int)bufferShimmerVersion[0]);
 			
-//			if(mShimmerVersion==HW_ID.SHIMMER_2R){
-//				initializeShimmer2R();
-//			} 
-//			else if(mShimmerVersion==HW_ID.SHIMMER_3) {
-//				initializeShimmer3();
-//			}
-			
-			printLogDataForDebugging("Shimmer Version (HW) Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
-			
-			readFWVersion();
+	//			if(mShimmerVersion==HW_ID.SHIMMER_2R){
+	//				initializeShimmer2R();
+	//			} 
+	//			else if(mShimmerVersion==HW_ID.SHIMMER_3) {
+	//				initializeShimmer3();
+	//			}
+				
+				printLogDataForDebugging("Shimmer Version (HW) Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
+				
+				readFWVersion();
+			}
 		} 							
 		else if(responseCommand==ACCEL_SENSITIVITY_RESPONSE) {
 			byte[] bufferAccelSensitivity = readBytes(1);
-			setAccelRange(bufferAccelSensitivity[0]);
-//			if(mDefaultCalibrationParametersAccel){
-//				if(getHardwareVersion()!=HW_ID.SHIMMER_3){
-//					if(getAccelRange()==0){
-//						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel1p5gShimmer2; 
-//					} 
-//					else if(getAccelRange()==1){
-//						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel2gShimmer2; 
-//					} 
-//					else if(getAccelRange()==2){
-//						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel4gShimmer2; 
-//					} 
-//					else if(getAccelRange()==3){
-//						mSensitivityMatrixAnalogAccel = SensitivityMatrixAccel6gShimmer2; 
-//					}
-//				} 
-//				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
-//					if(getAccelRange()==0){
-//						mSensitivityMatrixAnalogAccel = SensitivityMatrixLowNoiseAccel2gShimmer3;
-//						mAlignmentMatrixAnalogAccel = AlignmentMatrixLowNoiseAccelShimmer3;
-//						mOffsetVectorAnalogAccel = OffsetVectorLowNoiseAccelShimmer3;
-//					} 
-//					else if(getAccelRange()==1){
-//						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel4gShimmer3;
-//						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-//						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-//					} 
-//					else if(getAccelRange()==2){
-//						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel8gShimmer3;
-//						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-//						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-//					} 
-//					else if(getAccelRange()==3){
-//						mSensitivityMatrixAnalogAccel = SensitivityMatrixWideRangeAccel16gShimmer3;
-//						mAlignmentMatrixAnalogAccel = AlignmentMatrixWideRangeAccelShimmer3;
-//						mOffsetVectorAnalogAccel = OffsetVectorWideRangeAccelShimmer3;
-//					}
-//				}
-//			}
+			if(bufferAccelSensitivity!=null){
+				setAccelRange(bufferAccelSensitivity[0]);
+			}
 		} 
 		else if(responseCommand==MPU9150_GYRO_RANGE_RESPONSE) {
 			byte[] bufferGyroSensitivity = readBytes(1);
-			setGyroRange(bufferGyroSensitivity[0]);
-//			if(mDefaultCalibrationParametersGyro){
-//				if(getHardwareVersion()==HW_ID.SHIMMER_3){
-//					mAlignmentMatrixGyroscope = AlignmentMatrixGyroShimmer3;
-//					mOffsetVectorGyroscope = OffsetVectorGyroShimmer3;
-//					if(getGyroRange()==0){
-//						mSensitivityMatrixGyroscope = SensitivityMatrixGyro250dpsShimmer3;
-//					} 
-//					else if(getGyroRange()==1){
-//						mSensitivityMatrixGyroscope = SensitivityMatrixGyro500dpsShimmer3;
-//					} 
-//					else if(getGyroRange()==2){
-//						mSensitivityMatrixGyroscope = SensitivityMatrixGyro1000dpsShimmer3;
-//					} 
-//					else if(getGyroRange()==3){
-//						mSensitivityMatrixGyroscope = SensitivityMatrixGyro2000dpsShimmer3;
-//					}
-//				}
-//			}
+			if(bufferGyroSensitivity!=null){
+				setGyroRange(bufferGyroSensitivity[0]);
+			}
 		}
 		else if(responseCommand==GSR_RANGE_RESPONSE) {
 			byte[] bufferGSRRange = readBytes(1); 
-			mGSRRange=bufferGSRRange[0];
+			if(bufferGSRRange!=null){
+				mGSRRange=bufferGSRRange[0];
 			
-			printLogDataForDebugging("GSR Range Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferGSRRange));
+				printLogDataForDebugging("GSR Range Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferGSRRange));
+			}
 		} 
 		else if(responseCommand==BLINK_LED_RESPONSE) {
 			byte[] byteled = readBytes(1);
-			mCurrentLEDStatus = byteled[0]&0xFF;
+			if(byteled!=null){
+				mCurrentLEDStatus = byteled[0]&0xFF;
+			}
 		} 
 		else if(responseCommand==BUFFER_SIZE_RESPONSE) {
-			byte[] byteled = readBytes(1);
-			mBufferSize = byteled[0] & 0xFF;
+			byte[] byteBufferSize = readBytes(1);
+			if(byteBufferSize!=null){
+				mBufferSize = byteBufferSize[0] & 0xFF;
+			}
 		} 
 		else if(responseCommand==MAG_GAIN_RESPONSE) {
 			byte[] bufferAns = readBytes(1); 
-			setMagRange(bufferAns[0]);
+			if(bufferAns!=null){
+				setMagRange(bufferAns[0]);
+			}
 		} 
 		else if(responseCommand==MAG_SAMPLING_RATE_RESPONSE) {
-			byte[] bufferAns = readBytes(1); 
-			mLSM303MagRate=bufferAns[0];
-			
-			printLogDataForDebugging("Mag Sampling Rate Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferAns));
+			byte[] bufferAns = readBytes(1);
+			if(bufferAns!=null){
+				mLSM303MagRate=bufferAns[0];
+				
+				printLogDataForDebugging("Mag Sampling Rate Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferAns));
+			}
 		} 
 		else if(responseCommand==ACCEL_SAMPLING_RATE_RESPONSE) {
 			byte[] bufferAns = readBytes(1); 
-			mLSM303DigitalAccelRate=bufferAns[0];
+			if(bufferAns!=null){
+				mLSM303DigitalAccelRate=bufferAns[0];
+			}
 		}
 		else if(responseCommand==BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
 			//get pressure
 			delayForBtResponse(100); // Wait to ensure the packet has been fully received
 			byte[] pressureResoRes = new byte[22]; 
 			pressureResoRes = readBytes(22);
-			mPressureCalRawParams = new byte[23];
-			System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
-			mPressureCalRawParams[0] = responseCommand;
-			retrievePressureCalibrationParametersFromPacket(pressureResoRes,CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+			if(pressureResoRes!=null){
+				mPressureCalRawParams = new byte[23];
+				System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
+				mPressureCalRawParams[0] = responseCommand;
+				retrievePressureCalibrationParametersFromPacket(pressureResoRes,CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+			}
 		} 
 		else if(responseCommand==EXG_REGS_RESPONSE){
 			delayForBtResponse(300); // Wait to ensure the packet has been fully received
 			byte[] bufferAns = readBytes(11);
-			if(mTempChipID==EXG_CHIP_INDEX.CHIP1.ordinal()){
-				byte[] EXG1RegisterArray = new byte[10];
-				System.arraycopy(bufferAns, 1, EXG1RegisterArray, 0, 10);
-				setEXG1RegisterArray(EXG1RegisterArray);
-			} 
-			else if(mTempChipID==EXG_CHIP_INDEX.CHIP2.ordinal()){
-				byte[] EXG2RegisterArray = new byte[10];
-				System.arraycopy(bufferAns, 1, EXG2RegisterArray, 0, 10);
-				setEXG2RegisterArray(EXG2RegisterArray);
+			if(bufferAns!=null){
+				if(mTempChipID==EXG_CHIP_INDEX.CHIP1.ordinal()){
+					byte[] EXG1RegisterArray = new byte[10];
+					System.arraycopy(bufferAns, 1, EXG1RegisterArray, 0, 10);
+					setEXG1RegisterArray(EXG1RegisterArray);
+				} 
+				else if(mTempChipID==EXG_CHIP_INDEX.CHIP2.ordinal()){
+					byte[] EXG2RegisterArray = new byte[10];
+					System.arraycopy(bufferAns, 1, EXG2RegisterArray, 0, 10);
+					setEXG2RegisterArray(EXG2RegisterArray);
+				}
 			}
 		} 
 		else if(responseCommand==DAUGHTER_CARD_ID_RESPONSE) {
 			byte[] expBoardArray = readBytes(numBytesToReadFromExpBoard+1);
-//			getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
-			byte[] expBoardArraySplit = Arrays.copyOfRange(expBoardArray, 1, 4);
-			setExpansionBoardDetailsAndCreateSensorMap(new ExpansionBoardDetails(expBoardArraySplit));
+			if(expBoardArray!=null){
+	//			getExpBoardID();//CHANGED TO NEWER UP-TO-DATE method
+				byte[] expBoardArraySplit = Arrays.copyOfRange(expBoardArray, 1, 4);
+				setExpansionBoardDetailsAndCreateSensorMap(new ExpansionBoardDetails(expBoardArraySplit));
+			}
 		}
 		else if(responseCommand==BAUD_RATE_RESPONSE) {
 			byte[] bufferBaud = readBytes(1);
-			mBluetoothBaudRate=bufferBaud[0] & 0xFF;
+			if(bufferBaud!=null){
+				mBluetoothBaudRate=bufferBaud[0] & 0xFF;
+			}
 		}
 		else if(responseCommand==TRIAL_CONFIG_RESPONSE) {
 			byte[] data = readBytes(3);
-			fillTrialShimmer3(data);
+			if(data!=null){
+				fillTrialShimmer3(data);
+			}
 		}
 		else if(responseCommand==CENTER_RESPONSE) {
 			byte[] length = readBytes(1);
-			byte[] data = readBytes(length[0]);
-			String center = new String(data);
-			setCenter(center);
+			if(length!=null){
+				byte[] data = readBytes(length[0]);
+				if(data!=null){
+					String center = new String(data);
+					setCenter(center);
+				}
+			}
 		}
 		else if(responseCommand==SHIMMERNAME_RESPONSE) {
 			byte[] length = readBytes(1);
-			byte[] data = readBytes(length[0]);
-			String name = new String(data);
-			setShimmerUserAssignedName(name);
+			if(length!=null){
+				byte[] data = readBytes(length[0]);
+				if(data!=null){
+					String name = new String(data);
+					setShimmerUserAssignedName(name);
+				}
+			}
 		}
 		else if(responseCommand==EXPID_RESPONSE) {
 			byte[] length = readBytes(1);
-			byte[] data = readBytes(length[0]);
-			String name = new String(data);
-			setTrialNameAndCheck(name);
+			if(length!=null){
+				byte[] data = readBytes(length[0]);
+				if(data!=null){
+					String name = new String(data);
+					setTrialNameAndCheck(name);
+				}
+			}
 		}
 		else if(responseCommand==CONFIGTIME_RESPONSE) {
 			byte[] length = readBytes(1);
-			byte[] data = readBytes(length[0]);
-			String time = new String(data);
-			if(time.isEmpty()){
-				setConfigTime(0);
-			} 
-			else {
-				setConfigTime(Long.parseLong(time));	
+			if(length!=null){
+				byte[] data = readBytes(length[0]);
+				if(data!=null){
+					String time = new String(data);
+					if(time.isEmpty()){
+						setConfigTime(0);
+					} 
+					else {
+						setConfigTime(Long.parseLong(time));	
+					}
+				}
 			}
 		}
 		else if(responseCommand==RWC_RESPONSE) {
-			byte[] rxBuf = readBytes(8);
-			
-			// Parse response string
-			rxBuf = Arrays.copyOf(rxBuf, 8);
-			ArrayUtils.reverse(rxBuf);
-			long responseTime = (long)(((double)(ByteBuffer.wrap(rxBuf).getLong())/32.768)); // / 1000
-			
-			setLastReadRealTimeClockValue(responseTime);
+			byte[] responseData = readBytes(8);
+			if(responseData!=null){
+				// Parse response string
+				responseData = Arrays.copyOf(responseData, 8);
+				ArrayUtils.reverse(responseData);
+				long responseTime = (long)(((double)(ByteBuffer.wrap(responseData).getLong())/32.768)); // / 1000
+				
+				setLastReadRealTimeClockValue(responseTime);
+			}
 		}
 		else if(responseCommand==INSTREAM_CMD_RESPONSE) {
 			processInstreamResponse();
 		}
 		else if(responseCommand==LSM303DLHC_ACCEL_LPMODE_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			mLowPowerAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
+			if(responseData!=null){
+				mLowPowerAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
+			}
 		} 
 		else if(responseCommand==LSM303DLHC_ACCEL_HRMODE_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			mHighResAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
+			if(responseData!=null){
+				mHighResAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
+			}
 		} 
 		else if(responseCommand==MYID_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			mTrialId = (int)(responseData[0]&0xFF);
+			if(responseData!=null){
+				mTrialId = (int)(responseData[0]&0xFF);
+			}
 		}
 		else if(responseCommand==NSHIMMER_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			mTrialNumberOfShimmers = (int)(responseData[0]&0xFF);
+			if(responseData!=null){
+				mTrialNumberOfShimmers = (int)(responseData[0]&0xFF);
+			}
 		}
 		else if(responseCommand==MPU9150_SAMPLING_RATE_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			setMPU9150MPLSamplingRate(((int)(responseData[0]&0xFF)));
+			if(responseData!=null){
+				setMPU9150MPLSamplingRate(((int)(responseData[0]&0xFF)));
+			}
 		}
 		else if(responseCommand==BMP180_PRES_RESOLUTION_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			setPressureResolution((int)(responseData[0]&0xFF));
+			if(responseData!=null){
+				setPressureResolution((int)(responseData[0]&0xFF));
+			}
 		}
 		else if(responseCommand==BMP180_PRES_CALIBRATION_RESPONSE) { 
 			//TODO: Not used
@@ -1435,92 +1462,102 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		else if(responseCommand==INTERNAL_EXP_POWER_ENABLE_RESPONSE) {
 			byte[] responseData = readBytes(1);
-			setInternalExpPower((int)(responseData[0]&0xFF));
+			if(responseData!=null){
+				setInternalExpPower((int)(responseData[0]&0xFF));
+			}
 		}
 		else if(responseCommand==INFOMEM_RESPONSE) {
 			// Get data length to read
-			byte[] rxBuf = readBytes(1);
-			int lengthToRead = (int)(rxBuf[0]&0xFF);
-			rxBuf = readBytes(lengthToRead);
-			printLogDataForDebugging("INFOMEM_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
-			
-			//Copy to local buffer
-//			System.arraycopy(rxBuf, 0, mMemBuffer, mCurrentMemAddress, lengthToRead);
-			mMemBuffer = ArrayUtils.addAll(mMemBuffer, rxBuf);
-			
-//			//Update configuration when all bytes received.
-//			if((mCurrentMemAddress+mCurrentMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
-//				setShimmerInfoMemBytes(mMemBuffer);
-//				mMemBuffer = new byte[]{};
-//			}
-			
-			MemReadDetails memReadDetails = mMapOfMemReadDetails.get(GET_INFOMEM_COMMAND);
-			if(memReadDetails!=null){
-				int currentEndAddress = memReadDetails.mCurrentMemAddress+memReadDetails.mCurrentMemLengthToRead; 
-				//Update configuration when all bytes received.
-				if(currentEndAddress>=memReadDetails.mEndMemAddress){
-					setShimmerInfoMemBytes(mMemBuffer);
-					clearMemReadBuffer(GET_INFOMEM_COMMAND);
-				}
-			}
-
-		}
-		else if(responseCommand==RSP_CALIB_DUMP_COMMAND) {
-			byte[] rxBuf = readBytes(3);
-			int currentMemLength = rxBuf[0]&0xFF;
-			//Memory is currently read sequentially so no need to use the below at the moment.
-			int currentMemOffset = ((rxBuf[2]&0xFF)<<8) | (rxBuf[1]&0xFF);
-			
-//			rxBuf = readBytes(currentMemLength);
-//			mCalibDumpBuffer = ArrayUtils.addAll(mCalibDumpBuffer, rxBuf);
-//
-//			//For debugging
-//			rxBufFull = ArrayUtils.addAll(rxBufFull, rxBuf);
-//			printLogDataForDebugging("CALIB_DUMP Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBufFull));
-//			
-//			if(mCurrentMemAddress==0){
-//				//First read
-//				mCalibDumpSize = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
-//				
-//				if(mCalibDumpSize>mCurrentMemLengthToRead){
-//					readCalibrationDump(mCurrentMemLengthToRead, mCalibDumpSize-mCurrentMemLengthToRead);
-//					rePioritiseReadCalibDumpInstructions();
-//				}
-//			}
-//			
-//			if((mCurrentMemAddress+mCurrentMemLengthToRead)>=mCalibDumpSize){
-//				parseCalibByteDump(mCalibDumpBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
-//				mCalibDumpBuffer = new byte[]{};
-//			}
-			
-			rxBuf = readBytes(currentMemLength);
-			mMemBuffer = ArrayUtils.addAll(mMemBuffer, rxBuf);
-
-			//For debugging
-			printLogDataForDebugging("CALIB_DUMP Received:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
-			printLogDataForDebugging("CALIB_DUMP concat:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mMemBuffer));
-			
-			MemReadDetails memReadDetails = mMapOfMemReadDetails.get(GET_CALIB_DUMP_COMMAND);
-			if(memReadDetails!=null){
-				if(memReadDetails.mCurrentMemAddress==0){
-					//First read
-					int totalCalibLength = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
-					 // +2 because calib dump length bytes are not included
-					memReadDetails.setTotalMemLengthToRead(totalCalibLength+2); 
+			byte[] length = readBytes(1);
+			if(length!=null){
+				int lengthToRead = (int)(length[0]&0xFF);
+				byte[] responseData = readBytes(lengthToRead);
+				if(responseData!=null){
+					printLogDataForDebugging("INFOMEM_RESPONSE Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseData));
 					
-					if(memReadDetails.getTotalMemLengthToRead()>memReadDetails.mCurrentMemLengthToRead){
-						int nextAddress = memReadDetails.mCurrentMemLengthToRead;
-						int remainingBytes = memReadDetails.getTotalMemLengthToRead()-memReadDetails.mCurrentMemLengthToRead;
-						readCalibrationDump(nextAddress, remainingBytes);
-						rePioritiseReadCalibDumpInstructions();
+					//Copy to local buffer
+		//			System.arraycopy(rxBuf, 0, mMemBuffer, mCurrentMemAddress, lengthToRead);
+					mMemBuffer = ArrayUtils.addAll(mMemBuffer, responseData);
+					
+		//			//Update configuration when all bytes received.
+		//			if((mCurrentMemAddress+mCurrentMemLengthToRead)==mInfoMemLayout.calculateInfoMemByteLength()){
+		//				setShimmerInfoMemBytes(mMemBuffer);
+		//				mMemBuffer = new byte[]{};
+		//			}
+					
+					MemReadDetails memReadDetails = mMapOfMemReadDetails.get(GET_INFOMEM_COMMAND);
+					if(memReadDetails!=null){
+						int currentEndAddress = memReadDetails.mCurrentMemAddress+memReadDetails.mCurrentMemLengthToRead; 
+						//Update configuration when all bytes received.
+						if(currentEndAddress>=memReadDetails.mEndMemAddress){
+							setShimmerInfoMemBytes(mMemBuffer);
+							clearMemReadBuffer(GET_INFOMEM_COMMAND);
+						}
 					}
 				}
-			
-				int currentEndAddress = memReadDetails.mCurrentMemAddress+memReadDetails.mCurrentMemLengthToRead; 
-				//Update calibration dump when all bytes received.
-				if(currentEndAddress>=memReadDetails.mEndMemAddress){
-					calibByteDumpParse(mMemBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
-					clearMemReadBuffer(GET_CALIB_DUMP_COMMAND);
+			}
+		}
+		else if(responseCommand==RSP_CALIB_DUMP_COMMAND) {
+			byte[] responseData = readBytes(3);
+			if(responseData!=null){
+
+				int currentMemLength = responseData[0]&0xFF;
+				//Memory is currently read sequentially so no need to use the below at the moment.
+				int currentMemOffset = ((responseData[2]&0xFF)<<8) | (responseData[1]&0xFF);
+				
+	//			rxBuf = readBytes(currentMemLength);
+	//			mCalibDumpBuffer = ArrayUtils.addAll(mCalibDumpBuffer, rxBuf);
+	//
+	//			//For debugging
+	//			rxBufFull = ArrayUtils.addAll(rxBufFull, rxBuf);
+	//			printLogDataForDebugging("CALIB_DUMP Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBufFull));
+	//			
+	//			if(mCurrentMemAddress==0){
+	//				//First read
+	//				mCalibDumpSize = (rxBuf[1]&0xFF)<<8 | (rxBuf[0]&0xFF);
+	//				
+	//				if(mCalibDumpSize>mCurrentMemLengthToRead){
+	//					readCalibrationDump(mCurrentMemLengthToRead, mCalibDumpSize-mCurrentMemLengthToRead);
+	//					rePioritiseReadCalibDumpInstructions();
+	//				}
+	//			}
+	//			
+	//			if((mCurrentMemAddress+mCurrentMemLengthToRead)>=mCalibDumpSize){
+	//				parseCalibByteDump(mCalibDumpBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
+	//				mCalibDumpBuffer = new byte[]{};
+	//			}
+				
+				responseData = readBytes(currentMemLength);
+				if(responseData!=null){
+					mMemBuffer = ArrayUtils.addAll(mMemBuffer, responseData);
+		
+					//For debugging
+					printLogDataForDebugging("CALIB_DUMP Received:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseData));
+					printLogDataForDebugging("CALIB_DUMP concat:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mMemBuffer));
+					
+					MemReadDetails memReadDetails = mMapOfMemReadDetails.get(GET_CALIB_DUMP_COMMAND);
+					if(memReadDetails!=null){
+						if(memReadDetails.mCurrentMemAddress==0){
+							//First read
+							int totalCalibLength = (responseData[1]&0xFF)<<8 | (responseData[0]&0xFF);
+							 // +2 because calib dump length bytes are not included
+							memReadDetails.setTotalMemLengthToRead(totalCalibLength+2); 
+							
+							if(memReadDetails.getTotalMemLengthToRead()>memReadDetails.mCurrentMemLengthToRead){
+								int nextAddress = memReadDetails.mCurrentMemLengthToRead;
+								int remainingBytes = memReadDetails.getTotalMemLengthToRead()-memReadDetails.mCurrentMemLengthToRead;
+								readCalibrationDump(nextAddress, remainingBytes);
+								rePioritiseReadCalibDumpInstructions();
+							}
+						}
+					
+						int currentEndAddress = memReadDetails.mCurrentMemAddress+memReadDetails.mCurrentMemLengthToRead; 
+						//Update calibration dump when all bytes received.
+						if(currentEndAddress>=memReadDetails.mEndMemAddress){
+							calibByteDumpParse(mMemBuffer, CALIB_READ_SOURCE.RADIO_DUMP);
+							clearMemReadBuffer(GET_CALIB_DUMP_COMMAND);
+						}
+					}
 				}
 			}
 
@@ -1969,11 +2006,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void processAccelCalReadBytes(){
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(21);
-		mAccelCalRawParams = new byte[22];
-		System.arraycopy(bufferCalibrationParameters, 0, mAccelCalRawParams, 1, 21);
-		mAccelCalRawParams[0] = ACCEL_CALIBRATION_RESPONSE;
-//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
-		parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+		if(bufferCalibrationParameters!=null){
+			mAccelCalRawParams = new byte[22];
+			System.arraycopy(bufferCalibrationParameters, 0, mAccelCalRawParams, 1, 21);
+			mAccelCalRawParams[0] = ACCEL_CALIBRATION_RESPONSE;
+	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
+			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+		}
 	}
 
 	/**get gyro
@@ -1982,11 +2021,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void processGyroCalReadBytes(){
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(21);
-		mGyroCalRawParams = new byte[22];
-		System.arraycopy(bufferCalibrationParameters, 0, mGyroCalRawParams, 1, 21);
-		mGyroCalRawParams[0] = GYRO_CALIBRATION_RESPONSE;
-//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
-		parseCalibParamFromPacketGyro(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+		if(bufferCalibrationParameters!=null){
+			mGyroCalRawParams = new byte[22];
+			System.arraycopy(bufferCalibrationParameters, 0, mGyroCalRawParams, 1, 21);
+			mGyroCalRawParams[0] = GYRO_CALIBRATION_RESPONSE;
+	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
+			parseCalibParamFromPacketGyro(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+		}
 	} 
 	
 	/**get mag
@@ -1995,11 +2036,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void processMagCalReadBytes(){
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(21);
-		mMagCalRawParams = new byte[22];
-		System.arraycopy(bufferCalibrationParameters, 0, mMagCalRawParams, 1, 21);
-		mMagCalRawParams[0] = MAG_CALIBRATION_RESPONSE;
-//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
-		parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+		if(bufferCalibrationParameters!=null){
+			mMagCalRawParams = new byte[22];
+			System.arraycopy(bufferCalibrationParameters, 0, mMagCalRawParams, 1, 21);
+			mMagCalRawParams[0] = MAG_CALIBRATION_RESPONSE;
+	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
+			parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+		}
 	} 
 	
 	/**second accel cal params
@@ -2008,11 +2051,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void processLsm303dlhcAccelCalReadBytes(){
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(21);
-		mDigiAccelCalRawParams = new byte[22];
-		System.arraycopy(bufferCalibrationParameters, 0, mDigiAccelCalRawParams, 1, 21);
-		mDigiAccelCalRawParams[0] = LSM303DLHC_ACCEL_CALIBRATION_RESPONSE;
-//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
-		parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+		if(bufferCalibrationParameters!=null){
+			mDigiAccelCalRawParams = new byte[22];
+			System.arraycopy(bufferCalibrationParameters, 0, mDigiAccelCalRawParams, 1, 21);
+			mDigiAccelCalRawParams[0] = LSM303DLHC_ACCEL_CALIBRATION_RESPONSE;
+	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+			parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+		}
 	}
 	
 	/**get ECG
@@ -2021,10 +2066,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void processShimmer2EcgCalReadBytes(){
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(8);
-		mECGCalRawParams = new byte[9];
-		System.arraycopy(bufferCalibrationParameters, 0, mECGCalRawParams, 1, 8);
-		mECGCalRawParams[0] = ECG_CALIBRATION_RESPONSE;
-		retrieveBiophysicalCalibrationParametersFromPacket( bufferCalibrationParameters,ECG_CALIBRATION_RESPONSE);
+		if(bufferCalibrationParameters!=null){
+			mECGCalRawParams = new byte[9];
+			System.arraycopy(bufferCalibrationParameters, 0, mECGCalRawParams, 1, 8);
+			mECGCalRawParams[0] = ECG_CALIBRATION_RESPONSE;
+			retrieveBiophysicalCalibrationParametersFromPacket( bufferCalibrationParameters,ECG_CALIBRATION_RESPONSE);
+		}
 	} 
 	
 	/**get EMG
@@ -2033,10 +2080,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private void processShimmer2EmgCalReadBytes(){
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(4); 
-		mEMGCalRawParams = new byte[5];
-		System.arraycopy(bufferCalibrationParameters, 0, mEMGCalRawParams, 1, 4);
-		mEMGCalRawParams[0] = EMG_CALIBRATION_RESPONSE;
-		retrieveBiophysicalCalibrationParametersFromPacket( bufferCalibrationParameters,EMG_CALIBRATION_RESPONSE);
+		if(bufferCalibrationParameters!=null){
+			mEMGCalRawParams = new byte[5];
+			System.arraycopy(bufferCalibrationParameters, 0, mEMGCalRawParams, 1, 4);
+			mEMGCalRawParams[0] = EMG_CALIBRATION_RESPONSE;
+			retrieveBiophysicalCalibrationParametersFromPacket( bufferCalibrationParameters,EMG_CALIBRATION_RESPONSE);
+		}
 	}
 	
 	
