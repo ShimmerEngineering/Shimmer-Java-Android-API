@@ -493,7 +493,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected String[] mSignalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];						// 19 is the maximum number of signal thus far
 	
 	protected int mButtonStart = 0;
-	protected int mShowRtcErrorLeds = 0;
 	protected int mMasterShimmer = 0;
 	protected int mSingleTouch = 0;
 	protected int mTCXO = 0;
@@ -504,6 +503,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //	protected byte[] mInfoMemBytes = createEmptyInfoMemByteArray(512);
 	protected String mCenter = "";
 	
+	private boolean isOverrideShowErrorLedsRtc = false;
+	private int mShowErrorLedsRtc = 0;
+	private boolean isOverrideShowErrorLedsSd = false;
+	private int mShowErrorLedsSd = 0;
+
 //	protected final static int FW_TYPE_BT=0;
 //	protected final static int FW_TYPE_SD=1;
 	
@@ -537,7 +541,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private boolean mIsOrientationEnabled = false;	
 
 	protected boolean mEnableCalibration = true;	
-	private boolean isOverrideShowRwcErrorLeds = true;
 	protected boolean mConfigFileCreationFlag = true;
 //	@Deprecated
 //	protected boolean mCalibFileCreationFlag = false;
@@ -5904,7 +5907,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mTrialNumberOfShimmers = 1;
 			mTrialId = 0;
 			mButtonStart = 1;
-			mShowRtcErrorLeds = 1;
+			mShowErrorLedsRtc = 1;
+			mShowErrorLedsSd = 1;
 			
 			mBluetoothBaudRate=9; //460800
 
@@ -6229,7 +6233,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				if((getFirmwareIdentifier()==FW_ID.SDLOG)||(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)) {
 					mButtonStart = (configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftButtonStart) & infoMemLayoutCast.maskButtonStart;
-					mShowRtcErrorLeds = (configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowRwcErrorLeds) & infoMemLayoutCast.maskShowRwcErrorLeds;
+					setShowErrorLedsRtc((configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowErrorLedsRwc) & infoMemLayoutCast.maskShowErrorLedsRwc);
+					setShowErrorLedsSd((configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowErrorLedsSd) & infoMemLayoutCast.maskShowErrorLedsSd);
 				}
 				
 				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
@@ -6476,11 +6481,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				if((getFirmwareIdentifier()==FW_ID.SDLOG)||(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)) {
 					mConfigBytes[infoMemLayout.idxSDExperimentConfig0] = (byte) ((mButtonStart & infoMemLayout.maskButtonStart) << infoMemLayout.bitShiftButtonStart);
-					if(this.isOverrideShowRwcErrorLeds){
-						mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((infoMemLayout.maskShowRwcErrorLeds) << infoMemLayout.bitShiftShowRwcErrorLeds);
+					if(this.isOverrideShowErrorLedsRtc){
+						mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((infoMemLayout.maskShowErrorLedsRwc) << infoMemLayout.bitShiftShowErrorLedsRwc);
 					}
 					else {
-						mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mShowRtcErrorLeds & infoMemLayout.maskShowRwcErrorLeds) << infoMemLayout.bitShiftShowRwcErrorLeds);
+						mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mShowErrorLedsRtc & infoMemLayout.maskShowErrorLedsRwc) << infoMemLayout.bitShiftShowErrorLedsRwc);
+					}
+					if(this.isOverrideShowErrorLedsSd){
+						mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((infoMemLayout.maskShowErrorLedsSd) << infoMemLayout.bitShiftShowErrorLedsSd);
+					}
+					else {
+						mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mShowErrorLedsSd & infoMemLayout.maskShowErrorLedsSd) << infoMemLayout.bitShiftShowErrorLedsSd);
 					}
 				}
 				
@@ -7677,7 +7688,40 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void setButtonStart(boolean state) {
 		this.mButtonStart = (state? 1:0);
 	}
+	
+	public void setShowErrorLedsSd(boolean state) {
+		this.mShowErrorLedsSd = (state? 1:0);
+	}
 
+	public void setShowErrorLedsSd(int state) {
+		this.mShowErrorLedsSd = state;
+	}
+
+	public boolean isShowErrorLedsSd() {
+		return (this.mShowErrorLedsSd > 0)? true:false;
+	}
+	
+	public void setShowErrorLedsRtc(boolean state) {
+		this.mShowErrorLedsRtc = (state? 1:0);
+	}
+
+	public void setShowErrorLedsRtc(int state) {
+		this.mShowErrorLedsRtc = state;
+	}
+
+	public boolean isShowErrorLedsRtc() {
+		return (this.mShowErrorLedsRtc > 0)? true:false;
+	}
+	
+	public void setIsOverrideShowErrorLedsRtc(boolean state) {
+		this.isOverrideShowErrorLedsRtc = state;
+	}
+
+	public void setIsOverrideShowErrorLedsSd(boolean state) {
+		this.isOverrideShowErrorLedsSd = state;
+	}
+
+	
 	/**
 	 * @param mExperimentId the mExperimentId to set
 	 */
@@ -7826,6 +7870,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			exgBytesGetConfigFrom(EXG_CHIP_INDEX.CHIP2, exg2Bytes);
 //		}
 		exgBytesGetConfigFrom(exg1Bytes, exg2Bytes);
+		checkExgResolutionFromEnabledSensorsVar();
 		
 		//Digital Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
@@ -7921,7 +7966,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExperimentDurationMaximum(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)).intValue());
 		}
 
-		
+		prepareAllMapsAfterConfigRead();
+
 	}
 
 	private void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles) {
@@ -10694,6 +10740,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START):
 				returnValue = isSingleTouch();
 				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC):
+				returnValue = isShowErrorLedsRtc();
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD):
+				returnValue = isShowErrorLedsSd();
+	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER):
 				returnValue = isMasterShimmer();
 	        	break;
@@ -10986,6 +11038,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER):
 				setMasterShimmer((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC):
+				setShowErrorLedsRtc((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD):
+				setShowErrorLedsSd((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING):
 				setSyncWhenLogging((boolean)valueToSet);
@@ -11725,6 +11783,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			minAllowedSamplingRate = Math.max(51.2, minAllowedSamplingRate);
 		}
 		return minAllowedSamplingRate;
+	}
+
+
+	public boolean isSupportedErrorLedControl() {
+		return mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 7, 12);
 	}
 
 

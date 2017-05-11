@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -16,6 +17,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.exceptions.ShimmerException;
 
 /** Utility class with commonly useful methods
@@ -993,5 +996,37 @@ public class UtilShimmer implements Serializable {
 		}
 		return interleave;
 	}
+	
+	public static byte[] my_int_to_bb_le(int myInteger) {
+		return ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(myInteger).array();
+	}
+
+	public static int my_bb_to_int_le(byte[] byteBarray) {
+		return ByteBuffer.wrap(byteBarray).order(ByteOrder.LITTLE_ENDIAN).getInt();
+	}
+
+	public static byte[] my_int_to_bb_be(int myInteger) {
+		return ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN).putInt(myInteger).array();
+	}
+
+	public static int my_bb_to_int_be(byte[] byteBarray) {
+		return ByteBuffer.wrap(byteBarray).order(ByteOrder.BIG_ENDIAN).getInt();
+	}
+
+	
+	public static List<ShimmerDevice> cloneShimmerDevices(List<ShimmerDevice> listOfShimmerDevices){
+		List<ShimmerDevice> listOfClonedShimmerDevices = new ArrayList<ShimmerDevice>();
+		
+		Iterator<ShimmerDevice> iterator = listOfShimmerDevices.iterator();
+		while(iterator.hasNext()){
+			ShimmerDevice shimmerDevice = iterator.next();
+			listOfClonedShimmerDevices.add(shimmerDevice.deepClone());
+		}
+		
+		return listOfClonedShimmerDevices;
+	}
+
+
+
 	
 }

@@ -480,21 +480,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				if(!isInstructionStackLock()){
 					processNextInstruction();
 				}
-				
-				if(bytesAvailableToBeRead()){
-					if(mIsStreaming){
-						processWhileStreaming();
-					}
-					else {
-						if(mWaitForAck) {
-							processNotStreamingWaitForAck();
-						} 
-						else if(mWaitForResponse) {
-							processNotStreamingWaitForResp();
-						} 
-						
-						processBytesAvailableAndInstreamSupported();
-					}
+
+				if(mIsStreaming){
+					processWhileStreaming();
+				}
+				else if(bytesAvailableToBeRead()){
+					if(mWaitForAck) {
+						processNotStreamingWaitForAck();
+					} 
+					else if(mWaitForResponse) {
+						processNotStreamingWaitForResp();
+					} 
+					
+					processBytesAvailableAndInstreamSupported();
+
 				}
 			}
 		}
@@ -503,7 +502,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// check instruction stack, are there any other instructions left to be executed?
 			if(!getListofInstructions().isEmpty()) {
 				if(getListofInstructions().get(0)==null) {
-					getListofInstructions().remove(0);
+					removeInstruction(0);
 					printLogDataForDebugging("Null Removed");
 				}
 			}
@@ -663,7 +662,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						// in-stream response while streaming so not
 						// handled elsewhere
 						if(getListofInstructions().size()>0){
-							getListofInstructions().remove(0);
+							removeInstruction(0);
 						}
 						
 						mTransactionCompleted=true;
@@ -730,7 +729,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					clearSerialBuffer();
 					
 					hasStopStreaming();					
-					getListofInstructions().remove(0);
+					removeInstruction(0);
 					getListofInstructions().removeAll(Collections.singleton(null));
 					if (mCurrentCommand==STOP_SDBT_COMMAND){
 						eventLogAndStreamStatusChanged(mCurrentCommand);	
@@ -751,7 +750,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //					clearSerialBuffer();
 //					
 //					hasStopStreaming();					
-//					getListofInstructions().remove(0);
+//					removeInstruction(0);
 //					getListofInstructions().removeAll(Collections.singleton(null));
 //					setInstructionStackLock(false);
 //				}
@@ -788,7 +787,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							//Special cases
 							processSpecialGetCmdsAfterAck(mCurrentCommand);
 							mWaitForResponse=true;
-							getListofInstructions().remove(0);
+							removeInstruction(0);
 						}
 						
 					}
@@ -860,13 +859,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					if(byteBuffer[0]==ACK_COMMAND_PROCESSED) {
 						printLogDataForDebugging("ACK RECEIVED , Connected State!!");
 						byteBuffer = readBytes(1);
-						if (byteBuffer!=null){ //an android fix.. not fully investigated (JC)
-							if(byteBuffer[0]==ACK_COMMAND_PROCESSED){
-								byteBuffer = readBytes(1);
-							}
-							if(byteBuffer[0]==INSTREAM_CMD_RESPONSE){
-								processResponseCommand(INSTREAM_CMD_RESPONSE);
-							}
+						if(byteBuffer!=null && byteBuffer[0]==ACK_COMMAND_PROCESSED){ //an android fix.. not fully investigated (JC)
+							byteBuffer = readBytes(1);
+						}
+						if(byteBuffer!=null && byteBuffer[0]==INSTREAM_CMD_RESPONSE){
+							processResponseCommand(INSTREAM_CMD_RESPONSE);
 						}
 					}
 				}
@@ -1942,7 +1939,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					printLogDataForDebugging("Unhandled set command: " + btCommandToString(currentCommand));
 				}
 				
-				getListofInstructions().remove(0);
+				removeInstruction(0);
 			}
 			
 		}
@@ -2054,20 +2051,21 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		//reserved(((statusByte & (0x01 << 2)) > 0)? true:false);
 		setIsSDLogging(((statusByte & (0x01 << 3)) > 0)? true:false);
 		setIsStreaming(((statusByte & (0x01 << 4)) > 0)? true:false);
-		//unused(((statusByte & (0x01 << 5)) > 0)? true:false);
-		if(isSupportedSdErrorInStatus()){
+		if(isSupportedSdInfoInStatus()){
+			setIsSDPresent(((statusByte & (0x01 << 5)) > 0)? true:false);
 			setIsSDError(((statusByte & (0x01 << 6)) > 0)? true:false);
 		}
 		if(isSupportedRedLedStateInStatus()){
 			mIsRedLedOn = ((statusByte & (0x01 << 7)) > 0)? true:false;
 		}
 		
-		consolePrintLn("Status Response = " + UtilShimmer.byteToHexStringFormatted(statusByte)
+		consolePrintLn("\nStatus Response = \n" + UtilShimmer.byteToHexStringFormatted(statusByte) 
 				+ "\t" + "IsDocked = " + mIsDocked
 				+ "\t" + "IsSensing = " + mIsSensing
 				+ "\t" + "IsSDLogging = "+ isSDLogging()
 				+ "\t" + "IsStreaming = " + mIsStreaming
 				+ "\t" + "mIsSdError = " + isSDError()
+				+ "\t" + "mIsSdPresent = " + isSDPresent()
 				+ "\t" + "mIsRedLedOn = " + mIsRedLedOn);
 		
 		if(savedDockedState!=mIsDocked){
@@ -2079,11 +2077,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 10);
 	}
 	
-	public boolean isSupportedSdErrorInStatus() {
-		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 10);
+	public boolean isSupportedSdInfoInStatus() {
+		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 12);
 	}
 
-	
 	private byte[] convertStackToByteArray(Stack<Byte> b,int packetSize) {
 		byte[] returnByte=new byte[packetSize];
 		b.remove(0); //remove the Data Packet identifier 
@@ -2484,7 +2481,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mWaitForAck=false;
 					mWaitForResponse=false;
 					
-					getListofInstructions().remove(0);
+					removeInstruction(0);
 					mTransactionCompleted = true;
 					setInstructionStackLock(false);
 					
@@ -2499,7 +2496,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mWaitForAck=false;
 					mWaitForResponse=false;
 					
-					getListofInstructions().remove(0);
+					removeInstruction(0);
 					mTransactionCompleted = true;
 					setInstructionStackLock(false);
 					
@@ -2586,11 +2583,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ 
 			if(mTimerReadStatus==null){ 
 				mTimerReadStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerReadStatus");
-			} else {
-				mTimerReadStatus.cancel();
-				mTimerReadStatus.purge();
-				mTimerReadStatus = null;
 			}
+			//2017-05-09 MN removed the below, not sure the purpose and caused an NPE
+//			else {
+//				mTimerReadStatus.cancel();
+//				mTimerReadStatus.purge();
+//				mTimerReadStatus = null;
+//			}
 			mTimerReadStatus.schedule(new readStatusTask(), LiteProtocol.TIMER_READ_STATUS_PERIOD, LiteProtocol.TIMER_READ_STATUS_PERIOD);
 		}
 	}
@@ -3054,24 +3053,38 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
     // btsd changes
     public void SplitTrialConfig(int val) {
         //trialConfig = val;
-        mSync = ((val >> 2) & 0x01)==1;
-        setButtonStart(((val >> 5) & 0x01)==1); // currently FW only supports this
+        if(isSupportedErrorLedControl()){
+            setShowErrorLedsSd(((val >> 0) & 0x01)==1);
+        }
         setMasterShimmer(((val >> 1) & 0x01)==1);
-        setSingleTouch(((val >> 15) & 0x01)==1);
-        setTCXO(((val >> 12) & 0x01)==1);
-        setInternalExpPower(((val >> 11) & 0x01)==1);
+        mSync = ((val >> 2) & 0x01)==1;
+        if(isSupportedErrorLedControl()){
+            setShowErrorLedsRtc(((val >> 4) & 0x01)==1);
+        }
+        setButtonStart(((val >> 5) & 0x01)==1); // currently FW only supports this
         //monitor = ((val >> 10) & 0x01)==1;
+        setInternalExpPower(((val >> 11) & 0x01)==1);
+        setTCXO(((val >> 12) & 0x01)==1);
+        setSingleTouch(((val >> 15) & 0x01)==1);
     }
     
 	// btsd changes
     public byte[] combineTrialConfig() {
-        short trialConfig = (short) ((((mSync ? 1 : 0) & 0x01) << 2) +
-                      (((isButtonStart() ? 1 : 0) & 0x01) << 5) +  //currently only this is supported
-                      (((isMasterShimmer() ? 1 : 0) & 0x01) << 1) +
-                      (((isSingleTouch() ? 1 : 0) & 0x01) << 15) +
-                      (((isTCXO() ? 1 : 0) & 0x01) << 12) +
-                      (((isInternalExpPower() ? 1 : 0) & 0x01) << 11) +
-                      (((true ? 1 : 0) & 0x01) << 10));
+        short trialConfig = (short) (
+                (((isMasterShimmer() ? 1 : 0) & 0x01) << 1)
+        		+ (((mSync ? 1 : 0) & 0x01) << 2)
+        		+ (((isButtonStart() ? 1 : 0) & 0x01) << 5)  //currently only this is supported
+                + (((true ? 1 : 0) & 0x01) << 10)
+                + (((isInternalExpPower() ? 1 : 0) & 0x01) << 11)
+                + (((isTCXO() ? 1 : 0) & 0x01) << 12)
+                + (((isSingleTouch() ? 1 : 0) & 0x01) << 15)
+                );
+        
+        if(isSupportedErrorLedControl()){
+        	trialConfig += + (((isShowErrorLedsSd() ? 1 : 0) & 0x01) << 0);
+        	trialConfig += + (((isShowErrorLedsRtc() ? 1 : 0) & 0x01) << 4);
+        }
+
                       //(((monitor ? 1 : 0) & 0x01) << 10);
     	/*short trialConfig = (short) ((((true ? 1 : 0) & 0x01) << 2) +
                 (((true ? 1 : 0) & 0x01) << 5) +
@@ -4867,6 +4880,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public List<byte []> getListofInstructions() {
 		return mListofInstructions;
+	}
+	
+	private void removeInstruction(int index){
+		try {
+			getListofInstructions().remove(index);
+		} catch (IndexOutOfBoundsException e){
+			consolePrintLn("Tried to remove BT instruction but it was already gone.");
+			consolePrintException(e.getMessage(), e.getStackTrace());
+		}
 	}
 	
 	private void writeInstruction(int commandValue) {
