@@ -6329,7 +6329,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 		
-			// If not being generated from scratch then copy across exisiting InfoMem contents
+			// If not being generated from scratch then copy across existing InfoMem contents
 			if(!generateForWritingToShimmer) {
 				System.arraycopy(infoMemBackup, 0, mConfigBytes, 0, (infoMemBackup.length > mConfigBytes.length) ? mConfigBytes.length:infoMemBackup.length);
 			}	
