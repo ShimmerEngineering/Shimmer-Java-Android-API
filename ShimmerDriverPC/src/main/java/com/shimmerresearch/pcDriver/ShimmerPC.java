@@ -96,6 +96,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 //	double mLastSavedCalibratedTimeStamp = -1;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
+	
+	public double mLastSentPacketReceptionRateOverall = DEFAULT_RECEPTION_RATE;
+	public double mLastSentPacketReceptionRateCurrent = DEFAULT_RECEPTION_RATE;
 
 	/**
 	 * Constructor. Prepares a new Bluetooth session. Upon Connection the configuration of the device is read back and used. No device setup is done. To setup device see other Constructors. 
@@ -339,6 +342,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				mSerialPort.writeBytes(data);
 			}
 		} catch (SerialPortException | NullPointerException ex) {
+			consolePrintLn("Tried to writeBytes but port is closed");
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
 		}
@@ -351,14 +355,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				if (mSerialPort.isOpened()){
 					return(mSerialPort.readBytes(numberofBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_500));
 				} else {
-					System.out.println("ALERT!!");
+					consolePrintLn("Tried to readBytes but port is closed");
 				}
 			}
 		} catch (SerialPortException | NullPointerException e) {
 			connectionLost();
+			consolePrintLn("Tried to readBytes but serial port error");
 			e.printStackTrace();
 		} catch (SerialPortTimeoutException e) {
-			// TODO Auto-generated catch block
+			consolePrintLn("Tried to readBytes but serial port timed out");
 			e.printStackTrace();
 		}
 		return null;
@@ -399,19 +404,35 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 		super.calculatePacketReceptionRateCurrent(intervalMs);
-
-		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
-		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
+		sendUpdatePacketRateCurrentIfNew();
 	}
 	
 	@Override
 	protected void dataHandler(ObjectCluster ojc) {
-		
-		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, getMacId(), getComPort(), getPacketReceptionRateOverall());
-		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, callBackObject);
+		sendUpdatePacketRateOverallIfNew();
 		
 //		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getMacId());
 		sendCallBackMsg(MSG_IDENTIFIER_DATA_PACKET, ojc);
+	}
+
+	private void sendUpdatePacketRateOverallIfNew() {
+		//Only send update if there is a change
+		double packetReceptionRateOverall = getPacketReceptionRateOverall();
+		if(mLastSentPacketReceptionRateOverall!=packetReceptionRateOverall){
+			CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, getMacId(), getComPort(), packetReceptionRateOverall);
+			sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, callBackObject);
+		}
+		mLastSentPacketReceptionRateOverall = packetReceptionRateOverall;
+	}
+
+	private void sendUpdatePacketRateCurrentIfNew() {
+		//Only send update if there is a change
+		double packetReceptionRateCurrent = getPacketReceptionRateCurrent();
+		if(mLastSentPacketReceptionRateCurrent!=packetReceptionRateCurrent){
+			CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), packetReceptionRateCurrent);
+			sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
+		}
+		mLastSentPacketReceptionRateCurrent = packetReceptionRateCurrent;
 	}
 
 	public byte[] returnRawData(){
@@ -573,21 +594,26 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	public void finishOperation(BT_STATE btState){
 		
-		consolePrintLn("CURRENT OPERATION " + progressReportPerDevice.mCurrentOperationBtState + "\tFINISHED:" + btState);
-		
-		if(progressReportPerDevice.mCurrentOperationBtState == btState){
-
-			progressReportPerDevice.finishOperation();
-			progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.SUCCESS;
-			//JC: moved operationFinished to is ready for streaming, seems to be called before the inquiry response is received
-			super.operationFinished();
-			CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
-			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+		if(progressReportPerDevice!=null){
+			consolePrintLn("CURRENT OPERATION " + progressReportPerDevice.mCurrentOperationBtState + "\tFINISHED:" + btState);
 			
-			//Removed to try and stop progress going to 0% after finishing
-//			progressReportPerDevice = new ProgressReportPerDevice(this, BT_STATE.NONE, 1);
-//			callBackObject = new CallbackObject(mState, getMacId(), mUniqueID, progressReportPerDevice);
-//			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+			if(progressReportPerDevice.mCurrentOperationBtState == btState){
+
+				progressReportPerDevice.finishOperation();
+				progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.SUCCESS;
+				//JC: moved operationFinished to is ready for streaming, seems to be called before the inquiry response is received
+				super.operationFinished();
+				CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
+				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+				
+				//Removed to try and stop progress going to 0% after finishing
+//				progressReportPerDevice = new ProgressReportPerDevice(this, BT_STATE.NONE, 1);
+//				callBackObject = new CallbackObject(mState, getMacId(), mUniqueID, progressReportPerDevice);
+//				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+			}
+		}
+		else {
+			consolePrintLn("CURRENT OPERATION - UNKNOWN, null progressReportPerDevice" + "\tFINISHED:" + btState);
 		}
 
 	}

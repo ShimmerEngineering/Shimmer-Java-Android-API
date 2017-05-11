@@ -598,12 +598,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		this.mShimmerSDCardDetails.setFirstSdAccess(state);
 	}
 
+	public boolean isSDErrorOrNotPresent() {
+		return (mShimmerSDCardDetails.isSDError() || !mShimmerSDCardDetails.isSDPresent());
+	}
+
 	public boolean isSDError() {
 		return mShimmerSDCardDetails.isSDError();
 	}
 
 	public void setIsSDError(boolean state) {
 		this.mShimmerSDCardDetails.setIsSDError(state);
+	}
+
+	public boolean isSDPresent() {
+		return this.mShimmerSDCardDetails.isSDPresent();
+	}
+
+	public void setIsSDPresent(boolean state) {
+		this.mShimmerSDCardDetails.setIsSDPresent(state);
 	}
 
 	public boolean isSDLogging(){
@@ -661,7 +673,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			return STRING_CONSTANT_UNKNOWN;
 		}
 
-		if(isSDError()){
+		if(isSDErrorOrNotPresent()){
 			return STRING_CONSTANT_SD_ERROR;
 		}
 		else {
@@ -883,7 +895,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public boolean isShimmerError(){
-		if(isSDError()){
+		if(isSDErrorOrNotPresent()){
 			return true;
 		}
 		return false;
@@ -1664,7 +1676,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean isSupportedCalibDump() {
 		return mShimmerVerObject.isSupportedCalibDump();
 	}
-
+	
 	public boolean isShimmerGen2(){
 		return mShimmerVerObject.isShimmerGen2();
 	}
@@ -3515,9 +3527,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					calibBytesAll = newCalibBytesAll;
 				}
 				
-				if(calibDetailsPerRange.mRangeValue == 7){
-					System.err.println("MAG RANGE 7");
-				}
+				//Debugging
+//				if(calibDetailsPerRange.mRangeValue == 7){
+//					System.err.println("MAG RANGE 7");
+//				}
 				
 				//Debugging
 //				if(calibDetailsPerRange instanceof CalibDetailsKinematic){
