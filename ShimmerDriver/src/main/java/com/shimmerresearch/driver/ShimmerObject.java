@@ -6336,7 +6336,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			int samplingRate = (int)(32768 / getSamplingRateShimmer());
+			double samplingRateD = getSamplingRateShimmer();
+//			int samplingRate = (int)(32768.0 / samplingRateD);
+			int samplingRate = (int) Math.round(32768.0 / samplingRateD);
 			mConfigBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
 			mConfigBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
 	
