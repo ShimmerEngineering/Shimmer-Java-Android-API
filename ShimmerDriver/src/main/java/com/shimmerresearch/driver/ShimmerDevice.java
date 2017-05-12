@@ -2712,7 +2712,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		//TODO temporarily locating updateMapOfAlgorithmModules() in DataProcessing
 		if(mDataProcessing!=null){
-			mDataProcessing.updateMapOfAlgorithmModules();
+			mDataProcessing.updateMapOfAlgorithmModules(this);
 		}
 
 		// TODO load algorithm modules automatically from any included algorithm
