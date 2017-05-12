@@ -1,6 +1,7 @@
 package com.shimmerresearch.bluetooth;
 
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 
 /**
  * Provides an interface directly to the method BuildMSG. This can be used
@@ -40,5 +41,7 @@ public interface DataProcessingInterface {
 	
 	//TODO temporarily locating updateMapOfAlgorithmModules() in DataProcessing
 	public void updateMapOfAlgorithmModules();
+
+	public void updateMapOfAlgorithmModules(ShimmerDevice shimmerDevice);
 
 }

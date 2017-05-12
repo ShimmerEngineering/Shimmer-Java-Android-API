@@ -28,31 +28,56 @@ public class AssembleShimmerConfig {
 //		util.consolePrintLn("FrameConfigure: Saving to all listed Shimmer's InfoMems...");
 
 		if(listOfShimmersToConfigureClone.size()>0){
+
+			//If sync when logging isn't enabled on all devices disable it and disable the master
+			boolean isSyncEnabledOnAll = true;
+    		for(ShimmerDevice shimmerDevice : listOfShimmersToConfigureClone) {
+    			if(shimmerDevice instanceof ShimmerBluetooth) {
+    				ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerDevice;
+    				if(!shimmerBluetooth.isSyncWhenLogging()){
+    					isSyncEnabledOnAll = false;
+    					break;
+    				}
+    			}
+    		}
+			
+    		//if sync is enabled on all, generate the sync node list, else, reset the isSyncEnabled and isMasterShimmer variables 
 			List<String> syncNodesList = new ArrayList<String>();
-			//TODO: check logic
-			if(listOfShimmersToConfigureClone.get(0) instanceof ShimmerBluetooth) {
-				ShimmerBluetooth shimmerBluetooth = ((ShimmerBluetooth)listOfShimmersToConfigureClone.get(0));
-				if(isBasic){
-					// disable sync algorithms if ConsensysBASIC
-					shimmerBluetooth.setSyncWhenLogging(false);
-				}
-				if(shimmerBluetooth.isSyncWhenLogging()) {
-		    		// Compile a list of Shimmers in experiment
-		    		for(ShimmerDevice shimmerDevice : listOfShimmersToConfigureClone) {
-	    				if(shimmerDevice.getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.SDLOG) {
-			    			if(shimmerDevice instanceof ShimmerBluetooth) {
-			    				shimmerDevice = (ShimmerBluetooth) shimmerDevice;
-			        			if(((ShimmerBluetooth)shimmerDevice).isMasterShimmer()) {
-			        				syncNodesList.add(0, shimmerDevice.getMacIdFromUart());
-			        			}
-			        			else {
-			        				syncNodesList.add(shimmerDevice.getMacIdFromUart());
-			        			}
-		    				}
-		    			}
-		    		}
-				}
-			}
+    		if(isSyncEnabledOnAll){
+    			if(listOfShimmersToConfigureClone.get(0) instanceof ShimmerBluetooth) {
+    				ShimmerBluetooth shimmerBluetooth = ((ShimmerBluetooth)listOfShimmersToConfigureClone.get(0));
+    				if(isBasic){
+    					// disable sync algorithms if ConsensysBASIC
+    					shimmerBluetooth.setSyncWhenLogging(false);
+    				}
+    				if(shimmerBluetooth.isSyncWhenLogging()) {
+    		    		// Compile a list of Shimmers in experiment
+    		    		for(ShimmerDevice shimmerDevice : listOfShimmersToConfigureClone) {
+    	    				if(shimmerDevice.getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.SDLOG) {
+    			    			if(shimmerDevice instanceof ShimmerBluetooth) {
+//    			    				shimmerDevice = (ShimmerBluetooth) shimmerDevice;
+    			        			if(((ShimmerBluetooth)shimmerDevice).isMasterShimmer()) {
+    			        				syncNodesList.add(0, shimmerDevice.getMacIdFromUart());
+    			        			}
+    			        			else {
+    			        				syncNodesList.add(shimmerDevice.getMacIdFromUart());
+    			        			}
+    		    				}
+    		    			}
+    		    		}
+    				}
+    			}
+    		}
+    		else {
+        		for(ShimmerDevice shimmerDevice : listOfShimmersToConfigureClone) {
+        			if(shimmerDevice instanceof ShimmerBluetooth) {
+        				ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerDevice;
+        				shimmerBluetooth.setSyncWhenLogging(false);
+        				shimmerBluetooth.setMasterShimmer(false);
+        			}
+        		}
+    		}
+			
 			for(ShimmerDevice shimmerDevice: listOfShimmersToConfigureClone) {
 				if(shimmerDevice instanceof ShimmerBluetooth) {
 					ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth) shimmerDevice;
