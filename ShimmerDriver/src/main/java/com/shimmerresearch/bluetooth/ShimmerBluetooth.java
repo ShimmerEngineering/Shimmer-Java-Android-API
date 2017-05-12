@@ -1619,7 +1619,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						tempdouble=(double)1024/instruction[1];
 					} 
 					else {
-						System.err.println(((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8)));
+//						System.err.println(((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8)));
 						tempdouble = 32768/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
 					}
 					// TODO: MN Change to new method in ShimmerObject? It will
