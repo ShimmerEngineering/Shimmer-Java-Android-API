@@ -356,7 +356,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		try {
 			if(mSerialPort != null){
 				if (mSerialPort.isOpened()){
-					return(mSerialPort.readBytes(numberofBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_500));
+					return(mSerialPort.readBytes(numberofBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_2000));
 				} else {
 					consolePrintLn("Tried to readBytes but port is closed");
 				}
@@ -368,8 +368,14 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		} catch (SerialPortTimeoutException e) {
 			consolePrintLn("Tried to readBytes but serial port timed out");
 			e.printStackTrace();
-			
-			//TODO if in the middle of connecting or configuring trigger a connectionLost()? 
+
+			// TODO if in the middle of connecting or configuring, trigger a
+			// connectionLost()? BT_STATE.CONFIGURING not currently used by
+			// ShimmerBluetooth
+			if(mBluetoothRadioState==BT_STATE.CONNECTING
+					|| mBluetoothRadioState==BT_STATE.CONFIGURING){
+				connectionLost();
+			}
 		}
 		return null;
 	}

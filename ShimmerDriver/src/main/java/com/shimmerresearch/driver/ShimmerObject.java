@@ -4743,32 +4743,37 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
 		} 
 		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
-			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
-			setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
-			mNChannels = bufferInquiry[6];
-			mBufferSize = bufferInquiry[7];
-			mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));
-			setDigitalAccelRange(((int)(mConfigByte0 & 0xC))>>2);
-			setGyroRange(((int)(mConfigByte0 & 196608))>>16);
-			setLSM303MagRange(((int)(mConfigByte0 & 14680064))>>21);
-			mLSM303DigitalAccelRate = ((int)(mConfigByte0 & 0xF0))>>4;
-			setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
-			setLSM303MagRate(((int)(mConfigByte0 & 1835008))>>18); 
-			setPressureResolution((((int)(mConfigByte0 >>28)) & 3));
-			mGSRRange  = (((int)(mConfigByte0 >>25)) & 7);
-			mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
-			mInquiryResponseBytes = new byte[8+mNChannels];
-			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
-			if ((mLSM303DigitalAccelRate==2 && getSamplingRateShimmer()>10)){
-				mLowPowerAccelWR = true;
+			if(bufferInquiry.length>=8){
+				mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
+				setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
+				mNChannels = bufferInquiry[6];
+				mBufferSize = bufferInquiry[7];
+				mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));
+				setDigitalAccelRange(((int)(mConfigByte0 & 0xC))>>2);
+				setGyroRange(((int)(mConfigByte0 & 196608))>>16);
+				setLSM303MagRange(((int)(mConfigByte0 & 14680064))>>21);
+				mLSM303DigitalAccelRate = ((int)(mConfigByte0 & 0xF0))>>4;
+				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
+				setLSM303MagRate(((int)(mConfigByte0 & 1835008))>>18); 
+				setPressureResolution((((int)(mConfigByte0 >>28)) & 3));
+				mGSRRange  = (((int)(mConfigByte0 >>25)) & 7);
+				mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
+				mInquiryResponseBytes = new byte[8+mNChannels];
+				System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
+				if ((mLSM303DigitalAccelRate==2 && getSamplingRateShimmer()>10)){
+					mLowPowerAccelWR = true;
+				}
+				checkLowPowerGyro();
+				checkLowPowerMag();
+				
+				if(bufferInquiry.length>=(8+mNChannels)){
+					byte[] signalIdArray = new byte[mNChannels];
+					System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
+					updateEnabledSensorsFromChannels(signalIdArray);
+					interpretDataPacketFormat(mNChannels,signalIdArray);
+					checkExgResolutionFromEnabledSensorsVar();
+				}
 			}
-			checkLowPowerGyro();
-			checkLowPowerMag();
-			byte[] signalIdArray = new byte[mNChannels];
-			System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
-			updateEnabledSensorsFromChannels(signalIdArray);
-			interpretDataPacketFormat(mNChannels,signalIdArray);
-			checkExgResolutionFromEnabledSensorsVar();
 		} 
 		else if (getHardwareVersion()==HW_ID.SHIMMER_SR30) {
 			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
