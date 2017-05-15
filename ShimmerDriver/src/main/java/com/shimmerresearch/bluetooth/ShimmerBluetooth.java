@@ -1149,7 +1149,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					byte[] bufferSR = readBytes(2, responseCommand); //read the sampling rate
 					if(bufferSR!=null){
-						setSamplingRateShimmer(32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
+						setSamplingRateShimmer(convertSamplingRateBytesToFreq(bufferSR[0], bufferSR[1]));
 					}
 				}
 			}
@@ -1621,7 +1621,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					} 
 					else {
 //						System.err.println(((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8)));
-						tempdouble = 32768/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
+//						tempdouble = 32768/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
+						tempdouble = convertSamplingRateBytesToFreq(instruction[1], instruction[2]);
 					}
 					// TODO: MN Change to new method in ShimmerObject? It will
 					// automatically update the individual IMU + ExG sensor rate
@@ -3325,9 +3326,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				writeGyroSamplingRate(mMPU9150GyroAccelRate);
 				writeExgSamplingRate(rate);
 				
-				int samplingByteValue;
-				
+				byte[] buf = convertSamplingRateFreqBytes(getSamplingRateShimmer());
+//				writeInstruction(new byte[]{SET_SAMPLING_RATE_COMMAND, buf[0], buf[1]});
+
+				//TODO change the RM's below to the above once tested
+
 				// RM: get Shimmer compatible sampling rate (use ceil or floor depending on which is appropriate to the user entered sampling rate)
+				int samplingByteValue;
 		    	if((Math.ceil(32768/getSamplingRateShimmer()) - 32768/getSamplingRateShimmer()) < 0.05){
 		    		samplingByteValue = (int)Math.ceil(32768/getSamplingRateShimmer());
 		    	}

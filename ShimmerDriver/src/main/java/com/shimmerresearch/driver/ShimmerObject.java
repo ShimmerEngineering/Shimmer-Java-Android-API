@@ -4745,7 +4745,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 			if(bufferInquiry.length>=8){
 				mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
-				setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
+				double samplingRate = convertSamplingRateBytesToFreq(bufferInquiry[0], bufferInquiry[1]);
+				setSamplingRateShimmer(samplingRate);
+//				setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
 				mNChannels = bufferInquiry[6];
 				mBufferSize = bufferInquiry[7];
 				mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));
@@ -6002,8 +6004,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			setSamplingRateShimmer((32768/(double)((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
-					+ ((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8))));
+			byte samplingRateMSB = (byte) (configBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate);
+			byte samplingRateLSB = (byte) (configBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate);
+			double samplingRate = convertSamplingRateBytesToFreq(samplingRateLSB, samplingRateMSB);
+			setSamplingRateShimmer(samplingRate);
 	
 			mBufferSize = (int)(configBytes[infoMemLayoutCast.idxBufferSize] & infoMemLayoutCast.maskBufferSize);
 			
@@ -6299,7 +6303,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		checkAndCorrectShimmerName(shimmerName);
 	}
-	
+
 	@Override
 	public void prepareAllMapsAfterConfigRead() {
 		super.prepareAllMapsAfterConfigRead();
@@ -6341,11 +6345,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			double samplingRateD = getSamplingRateShimmer();
-//			int samplingRate = (int)(32768.0 / samplingRateD);
-			int samplingRate = (int) Math.round(32768.0 / samplingRateD);
-			mConfigBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
-			mConfigBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
+			byte[] samplingRateBytes = convertSamplingRateFreqBytes(getSamplingRateShimmer());
+			mConfigBytes[infoMemLayout.idxShimmerSamplingRate] = samplingRateBytes[0]; 
+			mConfigBytes[infoMemLayout.idxShimmerSamplingRate+1] = samplingRateBytes[1]; 
 	
 			//FW not using this feature and BtStream will reject infomem if this isn't set to '1'
 			mConfigBytes[infoMemLayout.idxBufferSize] = (byte) 1;//(byte) (mBufferSize & mInfoMemLayout.maskBufferSize); 
@@ -10921,8 +10923,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 //			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
 		        Double readSamplingRate = getSamplingRateShimmer();
-		    	Double actualSamplingRate = 32768/Math.floor(32768/readSamplingRate); // get Shimmer compatible sampling rate
-		    	actualSamplingRate = (double)Math.round(actualSamplingRate * 100) / 100; // round sampling rate to two decimal places
+				Double actualSamplingRate = roundSamplingRateToSupportedValue(readSamplingRate);
 //    					    	consolePrintLn("GET SAMPLING RATE: " + componentName);
 		    	returnValue = actualSamplingRate.toString();
 	        	break;

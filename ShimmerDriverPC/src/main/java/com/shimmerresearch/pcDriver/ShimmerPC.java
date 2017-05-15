@@ -505,10 +505,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			setBluetoothRadioState(BT_STATE.DISCONNECTED);
 			if (mSerialPort != null){
 				
-				if(mSerialPort.isOpened ()) {
-				  mSerialPort.purgePort (1);
-				  mSerialPort.purgePort (2);
-				  mSerialPort.closePort ();
+				if(mSerialPort.isOpened()) {
+				  mSerialPort.purgePort(1);
+				  mSerialPort.purgePort(2);
+				  mSerialPort.closePort();
 				}
 				
 			}
