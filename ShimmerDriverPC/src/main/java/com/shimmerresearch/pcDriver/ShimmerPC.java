@@ -100,6 +100,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public double mLastSentPacketReceptionRateOverall = DEFAULT_RECEPTION_RATE;
 	public double mLastSentPacketReceptionRateCurrent = DEFAULT_RECEPTION_RATE;
 
+	//TODO switch to using rather then using JSSC directly in this class 
+//	private SerialPortCommJssc SerialPortCommJssc = new SerialPortCommJssc(comPort, uniqueId, baudToUse);
+	
 	/**
 	 * Constructor. Prepares a new Bluetooth session. Upon Connection the configuration of the device is read back and used. No device setup is done. To setup device see other Constructors. 
 	 * This constructor was created as a simple constructor for use with MATLAB.

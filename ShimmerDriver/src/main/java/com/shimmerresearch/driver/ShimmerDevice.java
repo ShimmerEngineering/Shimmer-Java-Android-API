@@ -356,6 +356,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 			}
 		}
+		
+		//Debugging
+//		printSensorParserAndAlgoMaps();
 	}
 
 	public void generateConfigOptionsMap() {
@@ -2197,7 +2200,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
 				consolePrintLn("\tSENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-					consolePrintLn("\t\tChannel:\t" + channelDetails.getChannelObjectClusterName());
+					consolePrintLn("\t\t"  + "NumBytes:" + channelDetails.mDefaultNumBytes + "\tChannel:" + channelDetails.getChannelObjectClusterName());
 				}
 			}
 			consolePrintLn("");
