@@ -2405,7 +2405,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void startDataLogAndStreaming(){
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status perdiocally
+		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status periodically
 			initialiseStreaming();
 			
 			//TODO: ask JC, should mByteArrayOutputStream.reset(); and mListofPCTimeStamps.clear(); be here as well? 
@@ -2414,7 +2414,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	private void initialiseStreaming(){
-		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status perdiocally
+		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status periodically
 		
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && getFirmwareVersionCode() >=6){
 			readRealTimeClock();

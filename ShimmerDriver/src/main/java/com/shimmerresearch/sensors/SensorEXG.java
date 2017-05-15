@@ -1,5 +1,6 @@
 package com.shimmerresearch.sensors;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -796,14 +797,14 @@ public class SensorEXG extends AbstractSensor{
 					ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT,
 					ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT,
 					DatabaseChannelHandles.EXG2_CH1_16BITS,
-					CHANNEL_DATA_TYPE.INT16, 3, CHANNEL_DATA_ENDIAN.MSB,
+					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));	
 	public static final ChannelDetails cDExg_Test_CHIP2_CH2_16bit = new ChannelDetails(
 					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT,
 					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT,
 					DatabaseChannelHandles.EXG2_CH2_16BITS,
-					CHANNEL_DATA_TYPE.INT16, 3, CHANNEL_DATA_ENDIAN.MSB,
+					CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));	
 	public static final ChannelDetails cDExg_Test_CHIP1_CH1_24bit = new ChannelDetails(
@@ -3177,6 +3178,10 @@ public class SensorEXG extends AbstractSensor{
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override
 	public void handleSpecialCasesAfterSensorMapCreate() {
+		SensorEXG.updateSensorMapForExgResolution(mSensorMap, getExGResolution());
+	}
+	
+	public static void updateSensorMapForExgResolution(Map<Integer, SensorDetails> sensorMap, int exgResolution) {
 		//Special cases for ExG 24-bit vs. 16-bit
 		List<Integer> listOfSensorMapKeys = Arrays.asList(
 				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
@@ -3187,22 +3192,43 @@ public class SensorEXG extends AbstractSensor{
 				Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR);
 		
 		for(Integer sensorMapKey:listOfSensorMapKeys){
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
-			if(sensorDetails!=null){
-				Iterator<ChannelDetails> iterator = sensorDetails.mListOfChannels.iterator();
-				while (iterator.hasNext()) {
-					ChannelDetails channelDetails = iterator.next();
-					String channelName = channelDetails.mObjectClusterName;
-//			   		System.out.println("getExGResolution(): " +getExGResolution());
-			   		
-					if((getExGResolution()==1 && is16BitExgChannel(channelName))
-							|| (getExGResolution()==0 && is24BitExgChannel(channelName))){
-					    iterator.remove();
+			SensorDetails sensorDetails = sensorMap.get(sensorMapKey);
+			SensorDetailsRef sensorDetailsRef = mSensorMapRef.get(sensorMapKey);
+			
+			if(sensorDetails!=null && sensorDetailsRef!=null){
+				List<ChannelDetails> listOfRefChannels = new ArrayList<ChannelDetails>();
+				for(String channelMapKey:sensorDetailsRef.mListOfChannelsRef){
+					ChannelDetails channelDetails = mChannelMapRef.get(channelMapKey);
+					if(channelDetails!=null){
+						String channelName = channelDetails.mObjectClusterName;
+						
+						//If the resolution is 24-bit, filter out 16-bit channels and vice versa
+						if((exgResolution==1 && SensorEXG.is16BitExgChannel(channelName))
+								|| (exgResolution==0 && SensorEXG.is24BitExgChannel(channelName))){
+							continue;
+						}
+						
+						listOfRefChannels.add(channelDetails);
 					}
-			   	}
+				}
+				sensorDetails.mListOfChannels = listOfRefChannels;
+				
+//				Iterator<ChannelDetails> iterator = sensorDetails.mListOfChannels.iterator();
+//				while (iterator.hasNext()) {
+//					ChannelDetails channelDetails = iterator.next();
+//					String channelName = channelDetails.mObjectClusterName;
+////			   		System.out.println("getExGResolution(): " +getExGResolution());
+//			   		
+//					if((exgResolution==1 && SensorEXG.is16BitExgChannel(channelName))
+//							|| (exgResolution==0 && SensorEXG.is24BitExgChannel(channelName))){
+//					    iterator.remove();
+//					}
+//			   	}
+				
 			}
 		}
 	}
+
 	
 	@Override
 	public void handleSpecCasesBeforeSensorMapUpdateGeneral(ShimmerDevice shimmerDevice) {

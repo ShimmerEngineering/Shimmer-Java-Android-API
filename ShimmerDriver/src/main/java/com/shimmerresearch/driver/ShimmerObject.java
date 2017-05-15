@@ -6652,63 +6652,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	@Override
 	protected void handleSpecialCasesAfterSensorMapCreate() {
-		
-		//Special cases for ExG 24-bit vs. 16-bit
-		List<Integer> listOfSensorMapKeys = Arrays.asList(
-				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-				Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-				Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-				Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-				Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-				Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR);
-		
-		for(Integer sensorMapKey:listOfSensorMapKeys){
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
-			if(sensorDetails!=null){
-				Iterator<ChannelDetails> iterator = sensorDetails.mListOfChannels.iterator();
-				while (iterator.hasNext()) {
-					ChannelDetails channelDetails = iterator.next();
-					String channelName = channelDetails.mObjectClusterName;
-//			   		System.out.println("getExGResolution(): " +getExGResolution());
-			   		
-					if((getExGResolution()==1 && SensorEXG.is16BitExgChannel(channelName))
-							|| (getExGResolution()==0 && SensorEXG.is24BitExgChannel(channelName))){
-					    iterator.remove();
-					}
-
-//					if((getExGResolution()==1)
-//							&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT))
-//						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT))
-//						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT))
-//	    				||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_16BIT))
-//						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_16BIT))
-//						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_16BIT))
-//						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_16BIT))
-//						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_16BIT))
-//						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_16BIT))
-//						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_16BIT))
-//						||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT)))){
-//						    iterator.remove();
-//					}
-//					else if((getExGResolution()==0)
-//							&&((channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_RESP_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH1_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EMG_CH2_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH1_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP1_CH2_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH1_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT))
-//	    					||(channelName.equals(Configuration.Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT)))){
-//					    iterator.remove();
-//					}
-			   	}
-			}
-		}
+		SensorEXG.updateSensorMapForExgResolution(mSensorMap, getExGResolution());
 	}
 
+	@Override
+	public void generateParserMap() {
+		SensorEXG.updateSensorMapForExgResolution(mSensorMap, getExGResolution());
+		super.generateParserMap();
+	}
 	
 	private void createSensorMapShimmer3(){
 		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
