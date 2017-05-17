@@ -2413,6 +2413,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		writeInstruction(START_STREAMING_COMMAND);
 	}
 	
+	@Override
 	public void startDataLogAndStreaming(){
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status periodically
 			initialiseStreaming();
@@ -2437,12 +2438,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mSync=true; // a backup sync done every time you start streaming
 	}
 	
+	@Override
 	public void startSDLogging(){
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && getFirmwareVersionCode() >=6){
 			writeInstruction(START_LOGGING_ONLY_COMMAND);
 		}	
 	}
 	
+	@Override
 	public void stopSDLogging(){
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && getFirmwareVersionCode() >=6){
 			writeInstruction(STOP_LOGGING_ONLY_COMMAND);
@@ -2463,6 +2466,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**Only applicable for logandstream
 	 * 
 	 */
+	@Override
 	public void stopStreamingAndLogging() {
 		// if shimmer is using LogAndStream FW, stop reading its status periodically
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ 

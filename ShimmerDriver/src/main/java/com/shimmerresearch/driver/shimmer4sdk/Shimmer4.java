@@ -1046,12 +1046,14 @@ public class Shimmer4 extends ShimmerDevice {
 		}
 	}
 
+	@Override
 	public void startSDLogging() {
 		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
 			mCommsProtocolRadio.startSDLogging();
 		}
 	}
 
+	@Override
 	public void stopSDLogging() {
 		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioHal!=null){
 			mCommsProtocolRadio.stopSDLogging();
