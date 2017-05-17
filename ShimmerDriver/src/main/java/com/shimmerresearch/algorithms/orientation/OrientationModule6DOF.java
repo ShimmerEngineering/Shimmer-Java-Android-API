@@ -409,8 +409,7 @@ public class OrientationModule6DOF extends OrientationModule{
 
 	@Override
 	public void setSupportedVerInfo() {
-		// TODO Auto-generated method stub
-		
+		mListOfCompatibleSVO.add(svoSh3Module);
 	}
 
 
