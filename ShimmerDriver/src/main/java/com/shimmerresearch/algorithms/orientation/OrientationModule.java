@@ -1,8 +1,6 @@
 package com.shimmerresearch.algorithms.orientation;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.vecmath.Vector3d;
 
@@ -36,7 +34,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	protected static final String[] QUATERNION_OPTIONS = {"Off", "On"};
 	protected static final String[] EULER_OPTIONS = {"Off", "On"};
 	
-	private static final ShimmerVerObject svoSh3Module = new ShimmerVerObject(
+	protected static final ShimmerVerObject svoSh3Module = new ShimmerVerObject(
 			HW_ID.SHIMMER_3,ShimmerVerDetails.ANY_VERSION,
 			ShimmerVerDetails.ANY_VERSION,
 			ShimmerVerDetails.ANY_VERSION,
@@ -58,8 +56,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		public static final String EULER_OUTPUT = "Euler";
 	}
 	
-	public static List<ShimmerVerObject> mListSVO = new ArrayList<ShimmerVerObject>(); 
-	
+//	public static List<ShimmerVerObject> mListSVO = new ArrayList<ShimmerVerObject>(); 
 	
 	transient Object orientationAlgorithm;
 	public boolean quaternionOutput= true;
@@ -77,7 +74,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	// ------------------- Algorithms grouping map end -----------------------
 
 	{
-		mListSVO.add(svoSh3Module);
+//		mListSVO.add(svoSh3Module);
 		
 //		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
 //		String[] accSensors = new String[2];

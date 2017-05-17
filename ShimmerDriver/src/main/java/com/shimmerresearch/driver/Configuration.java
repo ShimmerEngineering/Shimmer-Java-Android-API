@@ -898,8 +898,6 @@ public class Configuration {
 
 		// Config Options Map
 		public class GuiLabelConfig{
-			public static final String COPY_ALL_SHIMMER_CONFIGURATION = "Copy Configuration";
-			
 			public static final String SHIMMER_USER_ASSIGNED_NAME = "Shimmer Name";
 			public static final String TRIAL_NAME = "Trial Name";
 			/** Algorithm models and sensor classes also rely on this*/
