@@ -97,6 +97,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	double mLastSavedCalibratedTimeStamp = -1;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
 	
+	public static final boolean ONLY_UPDATE_RATE_IF_CHANGED = false;
 	public double mLastSentPacketReceptionRateOverall = DEFAULT_RECEPTION_RATE;
 	public double mLastSentPacketReceptionRateCurrent = DEFAULT_RECEPTION_RATE;
 
@@ -415,18 +416,28 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 		super.calculatePacketReceptionRateCurrent(intervalMs);
-		sendUpdatePacketRateCurrentIfNew();
+		
+		if(ONLY_UPDATE_RATE_IF_CHANGED){
+			sendUpdatePacketRateCurrentIfChanged();
+		} else {
+			sendUpdatePacketRateCurrent();
+		}
 	}
 	
 	@Override
 	protected void dataHandler(ObjectCluster ojc) {
-		sendUpdatePacketRateOverallIfNew();
+		
+		if(ONLY_UPDATE_RATE_IF_CHANGED){
+			sendUpdatePacketRateOverallIfChanged();
+		} else {
+			sendUpdatePacketRateOverall();
+		}
 		
 //		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getMacId());
 		sendCallBackMsg(MSG_IDENTIFIER_DATA_PACKET, ojc);
 	}
 
-	private void sendUpdatePacketRateOverallIfNew() {
+	private void sendUpdatePacketRateOverallIfChanged() {
 		//Only send update if there is a change
 		double packetReceptionRateOverall = getPacketReceptionRateOverall();
 		if(mLastSentPacketReceptionRateOverall!=packetReceptionRateOverall){
@@ -436,7 +447,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mLastSentPacketReceptionRateOverall = packetReceptionRateOverall;
 	}
 
-	private void sendUpdatePacketRateCurrentIfNew() {
+	private void sendUpdatePacketRateOverall() {
+		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, getMacId(), getComPort(), getPacketReceptionRateOverall());
+		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, callBackObject);
+	}
+
+	private void sendUpdatePacketRateCurrentIfChanged() {
 		//Only send update if there is a change
 		double packetReceptionRateCurrent = getPacketReceptionRateCurrent();
 		if(mLastSentPacketReceptionRateCurrent!=packetReceptionRateCurrent){
@@ -444,6 +460,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
 		}
 		mLastSentPacketReceptionRateCurrent = packetReceptionRateCurrent;
+	}
+
+	private void sendUpdatePacketRateCurrent() {
+		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
+		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
 	}
 
 	public byte[] returnRawData(){

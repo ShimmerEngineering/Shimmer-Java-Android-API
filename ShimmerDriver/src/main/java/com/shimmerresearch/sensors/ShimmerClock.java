@@ -122,13 +122,13 @@ public class ShimmerClock extends AbstractSensor {
 		sensorShimmerClock.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
 	}
 
+	//Uncomment channels if you want them to appear in Consensys LiveData
 	public static final SensorDetailsRef sensorShimmerPacketReception = new SensorDetailsRef(
 			GuiLabelSensors.DEVICE_PROPERTIES,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(
 //					ObjectClusterSensorName.TIMESTAMP,
 //					ObjectClusterSensorName.TIMESTAMP_SYNC,
-					//temp only! JC: delete after db sync works
 //					ObjectClusterSensorName.REAL_TIME_CLOCK,
 //					ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 					SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
@@ -266,6 +266,7 @@ public class ShimmerClock extends AbstractSensor {
 //		channelRealTimeClockSync.mChannelSource = CHANNEL_SOURCE.API;
 //	}
 
+	//TODO: Move to separate class
 	public static final ChannelDetails channelBattPercentage = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
 			Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
@@ -277,6 +278,7 @@ public class ShimmerClock extends AbstractSensor {
 		channelBattPercentage.mChannelSource = CHANNEL_SOURCE.API;
 	}
 
+	//TODO: Move to separate class
 	public static final ChannelDetails channelReceptionRateCurrent = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT,
 			"Packet Reception Rate (per second)",
@@ -288,6 +290,7 @@ public class ShimmerClock extends AbstractSensor {
 		channelReceptionRateCurrent.mChannelSource = CHANNEL_SOURCE.API;
 	}
 
+	//TODO: Move to separate class
 	public static final ChannelDetails channelReceptionRateTrial = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL,
 			"Packet Reception Rate (overall)",
@@ -299,12 +302,13 @@ public class ShimmerClock extends AbstractSensor {
 		channelReceptionRateTrial.mChannelSource = CHANNEL_SOURCE.API;
 	}
 
+	//TODO: Move to separate class
 	public static final ChannelDetails channelEventMarker = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
 			DatabaseChannelHandles.EVENT_CHANNEL,
 			CHANNEL_UNITS.NO_UNITS,
-			Arrays.asList(CHANNEL_TYPE.CAL), true, false);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
 		//TODO put into above constructor
 		channelEventMarker.mChannelSource = CHANNEL_SOURCE.API;
