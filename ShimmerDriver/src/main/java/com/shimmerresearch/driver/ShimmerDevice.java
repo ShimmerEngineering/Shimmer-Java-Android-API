@@ -184,7 +184,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	protected long mEnabledSensors = (long)0;												// This stores the enabled sensors
 	protected long mDerivedSensors = (long)0;	
-
+	public static boolean mEnableDerivedSensors = true;
+	
 	protected String mComPort = "";
 	public transient CommsProtocolRadio mCommsProtocolRadio = null;
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
@@ -2242,7 +2243,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void algorithmMapUpdateFromEnabledSensorsVars() {
 //		consolePrintErrLn("algorithmMapUpdateFromEnabledSensorsVars\tmDerivedSensors = " + UtilShimmer.longToHexStringWithSpacesFormatted(mDerivedSensors, 8));
 		for(AbstractAlgorithm aA:getMapOfAlgorithmModules().values()){
-			aA.algorithmMapUpdateFromEnabledSensorsVars(mDerivedSensors);
+			if(mEnableDerivedSensors){
+				aA.algorithmMapUpdateFromEnabledSensorsVars(mDerivedSensors);
+			} else {
+				aA.algorithmMapUpdateFromEnabledSensorsVars(0);
+			}
 		}
 		initializeAlgorithms();
 	}
