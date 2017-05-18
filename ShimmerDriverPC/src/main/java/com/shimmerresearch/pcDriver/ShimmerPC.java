@@ -365,10 +365,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		} catch (SerialPortException | NullPointerException e) {
 			connectionLost();
 			consolePrintLn("Tried to readBytes but serial port error");
-			e.printStackTrace();
+			consolePrintException(e.getMessage(), e.getStackTrace());
+//			e.printStackTrace();
 		} catch (SerialPortTimeoutException e) {
 			consolePrintLn("Tried to readBytes but serial port timed out");
-			e.printStackTrace();
+			consolePrintException(e.getMessage(), e.getStackTrace());
+//			e.printStackTrace();
 
 			// TODO if in the middle of connecting or configuring, trigger a
 			// connectionLost()? BT_STATE.CONFIGURING not currently used by

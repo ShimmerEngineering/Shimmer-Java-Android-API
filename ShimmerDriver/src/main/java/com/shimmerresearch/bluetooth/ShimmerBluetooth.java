@@ -237,6 +237,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //	private String mParentClassName = "ShimmerBluetooth";
 	
 	public boolean mIsRedLedOn = false;
+	public boolean mIsRtcSet = false;
 
 	protected boolean mUseProcessingThread = false;
 	
@@ -686,7 +687,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//TODO: ACK in bufferTemp[0] not handled
 			//else if
 			else {
-				printLogDataForDebugging("Packet syncing problem:\tExpected: " + (mPacketSize+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes\n" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
+				printLogDataForDebugging("Packet syncing problem:\tExpected: " + (mPacketSize+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes" 
+										+ "\nBuffer = " + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
 				discardFirstBufferByte(); //throw the first byte away
 			}
 		}
@@ -861,9 +863,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				if(byteBuffer!=null){
 					if(byteBuffer[0]==ACK_COMMAND_PROCESSED) {
 						printLogDataForDebugging("ACK RECEIVED , Connected State!!");
-						byteBuffer = readBytes(1);
+						byteBuffer = readBytes(1, INSTREAM_CMD_RESPONSE);
 						if(byteBuffer!=null && byteBuffer[0]==ACK_COMMAND_PROCESSED){ //an android fix.. not fully investigated (JC)
-							byteBuffer = readBytes(1);
+							byteBuffer = readBytes(1, INSTREAM_CMD_RESPONSE);
 						}
 						if(byteBuffer!=null && byteBuffer[0]==INSTREAM_CMD_RESPONSE){
 							processResponseCommand(INSTREAM_CMD_RESPONSE);
@@ -931,11 +933,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				if(responseData!=null){
 					parseStatusByte(responseData[0]);
 		
-					if(!mIsSensing){
-						if(!isInitialised()){
+					if(!isSupportedRtcStateInStatus()){
+						if(!mIsSensing && !isInitialised()){
+							writeRealTimeClock();
+						}
+					} else {
+						//New case to make sure RTC is set if it hasn't been already
+						if(!isSDLogging() && (!isInitialised() || !mIsRtcSet)){
 							writeRealTimeClock();
 						}
 					}
+					
 					eventLogAndStreamStatusChanged(mCurrentCommand);
 				}
 			} 
@@ -2107,6 +2115,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		setIsDocked(((statusByte & (0x01 << 0)) > 0)? true:false);
 		setIsSensing(((statusByte & (0x01 << 1)) > 0)? true:false);
 		//reserved(((statusByte & (0x01 << 2)) > 0)? true:false);
+		if(isSupportedRtcStateInStatus()){
+			mIsRtcSet = ((statusByte & (0x01 << 2)) > 0)? true:false;
+		}
 		setIsSDLogging(((statusByte & (0x01 << 3)) > 0)? true:false);
 		setIsStreaming(((statusByte & (0x01 << 4)) > 0)? true:false);
 		if(isSupportedSdInfoInStatus()){
@@ -2120,6 +2131,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		consolePrintLn("\nStatus Response = \n" + UtilShimmer.byteToHexStringFormatted(statusByte) 
 				+ "\t" + "IsDocked = " + mIsDocked
 				+ "\t" + "IsSensing = " + mIsSensing
+				+ "\t" + "IsRtcSet = " + mIsRtcSet
 				+ "\t" + "IsSDLogging = "+ isSDLogging()
 				+ "\t" + "IsStreaming = " + mIsStreaming
 				+ "\t" + "mIsSdError = " + isSDError()
@@ -2134,7 +2146,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public boolean isSupportedRedLedStateInStatus() {
 		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 10);
 	}
-	
+
+	public boolean isSupportedRtcStateInStatus() {
+		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 14);
+	}
+
 	public boolean isSupportedSdInfoInStatus() {
 		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 12);
 	}
@@ -2427,7 +2443,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status periodically
 		
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && getFirmwareVersionCode() >=6){
-			readRealTimeClock();
+			if(!isSDLogging()){
+				readRealTimeClock();
+			}
 		}
 
 		initaliseDataProcessing();
@@ -2440,6 +2458,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	@Override
 	public void startSDLogging(){
+		//Shouldn't be logging anyway but just incase.
+		if(!isSDLogging()){
+			writeRealTimeClock();
+		}
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && getFirmwareVersionCode() >=6){
 			writeInstruction(START_LOGGING_ONLY_COMMAND);
 		}	
@@ -2652,7 +2674,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //				mTimerReadStatus.purge();
 //				mTimerReadStatus = null;
 //			}
-			mTimerReadStatus.schedule(new readStatusTask(), LiteProtocol.TIMER_READ_STATUS_PERIOD, LiteProtocol.TIMER_READ_STATUS_PERIOD);
+			mTimerReadStatus.schedule(new readStatusTask(), 0, LiteProtocol.TIMER_READ_STATUS_PERIOD);
 		}
 	}
 	
