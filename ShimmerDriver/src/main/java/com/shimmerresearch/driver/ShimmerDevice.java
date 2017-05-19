@@ -776,6 +776,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mExpansionBoardDetails.getExpansionBoardParsedWithVer();
 	}
 
+	public String getExpansionBoardVerParsed() {
+		return mExpansionBoardDetails.getBoardVerString();
+	}
+
 	public void clearExpansionBoardDetails(){
 		mExpansionBoardDetails = new ExpansionBoardDetails();
 	}
