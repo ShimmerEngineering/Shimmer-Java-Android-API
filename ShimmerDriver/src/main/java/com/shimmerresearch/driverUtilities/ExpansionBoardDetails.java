@@ -85,7 +85,7 @@ public class ExpansionBoardDetails implements Serializable {
 		return boardNameWithVer;
 	}
 	
-	private String getBoardVerString(){
+	public String getBoardVerString(){
 		return ("SR" + mExpansionBoardId + "." + mExpansionBoardRev + "." + mExpansionBoardRevSpecial);
 	}
 	
