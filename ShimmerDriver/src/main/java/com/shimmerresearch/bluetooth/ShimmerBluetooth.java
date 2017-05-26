@@ -164,6 +164,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	@Deprecated // mContinousSync doesn't do anything
 	private boolean mContinousSync=false;                                       // This is to select whether to continuously check the data packets 
 	protected boolean mSetupDevice=false;		
+
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected double mLowBattLimit=3.4;
 	protected int numBytesToReadFromExpBoard=0;
@@ -2277,21 +2278,27 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
 		if (mSetupDevice){
-			if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
-				writeShimmerUserAssignedName(getShimmerUserAssignedName());
+			if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
+				writeConfigBytes();
 			}
-			if(mSetupEXG){
-				writeEXGConfiguration();
-				mSetupEXG = false;
+			else {
+				if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
+					writeShimmerUserAssignedName(getShimmerUserAssignedName());
+				}
+				if(mSetupEXG){
+					writeEXGConfiguration();
+					mSetupEXG = false;
+				}
+				writeGSRRange(mGSRRange);
+				writeAccelRange(getAccelRange());
+				writeGyroRange(getGyroRange());
+				writeMagRange(getMagRange());
+				writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
+				writeInternalExpPower(1);
+				//		setContinuousSync(mContinousSync);
 			}
-			writeGSRRange(mGSRRange);
-			writeAccelRange(getAccelRange());
-			writeGyroRange(getGyroRange());
-			writeMagRange(getMagRange());
-			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
-			writeInternalExpPower(1);
-			//		setContinuousSync(mContinousSync);
 		}
+		
 		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
 			readConfigBytes();
 			readPressureCalibrationCoefficients();
@@ -5037,6 +5044,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	/**
+	 * @return the mSetupDevice
+	 */
+	public boolean isSetupDeviceDuringConnection() {
+		return mSetupDevice;
+	}
+	/**
+	 * @param mSetupDevice the mSetupDevice to set
+	 */
+	public void setSetupDeviceDuringConnection(boolean mSetupDevice) {
+		this.mSetupDevice = mSetupDevice;
+	}
+
+	/**
 	 * @param hardwareVersion
 	 * @param firmwareIdentifier
 	 * @param firmwareVersionMajor
@@ -5048,5 +5068,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
+	
+	
 
 }
