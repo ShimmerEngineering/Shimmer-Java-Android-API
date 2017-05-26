@@ -61,6 +61,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -196,6 +197,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public boolean mVerboseMode = true;
 //	public static TreeMap<Integer,String> mMapOfErrorCodes = new TreeMap<Integer,String>();
+
+	public FIXED_SHIMMER_CONFIG mFixedShimmerConfig = FIXED_SHIMMER_CONFIG.NONE;
+
 
 	private static final List<AlgorithmLoaderInterface> OPEN_SOURCE_ALGORITHMS = Arrays.asList(
 			new OrientationModule6DOFLoader(), 
@@ -3986,6 +3990,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public String getAlternativeName() {
 		return mAlternativeName;
+	}
+
+	public void setFixedConfig(FIXED_SHIMMER_CONFIG fixedConfig) {
+		mFixedShimmerConfig = fixedConfig;
 	}
 
 
