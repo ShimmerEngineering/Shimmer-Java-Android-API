@@ -1,7 +1,10 @@
 package com.shimmerresearch.bluetooth;
 
+import java.util.Arrays;
+
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
+import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exceptions.ShimmerException;
 
@@ -11,6 +14,9 @@ public class ShimmerRadioInitializer {
 	
 	private boolean mUseLegacyDelayToDelayForResponse = false;
 	
+	private ShimmerVerObject shimmerVerObject = null;
+	private ExpansionBoardDetails expansionBoardDetails = null;
+	
 	public ShimmerRadioInitializer(){
 	}
 
@@ -18,13 +24,13 @@ public class ShimmerRadioInitializer {
 		this.serialCommPort = serialCommPort;
 	}
 
-	public ShimmerVerObject getShimmerVerObject(){
+	public ShimmerVerObject readShimmerVerObject(){
 		try {
-			int hardwareVersion = getHardwareVersion();
-			byte[] bufferFWVersion = getFirmwareVersion(); 
-			ShimmerVerObject shimmerVersion = createShimmerVerObject(hardwareVersion, bufferFWVersion);
+			int hardwareVersion = readHardwareVersion();
+			byte[] bufferFWVersion = readFirmwareVersion(); 
+			shimmerVerObject = createShimmerVerObject(hardwareVersion, bufferFWVersion);
 			
-			return shimmerVersion;
+			return shimmerVerObject;
 		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -37,7 +43,7 @@ public class ShimmerRadioInitializer {
 	}
 	
 	
-	protected int getHardwareVersion() throws ShimmerException, InterruptedException{
+	protected int readHardwareVersion() throws ShimmerException, InterruptedException{
 		//every radio should have a method to get the version object, the command value should be the same across all byte radios
 		byte[] instruction = {InstructionsGet.GET_SHIMMER_VERSION_COMMAND_VALUE}; 
 		
@@ -50,7 +56,7 @@ public class ShimmerRadioInitializer {
 		return hardwareVersion;
 	}
 	
-	protected byte[] getFirmwareVersion() throws ShimmerException, InterruptedException{
+	protected byte[] readFirmwareVersion() throws ShimmerException, InterruptedException{
 		byte[] instruction = {InstructionsGet.GET_FW_VERSION_COMMAND_VALUE};
 		
 		serialCommPort.txBytes(instruction);
@@ -73,6 +79,33 @@ public class ShimmerRadioInitializer {
 		
 		return shimmerVersion;
 	}
+	
+	public ExpansionBoardDetails readExpansionBoardID() {
+		try {
+			if(shimmerVerObject!=null && shimmerVerObject.isShimmerHardware() && shimmerVerObject.getFirmwareVersionCode()>=5){
+				byte[] instruction = {InstructionsGet.GET_EXPID_COMMAND_VALUE, 3, 0}; 
+				
+				serialCommPort.txBytes(instruction);
+				if(mUseLegacyDelayToDelayForResponse)
+					Thread.sleep(200);
+				byte[] response = serialCommPort.rxBytes(3+1);
+	
+				if(response!=null){
+					byte[] expBoardArraySplit = Arrays.copyOfRange(response, 1, 4);
+					expansionBoardDetails = new ExpansionBoardDetails(expBoardArraySplit);
+					return expansionBoardDetails;
+				}
+			}
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	
 	public AbstractSerialPortHal getSerialCommPort() {
 		return this.serialCommPort;

@@ -110,6 +110,8 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
+import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
 	
@@ -162,8 +164,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	transient protected IOThread mIOThread;
 	transient protected ProcessingThread mPThread;
 	@Deprecated // mContinousSync doesn't do anything
-	private boolean mContinousSync=false;                                       // This is to select whether to continuously check the data packets 
-	protected boolean mSetupDevice=false;		
+	private boolean mContinousSync=false;                                       // This is to select whether to continuously check the data packets
+	
+	protected boolean mSetupDevice = false;		
 
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected double mLowBattLimit=3.4;
@@ -1141,6 +1144,17 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			
 			interpretInqResponse(bufferInquiry);
 			prepareAllMapsAfterConfigRead();
+			
+			// Write a fixed configuration at this point after all properties of
+			// the Shimmer have been read and the Sensor Maps have been
+			// initialised
+			if(mFixedShimmerConfig!=null && mFixedShimmerConfig!=FIXED_SHIMMER_CONFIG.NONE){
+				boolean triggerConfig = FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfig);
+				if(triggerConfig){
+					writeConfigBytes();
+				}
+			}
+			
 			inquiryDone();
 		} 
 
@@ -2277,6 +2291,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			operationPrepare();
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
+		
 		if (mSetupDevice){
 			if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
 				writeConfigBytes();
