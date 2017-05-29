@@ -3557,7 +3557,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	protected void setMapOfSensorCalibrationAll(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration){
+	public void setMapOfSensorCalibrationAll(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration){
 		Iterator<Integer> iterator = mapOfKinematicSensorCalibration.keySet().iterator();
 		while(iterator.hasNext()){
 			Integer sensorMapKey = iterator.next();

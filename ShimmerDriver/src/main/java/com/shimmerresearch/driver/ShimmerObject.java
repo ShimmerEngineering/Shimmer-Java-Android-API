@@ -8157,7 +8157,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	//TODO
 	@Override
-	protected void setMapOfSensorCalibrationAll(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfAllSensorCalibration) {
+	public void setMapOfSensorCalibrationAll(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfAllSensorCalibration) {
 		for(Integer sensorMapKey:mapOfAllSensorCalibration.keySet()){
 			TreeMap<Integer, CalibDetails> mapOfSensorCalibration = mapOfAllSensorCalibration.get(sensorMapKey);
 			setSensorCalibrationPerSensor(sensorMapKey, mapOfSensorCalibration);
