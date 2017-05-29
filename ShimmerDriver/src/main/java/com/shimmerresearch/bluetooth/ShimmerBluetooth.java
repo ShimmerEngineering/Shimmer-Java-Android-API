@@ -166,7 +166,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	@Deprecated // mContinousSync doesn't do anything
 	private boolean mContinousSync=false;                                       // This is to select whether to continuously check the data packets
 	
-	protected boolean mSetupDevice = false;		
+	protected boolean mSetupDeviceWhileConnecting = false;		
 
 	protected Stack<Byte> byteStack = new Stack<Byte>();
 	protected double mLowBattLimit=3.4;
@@ -1145,17 +1145,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			interpretInqResponse(bufferInquiry);
 			prepareAllMapsAfterConfigRead();
 			
-			// Write a fixed configuration at this point after all properties of
-			// the Shimmer have been read and the Sensor Maps have been
-			// initialised
-			if(mFixedShimmerConfig!=null && mFixedShimmerConfig!=FIXED_SHIMMER_CONFIG.NONE){
-				boolean triggerConfig = FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfig);
-				if(triggerConfig){
-					writeConfigBytes();
-				}
-			}
-			
 			inquiryDone();
+			
+			if(mAutoStartStreaming){
+				startStreaming();
+			}
 		} 
 
 		else if(responseCommand==SAMPLING_RATE_RESPONSE) {
@@ -2230,7 +2224,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readCalibrationParameters("Accelerometer");
 		readCalibrationParameters("Magnetometer");
 		readCalibrationParameters("Gyroscope");
-		if(mSetupDevice && getHardwareVersion()!=4){
+		if(mSetupDeviceWhileConnecting && getHardwareVersion()!=4){
 			writeAccelRange(getAccelRange());
 			writeGSRRange(mGSRRange);
 			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
@@ -2256,7 +2250,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readLEDCommand();
 		readConfigByte0();
 		readCalibrationParameters("All");
-		if(mSetupDevice){
+		if(mSetupDeviceWhileConnecting){
 			writeMagRange(getMagRange()); //set to default Shimmer mag gain
 			writeAccelRange(getAccelRange());
 			writeGSRRange(mGSRRange);
@@ -2292,25 +2286,35 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
 		
-		if (mSetupDevice){
-			if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
-				writeConfigBytes();
+		readExpansionBoardID();
+		
+		if (mSetupDeviceWhileConnecting){
+			if(mFixedShimmerConfig!=null && mFixedShimmerConfig!=FIXED_SHIMMER_CONFIG.NONE){
+				boolean triggerConfig = FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfig);
+				if(triggerConfig){
+					writeConfigBytes(false);
+				}
 			}
 			else {
-				if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
-					writeShimmerUserAssignedName(getShimmerUserAssignedName());
+				if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
+					writeConfigBytes(false);
 				}
-				if(mSetupEXG){
-					writeEXGConfiguration();
-					mSetupEXG = false;
+				else {
+					if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
+						writeShimmerUserAssignedName(getShimmerUserAssignedName());
+					}
+					if(mSetupEXG){
+						writeEXGConfiguration();
+						mSetupEXG = false;
+					}
+					writeGSRRange(mGSRRange);
+					writeAccelRange(getAccelRange());
+					writeGyroRange(getGyroRange());
+					writeMagRange(getMagRange());
+					writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
+					writeInternalExpPower(1);
+					//		setContinuousSync(mContinousSync);
 				}
-				writeGSRRange(mGSRRange);
-				writeAccelRange(getAccelRange());
-				writeGyroRange(getGyroRange());
-				writeMagRange(getMagRange());
-				writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
-				writeInternalExpPower(1);
-				//		setContinuousSync(mContinousSync);
 			}
 		}
 		
@@ -2339,7 +2343,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		
-		readExpansionBoardID();
 		readLEDCommand();
 
 		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
@@ -2356,9 +2359,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readCalibrationDump();
 		}
 		
-		if(mSetupDevice){
-			//writeAccelRange(mDigitalAccelRange);
-			writeEnabledSensors(mSetEnabledSensors); //this should always be the last command
+		if(mSetupDeviceWhileConnecting){
+			if(mFixedShimmerConfig!=null && mFixedShimmerConfig!=FIXED_SHIMMER_CONFIG.NONE){
+				writeEnabledSensors(mEnabledSensors); //this should always be the last command
+			} else {
+				//writeAccelRange(mDigitalAccelRange);
+				writeEnabledSensors(mSetEnabledSensors); //this should always be the last command
+			}
 		} 
 		else {
 			inquiry();
@@ -2376,6 +2383,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		startTimerReadStatus();	// if shimmer is using LogAndStream FW, read its status periodically
 		startTimerReadBattStatus(); // if shimmer is using LogAndStream FW, read its status periodically
 		
+	}
+	
+	@Override
+	public void setFixedShimmerConfig(FIXED_SHIMMER_CONFIG fixedShimmerConfig) {
+		super.setFixedShimmerConfig(fixedShimmerConfig);
+		
+		if(fixedShimmerConfig!=null && fixedShimmerConfig!=FIXED_SHIMMER_CONFIG.NONE){
+			setSetupDeviceWhileConnecting(true);
+		}
 	}
 	
 	//endregion --------- INITIALIZE SHIMMER FUNCTIONS ---------
@@ -2919,8 +2935,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 * Transmits a command to the Shimmer device to enable the sensors. To enable multiple sensors an or operator should be used (e.g. writeEnabledSensors(SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG)). Command should not be used consecutively. Valid values are SENSOR_ACCEL, SENSOR_GYRO, SENSOR_MAG, SENSOR_ECG, SENSOR_EMG, SENSOR_GSR, SENSOR_EXP_BOARD_A7, SENSOR_EXP_BOARD_A0, SENSOR_BRIDGE_AMP and SENSOR_HEART.
-    SENSOR_BATT
+	 * Transmits a command to the Shimmer device to enable the sensors. To
+	 * enable multiple sensors an or operator should be used (e.g.
+	 * writeEnabledSensors(SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG)). Command should
+	 * not be used consecutively. Valid values are SENSOR_ACCEL, SENSOR_GYRO,
+	 * SENSOR_MAG, SENSOR_ECG, SENSOR_EMG, SENSOR_GSR, SENSOR_EXP_BOARD_A7,
+	 * SENSOR_EXP_BOARD_A0, SENSOR_BRIDGE_AMP and SENSOR_HEART. SENSOR_BATT
+	 * 
 	 * @param enabledSensors e.g SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG
 	 */
 	public void writeEnabledSensors(long enabledSensors) {
@@ -3358,7 +3379,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param rate Defines the sampling rate to be set (e.g.51.2 sets the sampling rate to 51.2Hz). User should refer to the document Sampling Rate Table to see all possible values.
 	 */
 	public void writeShimmerAndSensorsSamplingRate(double rate) {
-		if(mIsInitialised || mSetupDevice) {
+		if(mIsInitialised || mSetupDeviceWhileConnecting) {
 			setShimmerAndSensorsSamplingRate(rate);
 			if(getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 
@@ -3956,21 +3977,28 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void writeConfigBytes(){
-		if(this.getFirmwareVersionCode()>=6){
-			writeConfigBytes(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, generateInfoMemBytesForWritingToShimmer(), mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
-		}
+		writeConfigBytes(true);
 	}
-	
-	public void writeConfigBytes(byte[] buf){
+
+	public void writeConfigBytes(boolean readBackAfter){
 		if(this.getFirmwareVersionCode()>=6){
-			writeConfigBytes(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, buf, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
+			writeConfigBytes(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, generateInfoMemBytesForWritingToShimmer(), mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS, readBackAfter);
 		}
 	}
 
-	public void writeConfigBytes(int startAddress, byte[] buf, int maxMemAddress){
+	public void writeConfigBytes(byte[] buf){
+		if(this.getFirmwareVersionCode()>=6){
+			writeConfigBytes(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, buf, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS, true);
+		}
+	}
+
+	public void writeConfigBytes(int startAddress, byte[] buf, int maxMemAddress, boolean readBackAfter){
 		if(this.getFirmwareVersionCode()>=6){
 			writeMem(SET_INFOMEM_COMMAND, startAddress, buf, maxMemAddress);
-			readConfigBytes();
+			
+			if(readBackAfter){
+				readConfigBytes();
+			}
 		}
 	}
 
@@ -5061,14 +5089,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @return the mSetupDevice
 	 */
-	public boolean isSetupDeviceDuringConnection() {
-		return mSetupDevice;
+	public boolean isSetupDeviceWhileConnecting() {
+		return mSetupDeviceWhileConnecting;
 	}
 	/**
 	 * @param mSetupDevice the mSetupDevice to set
 	 */
-	public void setSetupDeviceDuringConnection(boolean mSetupDevice) {
-		this.mSetupDevice = mSetupDevice;
+	public void setSetupDeviceWhileConnecting(boolean state) {
+		this.mSetupDeviceWhileConnecting = state;
 	}
 
 	/**

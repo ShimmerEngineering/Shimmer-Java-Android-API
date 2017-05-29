@@ -198,8 +198,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean mVerboseMode = true;
 //	public static TreeMap<Integer,String> mMapOfErrorCodes = new TreeMap<Integer,String>();
 
-	public FIXED_SHIMMER_CONFIG mFixedShimmerConfig = FIXED_SHIMMER_CONFIG.NONE;
-
+	protected FIXED_SHIMMER_CONFIG mFixedShimmerConfig = FIXED_SHIMMER_CONFIG.NONE;
+	protected boolean mAutoStartStreaming = false;		
 
 	private static final List<AlgorithmLoaderInterface> OPEN_SOURCE_ALGORITHMS = Arrays.asList(
 			new OrientationModule6DOFLoader(), 
@@ -3992,8 +3992,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mAlternativeName;
 	}
 
-	public void setFixedConfig(FIXED_SHIMMER_CONFIG fixedConfig) {
-		mFixedShimmerConfig = fixedConfig;
+	public void setFixedShimmerConfig(FIXED_SHIMMER_CONFIG fixedShimmerConfig) {
+		mFixedShimmerConfig = fixedShimmerConfig;
+	}
+	
+	public void setAutoStartStreaming(boolean state){
+		mAutoStartStreaming = state;
 	}
 
 

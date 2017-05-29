@@ -171,7 +171,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		setEXG1RegisterArray(exg1);
 		setEXG2RegisterArray(exg2);
 		
-		setSetupDeviceDuringConnection(true);
+		setSetupDeviceWhileConnecting(true);
     	setSamplingRateShimmer(samplingRate);
 		setupOrientation(orientation, samplingRate);
 	}
@@ -194,7 +194,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 
-		setSetupDeviceDuringConnection(true);
+		setSetupDeviceWhileConnecting(true);
     	setSamplingRateShimmer(samplingRate);
 		setupOrientation(orientation, samplingRate);
 	}
@@ -212,7 +212,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		mGSRRange = gsrRange;
 		mSetEnabledSensors=setEnabledSensors;
 		
-		setSetupDeviceDuringConnection(true);
+		setSetupDeviceWhileConnecting(true);
     	setSamplingRateShimmer(samplingRate);
 	}
     
