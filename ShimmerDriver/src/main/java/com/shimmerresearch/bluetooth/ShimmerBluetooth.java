@@ -848,7 +848,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						// Special case for FW_VERSION_RESPONSE because it
 						// needs to initialize the Shimmer after releasing
 						// the setInstructionStackLock
-						if(byteBuffer[0]==FW_VERSION_RESPONSE){
+//						if(byteBuffer[0]==FW_VERSION_RESPONSE){
+//							processFirmwareVerResponse();
+//						}
+						
+						// During the connecting process, after the
+						// FW_VERSION_RESPONSE (for Shimmer2) or
+						// DAUGHTER_CARD_ID_RESPONSE (for Shimmer3) has been
+						// received, we then need to trigger initialisation of the Shimmer device
+						if((isShimmerGen2() && (byteBuffer[0]==FW_VERSION_RESPONSE))
+								|| (getFirmwareVersionCode()>=5 && (byteBuffer[0]==DAUGHTER_CARD_ID_RESPONSE))){
 							processFirmwareVerResponse();
 						}
 					}
@@ -966,6 +975,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	private void processFirmwareVerResponse() {
+		//TODO need to add support for this?
+//		initializeBoilerPlate();
+		
 		if(getHardwareVersion()==HW_ID.SHIMMER_2R){
 			initializeShimmer2R();
 		} 
@@ -1173,6 +1185,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 			printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(getSamplingRateShimmer()));
 		} 
+		else if(responseCommand==GET_SHIMMER_VERSION_RESPONSE) {
+			delayForBtResponse(100); // Wait to ensure the packet has been fully received
+			byte[] bufferShimmerVersion = new byte[1]; 
+			bufferShimmerVersion = readBytes(1, responseCommand);
+			if(bufferShimmerVersion!=null){
+				setHardwareVersion((int)bufferShimmerVersion[0]);
+			
+				printLogDataForDebugging("Shimmer Version (HW) Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
+				
+				//Trigger an automatic read of the FW version as part of the connecting sequence
+				readFWVersion();
+			}
+		} 							
 		else if(responseCommand==FW_VERSION_RESPONSE){
 			delayForBtResponse(200); // Wait to ensure the packet has been fully received
 			byte[] bufferInquiry = readBytes(6, responseCommand);
@@ -1186,6 +1211,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 				printLogDataForDebugging("FW Version Response Received. FW Code: " + getFirmwareVersionCode());
 				printLogDataForDebugging("FW Version Response Received: " + getFirmwareVersionParsed());
+				
+				//Trigger an automatic read of the Expansion board ID as part of the connecting sequence (if Shimmer3 and above)
+				if(getFirmwareVersionCode()>=5){ 
+					readExpansionBoardID();
+				}
 			}
 		} 
 
@@ -1258,25 +1288,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				inquiryDone();
 			}
 		}
-		else if(responseCommand==GET_SHIMMER_VERSION_RESPONSE) {
-			delayForBtResponse(100); // Wait to ensure the packet has been fully received
-			byte[] bufferShimmerVersion = new byte[1]; 
-			bufferShimmerVersion = readBytes(1, responseCommand);
-			if(bufferShimmerVersion!=null){
-				setHardwareVersion((int)bufferShimmerVersion[0]);
-			
-	//			if(mShimmerVersion==HW_ID.SHIMMER_2R){
-	//				initializeShimmer2R();
-	//			} 
-	//			else if(mShimmerVersion==HW_ID.SHIMMER_3) {
-	//				initializeShimmer3();
-	//			}
-				
-				printLogDataForDebugging("Shimmer Version (HW) Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferShimmerVersion));
-				
-				readFWVersion();
-			}
-		} 							
 		else if(responseCommand==ACCEL_SENSITIVITY_RESPONSE) {
 			byte[] bufferAccelSensitivity = readBytes(1, responseCommand);
 			if(bufferAccelSensitivity!=null){
@@ -2286,7 +2297,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
 		
-		readExpansionBoardID();
+		//readExpansionBoardID();
 		
 		if (mSetupDeviceWhileConnecting){
 			if(mFixedShimmerConfig!=null && mFixedShimmerConfig!=FIXED_SHIMMER_CONFIG.NONE){
