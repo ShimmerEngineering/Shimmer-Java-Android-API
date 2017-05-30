@@ -202,7 +202,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected boolean mAutoStartStreaming = false;
 	
 	public static final int RECONNECT_ATTEMPTS_MAX = 3;
-	public int mReconnectAttempts = 0;		
+	public int mNumConnectionAttempts = 0;		
 
 	private static final List<AlgorithmLoaderInterface> OPEN_SOURCE_ALGORITHMS = Arrays.asList(
 			new OrientationModule6DOFLoader(), 
