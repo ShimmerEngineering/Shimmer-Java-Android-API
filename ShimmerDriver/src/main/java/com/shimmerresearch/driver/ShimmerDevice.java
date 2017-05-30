@@ -199,7 +199,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	public static TreeMap<Integer,String> mMapOfErrorCodes = new TreeMap<Integer,String>();
 
 	protected FIXED_SHIMMER_CONFIG mFixedShimmerConfig = FIXED_SHIMMER_CONFIG.NONE;
-	protected boolean mAutoStartStreaming = false;		
+	protected boolean mAutoStartStreaming = false;
+	
+	public static final int RECONNECT_ATTEMPTS_MAX = 3;
+	public int mReconnectAttempts = 0;		
 
 	private static final List<AlgorithmLoaderInterface> OPEN_SOURCE_ALGORITHMS = Arrays.asList(
 			new OrientationModule6DOFLoader(), 
@@ -1067,6 +1070,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public long getConfigTime() {
 		return mConfigTime;
+	}
+
+	/** Returns the config time by converting the long to a String
+	 * @return
+	 */
+	public String getConfigTimeLongString() {
+		return Long.toString(getConfigTime());
 	}
 
 	 /**
