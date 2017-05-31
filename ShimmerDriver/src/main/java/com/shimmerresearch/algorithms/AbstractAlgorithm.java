@@ -115,7 +115,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	protected UtilShimmer mUtilShimmer = new UtilShimmer(this.getClass().getSimpleName(), true);
 
 	/** this is to specify what fw version/hardware should be allowed to use the algorithm */
-	public static final List<ShimmerVerObject> mListOfCompatibleSVO = new ArrayList<ShimmerVerObject>(); 
+	public List<ShimmerVerObject> mListOfCompatibleSVO = new ArrayList<ShimmerVerObject>(); 
 
 	/** @deprecated This method is to be replaced by the channeldetails object, see mListofChannelDetails */
 	@Deprecated
