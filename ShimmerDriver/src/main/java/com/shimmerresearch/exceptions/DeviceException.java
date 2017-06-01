@@ -88,7 +88,7 @@ public class DeviceException extends ExecutionException {
 		return getShimmerDeviceExceptionErrString(mMapOfErrorCodes);
 	}
 
-	public String getShimmerDeviceExceptionErrString(Map<Integer, String> mapOfErrorCodes) {
+	private String getShimmerDeviceExceptionErrString(Map<Integer, String> mapOfErrorCodes) {
 		String errorString = "";
 
 		String id = mUniqueID;
