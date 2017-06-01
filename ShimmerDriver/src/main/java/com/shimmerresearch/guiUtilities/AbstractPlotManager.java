@@ -24,62 +24,61 @@ public abstract class AbstractPlotManager {
 		className ="";
 		int[] rgb=new int[3];
 		//changed to numeric value so that it`ll work with android
-		// Shimmer Blue
-		rgb[0] = 0;
-		rgb[1] = 129;
-		rgb[2] = 198;
+		
+		rgb=new int[3];
+		// Shimmer Orange
+		rgb[0] = 241;
+		rgb[1] = 93;
+		rgb[2] = 34;
 		mListofTraceColorsDefault.add(rgb);
-		/*rgb=new int[3];
-		rgb[0] = Color.YELLOW.getRed();
-		rgb[1] = Color.YELLOW.getGreen();
-		rgb[2] = Color.YELLOW.getBlue();
-		mListofDefaultColors.add(rgb);*/
+
 		rgb=new int[3];
 		//BROWN
 		rgb[0] = 153;
 		rgb[1] = 76;
 		rgb[2] = 0;
 		mListofTraceColorsDefault.add(rgb);
+		
 		rgb=new int[3];
 		//CYAN/AQUA
 		rgb[0] = 0;
 		rgb[1] = 153;
 		rgb[2] = 153;
 		mListofTraceColorsDefault.add(rgb);
+		
 		rgb=new int[3];
 		//PURPLE
 		rgb[0] = 102;
 		rgb[1] = 0;
 		rgb[2] = 204;
 		mListofTraceColorsDefault.add(rgb);
+		
 		rgb=new int[3];
 		//MAROON
 		rgb[0] = 102;
 		rgb[1] = 0;
 		rgb[2] = 0;
 		mListofTraceColorsDefault.add(rgb);
-		/*rgb=new int[3];
-		rgb[0] = Color.PINK.getRed();
-		rgb[1] = Color.PINK.getGreen();
-		rgb[2] = Color.PINK.getBlue();
-		mListofDefaultColors.add(rgb);*/
+		
 		rgb=new int[3];
 		//GREEN
 		rgb[0] = 0;
 		rgb[1] = 153;
 		rgb[2] = 76;
 		mListofTraceColorsDefault.add(rgb);
+		
 		rgb=new int[3];
 		// Shimmer Grey
 		rgb[0] = 119;
 		rgb[1] = 120;
 		rgb[2] = 124;
 		mListofTraceColorsDefault.add(rgb);
+		
 		rgb=new int[3];
-		// Shimmer Orange
-		rgb[0] = 241;
-		rgb[1] = 93;
-		rgb[2] = 34;
+		// Shimmer Blue
+		rgb[0] = 0;
+		rgb[1] = 129;
+		rgb[2] = 198;
 		mListofTraceColorsDefault.add(rgb);
 	}
 	
