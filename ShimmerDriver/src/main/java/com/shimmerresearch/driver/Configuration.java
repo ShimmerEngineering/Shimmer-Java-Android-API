@@ -1816,6 +1816,9 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD,  
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 							Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0,  
+					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+							Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
 
 	        mConfigOptionsMapRef = Collections.unmodifiableMap(aMap);
 	    }
