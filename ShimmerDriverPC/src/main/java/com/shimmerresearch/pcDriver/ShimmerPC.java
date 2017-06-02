@@ -353,11 +353,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	protected byte[] readBytes(int numberofBytes) {
+	protected byte[] readBytes(int numberOfBytes) {
+		if(numberOfBytes<=0){
+			consolePrintLn("Tried to readBytes but numberOfBytes is a negative number");
+			return null;
+		}
+		
 		try {
 			if(mSerialPort != null){
 				if (mSerialPort.isOpened()){
-					return(mSerialPort.readBytes(numberofBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_2000));
+					return(mSerialPort.readBytes(numberOfBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_2000));
 				} else {
 					consolePrintLn("Tried to readBytes but port is closed");
 				}
