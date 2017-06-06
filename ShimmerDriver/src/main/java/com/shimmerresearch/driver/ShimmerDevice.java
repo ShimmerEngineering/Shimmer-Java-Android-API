@@ -800,6 +800,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mExpansionBoardDetails  = eBD;
 	}
 	
+	
+	
 	/**
 	 * @return the mChargingState
 	 */
@@ -1695,6 +1697,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.isSupportedSdCardAccess();
 	}
 
+	public boolean isSupportedBluetooth() {
+		return mShimmerVerObject.isSupportedBluetooth();
+	}
+
 	public boolean isSupportedCalibDump() {
 		return mShimmerVerObject.isSupportedCalibDump();
 	}
@@ -1717,6 +1723,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public boolean isShimmerVideoDevice(){
 		return mShimmerVerObject.isShimmerVideoDevice();
+	}
+	
+	public boolean isSupportedSrProgViaDock() {
+		return mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 8, 1);
 	}
 
 	public void consolePrintExeptionLn(String message, StackTraceElement[] stackTrace) {

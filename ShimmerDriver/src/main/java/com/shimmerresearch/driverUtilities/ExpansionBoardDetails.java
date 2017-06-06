@@ -116,4 +116,29 @@ public class ExpansionBoardDetails implements Serializable {
 		
 		return mapOfByteDescriptions;
 	}
+	
+	public static byte[] generateExpBrdIdArrayEmpty() {
+		byte[] byteArray = new byte[16];
+		
+		//Clear byte array
+		for(int i=0;i<byteArray.length;i++){
+			byteArray[i] = (byte) (0xFF);
+		}
+		return byteArray;
+	}
+	
+	public static byte[] generateExpBrdIdArray(int srNumber, int verMajor, int verMinor) {
+		byte[] byteArray = generateExpBrdIdArrayEmpty();
+
+		byteArray[0] = (byte) srNumber;
+		byteArray[1] = (byte) verMajor;
+		byteArray[2] = (byte) verMinor;
+		
+		//reserve two bytes for future use
+		byteArray[3] = (byte) 0xFF;
+		byteArray[4] = (byte) 0xFF; 
+		
+		return byteArray;
+	}
+
 }

@@ -346,6 +346,21 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 
+	public boolean isSupportedBluetooth() {
+		return isSupportedBluetooth(getFirmwareIdentifier());
+	}
+	
+	public static boolean isSupportedBluetooth(int fwId) {
+		if (fwId==FW_ID.BTSTREAM 
+				|| fwId==FW_ID.LOGANDSTREAM
+				|| fwId==FW_ID.SHIMMER4_SDK_STOCK
+				|| fwId==FW_ID.SWEATCH
+				){
+			return true;
+		}
+		return false;
+	}
+
 	public boolean isSupportedEightByteDerivedSensors() {
 		if((compareVersions(this, FW_ID.SDLOG,0,13,1))
 				|| (compareVersions(this, FW_ID.LOGANDSTREAM,0,7,1))
