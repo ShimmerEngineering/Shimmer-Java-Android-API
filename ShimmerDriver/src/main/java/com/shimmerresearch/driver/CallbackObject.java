@@ -49,6 +49,7 @@ public class CallbackObject {
 	public String mComPort;
 	public double mPacketReceptionRate;
 	public BluetoothProgressReportPerDevice mProgressReportPerDevice;
+	public Object mMyObject;
 
 	
 	/**used for hasStopStreaming, isNowStreaming and isReadyForStreaming notifications
@@ -100,6 +101,11 @@ public class CallbackObject {
 		mBluetoothAddress = myBlueAdd;
 		mComPort = comPort;
 		mProgressReportPerDevice = progressReportPerDevice;
+	}
+	
+	public CallbackObject(String myBlueAdd, Object myObject) {
+		mBluetoothAddress = myBlueAdd;
+		mMyObject = myObject;
 	}
 
 }
