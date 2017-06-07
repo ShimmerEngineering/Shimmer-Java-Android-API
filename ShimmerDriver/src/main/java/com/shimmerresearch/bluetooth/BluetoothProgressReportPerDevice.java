@@ -57,11 +57,15 @@ public class BluetoothProgressReportPerDevice implements Serializable {
 //	public List<ErrorDetails> mListOfErrors = new ArrayList<ErrorDetails>(); 
 //	public String mLog = "";
 
-	public BluetoothProgressReportPerDevice(ShimmerDevice shimmerDevice, BT_STATE currentOperationBtState, int endValue) {
-		updateShimmerDeviceMini(shimmerDevice);
-		mComPort = shimmerDevice.getComPort();
+	public BluetoothProgressReportPerDevice(String comPort, BT_STATE currentOperationBtState, int endValue) {
+		mComPort = comPort;
 		mCurrentOperationBtState = currentOperationBtState;
 		mProgressEndValue = endValue;
+	}
+
+	public BluetoothProgressReportPerDevice(ShimmerDevice shimmerDevice, BT_STATE currentOperationBtState, int endValue) {
+		this(shimmerDevice.getComPort(), currentOperationBtState, endValue);
+		updateShimmerDeviceMini(shimmerDevice);
 	}
 
 	/**
@@ -71,9 +75,13 @@ public class BluetoothProgressReportPerDevice implements Serializable {
 	 * @param pRPC the ProgressReportPerCmd
 	 */
 	public void updateProgress(BluetoothProgressReportPerCmd pRPC) {
-		mProgressCounter = mProgressEndValue - pRPC.mNumberofRemainingCMDsInBuffer + 1;
+		updateProgress(pRPC.mNumberofRemainingCMDsInBuffer, pRPC.mCommandCompleted);
+	}
+
+	public void updateProgress(int numberofRemainingCMDsInBuffer, int commandsCompleted) {
+		mProgressCounter = mProgressEndValue - numberofRemainingCMDsInBuffer + 1;
 		
-		mCommandCompleted = pRPC.mCommandCompleted;
+		mCommandCompleted = commandsCompleted;
 
 		if(mProgressCounter<0) mProgressCounter=0;
 		if(mProgressCounter>mProgressEndValue) mProgressCounter=mProgressEndValue;
@@ -82,7 +90,7 @@ public class BluetoothProgressReportPerDevice implements Serializable {
 			mProgressPercentageComplete = (int)(((double)mProgressCounter / (double)mProgressEndValue) * 100);
 		}
 	}
-	
+
 //	public void setShimmerBluetooth(ShimmerBluetooth shimmerBluetooth) {
 //		mShimmerBluetoothDetailsMini.mUniqueID = shimmerBluetooth.getComPort();
 //		mShimmerBluetoothDetailsMini.mShimmerMacID = shimmerBluetooth.getBluetoothAddress();

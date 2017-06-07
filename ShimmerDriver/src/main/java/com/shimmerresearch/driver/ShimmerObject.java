@@ -6250,7 +6250,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mSyncWhenLogging = (configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftTimeSyncWhenLogging) & infoMemLayoutCast.maskTimeSyncWhenLogging;
 					mMasterShimmer = (configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftMasterShimmer) & infoMemLayoutCast.maskTimeMasterShimmer;
 					mSingleTouch = (configBytes[infoMemLayoutCast.idxSDExperimentConfig1] >> infoMemLayoutCast.bitShiftSingleTouch) & infoMemLayoutCast.maskTimeSingleTouch;
-					mTCXO = (configBytes[infoMemLayoutCast.idxSDExperimentConfig1] >> infoMemLayoutCast.bitShiftTCX0) & infoMemLayoutCast.maskTimeTCX0;
 					
 					mSyncBroadcastInterval = (int)(configBytes[infoMemLayoutCast.idxSDBTInterval] & 0xFF);
 					
@@ -6258,6 +6257,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					setTrialDurationEstimated((int)(configBytes[infoMemLayoutCast.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(configBytes[infoMemLayoutCast.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
 					setTrialDurationMaximum((int)(configBytes[infoMemLayoutCast.idxMaxExpLengthLsb] & 0xFF) + (((int)(configBytes[infoMemLayoutCast.idxMaxExpLengthMsb] & 0xFF)) << 8));
 				}
+				
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM) {
+					mTCXO = (configBytes[infoMemLayoutCast.idxSDExperimentConfig1] >> infoMemLayoutCast.bitShiftTCX0) & infoMemLayoutCast.maskTimeTCX0;
+				}
+
 					
 				byte[] macIdBytes = new byte[infoMemLayoutCast.lengthMacIdBytes];
 				System.arraycopy(configBytes, infoMemLayoutCast.idxMacAddress, macIdBytes, 0 , infoMemLayoutCast.lengthMacIdBytes);
@@ -6510,7 +6514,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & infoMemLayout.maskTimeMasterShimmer) << infoMemLayout.bitShiftMasterShimmer);
 					
 					mConfigBytes[infoMemLayout.idxSDExperimentConfig1] = (byte) ((mSingleTouch & infoMemLayout.maskTimeSingleTouch) << infoMemLayout.bitShiftSingleTouch);
-					mConfigBytes[infoMemLayout.idxSDExperimentConfig1] |= (byte) ((mTCXO & infoMemLayout.maskTimeTCX0) << infoMemLayout.bitShiftTCX0);
 				
 					mConfigBytes[infoMemLayout.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
 				
@@ -6520,7 +6523,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mConfigBytes[infoMemLayout.idxMaxExpLengthLsb] = (byte) ((getTrialDurationMaximum() >> 0) & 0xFF);
 					mConfigBytes[infoMemLayout.idxMaxExpLengthMsb] = (byte) ((getTrialDurationMaximum() >> 8) & 0xFF);
 				}
-				
+
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM) {
+					mConfigBytes[infoMemLayout.idxSDExperimentConfig1] |= (byte) ((mTCXO & infoMemLayout.maskTimeTCX0) << infoMemLayout.bitShiftTCX0);
+				}
+
 				if(((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SDLOG))) {
 					if(generateForWritingToShimmer) {
 						// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
