@@ -69,7 +69,21 @@ public class BluetoothProgressReportAll implements Serializable {
 		}
 		updateProgressTotal();
 	}
-	
+
+	/**Used for BT pairing/unpairing feedback
+	 * @param listOfShimmerHandles
+	 * @param currentOperationBtState
+	 */
+	public BluetoothProgressReportAll(List<String> listOfShimmerHandles, BT_STATE currentOperationBtState) {
+		this.currentOperationBtState = currentOperationBtState;
+
+		mMapOfOperationProgressInfo.clear();
+		for(String shimmerHandle:listOfShimmerHandles){
+			mMapOfOperationProgressInfo.put(shimmerHandle, new BluetoothProgressReportPerDevice(shimmerHandle, currentOperationBtState, 1));
+		}
+		updateProgressTotal();
+	}
+
 	public void updateProgressTotal() {
 		mProgressEndValue = mMapOfOperationProgressInfo.keySet().size();
 	}
