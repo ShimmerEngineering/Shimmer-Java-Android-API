@@ -6509,11 +6509,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 				
+				mConfigBytes[infoMemLayout.idxSDExperimentConfig1] = 0;
+				
 				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
 					mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & infoMemLayout.maskTimeSyncWhenLogging) << infoMemLayout.bitShiftTimeSyncWhenLogging);
 					mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & infoMemLayout.maskTimeMasterShimmer) << infoMemLayout.bitShiftMasterShimmer);
 					
-					mConfigBytes[infoMemLayout.idxSDExperimentConfig1] = (byte) ((mSingleTouch & infoMemLayout.maskTimeSingleTouch) << infoMemLayout.bitShiftSingleTouch);
+					mConfigBytes[infoMemLayout.idxSDExperimentConfig1] |= (byte) ((mSingleTouch & infoMemLayout.maskTimeSingleTouch) << infoMemLayout.bitShiftSingleTouch);
 				
 					mConfigBytes[infoMemLayout.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
 				
