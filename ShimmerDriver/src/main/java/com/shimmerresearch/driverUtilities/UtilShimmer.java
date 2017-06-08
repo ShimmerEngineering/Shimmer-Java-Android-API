@@ -525,6 +525,17 @@ public class UtilShimmer implements Serializable {
 		}
 	}
 	
+	/**
+	 * @return String: current date and time from the system i.e. PC in format yyyy-MM-dd_HH.mm.ss
+	 */
+	public static String getCurrentDateAndTimeFormatted(){
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
+		Calendar cal = Calendar.getInstance();
+		String formattedDateAndTime = dateFormat.format(cal.getTime());
+		
+		return formattedDateAndTime;
+	}
+	
 	public static File[] getArrayOfFilesWithFileType(File directory, final String fileType){
 		File[] listOfFiles = directory.listFiles(new FilenameFilter() {
 	        @Override
