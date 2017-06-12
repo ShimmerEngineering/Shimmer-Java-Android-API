@@ -508,9 +508,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private boolean isOverrideShowErrorLedsSd = false;
 	private int mShowErrorLedsSd = 0;
 
-//	protected final static int FW_TYPE_BT=0;
-//	protected final static int FW_TYPE_SD=1;
-	
 	protected int mTrialId = 0;
 	protected int mTrialNumberOfShimmers = 0;
 	protected int mTrialDurationEstimated = 0;
@@ -542,10 +539,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected boolean mEnableCalibration = true;	
 	protected boolean mConfigFileCreationFlag = true;
-//	@Deprecated
-//	protected boolean mCalibFileCreationFlag = false;
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
 	protected boolean mIsCrcEnabled = false;
+	protected boolean mIsBtFactoryReset = false;
 
 	protected byte[] mInquiryResponseBytes;	
 	
@@ -5896,7 +5892,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mEnableOntheFlyGyroOVCal;
 	}
 
-
+	public void setBtFactoryReset(boolean isBtFactoryReset) {
+		mIsBtFactoryReset = isBtFactoryReset;
+	}
 	
 	/* Need to override here because ShimmerDevice uses a different sensormap
 	 * (non-Javadoc)
@@ -6274,6 +6272,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				else {
 					mConfigFileCreationFlag = false;
 				}
+
+				if(infoMemLayoutCast.idxBtFactoryReset>0){
+					mIsBtFactoryReset = ((configBytes[infoMemLayoutCast.idxBtFactoryReset]&0xFF)==0xAA)? true:false;
+				}
 				
 				//Removed below because it was never fully used and has be removed from LogAndStream v0.6.5 onwards
 //				if(((infoMemBytes[infoMemLayoutCast.idxSDConfigDelayFlag]>>infoMemLayoutCast.bitShiftSDCalibFileWriteFlag)&infoMemLayoutCast.maskSDCalibFileWriteFlag) == infoMemLayoutCast.maskSDCalibFileWriteFlag) {
@@ -6543,6 +6545,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						mConfigBytes[infoMemLayout.idxSDConfigDelayFlag] |= configFileWriteBit;
 	
 						mConfigBytes[infoMemLayout.idxSDConfigDelayFlag] |= infoMemLayout.bitShiftSDCfgFileWriteFlag;
+						
+						if(infoMemLayout.idxBtFactoryReset>0){
+							mConfigBytes[infoMemLayout.idxBtFactoryReset] = (byte) (mIsBtFactoryReset? 0xAA:0x00);
+						}
 	
 						//Removed below because it was never fully used and has be removed from LogAndStream v0.6.5 onwards
 //						 // Tells the Shimmer to create a new calibration files on undock/power cycle
