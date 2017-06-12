@@ -163,6 +163,7 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	public int idxMaxExpLengthLsb =                 128+95;
 	public int idxMacAddress =                     	128+96; // 6bytes
 	public int idxSDConfigDelayFlag =            	128+102;
+	public int idxBtFactoryReset =            		0;
 
 	public int idxNode0 =                           128+128+0;
 
@@ -495,7 +496,7 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 		
 		mInfoMemSize = calculateInfoMemByteLength();
 
-		//Include changes to mapping below in order of oldest to newest in seperate "if statements"
+		//Include changes to mapping below in order of oldest to newest in separate "if statements"
 		
 		if((compareVersions(FW_ID.SDLOG,0,8,42))
 				||(compareVersions(FW_ID.LOGANDSTREAM,0,3,4))
@@ -550,6 +551,10 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 
 		if(compareVersions(FW_ID.LOGANDSTREAM,0,7,12)) {
 			maskShowErrorLedsSd = 0x01;
+		}
+		
+		if(compareVersions(FW_ID.LOGANDSTREAM,0,8,1)) {
+			idxBtFactoryReset =            		128+103;
 		}
 
 //		if(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,10,1)){
@@ -666,7 +671,7 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 		mapOfByteDescriptions.put(idxMaxExpLengthLsb, "idxMaxExpLengthLsb");
 		mapOfByteDescriptions.put(idxMacAddress, "idxMacAddress");
 		mapOfByteDescriptions.put(idxSDConfigDelayFlag, "idxSDConfigDelayFlag");
-		mapOfByteDescriptions.put(idxMacAddress, "MacAddress");
+		mapOfByteDescriptions.put(idxBtFactoryReset, "idxBtFactoryReset");
 
 		mapOfByteDescriptions.put(idxNode0, "Node0");
 		
