@@ -549,10 +549,4 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		this.mShimmerCalibratedTimeStamp = mShimmerCalibratedTimeStamp;
 	}
 
-	public String[] getSensorNamesFromMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
 }
