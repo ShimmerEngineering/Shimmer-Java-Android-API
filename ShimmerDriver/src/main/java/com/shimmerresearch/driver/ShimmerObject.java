@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.vecmath.Quat4d;
@@ -2599,6 +2600,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			objectCluster.mUnitUncal = uncalibratedDataUnits;
 			objectCluster.mSensorNames = sensorNames;
 
+//			printSensorNames(objectCluster.mSensorNames);
+			printSensorNames(objectCluster.getChannelNamesByInsertionOrder());
+			
 //			 processAlgorithmData(objectCluster);	
 
 		} 
@@ -2924,6 +2928,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return objectCluster;
 	}
 	
+
+	private void printSensorNames(List<String> list) {
+		System.out.println("ObjectClusterSensorNames");
+		for(String channelName:list){
+			System.out.println("\t"+channelName);
+		}
+		System.out.println("");
+	}
+
+
+	private void printSensorNames(String[] channelNames) {
+		System.out.println("ObjectClusterChannelNames");
+		for(String channelName:channelNames){
+			System.out.println("\t"+channelName);
+		}
+		System.out.println("");
+	}
+
 
 	/* 2016-10-11 MN removed 
 	@Deprecated
