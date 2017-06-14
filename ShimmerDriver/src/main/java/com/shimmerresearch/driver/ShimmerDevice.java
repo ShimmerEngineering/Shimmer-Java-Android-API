@@ -2190,7 +2190,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //			//Debugging
 //			printSensorParserAndAlgoMaps();
 			
-			if (!mShimmerVerObject.isShimmerGen2()) {
+			if (!isShimmerGen2()) {
 //			if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK) {
 				long enabledSensors = 0;
 				sensorMapCheckandCorrectHwDependencies();
