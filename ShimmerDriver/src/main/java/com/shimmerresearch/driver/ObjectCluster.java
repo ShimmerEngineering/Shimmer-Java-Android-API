@@ -49,7 +49,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -66,35 +65,44 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
 final public class ObjectCluster implements Cloneable,Serializable{
 	
-	/** * */
 	private static final long serialVersionUID = -7601464501144773539L;
 	
 	private Multimap<String, FormatCluster> mPropertyCluster = HashMultimap.create();
 	//TODO implement below to remove the need for the Guava library?
 //	private HashMap<String, HashMap<CHANNEL_TYPE, FormatCluster>> mPropertyClusterProposed = new HashMap<String, HashMap<CHANNEL_TYPE, FormatCluster>>();
-	
+
+	/**
+	 * Some times it is necessary to get a list of Channels from the
+	 * mPropertyCluster in order of insertion which is not possible with the
+	 * Multimap approach. This separate list was created to keep a record
+	 * of the order of insertion.
+	 */
+	private List<String> listOfChannelNames = new ArrayList<String>(); 
+
 	private String mMyName;
 	private String mBluetoothAddress;
+	
+	// ------- Old Array approach - Start -----------
 	public byte[] mRawData;
 	public double[] mUncalData;
 	public double[] mCalData;
+	/** The SensorNames array is an older approach and has been largely replaced
+	 * by the mPropertyCluster. Suggest using getChannelNamesByInsertionOrder()
+	 * or getChannelNamesFromKeySet() instead. */
+	@Deprecated
 	public String[] mSensorNames;
 	public String[] mUnitCal;
 	public String[] mUnitUncal;
+	// ------- Old Array approach - End -----------
+	
 	/** mObjectClusterBuilder needs to be uninitialized to avoid crash when connecting on Android */
 	private Builder mObjectClusterBuilder; 
 	
 	private int indexKeeper = 0;
 	
-	//TODO remove this variable? unused in PC applications
-	public BT_STATE mState;
-	
 	public byte[] mSystemTimeStamp = new byte[8];
-	
 	private double mShimmerCalibratedTimeStamp;
-
 	public boolean mIsValidObjectCluster = true;
-
 	
 	public enum OBJECTCLUSTER_TYPE{
 		ARRAYS,
@@ -105,6 +113,10 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			OBJECTCLUSTER_TYPE.ARRAYS,
 			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER,
 			OBJECTCLUSTER_TYPE.PROTOBUF);
+
+	//TODO remove this variable? unused in PC applications
+	public BT_STATE mState;
+
 	
 	public ObjectCluster(){
 	}
@@ -228,14 +240,14 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public List<String[]> generateArrayOfChannelsSorted(){
 		List<String[]> listofSignals = new ArrayList<String[]>();
 		int size=0;
-		for (String fckey : getKeySet() ) {
+		for (String fckey : getChannelNamesFromKeySet() ) {
 			size++;
 		}
 		
 		//arrange the properties
 		String[] properties = new String[size];
 		int y=0;
-		for (String fckey : getKeySet() ) {
+		for (String fckey : getChannelNamesFromKeySet() ) {
 			properties[y]=fckey;
 			y++;
 		}
@@ -442,44 +454,58 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 	
 	public void addCalDataToMap(ChannelDetails channelDetails, double data){
-		mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.CAL.toString(),channelDetails.mDefaultCalUnits,data));
+		addDataToMap(channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalUnits, data);
 	}
 
 	public void addUncalDataToMap(ChannelDetails channelDetails, double data){
-		mPropertyCluster.put(channelDetails.mObjectClusterName, new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),channelDetails.mDefaultUncalUnit,data));
+		addDataToMap(channelDetails.mObjectClusterName, CHANNEL_TYPE.UNCAL.toString(), channelDetails.mDefaultCalUnits, data);
 	}
 
 	public void addDataToMap(String channelName, String channelType, String units, double data){
-		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data));
+		addDataToMap(channelName, channelType, units, data, false);
 	}
-	
+
+	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
+		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
+		addChannelNameToList(channelName);
+	}
+
 	@Deprecated
 	public void addDataToMap(String channelName, String channelType, String units, List<Double> data){
 		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data));
+		addChannelNameToList(channelName);
 	}
 	
 	@Deprecated
 	public void addDataToMap(String channelName,String channelType, String units, double data, List<Double> dataArray){
 		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, dataArray));
+		addChannelNameToList(channelName);
 	}
 	
-	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
-		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
+	private void addChannelNameToList(String channelName) {
+		if(!listOfChannelNames.contains(channelName)){
+			listOfChannelNames.add(channelName);
+		}
 	}
 	
 	@Deprecated
 	public void removeAll(String channelName){
 		mPropertyCluster.removeAll(channelName);
+		listOfChannelNames = new ArrayList<String>();
 	}
 	
 	public Collection<FormatCluster> getCollectionOfFormatClusters(String channelName){
 		return mPropertyCluster.get(channelName);
 	}
 
-	public Set<String> getKeySet(){
+	public Set<String> getChannelNamesFromKeySet(){
 		return mPropertyCluster.keySet();
 	}
-	
+
+	public List<String> getChannelNamesByInsertionOrder(){
+		return listOfChannelNames;
+	}
+
 	public Multimap<String, FormatCluster> getPropertyCluster(){
 		return mPropertyCluster;
 	}
@@ -521,6 +547,11 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 	public void setShimmerCalibratedTimeStamp(double mShimmerCalibratedTimeStamp) {
 		this.mShimmerCalibratedTimeStamp = mShimmerCalibratedTimeStamp;
+	}
+
+	public String[] getSensorNamesFromMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	
