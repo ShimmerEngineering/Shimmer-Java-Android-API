@@ -1,8 +1,11 @@
 package com.shimmerresearch.driverUtilities;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 /**
@@ -24,7 +27,15 @@ public class ExpansionBoardDetails implements Serializable {
 	/** Stores the special revision number - for custom modifications to standard Shimmers */
 	public int mExpansionBoardRevSpecial = HW_ID_SR_CODES.UNKNOWN;
 	
-	public byte[] mExpBoardArray = new byte[]{}; 
+	public byte[] mExpBoardArray = new byte[]{};
+	
+	public static final List<Integer> LIST_OF_UNITS_WITH_EXP_BRDS = Arrays.asList(
+			HW_ID.SHIMMER_3,
+			HW_ID.SHIMMER_GQ_802154_LR,
+			HW_ID.SHIMMER_GQ_802154_NR,
+			HW_ID.SHIMMER_3_EXG_EXTENDED,
+			HW_ID.SHIMMER_4_SDK
+			);
 	
 	public ExpansionBoardDetails(
 			int boardID,
