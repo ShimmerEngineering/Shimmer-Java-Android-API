@@ -1,9 +1,9 @@
-package com.shimmerresearch.driver.calibration;
+package com.shimmerresearch.sensors.bmpX80;
 
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 
-public class CalibDetailsBmp180 extends CalibDetails {
+public class CalibDetailsBmp180 extends CalibDetailsBmpX80 {
 
 	/** * */
 	private static final long serialVersionUID = 6119627638201576905L;
@@ -48,6 +48,7 @@ public class CalibDetailsBmp180 extends CalibDetails {
 				return;
 			}
 
+			setPressureRawCoefficients(pressureResoRes);
 			setCalibReadSource(calibReadSource);
 
 			AC1 = UtilParseData.calculatetwoscomplement((int)((int)(pressureResoRes[1] & 0xFF) + ((int)(pressureResoRes[0] & 0xFF) << 8)),16);
@@ -86,6 +87,41 @@ public class CalibDetailsBmp180 extends CalibDetails {
 		this.MB = MB;
 		this.MC = MC;
 		this.MD = MD;
+	}
+
+	@Override
+	public double[] calibratePressureSensorData(double UP, double UT){
+		//Calculate the true temperature
+		double X1 = (UT - AC6) * (AC5 / 32768);
+		double X2 = (MC * 2048 / (X1 + MD));
+		double B5 = X1 + X2;
+		double T = (B5 + 8) / 16;
+		
+		double B6 = B5 - 4000;
+		X1 = (B2 * (Math.pow(B6,2)/ 4096)) / 2048;
+		X2 = AC2 * B6 / 2048;
+		double X3 = X1 + X2;
+		double B3 = (((AC1 * 4 + X3)*(1<<mRangeValue) + 2)) / 4;
+		X1 = AC3 * B6 / 8192;
+		X2 = (B1 * (Math.pow(B6,2)/ 4096)) / 65536;
+		X3 = ((X1 + X2) + 2) / 4;
+		double B4 = AC4 * (X3 + 32768) / 32768;
+		double B7 = (UP - B3) * (50000>>mRangeValue);
+		double p=0;
+		if (B7 < 2147483648L ){ //0x80000000
+			p = (B7 * 2) / B4;
+		}
+		else{
+			p = (B7 / B4) * 2;
+		}
+		X1 = ((p / 256.0) * (p / 256.0) * 3038) / 65536;
+		X2 = (-7357 * p) / 65536;
+		p = p +( (X1 + X2 + 3791) / 16);
+
+		double[] caldata = new double[2];
+		caldata[0]=p;
+		caldata[1]=T/10;
+		return caldata;
 	}
 
 }

@@ -1728,6 +1728,80 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean isSupportedSrProgViaDock() {
 		return mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 8, 1);
 	}
+	
+	public boolean isLegacySdLog(){
+		if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==5){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isSupportedDerivedSensors(){
+		return isSupportedDerivedSensors(mShimmerVerObject);
+	}
+
+	public static boolean isSupportedDerivedSensors(ShimmerVerObject svo){
+		if((isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 0))
+			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 8, 69))
+			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 3, 17))
+			||(svo.isShimmerGenGq())
+			||(svo.isShimmerGen4())){
+//			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_4_SDK, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION))){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Check each entry in the passed in list to see if the current Shimmer
+	 * version information in this instance of ShimmerDevice is compatible with
+	 * any of them. The hardware ID, firmware ID and expansion board ID need to
+	 * be equal whereas the combination of firmware major:minor:internal needs
+	 * to be greater or equal
+	 * 
+	 * @param listOfCompatibleVersionInfo
+	 * @return
+	 */
+	public boolean isVerCompatibleWithAnyOf(List<ShimmerVerObject> listOfCompatibleVersionInfo) {
+
+		if(listOfCompatibleVersionInfo==null || listOfCompatibleVersionInfo.isEmpty()) {
+			return true;
+		}
+
+		for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo){
+			if(compatibleVersionInfo.mShimmerExpansionBoardId!=ShimmerVerDetails.ANY_VERSION) {
+				if(getExpansionBoardId()!=compatibleVersionInfo.mShimmerExpansionBoardId) {
+					continue;
+				}
+			}
+			
+			if(isThisVerCompatibleWith( 
+					compatibleVersionInfo.mHardwareVersion,
+					compatibleVersionInfo.mFirmwareIdentifier, 
+					compatibleVersionInfo.mFirmwareVersionMajor, 
+					compatibleVersionInfo.mFirmwareVersionMinor, 
+					compatibleVersionInfo.mFirmwareVersionInternal)){
+				return true;
+			}
+
+		}
+		return false;
+	}
+	
+	public static boolean isVerCompatibleWith(ShimmerVerObject svo, int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
+		return svo.compareVersions(hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
+	
+	public boolean isThisVerCompatibleWith(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
+		return UtilShimmer.compareVersions(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
+				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
+
+	public boolean isThisVerCompatibleWith(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
+		return UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
+				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
+	
 
 	public void consolePrintExeptionLn(String message, StackTraceElement[] stackTrace) {
 		if(mVerboseMode) {
@@ -1826,80 +1900,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mSensorMap;
 	}
 
-	public boolean isLegacySdLog(){
-		if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==5){
-			return true;
-		}
-		return false;
-	}
-
-	public boolean isDerivedSensorsSupported(){
-		return isDerivedSensorsSupported(mShimmerVerObject);
-	}
-
-	public static boolean isDerivedSensorsSupported(ShimmerVerObject svo){
-		if((isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 0))
-			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 8, 69))
-			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 3, 17))
-			||(svo.isShimmerGenGq())
-			||(svo.isShimmerGen4())){
-//			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_4_SDK, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION))){
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Check each entry in the passed in list to see if the current Shimmer
-	 * version information in this instance of ShimmerDevice is compatible with
-	 * any of them. The hardware ID, firmware ID and expansion board ID need to
-	 * be equal whereas the combination of firmware major:minor:internal needs
-	 * to be greater or equal
-	 * 
-	 * @param listOfCompatibleVersionInfo
-	 * @return
-	 */
-	public boolean isVerCompatibleWithAnyOf(List<ShimmerVerObject> listOfCompatibleVersionInfo) {
-
-		if(listOfCompatibleVersionInfo==null || listOfCompatibleVersionInfo.isEmpty()) {
-			return true;
-		}
-
-		for(ShimmerVerObject compatibleVersionInfo:listOfCompatibleVersionInfo){
-			if(compatibleVersionInfo.mShimmerExpansionBoardId!=ShimmerVerDetails.ANY_VERSION) {
-				if(getExpansionBoardId()!=compatibleVersionInfo.mShimmerExpansionBoardId) {
-					continue;
-				}
-			}
-			
-			if(isThisVerCompatibleWith( 
-					compatibleVersionInfo.mHardwareVersion,
-					compatibleVersionInfo.mFirmwareIdentifier, 
-					compatibleVersionInfo.mFirmwareVersionMajor, 
-					compatibleVersionInfo.mFirmwareVersionMinor, 
-					compatibleVersionInfo.mFirmwareVersionInternal)){
-				return true;
-			}
-
-		}
-		return false;
-	}
-	
-	public static boolean isVerCompatibleWith(ShimmerVerObject svo, int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
-		return svo.compareVersions(hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
-	}
-	
-	public boolean isThisVerCompatibleWith(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
-		return UtilShimmer.compareVersions(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
-				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
-	}
-
-	public boolean isThisVerCompatibleWith(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal){
-		return UtilShimmer.compareVersions(getHardwareVersion(), getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(),
-				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
-	}
-	
-	
 	/**
 	 * Used to changed the enabled state of a sensor in the sensormap. This is
 	 * only used in Consensys for dynamic configuration of a Shimmer. This

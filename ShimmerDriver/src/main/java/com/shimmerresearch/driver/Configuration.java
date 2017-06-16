@@ -67,8 +67,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorADC;
-import com.shimmerresearch.sensors.SensorBMP180;
-import com.shimmerresearch.sensors.SensorBMP280;
 import com.shimmerresearch.sensors.SensorBattVoltage;
 import com.shimmerresearch.sensors.SensorBridgeAmp;
 import com.shimmerresearch.sensors.SensorECGToHRFw;
@@ -82,6 +80,8 @@ import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a
@@ -954,7 +954,7 @@ public class Configuration {
 			MPU(SensorMPU9X50.GuiLabelSensorTiles.MPU),
 			MPU_OTHER(SensorMPU9X50.GuiLabelSensorTiles.MPU_OTHER), //"MPU Other"),
 			GPS("GPS"),
-			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280),
+			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.GuiLabelSensorTiles.PRESSURE_TEMPERATURE),
 			STC3100_MONITORING (SensorSTC3100.GuiLabelSensorTiles.STC3100_MONITORING),
 			SWEATCH_ADC ("Sweatch ADC");
 			
@@ -1502,6 +1502,7 @@ public class Configuration {
 			aMap.putAll(SensorMPU9X50.mChannelMapRef);
 			aMap.putAll(SensorLSM303.mChannelMapRef);
 			aMap.putAll(SensorBMP180.mChannelMapRef);
+//			aMap.putAll(SensorBMP280.mChannelMapRef);
 			aMap.putAll(SensorEXG.mChannelMapRef);
 			aMap.putAll(SensorPPG.mChannelMapRef);
 

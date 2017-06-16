@@ -1,7 +1,5 @@
-package com.shimmerresearch.sensors;
+package com.shimmerresearch.sensors.bmpX80;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -10,16 +8,12 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
-import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.calibration.CalibDetailsBmp180;
-import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
-import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -29,48 +23,20 @@ import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.driverUtilities.UtilParseData;
-import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-
-//TODO add calibdetails from ShimmerObject (updateCurrentPressureCalibInUse() + generateCalibMap() + isSensorUsingDefaultCal(), refer to SensorKionix)
+import com.shimmerresearch.sensors.ActionSetting;
 
 /**
  * @author Ronan McCormack
  * @author Mark Nolan
  *
  */
-public class SensorBMP180 extends AbstractSensor {
+public class SensorBMP180 extends SensorBMPX80 {
 	
 	/** * */
 	private static final long serialVersionUID = 4559709230029277863L;
-	
-	private CalibDetailsBmp180 mCalibDetailsBmp180 = new CalibDetailsBmp180();
-	
-	private byte[] mPressureCalRawParams = new byte[23];
-	private byte[] mPressureRawParams  = new byte[23];
-	
-//	public static final int SHIMMER_BMP180_PRESSURE = 22;
-	private int mPressureResolution = 0;
-	
-
-	public class GuiLabelConfig{
-		public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
-	}
-	
-	public class GuiLabelSensors{
-		public static final String PRESS_TEMP_BMP180 = "Pressure & Temperature";
-	}
-	
-	// GUI Sensor Tiles
-	public class GuiLabelSensorTiles{
-		public static final String PRESSURE_TEMPERATURE = GuiLabelSensors.PRESS_TEMP_BMP180;
-	}
 	
 	public static class DatabaseChannelHandles{
 		public static final String PRESSURE = "BMP180_Pressure";
@@ -143,7 +109,7 @@ public class SensorBMP180 extends AbstractSensor {
 	public static final SensorDetailsRef sensorBmp180 = new SensorDetailsRef(
 			0x04<<(2*8), 
 			0x04<<(2*8), 
-			GuiLabelSensors.PRESS_TEMP_BMP180,
+			GuiLabelSensors.PRESS_TEMP_BMPX80,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(GuiLabelConfig.PRESSURE_RESOLUTION),
 			Arrays.asList(ObjectClusterSensorName.TEMPERATURE_BMP180,
@@ -208,7 +174,13 @@ public class SensorBMP180 extends AbstractSensor {
 	//--------- Constructors for this class end --------------
 	
 
+	public SensorBMP180(ShimmerDevice shimmerDevice) {
+		super(SENSORS.BMP180, shimmerDevice);
+		initialise();
+	}
+
 	//--------- Abstract methods implemented start --------------
+	
 	@Override
 	public void generateSensorMap() {
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
@@ -234,7 +206,12 @@ public class SensorBMP180 extends AbstractSensor {
 		super.updateSensorGroupingMap();
 	}
 	
-	
+	@Override
+	public void generateCalibMap() {
+		mCalibDetailsBmpX80 = new CalibDetailsBmp180();
+		super.generateCalibMap();
+	}
+
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
@@ -262,7 +239,7 @@ public class SensorBMP180 extends AbstractSensor {
 		}
 
 		//Calibration
-		double[] bmp180caldata = calibratePressureSensorData(rawDataUP, rawDataUT, mCalibDetailsBmp180);
+		double[] bmp180caldata = mCalibDetailsBmpX80.calibratePressureSensorData(rawDataUP, rawDataUT);
 		bmp180caldata[0] = bmp180caldata[0]/1000;
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -467,68 +444,13 @@ public class SensorBMP180 extends AbstractSensor {
 
 
 	//--------- Sensor specific methods start --------------
-	public static double[] calibratePressureSensorData(double UP, double UT, CalibDetailsBmp180 calibDetailsBmp180){
-		//Calculate the true temperature
-		double X1 = (UT - calibDetailsBmp180.AC6) * (calibDetailsBmp180.AC5 / 32768);
-		double X2 = (calibDetailsBmp180.MC * 2048 / (X1 + calibDetailsBmp180.MD));
-		double B5 = X1 + X2;
-		double T = (B5 + 8) / 16;
-		
-		double B6 = B5 - 4000;
-		X1 = (calibDetailsBmp180.B2 * (Math.pow(B6,2)/ 4096)) / 2048;
-		X2 = calibDetailsBmp180.AC2 * B6 / 2048;
-		double X3 = X1 + X2;
-		double B3 = (((calibDetailsBmp180.AC1 * 4 + X3)*(1<<calibDetailsBmp180.mRangeValue) + 2)) / 4;
-		X1 = calibDetailsBmp180.AC3 * B6 / 8192;
-		X2 = (calibDetailsBmp180.B1 * (Math.pow(B6,2)/ 4096)) / 65536;
-		X3 = ((X1 + X2) + 2) / 4;
-		double B4 = calibDetailsBmp180.AC4 * (X3 + 32768) / 32768;
-		double B7 = (UP - B3) * (50000>>calibDetailsBmp180.mRangeValue);
-		double p=0;
-		if (B7 < 2147483648L ){ //0x80000000
-			p = (B7 * 2) / B4;
-		}
-		else{
-			p = (B7 / B4) * 2;
-		}
-		X1 = ((p / 256.0) * (p / 256.0) * 3038) / 65536;
-		X2 = (-7357 * p) / 65536;
-		p = p +( (X1 + X2 + 3791) / 16);
-
-		double[] caldata = new double[2];
-		caldata[0]=p;
-		caldata[1]=T/10;
-		return caldata;
-	}
 	
 	public void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
-		mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes, calibReadSource);
-		mCalibDetailsBmp180.mRangeValue = getPressureResolution();
+		mCalibDetailsBmpX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
+		mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
 	}
 	
 
-	public byte[] getRawCalibrationParameters(ShimmerVerObject svo){        
-		byte[] rawcal=new byte[1];
-		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			// Mag + Pressure
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-			try {
-				outputStream.write(5); // write the number of different calibration parameters
-
-				outputStream.write( mPressureCalRawParams.length);
-				outputStream.write( mPressureCalRawParams );
-				rawcal = outputStream.toByteArray( );
-			} catch (IOException e) {
-				e.printStackTrace();
-			}			
-
-		} 
-		else {
-			rawcal[0]=0;
-		}
-		return rawcal;
-	}
-	
 	private void setPressureResolution(int i){
 		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
 //			System.out.println("New resolution:\t" + ListofPressureResolution[i]);
@@ -542,7 +464,7 @@ public class SensorBMP180 extends AbstractSensor {
 	}
 	
 	public void updateCurrentPressureCalibInUse(){
-		mCalibDetailsBmp180.mRangeValue = getPressureResolution();
+		mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
 	}
 
 	private void setDefaultBmp180PressureSensorConfig(boolean isSensorEnabled) {
@@ -559,50 +481,51 @@ public class SensorBMP180 extends AbstractSensor {
 			double AC4, double AC5, double AC6,
 			double B1, double B2, 
 			double MB, double MC, double MD){
-		mCalibDetailsBmp180.setPressureCalib(AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
+		((CalibDetailsBmp180)mCalibDetailsBmpX80).setPressureCalib(AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
 	}
+	
 	public double getPressTempAC1(){
-		return mCalibDetailsBmp180.AC1;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).AC1;
 	}
 	
 	public double getPressTempAC2(){
-		return mCalibDetailsBmp180.AC2;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).AC2;
 	}
 	
 	public double getPressTempAC3(){
-		return mCalibDetailsBmp180.AC3;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).AC3;
 	}
 	
 	public double getPressTempAC4(){
-		return mCalibDetailsBmp180.AC4;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).AC4;
 	}
 	
 	public double getPressTempAC5(){
-		return mCalibDetailsBmp180.AC5;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).AC5;
 	}
 	
 	public double getPressTempAC6(){
-		return mCalibDetailsBmp180.AC6;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).AC6;
 	}
 	
 	public double getPressTempB1(){
-		return mCalibDetailsBmp180.B1;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).B1;
 	}
 	
 	public double getPressTempB2(){
-		return mCalibDetailsBmp180.B2;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).B2;
 	}
 	
 	public double getPressTempMB(){
-		return mCalibDetailsBmp180.MB;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).MB;
 	}
 	
 	public double getPressTempMC(){
-		return mCalibDetailsBmp180.MC;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).MC;
 	}
 	
 	public double getPressTempMD(){
-		return mCalibDetailsBmp180.MD;
+		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).MD;
 	}
 	
 	

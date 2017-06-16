@@ -94,6 +94,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.MemReadDetails;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -288,6 +291,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(GET_BMP180_PRES_RESOLUTION_COMMAND, new BtCommandDetails(GET_BMP180_PRES_RESOLUTION_COMMAND, "GET_BMP180_PRES_RESOLUTION_COMMAND", BMP180_PRES_RESOLUTION_RESPONSE));
         aMap.put(GET_BMP180_PRES_CALIBRATION_COMMAND, new BtCommandDetails(GET_BMP180_PRES_CALIBRATION_COMMAND, "GET_BMP180_PRES_CALIBRATION_COMMAND", BMP180_PRES_CALIBRATION_RESPONSE));
         aMap.put(GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND, new BtCommandDetails(GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND, "GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND", BMP180_CALIBRATION_COEFFICIENTS_RESPONSE));
+        aMap.put(GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND, new BtCommandDetails(GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND, "GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND", BMP280_CALIBRATION_COEFFICIENTS_RESPONSE));
         aMap.put(GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND, new BtCommandDetails(GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND, "GET_MPU9150_MAG_SENS_ADJ_VALS_COMMAND", MPU9150_MAG_SENS_ADJ_VALS_RESPONSE));
         aMap.put(GET_INTERNAL_EXP_POWER_ENABLE_COMMAND, new BtCommandDetails(GET_INTERNAL_EXP_POWER_ENABLE_COMMAND, "GET_INTERNAL_EXP_POWER_ENABLE_COMMAND", INTERNAL_EXP_POWER_ENABLE_RESPONSE));
         aMap.put(GET_EXG_REGS_COMMAND,			new BtCommandDetails(GET_EXG_REGS_COMMAND, "GET_EXG_REGS_COMMAND", EXG_REGS_RESPONSE));
@@ -404,6 +408,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(BMP180_PRES_RESOLUTION_RESPONSE, new BtCommandDetails(BMP180_PRES_RESOLUTION_RESPONSE, "BMP180_PRES_RESOLUTION_RESPONSE", 1)); 	
         aMap.put(BMP180_PRES_CALIBRATION_RESPONSE, new BtCommandDetails(BMP180_PRES_CALIBRATION_RESPONSE, "BMP180_PRES_CALIBRATION_RESPONSE", -1)); // Unhandled //TODO RS
         aMap.put(BMP180_CALIBRATION_COEFFICIENTS_RESPONSE, new BtCommandDetails(BMP180_CALIBRATION_COEFFICIENTS_RESPONSE, "BMP180_CALIBRATION_COEFFICIENTS_RESPONSE", 22));
+        aMap.put(BMP280_CALIBRATION_COEFFICIENTS_RESPONSE, new BtCommandDetails(BMP280_CALIBRATION_COEFFICIENTS_RESPONSE, "BMP280_CALIBRATION_COEFFICIENTS_RESPONSE", 24));
         aMap.put(MPU9150_MAG_SENS_ADJ_VALS_RESPONSE, new BtCommandDetails(MPU9150_MAG_SENS_ADJ_VALS_RESPONSE, "MPU9150_MAG_SENS_ADJ_VALS_RESPONSE", -1)); // Unhandled
         aMap.put(INTERNAL_EXP_POWER_ENABLE_RESPONSE, new BtCommandDetails(INTERNAL_EXP_POWER_ENABLE_RESPONSE, "INTERNAL_EXP_POWER_ENABLE_RESPONSE", 1)); 
         aMap.put(EXG_REGS_RESPONSE, 			new BtCommandDetails(EXG_REGS_RESPONSE, "EXG_REGS_RESPONSE", 11));
@@ -1308,7 +1313,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==GSR_RANGE_RESPONSE) {
 			byte[] bufferGSRRange = readBytes(1, responseCommand); 
 			if(bufferGSRRange!=null){
-				mGSRRange=bufferGSRRange[0];
+				setGSRRange(bufferGSRRange[0]);
 			
 				printLogDataForDebugging("GSR Range Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferGSRRange));
 			}
@@ -1348,12 +1353,29 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
 			//get pressure
 			delayForBtResponse(100); // Wait to ensure the packet has been fully received
+			
+			// 2017-06-16 MN edited below as adding the response command to the
+			// calib byte has not been need for a long time and would be messing
+			// up parsing of the calibration parameters
+//			byte[] pressureResoRes = new byte[22]; 
+//			pressureResoRes = readBytes(22, responseCommand);
+//			if(pressureResoRes!=null){
+//				mPressureCalRawParams = new byte[23];
+//				System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
+//				mPressureCalRawParams[0] = responseCommand;
+//				retrieveBmp180PressureCalibrationParametersFromPacket(pressureResoRes,CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+//			}
+			
 			byte[] pressureResoRes = new byte[22]; 
 			pressureResoRes = readBytes(22, responseCommand);
 			if(pressureResoRes!=null){
-				mPressureCalRawParams = new byte[23];
-				System.arraycopy(pressureResoRes, 0, mPressureCalRawParams, 1, 22);
-				mPressureCalRawParams[0] = responseCommand;
+				retrievePressureCalibrationParametersFromPacket(pressureResoRes,CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+			}
+		} 
+		else if(responseCommand==BMP280_CALIBRATION_COEFFICIENTS_RESPONSE){
+			byte[] pressureResoRes = new byte[24]; 
+			pressureResoRes = readBytes(24, responseCommand);
+			if(pressureResoRes!=null){
 				retrievePressureCalibrationParametersFromPacket(pressureResoRes,CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 			}
 		} 
@@ -1694,7 +1716,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					//System.err.println("TEST_CONNECTION_COMMAND RESPONSE RECEIVED");
 				}
 				else if(currentCommand==SET_GSR_RANGE_COMMAND) {
-					mGSRRange=(int)((byte [])getListofInstructions().get(0))[1];
+					setGSRRange((int)((byte [])getListofInstructions().get(0))[1]);
 				}
 				else if(currentCommand==SET_CONFIG_BYTE0_COMMAND) {
 					mConfigByte0=(int)((byte [])getListofInstructions().get(0))[1];
@@ -2242,7 +2264,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readCalibrationParameters("Gyroscope");
 		if(mSetupDeviceWhileConnecting && getHardwareVersion()!=4){
 			writeAccelRange(getAccelRange());
-			writeGSRRange(mGSRRange);
+			writeGSRRange(getGSRRange());
 			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
 			writeEnabledSensors(mSetEnabledSensors);
 			setContinuousSync(mContinousSync);
@@ -2269,7 +2291,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(mSetupDeviceWhileConnecting){
 			writeMagRange(getMagRange()); //set to default Shimmer mag gain
 			writeAccelRange(getAccelRange());
-			writeGSRRange(mGSRRange);
+			writeGSRRange(getGSRRange());
 			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
 			writeEnabledSensors(mSetEnabledSensors);
 			setContinuousSync(mContinousSync);
@@ -2323,7 +2345,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						writeEXGConfiguration();
 						mSetupEXG = false;
 					}
-					writeGSRRange(mGSRRange);
+					writeGSRRange(getGSRRange());
 					writeAccelRange(getAccelRange());
 					writeGyroRange(getGyroRange());
 					writeMagRange(getMagRange());
@@ -2891,7 +2913,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void readPressureCalibrationCoefficients() {
 		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 			if(getFirmwareVersionCode()>1){
-				writeInstruction(GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND);
+				if(isSupportedBmp280()){
+					writeInstruction(GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND);
+				}
+				else {
+					writeInstruction(GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND);
+				}
 			}
 		}
 	}
