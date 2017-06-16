@@ -68,7 +68,6 @@ import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
-import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.bmpX80.CalibDetailsBmp180;
@@ -173,10 +172,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mFirstTime = true;
 	double mFirstRawTS = 0;
 	public int OFFSET_LENGTH = 9;
+
+	public static final class DatabaseConfigHandleShimmerObject{
+		public static final String SYNC_WHEN_LOGGING = 	"Sync_When_Logging";
+		public static final String TRIAL_DURATION_ESTIMATED = "Trial_Dur_Est";
+		public static final String TRIAL_DURATION_MAXIMUM = "Trial_Dur_Max";
+	}
 	
+
 	//Sensor Bitmap for ID ; for the purpose of forward compatibility the sensor bitmap and the ID and the sensor bitmap for the Shimmer firmware has been kept separate, 
-	
-	
 	public static final int SENSOR_ACCEL				   = 0x80; 
 	public static final int SENSOR_DACCEL				   = 0x1000;
 	public static final int SENSOR_GYRO				   	   = 0x40;
@@ -475,13 +479,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = (byte) InstructionsGet.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND_VALUE;
 	public static final byte BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = (byte) InstructionsResponse.BMP280_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE;
 
-
-	public static final class DatabaseConfigHandleShimmerObject{
-		public static final String SYNC_WHEN_LOGGING = 	"Sync_When_Logging";
-		public static final String TRIAL_DURATION_ESTIMATED = "Trial_Dur_Est";
-		public static final String TRIAL_DURATION_MAXIMUM = "Trial_Dur_Max";
-	}
-	
 	//new BT + SD command to set/rsp/get/update_dump_file all calibration parameters using the new byte array structure
 	public static final byte SET_CALIB_DUMP_COMMAND					= (byte) 0x98;
 	public static final byte RSP_CALIB_DUMP_COMMAND					= (byte) 0x99;
@@ -997,7 +994,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//TODO work on getting rid variables below by just using SensorBMPX80 above
 	protected int mPressureResolution = 0;
 	private CalibDetailsBmp180 mCalibDetailsBmp180 = new CalibDetailsBmp180();
-	protected byte[] mPressureCalRawParams = new byte[23];
+//	protected byte[] mPressureCalRawParams = new byte[23];
 	
 //	/** not used anywhere in the code - could be a variable used in early development */
 //	@Deprecated
@@ -3625,7 +3622,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param calibReadSource
 	 */
 	protected void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
-		setPressureRawCoefficients(pressureResoRes);
+//		setPressureRawCoefficients(pressureResoRes);
 		
 		//TODO use below
 //		mSensorBMPX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
@@ -6831,6 +6828,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+	//-------------------- Calibration Parameters End -----------------------------------
+
+	//-------------------- Pressure/Temperature Start -----------------------------------
+
 	public void updateCurrentPressureCalibInUse(){
 		//TODO use below
 //		mSensorBMPX80.mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
@@ -6842,11 +6843,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mCalibDetailsBmp180.mRangeValue = getPressureResolution();
 		}
 	}
-	
-	//-------------------- Calibration Parameters End -----------------------------------
 
-	//-------------------- Pressure/Temperature Start -----------------------------------
-	
 	public void setPressureResolution(int i){
 		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
 			mPressureResolution = i;
@@ -6859,50 +6856,68 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mPressureResolution;
 	}
 
+	public List<Double> getPressTempConfigValuesBmp180(){
+		List<Double> configValues = new ArrayList<Double>();
+		
+		configValues.add(mCalibDetailsBmp180.AC1);
+		configValues.add(mCalibDetailsBmp180.AC2);
+		configValues.add(mCalibDetailsBmp180.AC3);
+		configValues.add(mCalibDetailsBmp180.AC4);
+		configValues.add(mCalibDetailsBmp180.AC5);
+		configValues.add(mCalibDetailsBmp180.AC6);
+		configValues.add(mCalibDetailsBmp180.B1);
+		configValues.add(mCalibDetailsBmp180.B2);
+		configValues.add(mCalibDetailsBmp180.MB);
+		configValues.add(mCalibDetailsBmp180.MC);
+		configValues.add(mCalibDetailsBmp180.MD);
+		
+		return configValues;
+	}
 
-	public double getPressTempAC1(){
-		return mCalibDetailsBmp180.AC1;
-	}
-	
-	public double getPressTempAC2(){
-		return mCalibDetailsBmp180.AC2;
-	}
-	
-	public double getPressTempAC3(){
-		return mCalibDetailsBmp180.AC3;
-	}
-	
-	public double getPressTempAC4(){
-		return mCalibDetailsBmp180.AC4;
-	}
-	
-	public double getPressTempAC5(){
-		return mCalibDetailsBmp180.AC5;
-	}
-	
-	public double getPressTempAC6(){
-		return mCalibDetailsBmp180.AC6;
-	}
-	
-	public double getPressTempB1(){
-		return mCalibDetailsBmp180.B1;
-	}
-	
-	public double getPressTempB2(){
-		return mCalibDetailsBmp180.B2;
-	}
-	
-	public double getPressTempMB(){
-		return mCalibDetailsBmp180.MB;
-	}
-	
-	public double getPressTempMC(){
-		return mCalibDetailsBmp180.MC;
-	}
-	
-	public double getPressTempMD(){
-		return mCalibDetailsBmp180.MD;
-	}
+
+//	public double getPressTempAC1(){
+//		return mCalibDetailsBmp180.AC1;
+//	}
+//	
+//	public double getPressTempAC2(){
+//		return mCalibDetailsBmp180.AC2;
+//	}
+//	
+//	public double getPressTempAC3(){
+//		return mCalibDetailsBmp180.AC3;
+//	}
+//	
+//	public double getPressTempAC4(){
+//		return mCalibDetailsBmp180.AC4;
+//	}
+//	
+//	public double getPressTempAC5(){
+//		return mCalibDetailsBmp180.AC5;
+//	}
+//	
+//	public double getPressTempAC6(){
+//		return mCalibDetailsBmp180.AC6;
+//	}
+//	
+//	public double getPressTempB1(){
+//		return mCalibDetailsBmp180.B1;
+//	}
+//	
+//	public double getPressTempB2(){
+//		return mCalibDetailsBmp180.B2;
+//	}
+//	
+//	public double getPressTempMB(){
+//		return mCalibDetailsBmp180.MB;
+//	}
+//	
+//	public double getPressTempMC(){
+//		return mCalibDetailsBmp180.MC;
+//	}
+//	
+//	public double getPressTempMD(){
+//		return mCalibDetailsBmp180.MD;
+//	}
 
 	public void setPressureCalib(
 			double AC1, double AC2, double AC3, 
@@ -6912,12 +6927,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCalibDetailsBmp180.setPressureCalib(AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
 	}
 
-	public void setPressureRawCoefficients(byte[] pressureCalRawParams){
-		mPressureCalRawParams = pressureCalRawParams;
-	}
+//	public void setPressureRawCoefficients(byte[] pressureCalRawParams){
+////		mPressureCalRawParams = pressureCalRawParams;
+//		mCalibDetailsBmp180.mPressureCalRawParams = pressureCalRawParams;
+//	}
 
 	public byte[] getPressureRawCoefficients(){
-		return mPressureCalRawParams;
+//		return mPressureCalRawParams;
+		return mCalibDetailsBmp180.mPressureCalRawParams;
 	}
 
 	//-------------------- Pressure/Temperature End -----------------------------------
@@ -10138,17 +10155,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			addCalibKinematicToDbConfigValues(configValues, offsetVectorAnalogAccel, sensitivityMatrixAnalogAccel, alignmentMatrixAnalogAccel);
 
 			//PRESSURE (BMP180) CAL PARAMS
-			configValues.add(shimmerObject.getPressTempAC1());
-			configValues.add(shimmerObject.getPressTempAC2());
-			configValues.add(shimmerObject.getPressTempAC3());
-			configValues.add(shimmerObject.getPressTempAC4());
-			configValues.add(shimmerObject.getPressTempAC5());
-			configValues.add(shimmerObject.getPressTempAC6());
-			configValues.add(shimmerObject.getPressTempB1());
-			configValues.add(shimmerObject.getPressTempB2());
-			configValues.add(shimmerObject.getPressTempMB());
-			configValues.add(shimmerObject.getPressTempMC());
-			configValues.add(shimmerObject.getPressTempMD());
+			configValues.addAll(shimmerObject.getPressTempConfigValuesBmp180());
+//			configValues.add(shimmerObject.getPressTempAC1());
+//			configValues.add(shimmerObject.getPressTempAC2());
+//			configValues.add(shimmerObject.getPressTempAC3());
+//			configValues.add(shimmerObject.getPressTempAC4());
+//			configValues.add(shimmerObject.getPressTempAC5());
+//			configValues.add(shimmerObject.getPressTempAC6());
+//			configValues.add(shimmerObject.getPressTempB1());
+//			configValues.add(shimmerObject.getPressTempB2());
+//			configValues.add(shimmerObject.getPressTempMB());
+//			configValues.add(shimmerObject.getPressTempMC());
+//			configValues.add(shimmerObject.getPressTempMD());
 
 			//MPL Accel Calibration Configuration
 			double[][] offsetVectorMPLAccel = shimmerObject.getOffsetVectorMPLAccel();
