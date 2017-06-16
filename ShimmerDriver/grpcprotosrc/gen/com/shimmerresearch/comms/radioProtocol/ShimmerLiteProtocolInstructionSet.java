@@ -23,11 +23,11 @@ public final class ShimmerLiteProtocolInstructionSet {
    * Protobuf type {@code tutorial.LiteProtocolInstructionSet}
    */
   public  static final class LiteProtocolInstructionSet extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:tutorial.LiteProtocolInstructionSet)
       LiteProtocolInstructionSetOrBuilder {
     // Use LiteProtocolInstructionSet.newBuilder() to construct.
-    private LiteProtocolInstructionSet(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private LiteProtocolInstructionSet(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private LiteProtocolInstructionSet() {
@@ -73,7 +73,7 @@ public final class ShimmerLiteProtocolInstructionSet {
       return com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.internal_static_tutorial_LiteProtocolInstructionSet_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.internal_static_tutorial_LiteProtocolInstructionSet_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -904,6 +904,10 @@ public final class ShimmerLiteProtocolInstructionSet {
        * <code>GET_I2C_BATT_STATUS_COMMAND_VALUE = 158;</code>
        */
       GET_I2C_BATT_STATUS_COMMAND_VALUE(158),
+      /**
+       * <code>GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 159;</code>
+       */
+      GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND(159),
       UNRECOGNIZED(-1),
       ;
 
@@ -1107,6 +1111,10 @@ public final class ShimmerLiteProtocolInstructionSet {
        * <code>GET_I2C_BATT_STATUS_COMMAND_VALUE = 158;</code>
        */
       public static final int GET_I2C_BATT_STATUS_COMMAND_VALUE_VALUE = 158;
+      /**
+       * <code>GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 159;</code>
+       */
+      public static final int GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND_VALUE = 159;
 
 
       public final int getNumber() {
@@ -1175,6 +1183,7 @@ public final class ShimmerLiteProtocolInstructionSet {
           case 149: return GET_VBATT_COMMAND;
           case 154: return GET_CALIB_DUMP_COMMAND;
           case 158: return GET_I2C_BATT_STATUS_COMMAND_VALUE;
+          case 159: return GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND;
           default: return null;
         }
       }
@@ -1241,95 +1250,95 @@ public final class ShimmerLiteProtocolInstructionSet {
        */
       INQUIRY_RESPONSE(2),
       /**
-       * <code>SAMPLING_RATE_RESPONSE = 4;</code>
+       * <code>SAMPLING_RATE_RESPONSE = 4 [(.tutorial.LiteProtocolInstructionSet.response_size) = 2];</code>
        */
       SAMPLING_RATE_RESPONSE(4),
       /**
-       * <code>ACCEL_SENSITIVITY_RESPONSE = 10;</code>
+       * <code>ACCEL_SENSITIVITY_RESPONSE = 10 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       ACCEL_SENSITIVITY_RESPONSE(10),
       /**
-       * <code>CONFIG_BYTE0_RESPONSE = 15;</code>
+       * <code>CONFIG_BYTE0_RESPONSE = 15 [(.tutorial.LiteProtocolInstructionSet.response_size) = 4];</code>
        */
       CONFIG_BYTE0_RESPONSE(15),
       /**
-       * <code>ACCEL_CALIBRATION_RESPONSE = 18;</code>
+       * <code>ACCEL_CALIBRATION_RESPONSE = 18 [(.tutorial.LiteProtocolInstructionSet.response_size) = 21];</code>
        */
       ACCEL_CALIBRATION_RESPONSE(18),
       /**
-       * <code>LSM303DLHC_ACCEL_CALIBRATION_RESPONSE = 27;</code>
+       * <code>LSM303DLHC_ACCEL_CALIBRATION_RESPONSE = 27 [(.tutorial.LiteProtocolInstructionSet.response_size) = 21];</code>
        */
       LSM303DLHC_ACCEL_CALIBRATION_RESPONSE(27),
       /**
-       * <code>GYRO_CALIBRATION_RESPONSE = 21;</code>
+       * <code>GYRO_CALIBRATION_RESPONSE = 21 [(.tutorial.LiteProtocolInstructionSet.response_size) = 21];</code>
        */
       GYRO_CALIBRATION_RESPONSE(21),
       /**
-       * <code>MAG_CALIBRATION_RESPONSE = 24;</code>
+       * <code>MAG_CALIBRATION_RESPONSE = 24 [(.tutorial.LiteProtocolInstructionSet.response_size) = 21];</code>
        */
       MAG_CALIBRATION_RESPONSE(24),
       /**
-       * <code>GSR_RANGE_RESPONSE = 34;</code>
+       * <code>GSR_RANGE_RESPONSE = 34 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       GSR_RANGE_RESPONSE(34),
       /**
-       * <code>GET_SHIMMER_VERSION_RESPONSE = 37;</code>
+       * <code>GET_SHIMMER_VERSION_RESPONSE = 37 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       GET_SHIMMER_VERSION_RESPONSE(37),
       /**
-       * <code>EMG_CALIBRATION_RESPONSE = 39;</code>
+       * <code>EMG_CALIBRATION_RESPONSE = 39 [(.tutorial.LiteProtocolInstructionSet.response_size) = 4];</code>
        */
       EMG_CALIBRATION_RESPONSE(39),
       /**
-       * <code>ECG_CALIBRATION_RESPONSE = 42;</code>
+       * <code>ECG_CALIBRATION_RESPONSE = 42 [(.tutorial.LiteProtocolInstructionSet.response_size) = 4];</code>
        */
       ECG_CALIBRATION_RESPONSE(42),
       /**
-       * <code>ALL_CALIBRATION_RESPONSE = 45;</code>
+       * <code>ALL_CALIBRATION_RESPONSE = 45 [(.tutorial.LiteProtocolInstructionSet.response_size) = 84];</code>
        */
       ALL_CALIBRATION_RESPONSE(45),
       /**
-       * <code>FW_VERSION_RESPONSE = 47;</code>
+       * <code>FW_VERSION_RESPONSE = 47 [(.tutorial.LiteProtocolInstructionSet.response_size) = 6];</code>
        */
       FW_VERSION_RESPONSE(47),
       /**
-       * <code>BLINK_LED_RESPONSE = 49;</code>
+       * <code>BLINK_LED_RESPONSE = 49 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       BLINK_LED_RESPONSE(49),
       /**
-       * <code>BUFFER_SIZE_RESPONSE = 53;</code>
+       * <code>BUFFER_SIZE_RESPONSE = 53 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       BUFFER_SIZE_RESPONSE(53),
       /**
-       * <code>MAG_GAIN_RESPONSE = 56;</code>
+       * <code>MAG_GAIN_RESPONSE = 56 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       MAG_GAIN_RESPONSE(56),
       /**
-       * <code>MAG_SAMPLING_RATE_RESPONSE = 59;</code>
+       * <code>MAG_SAMPLING_RATE_RESPONSE = 59 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       MAG_SAMPLING_RATE_RESPONSE(59),
       /**
-       * <code>ACCEL_SAMPLING_RATE_RESPONSE = 65;</code>
+       * <code>ACCEL_SAMPLING_RATE_RESPONSE = 65 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       ACCEL_SAMPLING_RATE_RESPONSE(65),
       /**
-       * <code>LSM303DLHC_ACCEL_LPMODE_RESPONSE = 68;</code>
+       * <code>LSM303DLHC_ACCEL_LPMODE_RESPONSE = 68 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       LSM303DLHC_ACCEL_LPMODE_RESPONSE(68),
       /**
-       * <code>LSM303DLHC_ACCEL_HRMODE_RESPONSE = 71;</code>
+       * <code>LSM303DLHC_ACCEL_HRMODE_RESPONSE = 71 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       LSM303DLHC_ACCEL_HRMODE_RESPONSE(71),
       /**
-       * <code>MPU9150_GYRO_RANGE_RESPONSE = 74;</code>
+       * <code>MPU9150_GYRO_RANGE_RESPONSE = 74 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       MPU9150_GYRO_RANGE_RESPONSE(74),
       /**
-       * <code>MPU9150_SAMPLING_RATE_RESPONSE = 77;</code>
+       * <code>MPU9150_SAMPLING_RATE_RESPONSE = 77 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       MPU9150_SAMPLING_RATE_RESPONSE(77),
       /**
-       * <code>BMP180_PRES_RESOLUTION_RESPONSE = 83;</code>
+       * <code>BMP180_PRES_RESOLUTION_RESPONSE = 83 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       BMP180_PRES_RESOLUTION_RESPONSE(83),
       /**
@@ -1341,7 +1350,7 @@ public final class ShimmerLiteProtocolInstructionSet {
        */
       BMP180_PRES_CALIBRATION_RESPONSE(86),
       /**
-       * <code>BMP180_CALIBRATION_COEFFICIENTS_RESPONSE = 88;</code>
+       * <code>BMP180_CALIBRATION_COEFFICIENTS_RESPONSE = 88 [(.tutorial.LiteProtocolInstructionSet.response_size) = 22];</code>
        */
       BMP180_CALIBRATION_COEFFICIENTS_RESPONSE(88),
       /**
@@ -1353,59 +1362,59 @@ public final class ShimmerLiteProtocolInstructionSet {
        */
       MPU9150_MAG_SENS_ADJ_VALS_RESPONSE(92),
       /**
-       * <code>INTERNAL_EXP_POWER_ENABLE_RESPONSE = 95;</code>
+       * <code>INTERNAL_EXP_POWER_ENABLE_RESPONSE = 95 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       INTERNAL_EXP_POWER_ENABLE_RESPONSE(95),
       /**
-       * <code>EXG_REGS_RESPONSE = 98;</code>
+       * <code>EXG_REGS_RESPONSE = 98 [(.tutorial.LiteProtocolInstructionSet.response_size) = 11];</code>
        */
       EXG_REGS_RESPONSE(98),
       /**
-       * <code>DAUGHTER_CARD_ID_RESPONSE = 101;</code>
+       * <code>DAUGHTER_CARD_ID_RESPONSE = 101 [(.tutorial.LiteProtocolInstructionSet.response_size) = 3];</code>
        */
       DAUGHTER_CARD_ID_RESPONSE(101),
       /**
-       * <code>BAUD_RATE_RESPONSE = 107;</code>
+       * <code>BAUD_RATE_RESPONSE = 107 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       BAUD_RATE_RESPONSE(107),
       /**
-       * <code>DERIVED_CHANNEL_BYTES_RESPONSE = 110;</code>
+       * <code>DERIVED_CHANNEL_BYTES_RESPONSE = 110 [(.tutorial.LiteProtocolInstructionSet.response_size) = 3];</code>
        */
       DERIVED_CHANNEL_BYTES_RESPONSE(110),
       /**
-       * <code>STATUS_RESPONSE = 113;</code>
+       * <code>STATUS_RESPONSE = 113 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       STATUS_RESPONSE(113),
       /**
-       * <code>TRIAL_CONFIG_RESPONSE = 116;</code>
+       * <code>TRIAL_CONFIG_RESPONSE = 116 [(.tutorial.LiteProtocolInstructionSet.response_size) = 3];</code>
        */
       TRIAL_CONFIG_RESPONSE(116),
       /**
-       * <code>CENTER_RESPONSE = 119;</code>
+       * <code>CENTER_RESPONSE = 119 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       CENTER_RESPONSE(119),
       /**
-       * <code>SHIMMERNAME_RESPONSE = 122;</code>
+       * <code>SHIMMERNAME_RESPONSE = 122 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       SHIMMERNAME_RESPONSE(122),
       /**
-       * <code>EXPID_RESPONSE = 125;</code>
+       * <code>EXPID_RESPONSE = 125 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       EXPID_RESPONSE(125),
       /**
-       * <code>MYID_RESPONSE = 128;</code>
+       * <code>MYID_RESPONSE = 128 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       MYID_RESPONSE(128),
       /**
-       * <code>NSHIMMER_RESPONSE = 131;</code>
+       * <code>NSHIMMER_RESPONSE = 131 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       NSHIMMER_RESPONSE(131),
       /**
-       * <code>CONFIGTIME_RESPONSE = 134;</code>
+       * <code>CONFIGTIME_RESPONSE = 134 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       CONFIGTIME_RESPONSE(134),
       /**
-       * <code>DIR_RESPONSE = 136;</code>
+       * <code>DIR_RESPONSE = 136 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       DIR_RESPONSE(136),
       /**
@@ -1417,25 +1426,29 @@ public final class ShimmerLiteProtocolInstructionSet {
        */
       INSTREAM_CMD_RESPONSE(138),
       /**
-       * <code>INFOMEM_RESPONSE = 141;</code>
+       * <code>INFOMEM_RESPONSE = 141 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       INFOMEM_RESPONSE(141),
       /**
-       * <code>RWC_RESPONSE = 144;</code>
+       * <code>RWC_RESPONSE = 144 [(.tutorial.LiteProtocolInstructionSet.response_size) = 8];</code>
        */
       RWC_RESPONSE(144),
       /**
-       * <code>VBATT_RESPONSE = 148;</code>
+       * <code>VBATT_RESPONSE = 148 [(.tutorial.LiteProtocolInstructionSet.response_size) = 3];</code>
        */
       VBATT_RESPONSE(148),
       /**
-       * <code>RSP_CALIB_DUMP_COMMAND = 153;</code>
+       * <code>RSP_CALIB_DUMP_COMMAND = 153 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       RSP_CALIB_DUMP_COMMAND(153),
       /**
-       * <code>RSP_I2C_BATT_STATUS_COMMAND_VALUE = 157;</code>
+       * <code>RSP_I2C_BATT_STATUS_COMMAND_VALUE = 157 [(.tutorial.LiteProtocolInstructionSet.response_size) = 10];</code>
        */
       RSP_I2C_BATT_STATUS_COMMAND_VALUE(157),
+      /**
+       * <code>BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = 160 [(.tutorial.LiteProtocolInstructionSet.response_size) = 24];</code>
+       */
+      BMP280_CALIBRATION_COEFFICIENTS_RESPONSE(160),
       UNRECOGNIZED(-1),
       ;
 
@@ -1448,95 +1461,95 @@ public final class ShimmerLiteProtocolInstructionSet {
        */
       public static final int INQUIRY_RESPONSE_VALUE = 2;
       /**
-       * <code>SAMPLING_RATE_RESPONSE = 4;</code>
+       * <code>SAMPLING_RATE_RESPONSE = 4 [(.tutorial.LiteProtocolInstructionSet.response_size) = 2];</code>
        */
       public static final int SAMPLING_RATE_RESPONSE_VALUE = 4;
       /**
-       * <code>ACCEL_SENSITIVITY_RESPONSE = 10;</code>
+       * <code>ACCEL_SENSITIVITY_RESPONSE = 10 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int ACCEL_SENSITIVITY_RESPONSE_VALUE = 10;
       /**
-       * <code>CONFIG_BYTE0_RESPONSE = 15;</code>
+       * <code>CONFIG_BYTE0_RESPONSE = 15 [(.tutorial.LiteProtocolInstructionSet.response_size) = 4];</code>
        */
       public static final int CONFIG_BYTE0_RESPONSE_VALUE = 15;
       /**
-       * <code>ACCEL_CALIBRATION_RESPONSE = 18;</code>
+       * <code>ACCEL_CALIBRATION_RESPONSE = 18 [(.tutorial.LiteProtocolInstructionSet.response_size) = 21];</code>
        */
       public static final int ACCEL_CALIBRATION_RESPONSE_VALUE = 18;
       /**
-       * <code>LSM303DLHC_ACCEL_CALIBRATION_RESPONSE = 27;</code>
+       * <code>LSM303DLHC_ACCEL_CALIBRATION_RESPONSE = 27 [(.tutorial.LiteProtocolInstructionSet.response_size) = 21];</code>
        */
       public static final int LSM303DLHC_ACCEL_CALIBRATION_RESPONSE_VALUE = 27;
       /**
-       * <code>GYRO_CALIBRATION_RESPONSE = 21;</code>
+       * <code>GYRO_CALIBRATION_RESPONSE = 21 [(.tutorial.LiteProtocolInstructionSet.response_size) = 21];</code>
        */
       public static final int GYRO_CALIBRATION_RESPONSE_VALUE = 21;
       /**
-       * <code>MAG_CALIBRATION_RESPONSE = 24;</code>
+       * <code>MAG_CALIBRATION_RESPONSE = 24 [(.tutorial.LiteProtocolInstructionSet.response_size) = 21];</code>
        */
       public static final int MAG_CALIBRATION_RESPONSE_VALUE = 24;
       /**
-       * <code>GSR_RANGE_RESPONSE = 34;</code>
+       * <code>GSR_RANGE_RESPONSE = 34 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int GSR_RANGE_RESPONSE_VALUE = 34;
       /**
-       * <code>GET_SHIMMER_VERSION_RESPONSE = 37;</code>
+       * <code>GET_SHIMMER_VERSION_RESPONSE = 37 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int GET_SHIMMER_VERSION_RESPONSE_VALUE = 37;
       /**
-       * <code>EMG_CALIBRATION_RESPONSE = 39;</code>
+       * <code>EMG_CALIBRATION_RESPONSE = 39 [(.tutorial.LiteProtocolInstructionSet.response_size) = 4];</code>
        */
       public static final int EMG_CALIBRATION_RESPONSE_VALUE = 39;
       /**
-       * <code>ECG_CALIBRATION_RESPONSE = 42;</code>
+       * <code>ECG_CALIBRATION_RESPONSE = 42 [(.tutorial.LiteProtocolInstructionSet.response_size) = 4];</code>
        */
       public static final int ECG_CALIBRATION_RESPONSE_VALUE = 42;
       /**
-       * <code>ALL_CALIBRATION_RESPONSE = 45;</code>
+       * <code>ALL_CALIBRATION_RESPONSE = 45 [(.tutorial.LiteProtocolInstructionSet.response_size) = 84];</code>
        */
       public static final int ALL_CALIBRATION_RESPONSE_VALUE = 45;
       /**
-       * <code>FW_VERSION_RESPONSE = 47;</code>
+       * <code>FW_VERSION_RESPONSE = 47 [(.tutorial.LiteProtocolInstructionSet.response_size) = 6];</code>
        */
       public static final int FW_VERSION_RESPONSE_VALUE = 47;
       /**
-       * <code>BLINK_LED_RESPONSE = 49;</code>
+       * <code>BLINK_LED_RESPONSE = 49 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int BLINK_LED_RESPONSE_VALUE = 49;
       /**
-       * <code>BUFFER_SIZE_RESPONSE = 53;</code>
+       * <code>BUFFER_SIZE_RESPONSE = 53 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int BUFFER_SIZE_RESPONSE_VALUE = 53;
       /**
-       * <code>MAG_GAIN_RESPONSE = 56;</code>
+       * <code>MAG_GAIN_RESPONSE = 56 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int MAG_GAIN_RESPONSE_VALUE = 56;
       /**
-       * <code>MAG_SAMPLING_RATE_RESPONSE = 59;</code>
+       * <code>MAG_SAMPLING_RATE_RESPONSE = 59 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int MAG_SAMPLING_RATE_RESPONSE_VALUE = 59;
       /**
-       * <code>ACCEL_SAMPLING_RATE_RESPONSE = 65;</code>
+       * <code>ACCEL_SAMPLING_RATE_RESPONSE = 65 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int ACCEL_SAMPLING_RATE_RESPONSE_VALUE = 65;
       /**
-       * <code>LSM303DLHC_ACCEL_LPMODE_RESPONSE = 68;</code>
+       * <code>LSM303DLHC_ACCEL_LPMODE_RESPONSE = 68 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int LSM303DLHC_ACCEL_LPMODE_RESPONSE_VALUE = 68;
       /**
-       * <code>LSM303DLHC_ACCEL_HRMODE_RESPONSE = 71;</code>
+       * <code>LSM303DLHC_ACCEL_HRMODE_RESPONSE = 71 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int LSM303DLHC_ACCEL_HRMODE_RESPONSE_VALUE = 71;
       /**
-       * <code>MPU9150_GYRO_RANGE_RESPONSE = 74;</code>
+       * <code>MPU9150_GYRO_RANGE_RESPONSE = 74 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int MPU9150_GYRO_RANGE_RESPONSE_VALUE = 74;
       /**
-       * <code>MPU9150_SAMPLING_RATE_RESPONSE = 77;</code>
+       * <code>MPU9150_SAMPLING_RATE_RESPONSE = 77 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int MPU9150_SAMPLING_RATE_RESPONSE_VALUE = 77;
       /**
-       * <code>BMP180_PRES_RESOLUTION_RESPONSE = 83;</code>
+       * <code>BMP180_PRES_RESOLUTION_RESPONSE = 83 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int BMP180_PRES_RESOLUTION_RESPONSE_VALUE = 83;
       /**
@@ -1548,7 +1561,7 @@ public final class ShimmerLiteProtocolInstructionSet {
        */
       public static final int BMP180_PRES_CALIBRATION_RESPONSE_VALUE = 86;
       /**
-       * <code>BMP180_CALIBRATION_COEFFICIENTS_RESPONSE = 88;</code>
+       * <code>BMP180_CALIBRATION_COEFFICIENTS_RESPONSE = 88 [(.tutorial.LiteProtocolInstructionSet.response_size) = 22];</code>
        */
       public static final int BMP180_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE = 88;
       /**
@@ -1560,59 +1573,59 @@ public final class ShimmerLiteProtocolInstructionSet {
        */
       public static final int MPU9150_MAG_SENS_ADJ_VALS_RESPONSE_VALUE = 92;
       /**
-       * <code>INTERNAL_EXP_POWER_ENABLE_RESPONSE = 95;</code>
+       * <code>INTERNAL_EXP_POWER_ENABLE_RESPONSE = 95 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int INTERNAL_EXP_POWER_ENABLE_RESPONSE_VALUE = 95;
       /**
-       * <code>EXG_REGS_RESPONSE = 98;</code>
+       * <code>EXG_REGS_RESPONSE = 98 [(.tutorial.LiteProtocolInstructionSet.response_size) = 11];</code>
        */
       public static final int EXG_REGS_RESPONSE_VALUE = 98;
       /**
-       * <code>DAUGHTER_CARD_ID_RESPONSE = 101;</code>
+       * <code>DAUGHTER_CARD_ID_RESPONSE = 101 [(.tutorial.LiteProtocolInstructionSet.response_size) = 3];</code>
        */
       public static final int DAUGHTER_CARD_ID_RESPONSE_VALUE = 101;
       /**
-       * <code>BAUD_RATE_RESPONSE = 107;</code>
+       * <code>BAUD_RATE_RESPONSE = 107 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int BAUD_RATE_RESPONSE_VALUE = 107;
       /**
-       * <code>DERIVED_CHANNEL_BYTES_RESPONSE = 110;</code>
+       * <code>DERIVED_CHANNEL_BYTES_RESPONSE = 110 [(.tutorial.LiteProtocolInstructionSet.response_size) = 3];</code>
        */
       public static final int DERIVED_CHANNEL_BYTES_RESPONSE_VALUE = 110;
       /**
-       * <code>STATUS_RESPONSE = 113;</code>
+       * <code>STATUS_RESPONSE = 113 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int STATUS_RESPONSE_VALUE = 113;
       /**
-       * <code>TRIAL_CONFIG_RESPONSE = 116;</code>
+       * <code>TRIAL_CONFIG_RESPONSE = 116 [(.tutorial.LiteProtocolInstructionSet.response_size) = 3];</code>
        */
       public static final int TRIAL_CONFIG_RESPONSE_VALUE = 116;
       /**
-       * <code>CENTER_RESPONSE = 119;</code>
+       * <code>CENTER_RESPONSE = 119 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       public static final int CENTER_RESPONSE_VALUE = 119;
       /**
-       * <code>SHIMMERNAME_RESPONSE = 122;</code>
+       * <code>SHIMMERNAME_RESPONSE = 122 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       public static final int SHIMMERNAME_RESPONSE_VALUE = 122;
       /**
-       * <code>EXPID_RESPONSE = 125;</code>
+       * <code>EXPID_RESPONSE = 125 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       public static final int EXPID_RESPONSE_VALUE = 125;
       /**
-       * <code>MYID_RESPONSE = 128;</code>
+       * <code>MYID_RESPONSE = 128 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int MYID_RESPONSE_VALUE = 128;
       /**
-       * <code>NSHIMMER_RESPONSE = 131;</code>
+       * <code>NSHIMMER_RESPONSE = 131 [(.tutorial.LiteProtocolInstructionSet.response_size) = 1];</code>
        */
       public static final int NSHIMMER_RESPONSE_VALUE = 131;
       /**
-       * <code>CONFIGTIME_RESPONSE = 134;</code>
+       * <code>CONFIGTIME_RESPONSE = 134 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       public static final int CONFIGTIME_RESPONSE_VALUE = 134;
       /**
-       * <code>DIR_RESPONSE = 136;</code>
+       * <code>DIR_RESPONSE = 136 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       public static final int DIR_RESPONSE_VALUE = 136;
       /**
@@ -1624,25 +1637,29 @@ public final class ShimmerLiteProtocolInstructionSet {
        */
       public static final int INSTREAM_CMD_RESPONSE_VALUE = 138;
       /**
-       * <code>INFOMEM_RESPONSE = 141;</code>
+       * <code>INFOMEM_RESPONSE = 141 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       public static final int INFOMEM_RESPONSE_VALUE = 141;
       /**
-       * <code>RWC_RESPONSE = 144;</code>
+       * <code>RWC_RESPONSE = 144 [(.tutorial.LiteProtocolInstructionSet.response_size) = 8];</code>
        */
       public static final int RWC_RESPONSE_VALUE = 144;
       /**
-       * <code>VBATT_RESPONSE = 148;</code>
+       * <code>VBATT_RESPONSE = 148 [(.tutorial.LiteProtocolInstructionSet.response_size) = 3];</code>
        */
       public static final int VBATT_RESPONSE_VALUE = 148;
       /**
-       * <code>RSP_CALIB_DUMP_COMMAND = 153;</code>
+       * <code>RSP_CALIB_DUMP_COMMAND = 153 [(.tutorial.LiteProtocolInstructionSet.response_size) = -1];</code>
        */
       public static final int RSP_CALIB_DUMP_COMMAND_VALUE = 153;
       /**
-       * <code>RSP_I2C_BATT_STATUS_COMMAND_VALUE = 157;</code>
+       * <code>RSP_I2C_BATT_STATUS_COMMAND_VALUE = 157 [(.tutorial.LiteProtocolInstructionSet.response_size) = 10];</code>
        */
       public static final int RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE = 157;
+      /**
+       * <code>BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = 160 [(.tutorial.LiteProtocolInstructionSet.response_size) = 24];</code>
+       */
+      public static final int BMP280_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE = 160;
 
 
       public final int getNumber() {
@@ -1711,6 +1728,7 @@ public final class ShimmerLiteProtocolInstructionSet {
           case 148: return VBATT_RESPONSE;
           case 153: return RSP_CALIB_DUMP_COMMAND;
           case 157: return RSP_I2C_BATT_STATUS_COMMAND_VALUE;
+          case 160: return BMP280_CALIBRATION_COEFFICIENTS_RESPONSE;
           default: return null;
         }
       }
@@ -1807,12 +1825,23 @@ public final class ShimmerLiteProtocolInstructionSet {
         return memoizedHashCode;
       }
       int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (19 * hash) + getDescriptor().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
+    public static com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1836,39 +1865,39 @@ public final class ShimmerLiteProtocolInstructionSet {
     }
     public static com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessage
+      return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
     public static com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessage
+      return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessage
+      return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessage
+      return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessage
+      return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
     public static com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessage
+      return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
@@ -1886,7 +1915,7 @@ public final class ShimmerLiteProtocolInstructionSet {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1894,7 +1923,7 @@ public final class ShimmerLiteProtocolInstructionSet {
      * Protobuf type {@code tutorial.LiteProtocolInstructionSet}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:tutorial.LiteProtocolInstructionSet)
         com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSetOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -1902,7 +1931,7 @@ public final class ShimmerLiteProtocolInstructionSet {
         return com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.internal_static_tutorial_LiteProtocolInstructionSet_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.internal_static_tutorial_LiteProtocolInstructionSet_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1915,12 +1944,13 @@ public final class ShimmerLiteProtocolInstructionSet {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
@@ -2078,7 +2108,7 @@ public final class ShimmerLiteProtocolInstructionSet {
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_tutorial_LiteProtocolInstructionSet_descriptor;
   private static final 
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_tutorial_LiteProtocolInstructionSet_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
@@ -2091,7 +2121,7 @@ public final class ShimmerLiteProtocolInstructionSet {
     java.lang.String[] descriptorData = {
       "\n$src/LiteProtocolInstructionSet.proto\022\010" +
       "tutorial\032 google/protobuf/descriptor.pro" +
-      "to\"\341\'\n\032LiteProtocolInstructionSet\"\260\r\n\017In" +
+      "to\"\310(\n\032LiteProtocolInstructionSet\"\260\r\n\017In" +
       "structionsSet\022\017\n\013DATA_PACKET\020\000\022\035\n\031SET_SA" +
       "MPLING_RATE_COMMAND\020\005\022\026\n\022TOGGLE_LED_COMM" +
       "AND\020\006\022\033\n\027START_STREAMING_COMMAND\020\007\022\027\n\023SE" +
@@ -2134,7 +2164,7 @@ public final class ShimmerLiteProtocolInstructionSet {
       "NECTION_COMMAND\020\226\001\022\026\n\021STOP_SDBT_COMMAND\020" +
       "\227\001\022\033\n\026SET_CALIB_DUMP_COMMAND\020\230\001\022\036\n\031UPD_C" +
       "ONFIG_MEMORY_COMMAND\020\233\001\022+\n&SET_I2C_BATT_" +
-      "STATUS_FREQ_COMMAND_VALUE\020\234\001\"\375\013\n\017Instruc" +
+      "STATUS_FREQ_COMMAND_VALUE\020\234\001\"\257\014\n\017Instruc" +
       "tionsGet\022\020\n\014NOT_USED_GET\020\000\022\023\n\017INQUIRY_CO" +
       "MMAND\020\001\022\035\n\031GET_SAMPLING_RATE_COMMAND\020\003\022!" +
       "\n\035GET_ACCEL_SENSITIVITY_COMMAND\020\013\022\034\n\030GET" +
@@ -2173,55 +2203,57 @@ public final class ShimmerLiteProtocolInstructionSet {
       "OMMAND\020\216\001\022\024\n\017GET_RWC_COMMAND\020\221\001\022\026\n\021GET_V" +
       "BATT_COMMAND\020\225\001\022\033\n\026GET_CALIB_DUMP_COMMAN" +
       "D\020\232\001\022&\n!GET_I2C_BATT_STATUS_COMMAND_VALU" +
-      "E\020\236\001\"\323\r\n\024InstructionsResponse\022\025\n\021NOT_USE" +
-      "D_RESPONSE\020\000\022\024\n\020INQUIRY_RESPONSE\020\002\022 \n\026SA" +
-      "MPLING_RATE_RESPONSE\020\004\032\004\230\265\030\002\022$\n\032ACCEL_SE" +
-      "NSITIVITY_RESPONSE\020\n\032\004\230\265\030\001\022\037\n\025CONFIG_BYT" +
-      "E0_RESPONSE\020\017\032\004\230\265\030\004\022$\n\032ACCEL_CALIBRATION" +
-      "_RESPONSE\020\022\032\004\230\265\030\025\022/\n%LSM303DLHC_ACCEL_CA",
-      "LIBRATION_RESPONSE\020\033\032\004\230\265\030\025\022#\n\031GYRO_CALIB" +
-      "RATION_RESPONSE\020\025\032\004\230\265\030\025\022\"\n\030MAG_CALIBRATI" +
-      "ON_RESPONSE\020\030\032\004\230\265\030\025\022\034\n\022GSR_RANGE_RESPONS" +
-      "E\020\"\032\004\230\265\030\001\022&\n\034GET_SHIMMER_VERSION_RESPONS" +
-      "E\020%\032\004\230\265\030\001\022\"\n\030EMG_CALIBRATION_RESPONSE\020\'\032" +
-      "\004\230\265\030\004\022\"\n\030ECG_CALIBRATION_RESPONSE\020*\032\004\230\265\030" +
-      "\004\022\"\n\030ALL_CALIBRATION_RESPONSE\020-\032\004\230\265\030T\022\035\n" +
-      "\023FW_VERSION_RESPONSE\020/\032\004\230\265\030\006\022\034\n\022BLINK_LE" +
-      "D_RESPONSE\0201\032\004\230\265\030\001\022\036\n\024BUFFER_SIZE_RESPON" +
-      "SE\0205\032\004\230\265\030\001\022\033\n\021MAG_GAIN_RESPONSE\0208\032\004\230\265\030\001\022",
-      "$\n\032MAG_SAMPLING_RATE_RESPONSE\020;\032\004\230\265\030\001\022&\n" +
-      "\034ACCEL_SAMPLING_RATE_RESPONSE\020A\032\004\230\265\030\001\022*\n" +
-      " LSM303DLHC_ACCEL_LPMODE_RESPONSE\020D\032\004\230\265\030" +
-      "\001\022*\n LSM303DLHC_ACCEL_HRMODE_RESPONSE\020G\032" +
-      "\004\230\265\030\001\022%\n\033MPU9150_GYRO_RANGE_RESPONSE\020J\032\004" +
-      "\230\265\030\001\022(\n\036MPU9150_SAMPLING_RATE_RESPONSE\020M" +
-      "\032\004\230\265\030\001\022)\n\037BMP180_PRES_RESOLUTION_RESPONS" +
-      "E\020S\032\004\230\265\030\001\022$\n BMP180_PRES_CALIBRATION_RES" +
-      "PONSE\020V\0222\n(BMP180_CALIBRATION_COEFFICIEN" +
-      "TS_RESPONSE\020X\032\004\230\265\030\026\022&\n\"MPU9150_MAG_SENS_",
-      "ADJ_VALS_RESPONSE\020\\\022,\n\"INTERNAL_EXP_POWE" +
-      "R_ENABLE_RESPONSE\020_\032\004\230\265\030\001\022\033\n\021EXG_REGS_RE" +
-      "SPONSE\020b\032\004\230\265\030\013\022#\n\031DAUGHTER_CARD_ID_RESPO" +
-      "NSE\020e\032\004\230\265\030\003\022\034\n\022BAUD_RATE_RESPONSE\020k\032\004\230\265\030" +
-      "\001\022(\n\036DERIVED_CHANNEL_BYTES_RESPONSE\020n\032\004\230" +
-      "\265\030\003\022\031\n\017STATUS_RESPONSE\020q\032\004\230\265\030\001\022\037\n\025TRIAL_" +
-      "CONFIG_RESPONSE\020t\032\004\230\265\030\003\022\"\n\017CENTER_RESPON" +
-      "SE\020w\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022\'\n\024SHIMMERNAME_RESPO" +
-      "NSE\020z\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022!\n\016EXPID_RESPONSE\020}" +
-      "\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022\030\n\rMYID_RESPONSE\020\200\001\032\004\230\265\030",
-      "\001\022\034\n\021NSHIMMER_RESPONSE\020\203\001\032\004\230\265\030\001\022\'\n\023CONFI" +
-      "GTIME_RESPONSE\020\206\001\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022 \n\014DIR_" +
-      "RESPONSE\020\210\001\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022\032\n\025INSTREAM_C" +
-      "MD_RESPONSE\020\212\001\022$\n\020INFOMEM_RESPONSE\020\215\001\032\r\230" +
-      "\265\030\377\377\377\377\377\377\377\377\377\001\022\027\n\014RWC_RESPONSE\020\220\001\032\004\230\265\030\010\022\031\n" +
-      "\016VBATT_RESPONSE\020\224\001\032\004\230\265\030\003\022*\n\026RSP_CALIB_DU" +
-      "MP_COMMAND\020\231\001\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022,\n!RSP_I2C_" +
-      "BATT_STATUS_COMMAND_VALUE\020\235\001\032\004\230\265\030\n2:\n\rre" +
-      "sponse_size\022!.google.protobuf.EnumValueO" +
-      "ptions\030\323\206\003 \001(\005Bp\n\'com.shimmerresearch.co",
-      "mms.radioProtocolB!ShimmerLiteProtocolIn" +
-      "structionSet\252\002!com.shimmerresearch.radio" +
-      "protocolb\006proto3"
+      "E\020\236\001\0220\n+GET_BMP280_CALIBRATION_COEFFICIE" +
+      "NTS_COMMAND\020\237\001\"\210\016\n\024InstructionsResponse\022" +
+      "\025\n\021NOT_USED_RESPONSE\020\000\022\024\n\020INQUIRY_RESPON" +
+      "SE\020\002\022 \n\026SAMPLING_RATE_RESPONSE\020\004\032\004\230\265\030\002\022$" +
+      "\n\032ACCEL_SENSITIVITY_RESPONSE\020\n\032\004\230\265\030\001\022\037\n\025" +
+      "CONFIG_BYTE0_RESPONSE\020\017\032\004\230\265\030\004\022$\n\032ACCEL_C",
+      "ALIBRATION_RESPONSE\020\022\032\004\230\265\030\025\022/\n%LSM303DLH" +
+      "C_ACCEL_CALIBRATION_RESPONSE\020\033\032\004\230\265\030\025\022#\n\031" +
+      "GYRO_CALIBRATION_RESPONSE\020\025\032\004\230\265\030\025\022\"\n\030MAG" +
+      "_CALIBRATION_RESPONSE\020\030\032\004\230\265\030\025\022\034\n\022GSR_RAN" +
+      "GE_RESPONSE\020\"\032\004\230\265\030\001\022&\n\034GET_SHIMMER_VERSI" +
+      "ON_RESPONSE\020%\032\004\230\265\030\001\022\"\n\030EMG_CALIBRATION_R" +
+      "ESPONSE\020\'\032\004\230\265\030\004\022\"\n\030ECG_CALIBRATION_RESPO" +
+      "NSE\020*\032\004\230\265\030\004\022\"\n\030ALL_CALIBRATION_RESPONSE\020" +
+      "-\032\004\230\265\030T\022\035\n\023FW_VERSION_RESPONSE\020/\032\004\230\265\030\006\022\034" +
+      "\n\022BLINK_LED_RESPONSE\0201\032\004\230\265\030\001\022\036\n\024BUFFER_S",
+      "IZE_RESPONSE\0205\032\004\230\265\030\001\022\033\n\021MAG_GAIN_RESPONS" +
+      "E\0208\032\004\230\265\030\001\022$\n\032MAG_SAMPLING_RATE_RESPONSE\020" +
+      ";\032\004\230\265\030\001\022&\n\034ACCEL_SAMPLING_RATE_RESPONSE\020" +
+      "A\032\004\230\265\030\001\022*\n LSM303DLHC_ACCEL_LPMODE_RESPO" +
+      "NSE\020D\032\004\230\265\030\001\022*\n LSM303DLHC_ACCEL_HRMODE_R" +
+      "ESPONSE\020G\032\004\230\265\030\001\022%\n\033MPU9150_GYRO_RANGE_RE" +
+      "SPONSE\020J\032\004\230\265\030\001\022(\n\036MPU9150_SAMPLING_RATE_" +
+      "RESPONSE\020M\032\004\230\265\030\001\022)\n\037BMP180_PRES_RESOLUTI" +
+      "ON_RESPONSE\020S\032\004\230\265\030\001\022$\n BMP180_PRES_CALIB" +
+      "RATION_RESPONSE\020V\0222\n(BMP180_CALIBRATION_",
+      "COEFFICIENTS_RESPONSE\020X\032\004\230\265\030\026\022&\n\"MPU9150" +
+      "_MAG_SENS_ADJ_VALS_RESPONSE\020\\\022,\n\"INTERNA" +
+      "L_EXP_POWER_ENABLE_RESPONSE\020_\032\004\230\265\030\001\022\033\n\021E" +
+      "XG_REGS_RESPONSE\020b\032\004\230\265\030\013\022#\n\031DAUGHTER_CAR" +
+      "D_ID_RESPONSE\020e\032\004\230\265\030\003\022\034\n\022BAUD_RATE_RESPO" +
+      "NSE\020k\032\004\230\265\030\001\022(\n\036DERIVED_CHANNEL_BYTES_RES" +
+      "PONSE\020n\032\004\230\265\030\003\022\031\n\017STATUS_RESPONSE\020q\032\004\230\265\030\001" +
+      "\022\037\n\025TRIAL_CONFIG_RESPONSE\020t\032\004\230\265\030\003\022\"\n\017CEN" +
+      "TER_RESPONSE\020w\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022\'\n\024SHIMMER" +
+      "NAME_RESPONSE\020z\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022!\n\016EXPID_",
+      "RESPONSE\020}\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022\030\n\rMYID_RESPON" +
+      "SE\020\200\001\032\004\230\265\030\001\022\034\n\021NSHIMMER_RESPONSE\020\203\001\032\004\230\265\030" +
+      "\001\022\'\n\023CONFIGTIME_RESPONSE\020\206\001\032\r\230\265\030\377\377\377\377\377\377\377\377" +
+      "\377\001\022 \n\014DIR_RESPONSE\020\210\001\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022\032\n\025" +
+      "INSTREAM_CMD_RESPONSE\020\212\001\022$\n\020INFOMEM_RESP" +
+      "ONSE\020\215\001\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022\027\n\014RWC_RESPONSE\020\220" +
+      "\001\032\004\230\265\030\010\022\031\n\016VBATT_RESPONSE\020\224\001\032\004\230\265\030\003\022*\n\026RS" +
+      "P_CALIB_DUMP_COMMAND\020\231\001\032\r\230\265\030\377\377\377\377\377\377\377\377\377\001\022," +
+      "\n!RSP_I2C_BATT_STATUS_COMMAND_VALUE\020\235\001\032\004" +
+      "\230\265\030\n\0223\n(BMP280_CALIBRATION_COEFFICIENTS_",
+      "RESPONSE\020\240\001\032\004\230\265\030\0302:\n\rresponse_size\022!.goo" +
+      "gle.protobuf.EnumValueOptions\030\323\206\003 \001(\005Bp\n" +
+      "\'com.shimmerresearch.comms.radioProtocol" +
+      "B!ShimmerLiteProtocolInstructionSet\252\002!co" +
+      "m.shimmerresearch.radioprotocolb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2239,7 +2271,7 @@ public final class ShimmerLiteProtocolInstructionSet {
     internal_static_tutorial_LiteProtocolInstructionSet_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_tutorial_LiteProtocolInstructionSet_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tutorial_LiteProtocolInstructionSet_descriptor,
         new java.lang.String[] { });
     com.google.protobuf.ExtensionRegistry registry =
