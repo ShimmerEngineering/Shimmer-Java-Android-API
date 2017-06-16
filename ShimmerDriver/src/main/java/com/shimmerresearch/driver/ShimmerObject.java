@@ -2092,6 +2092,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 //					double[] bmp180caldata= calibratePressureSensorData(UP,UT);
 					double[] bmp180caldata = mCalibDetailsBmp180.calibratePressureSensorData(UP,UT);
+					//TODO use below
+//					double[] bmp180caldata = mSensorBMPX80.calibratePressureSensorData(UP,UT);
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KPASCAL,bmp180caldata[0]/1000);
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,bmp180caldata[1]);
 					calibratedData[iUT]=bmp180caldata[1];
@@ -3625,6 +3627,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
 		setPressureRawCoefficients(pressureResoRes);
 		
+		//TODO use below
+//		mSensorBMPX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
+
 		if(isSupportedBmp280()){
 			mSensorBMPX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
 		}
@@ -6827,6 +6832,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public void updateCurrentPressureCalibInUse(){
+		//TODO use below
+//		mSensorBMPX80.mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
+
 		if(isSupportedBmp280()){
 			mSensorBMPX80.mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
 		}
