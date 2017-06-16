@@ -118,7 +118,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	public ShimmerPCBTBCove( String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
 		setSamplingRateShimmer(samplingRate);
 		setAccelRange(accelRange);
-		mGSRRange = gsrRange;
+		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
 		setSetupDeviceWhileConnecting(true);
@@ -140,7 +140,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		mBluetoothRadioState = BT_STATE.DISCONNECTED;
 		setSamplingRateShimmer(samplingRate);
 		setAccelRange(accelRange);
-		mGSRRange = gsrRange;
+		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
 		setSetupDeviceWhileConnecting(true);
@@ -169,7 +169,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		setSamplingRateShimmer(samplingRate);
 		setAccelRange(accelRange);
 		setMagRange(magGain);
-		mGSRRange = gsrRange;
+		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;
 		setSetupDeviceWhileConnecting(true);

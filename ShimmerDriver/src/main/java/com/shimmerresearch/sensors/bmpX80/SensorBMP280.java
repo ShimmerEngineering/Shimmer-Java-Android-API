@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensors;
+package com.shimmerresearch.sensors.bmpX80;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,53 +24,22 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-
+import com.shimmerresearch.sensors.ActionSetting;
 
 /**
  * @author Ronan McCormack
  * @author Mark Nolan
  *
  */
-public class SensorBMP280 extends AbstractSensor{
+public class SensorBMP280 extends SensorBMPX80 {
 
 	/** * */
 	private static final long serialVersionUID = 5173164657730440965L;
 	
 	//--------- Sensor specific variables start --------------
 	
-// ---------Calibration handled on chip-------------	
-	
-//	public double pressTempAC1 = 408;
-//	public double pressTempAC2 = -72;
-//	public double pressTempAC3 = -14383;
-//	public double pressTempAC4 = 332741;
-//	public double pressTempAC5 = 32757;
-//	public double pressTempAC6 = 23153;
-//	public double pressTempB1 = 6190;
-//	public double pressTempB2 = 4;
-//	public double pressTempMB = -32767;
-//	public double pressTempMC = -8711;
-//	public double pressTempMD = 2868;
-//	
-//    protected byte[] mPressureCalRawParams = new byte[23];
-//	protected byte[] mPressureRawParams  = new byte[23];
-	
+	/** Calibration handled on chip for Shimmer4 - might change in the future */	
 
-	private int mPressureResolution_BMP280 = 0;
-	
-
-	public class GuiLabelConfig{
-		public static final String PRESSURE_RESOLUTION_BMP280 = "Pressure Resolution";
-	}
-	
-	public class GuiLabelSensors{
-		public static final String PRESS_TEMP_BMP280 = "Pressure & Temperature";
-	}
-	
-	// GUI Sensor Tiles
-	public class GuiLabelSensorTiles{
-		public static final String PRESSURE_TEMPERATURE_BMP280 = GuiLabelSensors.PRESS_TEMP_BMP280;
-	}
 	
 	public static class DatabaseChannelHandles{
 		public static final String PRESSURE_BMP280 = "BMP280_Pressure";
@@ -128,9 +97,9 @@ public class SensorBMP280 extends AbstractSensor{
 	public static final SensorDetailsRef sensorBmp280 = new SensorDetailsRef(
 			0x04<<(2*8), 
 			0x04<<(2*8), 
-			GuiLabelSensors.PRESS_TEMP_BMP280,
+			GuiLabelSensors.PRESS_TEMP_BMPX80,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(GuiLabelConfig.PRESSURE_RESOLUTION_BMP280),
+			Arrays.asList(GuiLabelConfig.PRESSURE_RESOLUTION),
 			Arrays.asList(ObjectClusterSensorName.TEMPERATURE_BMP280,
 					ObjectClusterSensorName.PRESSURE_BMP280));
 
@@ -196,7 +165,7 @@ public class SensorBMP280 extends AbstractSensor{
 
 	@Override
 	public void generateConfigOptionsMap() {
-		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION_BMP280, configOptionPressureResolutionBMP280);
+		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION, configOptionPressureResolutionBMP280);
 	}
 
 	@Override
@@ -205,11 +174,17 @@ public class SensorBMP280 extends AbstractSensor{
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280.ordinal();
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280,
+					GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP280_PRESSURE),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP280));
 		}
 		super.updateSensorGroupingMap();
+	}
+
+	@Override
+	public void generateCalibMap() {
+		mCalibDetailsBmpX80 = new CalibDetailsBmp280();
+		super.generateCalibMap();
 	}
 
 	@Override
@@ -253,8 +228,8 @@ public class SensorBMP280 extends AbstractSensor{
 		int idxConfigSetupByte3 = 9;
 		int bitShiftBMP280PressureResolution = 4;
 		int maskBMP280PressureResolution = 0x03;
-		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution_BMP280 & maskBMP280PressureResolution) << bitShiftBMP280PressureResolution);
-		mPressureResolution_BMP280 = getPressureResolution();
+		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution & maskBMP280PressureResolution) << bitShiftBMP280PressureResolution);
+		mPressureResolution = getPressureResolution();
 //		System.out.println("Info Mem Pressure resolution:\t" + mPressureResolution_BMP280);
 //		System.out.println("Check");
 	}
@@ -273,7 +248,7 @@ public class SensorBMP280 extends AbstractSensor{
 	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey,String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
-			case(GuiLabelConfig.PRESSURE_RESOLUTION_BMP280):
+			case(GuiLabelConfig.PRESSURE_RESOLUTION):
 				setPressureResolution((int)valueToSet);
 				returnValue = valueToSet;
 		 		break;
@@ -285,7 +260,7 @@ public class SensorBMP280 extends AbstractSensor{
 	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey,String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
-		case(GuiLabelConfig.PRESSURE_RESOLUTION_BMP280):
+		case(GuiLabelConfig.PRESSURE_RESOLUTION):
 			returnValue = getPressureResolution();
 	 		break;
 		  }
@@ -329,7 +304,7 @@ public class SensorBMP280 extends AbstractSensor{
 
 		ActionSetting actionSetting = new ActionSetting(commType);
 		switch(componentName){
-		case(GuiLabelConfig.PRESSURE_RESOLUTION_BMP280):
+		case(GuiLabelConfig.PRESSURE_RESOLUTION):
 			setPressureResolution((int)valueToSet);
 		break;
 		}
@@ -370,7 +345,7 @@ public class SensorBMP280 extends AbstractSensor{
 		if(isSensorEnabled) {
 		}
 		else{
-			mPressureResolution_BMP280 = 0;
+			mPressureResolution = 0;
 		}
 	}
 	
@@ -378,13 +353,14 @@ public class SensorBMP280 extends AbstractSensor{
 	private void setPressureResolution(int i){
 		if(ArrayUtils.contains(ListofPressureResolutionConfigValuesBMP280, i)){
 //			System.err.println("New resolution:\t" + ListofPressureResolution[i]);
-			mPressureResolution_BMP280 = i;
+			mPressureResolution = i;
 		}
 	}
 	
 	private int getPressureResolution() {
-		return mPressureResolution_BMP280;
+		return mPressureResolution;
 	}
+
 
 
 	

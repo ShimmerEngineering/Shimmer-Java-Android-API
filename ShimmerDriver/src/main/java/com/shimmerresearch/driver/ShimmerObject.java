@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.vecmath.Quat4d;
@@ -25,6 +24,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -33,7 +34,6 @@ import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
 import com.shimmerresearch.driver.calibration.CalibDetails;
-import com.shimmerresearch.driver.calibration.CalibDetailsBmp180;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
@@ -61,7 +61,6 @@ import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTING_OPTIONS;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorADC;
-import com.shimmerresearch.sensors.SensorBMP180;
 import com.shimmerresearch.sensors.SensorBridgeAmp;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
@@ -69,7 +68,13 @@ import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
+import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.bmpX80.CalibDetailsBmp180;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
+import com.shimmerresearch.sensors.bmpX80.SensorBMPX80;
 import com.shimmerresearch.algorithms.orientation.GradDes3DOrientation9DoF;
 import com.shimmerresearch.algorithms.orientation.Orientation3DObject;
 
@@ -466,6 +471,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte GET_VBATT_COMMAND                      = (byte) 0x95;
 	public static final byte TEST_CONNECTION_COMMAND            	= (byte) 0x96;
 	public static final byte STOP_SDBT_COMMAND 						= (byte) 0x97;
+	
+	public static final byte GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = (byte) InstructionsGet.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND_VALUE;
+	public static final byte BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = (byte) InstructionsResponse.BMP280_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE;
+
 
 	public static final class DatabaseConfigHandleShimmerObject{
 		public static final String SYNC_WHEN_LOGGING = 	"Sync_When_Logging";
@@ -983,12 +992,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// ----------- MPU9X50 options end -------------------------	
 
 	// ----------- Pressure/Temperature Start -------------------------
+	private SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
+
+	//TODO work on getting rid variables below by just using SensorBMPX80 above
 	protected int mPressureResolution = 0;
-	
 	private CalibDetailsBmp180 mCalibDetailsBmp180 = new CalibDetailsBmp180();
-	
 	protected byte[] mPressureCalRawParams = new byte[23];
-	protected byte[] mPressureRawParams  = new byte[23];
+	
+//	/** not used anywhere in the code - could be a variable used in early development */
+//	@Deprecated
+//	protected byte[] mPressureRawParams  = new byte[23];
 	// ----------- Pressure/Temperature end -------------------------
 	
 	// ----------  ECG/EMG start ---------------
@@ -1073,11 +1086,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// ----------  ECG/EMG end ---------------
 	
 	// ---------- GSR start ------------------
-	protected int mGSRRange=4;													// This stores the current GSR range being used.
-	protected int mPastGSRRange=4; // this is to fix a bug with SDLog v0.9
-	protected int mPastGSRUncalibratedValue=4; // this is to fix a bug with SDLog v0.9
-	protected boolean mPastGSRFirstTime=true; // this is to fix a bug with SDLog v0.9
-
+	protected int mGSRRange=4;		// This stores the current GSR range being used.
+	
+	protected int mPastGSRRange=4; 				// this is to fix a bug with SDLog v0.9
+	protected int mPastGSRUncalibratedValue=4; 	// this is to fix a bug with SDLog v0.9
+	protected boolean mPastGSRFirstTime=true; 	// this is to fix a bug with SDLog v0.9
 	// ---------- GSR end ------------------
 
 
@@ -1617,7 +1630,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1;
 					
 					//to Support derived sensor renaming
-					if (isDerivedSensorsSupported()){
+					if (isSupportedDerivedSensors()){
 						//change name based on derived sensor value
 						if ((mDerivedSensors & DerivedSensorsBitMask.PPG2_1_14)>0){
 							sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A1;
@@ -1652,7 +1665,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				tempData[0] = (double)newPacketInt[iA12];
 				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12;
 				//to Support derived sensor renaming
-				if (isDerivedSensorsSupported()){
+				if (isSupportedDerivedSensors()){
 					//change name based on derived sensor value
 					if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
 						sensorName = SensorPPG.ObjectClusterSensorName.PPG_A12;
@@ -1679,7 +1692,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				tempData[0] = (double)newPacketInt[iA13];
 				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13;
 				//to Support derived sensor renaming
-				if (isDerivedSensorsSupported()){
+				if (isSupportedDerivedSensors()){
 					//change name based on derived sensor value
 					if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
 						sensorName = SensorPPG.ObjectClusterSensorName.PPG_A13;
@@ -1705,7 +1718,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				tempData[0] = (double)newPacketInt[iA14];
 				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14;
 				//to Support derived sensor renaming
-				if (isDerivedSensorsSupported()){
+				if (isSupportedDerivedSensors()){
 					//change name based on derived sensor value
 					if ((mDerivedSensors & DerivedSensorsBitMask.PPG2_1_14)>0){
 						sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A14;
@@ -2078,7 +2091,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iUP]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
 //					double[] bmp180caldata= calibratePressureSensorData(UP,UT);
-					double[] bmp180caldata = SensorBMP180.calibratePressureSensorData(UP,UT, mCalibDetailsBmp180);
+					double[] bmp180caldata = mCalibDetailsBmp180.calibratePressureSensorData(UP,UT);
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.PRESSURE_BMP180,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KPASCAL,bmp180caldata[0]/1000);
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TEMPERATURE_BMP180,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,bmp180caldata[1]);
 					calibratedData[iUT]=bmp180caldata[1];
@@ -2120,6 +2133,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				tempData[0] = (double)newPacketInt[iGSR];
 				int gsrAdcValueUnCal = ((int)tempData[0] & 4095); 
+				
+				int currentGSRRange = getGSRRange();
 
 				if (fwType == COMMUNICATION_TYPE.SD && getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==9){
 //					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
@@ -2134,7 +2149,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					 *	end
 					 */
 					
-					if (mGSRRange==4){
+					if (currentGSRRange==4){
 						newGSRRange=(49152 & (int)tempData[0])>>14;
 						if (mPastGSRFirstTime){
 							mPastGSRRange = newGSRRange;
@@ -2152,7 +2167,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						}
 						
 					}
-					if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+					if (currentGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
 						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
 						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 							p1 = 0.0373;
@@ -2161,7 +2176,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p1 = 0.0363;
 							p2 = -24.8617;
 						}
-					} else if (mGSRRange==1 || newGSRRange==1) {
+					} else if (currentGSRRange==1 || newGSRRange==1) {
 						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 							p1 = 0.0054;
 							p2 = -3.5194;
@@ -2169,7 +2184,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p1 = 0.0051;
 							p2 = -3.8357;
 						}
-					} else if (mGSRRange==2 || newGSRRange==2) {
+					} else if (currentGSRRange==2 || newGSRRange==2) {
 						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 							p1 = 0.0015;
 							p2 = -1.0163;
@@ -2177,7 +2192,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p1 = 0.0015;
 							p2 = -1.0067;
 						}
-					} else if (mGSRRange==3  || newGSRRange==3) {
+					} else if (currentGSRRange==3  || newGSRRange==3) {
 						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 							p1 = 4.5580e-04;
 							p2 = -0.3014;
@@ -2188,11 +2203,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				} else {
 
-					if (mGSRRange==4){
+					if (currentGSRRange==4){
 						//Mask upper 2 bits of the 16-bit packet and then bit shift down
 						newGSRRange=(49152 & (int)tempData[0])>>14; 
 					}
-					if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+					if (currentGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
 						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
 						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 							p1 = 0.0373;
@@ -2201,7 +2216,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p1 = 0.0363;
 							p2 = -24.8617;
 						}
-					} else if (mGSRRange==1 || newGSRRange==1) {
+					} else if (currentGSRRange==1 || newGSRRange==1) {
 						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 							p1 = 0.0054;
 							p2 = -3.5194;
@@ -2209,7 +2224,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p1 = 0.0051;
 							p2 = -3.8357;
 						}
-					} else if (mGSRRange==2 || newGSRRange==2) {
+					} else if (currentGSRRange==2 || newGSRRange==2) {
 						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 							p1 = 0.0015;
 							p2 = -1.0163;
@@ -2217,7 +2232,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							p1 = 0.0015;
 							p2 = -1.0067;
 						}
-					} else if (mGSRRange==3  || newGSRRange==3) {
+					} else if (currentGSRRange==3 || newGSRRange==3) {
 						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
 							p1 = 4.5580e-04;
 							p2 = -0.3014;
@@ -2229,7 +2244,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 
 				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_RANGE)!=null){
-					double rangeToSave = newGSRRange>=0? newGSRRange:mGSRRange;
+					double rangeToSave = newGSRRange>=0? newGSRRange:currentGSRRange;
 					objectCluster.addCalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
 					objectCluster.addUncalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
 				}
@@ -2724,23 +2739,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				int iGSR = getSignalIndex(Shimmer2.ObjectClusterSensorName.GSR);
 				tempData[0] = (double)newPacketInt[iGSR];
 				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
-
+				int currentGSRRange = getGSRRange();
+				
 				double p1=0,p2=0;//,p3=0,p4=0,p5=0;
-				if (mGSRRange==4){
+				if (currentGSRRange==4){
 					newGSRRange=(49152 & (int)tempData[0])>>14; 
 				}
-				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+				if (currentGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
 					// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
 					
 					p1 = 0.0373;
 					p2 = -24.9915;
-				} else if (mGSRRange==1 || newGSRRange==1) {
+				} else if (currentGSRRange==1 || newGSRRange==1) {
 					p1 = 0.0054;
 					p2 = -3.5194;
-				} else if (mGSRRange==2 || newGSRRange==2) {
+				} else if (currentGSRRange==2 || newGSRRange==2) {
 					p1 = 0.0015;
 					p2 = -1.0163;
-				} else if (mGSRRange==3  || newGSRRange==3) {
+				} else if (currentGSRRange==3  || newGSRRange==3) {
 					p1 = 4.5580e-04;
 					p2 = -0.3014;
 				}
@@ -3607,7 +3623,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param calibReadSource
 	 */
 	protected void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
-		mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes, calibReadSource);
+		setPressureRawCoefficients(pressureResoRes);
+		
+		if(isSupportedBmp280()){
+			mSensorBMPX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
+		}
+		else {
+			mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes, calibReadSource);
+		}
 		updateCurrentPressureCalibInUse();
 	}
 
@@ -3685,15 +3708,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 	}
 
-	public int getPressureResolution(){
-		return mPressureResolution;
-	}
-
-
-	public int getGSRRange(){
-		return mGSRRange;
-	}
-
 	public int getPMux(){
 		if ((mConfigByte0 & (byte)64)!=0) {
 			//then set ConfigByte0 at bit position 7
@@ -3745,7 +3759,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
 				setLSM303MagRate(((int)(mConfigByte0 & 1835008))>>18); 
 				setPressureResolution((((int)(mConfigByte0 >>28)) & 3));
-				mGSRRange  = (((int)(mConfigByte0 >>25)) & 7);
+				setGSRRange((((int)(mConfigByte0 >>25)) & 7));
 				mInternalExpPower = (((int)(mConfigByte0 >>24)) & 1);
 				mInquiryResponseBytes = new byte[8+mNChannels];
 				System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
@@ -3957,8 +3971,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				outputStream.write( mGyroCalRawParams );
 				outputStream.write( mMagCalRawParams.length );
 				outputStream.write( mMagCalRawParams );
-				outputStream.write( mPressureCalRawParams.length);
-				outputStream.write( mPressureCalRawParams );
+				outputStream.write( getPressureRawCoefficients().length);
+				outputStream.write( getPressureRawCoefficients() );
 				rawcal = outputStream.toByteArray( );
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -4401,11 +4415,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mEnableOntheFlyGyroOVCal = state;
 	}
 
-	public byte[] getPressureRawCoefficients(){
-		return mPressureCalRawParams;
-	}
-	
-	
 	/* (non-Javadoc)
 	 * @see com.shimmerresearch.driver.ShimmerDevice#calcMaxSamplingRate()
 	 */
@@ -4661,7 +4670,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			mMPU9150AccelRange = (configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftMPU9150AccelRange) & infoMemLayoutCast.maskMPU9150AccelRange;
 			setPressureResolution((configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftBMP180PressureResolution) & infoMemLayoutCast.maskBMP180PressureResolution);
-			mGSRRange = (configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftGSRRange) & infoMemLayoutCast.maskGSRRange;
+			setGSRRange((configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftGSRRange) & infoMemLayoutCast.maskGSRRange);
 			mInternalExpPower = (configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
 			
 			//EXG Configuration
@@ -4991,7 +5000,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			mConfigBytes[infoMemLayout.idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & infoMemLayout.maskMPU9150AccelRange) << infoMemLayout.bitShiftMPU9150AccelRange);
 			mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((getPressureResolution() & infoMemLayout.maskBMP180PressureResolution) << infoMemLayout.bitShiftBMP180PressureResolution);
-			mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mGSRRange & infoMemLayout.maskGSRRange) << infoMemLayout.bitShiftGSRRange);
+			mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((getGSRRange() & infoMemLayout.maskGSRRange) << infoMemLayout.bitShiftGSRRange);
 			checkIfInternalExpBrdPowerIsNeeded();
 			mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
 			
@@ -5207,6 +5216,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public void sensorAndConfigMapsCreate() {
+		//TODO enable for new IMU sensor support (BMP280, MPU9250, LSM303AH, LN Accel)
+//		createMapOfSensorClasses();
+		
 		// Clear all here because they won't necessarily be cleared depending on
 		// hardware version
 		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
@@ -5278,6 +5290,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		handleSpecialCasesAfterSensorMapCreate();
 	}
 	
+	private void createMapOfSensorClasses() {
+		mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
+
+		//TODO decide whether to match Shimmer4 approach by storing classes only in the map or use mSensorBMPX80 
+		if(isSupportedBmp280()){
+			mSensorBMPX80 = new SensorBMP280(mShimmerVerObject);
+			addSensorClass(SENSORS.BMP280, mSensorBMPX80);
+		}
+		else{
+			mSensorBMPX80 = new SensorBMP180(mShimmerVerObject);
+			addSensorClass(SENSORS.BMP180, mSensorBMPX80);
+		}
+	}
+
+
 	@Override
 	protected void handleSpecialCasesAfterSensorMapCreate() {
 		SensorEXG.updateSensorMapForExgResolution(mSensorMap, getExGResolution());
@@ -5788,7 +5815,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(state) {
 		}
 		else {
-			mGSRRange=4;
+			setGSRRange(4);
 		}
 	}
 
@@ -5997,58 +6024,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mChannelMap;
 	}
 	
-	public double getPressTempAC1(){
-		return mCalibDetailsBmp180.AC1;
-	}
-	
-	public double getPressTempAC2(){
-		return mCalibDetailsBmp180.AC2;
-	}
-	
-	public double getPressTempAC3(){
-		return mCalibDetailsBmp180.AC3;
-	}
-	
-	public double getPressTempAC4(){
-		return mCalibDetailsBmp180.AC4;
-	}
-	
-	public double getPressTempAC5(){
-		return mCalibDetailsBmp180.AC5;
-	}
-	
-	public double getPressTempAC6(){
-		return mCalibDetailsBmp180.AC6;
-	}
-	
-	public double getPressTempB1(){
-		return mCalibDetailsBmp180.B1;
-	}
-	
-	public double getPressTempB2(){
-		return mCalibDetailsBmp180.B2;
-	}
-	
-	public double getPressTempMB(){
-		return mCalibDetailsBmp180.MB;
-	}
-	
-	public double getPressTempMC(){
-		return mCalibDetailsBmp180.MC;
-	}
-	
-	public double getPressTempMD(){
-		return mCalibDetailsBmp180.MD;
-	}
-
-	public void setPressureCalib(
-			double AC1, double AC2, double AC3, 
-			double AC4, double AC5, double AC6,
-			double B1, double B2, 
-			double MB, double MC, double MD){
-		mCalibDetailsBmp180.setPressureCalib(AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
-	}
-
 	public boolean isUsingConfigFromInfoMem() {
 		return mShimmerUsingConfigFromInfoMem;
 	}
@@ -6109,18 +6084,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mInitialTimeStamp = initialTimeStamp;
 	}
 
-	public void setPressureResolution(int i){
-		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
-			mPressureResolution = i;
-		}
-		
-		updateCurrentPressureCalibInUse();
-	}
-	
 	public void setGSRRange(int i){
 		mGSRRange = i;
 	}
 	
+	public int getGSRRange(){
+		return mGSRRange;
+	}
+
+
 	/**
 	 * @return the mShimmerInfoMemBytes generated from an empty byte array. This is called to generate the InfoMem bytes for writing to the Shimmer.
 	 */
@@ -6855,10 +6827,92 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public void updateCurrentPressureCalibInUse(){
-		mCalibDetailsBmp180.mRangeValue = getPressureResolution();
+		if(isSupportedBmp280()){
+			mSensorBMPX80.mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
+		}
+		else {
+			mCalibDetailsBmp180.mRangeValue = getPressureResolution();
+		}
 	}
 	
 	//-------------------- Calibration Parameters End -----------------------------------
+
+	//-------------------- Pressure/Temperature Start -----------------------------------
+	
+	public void setPressureResolution(int i){
+		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
+			mPressureResolution = i;
+		}
+		
+		updateCurrentPressureCalibInUse();
+	}
+	
+	public int getPressureResolution(){
+		return mPressureResolution;
+	}
+
+
+	public double getPressTempAC1(){
+		return mCalibDetailsBmp180.AC1;
+	}
+	
+	public double getPressTempAC2(){
+		return mCalibDetailsBmp180.AC2;
+	}
+	
+	public double getPressTempAC3(){
+		return mCalibDetailsBmp180.AC3;
+	}
+	
+	public double getPressTempAC4(){
+		return mCalibDetailsBmp180.AC4;
+	}
+	
+	public double getPressTempAC5(){
+		return mCalibDetailsBmp180.AC5;
+	}
+	
+	public double getPressTempAC6(){
+		return mCalibDetailsBmp180.AC6;
+	}
+	
+	public double getPressTempB1(){
+		return mCalibDetailsBmp180.B1;
+	}
+	
+	public double getPressTempB2(){
+		return mCalibDetailsBmp180.B2;
+	}
+	
+	public double getPressTempMB(){
+		return mCalibDetailsBmp180.MB;
+	}
+	
+	public double getPressTempMC(){
+		return mCalibDetailsBmp180.MC;
+	}
+	
+	public double getPressTempMD(){
+		return mCalibDetailsBmp180.MD;
+	}
+
+	public void setPressureCalib(
+			double AC1, double AC2, double AC3, 
+			double AC4, double AC5, double AC6,
+			double B1, double B2, 
+			double MB, double MC, double MD){
+		mCalibDetailsBmp180.setPressureCalib(AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
+	}
+
+	public void setPressureRawCoefficients(byte[] pressureCalRawParams){
+		mPressureCalRawParams = pressureCalRawParams;
+	}
+
+	public byte[] getPressureRawCoefficients(){
+		return mPressureCalRawParams;
+	}
+
+	//-------------------- Pressure/Temperature End -----------------------------------
 
 	//-------------------- PPG Start -----------------------------------
 
@@ -10369,6 +10423,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public boolean isSupportedErrorLedControl() {
 		return mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 7, 12);
+	}
+
+	/** Returns true if the Shimmer is using new sensors. These sensors are:
+	 * <li> Use BMP280 instead of BMP180 as barometer. 
+	 * 
+	 * @return
+	 */
+	public boolean isSupportedBmp280() {
+		return isSupportedNewImuSensors();
 	}
 
 	/** Returns true if the Shimmer is using new sensors. These sensors are:

@@ -1,0 +1,76 @@
+package com.shimmerresearch.sensors.bmpX80;
+
+import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.sensors.AbstractSensor;
+
+public abstract class SensorBMPX80 extends AbstractSensor {
+
+	private static final long serialVersionUID = 1772340408277892416L;
+
+	//--------- Sensor specific variables start --------------
+
+	protected int mPressureResolution = 0;
+
+	public CalibDetailsBmpX80 mCalibDetailsBmpX80 = new CalibDetailsBmp180(); // = new CalibDetailsBmp280();
+
+	public class GuiLabelConfig{
+		public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
+	}
+
+	public class GuiLabelSensors{
+		public static final String PRESS_TEMP_BMPX80 = "Pressure & Temperature";
+	}
+	
+	// GUI Sensor Tiles
+	public class GuiLabelSensorTiles{
+		public static final String PRESSURE_TEMPERATURE = GuiLabelSensors.PRESS_TEMP_BMPX80;
+	}
+	
+	//--------- Sensor specific variables end --------------
+
+	
+	public SensorBMPX80(SENSORS sensorType, ShimmerVerObject svo) {
+		super(sensorType, svo);
+		// TODO Auto-generated constructor stub
+	}
+	
+	public SensorBMPX80(SENSORS sensorType, ShimmerDevice shimmerDevice) {
+		super(sensorType, shimmerDevice);
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public byte[] getRawCalibrationParameters(ShimmerVerObject svo){        
+		byte[] rawcal=new byte[1];
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
+			// Mag + Pressure
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+			try {
+				outputStream.write(5); // write the number of different calibration parameters
+
+				outputStream.write( mCalibDetailsBmpX80.getPressureRawCoefficients().length);
+				outputStream.write( mCalibDetailsBmpX80.getPressureRawCoefficients() );
+				rawcal = outputStream.toByteArray( );
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+
+		} 
+		else {
+			rawcal[0]=0;
+		}
+		return rawcal;
+	}
+
+	public void parseCalParamByteArray(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
+		mCalibDetailsBmpX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
+	}
+
+
+}

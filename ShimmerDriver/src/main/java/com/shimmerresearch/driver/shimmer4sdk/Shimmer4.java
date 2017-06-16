@@ -41,8 +41,6 @@ import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.SensorSTC3100Details;
 import com.shimmerresearch.sensors.SensorADC;
-import com.shimmerresearch.sensors.SensorBMP180;
-import com.shimmerresearch.sensors.SensorBMP280;
 import com.shimmerresearch.sensors.SensorBattVoltage;
 import com.shimmerresearch.sensors.SensorBridgeAmp;
 import com.shimmerresearch.sensors.SensorEXG;
@@ -51,6 +49,8 @@ import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.ShimmerClock;
@@ -99,6 +99,11 @@ public class Shimmer4 extends ShimmerDevice {
 	
 	@Override
 	public void sensorAndConfigMapsCreate() {
+		createMapOfSensorClasses();
+		super.sensorAndConfigMapsCreateCommon();
+	}
+	
+	private void createMapOfSensorClasses() {
 		mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
 
 		//Example code
@@ -134,7 +139,7 @@ public class Shimmer4 extends ShimmerDevice {
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED
 				|| getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE
 				|| getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-			if(isDerivedSensorsSupported()){
+			if(isSupportedDerivedSensors()){
 				addSensorClass(SENSORS.PPG, new SensorPPG(this));
 			}
 		}
@@ -147,10 +152,8 @@ public class Shimmer4 extends ShimmerDevice {
 		else{
 			addSensorClass(SENSORS.BMP180, new SensorBMP180(mShimmerVerObject));
 		}
-		
-		super.sensorAndConfigMapsCreateCommon();
 	}
-	
+
 	@Override
 	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
 		//TODO don't think this is relevant for Shimmer4
