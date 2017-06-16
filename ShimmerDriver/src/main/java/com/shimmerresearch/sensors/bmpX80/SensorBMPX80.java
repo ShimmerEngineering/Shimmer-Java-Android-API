@@ -72,5 +72,9 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 		mCalibDetailsBmpX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
 	}
 
+	public double[] calibratePressureSensorData(double uP, double uT) {
+		return mCalibDetailsBmpX80.calibratePressureSensorData(uP, uT);
+	}
+
 
 }
