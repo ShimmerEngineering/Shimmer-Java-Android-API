@@ -183,7 +183,9 @@ dependencies {
 	//compile name: 'ShimmerBiophysicalProcessingLibrary_Rev_0_11'
 	compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
 	testCompile group: 'junit', name: 'junit', version: '4.+'
-	compile 'com.google.protobuf:protobuf-java:3.0.0-beta-4'
+	// https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
+	compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.3.1'
+
    //compile 'io.grpc:grpc-all:0.14.0'
    // https://mvnrepository.com/artifact/io.grpc/grpc-all
 	compile group: 'io.grpc', name: 'grpc-all', version: '1.0.0-pre1'
