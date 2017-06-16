@@ -23,8 +23,8 @@ namespace com.shimmerresearch.radioprotocol {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiRzcmMvTGl0ZVByb3RvY29sSW5zdHJ1Y3Rpb25TZXQucHJvdG8SCHR1dG9y",
-            "aWFsGiBnb29nbGUvcHJvdG9idWYvZGVzY3JpcHRvci5wcm90byK+JgoaTGl0",
-            "ZVByb3RvY29sSW5zdHJ1Y3Rpb25TZXQi4wwKD0luc3RydWN0aW9uc1NldBIP",
+            "aWFsGiBnb29nbGUvcHJvdG9idWYvZGVzY3JpcHRvci5wcm90byLIKAoaTGl0",
+            "ZVByb3RvY29sSW5zdHJ1Y3Rpb25TZXQisA0KD0luc3RydWN0aW9uc1NldBIP",
             "CgtEQVRBX1BBQ0tFVBAAEh0KGVNFVF9TQU1QTElOR19SQVRFX0NPTU1BTkQQ",
             "BRIWChJUT0dHTEVfTEVEX0NPTU1BTkQQBhIbChdTVEFSVF9TVFJFQU1JTkdf",
             "Q09NTUFORBAHEhcKE1NFVF9TRU5TT1JTX0NPTU1BTkQQCBIhCh1TRVRfQUND",
@@ -60,83 +60,88 @@ namespace com.shimmerresearch.radioprotocol {
             "EhoKFUFDS19DT01NQU5EX1BST0NFU1NFRBD/ARIfChpTVEFSVF9MT0dHSU5H",
             "X09OTFlfQ09NTUFORBCSARIeChlTVE9QX0xPR0dJTkdfT05MWV9DT01NQU5E",
             "EJMBEhwKF1RFU1RfQ09OTkVDVElPTl9DT01NQU5EEJYBEhYKEVNUT1BfU0RC",
-            "VF9DT01NQU5EEJcBEhsKFlNFVF9DQUxJQl9EVU1QX0NPTU1BTkQQmAEi1QsK",
-            "D0luc3RydWN0aW9uc0dldBIQCgxOT1RfVVNFRF9HRVQQABITCg9JTlFVSVJZ",
-            "X0NPTU1BTkQQARIdChlHRVRfU0FNUExJTkdfUkFURV9DT01NQU5EEAMSIQod",
-            "R0VUX0FDQ0VMX1NFTlNJVElWSVRZX0NPTU1BTkQQCxIcChhHRVRfQ09ORklH",
-            "X0JZVEUwX0NPTU1BTkQQEBIsCihHRVRfTFNNMzAzRExIQ19BQ0NFTF9DQUxJ",
-            "QlJBVElPTl9DT01NQU5EEBwSIQodR0VUX0FDQ0VMX0NBTElCUkFUSU9OX0NP",
-            "TU1BTkQQExIgChxHRVRfR1lST19DQUxJQlJBVElPTl9DT01NQU5EEBYSHwob",
-            "R0VUX01BR19DQUxJQlJBVElPTl9DT01NQU5EEBkSGQoVR0VUX0dTUl9SQU5H",
-            "RV9DT01NQU5EECMSHwobR0VUX1NISU1NRVJfVkVSU0lPTl9DT01NQU5EECQS",
-            "IwofR0VUX1NISU1NRVJfVkVSU0lPTl9DT01NQU5EX05FVxA/Eh8KG0dFVF9F",
-            "TUdfQ0FMSUJSQVRJT05fQ09NTUFORBAoEh8KG0dFVF9FQ0dfQ0FMSUJSQVRJ",
-            "T05fQ09NTUFORBArEh8KG0dFVF9BTExfQ0FMSUJSQVRJT05fQ09NTUFORBAs",
-            "EhoKFkdFVF9GV19WRVJTSU9OX0NPTU1BTkQQLhIRCg1HRVRfQkxJTktfTEVE",
-            "EDISGwoXR0VUX0JVRkZFUl9TSVpFX0NPTU1BTkQQNhIYChRHRVRfTUFHX0dB",
-            "SU5fQ09NTUFORBA5EiEKHUdFVF9NQUdfU0FNUExJTkdfUkFURV9DT01NQU5E",
-            "EDwSIwofR0VUX0FDQ0VMX1NBTVBMSU5HX1JBVEVfQ09NTUFORBBCEicKI0dF",
-            "VF9MU00zMDNETEhDX0FDQ0VMX0xQTU9ERV9DT01NQU5EEEUSJwojR0VUX0xT",
-            "TTMwM0RMSENfQUNDRUxfSFJNT0RFX0NPTU1BTkQQSBIiCh5HRVRfTVBVOTE1",
-            "MF9HWVJPX1JBTkdFX0NPTU1BTkQQSxIlCiFHRVRfTVBVOTE1MF9TQU1QTElO",
-            "R19SQVRFX0NPTU1BTkQQThImCiJHRVRfQk1QMTgwX1BSRVNfUkVTT0xVVElP",
-            "Tl9DT01NQU5EEFQSJwojR0VUX0JNUDE4MF9QUkVTX0NBTElCUkFUSU9OX0NP",
-            "TU1BTkQQVxIvCitHRVRfQk1QMTgwX0NBTElCUkFUSU9OX0NPRUZGSUNJRU5U",
-            "U19DT01NQU5EEFkSKQolR0VUX01QVTkxNTBfTUFHX1NFTlNfQURKX1ZBTFNf",
-            "Q09NTUFORBBdEikKJUdFVF9JTlRFUk5BTF9FWFBfUE9XRVJfRU5BQkxFX0NP",
-            "TU1BTkQQYBIYChRHRVRfRVhHX1JFR1NfQ09NTUFORBBjEiAKHEdFVF9EQVVH",
-            "SFRFUl9DQVJEX0lEX0NPTU1BTkQQZhIZChVHRVRfQkFVRF9SQVRFX0NPTU1B",
-            "TkQQbBIdChlHRVRfREVSSVZFRF9DSEFOTkVMX0JZVEVTEG8SFgoSR0VUX1NU",
-            "QVRVU19DT01NQU5EEHISHAoYR0VUX1RSSUFMX0NPTkZJR19DT01NQU5EEHUS",
-            "FgoSR0VUX0NFTlRFUl9DT01NQU5EEHgSGwoXR0VUX1NISU1NRVJOQU1FX0NP",
-            "TU1BTkQQexIVChFHRVRfRVhQSURfQ09NTUFORBB+EhUKEEdFVF9NWUlEX0NP",
-            "TU1BTkQQgQESGQoUR0VUX05TSElNTUVSX0NPTU1BTkQQhAESGwoWR0VUX0NP",
-            "TkZJR1RJTUVfQ09NTUFORBCHARIUCg9HRVRfRElSX0NPTU1BTkQQiQESGAoT",
-            "R0VUX0lORk9NRU1fQ09NTUFORBCOARIUCg9HRVRfUldDX0NPTU1BTkQQkQES",
-            "FgoRR0VUX1ZCQVRUX0NPTU1BTkQQlQESGwoWR0VUX0NBTElCX0RVTVBfQ09N",
-            "TUFORBCaASKlDQoUSW5zdHJ1Y3Rpb25zUmVzcG9uc2USFQoRTk9UX1VTRURf",
-            "UkVTUE9OU0UQABIUChBJTlFVSVJZX1JFU1BPTlNFEAISIAoWU0FNUExJTkdf",
-            "UkFURV9SRVNQT05TRRAEGgSYtRgCEiQKGkFDQ0VMX1NFTlNJVElWSVRZX1JF",
-            "U1BPTlNFEAoaBJi1GAESHwoVQ09ORklHX0JZVEUwX1JFU1BPTlNFEA8aBJi1",
-            "GAQSJAoaQUNDRUxfQ0FMSUJSQVRJT05fUkVTUE9OU0UQEhoEmLUYFRIvCiVM",
-            "U00zMDNETEhDX0FDQ0VMX0NBTElCUkFUSU9OX1JFU1BPTlNFEBsaBJi1GBUS",
-            "IwoZR1lST19DQUxJQlJBVElPTl9SRVNQT05TRRAVGgSYtRgVEiIKGE1BR19D",
-            "QUxJQlJBVElPTl9SRVNQT05TRRAYGgSYtRgVEhwKEkdTUl9SQU5HRV9SRVNQ",
-            "T05TRRAiGgSYtRgBEiYKHEdFVF9TSElNTUVSX1ZFUlNJT05fUkVTUE9OU0UQ",
-            "JRoEmLUYARIiChhFTUdfQ0FMSUJSQVRJT05fUkVTUE9OU0UQJxoEmLUYBBIi",
-            "ChhFQ0dfQ0FMSUJSQVRJT05fUkVTUE9OU0UQKhoEmLUYBBIiChhBTExfQ0FM",
-            "SUJSQVRJT05fUkVTUE9OU0UQLRoEmLUYVBIdChNGV19WRVJTSU9OX1JFU1BP",
-            "TlNFEC8aBJi1GAYSHAoSQkxJTktfTEVEX1JFU1BPTlNFEDEaBJi1GAESHgoU",
-            "QlVGRkVSX1NJWkVfUkVTUE9OU0UQNRoEmLUYARIbChFNQUdfR0FJTl9SRVNQ",
-            "T05TRRA4GgSYtRgBEiQKGk1BR19TQU1QTElOR19SQVRFX1JFU1BPTlNFEDsa",
-            "BJi1GAESJgocQUNDRUxfU0FNUExJTkdfUkFURV9SRVNQT05TRRBBGgSYtRgB",
-            "EioKIExTTTMwM0RMSENfQUNDRUxfTFBNT0RFX1JFU1BPTlNFEEQaBJi1GAES",
-            "KgogTFNNMzAzRExIQ19BQ0NFTF9IUk1PREVfUkVTUE9OU0UQRxoEmLUYARIl",
-            "ChtNUFU5MTUwX0dZUk9fUkFOR0VfUkVTUE9OU0UQShoEmLUYARIoCh5NUFU5",
-            "MTUwX1NBTVBMSU5HX1JBVEVfUkVTUE9OU0UQTRoEmLUYARIpCh9CTVAxODBf",
-            "UFJFU19SRVNPTFVUSU9OX1JFU1BPTlNFEFMaBJi1GAESJAogQk1QMTgwX1BS",
-            "RVNfQ0FMSUJSQVRJT05fUkVTUE9OU0UQVhIyCihCTVAxODBfQ0FMSUJSQVRJ",
-            "T05fQ09FRkZJQ0lFTlRTX1JFU1BPTlNFEFgaBJi1GBYSJgoiTVBVOTE1MF9N",
-            "QUdfU0VOU19BREpfVkFMU19SRVNQT05TRRBcEiwKIklOVEVSTkFMX0VYUF9Q",
-            "T1dFUl9FTkFCTEVfUkVTUE9OU0UQXxoEmLUYARIbChFFWEdfUkVHU19SRVNQ",
-            "T05TRRBiGgSYtRgLEiMKGURBVUdIVEVSX0NBUkRfSURfUkVTUE9OU0UQZRoE",
-            "mLUYAxIcChJCQVVEX1JBVEVfUkVTUE9OU0UQaxoEmLUYARIoCh5ERVJJVkVE",
-            "X0NIQU5ORUxfQllURVNfUkVTUE9OU0UQbhoEmLUYAxIZCg9TVEFUVVNfUkVT",
-            "UE9OU0UQcRoEmLUYARIfChVUUklBTF9DT05GSUdfUkVTUE9OU0UQdBoEmLUY",
-            "AxIiCg9DRU5URVJfUkVTUE9OU0UQdxoNmLUY////////////ARInChRTSElN",
-            "TUVSTkFNRV9SRVNQT05TRRB6Gg2YtRj///////////8BEiEKDkVYUElEX1JF",
-            "U1BPTlNFEH0aDZi1GP///////////wESGAoNTVlJRF9SRVNQT05TRRCAARoE",
-            "mLUYARIcChFOU0hJTU1FUl9SRVNQT05TRRCDARoEmLUYARInChNDT05GSUdU",
-            "SU1FX1JFU1BPTlNFEIYBGg2YtRj///////////8BEiAKDERJUl9SRVNQT05T",
-            "RRCIARoNmLUY////////////ARIaChVJTlNUUkVBTV9DTURfUkVTUE9OU0UQ",
-            "igESJAoQSU5GT01FTV9SRVNQT05TRRCNARoNmLUY////////////ARIXCgxS",
-            "V0NfUkVTUE9OU0UQkAEaBJi1GAgSGQoOVkJBVFRfUkVTUE9OU0UQlAEaBJi1",
-            "GAMSKgoWUlNQX0NBTElCX0RVTVBfQ09NTUFORBCZARoNmLUY////////////",
-            "ATI6Cg1yZXNwb25zZV9zaXplEiEuZ29vZ2xlLnByb3RvYnVmLkVudW1WYWx1",
-            "ZU9wdGlvbnMY04YDIAEoBUJwCidjb20uc2hpbW1lcnJlc2VhcmNoLmNvbW1z",
-            "LnJhZGlvUHJvdG9jb2xCIVNoaW1tZXJMaXRlUHJvdG9jb2xJbnN0cnVjdGlv",
-            "blNldKoCIWNvbS5zaGltbWVycmVzZWFyY2gucmFkaW9wcm90b2NvbGIGcHJv",
-            "dG8z"));
+            "VF9DT01NQU5EEJcBEhsKFlNFVF9DQUxJQl9EVU1QX0NPTU1BTkQQmAESHgoZ",
+            "VVBEX0NPTkZJR19NRU1PUllfQ09NTUFORBCbARIrCiZTRVRfSTJDX0JBVFRf",
+            "U1RBVFVTX0ZSRVFfQ09NTUFORF9WQUxVRRCcASKvDAoPSW5zdHJ1Y3Rpb25z",
+            "R2V0EhAKDE5PVF9VU0VEX0dFVBAAEhMKD0lOUVVJUllfQ09NTUFORBABEh0K",
+            "GUdFVF9TQU1QTElOR19SQVRFX0NPTU1BTkQQAxIhCh1HRVRfQUNDRUxfU0VO",
+            "U0lUSVZJVFlfQ09NTUFORBALEhwKGEdFVF9DT05GSUdfQllURTBfQ09NTUFO",
+            "RBAQEiwKKEdFVF9MU00zMDNETEhDX0FDQ0VMX0NBTElCUkFUSU9OX0NPTU1B",
+            "TkQQHBIhCh1HRVRfQUNDRUxfQ0FMSUJSQVRJT05fQ09NTUFORBATEiAKHEdF",
+            "VF9HWVJPX0NBTElCUkFUSU9OX0NPTU1BTkQQFhIfChtHRVRfTUFHX0NBTElC",
+            "UkFUSU9OX0NPTU1BTkQQGRIZChVHRVRfR1NSX1JBTkdFX0NPTU1BTkQQIxIf",
+            "ChtHRVRfU0hJTU1FUl9WRVJTSU9OX0NPTU1BTkQQJBIjCh9HRVRfU0hJTU1F",
+            "Ul9WRVJTSU9OX0NPTU1BTkRfTkVXED8SHwobR0VUX0VNR19DQUxJQlJBVElP",
+            "Tl9DT01NQU5EECgSHwobR0VUX0VDR19DQUxJQlJBVElPTl9DT01NQU5EECsS",
+            "HwobR0VUX0FMTF9DQUxJQlJBVElPTl9DT01NQU5EECwSGgoWR0VUX0ZXX1ZF",
+            "UlNJT05fQ09NTUFORBAuEhEKDUdFVF9CTElOS19MRUQQMhIbChdHRVRfQlVG",
+            "RkVSX1NJWkVfQ09NTUFORBA2EhgKFEdFVF9NQUdfR0FJTl9DT01NQU5EEDkS",
+            "IQodR0VUX01BR19TQU1QTElOR19SQVRFX0NPTU1BTkQQPBIjCh9HRVRfQUND",
+            "RUxfU0FNUExJTkdfUkFURV9DT01NQU5EEEISJwojR0VUX0xTTTMwM0RMSENf",
+            "QUNDRUxfTFBNT0RFX0NPTU1BTkQQRRInCiNHRVRfTFNNMzAzRExIQ19BQ0NF",
+            "TF9IUk1PREVfQ09NTUFORBBIEiIKHkdFVF9NUFU5MTUwX0dZUk9fUkFOR0Vf",
+            "Q09NTUFORBBLEiUKIUdFVF9NUFU5MTUwX1NBTVBMSU5HX1JBVEVfQ09NTUFO",
+            "RBBOEiYKIkdFVF9CTVAxODBfUFJFU19SRVNPTFVUSU9OX0NPTU1BTkQQVBIn",
+            "CiNHRVRfQk1QMTgwX1BSRVNfQ0FMSUJSQVRJT05fQ09NTUFORBBXEi8KK0dF",
+            "VF9CTVAxODBfQ0FMSUJSQVRJT05fQ09FRkZJQ0lFTlRTX0NPTU1BTkQQWRIp",
+            "CiVHRVRfTVBVOTE1MF9NQUdfU0VOU19BREpfVkFMU19DT01NQU5EEF0SKQol",
+            "R0VUX0lOVEVSTkFMX0VYUF9QT1dFUl9FTkFCTEVfQ09NTUFORBBgEhgKFEdF",
+            "VF9FWEdfUkVHU19DT01NQU5EEGMSIAocR0VUX0RBVUdIVEVSX0NBUkRfSURf",
+            "Q09NTUFORBBmEhkKFUdFVF9CQVVEX1JBVEVfQ09NTUFORBBsEh0KGUdFVF9E",
+            "RVJJVkVEX0NIQU5ORUxfQllURVMQbxIWChJHRVRfU1RBVFVTX0NPTU1BTkQQ",
+            "chIcChhHRVRfVFJJQUxfQ09ORklHX0NPTU1BTkQQdRIWChJHRVRfQ0VOVEVS",
+            "X0NPTU1BTkQQeBIbChdHRVRfU0hJTU1FUk5BTUVfQ09NTUFORBB7EhUKEUdF",
+            "VF9FWFBJRF9DT01NQU5EEH4SFQoQR0VUX01ZSURfQ09NTUFORBCBARIZChRH",
+            "RVRfTlNISU1NRVJfQ09NTUFORBCEARIbChZHRVRfQ09ORklHVElNRV9DT01N",
+            "QU5EEIcBEhQKD0dFVF9ESVJfQ09NTUFORBCJARIYChNHRVRfSU5GT01FTV9D",
+            "T01NQU5EEI4BEhQKD0dFVF9SV0NfQ09NTUFORBCRARIWChFHRVRfVkJBVFRf",
+            "Q09NTUFORBCVARIbChZHRVRfQ0FMSUJfRFVNUF9DT01NQU5EEJoBEiYKIUdF",
+            "VF9JMkNfQkFUVF9TVEFUVVNfQ09NTUFORF9WQUxVRRCeARIwCitHRVRfQk1Q",
+            "MjgwX0NBTElCUkFUSU9OX0NPRUZGSUNJRU5UU19DT01NQU5EEJ8BIogOChRJ",
+            "bnN0cnVjdGlvbnNSZXNwb25zZRIVChFOT1RfVVNFRF9SRVNQT05TRRAAEhQK",
+            "EElOUVVJUllfUkVTUE9OU0UQAhIgChZTQU1QTElOR19SQVRFX1JFU1BPTlNF",
+            "EAQaBJi1GAISJAoaQUNDRUxfU0VOU0lUSVZJVFlfUkVTUE9OU0UQChoEmLUY",
+            "ARIfChVDT05GSUdfQllURTBfUkVTUE9OU0UQDxoEmLUYBBIkChpBQ0NFTF9D",
+            "QUxJQlJBVElPTl9SRVNQT05TRRASGgSYtRgVEi8KJUxTTTMwM0RMSENfQUND",
+            "RUxfQ0FMSUJSQVRJT05fUkVTUE9OU0UQGxoEmLUYFRIjChlHWVJPX0NBTElC",
+            "UkFUSU9OX1JFU1BPTlNFEBUaBJi1GBUSIgoYTUFHX0NBTElCUkFUSU9OX1JF",
+            "U1BPTlNFEBgaBJi1GBUSHAoSR1NSX1JBTkdFX1JFU1BPTlNFECIaBJi1GAES",
+            "JgocR0VUX1NISU1NRVJfVkVSU0lPTl9SRVNQT05TRRAlGgSYtRgBEiIKGEVN",
+            "R19DQUxJQlJBVElPTl9SRVNQT05TRRAnGgSYtRgEEiIKGEVDR19DQUxJQlJB",
+            "VElPTl9SRVNQT05TRRAqGgSYtRgEEiIKGEFMTF9DQUxJQlJBVElPTl9SRVNQ",
+            "T05TRRAtGgSYtRhUEh0KE0ZXX1ZFUlNJT05fUkVTUE9OU0UQLxoEmLUYBhIc",
+            "ChJCTElOS19MRURfUkVTUE9OU0UQMRoEmLUYARIeChRCVUZGRVJfU0laRV9S",
+            "RVNQT05TRRA1GgSYtRgBEhsKEU1BR19HQUlOX1JFU1BPTlNFEDgaBJi1GAES",
+            "JAoaTUFHX1NBTVBMSU5HX1JBVEVfUkVTUE9OU0UQOxoEmLUYARImChxBQ0NF",
+            "TF9TQU1QTElOR19SQVRFX1JFU1BPTlNFEEEaBJi1GAESKgogTFNNMzAzRExI",
+            "Q19BQ0NFTF9MUE1PREVfUkVTUE9OU0UQRBoEmLUYARIqCiBMU00zMDNETEhD",
+            "X0FDQ0VMX0hSTU9ERV9SRVNQT05TRRBHGgSYtRgBEiUKG01QVTkxNTBfR1lS",
+            "T19SQU5HRV9SRVNQT05TRRBKGgSYtRgBEigKHk1QVTkxNTBfU0FNUExJTkdf",
+            "UkFURV9SRVNQT05TRRBNGgSYtRgBEikKH0JNUDE4MF9QUkVTX1JFU09MVVRJ",
+            "T05fUkVTUE9OU0UQUxoEmLUYARIkCiBCTVAxODBfUFJFU19DQUxJQlJBVElP",
+            "Tl9SRVNQT05TRRBWEjIKKEJNUDE4MF9DQUxJQlJBVElPTl9DT0VGRklDSUVO",
+            "VFNfUkVTUE9OU0UQWBoEmLUYFhImCiJNUFU5MTUwX01BR19TRU5TX0FESl9W",
+            "QUxTX1JFU1BPTlNFEFwSLAoiSU5URVJOQUxfRVhQX1BPV0VSX0VOQUJMRV9S",
+            "RVNQT05TRRBfGgSYtRgBEhsKEUVYR19SRUdTX1JFU1BPTlNFEGIaBJi1GAsS",
+            "IwoZREFVR0hURVJfQ0FSRF9JRF9SRVNQT05TRRBlGgSYtRgDEhwKEkJBVURf",
+            "UkFURV9SRVNQT05TRRBrGgSYtRgBEigKHkRFUklWRURfQ0hBTk5FTF9CWVRF",
+            "U19SRVNQT05TRRBuGgSYtRgDEhkKD1NUQVRVU19SRVNQT05TRRBxGgSYtRgB",
+            "Eh8KFVRSSUFMX0NPTkZJR19SRVNQT05TRRB0GgSYtRgDEiIKD0NFTlRFUl9S",
+            "RVNQT05TRRB3Gg2YtRj///////////8BEicKFFNISU1NRVJOQU1FX1JFU1BP",
+            "TlNFEHoaDZi1GP///////////wESIQoORVhQSURfUkVTUE9OU0UQfRoNmLUY",
+            "////////////ARIYCg1NWUlEX1JFU1BPTlNFEIABGgSYtRgBEhwKEU5TSElN",
+            "TUVSX1JFU1BPTlNFEIMBGgSYtRgBEicKE0NPTkZJR1RJTUVfUkVTUE9OU0UQ",
+            "hgEaDZi1GP///////////wESIAoMRElSX1JFU1BPTlNFEIgBGg2YtRj/////",
+            "//////8BEhoKFUlOU1RSRUFNX0NNRF9SRVNQT05TRRCKARIkChBJTkZPTUVN",
+            "X1JFU1BPTlNFEI0BGg2YtRj///////////8BEhcKDFJXQ19SRVNQT05TRRCQ",
+            "ARoEmLUYCBIZCg5WQkFUVF9SRVNQT05TRRCUARoEmLUYAxIqChZSU1BfQ0FM",
+            "SUJfRFVNUF9DT01NQU5EEJkBGg2YtRj///////////8BEiwKIVJTUF9JMkNf",
+            "QkFUVF9TVEFUVVNfQ09NTUFORF9WQUxVRRCdARoEmLUYChIzCihCTVAyODBf",
+            "Q0FMSUJSQVRJT05fQ09FRkZJQ0lFTlRTX1JFU1BPTlNFEKABGgSYtRgYMjoK",
+            "DXJlc3BvbnNlX3NpemUSIS5nb29nbGUucHJvdG9idWYuRW51bVZhbHVlT3B0",
+            "aW9ucxjThgMgASgFQnAKJ2NvbS5zaGltbWVycmVzZWFyY2guY29tbXMucmFk",
+            "aW9Qcm90b2NvbEIhU2hpbW1lckxpdGVQcm90b2NvbEluc3RydWN0aW9uU2V0",
+            "qgIhY29tLnNoaW1tZXJyZXNlYXJjaC5yYWRpb3Byb3RvY29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { pbr::FileDescriptor.DescriptorProtoFileDescriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -239,7 +244,7 @@ namespace com.shimmerresearch.radioprotocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static partial class Types {
       /// <summary>
-      /// response_size = -1, this means that the 1st rx byte is the length of the payload
+      ///response_size = -1, this means that the 1st rx byte is the length of the payload
       /// </summary>
       public enum InstructionsSet {
         [pbr::OriginalName("DATA_PACKET")] DataPacket = 0,
@@ -249,11 +254,11 @@ namespace com.shimmerresearch.radioprotocol {
         [pbr::OriginalName("SET_SENSORS_COMMAND")] SetSensorsCommand = 8,
         [pbr::OriginalName("SET_ACCEL_SENSITIVITY_COMMAND")] SetAccelSensitivityCommand = 9,
         /// <summary>
-        ///  only Shimmer 2
+        /// only Shimmer 2
         /// </summary>
         [pbr::OriginalName("SET_5V_REGULATOR_COMMAND")] Set5VRegulatorCommand = 12,
         /// <summary>
-        ///  only Shimmer 2
+        /// only Shimmer 2
         /// </summary>
         [pbr::OriginalName("SET_PMUX_COMMAND")] SetPmuxCommand = 13,
         [pbr::OriginalName("SET_CONFIG_BYTE0_COMMAND")] SetConfigByte0Command = 14,
@@ -287,15 +292,15 @@ namespace com.shimmerresearch.radioprotocol {
         [pbr::OriginalName("SET_TRIAL_CONFIG_COMMAND")] SetTrialConfigCommand = 115,
         [pbr::OriginalName("SET_CENTER_COMMAND")] SetCenterCommand = 118,
         /// <summary>
-        /// Shimmer Name
+        ///Shimmer Name
         /// </summary>
         [pbr::OriginalName("SET_SHIMMERNAME_COMMAND")] SetShimmernameCommand = 121,
         /// <summary>
-        /// Experiment Name
+        ///Experiment Name
         /// </summary>
         [pbr::OriginalName("SET_EXPID_COMMAND")] SetExpidCommand = 124,
         /// <summary>
-        /// Shimmer ID in trial
+        ///Shimmer ID in trial
         /// </summary>
         [pbr::OriginalName("SET_MYID_COMMAND")] SetMyidCommand = 127,
         [pbr::OriginalName("SET_NSHIMMER_COMMAND")] SetNshimmerCommand = 130,
@@ -310,11 +315,13 @@ namespace com.shimmerresearch.radioprotocol {
         [pbr::OriginalName("TEST_CONNECTION_COMMAND")] TestConnectionCommand = 150,
         [pbr::OriginalName("STOP_SDBT_COMMAND")] StopSdbtCommand = 151,
         [pbr::OriginalName("SET_CALIB_DUMP_COMMAND")] SetCalibDumpCommand = 152,
+        [pbr::OriginalName("UPD_CONFIG_MEMORY_COMMAND")] UpdConfigMemoryCommand = 155,
+        [pbr::OriginalName("SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE")] SetI2CBattStatusFreqCommandValue = 156,
       }
 
       public enum InstructionsGet {
         /// <summary>
-        /// protobuf requirement to have a 0
+        ///protobuf requirement to have a 0
         /// </summary>
         [pbr::OriginalName("NOT_USED_GET")] NotUsedGet = 0,
         [pbr::OriginalName("INQUIRY_COMMAND")] InquiryCommand = 1,
@@ -328,7 +335,7 @@ namespace com.shimmerresearch.radioprotocol {
         [pbr::OriginalName("GET_GSR_RANGE_COMMAND")] GetGsrRangeCommand = 35,
         [pbr::OriginalName("GET_SHIMMER_VERSION_COMMAND")] GetShimmerVersionCommand = 36,
         /// <summary>
-        /// this is to avoid the $ char which is used by rn42
+        ///this is to avoid the $ char which is used by rn42
         /// </summary>
         [pbr::OriginalName("GET_SHIMMER_VERSION_COMMAND_NEW")] GetShimmerVersionCommandNew = 63,
         [pbr::OriginalName("GET_EMG_CALIBRATION_COMMAND")] GetEmgCalibrationCommand = 40,
@@ -366,6 +373,8 @@ namespace com.shimmerresearch.radioprotocol {
         [pbr::OriginalName("GET_RWC_COMMAND")] GetRwcCommand = 145,
         [pbr::OriginalName("GET_VBATT_COMMAND")] GetVbattCommand = 149,
         [pbr::OriginalName("GET_CALIB_DUMP_COMMAND")] GetCalibDumpCommand = 154,
+        [pbr::OriginalName("GET_I2C_BATT_STATUS_COMMAND_VALUE")] GetI2CBattStatusCommandValue = 158,
+        [pbr::OriginalName("GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND")] GetBmp280CalibrationCoefficientsCommand = 159,
       }
 
       public enum InstructionsResponse {
@@ -395,12 +404,12 @@ namespace com.shimmerresearch.radioprotocol {
         [pbr::OriginalName("MPU9150_SAMPLING_RATE_RESPONSE")] Mpu9150SamplingRateResponse = 77,
         [pbr::OriginalName("BMP180_PRES_RESOLUTION_RESPONSE")] Bmp180PresResolutionResponse = 83,
         /// <summary>
-        /// not used
+        ///not used
         /// </summary>
         [pbr::OriginalName("BMP180_PRES_CALIBRATION_RESPONSE")] Bmp180PresCalibrationResponse = 86,
         [pbr::OriginalName("BMP180_CALIBRATION_COEFFICIENTS_RESPONSE")] Bmp180CalibrationCoefficientsResponse = 88,
         /// <summary>
-        /// not used
+        ///not used
         /// </summary>
         [pbr::OriginalName("MPU9150_MAG_SENS_ADJ_VALS_RESPONSE")] Mpu9150MagSensAdjValsResponse = 92,
         [pbr::OriginalName("INTERNAL_EXP_POWER_ENABLE_RESPONSE")] InternalExpPowerEnableResponse = 95,
@@ -418,13 +427,15 @@ namespace com.shimmerresearch.radioprotocol {
         [pbr::OriginalName("CONFIGTIME_RESPONSE")] ConfigtimeResponse = 134,
         [pbr::OriginalName("DIR_RESPONSE")] DirResponse = 136,
         /// <summary>
-        ///  no following byte
+        /// no following byte
         /// </summary>
         [pbr::OriginalName("INSTREAM_CMD_RESPONSE")] InstreamCmdResponse = 138,
         [pbr::OriginalName("INFOMEM_RESPONSE")] InfomemResponse = 141,
         [pbr::OriginalName("RWC_RESPONSE")] RwcResponse = 144,
         [pbr::OriginalName("VBATT_RESPONSE")] VbattResponse = 148,
         [pbr::OriginalName("RSP_CALIB_DUMP_COMMAND")] RspCalibDumpCommand = 153,
+        [pbr::OriginalName("RSP_I2C_BATT_STATUS_COMMAND_VALUE")] RspI2CBattStatusCommandValue = 157,
+        [pbr::OriginalName("BMP280_CALIBRATION_COEFFICIENTS_RESPONSE")] Bmp280CalibrationCoefficientsResponse = 160,
       }
 
     }
