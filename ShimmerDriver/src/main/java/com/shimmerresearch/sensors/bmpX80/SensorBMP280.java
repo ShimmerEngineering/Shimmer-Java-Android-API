@@ -3,6 +3,7 @@ package com.shimmerresearch.sensors.bmpX80;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -349,18 +350,22 @@ public class SensorBMP280 extends SensorBMPX80 {
 		}
 	}
 	
-	
-	private void setPressureResolution(int i){
+	@Override
+	public void setPressureResolution(int i){
 		if(ArrayUtils.contains(ListofPressureResolutionConfigValuesBMP280, i)){
 //			System.err.println("New resolution:\t" + ListofPressureResolution[i]);
 			mPressureResolution = i;
 		}
-	}
-	
-	private int getPressureResolution() {
-		return mPressureResolution;
+		updateCurrentPressureCalibInUse();
 	}
 
+	@Override
+	public List<Double> getPressTempConfigValues() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	//--------- Sensor specific methods end --------------
 
 
 	
