@@ -4,6 +4,7 @@ import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -32,6 +33,9 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 		public static final String PRESSURE_TEMPERATURE = GuiLabelSensors.PRESS_TEMP_BMPX80;
 	}
 	
+	public abstract void setPressureResolution(int i);
+	public abstract List<Double> getPressTempConfigValues();
+
 	//--------- Sensor specific variables end --------------
 
 	
@@ -75,6 +79,30 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 	public double[] calibratePressureSensorData(double uP, double uT) {
 		return mCalibDetailsBmpX80.calibratePressureSensorData(uP, uT);
 	}
+	
+	public void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
+		mCalibDetailsBmpX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
+		mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
+	}
+	
+	public int getPressureResolution(){
+		return mPressureResolution;
+	}
+	
+	public void updateCurrentPressureCalibInUse(){
+		mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
+	}
+
+	public void setDefaultBmp180PressureSensorConfig(boolean isSensorEnabled) {
+		//RS (30/5/2016) - from ShimmerObject:
+		if(isSensorEnabled) {
+		}
+		else{
+			mPressureResolution = 0;
+		}
+	}
+
+
 
 
 }

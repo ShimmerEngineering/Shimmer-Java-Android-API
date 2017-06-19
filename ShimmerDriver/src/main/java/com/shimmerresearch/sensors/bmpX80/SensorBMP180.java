@@ -1,8 +1,10 @@
 package com.shimmerresearch.sensors.bmpX80;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -445,37 +447,6 @@ public class SensorBMP180 extends SensorBMPX80 {
 
 	//--------- Sensor specific methods start --------------
 	
-	public void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
-		mCalibDetailsBmpX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
-		mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
-	}
-	
-
-	private void setPressureResolution(int i){
-		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
-//			System.out.println("New resolution:\t" + ListofPressureResolution[i]);
-			mPressureResolution = i;
-		}
-		updateCurrentPressureCalibInUse();
-	}
-	
-	private int getPressureResolution(){
-		return mPressureResolution;
-	}
-	
-	public void updateCurrentPressureCalibInUse(){
-		mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
-	}
-
-	private void setDefaultBmp180PressureSensorConfig(boolean isSensorEnabled) {
-		//RS (30/5/2016) - from ShimmerObject:
-		if(isSensorEnabled) {
-		}
-		else{
-			mPressureResolution = 0;
-		}
-	}
-	
 	public void setPressureCalib(
 			double AC1, double AC2, double AC3, 
 			double AC4, double AC5, double AC6,
@@ -528,7 +499,47 @@ public class SensorBMP180 extends SensorBMPX80 {
 		return ((CalibDetailsBmp180)mCalibDetailsBmpX80).MD;
 	}
 	
-	
+	@Override
+	public void setPressureResolution(int i){
+		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
+//			System.out.println("New resolution:\t" + ListofPressureResolution[i]);
+			mPressureResolution = i;
+		}
+		updateCurrentPressureCalibInUse();
+	}
+
+
+	@Override
+	public List<Double> getPressTempConfigValues() {
+		List<Double> configValues = new ArrayList<Double>();
+
+//		CalibDetailsBmp180 calibDetailsBmp180 = ((CalibDetailsBmp180)mCalibDetailsBmpX80);
+//		configValues.add(calibDetailsBmp180.AC1);
+//		configValues.add(calibDetailsBmp180.AC2);
+//		configValues.add(calibDetailsBmp180.AC3);
+//		configValues.add(calibDetailsBmp180.AC4);
+//		configValues.add(calibDetailsBmp180.AC5);
+//		configValues.add(calibDetailsBmp180.AC6);
+//		configValues.add(calibDetailsBmp180.B1);
+//		configValues.add(calibDetailsBmp180.B2);
+//		configValues.add(calibDetailsBmp180.MB);
+//		configValues.add(calibDetailsBmp180.MC);
+//		configValues.add(calibDetailsBmp180.MD);
+
+		configValues.add(getPressTempAC1());
+		configValues.add(getPressTempAC2());
+		configValues.add(getPressTempAC3());
+		configValues.add(getPressTempAC4());
+		configValues.add(getPressTempAC5());
+		configValues.add(getPressTempAC6());
+		configValues.add(getPressTempB1());
+		configValues.add(getPressTempB2());
+		configValues.add(getPressTempMB());
+		configValues.add(getPressTempMC());
+		configValues.add(getPressTempMD());
+		
+		return configValues;
+	}
 
 	
 	//--------- Sensor specific methods end --------------
