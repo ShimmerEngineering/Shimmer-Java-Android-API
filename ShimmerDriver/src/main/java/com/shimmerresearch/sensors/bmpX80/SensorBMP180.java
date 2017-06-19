@@ -41,8 +41,8 @@ public class SensorBMP180 extends SensorBMPX80 {
 	private static final long serialVersionUID = 4559709230029277863L;
 	
 	public static class DatabaseChannelHandles{
-		public static final String PRESSURE = "BMP180_Pressure";
-		public static final String TEMPERATURE = "BMP180_Temperature";
+		public static final String PRESSURE_BMP180 = "BMP180_Pressure";
+		public static final String TEMPERATURE_BMP180 = "BMP180_Temperature";
 	}
 	public static final class DatabaseConfigHandle{
 		public static final String PRESSURE_PRECISION = "BMP180_Pressure_Precision";
@@ -129,7 +129,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	public static final ChannelDetails channelBmp180Press = new ChannelDetails(
 			ObjectClusterSensorName.PRESSURE_BMP180,
 			ObjectClusterSensorName.PRESSURE_BMP180,
-			DatabaseChannelHandles.PRESSURE,
+			DatabaseChannelHandles.PRESSURE_BMP180,
 			CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.KPASCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -144,7 +144,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	public static final ChannelDetails channelBmp180Temp = new ChannelDetails(
 			ObjectClusterSensorName.TEMPERATURE_BMP180,
 			ObjectClusterSensorName.TEMPERATURE_BMP180,
-			DatabaseChannelHandles.TEMPERATURE,
+			DatabaseChannelHandles.TEMPERATURE_BMP180,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.DEGREES_CELSUIS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -508,7 +508,12 @@ public class SensorBMP180 extends SensorBMPX80 {
 		updateCurrentPressureCalibInUse();
 	}
 
-
+	@Override
+	public double[] calibratePressureSensorData(double UP, double UT) {
+		UP=UP/Math.pow(2,8-getPressureResolution());
+		return super.calibratePressureSensorData(UP, UT);
+	}
+	
 	@Override
 	public List<Double> getPressTempConfigValues() {
 		List<Double> configValues = new ArrayList<Double>();

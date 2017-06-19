@@ -1567,7 +1567,7 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A14;
         	}
 	        if (listOfSensorsShimmer3[12].isSelected()) {
-	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BMP180;
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BMPX80;
 	       	}
 	       	if (listOfSensorsShimmer3[13].isSelected()){
 	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GSR;

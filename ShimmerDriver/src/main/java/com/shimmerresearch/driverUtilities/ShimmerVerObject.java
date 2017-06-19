@@ -32,8 +32,8 @@ public class ShimmerVerObject implements Serializable {
 	public String mFirmwareVersionParsedJustVersionNumber = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 
 	//TODO MNtoMN: below is a bad implementation, consider using ExpansionBoardDetails 
-	public int mShimmerExpansionBoardId = ShimmerVerDetails.ANY_VERSION;//0;
-//	public ExpansionBoardDetails ExpansionBoardDetails = 
+//	public int mShimmerExpansionBoardId = ShimmerVerDetails.ANY_VERSION;//0;
+	private ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails(ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION); 
 	
 	//TODO handle SPAN_VERSION for SPANs? It is obtained from the PlatformHwManager
 	//public SPAN_VERSION hardwareVersion = SPAN_VERSION.UNKNOWN;
@@ -41,6 +41,10 @@ public class ShimmerVerObject implements Serializable {
 	public ShimmerVerObject() {
 		// TODO Auto-generated constructor stub
 	}
+	
+//	public ShimmerVerObject(int hardwareVersion){
+//		mHardwareVersion = hardwareVersion;
+//	}
 	
 	/**Not enough to parseShimmerVerDetails
 	 * @param firmwareIdentifier
@@ -103,13 +107,42 @@ public class ShimmerVerObject implements Serializable {
 			int firmwareVersionInternal,
 			int shimmerExpansionBoardId) {
 
+		this(hardwareVersion,
+				firmwareIdentifier,
+				firmwareVersionMajor,
+				firmwareVersionMinor,
+				firmwareVersionInternal,
+				shimmerExpansionBoardId,
+				ShimmerVerDetails.ANY_VERSION);
+	}
+	
+	/**
+	 * Used specifically for compatible version checking
+	 * 
+	 * @param hardwareVersion
+	 * @param firmwareIdentifier
+	 * @param firmwareVersionMajor
+	 * @param firmwareVersionMinor
+	 * @param firmwareVersionInternal
+	 * @param shimmerExpansionBoardId
+	 */
+	public ShimmerVerObject(
+			int hardwareVersion, 
+			int firmwareIdentifier,
+			int firmwareVersionMajor, 
+			int firmwareVersionMinor, 
+			int firmwareVersionInternal,
+			int shimmerExpansionBoardId,
+			int shimmerExpansionBoardRev) {
+
 		this(firmwareIdentifier,
 				firmwareVersionMajor,
 				firmwareVersionMinor,
 				firmwareVersionInternal);
 
 		mHardwareVersion = hardwareVersion;
-		mShimmerExpansionBoardId = shimmerExpansionBoardId;
+//		mShimmerExpansionBoardId = shimmerExpansionBoardId;
+		mExpansionBoardDetails = new ExpansionBoardDetails(shimmerExpansionBoardId, shimmerExpansionBoardRev, ShimmerVerDetails.ANY_VERSION);
 		parseShimmerVerDetails();
 	}
 	
@@ -547,6 +580,14 @@ public class ShimmerVerObject implements Serializable {
 	public static boolean compareVersions(ShimmerVerObject svo, int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 		return UtilShimmer.compareVersions(svo.getFirmwareIdentifier(), svo.getFirmwareVersionMajor(), svo.getFirmwareVersionMinor(), svo.getFirmwareVersionInternal(),
 				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
+
+	public int getShimmerExpansionBoardId() {
+		return mExpansionBoardDetails.mExpansionBoardId;
+	}
+	
+	public int getShimmerExpansionBoardRev() {
+		return mExpansionBoardDetails.mExpansionBoardRev;
 	}
 
 

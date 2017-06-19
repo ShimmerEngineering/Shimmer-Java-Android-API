@@ -32,6 +32,7 @@ import com.shimmerresearch.sensors.ActionSetting;
  * @author Mark Nolan
  *
  */
+//TODO update compatibility maps
 public class SensorBMP280 extends SensorBMPX80 {
 
 	/** * */
@@ -57,41 +58,41 @@ public class SensorBMP280 extends SensorBMPX80 {
 	//--------- Sensor specific variables end --------------
 	
 	//--------- Bluetooth commands start --------------
-	public static final byte SET_BMP280_PRES_RESOLUTION_COMMAND 	= (byte) 0x52;
-	public static final byte BMP280_PRES_RESOLUTION_RESPONSE 		= (byte) 0x53;
-	public static final byte GET_BMP280_PRES_RESOLUTION_COMMAND 	= (byte) 0x54;
-	public static final byte SET_BMP280_PRES_CALIBRATION_COMMAND	= (byte) 0x55;
-	public static final byte BMP280_PRES_CALIBRATION_RESPONSE 		= (byte) 0x56;
-	public static final byte GET_BMP280_PRES_CALIBRATION_COMMAND 	= (byte) 0x57;
-	public static final byte BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = (byte) 0x58;
-	public static final byte GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = (byte) 0x59;
-
-	public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
-	static {
-		Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
-		aMap.put(GET_BMP280_PRES_RESOLUTION_COMMAND, new BtCommandDetails(GET_BMP280_PRES_RESOLUTION_COMMAND, "GET_BMP280_PRES_RESOLUTION_COMMAND", BMP280_PRES_RESOLUTION_RESPONSE));
-		aMap.put(GET_BMP280_PRES_CALIBRATION_COMMAND, new BtCommandDetails(GET_BMP280_PRES_CALIBRATION_COMMAND, "GET_BMP280_PRES_CALIBRATION_COMMAND", BMP280_PRES_CALIBRATION_RESPONSE));
-		aMap.put(GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND, new BtCommandDetails(GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND, "GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND", BMP280_CALIBRATION_COEFFICIENTS_RESPONSE));
-		mBtGetCommandMap = Collections.unmodifiableMap(aMap);
-	}
-
-	public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
-	static {
-		Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
-		aMap.put(SET_BMP280_PRES_RESOLUTION_COMMAND, new BtCommandDetails(SET_BMP280_PRES_RESOLUTION_COMMAND, "SET_BMP280_PRES_RESOLUTION_COMMAND"));
-		aMap.put(SET_BMP280_PRES_CALIBRATION_COMMAND, new BtCommandDetails(SET_BMP280_PRES_CALIBRATION_COMMAND, "SET_BMP280_PRES_CALIBRATION_COMMAND"));
-		mBtSetCommandMap = Collections.unmodifiableMap(aMap);
-	}
+//	public static final byte SET_BMP280_PRES_RESOLUTION_COMMAND 	= (byte) 0x52;
+//	public static final byte BMP280_PRES_RESOLUTION_RESPONSE 		= (byte) 0x53;
+//	public static final byte GET_BMP280_PRES_RESOLUTION_COMMAND 	= (byte) 0x54;
+//	public static final byte SET_BMP280_PRES_CALIBRATION_COMMAND	= (byte) 0x55;
+//	public static final byte BMP280_PRES_CALIBRATION_RESPONSE 		= (byte) 0x56;
+//	public static final byte GET_BMP280_PRES_CALIBRATION_COMMAND 	= (byte) 0x57;
+//	public static final byte BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = (byte) 0x58;
+//	public static final byte GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = (byte) 0x59;
+//
+//	public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+//	static {
+//		Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+//		aMap.put(GET_BMP280_PRES_RESOLUTION_COMMAND, new BtCommandDetails(GET_BMP280_PRES_RESOLUTION_COMMAND, "GET_BMP280_PRES_RESOLUTION_COMMAND", BMP280_PRES_RESOLUTION_RESPONSE));
+//		aMap.put(GET_BMP280_PRES_CALIBRATION_COMMAND, new BtCommandDetails(GET_BMP280_PRES_CALIBRATION_COMMAND, "GET_BMP280_PRES_CALIBRATION_COMMAND", BMP280_PRES_CALIBRATION_RESPONSE));
+//		aMap.put(GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND, new BtCommandDetails(GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND, "GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND", BMP280_CALIBRATION_COEFFICIENTS_RESPONSE));
+//		mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+//	}
+//
+//	public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+//	static {
+//		Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+//		aMap.put(SET_BMP280_PRES_RESOLUTION_COMMAND, new BtCommandDetails(SET_BMP280_PRES_RESOLUTION_COMMAND, "SET_BMP280_PRES_RESOLUTION_COMMAND"));
+//		aMap.put(SET_BMP280_PRES_CALIBRATION_COMMAND, new BtCommandDetails(SET_BMP280_PRES_CALIBRATION_COMMAND, "SET_BMP280_PRES_CALIBRATION_COMMAND"));
+//		mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+//	}
 	
 	//--------- Configuration options start --------------
-	public static final String[] ListofPressureResolutionBMP280 = {"Low","Standard","High","Very High"};
+	public static final String[] ListofPressureResolutionBMP280 = {"Low","Standard","High","Ultra High"};
 	public static final Integer[] ListofPressureResolutionConfigValuesBMP280 = {0,1,2,3};
 
 	public static final ConfigOptionDetailsSensor configOptionPressureResolutionBMP280 = new ConfigOptionDetailsSensor(
 			ListofPressureResolutionBMP280, 
 			ListofPressureResolutionConfigValuesBMP280, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP280);
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
@@ -99,7 +100,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 			0x04<<(2*8), 
 			0x04<<(2*8), 
 			GuiLabelSensors.PRESS_TEMP_BMPX80,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP280,
 			Arrays.asList(GuiLabelConfig.PRESSURE_RESOLUTION),
 			Arrays.asList(ObjectClusterSensorName.TEMPERATURE_BMP280,
 					ObjectClusterSensorName.PRESSURE_BMP280));
@@ -357,6 +358,13 @@ public class SensorBMP280 extends SensorBMPX80 {
 			mPressureResolution = i;
 		}
 		updateCurrentPressureCalibInUse();
+	}
+	
+	@Override
+	public double[] calibratePressureSensorData(double UP, double UT) {
+//		UT = UT * Math.pow(2, 4);
+		UP=UP/Math.pow(2,4);
+		return super.calibratePressureSensorData(UP, UT);
 	}
 
 	@Override

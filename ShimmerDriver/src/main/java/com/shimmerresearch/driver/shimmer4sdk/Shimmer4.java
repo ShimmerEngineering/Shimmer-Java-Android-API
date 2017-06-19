@@ -183,47 +183,15 @@ public class Shimmer4 extends ShimmerDevice {
 			mConfigBytes = configBytes;
 		}
 		else {
-			mConfigBytes = configBytes;
-
+			createInfoMemLayoutObjectIfNeeded();
 			//TODO create for Shimmer4 or use Shimmer3?
 			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3) mInfoMemLayout;
+			mConfigBytes = configBytes;
 
-			createInfoMemLayoutObjectIfNeeded();
+			// Parse Enabled and Derived sensor bytes in order to update sensor maps
+			parseEnabledDerivedSensorsForMaps(infoMemLayoutCast, configBytes);
 
-			// Sensors
-			mEnabledSensors = ((long)configBytes[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
-			mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors1] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors1;
-			mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors2] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors2;
-	
-			mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors3] & 0xFF) << infoMemLayoutCast.bitShiftSensors3;
-			mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors4] & 0xFF) << infoMemLayoutCast.bitShiftSensors4;
-			
-			mDerivedSensors = (long)0;
-			// Check if compatible and not equal to 0xFF
-			if((infoMemLayoutCast.idxDerivedSensors0>0) && (configBytes[infoMemLayoutCast.idxDerivedSensors0]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)
-					&& (infoMemLayoutCast.idxDerivedSensors1>0) && (configBytes[infoMemLayoutCast.idxDerivedSensors1]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)) { 
-				
-				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors0] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors0;
-				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors1] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors1;
-				
-				// Check if compatible and not equal to 0xFF
-				// RM commented out the below check sept 2016 as infoMemBytes[infoMemLayoutCast.idxDerivedSensors2]  can be 0xFF if all 6DoF and 9DoF algorithms are enabled
-				//if((infoMemLayoutCast.idxDerivedSensors2>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors2]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)){
-				if(infoMemLayoutCast.idxDerivedSensors2>0){
-					mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors2] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors2;
-				}
-				
-				if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
-					mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors3] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors3;
-					mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors4] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors4;
-					mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors5] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors5;
-					mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors6] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors6;
-					mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors7] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors7;
-				}
-
-			}
-
-			prepareAllMapsAfterConfigRead();
+			overwriteEnabledSensors();
 
 			setSamplingRateShimmer(32768/(double)((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
 					+ ((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8)));
@@ -277,6 +245,61 @@ public class Shimmer4 extends ShimmerDevice {
 
 		}
 		checkAndCorrectShimmerName(shimmerName);
+	}
+
+	private void parseEnabledDerivedSensorsForMaps(InfoMemLayoutShimmer3 infoMemLayoutCast, byte[] configBytes) {
+		// Sensors
+		mEnabledSensors = ((long)configBytes[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
+		mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors1] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors1;
+		mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors2] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors2;
+
+		mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors3] & 0xFF) << infoMemLayoutCast.bitShiftSensors3;
+		mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors4] & 0xFF) << infoMemLayoutCast.bitShiftSensors4;
+		
+		mDerivedSensors = (long)0;
+		// Check if compatible and not equal to 0xFF
+		if((infoMemLayoutCast.idxDerivedSensors0>0) && (configBytes[infoMemLayoutCast.idxDerivedSensors0]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)
+				&& (infoMemLayoutCast.idxDerivedSensors1>0) && (configBytes[infoMemLayoutCast.idxDerivedSensors1]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)) { 
+			
+			mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors0] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors0;
+			mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors1] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors1;
+			
+			// Check if compatible and not equal to 0xFF
+			// RM commented out the below check sept 2016 as infoMemBytes[infoMemLayoutCast.idxDerivedSensors2]  can be 0xFF if all 6DoF and 9DoF algorithms are enabled
+			//if((infoMemLayoutCast.idxDerivedSensors2>0) && (infoMemBytes[infoMemLayoutCast.idxDerivedSensors2]!=(byte)infoMemLayoutCast.maskDerivedChannelsByte)){
+			if(infoMemLayoutCast.idxDerivedSensors2>0){
+				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors2] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors2;
+			}
+			
+			if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
+				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors3] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors3;
+				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors4] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors4;
+				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors5] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors5;
+				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors6] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors6;
+				mDerivedSensors |= ((long)configBytes[infoMemLayoutCast.idxDerivedSensors7] & infoMemLayoutCast.maskDerivedChannelsByte) << infoMemLayoutCast.byteShiftDerivedSensors7;
+			}
+
+		}
+
+		setEnabledAndDerivedSensorsAndUpdateMaps(mEnabledSensors, mDerivedSensors);
+	}
+
+	private void overwriteEnabledSensors() {
+		//Overrides - needed because there are no enabled/derived sensor bits for these
+		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
+		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true);
+		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, true);
+
+		//TODO
+//		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
+//		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
+
+//		updateExpectedDataPacketSize();
+		
+		//for testing
+//		printSensorAndParserMaps();
+		//for testing
+//		printMapOfConfigForDb();
 	}
 
 	// TODO need to move common infomem related activity to ShimmerDevice. Not
@@ -411,28 +434,6 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	@Override
-	public void prepareAllMapsAfterConfigRead() {
-		super.prepareAllMapsAfterConfigRead();
-
-		//Overrides - needed because there are no enabled/derived sensor bits for these
-		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
-		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true);
-		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, true);
-
-		//TODO
-//		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
-//		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
-
-		updateExpectedDataPacketSize();
-		
-		//for testing
-//		printSensorAndParserMaps();
-		//for testing
-//		printMapOfConfigForDb();
-	}
-	
-
-	@Override
 	public Shimmer4 deepClone() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -524,7 +525,6 @@ public class Shimmer4 extends ShimmerDevice {
 							shimmerVerObject.setHardwareVersion(getHardwareVersion());
 							//TODO check with ShimmerBluetooth
 							setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
-	//						setShimmerVersionObject(shimmerVerObject);
 						}
 						else {
 							initialiseDevice();
@@ -553,7 +553,7 @@ public class Shimmer4 extends ShimmerDevice {
 					else if(responseCommand==InstructionsResponse.RWC_RESPONSE_VALUE){ 
 						setLastReadRealTimeClockValue((long)parsedResponse);
 					}
-					else if(responseCommand==Temp.InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE){
+					else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE){
 						SensorSTC3100Details sensorSTC3100Details = (SensorSTC3100Details)parsedResponse;
 						
 						consolePrintLn(sensorSTC3100Details.getDebugString());
@@ -904,11 +904,11 @@ public class Shimmer4 extends ShimmerDevice {
 		mCommsProtocolRadio.startTimerCheckIfAlive();
 	}
 
-	//TODO - Copied from ShimmerObject
-	private void initialise(int hardwareVersion) {
-		this.setHardwareVersion(hardwareVersion);
-		sensorAndConfigMapsCreate();
-	}
+//	//TODO - Copied from ShimmerObject
+//	private void initialise(int hardwareVersion) {
+//		setHardwareVersion(hardwareVersion);
+//		sensorAndConfigMapsCreate();
+//	}
 
 	//TODO - Copied from ShimmerPC
 	protected void hasStopStreaming() {

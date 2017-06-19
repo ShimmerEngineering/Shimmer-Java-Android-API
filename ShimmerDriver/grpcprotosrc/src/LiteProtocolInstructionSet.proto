@@ -20,7 +20,7 @@ message LiteProtocolInstructionSet {
 		SET_ACCEL_SENSITIVITY_COMMAND    		= 0x09;
 		SET_5V_REGULATOR_COMMAND         		= 0x0C; // only Shimmer 2
 		SET_PMUX_COMMAND                 		= 0x0D; // only Shimmer 2
-		SET_CONFIG_BYTE0_COMMAND   	   		= 0x0E;
+		SET_CONFIG_BYTE0_COMMAND   	   			= 0x0E;
 		STOP_STREAMING_COMMAND           		= 0x20;
 		SET_ACCEL_CALIBRATION_COMMAND			= 0x11;
 		SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND =0x1A;
@@ -47,34 +47,34 @@ message LiteProtocolInstructionSet {
 		SET_EXG_REGS_COMMAND 					= 0x61;
 		SET_BAUD_RATE_COMMAND 					= 0x6A;
 		SET_DERIVED_CHANNEL_BYTES				= 0x6D; 
-		START_SDBT_COMMAND 					= 0x70;
+		START_SDBT_COMMAND 						= 0x70;
 		SET_TRIAL_CONFIG_COMMAND				= 0x73; 
 		SET_CENTER_COMMAND						= 0x76; 
-		SET_SHIMMERNAME_COMMAND				= 0x79; //Shimmer Name
+		SET_SHIMMERNAME_COMMAND					= 0x79; //Shimmer Name
 		SET_EXPID_COMMAND						= 0x7c; //Experiment Name
 		SET_MYID_COMMAND						= 0x7F; //Shimmer ID in trial
 		SET_NSHIMMER_COMMAND					= 0x82; 
 		SET_CONFIGTIME_COMMAND					= 0x85; 
 		SET_INFOMEM_COMMAND   					= 0x8C;
-		SET_CRC_COMMAND						= 0x8B; 
-		SET_RWC_COMMAND                        = 0x8F;
+		SET_CRC_COMMAND							= 0x8B; 
+		SET_RWC_COMMAND                        	= 0x8F;
 		ROUTINE_COMMUNICATION					= 0xE0;
 		ACK_COMMAND_PROCESSED            		= 0xFF;		
 		START_LOGGING_ONLY_COMMAND				= 0x92;
 		STOP_LOGGING_ONLY_COMMAND				= 0x93;
-		TEST_CONNECTION_COMMAND            	= 0x96;
+		TEST_CONNECTION_COMMAND            		= 0x96;
 		STOP_SDBT_COMMAND 						= 0x97;
 		SET_CALIB_DUMP_COMMAND					= 0x98;
 		UPD_CONFIG_MEMORY_COMMAND				= 0x9B;
-		SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE	= 0x9C;
+		SET_I2C_BATT_STATUS_FREQ_COMMAND		= 0x9C;
   	}
   	
    enum InstructionsGet {
-   		NOT_USED_GET = 0; //protobuf requirement to have a 0
-   		INQUIRY_COMMAND	= 0x01 ;
-		GET_SAMPLING_RATE_COMMAND = 0x03;
+   		NOT_USED_GET 							= 0; //protobuf requirement to have a 0
+   		INQUIRY_COMMAND							= 0x01;
+		GET_SAMPLING_RATE_COMMAND 				= 0x03;
 		GET_ACCEL_SENSITIVITY_COMMAND    		= 0x0B;
-		GET_CONFIG_BYTE0_COMMAND   	   		= 0x10;
+		GET_CONFIG_BYTE0_COMMAND   	   			= 0x10;
 		GET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND = 0x1C;
 		GET_ACCEL_CALIBRATION_COMMAND    		= 0x13;
 		GET_GYRO_CALIBRATION_COMMAND     		= 0x16;
@@ -104,21 +104,21 @@ message LiteProtocolInstructionSet {
 		GET_DAUGHTER_CARD_ID_COMMAND			= 0x66;
 		GET_BAUD_RATE_COMMAND 					= 0x6C;
 		GET_DERIVED_CHANNEL_BYTES				= 0x6F; 
-		GET_STATUS_COMMAND 					= 0x72;
+		GET_STATUS_COMMAND 						= 0x72;
 		GET_TRIAL_CONFIG_COMMAND				= 0x75; 
 		GET_CENTER_COMMAND						= 0x78; 
-		GET_SHIMMERNAME_COMMAND				= 0x7b; 
+		GET_SHIMMERNAME_COMMAND					= 0x7b; 
 		GET_EXPID_COMMAND						= 0x7e; 
 		GET_MYID_COMMAND						= 0x81; 
 		GET_NSHIMMER_COMMAND					= 0x84; 
 		GET_CONFIGTIME_COMMAND					= 0x87; 
 		GET_DIR_COMMAND 						= 0x89;
 		GET_INFOMEM_COMMAND   					= 0x8E;		
-		GET_RWC_COMMAND                        = 0x91;		
-		GET_VBATT_COMMAND                      = 0x95;
+		GET_RWC_COMMAND                       	= 0x91;		
+		GET_VBATT_COMMAND                      	= 0x95;
 		GET_CALIB_DUMP_COMMAND					= 0x9A;
-		GET_I2C_BATT_STATUS_COMMAND_VALUE 		= 0x9E;
-		GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 0x9F;
+		GET_I2C_BATT_STATUS_COMMAND		 		= 0x9E;
+		GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 0xA0;
 	}
   
   	enum InstructionsResponse {
@@ -126,7 +126,7 @@ message LiteProtocolInstructionSet {
   		INQUIRY_RESPONSE = 0x02 ;
 		SAMPLING_RATE_RESPONSE           		= 0x04 [(response_size) = 2];
 		ACCEL_SENSITIVITY_RESPONSE       		= 0x0A [(response_size) = 1];
-		CONFIG_BYTE0_RESPONSE      	   		= 0x0F [(response_size) = 4];
+		CONFIG_BYTE0_RESPONSE      	   			= 0x0F [(response_size) = 4];
 		ACCEL_CALIBRATION_RESPONSE       		= 0x12 [(response_size) = 21];
 		LSM303DLHC_ACCEL_CALIBRATION_RESPONSE 	= 0x1B [(response_size) = 21];
 		GYRO_CALIBRATION_RESPONSE        		= 0x15 [(response_size) = 21];
@@ -149,27 +149,27 @@ message LiteProtocolInstructionSet {
 		BMP180_PRES_RESOLUTION_RESPONSE 		= 0x53 [(response_size) = 1];
 		BMP180_PRES_CALIBRATION_RESPONSE 		= 0x56; //not used
 		BMP180_CALIBRATION_COEFFICIENTS_RESPONSE = 0x58 [(response_size) = 22];
-		MPU9150_MAG_SENS_ADJ_VALS_RESPONSE 	= 0x5C; //not used
-		INTERNAL_EXP_POWER_ENABLE_RESPONSE 	= 0x5F [(response_size) = 1];
+		MPU9150_MAG_SENS_ADJ_VALS_RESPONSE 		= 0x5C; //not used
+		INTERNAL_EXP_POWER_ENABLE_RESPONSE 		= 0x5F [(response_size) = 1];
 		EXG_REGS_RESPONSE 						= 0x62 [(response_size) = 11];
 		DAUGHTER_CARD_ID_RESPONSE 				= 0x65 [(response_size) = 3];
-		BAUD_RATE_RESPONSE 					= 0x6B [(response_size) = 1];
+		BAUD_RATE_RESPONSE 						= 0x6B [(response_size) = 1];
 		DERIVED_CHANNEL_BYTES_RESPONSE			= 0x6E [(response_size) = 3]; 
-		STATUS_RESPONSE	 					= 0x71 [(response_size) = 1];
+		STATUS_RESPONSE	 						= 0x71 [(response_size) = 1];
 		TRIAL_CONFIG_RESPONSE					= 0x74 [(response_size) = 3]; 
-		CENTER_RESPONSE						= 0x77 [(response_size) = -1]; 
+		CENTER_RESPONSE							= 0x77 [(response_size) = -1]; 
 		SHIMMERNAME_RESPONSE					= 0x7a [(response_size) = -1]; 
 		EXPID_RESPONSE							= 0x7d [(response_size) = -1]; 
 		MYID_RESPONSE							= 0x80 [(response_size) = 1]; 	
 		NSHIMMER_RESPONSE						= 0x83 [(response_size) = 1]; 
-		CONFIGTIME_RESPONSE					= 0x86 [(response_size) = -1]; 
+		CONFIGTIME_RESPONSE						= 0x86 [(response_size) = -1]; 
 		DIR_RESPONSE		 					= 0x88 [(response_size) = -1];
 		INSTREAM_CMD_RESPONSE 					= 0x8A; // no following byte
 		INFOMEM_RESPONSE      					= 0x8D [(response_size) = -1];
-		RWC_RESPONSE                           = 0x90 [(response_size) = 8];
-		VBATT_RESPONSE                         = 0x94 [(response_size) = 3];
+		RWC_RESPONSE                           	= 0x90 [(response_size) = 8];
+		VBATT_RESPONSE                         	= 0x94 [(response_size) = 3];
 		RSP_CALIB_DUMP_COMMAND					= 0x99 [(response_size) = -1];
-		RSP_I2C_BATT_STATUS_COMMAND_VALUE		= 0x9D [(response_size) = 10];
-		BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = 0xA0 [(response_size) = 24];
+		RSP_I2C_BATT_STATUS_COMMAND				= 0x9D [(response_size) = 10];
+		BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = 0x9F [(response_size) = 24];
   	}
 }

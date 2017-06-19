@@ -1165,7 +1165,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			printLogDataForDebugging("Inquiry Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferInquiry));
 			
 			interpretInqResponse(bufferInquiry);
-			prepareAllMapsAfterConfigRead();
+//			prepareAllMapsAfterConfigRead();
 			
 			inquiryDone();
 			
@@ -1294,7 +1294,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 
 			if (mEnabledSensors!=0){
-				prepareAllMapsAfterConfigRead();
+//				prepareAllMapsAfterConfigRead();
+				setEnabledAndDerivedSensorsAndUpdateMaps(mEnabledSensors, mDerivedSensors);
 				inquiryDone();
 			}
 		}
@@ -1377,6 +1378,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			pressureResoRes = readBytes(24, responseCommand);
 			if(pressureResoRes!=null){
 				retrievePressureCalibrationParametersFromPacket(pressureResoRes,CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+				printLogDataForDebugging("BMP280 CALIB Received:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(pressureResoRes));
 			}
 		} 
 		else if(responseCommand==EXG_REGS_RESPONSE){
@@ -1931,7 +1933,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					
 					if (mEnabledSensors!=0){
-						prepareAllMapsAfterConfigRead();
+//						prepareAllMapsAfterConfigRead();
+						setEnabledAndDerivedSensorsAndUpdateMaps(mEnabledSensors, mDerivedSensors);
 						inquiryDone();
 					}
 				}
@@ -2243,7 +2246,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected synchronized void initialize() {	    	//See two constructors for Shimmer
 		//InstructionsThread instructionsThread = new InstructionsThread();
 		//instructionsThread.start();
-		clearShimmerVersionInfo();
+		clearShimmerVersionObjectAndCreateSensorMaps();
 		
 		stopTimerReadStatus();
 		stopTimerCheckForAckOrResp();
@@ -2316,7 +2319,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	private void initializeShimmer3(){
-		initialise(HW_ID.SHIMMER_3);
+		setHardwareVersionAndCreateSensorMaps(HW_ID.SHIMMER_3);
+//		initialise(HW_ID.SHIMMER_3);
+		
 		mHaveAttemptedToReadConfig = true;
 		
 		if(mSendProgressReport){
@@ -2914,6 +2919,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 			if(getFirmwareVersionCode()>1){
 				if(isSupportedBmp280()){
+//					writeInstruction(InstructionsGet.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND_VALUE);
+//					writeInstruction(LiteProtocol.Temp.InstructionsGet.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND);
 					writeInstruction(GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND);
 				}
 				else {
@@ -4975,7 +4982,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if((enabledSensors & SENSOR_INT_ADC_A14) > 0){
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_INT_A14;
 			}
-			if  ((enabledSensors & SENSOR_BMP180) > 0){
+			if  ((enabledSensors & SENSOR_BMPX80) > 0){
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_BMP180;
 			} 
 			if((enabledSensors & SENSOR_GSR) > 0){
