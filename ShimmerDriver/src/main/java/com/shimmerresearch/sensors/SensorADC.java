@@ -21,6 +21,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.SensorBattVoltage.GuiLabelSensorTiles;
 import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
 import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
 
@@ -258,6 +259,21 @@ public class SensorADC extends AbstractSensor {
 
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
+
+    public static final SensorGroupingDetails sensorGroupExternalExpansionADCs = new SensorGroupingDetails(
+			SensorADC.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6,
+						Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7,
+						Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15),
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+
+    public static final SensorGroupingDetails sensorGroupInternalExpansionADCs = new SensorGroupingDetails(
+			GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, 
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntAdcsGeneral);
 	
     //------------------Channel Details----------------------
 
@@ -373,22 +389,8 @@ public class SensorADC extends AbstractSensor {
 		
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 //		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			int groupIndexExt = Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC.ordinal();
-			mSensorGroupingMap.put(groupIndexExt, new SensorGroupingDetails(
-					GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC, 
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6,
-							Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7,
-							Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15),
-							CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			
-			int groupIndexInt = Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC.ordinal();
-			mSensorGroupingMap.put(groupIndexInt, new SensorGroupingDetails(
-					GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, 
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-							Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
-							CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntAdcsGeneral));
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC.ordinal(), sensorGroupExternalExpansionADCs);
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC.ordinal(), sensorGroupInternalExpansionADCs);
 //		}
 		super.updateSensorGroupingMap();	
 	}

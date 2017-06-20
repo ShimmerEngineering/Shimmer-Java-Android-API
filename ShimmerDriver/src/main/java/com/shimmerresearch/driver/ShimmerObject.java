@@ -4364,16 +4364,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mRTCOffset = rtcOffset;
 	}
 
+	/**
+	 * Suitable for Shimmer2r only. Shimmer3 has been replaced with the sensors
+	 * maps approach
+	 */
+	@Deprecated
 	public String[] getListofSupportedSensors(){
-		String[] sensorNames = null;
-		if (getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){
-			sensorNames = Configuration.Shimmer2.ListofCompatibleSensors;
-		} else if  (getHardwareVersion()==HW_ID.SHIMMER_3){
-			sensorNames = Configuration.Shimmer3.ListofCompatibleSensors;
-		}
-		return sensorNames;
+		return getListofSupportedSensors(getHardwareVersion());
 	}
 
+	/**
+	 * Suitable for Shimmer2r only. Shimmer3 has been replaced with the sensors
+	 * maps approach
+	 */
+	@Deprecated
 	public static String[] getListofSupportedSensors(int shimmerVersion){
 		String[] sensorNames = null;
 		if (shimmerVersion==HW_ID.SHIMMER_2R || shimmerVersion==HW_ID.SHIMMER_2){
@@ -4654,7 +4658,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setGyroRange((configBytes[infoMemLayoutCast.idxConfigSetupByte2] >> infoMemLayoutCast.bitShiftMPU9150GyroRange) & infoMemLayoutCast.maskMPU9150GyroRange);
 			
 			mMPU9150AccelRange = (configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftMPU9150AccelRange) & infoMemLayoutCast.maskMPU9150AccelRange;
-			setPressureResolution((configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftBMP180PressureResolution) & infoMemLayoutCast.maskBMP180PressureResolution);
+			setPressureResolution((configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftBMPX80PressureResolution) & infoMemLayoutCast.maskBMPX80PressureResolution);
+			int presRes = getPressureResolution();
 			setGSRRange((configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftGSRRange) & infoMemLayoutCast.maskGSRRange);
 			mInternalExpPower = (configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
 			
@@ -4985,7 +4990,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mConfigBytes[infoMemLayout.idxConfigSetupByte2] |= (byte) ((getGyroRange() & infoMemLayout.maskMPU9150GyroRange) << infoMemLayout.bitShiftMPU9150GyroRange);
 			
 			mConfigBytes[infoMemLayout.idxConfigSetupByte3] = (byte) ((mMPU9150AccelRange & infoMemLayout.maskMPU9150AccelRange) << infoMemLayout.bitShiftMPU9150AccelRange);
-			mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((getPressureResolution() & infoMemLayout.maskBMP180PressureResolution) << infoMemLayout.bitShiftBMP180PressureResolution);
+			int presRes = getPressureResolution();
+			mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((getPressureResolution() & infoMemLayout.maskBMPX80PressureResolution) << infoMemLayout.bitShiftBMPX80PressureResolution);
 			mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((getGSRRange() & infoMemLayout.maskGSRRange) << infoMemLayout.bitShiftGSRRange);
 			checkIfInternalExpBrdPowerIsNeeded();
 			mConfigBytes[infoMemLayout.idxConfigSetupByte3] |= (byte) ((mInternalExpPower & infoMemLayout.maskEXPPowerEnable) << infoMemLayout.bitShiftEXPPowerEnable);
@@ -5202,23 +5208,45 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public void sensorAndConfigMapsCreate() {
-		//2017-06-19 New from sensor classes
 		createMapOfSensorClasses();
 
-		//TODO call the following method at the start of this method instead??
 		super.sensorAndConfigMapsCreateCommon();
+	}
+	
+	private void updateSensorMapChannelsFromChannelMap(LinkedHashMap<Integer, SensorDetails> sensorMap) {
+		//Update ChannelDetails in the mSensorMap
+		Iterator<SensorDetails> iterator = sensorMap.values().iterator();
+		while(iterator.hasNext()){
+			SensorDetails sensorDetails = iterator.next();
+			for(String channelMapKey:sensorDetails.mSensorDetailsRef.mListOfChannelsRef){
+				ChannelDetails channelDetails = mChannelMap.get(channelMapKey);
+				if(channelDetails!=null){
+					sensorDetails.mListOfChannels.add(channelDetails);
+				}
+			}
+		}
+	}
 
+	private void createMapOfSensorClasses() {
+		mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
+
+		//TODO decide whether to match Shimmer4 approach by storing classes only in the map or use mSensorBMPX80 
+		if(isSupportedBmp280()){
+			mSensorBMPX80 = new SensorBMP280(this);
+			addSensorClass(SENSORS.BMP280, mSensorBMPX80);
+		}
+		else{
+			mSensorBMPX80 = new SensorBMP180(this);
+			addSensorClass(SENSORS.BMP180, mSensorBMPX80);
+		}
+	}
+
+
+	@Override
+	protected void handleSpecialCasesAfterSensorMapCreate() {
+		super.handleSpecialCasesAfterSensorMapCreate();
 		
-		// Clear all here because they won't necessarily be cleared depending on
-		// hardware version
-//		mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
-//		mChannelMap = new LinkedHashMap<String, ChannelDetails>();
-//		mMapOfAlgorithmModules = new LinkedHashMap<String, AbstractAlgorithm>();
-//		mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
-//		mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetailsAlgorithm>();
-//		mSensorGroupingMap = new TreeMap<Integer,SensorGroupingDetails>();
-//		mConfigOptionsMap = new HashMap<String, ConfigOptionDetailsSensor>();
-
+		//Old approach pre-Shimmer4 code framework with sensor classes
 		if (getHardwareVersion() != -1){
 			if (isShimmerGen2()){
 				Map<Integer,SensorDetailsRef> sensorMapRef = Configuration.Shimmer2.mSensorMapRef;
@@ -5251,9 +5279,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mSensorGroupingMap.putAll(Configuration.Shimmer3.mSensorGroupingMapRef);
 				mConfigOptionsMap.putAll(Configuration.Shimmer3.mConfigOptionsMapRef);
 				
-				generateMapOfAlgorithmModules();
-				generateMapOfAlgorithmConfigOptions();
-				generateMapOfAlgorithmGroupingMap();
+//				generateMapOfAlgorithmModules();
+//				generateMapOfAlgorithmConfigOptions();
+//				generateMapOfAlgorithmGroupingMap();
 			}
 			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 				
@@ -5269,68 +5297,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		}
 		
-		
-//		//2017-06-19 New from sensor classes
-//		//TODO work the below into the above? 
-//		for(AbstractSensor sensorClass:mMapOfSensorClasses.values()){
-//			mSensorMap.putAll(sensorClass.mSensorMap);
-//		}
-
-		
-
-//		//TODO enable for new IMU sensor support (BMP280, MPU9250, LSM303AH, LN Accel)
-//		//2017-06-19 New from sensor classes
-//		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-//			mSensorMap.putAll(abstractSensor.mSensorMap);
-//			
-//			for(SensorDetails sensorDetails:abstractSensor.mSensorMap.values()){
-//				for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-//					mChannelMap.put(channelDetails.mObjectClusterName, channelDetails);
-//				}
-//			}
-//			
-//			mSensorGroupingMap.putAll(abstractSensor.mSensorGroupingMap);
-//			mConfigOptionsMap.putAll(abstractSensor.mConfigOptionsMap);
-//		}
-		
-		
-		
-		handleSpecialCasesAfterSensorMapCreate();
-	}
-	
-	private void updateSensorMapChannelsFromChannelMap(LinkedHashMap<Integer, SensorDetails> sensorMap) {
-		//Update ChannelDetails in the mSensorMap
-		Iterator<SensorDetails> iterator = sensorMap.values().iterator();
-		while(iterator.hasNext()){
-			SensorDetails sensorDetails = iterator.next();
-			for(String channelMapKey:sensorDetails.mSensorDetailsRef.mListOfChannelsRef){
-				ChannelDetails channelDetails = mChannelMap.get(channelMapKey);
-				if(channelDetails!=null){
-					sensorDetails.mListOfChannels.add(channelDetails);
-				}
-			}
-		}
-	}
-
-
-	//2017-06-19 New from sensor classes
-	private void createMapOfSensorClasses() {
-		mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
-
-		//TODO decide whether to match Shimmer4 approach by storing classes only in the map or use mSensorBMPX80 
-		if(isSupportedBmp280()){
-			mSensorBMPX80 = new SensorBMP280(mShimmerVerObject);
-			addSensorClass(SENSORS.BMP280, mSensorBMPX80);
-		}
-		else{
-			mSensorBMPX80 = new SensorBMP180(mShimmerVerObject);
-			addSensorClass(SENSORS.BMP180, mSensorBMPX80);
-		}
-	}
-
-
-	@Override
-	protected void handleSpecialCasesAfterSensorMapCreate() {
 		SensorEXG.updateSensorMapForExgResolution(mSensorMap, getExGResolution());
 	}
 
@@ -5646,7 +5612,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-
+		
 		if (getHardwareVersion() == HW_ID.SHIMMER_3){
 
 			// If Shimmer name is default, update with MAC ID if available.
@@ -5672,9 +5638,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)){
 				setMPU9150MagRateFromFreq(getSamplingRateShimmer());
 			}
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE)) {
-				setDefaultBmp180PressureSensorConfig(false);
-			}
+//			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE)) {
+//				setDefaultBmp180PressureSensorConfig(false);
+//			}
+//			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP280_PRESSURE)) {
+//				setDefaultBmp180PressureSensorConfig(false);
+//			}
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)) {
 				setDefaultGsrSensorConfig(false);
 			}
@@ -5700,7 +5669,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setDefaultMpu9150MplSensorConfig(false);
 			}
 
-			checkIfInternalExpBrdPowerIsNeeded();
+			super.checkShimmerConfigBeforeConfiguring();
+//			checkIfInternalExpBrdPowerIsNeeded();
 //			checkIfMPLandDMPIsNeeded();
 			
 			//Added this for Conensys 1.0.0 release - assumes individual sampling rates of each sensor matches the Shimmer sampling
@@ -5766,9 +5736,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
 		}
 		
-		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE) {
-			setDefaultBmp180PressureSensorConfig(state);
-		}
+//		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE) {
+//			setDefaultBmp180PressureSensorConfig(state);
+//		}
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR) {
 			setDefaultGsrSensorConfig(state);
 		}
@@ -5831,14 +5801,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		}
 		
-	}
-	
-	private void setDefaultBmp180PressureSensorConfig(boolean state) {
-		if(state) {
-		}
 		else {
-			setPressureResolution(0);
+			super.setDefaultConfigForSensor(sensorMapKey, state);
 		}
+		
 	}
 	
 	private void setDefaultGsrSensorConfig(boolean state) {
@@ -6422,6 +6388,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//Pressure sensor
 		if(mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION)){
 			setPressureResolution(((Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorBMP280.DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)){
+			setPressureResolution(((Double) mapOfConfigPerShimmer.get(SensorBMP280.DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(SensorGSR.DatabaseConfigHandle.GSR_RANGE)){
 			setGSRRange(((Double) mapOfConfigPerShimmer.get(SensorGSR.DatabaseConfigHandle.GSR_RANGE)).intValue());
@@ -7015,6 +6984,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		return mPressureCalRawParams;
 //		return mCalibDetailsBmp180.mPressureCalRawParams;
 		return mSensorBMPX80.mCalibDetailsBmpX80.getPressureRawCoefficients();
+	}
+
+	@Deprecated //replaced by sensor map approach
+	private void setDefaultBmp180PressureSensorConfig(boolean state) {
+		if(mSensorBMPX80 instanceof SensorBMP180){
+			if(state) {
+			}
+			else {
+				setPressureResolution(0);
+			}
+		}
+	}
+
+	@Deprecated //replaced by sensor map approach
+	private void setDefaultBmp280PressureSensorConfig(boolean state) {
+		if(mSensorBMPX80 instanceof SensorBMP280){
+			if(state) {
+			}
+			else {
+				setPressureResolution(0);
+			}
+		}
 	}
 
 	//-------------------- Pressure/Temperature End -----------------------------------
@@ -10559,7 +10550,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int expBrdRev = getExpansionBoardRev();
 		
 		if(getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
-				(expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=2)
+				(expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=3)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=2)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev>=2)
 				|| (expBrdId==HW_ID_SR_CODES.SHIMMER3 && expBrdRev>=5)

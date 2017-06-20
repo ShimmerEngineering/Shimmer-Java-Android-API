@@ -519,12 +519,12 @@ public class SensorLSM303 extends AbstractSensor{
 	//--------- Channel info end --------------
     
     
-    public static final SensorGroupingDetails sensorGDLsmAccel = new SensorGroupingDetails(
+    public static final SensorGroupingDetails sensorGroupLsmAccel = new SensorGroupingDetails(
 			GuiLabelSensorTiles.WIDE_RANGE_ACCEL,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
     
-    public static final SensorGroupingDetails sensorGDLsmMag = new SensorGroupingDetails(
+    public static final SensorGroupingDetails sensorGroupLsmMag = new SensorGroupingDetails(
 			GuiLabelSensorTiles.MAG,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
@@ -563,8 +563,8 @@ public class SensorLSM303 extends AbstractSensor{
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), sensorGDLsmAccel);
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG.ordinal(), sensorGDLsmMag);
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), sensorGroupLsmAccel);
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG.ordinal(), sensorGroupLsmMag);
 		}
 		super.updateSensorGroupingMap();	
 	}	
