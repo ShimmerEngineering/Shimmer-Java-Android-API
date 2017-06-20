@@ -205,8 +205,8 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	//Config Byte3
 	public int bitShiftMPU9150AccelRange =              6;
 	public int maskMPU9150AccelRange =                  0x03;
-	public int bitShiftBMP180PressureResolution =       4;
-	public int maskBMP180PressureResolution =           0x03;
+	public int bitShiftBMPX80PressureResolution =       4;
+	public int maskBMPX80PressureResolution =           0x03;
 	public int bitShiftGSRRange =                       1;
 	public int maskGSRRange =                           0x07;
 	public int bitShiftEXPPowerEnable =                 0;

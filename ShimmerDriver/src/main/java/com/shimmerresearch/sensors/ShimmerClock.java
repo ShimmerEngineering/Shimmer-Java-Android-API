@@ -17,7 +17,9 @@ import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMap
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.bmpX80.SensorBMPX80.GuiLabelSensorTiles;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
@@ -63,6 +65,10 @@ public class ShimmerClock extends AbstractSensor {
 		public static final String SYSTEM_TIMESTAMP = SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP; 
 		public static final String TIMESTAMP = ObjectClusterSensorName.TIMESTAMP; 
 		public static final String DEVICE_PROPERTIES = "Device Properties"; 
+	}
+
+	public static class GuiLabelSensorTiles{
+		public static final String STREAMING_PROPERTIES = GuiLabelSensors.DEVICE_PROPERTIES; 
 	}
 
 	public static class ObjectClusterSensorName{
@@ -123,7 +129,7 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	//Uncomment channels if you want them to appear in Consensys LiveData
-	public static final SensorDetailsRef sensorShimmerPacketReception = new SensorDetailsRef(
+	public static final SensorDetailsRef sensorShimmerStreamingProperties = new SensorDetailsRef(
 			GuiLabelSensors.DEVICE_PROPERTIES,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(
@@ -145,7 +151,7 @@ public class ShimmerClock extends AbstractSensor {
 //					ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE
 					));
 	{
-		sensorShimmerPacketReception.mIsApiSensor = true;
+		sensorShimmerStreamingProperties.mIsApiSensor = true;
 	}
 	
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
@@ -153,9 +159,16 @@ public class ShimmerClock extends AbstractSensor {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
 		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, ShimmerClock.sensorSystemTimeStampRef);
         aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, ShimmerClock.sensorShimmerClock);
-        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception);
+        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerStreamingProperties);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
+    
+    public static final SensorGroupingDetails sensorGroupStreamingProperties = new SensorGroupingDetails(
+			GuiLabelSensorTiles.STREAMING_PROPERTIES,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES),
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			true);
+
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
@@ -313,8 +326,6 @@ public class ShimmerClock extends AbstractSensor {
 		//TODO put into above constructor
 		channelEventMarker.mChannelSource = CHANNEL_SOURCE.API;
 	}
-
-	
 	//--------- Channel info end --------------
 
 	public ShimmerClock(ShimmerDevice shimmerDevice) {

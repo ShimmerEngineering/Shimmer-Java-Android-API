@@ -26,6 +26,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 /**
  * @author Ronan McCormack
@@ -112,6 +113,11 @@ public class SensorBMP280 extends SensorBMPX80 {
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
 	}
 	
+    public static final SensorGroupingDetails sensorGroupBmp280 = new SensorGroupingDetails(
+			GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP280_PRESSURE),
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP280);
+
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
@@ -156,7 +162,12 @@ public class SensorBMP280 extends SensorBMPX80 {
 		super(SENSORS.BMP280, svo);
 		initialise();
 	}
-	
+
+	public SensorBMP280(ShimmerDevice shimmerDevice) {
+		super(SENSORS.BMP180, shimmerDevice);
+		initialise();
+	}
+
    //--------- Constructors for this class end --------------
 
 
@@ -173,12 +184,9 @@ public class SensorBMP280 extends SensorBMPX80 {
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
+		//TODO Extra version check here not needed because compatability info already contained in SensorGroupingDetails?
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280.ordinal();
-			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP280_PRESSURE),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP280));
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280.ordinal(), sensorGroupBmp280);
 		}
 		super.updateSensorGroupingMap();
 	}
@@ -362,7 +370,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 	
 	@Override
 	public double[] calibratePressureSensorData(double UP, double UT) {
-//		UT = UT * Math.pow(2, 4);
+		UT = UT * Math.pow(2, 4);
 		UP=UP/Math.pow(2,4);
 		return super.calibratePressureSensorData(UP, UT);
 	}

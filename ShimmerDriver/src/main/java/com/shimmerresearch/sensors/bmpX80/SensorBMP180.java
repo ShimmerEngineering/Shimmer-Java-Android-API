@@ -123,6 +123,13 @@ public class SensorBMP180 extends SensorBMPX80 {
         aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
+    
+    public static final SensorGroupingDetails sensorGroupBmp180 = new SensorGroupingDetails(
+			GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
@@ -163,6 +170,7 @@ public class SensorBMP180 extends SensorBMPX80 {
         aMap.put(ObjectClusterSensorName.TEMPERATURE_BMP180, SensorBMP180.channelBmp180Temp);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
+    
 	//--------- Channel info end --------------
     
 	//--------- Constructors for this class start --------------
@@ -198,12 +206,9 @@ public class SensorBMP180 extends SensorBMPX80 {
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
+		//TODO Extra version check here not needed because compatability info already contained in SensorGroupingDetails?
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE.ordinal();
-			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP180.ordinal(), sensorGroupBmp180);
 		}
 		super.updateSensorGroupingMap();
 	}
@@ -233,7 +238,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
 				rawDataUP = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.PRESSURE_BMP180), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				rawDataUP = rawDataUP/Math.pow(2,8-mPressureResolution);
+//				rawDataUP = rawDataUP/Math.pow(2,8-mPressureResolution);
 			}
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				rawDataUT = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.TEMPERATURE_BMP180), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
@@ -241,7 +246,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 		}
 
 		//Calibration
-		double[] bmp180caldata = mCalibDetailsBmpX80.calibratePressureSensorData(rawDataUP, rawDataUT);
+		double[] bmp180caldata = calibratePressureSensorData(rawDataUP, rawDataUT);
 		bmp180caldata[0] = bmp180caldata[0]/1000;
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
