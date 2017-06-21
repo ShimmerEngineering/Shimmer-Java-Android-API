@@ -4,7 +4,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.SensorEXG;
-import com.shimmerresearch.sensors.SensorLSM303;
+import com.shimmerresearch.sensors.SensorLSM303DLHC;
 
 public class FixedShimmerConfigs {
 
@@ -62,7 +62,7 @@ public class FixedShimmerConfigs {
 			//setting accel range +/- 4g
 			shimmerDevice.setConfigValueUsingConfigLabel(
 					Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 
-					SensorLSM303.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,
+					SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,
 					1);
 		}
 

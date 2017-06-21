@@ -37,7 +37,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.sensors.SensorLSM303.DatabaseConfigHandle;
+import com.shimmerresearch.sensors.SensorLSM303DLHC.DatabaseConfigHandle;
 
 
 /**
