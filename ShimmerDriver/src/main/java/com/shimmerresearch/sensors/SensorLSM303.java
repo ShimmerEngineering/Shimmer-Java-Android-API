@@ -223,7 +223,7 @@ public class SensorLSM303 extends AbstractSensor{
 	public static final class DatabaseConfigHandle{
 		public static final String MAG_RANGE = "LSM303DLHC_Mag_Range";
 		public static final String MAG_RATE = "LSM303DLHC_Mag_Rate";
-		public static final String MAG = "LSM303DLHC_Mag";
+//		public static final String MAG = "LSM303DLHC_Mag";
 		
 		public static final String WR_ACC = "LSM303DLHC_Acc";
 		public static final String WR_ACC_RATE = "LSM303DLHC_Acc_Rate";

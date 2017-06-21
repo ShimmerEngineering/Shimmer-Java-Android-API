@@ -240,15 +240,6 @@ public class SensorEXG extends AbstractSensor{
 		
 		public static final String ECG_LL_LA_16BITS = ObjectClusterSensorName.ECG_LL_LA_16BIT.replace("-", "_");
 		public static final String ECG_LL_LA_24BITS = ObjectClusterSensorName.ECG_LL_LA_24BIT.replace("-", "_");
-
-		public static final String EXT_ADC_A7 = "F5437a_Ext_A7"; //channel
-		public static final String EXT_ADC_A6 = "F5437a_Ext_A6"; //channel
-		
-		public static final String EXT_ADC_A15 = "F5437a_Ext_A15"; //channel
-		public static final String INT_ADC_A1 = "F5437a_Int_A1";   //channel
-		public static final String INT_ADC_A12 = "F5437a_Int_A12"; //channel
-		public static final String INT_ADC_A13 = "F5437a_Int_A13"; //channel
-		public static final String INT_ADC_A14 = "F5437a_Int_A14"; //channel
 	}
 	
 	public static final class DatabaseConfigHandle{

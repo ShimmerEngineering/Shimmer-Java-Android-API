@@ -361,7 +361,6 @@ public class SensorBMP180 extends SensorBMPX80 {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, getPressureResolution());
 
-
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC1, getPressTempAC1());
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC2, getPressTempAC2());
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC3, getPressTempAC3());
@@ -520,35 +519,32 @@ public class SensorBMP180 extends SensorBMPX80 {
 	}
 	
 	@Override
-	public List<Double> getPressTempConfigValues() {
+	public List<Double> getPressTempConfigValuesLegacy() {
 		List<Double> configValues = new ArrayList<Double>();
 
-//		CalibDetailsBmp180 calibDetailsBmp180 = ((CalibDetailsBmp180)mCalibDetailsBmpX80);
-//		configValues.add(calibDetailsBmp180.AC1);
-//		configValues.add(calibDetailsBmp180.AC2);
-//		configValues.add(calibDetailsBmp180.AC3);
-//		configValues.add(calibDetailsBmp180.AC4);
-//		configValues.add(calibDetailsBmp180.AC5);
-//		configValues.add(calibDetailsBmp180.AC6);
-//		configValues.add(calibDetailsBmp180.B1);
-//		configValues.add(calibDetailsBmp180.B2);
-//		configValues.add(calibDetailsBmp180.MB);
-//		configValues.add(calibDetailsBmp180.MC);
-//		configValues.add(calibDetailsBmp180.MD);
-
-		configValues.add(getPressTempAC1());
-		configValues.add(getPressTempAC2());
-		configValues.add(getPressTempAC3());
-		configValues.add(getPressTempAC4());
-		configValues.add(getPressTempAC5());
-		configValues.add(getPressTempAC6());
-		configValues.add(getPressTempB1());
-		configValues.add(getPressTempB2());
-		configValues.add(getPressTempMB());
-		configValues.add(getPressTempMC());
-		configValues.add(getPressTempMD());
+		CalibDetailsBmp180 calibDetailsBmp180 = ((CalibDetailsBmp180)mCalibDetailsBmpX80);
+		configValues.add(calibDetailsBmp180.AC1);
+		configValues.add(calibDetailsBmp180.AC2);
+		configValues.add(calibDetailsBmp180.AC3);
+		configValues.add(calibDetailsBmp180.AC4);
+		configValues.add(calibDetailsBmp180.AC5);
+		configValues.add(calibDetailsBmp180.AC6);
+		configValues.add(calibDetailsBmp180.B1);
+		configValues.add(calibDetailsBmp180.B2);
+		configValues.add(calibDetailsBmp180.MB);
+		configValues.add(calibDetailsBmp180.MC);
+		configValues.add(calibDetailsBmp180.MD);
 		
 		return configValues;
+	}
+
+	public void setDefaultBmp180PressureSensorConfig(boolean isSensorEnabled) {
+		//RS (30/5/2016) - from ShimmerObject:
+		if(isSensorEnabled) {
+		}
+		else{
+			mPressureResolution = 0;
+		}
 	}
 
 	

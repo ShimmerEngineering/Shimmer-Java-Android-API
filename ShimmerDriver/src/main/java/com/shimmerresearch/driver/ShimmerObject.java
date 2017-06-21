@@ -41,6 +41,7 @@ import com.shimmerresearch.driver.shimmerGq.InfoMemLayoutShimmerGq802154;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
+import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -989,15 +990,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	// ----------- Pressure/Temperature Start -------------------------
 	private SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
-
-	//TODO work on getting rid variables below by just using SensorBMPX80 above
-//	protected int mPressureResolution = 0;
-//	private CalibDetailsBmp180 mCalibDetailsBmp180 = new CalibDetailsBmp180();
-//	protected byte[] mPressureCalRawParams = new byte[23];
-	
-//	/** not used anywhere in the code - could be a variable used in early development */
-//	@Deprecated
-//	protected byte[] mPressureRawParams  = new byte[23];
 	// ----------- Pressure/Temperature end -------------------------
 	
 	// ----------  ECG/EMG start ---------------
@@ -6385,13 +6377,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(mapOfConfigPerShimmer.containsKey(SensorMPU9X50.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)){
 			setMPU9150AccelRange(((Double) mapOfConfigPerShimmer.get(SensorMPU9X50.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)).intValue());
 		}
-		//Pressure sensor
-		if(mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION)){
-			setPressureResolution(((Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION)).intValue());
-		}
-		if(mapOfConfigPerShimmer.containsKey(SensorBMP280.DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)){
-			setPressureResolution(((Double) mapOfConfigPerShimmer.get(SensorBMP280.DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)).intValue());
-		}
 		if(mapOfConfigPerShimmer.containsKey(SensorGSR.DatabaseConfigHandle.GSR_RANGE)){
 			setGSRRange(((Double) mapOfConfigPerShimmer.get(SensorGSR.DatabaseConfigHandle.GSR_RANGE)).intValue());
 		}
@@ -6478,32 +6463,41 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC,
 				SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_CALIB_TIME);
 		
-		//PRESSURE (BMP180) CAL PARAMS
-		if(mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC1)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC2)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC3)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC4)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC5)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC6)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B1)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B2)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MB)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MC)
-				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MD)){
-			
-			setPressureCalib(
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC1),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC2),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC3),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC4),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC5),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC6),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B1),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B2),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MB),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MC),
-					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MD));
-		}
+		//Moved to SensorBMP180
+//		//Pressure sensor
+//		if(mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION)){
+//			setPressureResolution(((Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION)).intValue());
+//		}
+//		if(mapOfConfigPerShimmer.containsKey(SensorBMP280.DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)){
+//			setPressureResolution(((Double) mapOfConfigPerShimmer.get(SensorBMP280.DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)).intValue());
+//		}
+//
+//		//PRESSURE (BMP180) CAL PARAMS
+//		if(mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC1)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC2)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC3)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC4)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC5)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC6)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B1)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B2)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MB)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MC)
+//				&& mapOfConfigPerShimmer.containsKey(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MD)){
+//			
+//			setPressureCalib(
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC1),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC2),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC3),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC4),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC5),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC6),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B1),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B2),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MB),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MC),
+//					(Double) mapOfConfigPerShimmer.get(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MD));
+//		}
 		
 		//TODO
 		//MPL Accel Calibration Configuration
@@ -6871,143 +6865,38 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param calibReadSource
 	 */
 	protected void retrievePressureCalibrationParametersFromPacket(byte[] pressureResoRes, CALIB_READ_SOURCE calibReadSource) {
-//		setPressureRawCoefficients(pressureResoRes);
-		
 		mSensorBMPX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
 
-//		if(isSupportedBmp280()){
-//			mSensorBMPX80.parseCalParamByteArray(pressureResoRes, calibReadSource);
-//		}
-//		else {
-//			mCalibDetailsBmp180.parseCalParamByteArray(pressureResoRes, calibReadSource);
-//		}
+		//TODO below not needed here because is done in method above
 		updateCurrentPressureCalibInUse();
 	}
 	
 	public void updateCurrentPressureCalibInUse(){
 		mSensorBMPX80.updateCurrentPressureCalibInUse();
-
-//		if(isSupportedBmp280()){
-//			mSensorBMPX80.mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
-//		}
-//		else {
-//			mCalibDetailsBmp180.mRangeValue = getPressureResolution();
-//		}
 	}
 
 	public void setPressureResolution(int i){
 		mSensorBMPX80.setPressureResolution(i);
-//		if(ArrayUtils.contains(SensorBMP180.ListofPressureResolutionConfigValues, i)){
-//			mPressureResolution = i;
-//		}
-//		
-//		updateCurrentPressureCalibInUse();
 	}
 	
 	public int getPressureResolution(){
-//		return mPressureResolution;
 		return mSensorBMPX80.getPressureResolution();
 	}
-
-	public List<Double> getPressTempConfigValuesBmp180(){
-		List<Double> configValues = new ArrayList<Double>();
-		
-		if(mSensorBMPX80 instanceof SensorBMP180){
-			configValues = mSensorBMPX80.getPressTempConfigValues();
-		}
-		
-		return configValues;
-	}
-
-
-//	public double getPressTempAC1(){
-//		return mCalibDetailsBmp180.AC1;
-//	}
-//	
-//	public double getPressTempAC2(){
-//		return mCalibDetailsBmp180.AC2;
-//	}
-//	
-//	public double getPressTempAC3(){
-//		return mCalibDetailsBmp180.AC3;
-//	}
-//	
-//	public double getPressTempAC4(){
-//		return mCalibDetailsBmp180.AC4;
-//	}
-//	
-//	public double getPressTempAC5(){
-//		return mCalibDetailsBmp180.AC5;
-//	}
-//	
-//	public double getPressTempAC6(){
-//		return mCalibDetailsBmp180.AC6;
-//	}
-//	
-//	public double getPressTempB1(){
-//		return mCalibDetailsBmp180.B1;
-//	}
-//	
-//	public double getPressTempB2(){
-//		return mCalibDetailsBmp180.B2;
-//	}
-//	
-//	public double getPressTempMB(){
-//		return mCalibDetailsBmp180.MB;
-//	}
-//	
-//	public double getPressTempMC(){
-//		return mCalibDetailsBmp180.MC;
-//	}
-//	
-//	public double getPressTempMD(){
-//		return mCalibDetailsBmp180.MD;
-//	}
 
 	public void setPressureCalib(
 			double AC1, double AC2, double AC3, 
 			double AC4, double AC5, double AC6,
 			double B1, double B2, 
 			double MB, double MC, double MD){
-//		mCalibDetailsBmp180.setPressureCalib(AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
 		if(mSensorBMPX80 instanceof SensorBMP180){
 			((SensorBMP180) mSensorBMPX80).setPressureCalib(AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
 		}
 	}
 
-//	public void setPressureRawCoefficients(byte[] pressureCalRawParams){
-////		mPressureCalRawParams = pressureCalRawParams;
-//		mCalibDetailsBmp180.mPressureCalRawParams = pressureCalRawParams;
-//	}
-
 	public byte[] getPressureRawCoefficients(){
-//		return mPressureCalRawParams;
-//		return mCalibDetailsBmp180.mPressureCalRawParams;
 		return mSensorBMPX80.mCalibDetailsBmpX80.getPressureRawCoefficients();
 	}
-
-	@Deprecated //replaced by sensor map approach
-	private void setDefaultBmp180PressureSensorConfig(boolean state) {
-		if(mSensorBMPX80 instanceof SensorBMP180){
-			if(state) {
-			}
-			else {
-				setPressureResolution(0);
-			}
-		}
-	}
-
-	@Deprecated //replaced by sensor map approach
-	private void setDefaultBmp280PressureSensorConfig(boolean state) {
-		if(mSensorBMPX80 instanceof SensorBMP280){
-			if(state) {
-			}
-			else {
-				setPressureResolution(0);
-			}
-		}
-	}
-
+	
 	//-------------------- Pressure/Temperature End -----------------------------------
 
 	//-------------------- PPG Start -----------------------------------
@@ -9549,9 +9438,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    							else cmBx.setSelectedIndex(getMagRange()-1);
 	    		break;
 			
-			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
-				returnValue = getPressureResolution();
-	    		break;
+	    	//Moved to sensor class
+//			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
+//				returnValue = getPressureResolution();
+//	    		break;
 	    		
 			case(SensorGSR.GuiLabelConfig.GSR_RANGE):
 				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
@@ -9837,9 +9727,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setLSM303MagRange((int)valueToSet);
 	    		break;
 			
-			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
-				setPressureResolution((int)valueToSet);
-	    		break;
+	    	//Moved to sensor class
+//			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
+//				setPressureResolution((int)valueToSet);
+//	    		break;
 	    		
 			case(SensorGSR.GuiLabelConfig.GSR_RANGE):
 	    		setGSRRange((int)valueToSet);
@@ -10227,18 +10118,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			addCalibKinematicToDbConfigValues(configValues, offsetVectorAnalogAccel, sensitivityMatrixAnalogAccel, alignmentMatrixAnalogAccel);
 
 			//PRESSURE (BMP180) CAL PARAMS
-			configValues.addAll(shimmerObject.getPressTempConfigValuesBmp180());
-//			configValues.add(shimmerObject.getPressTempAC1());
-//			configValues.add(shimmerObject.getPressTempAC2());
-//			configValues.add(shimmerObject.getPressTempAC3());
-//			configValues.add(shimmerObject.getPressTempAC4());
-//			configValues.add(shimmerObject.getPressTempAC5());
-//			configValues.add(shimmerObject.getPressTempAC6());
-//			configValues.add(shimmerObject.getPressTempB1());
-//			configValues.add(shimmerObject.getPressTempB2());
-//			configValues.add(shimmerObject.getPressTempMB());
-//			configValues.add(shimmerObject.getPressTempMC());
-//			configValues.add(shimmerObject.getPressTempMD());
+			//TODO add support for BMP280
+			configValues.addAll(shimmerObject.mSensorBMPX80.getPressTempConfigValuesLegacy());
 
 			//MPL Accel Calibration Configuration
 			double[][] offsetVectorMPLAccel = shimmerObject.getOffsetVectorMPLAccel();
@@ -10546,10 +10427,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return
 	 */
 	public boolean isSupportedNewImuSensors() {
-		int expBrdId = getExpansionBoardId();
-		int expBrdRev = getExpansionBoardRev();
+		return isSupportedNewImuSensors(getShimmerVerObject(), getExpansionBoardDetails());
+	}
+
+	public static boolean isSupportedNewImuSensors(ShimmerVerObject svo, ExpansionBoardDetails ebd) {
+		int expBrdId = ebd.getExpansionBoardId();
+		int expBrdRev = ebd.getExpansionBoardRev();
 		
-		if(getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
+		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
 				(expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=3)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=2)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev>=2)

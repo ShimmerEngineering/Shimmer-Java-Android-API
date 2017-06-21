@@ -83,7 +83,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		public static final String LN_ACC_Z = "KXRB8_2042_Z";
 	}
 	public static final class DatabaseConfigHandle{
-		public static final String LN_ACC = "KXRB8_2042_Acc";
+//		public static final String LN_ACC = "KXRB8_2042_Acc";
 		
 		public static final String LN_ACC_CALIB_TIME = "KXRB8_2042_Acc_Calib_Time";
 		public static final String LN_ACC_OFFSET_X = "KXRB8_2042_Acc_Offset_X";
