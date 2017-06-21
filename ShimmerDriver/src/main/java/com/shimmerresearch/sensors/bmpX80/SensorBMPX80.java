@@ -34,7 +34,7 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 	}
 	
 	public abstract void setPressureResolution(int i);
-	public abstract List<Double> getPressTempConfigValues();
+	public abstract List<Double> getPressTempConfigValuesLegacy();
 
 	//--------- Sensor specific variables end --------------
 
@@ -92,16 +92,6 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 	public void updateCurrentPressureCalibInUse(){
 		mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
 	}
-
-	public void setDefaultBmp180PressureSensorConfig(boolean isSensorEnabled) {
-		//RS (30/5/2016) - from ShimmerObject:
-		if(isSensorEnabled) {
-		}
-		else{
-			mPressureResolution = 0;
-		}
-	}
-
 
 
 

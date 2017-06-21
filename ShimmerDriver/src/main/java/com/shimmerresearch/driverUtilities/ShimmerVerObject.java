@@ -7,6 +7,7 @@ import java.util.List;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_LABEL;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 /**
  * Holds HW, FW and expansion board infomation. Used for docked Shimmers current
@@ -31,8 +32,11 @@ public class ShimmerVerObject implements Serializable {
 	public String mFirmwareVersionParsed = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 	public String mFirmwareVersionParsedJustVersionNumber = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 
-	//TODO MNtoMN: below is a bad implementation, consider using ExpansionBoardDetails 
-//	public int mShimmerExpansionBoardId = ShimmerVerDetails.ANY_VERSION;//0;
+	/**
+	 * only used for driver version checking. If a current Shimmers expansion
+	 * board info is needed, refer to the ExpansionBoardDetails declared in the
+	 * ShimmerDevice instance
+	 */
 	private ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails(ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION); 
 	
 	//TODO handle SPAN_VERSION for SPANs? It is obtained from the PlatformHwManager
@@ -458,7 +462,7 @@ public class ShimmerVerObject implements Serializable {
 		}
 		return false;
 	}
-
+	
 	public boolean isShimmerHardware() {
 		return isShimmerHardware(getHardwareVersion());
 	}

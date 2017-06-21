@@ -27,6 +27,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP180.DatabaseConfigHandle;
 
 /**
  * @author Ronan McCormack
@@ -43,6 +44,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 	
 	/** Calibration handled on chip for Shimmer4 - might change in the future */	
 
+	private CalibDetailsBmp280 mCalibDetailsBmp280Lcl;
 	
 	public static class DatabaseChannelHandles{
 		public static final String PRESSURE_BMP280 = "BMP280_Pressure";
@@ -50,6 +52,19 @@ public class SensorBMP280 extends SensorBMPX80 {
 	}
 	public static final class DatabaseConfigHandle{
 		public static final String PRESSURE_PRECISION_BMP280 = "BMP280_Pressure_Precision";
+		
+		public static final String DIG_T1 = "BMP280_DIG_T1";
+		public static final String DIG_T2 = "BMP280_DIG_T2";
+		public static final String DIG_T3 = "BMP280_DIG_T3";
+		public static final String DIG_P1 = "BMP280_DIG_P1";
+		public static final String DIG_P2 = "BMP280_DIG_P2";
+		public static final String DIG_P3 = "BMP280_DIG_P3";
+		public static final String DIG_P4 = "BMP280_DIG_P4";
+		public static final String DIG_P5 = "BMP280_DIG_P5";
+		public static final String DIG_P6 = "BMP280_DIG_P6";
+		public static final String DIG_P7 = "BMP280_DIG_P7";
+		public static final String DIG_P8 = "BMP280_DIG_P8";
+		public static final String DIG_P9 = "BMP280_DIG_P9";
 	}
 	
 	public static class ObjectClusterSensorName{
@@ -194,6 +209,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 	@Override
 	public void generateCalibMap() {
 		mCalibDetailsBmpX80 = new CalibDetailsBmp280();
+		mCalibDetailsBmp280Lcl = (CalibDetailsBmp280) mCalibDetailsBmpX80;
 		super.generateCalibMap();
 	}
 
@@ -325,6 +341,20 @@ public class SensorBMP280 extends SensorBMPX80 {
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION_BMP280, getPressureResolution());
+		
+		mapOfConfig.put(DatabaseConfigHandle.DIG_T1, mCalibDetailsBmp280Lcl.dig_T1);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_T2, mCalibDetailsBmp280Lcl.dig_T2);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_T3, mCalibDetailsBmp280Lcl.dig_T3);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_P1, mCalibDetailsBmp280Lcl.dig_P1);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_P2, mCalibDetailsBmp280Lcl.dig_P2);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_P3, mCalibDetailsBmp280Lcl.dig_P3);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_P4, mCalibDetailsBmp280Lcl.dig_P4);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_P5, mCalibDetailsBmp280Lcl.dig_P5);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_P6, mCalibDetailsBmp280Lcl.dig_P6);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_P7, mCalibDetailsBmp280Lcl.dig_P7);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_P8, mCalibDetailsBmp280Lcl.dig_P8);
+		mapOfConfig.put(DatabaseConfigHandle.DIG_P9, mCalibDetailsBmp280Lcl.dig_P9);
+
 		return mapOfConfig;
 	}
 	
@@ -333,8 +363,36 @@ public class SensorBMP280 extends SensorBMPX80 {
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)){
 			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION_BMP280)).intValue());
 		}
-	}
+		//PRESSURE (BMP180) CAL PARAMS
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_T1)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_T2)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_T3)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_P1)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_P2)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_P3)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_P4)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_P5)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_P6)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_P7)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_P8)
+				&& mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.DIG_P9)){
+			
+			setPressureCalib(
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_T1),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_T2),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_T3),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_P1),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_P2),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_P3),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_P4),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_P5),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_P6),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_P7),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_P8),
+					(Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.DIG_P9));
+		}
 
+	}
 
 	@Override
 	public boolean processResponse(int responseCommand, Object parsedResponse, COMMUNICATION_TYPE commType) {
@@ -343,22 +401,18 @@ public class SensorBMP280 extends SensorBMPX80 {
 	}
 	
 	
-	
-	
 	//--------- Abstract methods implemented end --------------
 
 
 	//--------- Sensor specific methods start --------------	
-	
-	private void setDefaultBmp280PressureSensorConfig(boolean isSensorEnabled) {
-
-		if(isSensorEnabled) {
-		}
-		else{
-			mPressureResolution = 0;
-		}
+	public void setPressureCalib(
+			double T1, double T2, double T3,
+			double P1, double P2, double P3, 
+			double P4, double P5, double P6, 
+			double P7, double P8, double P9) {
+		mCalibDetailsBmp280Lcl.setPressureCalib(T1, T2, T3, P1, P2, P3, P4, P5, P6, P7, P8, P9);
 	}
-	
+
 	@Override
 	public void setPressureResolution(int i){
 		if(ArrayUtils.contains(ListofPressureResolutionConfigValuesBMP280, i)){
@@ -376,10 +430,20 @@ public class SensorBMP280 extends SensorBMPX80 {
 	}
 
 	@Override
-	public List<Double> getPressTempConfigValues() {
+	public List<Double> getPressTempConfigValuesLegacy() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	private void setDefaultBmp280PressureSensorConfig(boolean isSensorEnabled) {
+		if(isSensorEnabled) {
+		}
+		else{
+			mPressureResolution = 0;
+		}
+	}
+	
+
 	
 	//--------- Sensor specific methods end --------------
 
