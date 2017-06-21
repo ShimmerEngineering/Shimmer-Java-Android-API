@@ -46,7 +46,7 @@ import com.shimmerresearch.sensors.SensorBridgeAmp;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorKionixKXRB52042;
-import com.shimmerresearch.sensors.SensorLSM303;
+import com.shimmerresearch.sensors.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
@@ -115,7 +115,7 @@ public class Shimmer4 extends ShimmerDevice {
 		addSensorClass(SENSORS.CLOCK, new ShimmerClock(this));
 		
 		addSensorClass(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
-		addSensorClass(SENSORS.LSM303, new SensorLSM303(mShimmerVerObject));
+		addSensorClass(SENSORS.LSM303, new SensorLSM303DLHC(mShimmerVerObject));
 		addSensorClass(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
 		addSensorClass(SENSORS.ADC, new SensorADC(mShimmerVerObject));
 		addSensorClass(SENSORS.Battery, new SensorBattVoltage(this));

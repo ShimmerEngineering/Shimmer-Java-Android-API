@@ -25,7 +25,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.sensors.SensorLSM303.DatabaseConfigHandle;
+import com.shimmerresearch.sensors.SensorLSM303DLHC.DatabaseConfigHandle;
 
 public abstract class AbstractSensor implements Serializable{
 	

@@ -22,8 +22,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.SensorBattVoltage.GuiLabelSensorTiles;
-import com.shimmerresearch.sensors.SensorLSM303.GuiLabelConfig;
-import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
+import com.shimmerresearch.sensors.SensorLSM303DLHC.GuiLabelConfig;
+import com.shimmerresearch.sensors.SensorLSM303DLHC.ObjectClusterSensorName;
 
 /**
  * @author Ronan McCormack
