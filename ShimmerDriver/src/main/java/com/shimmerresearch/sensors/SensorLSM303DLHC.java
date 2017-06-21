@@ -88,25 +88,25 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
 			ListofLSM303DLHCAccelRangeConfigValues[0],
-			ListofAccelRange[0],
+			ListofLSM303AccelRange[0],
 			AlignmentMatrixWideRangeAccelShimmer3, 
 			SensitivityMatrixWideRangeAccel2gShimmer3, 
 			OffsetVectorWideRangeAccelShimmer3);
 	private CalibDetailsKinematic calibDetailsAccelWr4g = new CalibDetailsKinematic(
 			ListofLSM303DLHCAccelRangeConfigValues[1], 
-			ListofAccelRange[1],
+			ListofLSM303AccelRange[1],
 			AlignmentMatrixWideRangeAccelShimmer3,
 			SensitivityMatrixWideRangeAccel4gShimmer3, 
 			OffsetVectorWideRangeAccelShimmer3);
 	private CalibDetailsKinematic calibDetailsAccelWr8g = new CalibDetailsKinematic(
 			ListofLSM303DLHCAccelRangeConfigValues[2], 
-			ListofAccelRange[2],
+			ListofLSM303AccelRange[2],
 			AlignmentMatrixWideRangeAccelShimmer3, 
 			SensitivityMatrixWideRangeAccel8gShimmer3, 
 			OffsetVectorWideRangeAccelShimmer3);
 	private CalibDetailsKinematic calibDetailsAccelWr16g = new CalibDetailsKinematic(
 			ListofLSM303DLHCAccelRangeConfigValues[3], 
-			ListofAccelRange[3],
+			ListofLSM303AccelRange[3],
 			AlignmentMatrixWideRangeAccelShimmer3,
 			SensitivityMatrixWideRangeAccel16gShimmer3, 
 			OffsetVectorWideRangeAccelShimmer3);
@@ -126,44 +126,44 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	public static final double[][] SensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
 
 	private CalibDetailsKinematic calibDetailsMag1p3 = new CalibDetailsKinematic(
-			ListofMagRangeConfigValues[0],
-			ListofMagRange[0],
+			ListofLSM303DLHCMagRangeConfigValues[0],
+			ListofLSM303DLHCMagRange[0],
 			AlignmentMatrixMagShimmer3,
 			SensitivityMatrixMag1p3GaShimmer3,
 			OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag1p9 = new CalibDetailsKinematic(
-			ListofMagRangeConfigValues[1],
-			ListofMagRange[1],
+			ListofLSM303DLHCMagRangeConfigValues[1],
+			ListofLSM303DLHCMagRange[1],
 			AlignmentMatrixMagShimmer3, 
 			SensitivityMatrixMag1p9GaShimmer3,
 			OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag2p5 = new CalibDetailsKinematic(
-			ListofMagRangeConfigValues[2], 
-			ListofMagRange[2],
+			ListofLSM303DLHCMagRangeConfigValues[2], 
+			ListofLSM303DLHCMagRange[2],
 			AlignmentMatrixMagShimmer3,
 			SensitivityMatrixMag2p5GaShimmer3, 
 			OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag4p0 = new CalibDetailsKinematic(
-			ListofMagRangeConfigValues[3],
-			ListofMagRange[3],
+			ListofLSM303DLHCMagRangeConfigValues[3],
+			ListofLSM303DLHCMagRange[3],
 			AlignmentMatrixMagShimmer3,
 			SensitivityMatrixMag4GaShimmer3,
 			OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag4p7 = new CalibDetailsKinematic(
-			ListofMagRangeConfigValues[4],
-			ListofMagRange[4],
+			ListofLSM303DLHCMagRangeConfigValues[4],
+			ListofLSM303DLHCMagRange[4],
 			AlignmentMatrixMagShimmer3, 
 			SensitivityMatrixMag4p7GaShimmer3,
 			OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag5p6 = new CalibDetailsKinematic(
-			ListofMagRangeConfigValues[5],
-			ListofMagRange[5],
+			ListofLSM303DLHCMagRangeConfigValues[5],
+			ListofLSM303DLHCMagRange[5],
 			AlignmentMatrixMagShimmer3, 
 			SensitivityMatrixMag5p6GaShimmer3,
 			OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag8p1 = new CalibDetailsKinematic(
-			ListofMagRangeConfigValues[6],
-			ListofMagRange[6],
+			ListofLSM303DLHCMagRangeConfigValues[6],
+			ListofLSM303DLHCMagRange[6],
 			AlignmentMatrixMagShimmer3, 
 			SensitivityMatrixMag8p1GaShimmer3, 
 			OffsetVectorMagShimmer3);
@@ -191,19 +191,11 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 		public static final String LSM303DLHC_MAG_CALIB_PARAM = "Mag Calibration Details";
 		public static final String LSM303DLHC_MAG_VALID_CALIB = "Mag Valid Calibration";
 	}
-	
 
 	public class GuiLabelSensors{
 		public static final String ACCEL_WR = "Wide-Range Accelerometer"; 
 		public static final String MAG = "Magnetometer"; 
 	}
-
-	
-	public class GuiLabelSensorTiles{
-		public static final String MAG = GuiLabelSensors.MAG;
-		public static final String WIDE_RANGE_ACCEL = GuiLabelSensors.ACCEL_WR;
-	}
-	
 	
 	public static class DatabaseChannelHandles{
 		public static final String WR_ACC_X = "LSM303DLHC_ACC_X";
@@ -351,30 +343,28 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	
 
 	//--------- Configuration options start --------------
-	public static final String[] ListofAccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};  
-	public static final Integer[] ListofLSM303DLHCAccelRangeConfigValues={0,1,2,3};  
-	
-	public static final String[] ListofMagRange={"+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"}; 
-	public static final Integer[] ListofMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option  
 	
 	public static final String[] ListofLSM303DLHCAccelRate={"Power-down","1.0Hz","10.0Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","400.0Hz","1344.0Hz"};
 	public static final Integer[] ListofLSM303DLHCAccelRateConfigValues={0,1,2,3,4,5,6,7,9};
-	
-	public static final String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3.0Hz","7.5Hz","15.0Hz","30.0Hz","75.0Hz","220.0Hz"};
-	public static final Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
-	
+
 	public static final String[] ListofLSM303DLHCAccelRateLpm={"Power-down","1Hz","10Hz","25Hz","50Hz","100Hz","200Hz","400Hz","1620Hz","5376Hz"}; // 1620Hz and 5376Hz are only available in low-power mode
 	public static final Integer[] ListofLSM303DLHCAccelRateLpmConfigValues={0,1,2,3,4,5,6,7,8,9};
-	
+
+	public static final String[] ListofLSM303DLHCMagRate={"0.75Hz","1.5Hz","3.0Hz","7.5Hz","15.0Hz","30.0Hz","75.0Hz","220.0Hz"};
+	public static final Integer[] ListofLSM303DLHCMagRateConfigValues={0,1,2,3,4,5,6,7};
+
+	public static final String[] ListofLSM303DLHCMagRange={"+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"}; 
+	public static final Integer[] ListofLSM303DLHCMagRangeConfigValues={1,2,3,4,5,6,7}; // no '0' option  
+
 	public static final ConfigOptionDetailsSensor configOptionAccelRange = new ConfigOptionDetailsSensor(
-			ListofAccelRange, 
+			ListofLSM303AccelRange, 
 			ListofLSM303DLHCAccelRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	
 	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
-			ListofMagRange, 
-			ListofMagRangeConfigValues, 
+			ListofLSM303DLHCMagRange, 
+			ListofLSM303DLHCMagRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	
@@ -526,17 +516,16 @@ public class SensorLSM303DLHC extends SensorLSM303 {
     //--------- Constructors for this class start --------------
     /** This constructor is just used for accessing calibration*/
     public SensorLSM303DLHC() {
-		super(SENSORS.LSM303);
+		super();
     }
     
     public SensorLSM303DLHC(ShimmerVerObject svo) {
-		super(SENSORS.LSM303, svo);
+		super(svo);
 	}
     
 	public SensorLSM303DLHC(ShimmerDevice shimmerDevice) {
-		super(SENSORS.LSM303, shimmerDevice);
+		super(shimmerDevice);
 	}
-
    //--------- Constructors for this class end --------------
 
 	
@@ -1235,7 +1224,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	
 
 	public void setLSM303MagRange(int valueToSet){
-		if(ArrayUtils.contains(ListofMagRangeConfigValues, valueToSet)){
+		if(ArrayUtils.contains(ListofLSM303DLHCMagRangeConfigValues, valueToSet)){
 			mMagRange = valueToSet;
 			updateCurrentAccelWrCalibInUse();
 		}

@@ -73,6 +73,7 @@ import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorKionixKXRB52042;
+import com.shimmerresearch.sensors.SensorLSM303;
 import com.shimmerresearch.sensors.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
@@ -680,14 +681,16 @@ public class Configuration {
 			public static final int SHIMMER_MPU9150_GYRO = 30;
 			/** Shimmer3 Wide-range digital accelerometer */
 			public static final int SHIMMER_LSM303DLHC_ACCEL = 31;
-			public static final int SHIMMER_LSM303DLHC_MAG = 32;
+			public static final int SHIMMER_LSM303AH_ACCEL = 32;
+			public static final int SHIMMER_LSM303DLHC_MAG = 33;
+			public static final int SHIMMER_LSM303AH_MAG = 34;
 			/** Shimmer3 Alternative accelerometer */
-			public static final int SHIMMER_MPU9150_ACCEL = 33;
+			public static final int SHIMMER_MPU9150_ACCEL = 35;
 			/** Shimmer3 Alternative magnetometer */
-			public static final int SHIMMER_MPU9150_MAG = 34;
-			public static final int SHIMMER_MPU9150_TEMP = 35;
-			public static final int SHIMMER_BMP180_PRESSURE = 36;
-			public static final int SHIMMER_BMP280_PRESSURE = 37;
+			public static final int SHIMMER_MPU9150_MAG = 36;
+			public static final int SHIMMER_MPU9150_TEMP = 37;
+			public static final int SHIMMER_BMP180_PRESSURE = 38;
+			public static final int SHIMMER_BMP280_PRESSURE = 39;
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
@@ -861,9 +864,9 @@ public class Configuration {
 		public enum GuiLabelSensorTiles{
 			STREAMING_PROPERTIES(ShimmerClock.GuiLabelSensorTiles.STREAMING_PROPERTIES),
 			LOW_NOISE_ACCEL(SensorKionixKXRB52042.GuiLabelSensorTiles.LOW_NOISE_ACCEL),
-			WIDE_RANGE_ACCEL(SensorLSM303DLHC.GuiLabelSensorTiles.WIDE_RANGE_ACCEL),
+			WIDE_RANGE_ACCEL(SensorLSM303.GuiLabelSensorTiles.WIDE_RANGE_ACCEL),
 			GYRO(SensorMPU9X50.GuiLabelSensorTiles.GYRO),
-			MAG(SensorLSM303DLHC.GuiLabelSensorTiles.MAG),
+			MAG(SensorLSM303.GuiLabelSensorTiles.MAG),
 			PRESSURE_TEMPERATURE_BMP180(SensorBMP180.GuiLabelSensorTiles.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.GuiLabelSensorTiles.PRESSURE_TEMPERATURE),
 			BATTERY_MONITORING(SensorBattVoltage.GuiLabelSensorTiles.BATTERY_MONITORING),

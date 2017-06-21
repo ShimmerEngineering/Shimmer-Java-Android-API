@@ -66,6 +66,7 @@ import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorLSM303;
+import com.shimmerresearch.sensors.SensorLSM303AH;
 import com.shimmerresearch.sensors.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
@@ -657,6 +658,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	
 	// ----------   Wide-range accel start ---------------
+	private SensorLSM303 mSensorLSM303 = new SensorLSM303DLHC(this);
+
 	protected boolean mHighResAccelWR = false; 
 	protected boolean mLowPowerAccelWR = false;	
 	protected int mLSM303DigitalAccelRate=0;
@@ -667,25 +670,25 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//Shimmer3 Calibration - Copied from SensorLSM303
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCAccelRangeConfigValues[0],
-			SensorLSM303DLHC.ListofAccelRange[0],
+			SensorLSM303DLHC.ListofLSM303AccelRange[0],
 			SensorLSM303DLHC.AlignmentMatrixWideRangeAccelShimmer3, 
 			SensorLSM303DLHC.SensitivityMatrixWideRangeAccel2gShimmer3, 
 			SensorLSM303DLHC.OffsetVectorWideRangeAccelShimmer3);
 	private CalibDetailsKinematic calibDetailsAccelWr4g = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCAccelRangeConfigValues[1], 
-			SensorLSM303DLHC.ListofAccelRange[1],
+			SensorLSM303DLHC.ListofLSM303AccelRange[1],
 			SensorLSM303DLHC.AlignmentMatrixWideRangeAccelShimmer3,
 			SensorLSM303DLHC.SensitivityMatrixWideRangeAccel4gShimmer3, 
 			SensorLSM303DLHC.OffsetVectorWideRangeAccelShimmer3);
 	private CalibDetailsKinematic calibDetailsAccelWr8g = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCAccelRangeConfigValues[2], 
-			SensorLSM303DLHC.ListofAccelRange[2],
+			SensorLSM303DLHC.ListofLSM303AccelRange[2],
 			SensorLSM303DLHC.AlignmentMatrixWideRangeAccelShimmer3, 
 			SensorLSM303DLHC.SensitivityMatrixWideRangeAccel8gShimmer3, 
 			SensorLSM303DLHC.OffsetVectorWideRangeAccelShimmer3);
 	private CalibDetailsKinematic calibDetailsAccelWr16g = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCAccelRangeConfigValues[3], 
-			SensorLSM303DLHC.ListofAccelRange[3],
+			SensorLSM303DLHC.ListofLSM303AccelRange[3],
 			SensorLSM303DLHC.AlignmentMatrixWideRangeAccelShimmer3,
 			SensorLSM303DLHC.SensitivityMatrixWideRangeAccel16gShimmer3, 
 			SensorLSM303DLHC.OffsetVectorWideRangeAccelShimmer3);
@@ -864,48 +867,46 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	
-//	private SensorLSM303 mSensorLSM303 = new SensorLSM303DLHC(this);
-
 	//Shimmer3 Calibration - Copied from SensorMPU9X50
 	private CalibDetailsKinematic calibDetailsMag1p3 = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofMagRangeConfigValues[0],
-			SensorLSM303DLHC.ListofMagRange[0],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[0],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRange[0],
 			SensorLSM303DLHC.AlignmentMatrixMagShimmer3,
 			SensorLSM303DLHC.SensitivityMatrixMag1p3GaShimmer3,
 			SensorLSM303DLHC.OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag1p9 = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofMagRangeConfigValues[1],
-			SensorLSM303DLHC.ListofMagRange[1],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[1],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRange[1],
 			SensorLSM303DLHC.AlignmentMatrixMagShimmer3, 
 			SensorLSM303DLHC.SensitivityMatrixMag1p9GaShimmer3,
 			SensorLSM303DLHC.OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag2p5 = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofMagRangeConfigValues[2], 
-			SensorLSM303DLHC.ListofMagRange[2],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[2], 
+			SensorLSM303DLHC.ListofLSM303DLHCMagRange[2],
 			SensorLSM303DLHC.AlignmentMatrixMagShimmer3,
 			SensorLSM303DLHC.SensitivityMatrixMag2p5GaShimmer3, 
 			SensorLSM303DLHC.OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag4p0 = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofMagRangeConfigValues[3],
-			SensorLSM303DLHC.ListofMagRange[3],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[3],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRange[3],
 			SensorLSM303DLHC.AlignmentMatrixMagShimmer3,
 			SensorLSM303DLHC.SensitivityMatrixMag4GaShimmer3,
 			SensorLSM303DLHC.OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag4p7 = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofMagRangeConfigValues[4],
-			SensorLSM303DLHC.ListofMagRange[4],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[4],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRange[4],
 			SensorLSM303DLHC.AlignmentMatrixMagShimmer3, 
 			SensorLSM303DLHC.SensitivityMatrixMag4p7GaShimmer3,
 			SensorLSM303DLHC.OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag5p6 = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofMagRangeConfigValues[5],
-			SensorLSM303DLHC.ListofMagRange[5],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[5],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRange[5],
 			SensorLSM303DLHC.AlignmentMatrixMagShimmer3, 
 			SensorLSM303DLHC.SensitivityMatrixMag5p6GaShimmer3,
 			SensorLSM303DLHC.OffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag8p1 = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofMagRangeConfigValues[6],
-			SensorLSM303DLHC.ListofMagRange[6],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[6],
+			SensorLSM303DLHC.ListofLSM303DLHCMagRange[6],
 			SensorLSM303DLHC.AlignmentMatrixMagShimmer3, 
 			SensorLSM303DLHC.SensitivityMatrixMag8p1GaShimmer3, 
 			SensorLSM303DLHC.OffsetVectorMagShimmer3);
@@ -5231,7 +5232,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensorBMPX80 = new SensorBMP280(this);
 			addSensorClass(SENSORS.BMP280, mSensorBMPX80);
 //			mSensorLSM303 = new SensorLSM303AH(this);
-//			addSensorClass(SENSORS.LSM303, mSensorBMPX80);
+//			addSensorClass(SENSORS.LSM303, mSensorLSM303);
 		}
 		else{
 			mSensorBMPX80 = new SensorBMP180(this);
@@ -8527,7 +8528,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public void setLSM303MagRange(int i){
-		if(ArrayUtils.contains(SensorLSM303DLHC.ListofMagRangeConfigValues, i)){
+		if(ArrayUtils.contains(SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues, i)){
 			mMagRange = i;
 		}
 		updateCurrentMagCalibInUse();
