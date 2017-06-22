@@ -662,36 +662,36 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected boolean mHighResAccelWR = false; 
 	protected boolean mLowPowerAccelWR = false;	
-	protected int mLSM303DigitalAccelRate=0;
+	protected int mLSM303DigitalAccelRate = 0;
 	
 	/** all raw params should start with a 1 byte identifier in position [0] */
 	protected byte[] mDigiAccelCalRawParams  = new byte[22];
 
 	//Shimmer3 Calibration - Copied from SensorLSM303
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofLSM303DLHCAccelRangeConfigValues[0],
+			SensorLSM303DLHC.ListofLSM303AccelRangeConfigValues[0],
 			SensorLSM303DLHC.ListofLSM303AccelRange[0],
-			SensorLSM303DLHC.AlignmentMatrixWideRangeAccelShimmer3, 
-			SensorLSM303DLHC.SensitivityMatrixWideRangeAccel2gShimmer3, 
-			SensorLSM303DLHC.OffsetVectorWideRangeAccelShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixWideRangeAccelShimmer3, 
+			SensorLSM303DLHC.DefaultSensitivityMatrixWideRangeAccel2gShimmer3, 
+			SensorLSM303DLHC.DefaultOffsetVectorWideRangeAccelShimmer3);
 	private CalibDetailsKinematic calibDetailsAccelWr4g = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofLSM303DLHCAccelRangeConfigValues[1], 
+			SensorLSM303DLHC.ListofLSM303AccelRangeConfigValues[1], 
 			SensorLSM303DLHC.ListofLSM303AccelRange[1],
-			SensorLSM303DLHC.AlignmentMatrixWideRangeAccelShimmer3,
-			SensorLSM303DLHC.SensitivityMatrixWideRangeAccel4gShimmer3, 
-			SensorLSM303DLHC.OffsetVectorWideRangeAccelShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixWideRangeAccelShimmer3,
+			SensorLSM303DLHC.DefaultSensitivityMatrixWideRangeAccel4gShimmer3, 
+			SensorLSM303DLHC.DefaultOffsetVectorWideRangeAccelShimmer3);
 	private CalibDetailsKinematic calibDetailsAccelWr8g = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofLSM303DLHCAccelRangeConfigValues[2], 
+			SensorLSM303DLHC.ListofLSM303AccelRangeConfigValues[2], 
 			SensorLSM303DLHC.ListofLSM303AccelRange[2],
-			SensorLSM303DLHC.AlignmentMatrixWideRangeAccelShimmer3, 
-			SensorLSM303DLHC.SensitivityMatrixWideRangeAccel8gShimmer3, 
-			SensorLSM303DLHC.OffsetVectorWideRangeAccelShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixWideRangeAccelShimmer3, 
+			SensorLSM303DLHC.DefaultSensitivityMatrixWideRangeAccel8gShimmer3, 
+			SensorLSM303DLHC.DefaultOffsetVectorWideRangeAccelShimmer3);
 	private CalibDetailsKinematic calibDetailsAccelWr16g = new CalibDetailsKinematic(
-			SensorLSM303DLHC.ListofLSM303DLHCAccelRangeConfigValues[3], 
+			SensorLSM303DLHC.ListofLSM303AccelRangeConfigValues[3], 
 			SensorLSM303DLHC.ListofLSM303AccelRange[3],
-			SensorLSM303DLHC.AlignmentMatrixWideRangeAccelShimmer3,
-			SensorLSM303DLHC.SensitivityMatrixWideRangeAccel16gShimmer3, 
-			SensorLSM303DLHC.OffsetVectorWideRangeAccelShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixWideRangeAccelShimmer3,
+			SensorLSM303DLHC.DefaultSensitivityMatrixWideRangeAccel16gShimmer3, 
+			SensorLSM303DLHC.DefaultOffsetVectorWideRangeAccelShimmer3);
 	
 	protected TreeMap<Integer, CalibDetails> mCalibMapAccelWideRangeShimmer3 = new TreeMap<Integer, CalibDetails>(); 
 	{
@@ -778,18 +778,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public CalibDetailsKinematic mCurrentCalibDetailsGyro = calibDetailsGyro500;
 	// ----------   Gyro end ---------------
 
-		
-	// ----------   Mag start ---------------
+	// ----------   Mag start - Common ---------------
 	protected boolean mLowPowerMag = false;	
-
-	protected int mShimmer2MagRate=0;
-	/** This stores the current Mag Sampling rate, it is a value between 0 and 6; 0 = 0.5 Hz; 1 = 1.0 Hz; 2 = 2.0 Hz; 3 = 5.0 Hz; 4 = 10.0 Hz; 5 = 20.0 Hz; 6 = 50.0 Hz*/
-	protected int mLSM303MagRate=4;
-	/** Currently not supported on Shimmer2. This stores the current Mag Range, it is a value between 0 and 6; 0 = 0.7 Ga; 1 = 1.0 Ga; 2 = 1.5 Ga; 3 = 2.0 Ga; 4 = 3.2 Ga; 5 = 3.8 Ga; 6 = 4.5 Ga */
-	private int mMagRange=1;	
 
 	/** all raw params should start with a 1 byte identifier in position [0] */
 	protected byte[] mMagCalRawParams  = new byte[22];	
+	// ----------   Mag end - Common ---------------
+
+	// ----------   Mag start - Shimmer2 ---------------
+	protected int mShimmer2MagRate=0;
 
 	//Shimmer2/2r Calibration - Default values
 	protected static final double[][] AlignmentMatrixMagShimmer2 = {{1,0,0},{0,1,0},{0,0,-1}};
@@ -865,51 +862,57 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mCalibMapMagShimmer2r.put(calibDetailsShimmer2rMag5p6.mRangeValue, calibDetailsShimmer2rMag5p6);
 		mCalibMapMagShimmer2r.put(calibDetailsShimmer2rMag8p1.mRangeValue, calibDetailsShimmer2rMag8p1);
 	}
+	// ----------   Mag end - Shimmer2 ---------------
 
-	
+	// ----------   Mag start - Shimmer3 ---------------
+	/** This stores the current Mag Sampling rate, it is a value between 0 and 6; 0 = 0.5 Hz; 1 = 1.0 Hz; 2 = 2.0 Hz; 3 = 5.0 Hz; 4 = 10.0 Hz; 5 = 20.0 Hz; 6 = 50.0 Hz*/
+	protected int mLSM303MagRate=4;
+	/** Currently not supported on Shimmer2. This stores the current Mag Range, it is a value between 0 and 6; 0 = 0.7 Ga; 1 = 1.0 Ga; 2 = 1.5 Ga; 3 = 2.0 Ga; 4 = 3.2 Ga; 5 = 3.8 Ga; 6 = 4.5 Ga */
+	private int mLSM303MagRange=1;	
+
 	//Shimmer3 Calibration - Copied from SensorMPU9X50
 	private CalibDetailsKinematic calibDetailsMag1p3 = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[0],
 			SensorLSM303DLHC.ListofLSM303DLHCMagRange[0],
-			SensorLSM303DLHC.AlignmentMatrixMagShimmer3,
-			SensorLSM303DLHC.SensitivityMatrixMag1p3GaShimmer3,
-			SensorLSM303DLHC.OffsetVectorMagShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixMagShimmer3,
+			SensorLSM303DLHC.DefaultSensitivityMatrixMag1p3GaShimmer3,
+			SensorLSM303DLHC.DefaultOffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag1p9 = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[1],
 			SensorLSM303DLHC.ListofLSM303DLHCMagRange[1],
-			SensorLSM303DLHC.AlignmentMatrixMagShimmer3, 
-			SensorLSM303DLHC.SensitivityMatrixMag1p9GaShimmer3,
-			SensorLSM303DLHC.OffsetVectorMagShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixMagShimmer3, 
+			SensorLSM303DLHC.DefaultSensitivityMatrixMag1p9GaShimmer3,
+			SensorLSM303DLHC.DefaultOffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag2p5 = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[2], 
 			SensorLSM303DLHC.ListofLSM303DLHCMagRange[2],
-			SensorLSM303DLHC.AlignmentMatrixMagShimmer3,
-			SensorLSM303DLHC.SensitivityMatrixMag2p5GaShimmer3, 
-			SensorLSM303DLHC.OffsetVectorMagShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixMagShimmer3,
+			SensorLSM303DLHC.DefaultSensitivityMatrixMag2p5GaShimmer3, 
+			SensorLSM303DLHC.DefaultOffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag4p0 = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[3],
 			SensorLSM303DLHC.ListofLSM303DLHCMagRange[3],
-			SensorLSM303DLHC.AlignmentMatrixMagShimmer3,
-			SensorLSM303DLHC.SensitivityMatrixMag4GaShimmer3,
-			SensorLSM303DLHC.OffsetVectorMagShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixMagShimmer3,
+			SensorLSM303DLHC.DefaultSensitivityMatrixMag4GaShimmer3,
+			SensorLSM303DLHC.DefaultOffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag4p7 = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[4],
 			SensorLSM303DLHC.ListofLSM303DLHCMagRange[4],
-			SensorLSM303DLHC.AlignmentMatrixMagShimmer3, 
-			SensorLSM303DLHC.SensitivityMatrixMag4p7GaShimmer3,
-			SensorLSM303DLHC.OffsetVectorMagShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixMagShimmer3, 
+			SensorLSM303DLHC.DefaultSensitivityMatrixMag4p7GaShimmer3,
+			SensorLSM303DLHC.DefaultOffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag5p6 = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[5],
 			SensorLSM303DLHC.ListofLSM303DLHCMagRange[5],
-			SensorLSM303DLHC.AlignmentMatrixMagShimmer3, 
-			SensorLSM303DLHC.SensitivityMatrixMag5p6GaShimmer3,
-			SensorLSM303DLHC.OffsetVectorMagShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixMagShimmer3, 
+			SensorLSM303DLHC.DefaultSensitivityMatrixMag5p6GaShimmer3,
+			SensorLSM303DLHC.DefaultOffsetVectorMagShimmer3);
 	private CalibDetailsKinematic calibDetailsMag8p1 = new CalibDetailsKinematic(
 			SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues[6],
 			SensorLSM303DLHC.ListofLSM303DLHCMagRange[6],
-			SensorLSM303DLHC.AlignmentMatrixMagShimmer3, 
-			SensorLSM303DLHC.SensitivityMatrixMag8p1GaShimmer3, 
-			SensorLSM303DLHC.OffsetVectorMagShimmer3);
+			SensorLSM303DLHC.DefaultAlignmentMatrixMagShimmer3, 
+			SensorLSM303DLHC.DefaultSensitivityMatrixMag8p1GaShimmer3, 
+			SensorLSM303DLHC.DefaultOffsetVectorMagShimmer3);
 
 	protected TreeMap<Integer, CalibDetails> mCalibMapMagShimmer3 = new TreeMap<Integer, CalibDetails>(); 
 	{
@@ -923,7 +926,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	public CalibDetailsKinematic mCurrentCalibDetailsMag = calibDetailsMag1p3;
 
-	// ----------   Mag end ---------------
+	// ----------   Mag end - Shimmer3 ---------------
 	
 	// ----------- MPU9X50 options start -------------------------
 	/** This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g */
@@ -3718,7 +3721,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
 			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
 			if (getLSM303MagRate()==3 && getSamplingRateShimmer()>10){
-				mLowPowerMag = true;
+				setLowPowerMag(true);
 			}
 			setDigitalAccelRange(bufferInquiry[1]);
 			mConfigByte0 = bufferInquiry[2] & 0xFF; //convert the byte to unsigned integer
@@ -3751,8 +3754,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setInternalExpPower(((int)(mConfigByte0 >>24)) & 1);
 				mInquiryResponseBytes = new byte[8+mNChannels];
 				System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
-				if ((mLSM303DigitalAccelRate==2 && getSamplingRateShimmer()>10)){
-					mLowPowerAccelWR = true;
+				if ((getLSM303DigitalAccelRate()==2 && getSamplingRateShimmer()>10)){
+					setLowPowerAccelWR(true);
 				}
 				checkLowPowerGyro();
 				checkLowPowerMag();
@@ -4432,7 +4435,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	@Override
 	protected void setSamplingRateSensors(double samplingRateShimmer) {
 		if(isShimmerGen2()) {
-			if(!mLowPowerMag){
+			if(!isLowPowerMagEnabled()){
 				if(samplingRateShimmer<=10) {
 					mShimmer2MagRate = 4;
 				} 
@@ -4471,12 +4474,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public boolean checkLowPowerMag() {
 		if(getLSM303MagRate() <= 4) {
-			mLowPowerMag = true;
+			setLowPowerMag(true);
 		}
 		else {
-			mLowPowerMag = false;
+			setLowPowerMag(false);
 		}
-		return mLowPowerMag;
+		return isLowPowerMagEnabled();
 	}
 	
 	/**
@@ -4564,7 +4567,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//setDefaultECGConfiguration(getSamplingRateShimmer()); // RM commented out for reason below
 			clearExgConfig(); // RM included this as ECG channel was being set after flashing firmware with reload config checkbox unticked
 			
-			setMagRange(getMagRange());
+			setLSM303MagRange(getMagRange());
 			setAccelRange(getAccelRange());
 			setGyroRange(getGyroRange());
 			
@@ -4630,25 +4633,25 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mBufferSize = (int)(configBytes[infoMemLayoutCast.idxBufferSize] & infoMemLayoutCast.maskBufferSize);
 			
 			// Configuration
-			mLSM303DigitalAccelRate = (configBytes[infoMemLayoutCast.idxConfigSetupByte0] >> infoMemLayoutCast.bitShiftLSM303DLHCAccelSamplingRate) & infoMemLayoutCast.maskLSM303DLHCAccelSamplingRate; 
+			setLSM303DigitalAccelRate((configBytes[infoMemLayoutCast.idxConfigSetupByte0] >> infoMemLayoutCast.bitShiftLSM303DLHCAccelSamplingRate) & infoMemLayoutCast.maskLSM303DLHCAccelSamplingRate); 
 			setDigitalAccelRange((configBytes[infoMemLayoutCast.idxConfigSetupByte0] >> infoMemLayoutCast.bitShiftLSM303DLHCAccelRange) & infoMemLayoutCast.maskLSM303DLHCAccelRange);
 			if(((configBytes[infoMemLayoutCast.idxConfigSetupByte0] >> infoMemLayoutCast.bitShiftLSM303DLHCAccelLPM) & infoMemLayoutCast.maskLSM303DLHCAccelLPM) == infoMemLayoutCast.maskLSM303DLHCAccelLPM) {
-				mLowPowerAccelWR = true;
+				setLowPowerAccelWR(true);
 			}
 			else {
-				mLowPowerAccelWR = false;
+				setLowPowerAccelWR(false);
 			}
 			if(((configBytes[infoMemLayoutCast.idxConfigSetupByte0] >> infoMemLayoutCast.bitShiftLSM303DLHCAccelHRM) & infoMemLayoutCast.maskLSM303DLHCAccelHRM) == infoMemLayoutCast.maskLSM303DLHCAccelHRM) {
-				mHighResAccelWR = true;
+				setHighResAccelWR(true);
 			}
 			else {
-				mHighResAccelWR = false;
+				setHighResAccelWR(false);
 			}
 			
 			setMPU9150GyroAccelRate((configBytes[infoMemLayoutCast.idxConfigSetupByte1] >> infoMemLayoutCast.bitShiftMPU9150AccelGyroSamplingRate) & infoMemLayoutCast.maskMPU9150AccelGyroSamplingRate);
 			checkLowPowerGyro(); // check rate to determine if Sensor is in LPM mode
 			
-			setMagRange((configBytes[infoMemLayoutCast.idxConfigSetupByte2] >> infoMemLayoutCast.bitShiftLSM303DLHCMagRange) & infoMemLayoutCast.maskLSM303DLHCMagRange);
+			setLSM303MagRange((configBytes[infoMemLayoutCast.idxConfigSetupByte2] >> infoMemLayoutCast.bitShiftLSM303DLHCMagRange) & infoMemLayoutCast.maskLSM303DLHCMagRange);
 			setLSM303MagRate((configBytes[infoMemLayoutCast.idxConfigSetupByte2] >> infoMemLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & infoMemLayoutCast.maskLSM303DLHCMagSamplingRate);
 			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
 
@@ -4970,12 +4973,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mConfigBytes[infoMemLayout.idxSensors2] = (byte) ((mEnabledSensors >> infoMemLayout.byteShiftSensors2) & infoMemLayout.maskSensors);
 			
 			// Configuration
-			mConfigBytes[infoMemLayout.idxConfigSetupByte0] = (byte) ((mLSM303DigitalAccelRate & infoMemLayout.maskLSM303DLHCAccelSamplingRate) << infoMemLayout.bitShiftLSM303DLHCAccelSamplingRate);
+			mConfigBytes[infoMemLayout.idxConfigSetupByte0] = (byte) ((getLSM303DigitalAccelRate() & infoMemLayout.maskLSM303DLHCAccelSamplingRate) << infoMemLayout.bitShiftLSM303DLHCAccelSamplingRate);
 			mConfigBytes[infoMemLayout.idxConfigSetupByte0] |= (byte) ((getAccelRange() & infoMemLayout.maskLSM303DLHCAccelRange) << infoMemLayout.bitShiftLSM303DLHCAccelRange);
-			if(mLowPowerAccelWR) {
+			if(isLowPowerAccelWR()) {
 				mConfigBytes[infoMemLayout.idxConfigSetupByte0] |= (infoMemLayout.maskLSM303DLHCAccelLPM << infoMemLayout.bitShiftLSM303DLHCAccelLPM);
 			}
-			if(mHighResAccelWR) {
+			if(isHighResAccelWR()) {
 				mConfigBytes[infoMemLayout.idxConfigSetupByte0] |= (infoMemLayout.maskLSM303DLHCAccelHRM << infoMemLayout.bitShiftLSM303DLHCAccelHRM);
 			}
 	
@@ -5231,13 +5234,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isSupportedNewImuSensors()){
 			mSensorBMPX80 = new SensorBMP280(this);
 			addSensorClass(SENSORS.BMP280, mSensorBMPX80);
-//			mSensorLSM303 = new SensorLSM303AH(this);
+			mSensorLSM303 = new SensorLSM303AH(this);
 //			addSensorClass(SENSORS.LSM303, mSensorLSM303);
 		}
 		else{
 			mSensorBMPX80 = new SensorBMP180(this);
 			addSensorClass(SENSORS.BMP180, mSensorBMPX80);
-//			mSensorLSM303 = new SensorLSM303DLHC(this);
+			mSensorLSM303 = new SensorLSM303DLHC(this);
 //			addSensorClass(SENSORS.LSM303, mSensorLSM303);
 		}
 		
@@ -5368,14 +5371,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if(configOptions!=null){
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					int nonStandardIndex = -1;
-			        if(stringKey.equals(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)) {
+			        if(stringKey.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE)) {
 			        	if(isLSM303DigitalAccelLPM()) {
-							nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.IS_LPM;
+							nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303_ACCEL_RATE.IS_LPM;
 			        	}
 			        	else {
-							nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303DLHC_ACCEL_RATE.NOT_LPM;
+							nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303_ACCEL_RATE.NOT_LPM;
 		        			// double check that rate is compatible with LPM (8 not compatible so set to higher rate) 
-			        		setLSM303DigitalAccelRate(mLSM303DigitalAccelRate);
+			        		setLSM303DigitalAccelRate(getLSM303DigitalAccelRate());
 			        	}
 			        	
 						if(nonStandardIndex!=-1 && configOptions instanceof ConfigOptionDetailsSensor){
@@ -6376,7 +6379,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setMPU9150GyroAccelRate(((Double) mapOfConfigPerShimmer.get(SensorMPU9X50.DatabaseConfigHandle.GYRO_RATE)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE)){
-			setMagRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE)).intValue());
+			setLSM303MagRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RATE)){
 			setLSM303MagRate(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RATE)).intValue());
@@ -8480,31 +8483,36 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected void setLowPowerMag(boolean enable){
 		mLowPowerMag = enable;
-		if((getHardwareVersion()==HW_ID.SHIMMER_2)||(getHardwareVersion()==HW_ID.SHIMMER_2R)){
-			if (!mLowPowerMag){
-				if (getSamplingRateShimmer()>=50){
-					mShimmer2MagRate = 6;
-				} else if (getSamplingRateShimmer()>=20) {
-					mShimmer2MagRate = 5;
-				} else if (getSamplingRateShimmer()>=10) {
-					mShimmer2MagRate = 4;
-				} else {
-					mShimmer2MagRate = 3;
-				}
-			} else {
-				mShimmer2MagRate = 4;
-			}
+		if(isShimmerGen2()){
+			setShimmer2rMagRateFromFreq(getSamplingRateShimmer());
 		} else {
 			setLSM303MagRateFromFreq(getSamplingRateShimmer());
 		}
 	}
+
+	private void setShimmer2rMagRateFromFreq(double samplingRateShimmer) {
+		if (!mLowPowerMag){
+			if (samplingRateShimmer>=50){
+				mShimmer2MagRate = 6;
+			} else if (samplingRateShimmer>=20) {
+				mShimmer2MagRate = 5;
+			} else if (samplingRateShimmer>=10) {
+				mShimmer2MagRate = 4;
+			} else {
+				mShimmer2MagRate = 3;
+			}
+		} else {
+			mShimmer2MagRate = 4;
+		}
+	}
+
 
 	public void setAccelRange(int i){
 		setDigitalAccelRange(i);
 	}
 
 	public void setDigitalAccelRange(int i){
-		if(isShimmerGen2() || ArrayUtils.contains(SensorLSM303DLHC.ListofLSM303DLHCAccelRangeConfigValues, i)){
+		if(isShimmerGen2() || ArrayUtils.contains(SensorLSM303DLHC.ListofLSM303AccelRangeConfigValues, i)){
 			mAccelRange = i;
 		}
 		updateCurrentAccelLnCalibInUse(); // this needs to be here for Shimmer2/2r
@@ -8523,13 +8531,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mLSM303DigitalAccelRate = mLSM303DigitalAccelRate;
 	}
 	
+	/** Use setLSM303MagRange() instead
+	 * @param i
+	 */
+	@Deprecated
 	public void setMagRange(int i){
 		setLSM303MagRange(i);
 	}
 	
 	public void setLSM303MagRange(int i){
 		if(ArrayUtils.contains(SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues, i)){
-			mMagRange = i;
+			mLSM303MagRange = i;
 		}
 		updateCurrentMagCalibInUse();
 	}
@@ -8543,7 +8555,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	private int setLSM303MagRateFromFreq(double freq) {
 		boolean isEnabled = isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG);
-		mLSM303MagRate = SensorLSM303DLHC.getMagRateFromFreq(isEnabled, freq, mLowPowerMag);
+		mLSM303MagRate = SensorLSM303DLHC.getMagRateFromFreq(isEnabled, freq, isLowPowerMagEnabled());
 		return mLSM303MagRate;
 	}
 
@@ -8595,7 +8607,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setLowPowerMag(true);
 //			setLSM303MagRateFromFreq(mShimmerSamplingRate);
 		}
-		setMagRange(1);
+		setLSM303MagRange(1);
 	}
 
 	/**
@@ -8608,7 +8620,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void setHighResAccelWR(int i){
 		mHighResAccelWR = (i>0)? true:false;
 	}
-
 	
 	/**
 	 * @return the mLSM303DigitalAccelHRM
@@ -8696,7 +8707,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public int getMagRange(){
-		return mMagRange;
+		return mLSM303MagRange;
 	}
 
 	/**
@@ -9349,7 +9360,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel) {
 		Object returnValue = null;
 		
-        if((configLabel.equals(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RATE)) 
+        if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE)) 
         		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
         		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);
@@ -9392,13 +9403,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					returnValue = false;
 				}
 	        	break;
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_LPM): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM): 
 				returnValue = isLSM303DigitalAccelLPM();
 	        	break;
 			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM):
 				returnValue = checkLowPowerGyro();
 	        	break;
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_LPM): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM): 
 				returnValue = checkLowPowerMag();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
@@ -9431,7 +9442,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = getBluetoothBaudRate();
 	        	break;
     	
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE): 
 				returnValue = getAccelRange();
 	        	break;
 	        
@@ -9439,7 +9450,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = getGyroRange();
 	        	break;
 	
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_RANGE): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE): 
 				//TODO check below and commented out code
 				returnValue = getMagRange();
 			
@@ -9466,7 +9477,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//consolePrintLn("Get " + configValue);
 	        	break;
 	        	
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RATE): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE): 
 				int configValue = getLSM303DigitalAccelRate(); 
 				 
 	        	if(!isLSM303DigitalAccelLPM()) {
@@ -9482,7 +9493,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = configValue;
 	    		break;
 	    		
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_RATE): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE): 
 				returnValue = getLSM303MagRate();
 	        	break;
 
@@ -9556,10 +9567,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					return 0;
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
-					return getConfigValueUsingConfigLabel(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE);
+					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
-					return getConfigValueUsingConfigLabel(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_RANGE);
+					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE);
@@ -9570,10 +9581,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				break;
 			case(AbstractSensor.GuiLabelConfigCommon.RATE):
 				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
-					return getConfigValueUsingConfigLabel(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RATE);
+					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
-					return getConfigValueUsingConfigLabel(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_RATE);
+					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE);
@@ -9685,13 +9696,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setLowPowerGyro((boolean)valueToSet);
 				setLowPowerMag((boolean)valueToSet);
 	        	break;
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_LPM): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM): 
 				setLowPowerAccelWR((boolean)valueToSet);
 	        	break;
 			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM):
 				setLowPowerGyro((boolean)valueToSet);
 	        	break;
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_LPM): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM): 
 				setLowPowerMag((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
@@ -9725,7 +9736,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setBluetoothBaudRate((int)valueToSet);
 	        	break;
 		        	
-    		case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE): 
+    		case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE): 
 				setDigitalAccelRange((int)valueToSet);
 	        	break;
 	        
@@ -9733,7 +9744,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	        	setMPU9150GyroRange((int)valueToSet);
 	        	break;
 	
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_RANGE): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE): 
 				setLSM303MagRange((int)valueToSet);
 	    		break;
 			
@@ -9756,11 +9767,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//consolePrintLn("after set " + getExGGain());
 	        	break;
 				
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RATE): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE): 
 				setLSM303DigitalAccelRate((int)valueToSet);
 	    		break;
 	    		
-			case(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_RATE): 
+			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE): 
 				setLSM303MagRate((int)valueToSet);
 	        	break;
 	        	
@@ -9965,7 +9976,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	        	break;
 		}
 		
-        if((configLabel.equals(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RATE))
+        if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE))
         		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
         		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);
@@ -10426,6 +10437,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public boolean isSupportedBmp280() {
 		return isSupportedNewImuSensors();
+	}
+
+	public static boolean isSupportedBmp280(ShimmerVerObject svo, ExpansionBoardDetails ebd) {
+		return isSupportedNewImuSensors(svo, ebd);
 	}
 
 	/** Returns true if the Shimmer is using new sensors. These sensors are:

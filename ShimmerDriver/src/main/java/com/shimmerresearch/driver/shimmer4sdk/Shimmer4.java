@@ -115,7 +115,7 @@ public class Shimmer4 extends ShimmerDevice {
 		addSensorClass(SENSORS.CLOCK, new ShimmerClock(this));
 		
 		addSensorClass(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
-		addSensorClass(SENSORS.LSM303, new SensorLSM303DLHC(mShimmerVerObject));
+		addSensorClass(SENSORS.LSM303, new SensorLSM303DLHC(this));
 		addSensorClass(SENSORS.MPU9X50, new SensorMPU9X50(mShimmerVerObject));
 		addSensorClass(SENSORS.ADC, new SensorADC(mShimmerVerObject));
 		addSensorClass(SENSORS.Battery, new SensorBattVoltage(this));

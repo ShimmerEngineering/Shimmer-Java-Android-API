@@ -164,11 +164,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		setAccelRange(accelRange);
 		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
-		mLowPowerMag = enableLowPowerMag;
-		mLowPowerAccelWR = enableLowPowerAccel;
-		mLowPowerGyro = enableLowPowerGyro;
+		setLowPowerMag(enableLowPowerMag);
+		setLowPowerAccelWR(enableLowPowerAccel);
+		setLowPowerGyro(enableLowPowerGyro);
 		setGyroRange(gyroRange);
-		setMagRange(magRange);
+		setLSM303MagRange(magRange);
 		mSetupEXG = true;
 		setEXG1RegisterArray(exg1);
 		setEXG2RegisterArray(exg2);
@@ -192,7 +192,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		this(myName, continousSync);
 
 		setAccelRange(accelRange);
-		setMagRange(magGain);
+		setLSM303MagRange(magGain);
 		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
 

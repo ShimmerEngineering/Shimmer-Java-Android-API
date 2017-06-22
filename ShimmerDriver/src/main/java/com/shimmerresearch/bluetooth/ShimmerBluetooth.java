@@ -1334,7 +1334,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==MAG_GAIN_RESPONSE) {
 			byte[] bufferAns = readBytes(1, responseCommand); 
 			if(bufferAns!=null){
-				setMagRange(bufferAns[0]);
+				setLSM303MagRange(bufferAns[0]);
 			}
 		} 
 		else if(responseCommand==MAG_SAMPLING_RATE_RESPONSE) {
@@ -1348,7 +1348,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==ACCEL_SAMPLING_RATE_RESPONSE) {
 			byte[] bufferAns = readBytes(1, responseCommand); 
 			if(bufferAns!=null){
-				mLSM303DigitalAccelRate=bufferAns[0];
+				setLSM303DigitalAccelRate(bufferAns[0]);
 			}
 		}
 		else if(responseCommand==BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
@@ -1479,13 +1479,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==LSM303DLHC_ACCEL_LPMODE_RESPONSE) {
 			byte[] responseData = readBytes(1, responseCommand);
 			if(responseData!=null){
-				mLowPowerAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
+				setLowPowerAccelWR(((int)(responseData[0]&0xFF))>=1? true:false);
 			}
 		} 
 		else if(responseCommand==LSM303DLHC_ACCEL_HRMODE_RESPONSE) {
 			byte[] responseData = readBytes(1, responseCommand);
 			if(responseData!=null){
-				mHighResAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
+				setHighResAccelWR(((int)(responseData[0]&0xFF))>=1? true:false);
 			}
 		} 
 		else if(responseCommand==MYID_RESPONSE) {
@@ -1849,7 +1849,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mLSM303MagRate = mTempIntValue;
 				}
 				else if(currentCommand==SET_ACCEL_SAMPLING_RATE_COMMAND){
-					mLSM303DigitalAccelRate = mTempIntValue;
+					setLSM303DigitalAccelRate(mTempIntValue);
 				}
 				else if(currentCommand==SET_MPU9150_SAMPLING_RATE_COMMAND){
 					mMPU9150GyroAccelRate = mTempIntValue;
@@ -1875,7 +1875,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byteStack.clear(); // Always clear the packetStack after setting the sensors, this is to ensure a fresh start
 				}
 				else if(currentCommand==SET_MAG_GAIN_COMMAND){
-					setMagRange((int)((byte [])getListofInstructions().get(0))[1]);
+					setLSM303MagRange((int)((byte [])getListofInstructions().get(0))[1]);
 //					if(mDefaultCalibrationParametersMag){
 //						if(getHardwareVersion()==HW_ID.SHIMMER_3){
 //							mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
@@ -1991,10 +1991,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					// to do anything here
 				}
 				else if(currentCommand==SET_LSM303DLHC_ACCEL_LPMODE_COMMAND) {
-					mLowPowerAccelWR = ((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
+					setLowPowerAccelWR((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
 				} 
 				else if(currentCommand==SET_LSM303DLHC_ACCEL_HRMODE_COMMAND) {
-					mHighResAccelWR = ((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
+					setHighResAccelWR((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
 				}
 				else if(currentCommand==SET_MYID_COMMAND){
 					mTrialId = (int)((byte [])getListofInstructions().get(0))[1];
@@ -3441,7 +3441,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
 				
 				writeMagSamplingRate(mLSM303MagRate);
-				writeAccelSamplingRate(mLSM303DigitalAccelRate);
+				writeAccelSamplingRate(getLSM303DigitalAccelRate());
 				writeGyroSamplingRate(mMPU9150GyroAccelRate);
 				writeExgSamplingRate(rate);
 				
@@ -4297,7 +4297,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void enableLowPowerAccel(boolean enable){
 		enableHighResolutionMode(!enable);
-		writeAccelSamplingRate(mLSM303DigitalAccelRate);
+		writeAccelSamplingRate(getLSM303DigitalAccelRate());
 	}
 
 	private void enableHighResolutionMode(boolean enable) {

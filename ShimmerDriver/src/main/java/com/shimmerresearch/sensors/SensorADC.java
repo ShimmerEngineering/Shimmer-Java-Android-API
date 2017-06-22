@@ -12,7 +12,6 @@ import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMap
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -21,9 +20,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.sensors.SensorBattVoltage.GuiLabelSensorTiles;
-import com.shimmerresearch.sensors.SensorLSM303DLHC.GuiLabelConfig;
-import com.shimmerresearch.sensors.SensorLSM303DLHC.ObjectClusterSensorName;
 
 /**
  * @author Ronan McCormack
