@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;

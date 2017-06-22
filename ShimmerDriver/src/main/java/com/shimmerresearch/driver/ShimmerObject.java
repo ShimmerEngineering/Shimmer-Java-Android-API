@@ -5227,25 +5227,27 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+	//TODO decide whether to match Shimmer4 approach by storing classes only in the map or use mSensorBMPX80 
 	private void createMapOfSensorClasses() {
 		mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
 
-		//TODO decide whether to match Shimmer4 approach by storing classes only in the map or use mSensorBMPX80 
-		if(isSupportedNewImuSensors()){
-			mSensorBMPX80 = new SensorBMP280(this);
-			addSensorClass(SENSORS.BMP280, mSensorBMPX80);
-			mSensorLSM303 = new SensorLSM303AH(this);
-//			addSensorClass(SENSORS.LSM303, mSensorLSM303);
+		if(isShimmerGen2()){
+			//TODO handle mag and LN accel?
+		} else {
+			if(isSupportedNewImuSensors()){
+				mSensorBMPX80 = new SensorBMP280(this);
+				addSensorClass(SENSORS.BMP280, mSensorBMPX80);
+				mSensorLSM303 = new SensorLSM303AH(this);
+//				addSensorClass(SENSORS.LSM303, mSensorLSM303);
+			}
+			else{
+				mSensorBMPX80 = new SensorBMP180(this);
+				addSensorClass(SENSORS.BMP180, mSensorBMPX80);
+				mSensorLSM303 = new SensorLSM303DLHC(this);
+//				addSensorClass(SENSORS.LSM303, mSensorLSM303);
+			}
 		}
-		else{
-			mSensorBMPX80 = new SensorBMP180(this);
-			addSensorClass(SENSORS.BMP180, mSensorBMPX80);
-			mSensorLSM303 = new SensorLSM303DLHC(this);
-//			addSensorClass(SENSORS.LSM303, mSensorLSM303);
-		}
-		
 	}
-
 
 	@Override
 	protected void handleSpecialCasesAfterSensorMapCreate() {
@@ -8453,8 +8455,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @param mHighResAccelWR the mHighResAccelWR to set
 	 */
-	public void setHighResAccelWR(boolean mHighResAccelWR) {
-		this.mHighResAccelWR = mHighResAccelWR;
+	public void setHighResAccelWR(boolean enable) {
+		//TODO change over
+//		mSensorLSM303.setHighResAccelWR(enable);
+		this.mHighResAccelWR = enable;
 	}
 
 	/**
@@ -8467,6 +8471,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param enable
 	 */
 	public void setLowPowerAccelWR(boolean enable){
+		//TODO change over
+//		mSensorLSM303.setLowPowerAccelWR(enable);
+		
 		mLowPowerAccelWR = enable;
 		mHighResAccelWR = !enable;
 
@@ -10456,6 +10463,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public static boolean isSupportedNewImuSensors(ShimmerVerObject svo, ExpansionBoardDetails ebd) {
+		if(svo==null || ebd==null){
+			return false;
+		}
+		
 		int expBrdId = ebd.getExpansionBoardId();
 		int expBrdRev = ebd.getExpansionBoardRev();
 		
