@@ -4,8 +4,8 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.SensorEXG;
-import com.shimmerresearch.sensors.SensorLSM303;
-import com.shimmerresearch.sensors.SensorLSM303DLHC;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 
 public class FixedShimmerConfigs {
 
