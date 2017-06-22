@@ -1055,12 +1055,12 @@ public class Configuration {
 			public static String GSR_RESISTANCE = SensorGSR.ObjectClusterSensorName.GSR_RESISTANCE;
 			public static String GSR_CONDUCTANCE = SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE;
 
-			public static String ACCEL_WR_X = SensorLSM303DLHC.ObjectClusterSensorName.ACCEL_WR_X;
-			public static String ACCEL_WR_Y = SensorLSM303DLHC.ObjectClusterSensorName.ACCEL_WR_Y;
-			public static String ACCEL_WR_Z= SensorLSM303DLHC.ObjectClusterSensorName.ACCEL_WR_Z;
-			public static String MAG_X = SensorLSM303DLHC.ObjectClusterSensorName.MAG_X;
-			public static String MAG_Y = SensorLSM303DLHC.ObjectClusterSensorName.MAG_Y;
-			public static String MAG_Z = SensorLSM303DLHC.ObjectClusterSensorName.MAG_Z;
+			public static String ACCEL_WR_X = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
+			public static String ACCEL_WR_Y = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y;
+			public static String ACCEL_WR_Z= SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z;
+			public static String MAG_X = SensorLSM303.ObjectClusterSensorName.MAG_X;
+			public static String MAG_Y = SensorLSM303.ObjectClusterSensorName.MAG_Y;
+			public static String MAG_Z = SensorLSM303.ObjectClusterSensorName.MAG_Z;
 			
 			public static String TEMPERATURE_BMP180 = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180;
 			public static String PRESSURE_BMP180 = SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;
@@ -1308,7 +1308,10 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP280 = Arrays.asList(
 					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
 					svoShimmer4Stock);  
-			
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303AH = Arrays.asList(
+					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream);  
+
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					svoBrAmpSdLog, svoBrAmpBtStream, svoBrAmpLogAndStream,  
 					svoBrAmpUnifiedSdLog,  svoBrAmpUnifiedBtStream, svoBrAmpUnifiedLogAndStream,
@@ -1627,8 +1630,8 @@ public class Configuration {
 											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoStreaming));
 			
-			aMap.put(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE,SensorLSM303DLHC.configOptionAccelRange);
-			aMap.put(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RATE,SensorLSM303DLHC.configOptionAccelRate);
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE,SensorLSM303DLHC.configOptionAccelRange);
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE,SensorLSM303DLHC.configOptionAccelRate);
 
 			//XXX-RS-LSM-SensorClass? 
 //			if(mLowPowerAccelWR) {
@@ -1646,8 +1649,8 @@ public class Configuration {
 			
 			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE, SensorMPU9X50.configOptionMpu9150GyroRange);
 
-			aMap.put(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_RANGE, SensorLSM303DLHC.configOptionMagRange);
-			aMap.put(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_RATE, SensorLSM303DLHC.configOptionMagRate);
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, SensorLSM303DLHC.configOptionMagRange);
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE, SensorLSM303DLHC.configOptionMagRate);
 //			aMap.put(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION, SensorBMP180.configOptionPressureResolution);
 
 			aMap.put(SensorGSR.GuiLabelConfig.GSR_RANGE, SensorGSR.configOptionGsrRange);
@@ -1701,13 +1704,13 @@ public class Configuration {
 
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			aMap.put(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_LPM,SensorLSM303DLHC.configOptionAccelLpm); 
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,SensorLSM303DLHC.configOptionAccelLpm); 
 //					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
 			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM, SensorMPU9X50.configOptionMpu9150GyroLpm);
 //					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			
 			//XXX-RS-LSM-SensorClass? 
-			aMap.put(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_MAG_LPM, 
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
@@ -1802,10 +1805,10 @@ public class Configuration {
 			public static final String SAMPLING_RATE_DIVIDER_GSR = SensorGSR.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR; //"GSR Divider";
 			public static final String SAMPLING_RATE_DIVIDER_PPG = SensorPPG.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG; //"PPG Divider";
 			public static final String SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL = "LSM303DLHC Divider"; //XXX-RS-LSM-SensorClass?
-			public static final String LSM303DLHC_ACCEL_RATE = SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RATE;
-			public static final String LSM303DLHC_ACCEL_RANGE = SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE;
+			public static final String LSM303DLHC_ACCEL_RATE = SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE;
+			public static final String LSM303DLHC_ACCEL_RANGE = SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE;
 			public static final String GSR_RANGE = SensorGSR.GuiLabelConfig.GSR_RANGE; // "GSR Range";
-			public static final String LSM303DLHC_ACCEL_LPM = SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_LPM;
+			public static final String LSM303DLHC_ACCEL_LPM = SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM;
 			public static final String SAMPLING_RATE_DIVIDER_BEACON = "Beacon Divider";
 			
 			public static final String SHIMMER_USER_ASSIGNED_NAME = "Shimmer Name";
@@ -1935,8 +1938,8 @@ public class Configuration {
 	//				new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
 	//						Configuration.ShimmerGQ.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
 			
-			aMap.put(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE, SensorLSM303DLHC.configOptionAccelRange);
-			aMap.put(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, SensorLSM303DLHC.configOptionAccelRate);
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, SensorLSM303DLHC.configOptionAccelRange);
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE, SensorLSM303DLHC.configOptionAccelRate);
 	
 			aMap.put(SensorGSR.GuiLabelConfig.GSR_RANGE, SensorGSR.configOptionGsrRange);  
 
@@ -1972,7 +1975,7 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
 	
-			aMap.put(SensorLSM303DLHC.GuiLabelConfig.LSM303DLHC_ACCEL_LPM,  //XXX-RS-LSM-SensorClass?
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,  //XXX-RS-LSM-SensorClass?
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
 			
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 

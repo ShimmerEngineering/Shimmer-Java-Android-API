@@ -91,12 +91,12 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void generateSensorMap();
 	public abstract void generateConfigOptionsMap();
 	public abstract void generateSensorGroupMapping();
-	public abstract void checkShimmerConfigBeforeConfiguring();
 
 	/** for use only if a custom parser is required, i.e. for calibrated data. Use in conjunction with createLocalSensorMapWithCustomParser()*/ 
 	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimeStamp);
 //	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
+	public abstract void checkShimmerConfigBeforeConfiguring();
 	public abstract void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes);
 	public abstract void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes);
 	public abstract Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet);
