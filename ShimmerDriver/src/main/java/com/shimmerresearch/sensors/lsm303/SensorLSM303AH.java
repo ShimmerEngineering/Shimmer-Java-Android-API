@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensors;
+package com.shimmerresearch.sensors.lsm303;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +22,7 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.ActionSetting;
 
 //TODO update alignments for accel and mag (x swapped with y)
 //TODO take into account Accel 12-bit vs. 14-bit vs. 10-bit modes when setting default calibration sensitivity values 

@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensors;
+package com.shimmerresearch.sensors.lsm303;
 
 import java.util.Arrays;
 
@@ -17,6 +17,9 @@ import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.AbstractSensor;
+import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 public abstract class SensorLSM303 extends AbstractSensor {
 

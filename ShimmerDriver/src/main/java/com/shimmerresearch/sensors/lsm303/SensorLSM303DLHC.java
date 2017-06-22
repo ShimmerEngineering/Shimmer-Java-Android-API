@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensors;
+package com.shimmerresearch.sensors.lsm303;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +32,8 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.sensors.SensorLSM303.ObjectClusterSensorName;
+import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303.ObjectClusterSensorName;
 
 /**
  * Sensor class for the LSM303DLHC combined Accelerometer and Magnetometer 

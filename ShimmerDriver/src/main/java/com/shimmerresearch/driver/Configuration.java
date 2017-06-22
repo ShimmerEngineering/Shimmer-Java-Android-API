@@ -73,8 +73,6 @@ import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorKionixKXRB52042;
-import com.shimmerresearch.sensors.SensorLSM303;
-import com.shimmerresearch.sensors.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
@@ -83,6 +81,8 @@ import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a
