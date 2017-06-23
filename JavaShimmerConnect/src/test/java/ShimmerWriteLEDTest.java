@@ -27,7 +27,7 @@ public class ShimmerWriteLEDTest extends BasicProcessWithCallBack{
 
 		ShimmerPC mShimmer = new ShimmerPC("ShimmerDevice", true);
 		
-		mShimmer.connect("COM35", "");
+		mShimmer.connect("COM11", "");
 		
 		ShimmerWriteLEDTest stest = new ShimmerWriteLEDTest();
 		stest.setWaitForData(mShimmer);
@@ -55,17 +55,17 @@ public class ShimmerWriteLEDTest extends BasicProcessWithCallBack{
 			if (callbackObject.mState == BT_STATE.CONNECTING) {
 				
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
-				System.out.println("Connected");
+				//System.out.println("Connected");
 			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
 //					|| callbackObject.mState == BT_STATE.NONE
 					|| callbackObject.mState == BT_STATE.CONNECTION_LOST){
-				
+				System.out.println("Shimmer DISCONNECTED or CONNECTION LOST");				
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject)object;
 			int msg = callbackObject.mIndicator;
 			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
-				
+				System.out.println("Shimmer FULLY INITIALIZED");
 			}
 			if (msg == ShimmerPC.NOTIFICATION_SHIMMER_STOP_STREAMING) {
 				
@@ -73,7 +73,7 @@ public class ShimmerWriteLEDTest extends BasicProcessWithCallBack{
 				
 			} else {}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
-			
+			System.out.println("Shimmer MSG_IDENTIFIER_DATA_PACKET");
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL) {
 			
 		}
