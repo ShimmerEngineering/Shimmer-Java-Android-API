@@ -306,21 +306,24 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 		
 		public static final String MPU_QUAT_6DOF = "MPU9150_MPL_Quat_6DOF"; 
 		public static final String MPU_EULER_6DOF = "MPU9150_MPL_Euler_6DOF"; 
-		
-		public static final String MPU_HEADING = "MPU9150_MPL_Heading"; // not available but supported in FW //channel
+		public static final String MPU_HEADING_ENABLE = "MPU9150_MPL_Heading"; // not available but supported in FW //channel
 		
 		public static final String MPU_PEDOMETER = "MPU9150_MPL_Pedometer"; 
 		public static final String MPU_TAP = "MPU9150_MPL_Tap"; 
 		public static final String MPU_MOTION_ORIENT = "MPU9150_MPL_Motion"; 
 		public static final String MPU_GYRO = "MPU9150_MPL_Gyro_Cal";
+		
 		public static final String GYRO_RATE = "MPU9150_Gyro_Rate";
 		public static final String GYRO_RANGE = "MPU9150_Gyro_Range";
 		public static final String ALTERNATIVE_ACC_RANGE = "MPU9150_Acc_Range";
+		
 		public static final String MPU_ACC = "MPU9150_MPL_Acc_Cal";
 		public static final String MPU_MAG = "MPU9150_MPL_Mag_Cal";
 		public static final String MPU_QUAT_6DOF_DMP = "MPU9150_Quat_6DOF_Dmp";
+		
 		public static final String MPU_DMP = "MPU9150_DMP";
 		public static final String MPU_LPF = "MPU9150_LFP";
+		
 		public static final String MPU_MOT_CAL_CFG = "MPU9150_MOT_Cal_Cfg";
 		public static final String MPU_MPL_SAMPLING_RATE = "MPU9150_MPL_Sampling_rate";
 		public static final String MPU_MAG_SAMPLING_RATE = "MPU9150_MAG_Sampling_rate";
