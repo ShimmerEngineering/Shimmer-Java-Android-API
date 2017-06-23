@@ -339,6 +339,11 @@ public abstract class AbstractSensor implements Serializable{
 	}
 
 	public boolean isSensorEnabled(int sensorMapKey){
+		//below Shouldn't be needed
+//		if(mShimmerDevice!=null){
+//			return mShimmerDevice.isSensorEnabled(sensorMapKey);
+//		}
+
 		if(mSensorMap!=null) {
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 			if(sensorDetails!=null){
@@ -399,12 +404,12 @@ public abstract class AbstractSensor implements Serializable{
 		for(Integer sensorMapKey:mSensorMap.keySet()){
 			TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfSensorCalibration.get(sensorMapKey);
 			if(mapOfCalibPerSensor!=null){
-				addCalibrationPerSensor(sensorMapKey, mapOfCalibPerSensor);
+				setCalibrationMapPerSensor(sensorMapKey, mapOfCalibPerSensor);
 			}
 		}
 	}
 
-	protected void addCalibrationPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
 		mCalibMap.put(sensorMapKey, mapOfSensorCalibration);
 //		System.out.println("Calib make check");
 	}

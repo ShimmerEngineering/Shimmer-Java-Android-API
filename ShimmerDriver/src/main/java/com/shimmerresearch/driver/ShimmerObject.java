@@ -802,6 +802,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final double[][] SensitivityMatrixMag5p6GaShimmer2 = {{330,0,0},{0,330,0},{0,0,330}};
 	protected static final double[][] SensitivityMatrixMag8p1GaShimmer2 = {{230,0,0},{0,230,0},{0,0,230}};
 
+	protected static final boolean USE_LSM_SENSOR_CLASS = true;
+
 	private CalibDetailsKinematic calibDetailsShimmer2rMag0p8 = new CalibDetailsKinematic(
 			0,
 			Configuration.Shimmer2.ListofMagRange[0],
@@ -1375,7 +1377,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					double[] accelCalibratedData;
 //					accelCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixWRAccel, mSensitivityMatrixWRAccel, mOffsetVectorWRAccel);
-					accelCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mCurrentCalibDetailsAccelWr);
+					accelCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, getCurrentCalibDetailsAccelWr());
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
@@ -1518,7 +1520,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					double[] magCalibratedData;
 //					magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
-					magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mCurrentCalibDetailsMag);
+					magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, getCurrentCalibDetailsMag());
 					calibratedData[iMagX]=magCalibratedData[0];
 					calibratedData[iMagY]=magCalibratedData[1];
 					calibratedData[iMagZ]=magCalibratedData[2];
@@ -2693,7 +2695,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					tempData[1]=(double)newPacketInt[iMagY];
 					tempData[2]=(double)newPacketInt[iMagZ];
 //					double[] magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
-					double[] magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mCurrentCalibDetailsMag);
+					double[] magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, getCurrentCalibDetailsMag());
 					calibratedData[iMagX]=magCalibratedData[0];
 					calibratedData[iMagY]=magCalibratedData[1];
 					calibratedData[iMagZ]=magCalibratedData[2];
@@ -4532,7 +4534,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, true);
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, true);
-				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, true);
+				if(isSupportedNewImuSensors()){
+					setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_MAG, true);
+				} else {
+					setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, true);
+				}
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, true);
 			}
 
@@ -4680,8 +4686,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (this.isConnected()){
 				mCurrentCalibDetailsGyro.mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 				mCurrentCalibDetailsAccelLn.mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
-				mCurrentCalibDetailsMag.mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
-				mCurrentCalibDetailsAccelWr.mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+				getCurrentCalibDetailsMag().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+				getCurrentCalibDetailsAccelWr().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 			}
 			// Analog Accel Calibration Parameters
 			System.arraycopy(configBytes, infoMemLayoutCast.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , infoMemLayoutCast.lengthGeneralCalibrationBytes);
@@ -5237,14 +5243,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if(isSupportedNewImuSensors()){
 				mSensorBMPX80 = new SensorBMP280(this);
 				addSensorClass(SENSORS.BMP280, mSensorBMPX80);
-				mSensorLSM303 = new SensorLSM303AH(this);
-//				addSensorClass(SENSORS.LSM303, mSensorLSM303);
+				if(USE_LSM_SENSOR_CLASS){
+					mSensorLSM303 = new SensorLSM303AH(this);
+					addSensorClass(SENSORS.LSM303, mSensorLSM303);
+				}
 			}
 			else{
 				mSensorBMPX80 = new SensorBMP180(this);
 				addSensorClass(SENSORS.BMP180, mSensorBMPX80);
-				mSensorLSM303 = new SensorLSM303DLHC(this);
-//				addSensorClass(SENSORS.LSM303, mSensorLSM303);
+				if(USE_LSM_SENSOR_CLASS){
+					mSensorLSM303 = new SensorLSM303DLHC(this);
+					addSensorClass(SENSORS.LSM303, mSensorLSM303);
+				}
 			}
 		}
 	}
@@ -5630,11 +5640,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//This will fill a default trial name if the current one is invalid
 			setTrialNameAndCheck(getTrialName());
 
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL)) {
-				setDefaultLsm303dlhcAccelSensorConfig(false);
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) && !USE_LSM_SENSOR_CLASS) {
+				setDefaultLsm303AccelSensorConfig(false);
 			}
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG)) {
-				setDefaultLsm303dlhcMagSensorConfig(false);
+			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG) && !USE_LSM_SENSOR_CLASS) {
+				setDefaultLsm303MagSensorConfig(false);
 			}
 			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){ 
 				setDefaultMpu9150GyroSensorConfig(false);
@@ -5726,11 +5736,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//TODO set defaults when ").setIsEnabled(false))" is set manually in the code
 	@Override
 	protected void setDefaultConfigForSensor(int sensorMapKey, boolean state) {
-		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL) {
-			setDefaultLsm303dlhcAccelSensorConfig(state);
+		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL && !USE_LSM_SENSOR_CLASS) {
+			setDefaultLsm303AccelSensorConfig(state);
 		}
-		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG) {
-			setDefaultLsm303dlhcMagSensorConfig(state);
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG && !USE_LSM_SENSOR_CLASS) {
+			setDefaultLsm303MagSensorConfig(state);
 		}
 		
 		else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
@@ -5995,19 +6005,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
+		boolean isSensorUsingDefaultCal = super.isSensorUsingDefaultCal(sensorMapKey);
+		
 		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
 			return isUsingDefaultLNAccelParam();
 		}
-		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL && !USE_LSM_SENSOR_CLASS){
 			return isUsingDefaultWRAccelParam();
 		}
 		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 			return isUsingDefaultGyroParam();
 		}
-		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG && !USE_LSM_SENSOR_CLASS){
 			return isUsingDefaultMagParam();
 		}
-		return false;
+		return isSensorUsingDefaultCal;
 	}
 	
 
@@ -6607,7 +6619,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the bytes array containing the LSM303DLHC Accel calibration
 	 */
 	public byte[] generateCalParamLSM303DLHCAccel(){
-		return mCurrentCalibDetailsAccelWr.generateCalParamByteArray();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.generateCalParamLSM303DLHCAccel();
+		} else {
+			return mCurrentCalibDetailsAccelWr.generateCalParamByteArray();
+		}
 	}
 	
 	/**
@@ -6669,7 +6685,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public void parseCalibParamFromPacketAccelLsm(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
-		mCurrentCalibDetailsAccelWr.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, calibReadSource);
+		} else {
+			mCurrentCalibDetailsAccelWr.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
+		}
 	}
 
 	public void parseCalibParamFromPacketMag(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
@@ -6688,7 +6708,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	private void setDefaultCalibrationShimmer3WideRangeAccel() {
-		mCurrentCalibDetailsAccelWr.resetToDefaultParameters();
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setDefaultCalibrationShimmer3WideRangeAccel();
+		} else {
+			mCurrentCalibDetailsAccelWr.resetToDefaultParameters();
+		}
 	}
 
 	private void setDefaultCalibrationShimmer3Gyro() {
@@ -6696,12 +6720,33 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	private void setDefaultCalibrationShimmer3Mag() {
-		mCurrentCalibDetailsMag.resetToDefaultParameters();
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setDefaultCalibrationShimmer3Mag();
+		} else {
+			mCurrentCalibDetailsMag.resetToDefaultParameters();
+		}
 	}
 	
+	private CalibDetailsKinematic getCurrentCalibDetailsAccelWr() {
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getCurrentCalibDetailsAccelWr();
+		} else {
+			return mCurrentCalibDetailsAccelWr;
+		}
+	}
+
+	private CalibDetailsKinematic getCurrentCalibDetailsMag() {
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getCurrentCalibDetailsMag();
+		} else {
+			return mCurrentCalibDetailsMag;
+		}
+	}
+
 	@Override
 	public TreeMap<Integer, TreeMap<Integer, CalibDetails>> getMapOfSensorCalibrationAll(){
-		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
+//		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
+		TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration = super.getMapOfSensorCalibrationAll();
 		
 		List<Integer> listOfSensorMapKeys = new ArrayList<Integer>();
 		if(isShimmerGen2()){
@@ -6713,10 +6758,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else if(isShimmerGen3()){
 			listOfSensorMapKeys = Arrays.asList(
 					Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL,
-					Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO,
-					Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
-					Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG,
-					Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL);
+					Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO);
+			
+			if(!USE_LSM_SENSOR_CLASS){
+				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL);
+				listOfSensorMapKeys.add(Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG);
+			}
 			
 			if(mShimmerVerObject.isSupportedMpl() && isMPLEnabled()){
 				listOfSensorMapKeys = new ArrayList<Integer>(listOfSensorMapKeys);
@@ -6736,6 +6783,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mapOfKinematicSensorCalibration;
 	}
 	
+	@Override
 	public TreeMap<Integer, CalibDetails> getMapOfSensorCalibrationPerSensor(Integer sensorMapKey){
 		if(isShimmerGen2()){
 			if(sensorMapKey==Configuration.Shimmer2.SensorMapKey.ACCEL){
@@ -6758,10 +6806,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				 return mCalibMapAccelAnalogShimmer3;
 			}
 			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
-				return mCalibMapAccelWideRangeShimmer3;
+				if(USE_LSM_SENSOR_CLASS){
+					return super.getMapOfSensorCalibrationPerSensor(sensorMapKey);
+				} else {
+					return mCalibMapAccelWideRangeShimmer3;
+				}
 			}
 			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
-				return mCalibMapMagShimmer3;
+				if(USE_LSM_SENSOR_CLASS){
+					return super.getMapOfSensorCalibrationPerSensor(sensorMapKey);
+				} else {
+					return mCalibMapMagShimmer3;
+				}
 			}
 			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 				return mCalibMapGyroShimmer3;
@@ -6783,13 +6839,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	@Override
 	public void setMapOfSensorCalibrationAll(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfAllSensorCalibration) {
+		super.setMapOfSensorCalibrationAll(mapOfAllSensorCalibration);
+		
 		for(Integer sensorMapKey:mapOfAllSensorCalibration.keySet()){
 			TreeMap<Integer, CalibDetails> mapOfSensorCalibration = mapOfAllSensorCalibration.get(sensorMapKey);
 			setSensorCalibrationPerSensor(sensorMapKey, mapOfSensorCalibration);
 		}
 	}
 
-	private void setSensorCalibrationPerSensor(Integer sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+	@Override
+	protected void setSensorCalibrationPerSensor(Integer sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
 		if(isShimmerGen2()){
 			if(sensorMapKey==Configuration.Shimmer2.SensorMapKey.ACCEL){
 				if(getHardwareVersion()==HW_ID.SHIMMER_2){
@@ -6815,17 +6874,25 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mCalibMapAccelAnalogShimmer3.putAll(mapOfSensorCalibration);
 				updateCurrentAccelLnCalibInUse();
 			}
-			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
 				mCalibMapGyroShimmer3.putAll(mapOfSensorCalibration);
 				updateCurrentGyroCalibInUse();
 			}
-			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
-				mCalibMapAccelWideRangeShimmer3.putAll(mapOfSensorCalibration);
-				updateCurrentAccelWrCalibInUse();
+			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+				if(USE_LSM_SENSOR_CLASS){
+					super.setSensorCalibrationPerSensor(sensorMapKey, mapOfSensorCalibration);
+				} else {
+					mCalibMapAccelWideRangeShimmer3.putAll(mapOfSensorCalibration);
+					updateCurrentAccelWrCalibInUse();
+				}
 			}
-			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
-				mCalibMapMagShimmer3.putAll(mapOfSensorCalibration);
-				updateCurrentMagCalibInUse();
+			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+				if(USE_LSM_SENSOR_CLASS){
+					super.setSensorCalibrationPerSensor(sensorMapKey, mapOfSensorCalibration);
+				} else {
+					mCalibMapMagShimmer3.putAll(mapOfSensorCalibration);
+					updateCurrentMagCalibInUse();
+				}
 			}
 		}
 	}
@@ -6849,12 +6916,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public void updateCurrentMagCalibInUse(){
-		mCurrentCalibDetailsMag = (CalibDetailsKinematic) mCalibMapMagShimmer3.get(getMagRange());
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.updateCurrentMagCalibInUse();
+		} else {
+			mCurrentCalibDetailsMag = (CalibDetailsKinematic) mCalibMapMagShimmer3.get(getMagRange());
+		}
 	}
 	
 	public void updateCurrentAccelWrCalibInUse(){
 		if(!isShimmerGen2()){
-			mCurrentCalibDetailsAccelWr = (CalibDetailsKinematic) mCalibMapAccelWideRangeShimmer3.get(getAccelRange());
+			if(USE_LSM_SENSOR_CLASS){
+				mSensorLSM303.updateCurrentAccelWrCalibInUse();
+			} else {
+				mCurrentCalibDetailsAccelWr = (CalibDetailsKinematic) mCalibMapAccelWideRangeShimmer3.get(getAccelRange());
+			}
 		}
 	}
 	
@@ -8456,9 +8531,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param mHighResAccelWR the mHighResAccelWR to set
 	 */
 	public void setHighResAccelWR(boolean enable) {
-		//TODO change over
-//		mSensorLSM303.setHighResAccelWR(enable);
-		this.mHighResAccelWR = enable;
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setHighResAccelWR(enable);
+		} else {
+			this.mHighResAccelWR = enable;
+		}
 	}
 
 	/**
@@ -8471,13 +8548,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param enable
 	 */
 	public void setLowPowerAccelWR(boolean enable){
-		//TODO change over
-//		mSensorLSM303.setLowPowerAccelWR(enable);
-		
-		mLowPowerAccelWR = enable;
-		mHighResAccelWR = !enable;
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setLowPowerAccelWR(enable);
+		} else {
+			mLowPowerAccelWR = enable;
+			mHighResAccelWR = !enable;
 
-		setLSM303AccelRateFromFreq(getSamplingRateShimmer());
+			setLSM303AccelRateFromFreq(getSamplingRateShimmer());
+		}
 	}
 
 
@@ -8489,11 +8567,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param enable
 	 */
 	protected void setLowPowerMag(boolean enable){
-		mLowPowerMag = enable;
-		if(isShimmerGen2()){
-			setShimmer2rMagRateFromFreq(getSamplingRateShimmer());
+		if(USE_LSM_SENSOR_CLASS){
+			if(isShimmerGen2()){
+				//TODO add support for Shimmer2
+			} else {
+				mSensorLSM303.setLowPowerMag(enable);
+			}
 		} else {
-			setLSM303MagRateFromFreq(getSamplingRateShimmer());
+			mLowPowerMag = enable;
+			if(isShimmerGen2()){
+				setShimmer2rMagRateFromFreq(getSamplingRateShimmer());
+			} else {
+				setLSM303MagRateFromFreq(getSamplingRateShimmer());
+			}
 		}
 	}
 
@@ -8515,15 +8601,27 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 	public void setAccelRange(int i){
-		setDigitalAccelRange(i);
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setLSM303AccelRange(i);
+		} else {
+			setDigitalAccelRange(i);
+		}
 	}
 
 	public void setDigitalAccelRange(int i){
-		if(isShimmerGen2() || ArrayUtils.contains(SensorLSM303DLHC.ListofLSM303AccelRangeConfigValues, i)){
-			mAccelRange = i;
+		if(USE_LSM_SENSOR_CLASS){
+			if(isShimmerGen2()) {
+				//TODO add support for Shimmer2r
+			} else {
+				mSensorLSM303.setLSM303AccelRange(i);
+			}
+		} else {
+			if(isShimmerGen2() || ArrayUtils.contains(SensorLSM303DLHC.ListofLSM303AccelRangeConfigValues, i)){
+				mAccelRange = i;
+			}
+			updateCurrentAccelLnCalibInUse(); // this needs to be here for Shimmer2/2r
+			updateCurrentAccelWrCalibInUse();
 		}
-		updateCurrentAccelLnCalibInUse(); // this needs to be here for Shimmer2/2r
-		updateCurrentAccelWrCalibInUse();
 	}
 
 	
@@ -8531,11 +8629,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param mLSM303DigitalAccelRate the mLSM303DigitalAccelRate to set
 	 */
 	public void setLSM303DigitalAccelRate(int mLSM303DigitalAccelRate) {
-		// double check that rate is compatible with LPM (8 not compatible so set to higher rate)
-		if((!isLSM303DigitalAccelLPM()) && (mLSM303DigitalAccelRate==8)) {
-			mLSM303DigitalAccelRate = 9;
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setLSM303DigitalAccelRate(mLSM303DigitalAccelRate);
+		} else {
+			// double check that rate is compatible with LPM (8 not compatible so set to higher rate)
+			if((!isLSM303DigitalAccelLPM()) && (mLSM303DigitalAccelRate==8)) {
+				mLSM303DigitalAccelRate = 9;
+			}
+			this.mLSM303DigitalAccelRate = mLSM303DigitalAccelRate;
 		}
-		this.mLSM303DigitalAccelRate = mLSM303DigitalAccelRate;
 	}
 	
 	/** Use setLSM303MagRange() instead
@@ -8543,14 +8645,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Deprecated
 	public void setMagRange(int i){
-		setLSM303MagRange(i);
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setLSM303MagRange(i);
+		} else {
+			setLSM303MagRange(i);
+		}
 	}
 	
 	public void setLSM303MagRange(int i){
-		if(ArrayUtils.contains(SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues, i)){
-			mLSM303MagRange = i;
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setLSM303MagRange(i);
+		} else{
+			if(ArrayUtils.contains(SensorLSM303DLHC.ListofLSM303DLHCMagRangeConfigValues, i)){
+				mLSM303MagRange = i;
+			}
+			updateCurrentMagCalibInUse();
 		}
-		updateCurrentMagCalibInUse();
 	}
 
 	/**
@@ -8561,23 +8671,35 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	private int setLSM303MagRateFromFreq(double freq) {
-		boolean isEnabled = isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG);
-		mLSM303MagRate = SensorLSM303DLHC.getMagRateFromFreq(isEnabled, freq, isLowPowerMagEnabled());
-		return mLSM303MagRate;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.setLSM303MagRateFromFreq(freq);
+		} else {
+			boolean isEnabled = isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG);
+			mLSM303MagRate = SensorLSM303DLHC.getMagRateFromFreq(isEnabled, freq, isLowPowerMagEnabled());
+			return mLSM303MagRate;
+		}
 	}
 
 	/**
 	 * @param mLSM303MagRate the mLSM303MagRate to set
 	 */
 	public void setLSM303MagRate(int mLSM303MagRate) {
-		this.mLSM303MagRate = mLSM303MagRate;
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setLSM303MagRate(mLSM303MagRate);
+		} else {
+			this.mLSM303MagRate = mLSM303MagRate;
+		}
 	}
 
 	/**
 	 * @return the mLSM303MagRate
 	 */
 	public int getLSM303MagRate() {
-		return mLSM303MagRate;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getLSM303MagRate();
+		} else {
+			return mLSM303MagRate;
+		}
 	}
 	
 	/**
@@ -8588,93 +8710,149 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	private int setLSM303AccelRateFromFreq(double freq) {
-		boolean isEnabled = isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL);
-		mLSM303DigitalAccelRate = SensorLSM303DLHC.getAccelRateFromFreq(isEnabled, freq, mLowPowerAccelWR);
-		return mLSM303DigitalAccelRate;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.setLSM303AccelRateFromFreq(freq);
+		} else {
+			boolean isEnabled = isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL);
+			mLSM303DigitalAccelRate = SensorLSM303DLHC.getAccelRateFromFreq(isEnabled, freq, mLowPowerAccelWR);
+			return mLSM303DigitalAccelRate;
+		}
 	}
 	
-	private void setDefaultLsm303dlhcAccelSensorConfig(boolean state) {
-		if(state) {
-			setLowPowerAccelWR(false);
+	private void setDefaultLsm303AccelSensorConfig(boolean state) {
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setDefaultLsm303AccelSensorConfig(state);
+		} else {
+			if(state) {
+				setLowPowerAccelWR(false);
+			}
+			else {
+			//	setDigitalAccelRange(0);
+				setLowPowerAccelWR(true);
+//				setLSM303AccelRateFromFreq(mShimmerSamplingRate);
+			}
+			setDigitalAccelRange(0);
 		}
-		else {
-		//	setDigitalAccelRange(0);
-			setLowPowerAccelWR(true);
-//			setLSM303AccelRateFromFreq(mShimmerSamplingRate);
-		}
-		setDigitalAccelRange(0);
 	}
 
-	private void setDefaultLsm303dlhcMagSensorConfig(boolean state) {
-		if(state) {
-			setLowPowerMag(false);
+	private void setDefaultLsm303MagSensorConfig(boolean state) {
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setDefaultLsm303MagSensorConfig(state);
+		} else {
+			if(state) {
+				setLowPowerMag(false);
+			}
+			else {
+				//setMagRange(1);
+				setLowPowerMag(true);
+//				setLSM303MagRateFromFreq(mShimmerSamplingRate);
+			}
+			setLSM303MagRange(1);
 		}
-		else {
-			//setMagRange(1);
-			setLowPowerMag(true);
-//			setLSM303MagRateFromFreq(mShimmerSamplingRate);
-		}
-		setLSM303MagRange(1);
 	}
 
 	/**
 	 * @return the mHighResAccelWR
 	 */
 	public boolean isHighResAccelWR() {
-		return isLSM303DigitalAccelHRM();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isHighResAccelWr();
+		} else {
+			return isLSM303DigitalAccelHRM();
+		}
 	}
 
 	public void setHighResAccelWR(int i){
-		mHighResAccelWR = (i>0)? true:false;
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setHighResAccelWR(i);
+		} else {
+			mHighResAccelWR = (i>0)? true:false;
+		}
 	}
 	
 	/**
 	 * @return the mLSM303DigitalAccelHRM
 	 */
 	public boolean isLSM303DigitalAccelHRM() {
-		return mHighResAccelWR;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isLSM303DigitalAccelHRM();
+		} else {
+			return mHighResAccelWR;
+		}
 	}
 	
 	public int getHighResAccelWREnabled(){
-		return (mHighResAccelWR? 1:0);
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getHighResAccelWREnabled();
+		} else {
+			return (mHighResAccelWR? 1:0);
+		}
 	}
 
 
     public boolean isLowPowerMagEnabled(){
-		return mLowPowerMag;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isLowPowerMagEnabled();
+		} else {
+			return mLowPowerMag;
+		}
 	} 
 
 	public double getCalibTimeWRAccel() {
-		return mCurrentCalibDetailsAccelWr.getCalibTimeMs();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getCalibTimeWRAccel();
+		} else {
+			return mCurrentCalibDetailsAccelWr.getCalibTimeMs();
+		}
 	}
 
 	public boolean isUsingDefaultWRAccelParam(){
-//		return mDefaultCalibrationParametersDigitalAccel; 
-		return mCurrentCalibDetailsAccelWr.isUsingDefaultParameters();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isUsingDefaultWRAccelParam();
+		} else {
+//			return mDefaultCalibrationParametersDigitalAccel; 
+			return mCurrentCalibDetailsAccelWr.isUsingDefaultParameters();
+		}
 	}
 
 	public boolean isUsingValidWRAccelParam(){
-		if(!UtilShimmer.isAllZeros(getAlignmentMatrixAccel()) && !UtilShimmer.isAllZeros(getSensitivityMatrixAccel())){
-			return true;
-		}else{
-			return false;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isUsingValidWRAccelParam();
+		} else {
+			if(!UtilShimmer.isAllZeros(getAlignmentMatrixWRAccel()) && !UtilShimmer.isAllZeros(getSensitivityMatrixWRAccel())){
+				return true;
+			}else{
+				return false;
+			}
 		}
 	}
 	
 	public double getCalibTimeMag() {
-		return mCurrentCalibDetailsMag.getCalibTimeMs();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getCalibTimeMag();
+		} else {
+			return mCurrentCalibDetailsMag.getCalibTimeMs();
+		}
 	}
 	
 	public boolean isUsingDefaultMagParam(){
-//		return mDefaultCalibrationParametersMag;
-		return mCurrentCalibDetailsMag.isUsingDefaultParameters();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isUsingDefaultMagParam();
+		} else {
+	//		return mDefaultCalibrationParametersMag;
+			return mCurrentCalibDetailsMag.isUsingDefaultParameters();
+		}
 	}
 	
 	public boolean isUsingValidMagParam(){
-		if(!UtilShimmer.isAllZeros(getAlignmentMatrixMag()) && !UtilShimmer.isAllZeros(getSensitivityMatrixMag())){
-			return true;
-		}else{
-			return false;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isUsingValidMagParam();
+		} else {
+			if(!UtilShimmer.isAllZeros(getAlignmentMatrixMag()) && !UtilShimmer.isAllZeros(getSensitivityMatrixMag())){
+				return true;
+			}else{
+				return false;
+			}
 		}
 	}
 	
@@ -8682,71 +8860,131 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mLowPowerAccelWR
 	 */
 	public boolean isLowPowerAccelWR() {
-		return mLowPowerAccelWR;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isLowPowerAccelWr();
+		} else {
+			return mLowPowerAccelWR;
+		}
 	}
 
 	/**
 	 * @return the mLSM303DigitalAccelLPM
 	 */
 	public boolean isLSM303DigitalAccelLPM() {
-		return mLowPowerAccelWR;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isLSM303DigitalAccelLPM();
+		} else {
+			return mLowPowerAccelWR;
+		}
 	}
 
 	public boolean isLowPowerAccelEnabled() {
-		return isLSM303DigitalAccelLPM();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.isLowPowerAccelEnabled();
+		} else {
+			return isLSM303DigitalAccelLPM();
+		}
 	}
 
 	public void setLowPowerAccelEnabled(int i){
-		mLowPowerAccelWR = (i>0)? true:false;
+		if(USE_LSM_SENSOR_CLASS){
+			mSensorLSM303.setLowPowerAccelEnabled(i);
+		} else {
+			mLowPowerAccelWR = (i>0)? true:false;
+		}
 	}
 
 	public int getLowPowerAccelEnabled(){
-		return (mLowPowerAccelWR? 1:0);
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getLowPowerAccelEnabled();
+		} else {
+			return (mLowPowerAccelWR? 1:0);
+		}
 	}
 
 	public int getLowPowerMagEnabled() {
-		return (mLowPowerMag? 1:0);
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getLowPowerMagEnabled();
+		} else {
+			return (mLowPowerMag? 1:0);
+		}
 	}
 
 	/** 0 = +/-2g, 1 = +/-4g, 2 = +/-8g, 3 = +/- 16g */
 	public int getAccelRange(){
-		return mAccelRange;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getAccelRange();
+		} else {
+			return mAccelRange;
+		}
 	}
 
 	public int getMagRange(){
-		return mLSM303MagRange;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getMagRange();
+		} else {
+			return mLSM303MagRange;
+		}
 	}
 
 	/**
 	 * @return the mLSM303DigitalAccelRate
 	 */
 	public int getLSM303DigitalAccelRate() {
-		return mLSM303DigitalAccelRate;
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getLSM303DigitalAccelRate();
+		} else {
+			return mLSM303DigitalAccelRate;
+		}
 	}
 
 
 	public double[][] getAlignmentMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getValidAlignmentMatrix();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getAlignmentMatrixWRAccel();
+		} else {
+			return mCurrentCalibDetailsAccelWr.getValidAlignmentMatrix();
+		}
 	}
 
 	public double[][] getSensitivityMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getValidSensitivityMatrix();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getSensitivityMatrixWRAccel();
+		} else {
+			return mCurrentCalibDetailsAccelWr.getValidSensitivityMatrix();
+		}
 	}
 
 	public double[][] getOffsetVectorMatrixWRAccel(){
-		return mCurrentCalibDetailsAccelWr.getValidOffsetVector();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getOffsetVectorMatrixWRAccel();
+		} else {
+			return mCurrentCalibDetailsAccelWr.getValidOffsetVector();
+		}
 	}
 
 	public double[][] getAlignmentMatrixMag(){
-		return mCurrentCalibDetailsMag.getValidAlignmentMatrix();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getSensitivityMatrixMag();
+		} else {
+			return mCurrentCalibDetailsMag.getValidAlignmentMatrix();
+		}
 	}
 
 	public double[][] getSensitivityMatrixMag(){
-		return mCurrentCalibDetailsMag.getValidSensitivityMatrix();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getSensitivityMatrixMag();
+		} else {
+			return mCurrentCalibDetailsMag.getValidSensitivityMatrix();
+		}
 	}
 
 	public double[][] getOffsetVectorMatrixMag(){
-		return mCurrentCalibDetailsMag.getValidOffsetVector();
+		if(USE_LSM_SENSOR_CLASS){
+			return mSensorLSM303.getOffsetVectorMatrixMag();
+		} else {
+			return mCurrentCalibDetailsMag.getValidOffsetVector();
+		}
 	}
 
 	/** Only GQ BLE
@@ -9365,11 +9603,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	@Override
 	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel) {
-		Object returnValue = null;
+//		Object returnValue = null;
+		Object returnValue = super.getConfigValueUsingConfigLabel(identifier, configLabel);
+    	if(returnValue!=null){
+    		return returnValue;
+    	}
 		
-        if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE)) 
-        		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
-        		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
+        if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE) && !USE_LSM_SENSOR_CLASS) 
+        		|| (configLabel.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
+        		|| (configLabel.equals(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);
         }
         
@@ -9380,9 +9622,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//Do nothing
 		}
 
-        
 		switch(configLabel){
-//Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				returnValue = isButtonStart();
 				break;
@@ -9410,14 +9650,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					returnValue = false;
 				}
 	        	break;
-			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM): 
-				returnValue = isLSM303DigitalAccelLPM();
-	        	break;
 			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM):
 				returnValue = checkLowPowerGyro();
-	        	break;
-			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM): 
-				returnValue = checkLowPowerMag();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
 				returnValue = isTCXO();
@@ -9444,33 +9678,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				returnValue = isMPLMagDistCal();
 	        	break;
 
-//Integers
 			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
 				returnValue = getBluetoothBaudRate();
 	        	break;
-    	
-			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE): 
-				returnValue = getAccelRange();
-	        	break;
-	        
 			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE):
 				returnValue = getGyroRange();
 	        	break;
-	
-			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE): 
-				//TODO check below and commented out code
-				returnValue = getMagRange();
-			
-//    							// firmware sets mag range to 7 (i.e. index 6 in combobox) if user set mag range to 0 in config file
-//    							if(getMagRange() == 0) cmBx.setSelectedIndex(6);
-//    							else cmBx.setSelectedIndex(getMagRange()-1);
-	    		break;
-			
-	    	//Moved to sensor class
-//			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
-//				returnValue = getPressureResolution();
-//	    		break;
-	    		
 			case(SensorGSR.GuiLabelConfig.GSR_RANGE):
 				returnValue = getGSRRange(); //TODO: check with RM re firmware bug??
 	        	break;
@@ -9484,26 +9697,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//consolePrintLn("Get " + configValue);
 	        	break;
 	        	
-			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE): 
-				int configValue = getLSM303DigitalAccelRate(); 
-				 
-	        	if(!isLSM303DigitalAccelLPM()) {
-		        	if(configValue==8) {
-		        		//TODO:
-		        		/* RS (20/5/2016): Why returning a different value?
-		        		 * In the Set-method the compatibility-check for Accel Rates supported for Low Power Mode is made.
-		        		 * In this get-method the it should just read/get the value, not manipulating it.
-		        		 * */
-		        		configValue = 9;
-		        	}
-	        	}
-				returnValue = configValue;
-	    		break;
-	    		
-			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE): 
-				returnValue = getLSM303MagRate();
-	        	break;
-
 			case(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE):
 				returnValue = getMPU9150AccelRange();
             	break;
@@ -9573,10 +9766,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
 					return 0;
 				}
-				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL && !USE_LSM_SENSOR_CLASS){
 					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE);
 				}
-				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG && !USE_LSM_SENSOR_CLASS){
 					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
@@ -9587,10 +9780,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				break;
 			case(AbstractSensor.GuiLabelConfigCommon.RATE):
-				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL){
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL && !USE_LSM_SENSOR_CLASS){
 					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE);
 				}
-				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG){
+				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG && !USE_LSM_SENSOR_CLASS){
 					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
@@ -9601,8 +9794,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				break;
 
-	    		
-//Strings
 //    		case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
 //    			returnValue = getShimmerUserAssignedName();
 //    		   	break;
@@ -9662,10 +9853,64 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    			returnValue = listOFExGBytes;
 //    	       	break;
 //			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+
+	        //----------- BMP180 Start ----------------------	
+//	    	Moved to sensor class
+//			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
+//				returnValue = getPressureResolution();
+//	    		break;
+	        //----------- BMP180 End ----------------------	
 	        	
-	        default:
-	        	returnValue = super.getConfigValueUsingConfigLabel(identifier, configLabel);
-	        	break;
+	        //----------- LSM303 Start ----------------------	
+//			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					returnValue = isLSM303DigitalAccelLPM();
+//				}
+//	        	break;
+//			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					returnValue = checkLowPowerMag();
+//				}
+//	        	break;
+//			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					returnValue = getAccelRange();
+//				}
+//	        	break;
+//			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					//TODO check below and commented out code
+//					returnValue = getMagRange();
+//				
+//	//    							// firmware sets mag range to 7 (i.e. index 6 in combobox) if user set mag range to 0 in config file
+//	//    							if(getMagRange() == 0) cmBx.setSelectedIndex(6);
+//	//    							else cmBx.setSelectedIndex(getMagRange()-1);
+//				}
+//	    		break;
+//			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					int configValue = getLSM303DigitalAccelRate(); 
+//					 
+//		        	if(!isLSM303DigitalAccelLPM()) {
+//			        	if(configValue==8) {
+//			        		//TODO:
+//			        		/* RS (20/5/2016): Why returning a different value?
+//			        		 * In the Set-method the compatibility-check for Accel Rates supported for Low Power Mode is made.
+//			        		 * In this get-method the it should just read/get the value, not manipulating it.
+//			        		 * */
+//			        		configValue = 9;
+//			        	}
+//		        	}
+//					returnValue = configValue;
+//				}
+//	    		break;
+//			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					returnValue = getLSM303MagRate();
+//				}
+//	        	break;
+	        //----------- LSM303 End ----------------------	
+	        	
 		}
 		
 		return returnValue;
@@ -9678,7 +9923,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int buf = 0;
 
 		switch(configLabel){
-//Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				setButtonStart((boolean)valueToSet);
 				break;
@@ -9703,14 +9947,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setLowPowerGyro((boolean)valueToSet);
 				setLowPowerMag((boolean)valueToSet);
 	        	break;
-			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM): 
-				setLowPowerAccelWR((boolean)valueToSet);
-	        	break;
 			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM):
 				setLowPowerGyro((boolean)valueToSet);
-	        	break;
-			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM): 
-				setLowPowerMag((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
             	setTCXO((boolean)valueToSet);
@@ -9738,28 +9976,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
             	setMPLMagDistCal((boolean)valueToSet);
 	        	break;
 
-//Integers
 			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
 				setBluetoothBaudRate((int)valueToSet);
 	        	break;
 		        	
-    		case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE): 
-				setDigitalAccelRange((int)valueToSet);
-	        	break;
-	        
 			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE):
 	        	setMPU9150GyroRange((int)valueToSet);
 	        	break;
 	
-			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE): 
-				setLSM303MagRange((int)valueToSet);
-	    		break;
 			
-	    	//Moved to sensor class
-//			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
-//				setPressureResolution((int)valueToSet);
-//	    		break;
-	    		
 			case(SensorGSR.GuiLabelConfig.GSR_RANGE):
 	    		setGSRRange((int)valueToSet);
 	        	break;
@@ -9774,14 +9999,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//consolePrintLn("after set " + getExGGain());
 	        	break;
 				
-			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE): 
-				setLSM303DigitalAccelRate((int)valueToSet);
-	    		break;
-	    		
-			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE): 
-				setLSM303MagRate((int)valueToSet);
-	        	break;
-	        	
 			case(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE):
 				setMPU9150AccelRange((int)valueToSet);
 	        	break;
@@ -9858,7 +10075,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//TODO decide whether to include the below
 //				returnValue = valueToSet;
 				break;
-//Strings
+
 //			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
 //        		setShimmerUserAssignedName((String)valueToSet);
 //	        	break;
@@ -9978,12 +10195,53 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	        	//TODO
 //	        	checkLowPowerAccelWR();
 				break;
+
+	        //----------- BMP180 Start ----------------------	
+		    	//Moved to sensor class
+//			case(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION):
+//				setPressureResolution((int)valueToSet);
+//	    		break;
+	        //----------- BMP180 End ----------------------	
+
+	        //----------- LSM303 Start ----------------------	
+//			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					setLowPowerAccelWR((boolean)valueToSet);
+//				}
+//	        	break;
+//			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					setLowPowerMag((boolean)valueToSet);
+//				}
+//	        	break;
+//    		case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					setDigitalAccelRange((int)valueToSet);
+//				}
+//	        	break;
+//			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					setLSM303MagRange((int)valueToSet);
+//				}
+//	    		break;
+//			case(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					setLSM303DigitalAccelRate((int)valueToSet);
+//				}
+//	    		break;
+//			case(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE): 
+//				if(!USE_LSM_SENSOR_CLASS){
+//					setLSM303MagRate((int)valueToSet);
+//				}
+//	        	break;
+	        //----------- LSM303 End ----------------------	
+
 	        default:
 	        	returnValue = super.setConfigValueUsingConfigLabel(identifier, configLabel, valueToSet);
 	        	break;
 		}
 		
-        if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE))
+        if((configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE) && !USE_LSM_SENSOR_CLASS)
         		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
         		||(configLabel.equals(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
         	checkConfigOptionValues(configLabel);

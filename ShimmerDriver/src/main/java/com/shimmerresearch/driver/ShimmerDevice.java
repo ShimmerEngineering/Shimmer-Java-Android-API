@@ -1924,7 +1924,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * Used to changed the enabled state of a sensor in the sensormap. This is
 	 * only used in Consensys for dynamic configuration of a Shimmer. This
-	 * method deals with everything assciated with enabling a sensor such as:
+	 * method deals with everything associated with enabling a sensor such as:
 	 * 1) dealing with conflicting sensors
 	 * 2) dealing with other required sensors for the chosen sensor
 	 * 3) determining whether expansion board power is required
@@ -3474,6 +3474,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void addSensorClass(AbstractSensor.SENSORS sensorClassKey, AbstractSensor abstractSensor){
 		mMapOfSensorClasses.put(sensorClassKey, abstractSensor);
+		//TODO not sure if this is needed
+//		mSensorMap.putAll(abstractSensor.mSensorMap);
 	}
 
 	public AbstractSensor getSensorClass(AbstractSensor.SENSORS sensorClassKey){
@@ -3620,6 +3622,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	protected void setSensorCalibrationPerSensor(Integer sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		AbstractSensor abstractSensor = getSensorClass(sensorMapKey);
+		if(abstractSensor!=null){
+			abstractSensor.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+		}
+	}
+
+	public TreeMap<Integer, CalibDetails> getMapOfSensorCalibrationPerSensor(Integer sensorMapKey){
+		AbstractSensor abstractSensor = getSensorClass(sensorMapKey);
+		if(abstractSensor!=null){
+			return abstractSensor.getCalibrationMapForSensor(sensorMapKey);
+		}
+		return null;
+	}
+
 	public byte[] calibByteDumpGenerate(){
 		byte[] calibBytesAll = new byte[]{};
 		
@@ -4050,7 +4067,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setAutoStartStreaming(boolean state){
 		mAutoStartStreaming = state;
 	}
-
 
 
 }

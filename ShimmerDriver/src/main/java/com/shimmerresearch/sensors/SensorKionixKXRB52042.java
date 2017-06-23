@@ -513,7 +513,7 @@ public class SensorKionixKXRB52042 extends AbstractSensor{
 		TreeMap<Integer, CalibDetails> calibMapAccelLn = new TreeMap<Integer, CalibDetails>();
 		calibMapAccelLn.put(calibDetailsAccelLn2g.mRangeValue, calibDetailsAccelLn2g);
 		
-		addCalibrationPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, calibMapAccelLn);
+		setCalibrationMapPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, calibMapAccelLn);
 		updateCurrentAccelLnCalibInUse();
 	}
 	

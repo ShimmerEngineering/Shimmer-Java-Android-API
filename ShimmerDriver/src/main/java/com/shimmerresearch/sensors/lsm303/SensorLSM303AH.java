@@ -85,12 +85,12 @@ public class SensorLSM303AH extends SensorLSM303 {
 	// ----------   Mag end ---------------
 	
 	public static class DatabaseChannelHandles{
-		public static final String WR_ACC_X = "LSM303DLHC_ACC_X";
-		public static final String WR_ACC_Y = "LSM303DLHC_ACC_Y";
-		public static final String WR_ACC_Z = "LSM303DLHC_ACC_Z";
-		public static final String MAG_X = "LSM303DLHC_MAG_X";
-		public static final String MAG_Y = "LSM303DLHC_MAG_Y";
-		public static final String MAG_Z = "LSM303DLHC_MAG_Z";
+		public static final String WR_ACC_X = "LSM303AHTR_ACC_X";
+		public static final String WR_ACC_Y = "LSM303AHTR_ACC_Y";
+		public static final String WR_ACC_Z = "LSM303AHTR_ACC_Z";
+		public static final String MAG_X = "LSM303AHTR_MAG_X";
+		public static final String MAG_Y = "LSM303AHTR_MAG_Y";
+		public static final String MAG_Z = "LSM303AHTR_MAG_Z";
 	}
 	
 	public static final class DatabaseConfigHandle{
@@ -421,14 +421,14 @@ public class SensorLSM303AH extends SensorLSM303 {
 		
 		//Digital Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_ACCEL, 
 				getAccelRange(), 
 				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
 				SensorLSM303AH.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
 		
 		//Magnetometer Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_MAG, 
 				getMagRange(), 
 				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
 				SensorLSM303AH.DatabaseConfigHandle.MAG_CALIB_TIME);
@@ -453,13 +453,13 @@ public class SensorLSM303AH extends SensorLSM303 {
 		calibMapAccelWr.put(calibDetailsAccelWr4g.mRangeValue, calibDetailsAccelWr4g);
 		calibMapAccelWr.put(calibDetailsAccelWr8g.mRangeValue, calibDetailsAccelWr8g);
 		calibMapAccelWr.put(calibDetailsAccelWr16g.mRangeValue, calibDetailsAccelWr16g);
-		addCalibrationPerSensor(mSensorMapKeyAccel, calibMapAccelWr);
+		setCalibrationMapPerSensor(mSensorMapKeyAccel, calibMapAccelWr);
 
 		updateCurrentAccelWrCalibInUse();
 
 		TreeMap<Integer, CalibDetails> calibMapMag = new TreeMap<Integer, CalibDetails>();
 		calibMapMag.put(calibDetailsMag50Ga.mRangeValue, calibDetailsMag50Ga);
-		addCalibrationPerSensor(mSensorMapKeyMag, calibMapMag);
+		setCalibrationMapPerSensor(mSensorMapKeyMag, calibMapMag);
 		
 		updateCurrentMagCalibInUse();
 	}

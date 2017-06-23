@@ -16,10 +16,9 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
-import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 public abstract class SensorLSM303 extends AbstractSensor {
 
@@ -160,6 +159,12 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	//--------- Abstract methods implemented end --------------
 
+	@Override
+	public void initialise() {
+		super.initialise();
+		updateCurrentAccelWrCalibInUse();
+		updateCurrentMagCalibInUse();
+	}
 	
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override 
@@ -377,22 +382,18 @@ public abstract class SensorLSM303 extends AbstractSensor {
 			case(GuiLabelConfig.LSM303_ACCEL_LPM):
 				setLowPowerAccelWR((boolean)valueToSet);
 				break;
-				
 			case(GuiLabelConfig.LSM303_MAG_LPM):
 				setLowPowerMag((boolean)valueToSet);
 				break;
 			case(GuiLabelConfig.LSM303_ACCEL_RANGE):
 				setLSM303AccelRange((int)valueToSet);
 				break;
-				
 			case(GuiLabelConfig.LSM303_MAG_RANGE):
 				setLSM303MagRange((int)valueToSet);
 				break;
-				
 			case(GuiLabelConfig.LSM303_ACCEL_RATE):
 				setLSM303DigitalAccelRate((int)valueToSet);
 				break;
-				
 			case(GuiLabelConfig.LSM303_MAG_RATE):
 				setLSM303MagRate((int)valueToSet);
 				break;
@@ -438,15 +439,12 @@ public abstract class SensorLSM303 extends AbstractSensor {
 			case(GuiLabelConfig.LSM303_ACCEL_LPM):
 				returnValue = isLSM303DigitalAccelLPM();
 	        	break;
-	        	
 			case(GuiLabelConfig.LSM303_MAG_LPM):
 				returnValue = checkLowPowerMag();
 	        	break;
-	        	
 			case(GuiLabelConfig.LSM303_ACCEL_RANGE): 
 				returnValue = getAccelRange();
 		    	break;
-		    	
 			case(GuiLabelConfig.LSM303_MAG_RANGE):
 				//TODO check below and commented out code (RS (20/5/2016): Same as in ShimmerObject.)
 				returnValue = getMagRange();
@@ -455,7 +453,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		//						if(getMagRange() == 0) cmBx.setSelectedIndex(6);
 		//						else cmBx.setSelectedIndex(getMagRange()-1);
 				break;
-			
 			case(GuiLabelConfig.LSM303_ACCEL_RATE): 
 				int configValue = getLSM303DigitalAccelRate(); 
 				 
@@ -471,7 +468,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		    	}
 				returnValue = configValue;
 				break;
-		
 			case(GuiLabelConfig.LSM303_MAG_RATE):
 				returnValue = getLSM303MagRate();
 	        	break;
@@ -571,6 +567,10 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		mHighResAccelWR = enable;
 	}
 	
+	public void setHighResAccelWR(int i){
+		mHighResAccelWR = (i>0)? true:false;
+	}
+	
 	public void setLowPowerAccelWR(boolean enable){
 		mLowPowerAccelWR = enable;
 		mHighResAccelWR = !enable;
@@ -604,7 +604,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	}
 
 	
-	protected void setDefaultLsm303MagSensorConfig(boolean isSensorEnabled) {
+	public void setDefaultLsm303MagSensorConfig(boolean isSensorEnabled) {
 		if(isSensorEnabled) {
 			setLowPowerMag(false);
 		}
@@ -615,7 +615,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	}
 
 	
-	protected void setDefaultLsm303AccelSensorConfig(boolean isSensorEnabled) {
+	public void setDefaultLsm303AccelSensorConfig(boolean isSensorEnabled) {
 		if(isSensorEnabled) {
 			setLowPowerAccelWR(false);
 		}
@@ -655,19 +655,21 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 
 	public CalibDetailsKinematic getCurrentCalibDetailsMag(){
-		return getCurrentCalibDetails(mSensorMapKeyMag, getMagRange());
+//		return getCurrentCalibDetails(mSensorMapKeyMag, getMagRange());
+		return mCurrentCalibDetailsMag;
 	}
 
 	public CalibDetailsKinematic getCurrentCalibDetailsAccelWr(){
-		return getCurrentCalibDetails(mSensorMapKeyAccel, getAccelRange());
+//		return getCurrentCalibDetails(mSensorMapKeyAccel, getAccelRange());
+		return mCurrentCalibDetailsAccelWr;
 	}
 
-	protected byte[] generateCalParamLSM303DLHCAccel(){
+	public byte[] generateCalParamLSM303DLHCAccel(){
 		return mCurrentCalibDetailsAccelWr.generateCalParamByteArray();
 	}
 	
 	
-	protected byte[] generateCalParamLSM303DLHCMag(){
+	public byte[] generateCalParamLSM303DLHCMag(){
 		return mCurrentCalibDetailsMag.generateCalParamByteArray();
 	}
 	
@@ -680,12 +682,12 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	}
 	
 	
-	private void setDefaultCalibrationShimmer3WideRangeAccel() {
+	public void setDefaultCalibrationShimmer3WideRangeAccel() {
 		mCurrentCalibDetailsAccelWr.resetToDefaultParameters();
 	}
 
 	
-	private void setDefaultCalibrationShimmer3Mag() {
+	public void setDefaultCalibrationShimmer3Mag() {
 		mCurrentCalibDetailsMag.resetToDefaultParameters();
 	}
 
@@ -734,11 +736,13 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 
 	public void updateCurrentMagCalibInUse(){
-		mCurrentCalibDetailsMag = getCurrentCalibDetailsMag();
+//		mCurrentCalibDetailsMag = getCurrentCalibDetailsMag();
+		mCurrentCalibDetailsMag = getCurrentCalibDetails(mSensorMapKeyMag, getMagRange());
 	}
 	
 	public void updateCurrentAccelWrCalibInUse(){
-		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsAccelWr();
+//		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsAccelWr();
+		mCurrentCalibDetailsAccelWr = getCurrentCalibDetails(mSensorMapKeyAccel, getAccelRange());
 	}
 
 	
@@ -775,10 +779,18 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		return mHighResAccelWR;
 	}
 	
+	public int getHighResAccelWREnabled(){
+		return (mHighResAccelWR? 1:0);
+	}
+
 
 	//TODO Returning same variable as isLowPowerAccelWr() -> remove one method?
 	public boolean isLSM303DigitalAccelLPM() {
 		return mLowPowerAccelWR;
+	}
+
+	public void setLowPowerAccelEnabled(int i){
+		mLowPowerAccelWR = (i>0)? true:false;
 	}
 
 	public int getLowPowerAccelEnabled(){
@@ -798,6 +810,31 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		return mLSM303DigitalAccelRate;
 	}
 	
+	public double getCalibTimeWRAccel() {
+		return mCurrentCalibDetailsAccelWr.getCalibTimeMs();
+	}
+
+	public double getCalibTimeMag() {
+		return mCurrentCalibDetailsMag.getCalibTimeMs();
+	}
+	
+	public boolean isUsingValidMagParam() {
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixMag()) && !UtilShimmer.isAllZeros(getSensitivityMatrixMag())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public boolean isUsingValidWRAccelParam(){
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixWRAccel()) && !UtilShimmer.isAllZeros(getSensitivityMatrixWRAccel())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+
 	//--------- Sensor specific methods end --------------
 
 
