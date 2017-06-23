@@ -44,6 +44,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 		public static final String PRESSURE_BMP180 = "BMP180_Pressure";
 		public static final String TEMPERATURE_BMP180 = "BMP180_Temperature";
 	}
+	
 	public static final class DatabaseConfigHandle{
 		public static final String PRESSURE_PRECISION = "BMP180_Pressure_Precision";
 		
@@ -58,7 +59,6 @@ public class SensorBMP180 extends SensorBMPX80 {
 		public static final String TEMP_PRES_MB = "BMP180_MB";
 		public static final String TEMP_PRES_MC = "BMP180_MC";
 		public static final String TEMP_PRES_MD = "BMP180_MD";
-		
 	}
 	
 	public static class ObjectClusterSensorName{
