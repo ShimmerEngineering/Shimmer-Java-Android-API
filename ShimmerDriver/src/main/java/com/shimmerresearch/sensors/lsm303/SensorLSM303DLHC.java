@@ -29,6 +29,7 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -694,7 +695,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 		calibMapAccelWr.put(calibDetailsAccelWr4g.mRangeValue, calibDetailsAccelWr4g);
 		calibMapAccelWr.put(calibDetailsAccelWr8g.mRangeValue, calibDetailsAccelWr8g);
 		calibMapAccelWr.put(calibDetailsAccelWr16g.mRangeValue, calibDetailsAccelWr16g);
-		addCalibrationPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, calibMapAccelWr);
+		setCalibrationMapPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, calibMapAccelWr);
 
 		updateCurrentAccelWrCalibInUse();
 
@@ -706,7 +707,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 		calibMapMag.put(calibDetailsMag4p7.mRangeValue, calibDetailsMag4p7);
 		calibMapMag.put(calibDetailsMag5p6.mRangeValue, calibDetailsMag5p6);
 		calibMapMag.put(calibDetailsMag8p1.mRangeValue, calibDetailsMag8p1);
-		addCalibrationPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, calibMapMag);
+		setCalibrationMapPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, calibMapMag);
 		
 		updateCurrentMagCalibInUse();
 	}
@@ -719,6 +720,9 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	@Override
 	public void setLSM303MagRange(int valueToSet){
 		if(ArrayUtils.contains(ListofLSM303DLHCMagRangeConfigValues, valueToSet)){
+			if(valueToSet!=7){
+				UtilShimmer.consolePrintCurrentStackTrace();
+			}
 			mMagRange = valueToSet;
 			updateCurrentAccelWrCalibInUse();
 		}
