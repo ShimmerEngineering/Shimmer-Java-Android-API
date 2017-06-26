@@ -3280,10 +3280,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		Iterator<AbstractAlgorithm> iteratorAlgorithms = mMapOfAlgorithmModules.values().iterator();
 		while(iteratorAlgorithms.hasNext()){
 			AbstractAlgorithm abstractAlgorithm = iteratorAlgorithms.next();
-			LinkedHashMap<String, Object> configMapPerAlgorithm = abstractAlgorithm.getConfigMapForDb();
-			if(configMapPerAlgorithm!=null){
-				mapOfConfig.putAll(configMapPerAlgorithm);
-			}
+//			if(abstractAlgorithm.isEnabled()){
+				LinkedHashMap<String, Object> configMapPerAlgorithm = abstractAlgorithm.getConfigMapForDb();
+				if(configMapPerAlgorithm!=null){
+					mapOfConfig.putAll(configMapPerAlgorithm);
+				}
+//			}
 		}
 		//Old approach to getting config for DB from Algorithms
 //		HashMap<String, Object> algorithmsConfig = getEnabledAlgorithmSettings();
