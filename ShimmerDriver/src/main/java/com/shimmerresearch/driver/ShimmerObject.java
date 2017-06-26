@@ -10791,8 +10791,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	@Deprecated
-	public List<Double> getShimmerConfigToInsertInDB(){
-		return getDbConfigFromShimmer(this);
+	public List<Double> getShimmerConfigToInsertInDBLegacy(){
+		return getDbConfigFromShimmerLegacy(this);
 	}
 
 	/** This method only needs to support Shimmer3. ShimmerGQ is handled in the ShimmerGQ class and >=Shimmer4 is via a config map
@@ -10800,7 +10800,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * This corresponds to the Database column labels declared in DatabaseHandler.getShimmer3ConfigColumns()
 	 *  */
 	@Deprecated
-	public static List<Double> getDbConfigFromShimmer(ShimmerDevice shimmerDevice){
+	public static List<Double> getDbConfigFromShimmerLegacy(ShimmerDevice shimmerDevice){
 		if (shimmerDevice instanceof ShimmerObject){
 			ShimmerObject shimmerObject = (ShimmerObject) shimmerDevice;
 			List<Double> configValues = new ArrayList<Double>();

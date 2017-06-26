@@ -720,9 +720,9 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	@Override
 	public void setLSM303MagRange(int valueToSet){
 		if(ArrayUtils.contains(ListofLSM303DLHCMagRangeConfigValues, valueToSet)){
-			if(valueToSet!=7){
-				UtilShimmer.consolePrintCurrentStackTrace();
-			}
+//			if(valueToSet!=7){
+//				UtilShimmer.consolePrintCurrentStackTrace();
+//			}
 			mMagRange = valueToSet;
 			updateCurrentAccelWrCalibInUse();
 		}
