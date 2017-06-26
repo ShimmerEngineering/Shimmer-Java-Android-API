@@ -2105,12 +2105,24 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 				DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
 				DatabaseConfigHandle.GYRO_CALIB_TIME);
 		
-		//TODO
-//		super.addCalibDetailsToDbMap(mapOfConfig, get, DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
-		//TODO
-//		super.addCalibDetailsToDbMap(mapOfConfig, get, DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
-		//TODO
-//		super.addCalibDetailsToDbMap(mapOfConfig, get, DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
+		AbstractSensor.addCalibDetailsToDbMap(mapOfConfig, 
+				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC,
+				getOffsetVectorMPLAccel(),
+				getSensitivityMatrixMPLAccel(),
+				getAlignmentMatrixMPLAccel());
+		
+		AbstractSensor.addCalibDetailsToDbMap(mapOfConfig, 
+				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG,
+				getOffsetVectorMPLMag(),
+				getSensitivityMatrixMPLMag(),
+				getAlignmentMatrixMPLMag());
+
+		AbstractSensor.addCalibDetailsToDbMap(mapOfConfig, 
+				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO,
+				getOffsetVectorMPLGyro(),
+				getSensitivityMatrixMPLGyro(),
+				getAlignmentMatrixMPLGyro());
+
 		return mapOfConfig;
 	}
 	@Override

@@ -179,7 +179,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 		public static final String MAG_RATE = "LSM303DLHC_Mag_Rate";
 //		public static final String MAG = "LSM303DLHC_Mag";
 		
-		public static final String WR_ACC = "LSM303DLHC_Acc";
+//		public static final String WR_ACC = "LSM303DLHC_Acc";
 		public static final String WR_ACC_RATE = "LSM303DLHC_Acc_Rate";
 		public static final String WR_ACC_RANGE = "LSM303DLHC_Acc_Range";
 		
@@ -608,25 +608,24 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE, getMagRange());
-		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
-		
-		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC, getSensorName());
 		
 		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RATE, getLSM303DigitalAccelRate());
 		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RANGE, getAccelRange());
 		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_LPM, getLowPowerAccelEnabled());
-		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_HRM, isHighResAccelWr());
+		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_HRM, getHighResAccelWREnabled());
 		
-		super.addCalibDetailsToDbMap(mapOfConfig, 
-				getCurrentCalibDetailsMag(), 
-				SensorLSM303DLHC.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
-				SensorLSM303DLHC.DatabaseConfigHandle.MAG_CALIB_TIME);
-
 		super.addCalibDetailsToDbMap(mapOfConfig, 
 				getCurrentCalibDetailsAccelWr(), 
 				SensorLSM303DLHC.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
 				SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
+
+		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE, getMagRange());
+		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
+
+		super.addCalibDetailsToDbMap(mapOfConfig, 
+				getCurrentCalibDetailsMag(), 
+				SensorLSM303DLHC.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
+				SensorLSM303DLHC.DatabaseConfigHandle.MAG_CALIB_TIME);
 
 		return mapOfConfig;
 	}	
@@ -647,19 +646,20 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 			setHighResAccelWR(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_HRM))>0? true:false);
 		}
 		
-		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE)){
-			setLSM303MagRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE)).intValue());
-		}
-		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RATE)){
-			setLSM303MagRate(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RATE)).intValue());
-		}
-		
 		//Digital Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
 				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 
 				getAccelRange(), 
 				SensorLSM303DLHC.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
 				SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
+		
+		
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE)){
+			setLSM303MagRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RATE)){
+			setLSM303MagRate(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RATE)).intValue());
+		}
 		
 		//Magnetometer Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 

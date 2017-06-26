@@ -601,6 +601,19 @@ public class OrientationModule9DOF extends OrientationModule {
 		}
 	}
 
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public ObjectCluster addQuaternionToObjectCluster(Orientation3DObject quaternion, ObjectCluster objectCluster){
 
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
@@ -646,5 +659,6 @@ public class OrientationModule9DOF extends OrientationModule {
 
 		return objectCluster;
 	}
+
 
 }

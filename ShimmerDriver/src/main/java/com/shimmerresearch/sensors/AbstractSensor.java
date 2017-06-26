@@ -637,6 +637,34 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 	
+	public static void addCalibDetailsToDbMap(
+			LinkedHashMap<String, Object> configMapForDb,
+			List<String> listOfCalibHandles,
+			double[][] offsetVector, 
+			double[][] sensitivityMatrix, 
+			double[][] alignmentMatrix) {
+		
+		configMapForDb.put(listOfCalibHandles.get(0), offsetVector[0][0]);
+		configMapForDb.put(listOfCalibHandles.get(1), offsetVector[1][0]);
+		configMapForDb.put(listOfCalibHandles.get(2), offsetVector[2][0]);
+
+		configMapForDb.put(listOfCalibHandles.get(3), sensitivityMatrix[0][0]);
+		configMapForDb.put(listOfCalibHandles.get(4), sensitivityMatrix[1][1]);
+		configMapForDb.put(listOfCalibHandles.get(5), sensitivityMatrix[2][2]);
+	
+		configMapForDb.put(listOfCalibHandles.get(6), alignmentMatrix[0][0]);
+		configMapForDb.put(listOfCalibHandles.get(7), alignmentMatrix[0][1]);
+		configMapForDb.put(listOfCalibHandles.get(8), alignmentMatrix[0][2]);
+		
+		configMapForDb.put(listOfCalibHandles.get(9), alignmentMatrix[1][0]);
+		configMapForDb.put(listOfCalibHandles.get(10), alignmentMatrix[1][1]);
+		configMapForDb.put(listOfCalibHandles.get(11), alignmentMatrix[1][2]);
+		
+		configMapForDb.put(listOfCalibHandles.get(12), alignmentMatrix[2][0]);
+		configMapForDb.put(listOfCalibHandles.get(13), alignmentMatrix[2][1]);
+		configMapForDb.put(listOfCalibHandles.get(14), alignmentMatrix[2][2]);
+	}
+
 
 	/** 
 	 * @see ShimmerObject.parseCalibDetailsKinematicFromDb
@@ -691,6 +719,7 @@ public abstract class AbstractSensor implements Serializable{
 					alignZx, alignZy, alignZz);
 		}
 	}
+	
 	
 	//--------- Optional methods to override in Sensor Class end -------- 
 

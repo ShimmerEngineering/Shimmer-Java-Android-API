@@ -151,10 +151,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long mShimmerRealTimeClockConFigTime = 0;
 	public long mShimmerLastReadRealTimeClockValue = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
-	protected InfoMemLayout mInfoMemLayout;// = new InfoMemLayoutShimmer3(); //default
-	protected byte[] mConfigBytes = InfoMemLayout.createEmptyInfoMemByteArray(512);
+	protected ConfigByteLayout mConfigByteLayout;// = new InfoMemLayoutShimmer3(); //default
+	protected byte[] mConfigBytes = ConfigByteLayout.createEmptyConfigByteArray(512);
 	/**shows the original contents of the Infomem any configuration is changed */
-	protected byte[] mInfoMemBytesOriginal = InfoMemLayout.createEmptyInfoMemByteArray(512);
+	protected byte[] mInfoMemBytesOriginal = ConfigByteLayout.createEmptyConfigByteArray(512);
 	
 	public byte[] mCalibBytes = new byte[]{};
 	public HashMap<Integer, String> mCalibBytesDescriptions = new HashMap<Integer, String>();
@@ -976,8 +976,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public HashMap<Integer, String> getMapOfConfigByteDescriptions() {
-		if(mInfoMemLayout!=null){
-			return mInfoMemLayout.getMapOfByteDescriptions();
+		if(mConfigByteLayout!=null){
+			return mConfigByteLayout.getMapOfByteDescriptions();
 		}
 		return null;
 	}
@@ -1111,9 +1111,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	// --------------- Get/Set Methods End --------------------------
 
-	public InfoMemLayout getInfoMemLayout(){
+	public ConfigByteLayout getConfigByteLayout(){
 		createInfoMemLayoutObjectIfNeeded();
-		return mInfoMemLayout;
+		return mConfigByteLayout;
 	}
 	
 	 /**
@@ -1121,16 +1121,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public int getExpectedInfoMemByteLength() {
 		createInfoMemLayoutObjectIfNeeded();
-		return mInfoMemLayout.mInfoMemSize;
+		return mConfigByteLayout.mInfoMemSize;
 	}
 	
 	public void createInfoMemLayoutObjectIfNeeded(){
 		boolean create = false;
-		if(mInfoMemLayout==null){
+		if(mConfigByteLayout==null){
 			create = true;
 		}
 		else {
-			if(mInfoMemLayout.isDifferent(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal())){
+			if(mConfigByteLayout.isDifferent(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal())){
 				create = true;
 			}
 		}
@@ -1680,23 +1680,23 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return returnValue;		
 	}
 	
-	public HashMap<String, Object> getEnabledAlgorithmSettingsPerGroup(String groupName) {
-		List<AbstractAlgorithm> listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
-		HashMap<String, Object> mapOfAlgorithmSettings = new HashMap<String, Object>();
-		for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){
-			mapOfAlgorithmSettings.putAll(abstractAlgorithm.getAlgorithmSettings());
-		}
-		return mapOfAlgorithmSettings;
-	}
-
-	public HashMap<String, Object> getEnabledAlgorithmSettings() {
-		List<AbstractAlgorithm> listOfAlgorithms = getListOfEnabledAlgorithmModules();
-		HashMap<String, Object> mapOfAlgorithmSettings = new HashMap<String, Object>();
-		for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){
-			mapOfAlgorithmSettings.putAll(abstractAlgorithm.getAlgorithmSettings());
-		}
-		return mapOfAlgorithmSettings;
-	}
+//	public HashMap<String, Object> getEnabledAlgorithmSettingsPerGroup(String groupName) {
+//		List<AbstractAlgorithm> listOfAlgorithms = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+//		HashMap<String, Object> mapOfAlgorithmSettings = new HashMap<String, Object>();
+//		for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){
+//			mapOfAlgorithmSettings.putAll(abstractAlgorithm.getAlgorithmSettings());
+//		}
+//		return mapOfAlgorithmSettings;
+//	}
+//
+//	public HashMap<String, Object> getEnabledAlgorithmSettings() {
+//		List<AbstractAlgorithm> listOfAlgorithms = getListOfEnabledAlgorithmModules();
+//		HashMap<String, Object> mapOfAlgorithmSettings = new HashMap<String, Object>();
+//		for(AbstractAlgorithm abstractAlgorithm:listOfAlgorithms){
+//			mapOfAlgorithmSettings.putAll(abstractAlgorithm.getAlgorithmSettings());
+//		}
+//		return mapOfAlgorithmSettings;
+//	}
 	
 	public boolean isSupportedRtcConfigViaUart() {
 		return mShimmerVerObject.isSupportedRtcConfigViaUart();
@@ -3276,7 +3276,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 		}
 		
-		//TODO Algorithm configuration
+		//Algorithm configuration
+		Iterator<AbstractAlgorithm> iteratorAlgorithms = mMapOfAlgorithmModules.values().iterator();
+		while(iteratorAlgorithms.hasNext()){
+			AbstractAlgorithm abstractAlgorithm = iteratorAlgorithms.next();
+			LinkedHashMap<String, Object> configMapPerAlgorithm = abstractAlgorithm.getConfigMapForDb();
+			if(configMapPerAlgorithm!=null){
+				mapOfConfig.putAll(configMapPerAlgorithm);
+			}
+		}
+		//Old approach to getting config for DB from Algorithms
 //		HashMap<String, Object> algorithmsConfig = getEnabledAlgorithmSettings();
 //		mapOfConfig.putAll(algorithmsConfig);
 		
@@ -3336,7 +3345,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			abstractSensor.parseConfigMapFromDb(mapOfConfigPerShimmer);
 		}
 		
-		//TODO Algorithm configuration
+		//Algorithm configuration
+		Iterator<AbstractAlgorithm> iteratorAlgorithms = mMapOfAlgorithmModules.values().iterator();
+		while(iteratorAlgorithms.hasNext()){
+			AbstractAlgorithm abstractAlgorithm = iteratorAlgorithms.next();
+			abstractAlgorithm.parseConfigMapFromDb(mapOfConfigPerShimmer);
+		}
+		//Old approach to getting config for DB from Algorithms
 //		Iterator<AbstractAlgorithm> iteratorAlgo = getListOfAlgorithmModules().iterator();
 //		while(iteratorAlgo.hasNext()){
 //			AbstractAlgorithm abstractAlgorithm = iteratorAlgo.next();

@@ -76,7 +76,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.driver.CallbackObject;
-import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
+import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 
@@ -819,7 +819,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public void createConfigBytesLayout() {
-		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 
 	
