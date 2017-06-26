@@ -606,6 +606,19 @@ public class OrientationModule6DOF extends OrientationModule{
 		}
 	}
 
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public ObjectCluster addQuaternionToObjectCluster(Orientation3DObject quaternion, ObjectCluster objectCluster){
 
 
@@ -652,6 +665,7 @@ public class OrientationModule6DOF extends OrientationModule{
 
 		return objectCluster;
 	}
+
 	
 }
 

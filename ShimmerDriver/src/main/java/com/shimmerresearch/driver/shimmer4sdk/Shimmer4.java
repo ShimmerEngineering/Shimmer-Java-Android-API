@@ -22,8 +22,8 @@ import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.InfoMemLayout;
-import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
+import com.shimmerresearch.driver.ConfigByteLayout;
+import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -162,7 +162,7 @@ public class Shimmer4 extends ShimmerDevice {
 	@Override
 	public void createConfigBytesLayout() {
 		//TODO replace with Shimmer4?
-		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 
 	// TODO need to move common infomem related activity to ShimmerDevice. Not
@@ -173,7 +173,7 @@ public class Shimmer4 extends ShimmerDevice {
 		String shimmerName = "";
 		mInfoMemBytesOriginal = configBytes;
 
-		if(!InfoMemLayout.checkInfoMemValid(configBytes)){
+		if(!ConfigByteLayout.checkConfigBytesValid(configBytes)){
 			// InfoMem not valid
 			setDefaultShimmerConfiguration();
 //			mShimmerUsingConfigFromInfoMem = false;
@@ -185,26 +185,26 @@ public class Shimmer4 extends ShimmerDevice {
 		else {
 			createInfoMemLayoutObjectIfNeeded();
 			//TODO create for Shimmer4 or use Shimmer3?
-			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3) mInfoMemLayout;
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) mConfigByteLayout;
 			mConfigBytes = configBytes;
 
 			// Parse Enabled and Derived sensor bytes in order to update sensor maps
-			parseEnabledDerivedSensorsForMaps(infoMemLayoutCast, configBytes);
+			parseEnabledDerivedSensorsForMaps(configByteLayoutCast, configBytes);
 
 			overwriteEnabledSensors();
 
-			setSamplingRateShimmer(32768/(double)((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
-					+ ((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8)));
+			setSamplingRateShimmer(32768/(double)((int)(configBytes[configByteLayoutCast.idxShimmerSamplingRate] & configByteLayoutCast.maskShimmerSamplingRate) 
+					+ ((int)(configBytes[configByteLayoutCast.idxShimmerSamplingRate+1] & configByteLayoutCast.maskShimmerSamplingRate) << 8)));
 
-			mInternalExpPower = (configBytes[infoMemLayoutCast.idxConfigSetupByte3] >> infoMemLayoutCast.bitShiftEXPPowerEnable) & infoMemLayoutCast.maskEXPPowerEnable;
+			mInternalExpPower = (configBytes[configByteLayoutCast.idxConfigSetupByte3] >> configByteLayoutCast.bitShiftEXPPowerEnable) & configByteLayoutCast.maskEXPPowerEnable;
 
 
-			mBluetoothBaudRate = configBytes[infoMemLayoutCast.idxBtCommBaudRate] & infoMemLayoutCast.maskBaudRate;
+			mBluetoothBaudRate = configBytes[configByteLayoutCast.idxBtCommBaudRate] & configByteLayoutCast.maskBaudRate;
 
 			
 			// Shimmer Name
-			byte[] shimmerNameBuffer = new byte[infoMemLayoutCast.lengthShimmerName];
-			System.arraycopy(configBytes, infoMemLayoutCast.idxSDShimmerName, shimmerNameBuffer, 0 , infoMemLayoutCast.lengthShimmerName);
+			byte[] shimmerNameBuffer = new byte[configByteLayoutCast.lengthShimmerName];
+			System.arraycopy(configBytes, configByteLayoutCast.idxSDShimmerName, shimmerNameBuffer, 0 , configByteLayoutCast.lengthShimmerName);
 			for(byte b : shimmerNameBuffer) {
 				if(!UtilShimmer.isAsciiPrintable((char)b)) {
 					break;
@@ -213,8 +213,8 @@ public class Shimmer4 extends ShimmerDevice {
 			}
 			
 			// Experiment Name
-			byte[] experimentNameBuffer = new byte[infoMemLayoutCast.lengthExperimentName];
-			System.arraycopy(configBytes, infoMemLayoutCast.idxSDEXPIDName, experimentNameBuffer, 0 , infoMemLayoutCast.lengthExperimentName);
+			byte[] experimentNameBuffer = new byte[configByteLayoutCast.lengthExperimentName];
+			System.arraycopy(configBytes, configByteLayoutCast.idxSDEXPIDName, experimentNameBuffer, 0 , configByteLayoutCast.lengthExperimentName);
 			String experimentName = "";
 			for(byte b : experimentNameBuffer) {
 				if(!UtilShimmer.isAsciiPrintable((char)b)) {
@@ -225,15 +225,15 @@ public class Shimmer4 extends ShimmerDevice {
 			mTrialName = new String(experimentName);
 
 			//Configuration Time
-			int bitShift = (infoMemLayoutCast.lengthConfigTimeBytes-1) * 8;
+			int bitShift = (configByteLayoutCast.lengthConfigTimeBytes-1) * 8;
 			mConfigTime = 0;
-			for(int x=0; x<infoMemLayoutCast.lengthConfigTimeBytes; x++ ) {
-				mConfigTime += (((long)(configBytes[infoMemLayoutCast.idxSDConfigTime0+x] & 0xFF)) << bitShift);
+			for(int x=0; x<configByteLayoutCast.lengthConfigTimeBytes; x++ ) {
+				mConfigTime += (((long)(configBytes[configByteLayoutCast.idxSDConfigTime0+x] & 0xFF)) << bitShift);
 				bitShift -= 8;
 			}
 			
-			mButtonStart = ((configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftButtonStart) & infoMemLayoutCast.maskButtonStart)>0? true:false;
-			mShowRtcErrorLeds = ((configBytes[infoMemLayoutCast.idxSDExperimentConfig0] >> infoMemLayoutCast.bitShiftShowErrorLedsRwc) & infoMemLayoutCast.maskShowErrorLedsRwc)>0? true:false;
+			mButtonStart = ((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftButtonStart) & configByteLayoutCast.maskButtonStart)>0? true:false;
+			mShowRtcErrorLeds = ((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftShowErrorLedsRwc) & configByteLayoutCast.maskShowErrorLedsRwc)>0? true:false;
 
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
@@ -247,7 +247,7 @@ public class Shimmer4 extends ShimmerDevice {
 		checkAndCorrectShimmerName(shimmerName);
 	}
 
-	private void parseEnabledDerivedSensorsForMaps(InfoMemLayoutShimmer3 infoMemLayoutCast, byte[] configBytes) {
+	private void parseEnabledDerivedSensorsForMaps(ConfigByteLayoutShimmer3 infoMemLayoutCast, byte[] configBytes) {
 		// Sensors
 		mEnabledSensors = ((long)configBytes[infoMemLayoutCast.idxSensors0] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors0;
 		mEnabledSensors += ((long)configBytes[infoMemLayoutCast.idxSensors1] & infoMemLayoutCast.maskSensors) << infoMemLayoutCast.byteShiftSensors1;
@@ -310,14 +310,14 @@ public class Shimmer4 extends ShimmerDevice {
 		//TODO refer to same method in ShimmerGQ/ShimmerObject
 
 		//TODO create for Shimmer4 or use Shimmer3?
-		InfoMemLayoutShimmer3 infoMemLayout = new InfoMemLayoutShimmer3(
+		ConfigByteLayoutShimmer3 infoMemLayout = new ConfigByteLayoutShimmer3(
 				getFirmwareIdentifier(), 
 				getFirmwareVersionMajor(), 
 				getFirmwareVersionMinor(), 
 				getFirmwareVersionInternal());
 		
 //		byte[] infoMemBackup = mInfoMemBytes.clone();
-		mConfigBytes = infoMemLayout.createEmptyInfoMemByteArray();
+		mConfigBytes = infoMemLayout.createEmptyConfigByteArray();
 		
 		refreshEnabledSensorsFromSensorMap();
 		
@@ -1009,8 +1009,8 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 
 	public void writeConfigBytes(byte[] shimmerInfoMemBytes) {
-		if(mCommsProtocolRadio!=null && mInfoMemLayout!=null){
-			mCommsProtocolRadio.writeInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
+		if(mCommsProtocolRadio!=null && mConfigByteLayout!=null){
+			mCommsProtocolRadio.writeInfoMem(mConfigByteLayout.MSP430_5XX_INFOMEM_D_ADDRESS, shimmerInfoMemBytes, mConfigByteLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
 			readConfigBytes();
 		}
 	}
@@ -1019,8 +1019,8 @@ public class Shimmer4 extends ShimmerDevice {
 		if(this.getFirmwareVersionCode()>=6){
 			createInfoMemLayoutObjectIfNeeded();
 //			int size = InfoMemLayoutShimmer3.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-			int size = mInfoMemLayout.calculateInfoMemByteLength();
-			mCommsProtocolRadio.readInfoMem(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
+			int size = mConfigByteLayout.calculateConfigByteLength();
+			mCommsProtocolRadio.readInfoMem(mConfigByteLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size, mConfigByteLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
 		}
 	}
 	

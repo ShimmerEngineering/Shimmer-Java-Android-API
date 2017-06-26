@@ -4,11 +4,15 @@ import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.shimmerresearch.driver.ConfigByteLayout;
+import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensors.AbstractSensor;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP180.DatabaseConfigHandle;
 
 public abstract class SensorBMPX80 extends AbstractSensor {
 
@@ -93,6 +97,26 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 		mCalibDetailsBmpX80.mRangeValue = getPressureResolution();
 	}
 
+	@Override
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
+			configBytes[configByteLayoutCast.idxConfigSetupByte3] |= (byte) ((getPressureResolution() & configByteLayoutCast.maskBMPX80PressureResolution) << configByteLayoutCast.bitShiftBMPX80PressureResolution);
+		}
 
+//		System.out.println("Info Mem Pressure resolution:\t" + mPressureResolution_BMP280);
+//		System.out.println("Check");
+	}
+
+	@Override
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+			setPressureResolution((configBytes[configByteLayoutCast.idxConfigSetupByte3] >> configByteLayoutCast.bitShiftBMPX80PressureResolution) & configByteLayoutCast.maskBMPX80PressureResolution);
+		}
+	}
+	
 }

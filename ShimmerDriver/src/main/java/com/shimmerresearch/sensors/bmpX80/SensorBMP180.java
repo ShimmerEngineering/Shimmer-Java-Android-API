@@ -270,25 +270,6 @@ public class SensorBMP180 extends SensorBMPX80 {
 	}
 
 	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte3 = 9;
-		int bitShiftBMP180PressureResolution = 4;
-		int maskBMP180PressureResolution = 0x03;
-		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution & maskBMP180PressureResolution) << bitShiftBMP180PressureResolution);
-	}
-
-	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte3 = 9;
-		int bitShiftBMP180PressureResolution = 4;
-		int maskBMP180PressureResolution = 0x03;
-		setPressureResolution((mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution);
-		mPressureResolution = getPressureResolution();
-//		System.out.println("Info Mem Pressure resolution:\t" + mPressureResolution);
-//		System.out.println("Check");
-	}
-
-	@Override
 	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){

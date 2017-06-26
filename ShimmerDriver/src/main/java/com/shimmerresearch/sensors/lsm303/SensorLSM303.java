@@ -7,6 +7,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.ConfigByteLayout;
+import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
@@ -270,107 +272,78 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	@Override 
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {//XXX - What is "ShimmerDevice shimmerDevice" doing here? 
-		int idxConfigSetupByte0 =              		6; 
-		int idxConfigSetupByte2 =              		8;
-//		int idxLSM303DLHCAccelCalibration =    	   94; 
-//		int idxLSM303DLHCMagCalibration =          73;
-		//fix for newer firmware -> see InfomemLayoutShimmer3
-		int idxLSM303DLHCMagCalibration =   76;
-		int idxLSM303DLHCAccelCalibration = 97;
-		int bitShiftLSM303DLHCAccelSamplingRate =   4;
-		int bitShiftLSM303DLHCAccelRange =          2;
-		int bitShiftLSM303DLHCAccelLPM =            1;
-		int bitShiftLSM303DLHCAccelHRM =            0;
-		int bitShiftLSM303DLHCMagRange =            5;
-		int bitShiftLSM303DLHCMagSamplingRate =     2;
-		int maskLSM303DLHCAccelSamplingRate =    0x0F;   
-		int maskLSM303DLHCAccelRange =           0x03;
-		int maskLSM303DLHCAccelLPM =             0x01;
-		int maskLSM303DLHCAccelHRM =             0x01;
-		int maskLSM303DLHCMagRange =             0x07;
-		int maskLSM303DLHCMagSamplingRate =      0x07;
-		int lengthGeneralCalibrationBytes =        21;
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		
-		//idxConfigSetupByte0 
-		mInfoMemBytes[idxConfigSetupByte0] |= (byte) ((mLSM303DigitalAccelRate & maskLSM303DLHCAccelSamplingRate) << bitShiftLSM303DLHCAccelSamplingRate);
-		mInfoMemBytes[idxConfigSetupByte0] |= (byte) ((getAccelRange() & maskLSM303DLHCAccelRange) << bitShiftLSM303DLHCAccelRange);
-		if(mLowPowerAccelWR) {
-			mInfoMemBytes[idxConfigSetupByte0] |= (maskLSM303DLHCAccelLPM << bitShiftLSM303DLHCAccelLPM);
-		}
-		if(mHighResAccelWR) {
-			mInfoMemBytes[idxConfigSetupByte0] |= (maskLSM303DLHCAccelHRM << bitShiftLSM303DLHCAccelHRM);
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+			
+			configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (byte) ((getLSM303DigitalAccelRate() & configByteLayoutCast.maskLSM303DLHCAccelSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate);
+			configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (byte) ((getAccelRange() & configByteLayoutCast.maskLSM303DLHCAccelRange) << configByteLayoutCast.bitShiftLSM303DLHCAccelRange);
+			if(isLowPowerAccelWR()) {
+				configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (configByteLayoutCast.maskLSM303DLHCAccelLPM << configByteLayoutCast.bitShiftLSM303DLHCAccelLPM);
+			}
+			if(isHighResAccelWR()) {
+				configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (configByteLayoutCast.maskLSM303DLHCAccelHRM << configByteLayoutCast.bitShiftLSM303DLHCAccelHRM);
+			}
+
+			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getMagRange() & configByteLayoutCast.maskLSM303DLHCMagRange) << configByteLayoutCast.bitShiftLSM303DLHCMagRange);
+			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getLSM303MagRate() & configByteLayoutCast.maskLSM303DLHCMagSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate);
+
+			// LSM303DLHC Magnetometer Calibration Parameters
+			byte[] bufferCalibrationParameters = generateCalParamLSM303DLHCMag();
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+
+			// LSM303DLHC Digital Accel Calibration Parameters
+			bufferCalibrationParameters = generateCalParamLSM303DLHCAccel();
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLSM303DLHCAccelCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+
 		}
 		
-		//idxConfigSetupByte2
-		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((getMagRange() & maskLSM303DLHCMagRange) << bitShiftLSM303DLHCMagRange);
-		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((getLSM303MagRate() & maskLSM303DLHCMagSamplingRate) << bitShiftLSM303DLHCMagSamplingRate);
-		
-		// LSM303DLHC Digital Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = generateCalParamLSM303DLHCAccel();
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, idxLSM303DLHCAccelCalibration, lengthGeneralCalibrationBytes);
-		
-		// LSM303DLHC Magnetometer Calibration Parameters
-		bufferCalibrationParameters = generateCalParamLSM303DLHCMag();
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, idxLSM303DLHCMagCalibration, lengthGeneralCalibrationBytes);
 	}
 
 	
 	@Override 
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {//XXX - What is "ShimmerDevice shimmerDevice" doing here? 
-		int idxConfigSetupByte0 =              		6; 
-		int idxConfigSetupByte2 =              		8;
-//		int idxLSM303DLHCAccelCalibration =    	   94; 
-//		int idxLSM303DLHCMagCalibration =          73;
-		//fix for newer firmware -> see InfomemLayoutShimmer3
-		int idxLSM303DLHCMagCalibration =   76;
-		int idxLSM303DLHCAccelCalibration = 97;
-		int bitShiftLSM303DLHCAccelSamplingRate =   4;
-		int bitShiftLSM303DLHCAccelRange =          2;
-		int bitShiftLSM303DLHCAccelLPM =            1;
-		int bitShiftLSM303DLHCAccelHRM =            0;
-		int bitShiftLSM303DLHCMagRange =            5;
-		int bitShiftLSM303DLHCMagSamplingRate =     2;
-		int maskLSM303DLHCAccelSamplingRate =    0x0F;   
-		int maskLSM303DLHCAccelRange =           0x03;
-		int maskLSM303DLHCAccelLPM =             0x01;
-		int maskLSM303DLHCAccelHRM =             0x01;
-		int maskLSM303DLHCMagRange =             0x07;
-		int maskLSM303DLHCMagSamplingRate =      0x07;
-		int lengthGeneralCalibrationBytes =        21;
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) { 
 		
-		//idxConfigSetupByte0 
-		mLSM303DigitalAccelRate = (mInfoMemBytes[idxConfigSetupByte0] >> bitShiftLSM303DLHCAccelSamplingRate) & maskLSM303DLHCAccelSamplingRate; 
-		setLSM303AccelRange((mInfoMemBytes[idxConfigSetupByte0] >> bitShiftLSM303DLHCAccelRange) & maskLSM303DLHCAccelRange);
-		if(((mInfoMemBytes[idxConfigSetupByte0] >> bitShiftLSM303DLHCAccelLPM) & maskLSM303DLHCAccelLPM) == maskLSM303DLHCAccelLPM) {
-			mLowPowerAccelWR = true;
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+
+			setLSM303DigitalAccelRate((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate) & configByteLayoutCast.maskLSM303DLHCAccelSamplingRate); 
+			setLSM303AccelRange((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelRange) & configByteLayoutCast.maskLSM303DLHCAccelRange);
+			if(((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelLPM) & configByteLayoutCast.maskLSM303DLHCAccelLPM) == configByteLayoutCast.maskLSM303DLHCAccelLPM) {
+				setLowPowerAccelWR(true);
+			}
+			else {
+				setLowPowerAccelWR(false);
+			}
+			if(((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelHRM) & configByteLayoutCast.maskLSM303DLHCAccelHRM) == configByteLayoutCast.maskLSM303DLHCAccelHRM) {
+				setHighResAccelWR(true);
+			}
+			else {
+				setHighResAccelWR(false);
+			}
+
+			setLSM303MagRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagRange) & configByteLayoutCast.maskLSM303DLHCMagRange);
+			setLSM303MagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
+			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
+
+			if (shimmerDevice.isConnected()){
+				getCurrentCalibDetailsMag().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+				getCurrentCalibDetailsAccelWr().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+			}
+
+			// LSM303DLHC Magnetometer Calibration Parameters
+			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+			System.arraycopy(configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
+
+			// LSM303DLHC Digital Accel Calibration Parameters
+			bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+			System.arraycopy(configBytes, configByteLayoutCast.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 		}
-		else {
-			mLowPowerAccelWR = false;
-		}
-		if(((mInfoMemBytes[idxConfigSetupByte0] >> bitShiftLSM303DLHCAccelHRM) & maskLSM303DLHCAccelHRM) == maskLSM303DLHCAccelHRM) {
-			mHighResAccelWR = true;
-		}
-		else {
-			mHighResAccelWR = false;
-		}
-		
-		//idxConfigSetupByte2
-		setLSM303MagRange((mInfoMemBytes[idxConfigSetupByte2] >> bitShiftLSM303DLHCMagRange) & maskLSM303DLHCMagRange);
-		setLSM303MagRate((mInfoMemBytes[idxConfigSetupByte2] >> bitShiftLSM303DLHCMagSamplingRate) & maskLSM303DLHCMagSamplingRate);
-		checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
-		
-		// LSM303DLHC Digital Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
-		System.arraycopy(mInfoMemBytes, idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
-//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
-		parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
-		
-		// LSM303DLHC Magnetometer Calibration Parameters
-		bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
-		System.arraycopy(mInfoMemBytes, idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
-//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
-		parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 	}
 
 	
@@ -769,7 +742,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		return mLSM303MagRate;
 	}
 	
-	public boolean isHighResAccelWr(){
+	public boolean isHighResAccelWR(){
 		return isLSM303DigitalAccelHRM();
 	}
 	
@@ -797,7 +770,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		return (isLSM303DigitalAccelLPM()? 1:0);
 	}
 
-	public boolean isLowPowerAccelWr(){
+	public boolean isLowPowerAccelWR(){
 		return isLSM303DigitalAccelLPM();
 	}
 	

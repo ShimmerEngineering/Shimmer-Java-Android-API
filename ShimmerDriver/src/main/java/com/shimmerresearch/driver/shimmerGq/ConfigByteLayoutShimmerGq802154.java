@@ -3,7 +3,7 @@ package com.shimmerresearch.driver.shimmerGq;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import com.shimmerresearch.driver.InfoMemLayout;
+import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -19,7 +19,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
  * @author Mark Nolan
  *
  */
-public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Serializable {
+public class ConfigByteLayoutShimmerGq802154 extends ConfigByteLayout implements Serializable {
 
 	private static final long serialVersionUID = -5729543049033754281L;
 	
@@ -134,10 +134,10 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 	 * @param firmwareVersionMinor
 	 * @param firmwareVersionInternal
 	 */
-	public InfoMemLayoutShimmerGq802154(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+	public ConfigByteLayoutShimmerGq802154(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 		mShimmerVerObject = new ShimmerVerObject(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 		
-		mInfoMemSize = calculateInfoMemByteLength();
+		mInfoMemSize = calculateConfigByteLength();
 
 		MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
 		MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
@@ -161,7 +161,7 @@ public class InfoMemLayoutShimmerGq802154 extends InfoMemLayout implements Seria
 		
 	}
 	
-	public int calculateInfoMemByteLength(ShimmerVerObject shimmerVersionObject) {
+	public int calculateConfigByteLength(ShimmerVerObject shimmerVersionObject) {
 		
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
 //		if(Util.compareVersions(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionRelease,

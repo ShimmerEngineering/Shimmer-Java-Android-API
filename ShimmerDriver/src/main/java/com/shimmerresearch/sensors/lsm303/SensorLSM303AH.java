@@ -373,25 +373,24 @@ public class SensorLSM303AH extends SensorLSM303 {
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.MAG_RANGE, getMagRange());
-		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
-		
-		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.WR_ACC, getSensorName());
 		
 		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_RATE, getLSM303DigitalAccelRate());
 		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_RANGE, getAccelRange());
 		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_LPM, getLowPowerAccelEnabled());
-		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_HRM, isHighResAccelWr());
+		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_HRM, getHighResAccelWREnabled());
 		
-		super.addCalibDetailsToDbMap(mapOfConfig, 
-				getCurrentCalibDetailsMag(), 
-				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
-				SensorLSM303AH.DatabaseConfigHandle.MAG_CALIB_TIME);
-
 		super.addCalibDetailsToDbMap(mapOfConfig, 
 				getCurrentCalibDetailsAccelWr(), 
 				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
 				SensorLSM303AH.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
+
+		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.MAG_RANGE, getMagRange());
+		mapOfConfig.put(SensorLSM303AH.DatabaseConfigHandle.MAG_RATE, getLSM303MagRate());
+
+		super.addCalibDetailsToDbMap(mapOfConfig, 
+				getCurrentCalibDetailsMag(), 
+				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
+				SensorLSM303AH.DatabaseConfigHandle.MAG_CALIB_TIME);
 
 		return mapOfConfig;
 	}
