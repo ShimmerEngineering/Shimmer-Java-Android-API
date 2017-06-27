@@ -68,9 +68,9 @@ public class SensorBMP180 extends SensorBMPX80 {
 				DatabaseConfigHandle.TEMP_PRES_MB, DatabaseConfigHandle.TEMP_PRES_MC, DatabaseConfigHandle.TEMP_PRES_MD);
 	}
 	
-	public static class ObjectClusterSensorName{
-		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
-		public static String PRESSURE_BMP180 = "Pressure_BMP180";
+	public static final class ObjectClusterSensorName{
+		public static final String TEMPERATURE_BMP180 = "Temperature_BMP180";
+		public static final String PRESSURE_BMP180 = "Pressure_BMP180";
 	}
 	//--------- Sensor specific variables end --------------
 
@@ -533,6 +533,29 @@ public class SensorBMP180 extends SensorBMPX80 {
 		else{
 			mPressureResolution = 0;
 		}
+	}
+
+
+	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
+		String channel = "";
+		
+		if (dbColumn.equals(SensorBMP180.DatabaseChannelHandles.TEMPERATURE_BMP180)) {
+			channel = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180;
+		} else if (dbColumn.equals(SensorBMP180.DatabaseChannelHandles.PRESSURE_BMP180)) {
+			channel = SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;
+		}
+		
+		return channel;
+	}
+
+	public static String parseFromGUIChannelsToDBColumn(String channel) {
+		String dbColumn = "";
+		if (channel.equals(SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180)) {
+			dbColumn = SensorBMP180.DatabaseChannelHandles.TEMPERATURE_BMP180;
+		} else if (channel.equals(SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180)) {
+			dbColumn = SensorBMP180.DatabaseChannelHandles.PRESSURE_BMP180;
+		}
+		return dbColumn;
 	}
 
 	

@@ -57,7 +57,8 @@ public abstract class AbstractSensor implements Serializable{
 		STC3100("STC3100"),
 		WEBCAM_FRAME_NUMBER("Frame Number"),
 		HOST_CPU_USAGE("Cpu Usage"),
-		SWEATCH_ADC("Sweatch ADC");
+		SWEATCH_ADC("Sweatch ADC"),
+		SHIMMER2R_MAG("Shimmer2r Mag");
 		
 	    private final String text;
 
@@ -121,6 +122,7 @@ public abstract class AbstractSensor implements Serializable{
 
 	// --------------- Abstract methods end ----------------	
 
+	public SENSORS mSensorType = null;
 	protected String mSensorName = "";
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
@@ -140,6 +142,7 @@ public abstract class AbstractSensor implements Serializable{
     protected ShimmerDevice mShimmerDevice = null;
     
 	public AbstractSensor(SENSORS sensorType){
+		mSensorType = sensorType;
 		setSensorName(sensorType.toString());
 	}
 	
@@ -721,7 +724,6 @@ public abstract class AbstractSensor implements Serializable{
 					alignZx, alignZy, alignZz);
 		}
 	}
-	
 	
 	//--------- Optional methods to override in Sensor Class end -------- 
 

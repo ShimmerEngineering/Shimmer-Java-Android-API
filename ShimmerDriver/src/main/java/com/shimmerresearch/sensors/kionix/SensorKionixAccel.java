@@ -386,6 +386,7 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 		calibMapAccelLn.put(calibDetailsAccelLn2g.mRangeValue, calibDetailsAccelLn2g);
 		
 		setCalibrationMapPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, calibMapAccelLn);
+		
 		updateCurrentAccelLnCalibInUse();
 	}
 	

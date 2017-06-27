@@ -550,6 +550,42 @@ public class SensorLSM303AH extends SensorLSM303 {
 		return magRate;
 	}
 
+	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
+		String channel = "";
+		if (dbColumn.equals(SensorLSM303AH.DatabaseChannelHandles.WR_ACC_X)) {
+			channel = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
+		} else if (dbColumn.equals(SensorLSM303AH.DatabaseChannelHandles.WR_ACC_Y)) {
+			channel = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y;
+		} else if (dbColumn.equals(SensorLSM303AH.DatabaseChannelHandles.WR_ACC_Z)) {
+			channel = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z;
+		} else if (dbColumn.equals(SensorLSM303AH.DatabaseChannelHandles.MAG_X)) {
+			channel = SensorLSM303.ObjectClusterSensorName.MAG_X;
+		} else if (dbColumn.equals(SensorLSM303AH.DatabaseChannelHandles.MAG_Y)) {
+			channel = SensorLSM303.ObjectClusterSensorName.MAG_Y;
+		} else if (dbColumn.equals(SensorLSM303AH.DatabaseChannelHandles.MAG_Z)) {
+			channel = SensorLSM303.ObjectClusterSensorName.MAG_Z;
+		}
+		return channel;
+	}
+
+	public static String parseFromGUIChannelsToDBColumn(String channel) {
+		String dbColumn = "";
+		if (channel.equals(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X)) {
+			dbColumn = SensorLSM303AH.DatabaseChannelHandles.WR_ACC_X;
+		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y)) {
+			dbColumn = SensorLSM303AH.DatabaseChannelHandles.WR_ACC_Y;
+		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z)) {
+			dbColumn = SensorLSM303AH.DatabaseChannelHandles.WR_ACC_Z;
+		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.MAG_X)) {
+			dbColumn = SensorLSM303AH.DatabaseChannelHandles.MAG_X;
+		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.MAG_Y)) {
+			dbColumn = SensorLSM303AH.DatabaseChannelHandles.MAG_Y;
+		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.MAG_Z)) {
+			dbColumn = SensorLSM303AH.DatabaseChannelHandles.MAG_Z;
+		}
+		return dbColumn;
+	}
+
 	//--------- Sensor specific methods end --------------
 
 }
