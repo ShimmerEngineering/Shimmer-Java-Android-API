@@ -9652,7 +9652,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					returnValue = false;
 				}
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM):
 				returnValue = checkLowPowerGyro();
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
@@ -9661,29 +9661,29 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
 //				returnValue = isInternalExpPower();
 //	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP):
 				returnValue = isMPU9150DMP();
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL):
 				returnValue = isMPLEnabled();
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION):
 				returnValue = isMPLSensorFusion();
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_GYRO_CAL):
 				returnValue = isMPLGyroCalTC();
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL):
 				returnValue = isMPLVectCompCal();
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_MAG_CAL):
 				returnValue = isMPLMagDistCal();
 	        	break;
 
 			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
 				returnValue = getBluetoothBaudRate();
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE):
 				returnValue = getGyroRange();
 	        	break;
 			case(SensorGSR.GuiLabelConfig.GSR_RANGE):
@@ -9699,19 +9699,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//consolePrintLn("Get " + configValue);
 	        	break;
 	        	
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE):
 				returnValue = getMPU9150AccelRange();
             	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP_GYRO_CAL):
 				returnValue = getMPU9150MotCalCfg();
             	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_LPF):
 				returnValue = getMPU9150LPF();
             	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_RATE):
 				returnValue = getMPU9150MPLSamplingRate();
         		break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE):
 				returnValue = getMPU9150MagSamplingRate();
             	break;
             	
@@ -9775,10 +9775,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE);
+					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
-					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE);
+					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE);
 				}
 				break;
 			case(AbstractSensor.GuiLabelConfigCommon.RATE):
@@ -9789,10 +9789,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					return getConfigValueUsingConfigLabel(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE);
+					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE);
 				}
 				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
-					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE);
+					return getConfigValueUsingConfigLabel(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE);
 				}
 				break;
 
@@ -9833,11 +9833,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
 	        	returnValue = Integer.toString(getSyncBroadcastInterval());
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE):
 				returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
 //    		    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE_HZ):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE_HZ):
 				returnValue = getMPU9150GyroAccelRateInHz();
 				break;
 	        	
@@ -9951,7 +9951,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setLowPowerGyro((boolean)valueToSet);
 				setLowPowerMag((boolean)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM):
 				setLowPowerGyro((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
@@ -9961,22 +9961,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
             	setInternalExpPower((boolean)valueToSet);
 	        	break;
         	
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP):
             	setMPU9150DMP((boolean)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL):
             	setMPLEnabled((boolean)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION):
             	setMPLSensorFusion((boolean)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_GYRO_CAL):
             	setMPLGyroCalTC((boolean)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL):
             	setMPLVectCompCal((boolean)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_MAG_CAL):
             	setMPLMagDistCal((boolean)valueToSet);
 	        	break;
 
@@ -9984,7 +9984,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setBluetoothBaudRate((int)valueToSet);
 	        	break;
 		        	
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE):
 	        	setMPU9150GyroRange((int)valueToSet);
 	        	break;
 	
@@ -10003,19 +10003,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//consolePrintLn("after set " + getExGGain());
 	        	break;
 				
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE):
 				setMPU9150AccelRange((int)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP_GYRO_CAL):
 				setMPU9150MotCalCfg((int)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_LPF):
 				setMPU9150LPF((int)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_RATE):
 				setMPU9150MPLSamplingRate((int)valueToSet);
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE):
 				setMPU9150MagSamplingRate((int)valueToSet);
 	        	break;
 	        
@@ -10156,7 +10156,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
         		
         		returnValue = Integer.toString(getSyncBroadcastInterval());
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE):
             	double bufDouble = 4.0; // Minimum = 4Hz
             	if(((String)valueToSet).isEmpty()) {
             		bufDouble = 4.0;
@@ -10175,7 +10175,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //        		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
 
 	        	break;
-			case(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE_HZ):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE_HZ):
 				System.err.print("BUG");
 //				returnValue = getMPU9150GyroAccelRateInHz();
 				break;

@@ -1665,7 +1665,7 @@ public class Configuration {
 //												ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 //			}
 			
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE, SensorMPU9X50.configOptionMpu9150GyroRange);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, SensorMPU9X50.configOptionMpu9150GyroRange);
 
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, SensorLSM303DLHC.configOptionMagRange);
@@ -1690,11 +1690,11 @@ public class Configuration {
 			aMap.put(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE, SensorEXG.configOptionExgRespirationDetectPhase);
 
 			//MPL Options
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_ACCEL_RANGE,SensorMPU9X50.configOptionMpu9150AccelRange);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP_GYRO_CAL, SensorMPU9X50.configOptionMpu9150DmpGyroCal);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_LPF, SensorMPU9X50.configOptionMpu9150MplLpf);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_RATE, SensorMPU9X50.configOptionMpu9150MplRate);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MAG_RATE, SensorMPU9X50.configOptionMpu9150MagRate);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE,SensorMPU9X50.configOptionMpu9150AccelRange);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP_GYRO_CAL, SensorMPU9X50.configOptionMpu9150DmpGyroCal);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_LPF, SensorMPU9X50.configOptionMpu9150MplLpf);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_RATE, SensorMPU9X50.configOptionMpu9150MplRate);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE, SensorMPU9X50.configOptionMpu9150MagRate);
 
 		    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
 		    	      new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfOnOff, 
@@ -1702,15 +1702,15 @@ public class Configuration {
 				    	        ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 			
 			//MPL CheckBoxes
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_DMP, SensorMPU9X50.configOptionMpu9150Dmp); 
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL, SensorMPU9X50.configOptionMpu9150Mpl);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_9DOF_SENSOR_FUSION, SensorMPU9X50.configOptionMpu9150Mpl9DofSensorFusion); 
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_GYRO_CAL, SensorMPU9X50.configOptionMpu9150MplGyroCal);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_VECTOR_CAL, SensorMPU9X50.configOptionMpu9150MplVectorCal); 
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_MPL_MAG_CAL, SensorMPU9X50.configOptionMpu9150MplMagCal);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP, SensorMPU9X50.configOptionMpu9150Dmp); 
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL, SensorMPU9X50.configOptionMpu9150Mpl);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION, SensorMPU9X50.configOptionMpu9150Mpl9DofSensorFusion); 
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_GYRO_CAL, SensorMPU9X50.configOptionMpu9150MplGyroCal);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL, SensorMPU9X50.configOptionMpu9150MplVectorCal); 
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_MAG_CAL, SensorMPU9X50.configOptionMpu9150MplMagCal);
 			
 			//General Config
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RATE, SensorMPU9X50.configOptionMpu9150GyroRate); 
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE, SensorMPU9X50.configOptionMpu9150GyroRate); 
 //					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
@@ -1727,7 +1727,7 @@ public class Configuration {
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,SensorLSM303DLHC.configOptionAccelLpm);
 			}
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM, SensorMPU9X50.configOptionMpu9150GyroLpm);
+			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM, SensorMPU9X50.configOptionMpu9150GyroLpm);
 			
 			//XXX-RS-LSM-SensorClass? 
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
