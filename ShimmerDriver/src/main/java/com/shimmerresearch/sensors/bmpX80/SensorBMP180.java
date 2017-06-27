@@ -29,6 +29,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP280.DatabaseConfigHandle;
 
 /**
  * @author Ronan McCormack
@@ -59,6 +60,12 @@ public class SensorBMP180 extends SensorBMPX80 {
 		public static final String TEMP_PRES_MB = "BMP180_MB";
 		public static final String TEMP_PRES_MC = "BMP180_MC";
 		public static final String TEMP_PRES_MD = "BMP180_MD";
+		
+		public static final List<String> LIST_OF_CALIB_HANDLES = Arrays.asList(
+				DatabaseConfigHandle.TEMP_PRES_AC1, DatabaseConfigHandle.TEMP_PRES_AC2, DatabaseConfigHandle.TEMP_PRES_AC3,
+				DatabaseConfigHandle.TEMP_PRES_AC4, DatabaseConfigHandle.TEMP_PRES_AC5, DatabaseConfigHandle.TEMP_PRES_AC6,
+				DatabaseConfigHandle.TEMP_PRES_B1, DatabaseConfigHandle.TEMP_PRES_B2,
+				DatabaseConfigHandle.TEMP_PRES_MB, DatabaseConfigHandle.TEMP_PRES_MC, DatabaseConfigHandle.TEMP_PRES_MD);
 	}
 	
 	public static class ObjectClusterSensorName{

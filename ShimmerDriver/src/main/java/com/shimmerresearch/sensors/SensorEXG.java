@@ -152,6 +152,10 @@ public class SensorEXG extends AbstractSensor{
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
+	
+	public static final String BIT_16 = "_16BIT";
+	public static final String BIT_24 = "_24BIT";
+	
 	public class GuiLabelConfig{
 		public static final String EXG_RESOLUTION = "Resolution";
 		public static final String EXG_GAIN = "Gain";

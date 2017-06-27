@@ -47,6 +47,8 @@ public abstract class AbstractSensor implements Serializable{
 		ADC("ADC"),
 		Battery("Battery"),
 		Bridge_Amplifier("Bridge Amplifier"),
+		MMA776X("Shimmer2r Accelerometer"),
+		KIONIXKXTC92050("Analog Accelerometer"),
 		
 		NONIN_ONYX_II("Nonin Onyx II"),
 		QTI_DIRECT_TEMP("QTI DirectTemp"),
