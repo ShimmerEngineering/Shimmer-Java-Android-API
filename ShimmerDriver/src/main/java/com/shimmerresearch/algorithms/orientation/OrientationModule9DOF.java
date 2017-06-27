@@ -41,51 +41,51 @@ public class OrientationModule9DOF extends OrientationModule {
 	public static String LN = "_LN";
 
 	public static class ObjectClusterSensorName{
-		public static String QUAT_MADGE_9DOF_W = Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W; 
+		public static String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W; 
 		public static String QUAT_MADGE_9DOF_W_LN = QUAT_MADGE_9DOF_W + LN; 
 		public static String QUAT_MADGE_9DOF_W_WR = QUAT_MADGE_9DOF_W + WR; 
-		public static String QUAT_MADGE_9DOF_X = Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X; 
+		public static String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X; 
 		public static String QUAT_MADGE_9DOF_X_LN = QUAT_MADGE_9DOF_X + LN; 
 		public static String QUAT_MADGE_9DOF_X_WR = QUAT_MADGE_9DOF_X + WR; 
-		public static String QUAT_MADGE_9DOF_Y = Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y; 
+		public static String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y; 
 		public static String QUAT_MADGE_9DOF_Y_LN = QUAT_MADGE_9DOF_Y + LN; 
 		public static String QUAT_MADGE_9DOF_Y_WR = QUAT_MADGE_9DOF_Y + WR; 
-		public static String QUAT_MADGE_9DOF_Z = Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z; 
+		public static String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z; 
 		public static String QUAT_MADGE_9DOF_Z_LN = QUAT_MADGE_9DOF_Z + LN; 
 		public static String QUAT_MADGE_9DOF_Z_WR = QUAT_MADGE_9DOF_Z + WR; 
 
-		public static String AXIS_ANGLE_9DOF_A = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A; 
+		public static String AXIS_ANGLE_9DOF_A = "Axis_Angle_9DOF_A";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A; 
 		public static String AXIS_ANGLE_9DOF_A_LN = AXIS_ANGLE_9DOF_A + LN; 
 		public static String AXIS_ANGLE_9DOF_A_WR = AXIS_ANGLE_9DOF_A + WR; 
-		public static String AXIS_ANGLE_9DOF_X = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X; 
+		public static String AXIS_ANGLE_9DOF_X = "Axis_Angle_9DOF_X";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X; 
 		public static String AXIS_ANGLE_9DOF_X_LN = AXIS_ANGLE_9DOF_X + LN; 
 		public static String AXIS_ANGLE_9DOF_X_WR = AXIS_ANGLE_9DOF_X + WR; 
-		public static String AXIS_ANGLE_9DOF_Y = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y; 
+		public static String AXIS_ANGLE_9DOF_Y = "Axis_Angle_9DOF_Y";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y; 
 		public static String AXIS_ANGLE_9DOF_Y_LN = AXIS_ANGLE_9DOF_Y + LN; 
 		public static String AXIS_ANGLE_9DOF_Y_WR = AXIS_ANGLE_9DOF_Y + WR; 
-		public static String AXIS_ANGLE_9DOF_Z = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Z; 
+		public static String AXIS_ANGLE_9DOF_Z = "Axis_Angle_9DOF_Z";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Z; 
 		public static String AXIS_ANGLE_9DOF_Z_LN = AXIS_ANGLE_9DOF_Z + LN; 
 		public static String AXIS_ANGLE_9DOF_Z_WR = AXIS_ANGLE_9DOF_Z + WR; 
 		
-		public static String EULER_9DOF_YAW = Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_YAW; 
+		public static String EULER_9DOF_YAW = "Euler_9DOF_Yaw";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_YAW; 
 		public static String EULER_9DOF_YAW_LN = EULER_9DOF_YAW + LN; 
 		public static String EULER_9DOF_YAW_WR = EULER_9DOF_YAW + WR; 
-		public static String EULER_9DOF_PITCH = Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_PITCH; 
+		public static String EULER_9DOF_PITCH = "Euler_9DOF_Pitch";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_PITCH; 
 		public static String EULER_9DOF_PITCH_LN = EULER_9DOF_PITCH + LN; 
 		public static String EULER_9DOF_PITCH_WR = EULER_9DOF_PITCH + WR; 
-		public static String EULER_9DOF_ROLL = Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_ROLL; 
+		public static String EULER_9DOF_ROLL = "Euler_9DOF_Roll";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_9DOF_ROLL; 
 		public static String EULER_9DOF_ROLL_LN = EULER_9DOF_ROLL + LN; 
 		public static String EULER_9DOF_ROLL_WR = EULER_9DOF_ROLL + WR; 
 
 
-		@Deprecated //need to describe axis angle 9DOF vs 9DOF
-		public static String AXIS_ANGLE_A = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A; 
-		@Deprecated //need to describe axis angle 9DOF vs 9DOF
-		public static String AXIS_ANGLE_X = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X; 
-		@Deprecated //need to describe axis angle 9DOF vs 9DOF
-		public static String AXIS_ANGLE_Y = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y; 
-		@Deprecated //need to describe axis angle 9DOF vs 9DOF
-		public static String AXIS_ANGLE_Z = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z; 
+//		@Deprecated //need to describe axis angle 9DOF vs 9DOF
+//		public static String AXIS_ANGLE_A = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A; 
+//		@Deprecated //need to describe axis angle 9DOF vs 9DOF
+//		public static String AXIS_ANGLE_X = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X; 
+//		@Deprecated //need to describe axis angle 9DOF vs 9DOF
+//		public static String AXIS_ANGLE_Y = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y; 
+//		@Deprecated //need to describe axis angle 9DOF vs 9DOF
+//		public static String AXIS_ANGLE_Z = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z; 
 	}
 	
 	public static class DatabaseChannelHandles{

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -18,6 +19,10 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
+/** This is the older (pre-July 2017) low-noise accelerometer used in the Shimmer3
+ * @author Mark Nolan
+ *
+ */
 public class SensorKionixKXRB52042 extends SensorKionixAccel {
 
 	private static final long serialVersionUID = -4053257599631109173L;
@@ -63,7 +68,9 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
 			GuiLabelSensors.ACCEL_LN,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			null,
-			Arrays.asList(ObjectClusterSensorName.ACCEL_LN_X,ObjectClusterSensorName.ACCEL_LN_Y,ObjectClusterSensorName.ACCEL_LN_Z));
+			Arrays.asList(SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_X,
+					SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Y,
+					SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Z));
 //	{
 //		sensorKionixKXRB52042.mCalibSensorKey = 0x01;
 //	}
@@ -180,6 +187,29 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
 		super.updateSensorGroupingMap();	
 	}
 
+	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
+		String channel = "";
+		if (dbColumn.equals(SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_X)) {
+			channel = Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
+		} else if (dbColumn.equals(SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_Y)) {
+			channel = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
+		} else if (dbColumn.equals(SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_Z)) {
+			channel = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
+		}
+		return channel;
+	}
+
+	public static String parseFromGUIChannelsToDBColumn(String channel) {
+		String dbColumn = "";
+		if (channel.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_X)) {
+			dbColumn = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_X;
+		} else if (channel.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y)) {
+			dbColumn = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_Y;
+		} else if (channel.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z)) {
+			dbColumn = SensorKionixKXRB52042.DatabaseChannelHandles.LN_ACC_Z;
+		}
+		return dbColumn;
+	}
 
 	//--------- Abstract methods implemented end --------------
 

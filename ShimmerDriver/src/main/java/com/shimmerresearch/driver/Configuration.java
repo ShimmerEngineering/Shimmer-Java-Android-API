@@ -55,6 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.shimmerresearch.algorithms.orientation.OrientationModule6DOF;
+import com.shimmerresearch.algorithms.orientation.OrientationModule9DOF;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -478,10 +480,10 @@ public class Configuration {
 		Shimmer3.ObjectClusterSensorName.EULER_9DOF_YAW = "Euler_9DOF_Yaw";
 		Shimmer3.ObjectClusterSensorName.EULER_9DOF_PITCH = "Euler_9DOF_Pitch";
 		Shimmer3.ObjectClusterSensorName.EULER_9DOF_ROLL = "Euler_9DOF_Roll";
-		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A = "Axis Angle A";
-		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X = "Axis Angle X";
-		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y = "Axis Angle Y";
-		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z = "Axis Angle Z";
+		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A = "Axis Angle A";
+		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X = "Axis Angle X";
+		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y = "Axis Angle Y";
+		Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Z = "Axis Angle Z";
 		SensorPPG.ObjectClusterSensorName.PPG_A12 = "PPG_A12";
 		SensorPPG.ObjectClusterSensorName.PPG_A13 = "PPG_A13";
 		SensorPPG.ObjectClusterSensorName.PPG1_A12 = "PPG1_A12";
@@ -1162,38 +1164,38 @@ public class Configuration {
 			//TODO: move to algorithms class (JC).
 			//Algorithms
 			//TODO separate entries for LN accel vs. WR accel. 
-			public static String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W"; 
-			public static String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X"; 
-			public static String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y"; 
-			public static String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z"; 
-			public static String QUAT_MADGE_9DOF_W = "Quat_Madge_9DOF_W"; 
-			public static String QUAT_MADGE_9DOF_X = "Quat_Madge_9DOF_X"; 
-			public static String QUAT_MADGE_9DOF_Y = "Quat_Madge_9DOF_Y"; 
-			public static String QUAT_MADGE_9DOF_Z = "Quat_Madge_9DOF_Z";
+			public static String QUAT_MADGE_6DOF_W = OrientationModule6DOF.ObjectClusterSensorName.QUAT_MADGE_6DOF_W;//"Quat_Madge_6DOF_W"; 
+			public static String QUAT_MADGE_6DOF_X = OrientationModule6DOF.ObjectClusterSensorName.QUAT_MADGE_6DOF_X;//"Quat_Madge_6DOF_X"; 
+			public static String QUAT_MADGE_6DOF_Y = OrientationModule6DOF.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y;//"Quat_Madge_6DOF_Y"; 
+			public static String QUAT_MADGE_6DOF_Z = OrientationModule6DOF.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z;//"Quat_Madge_6DOF_Z"; 
+			public static String QUAT_MADGE_9DOF_W = OrientationModule9DOF.ObjectClusterSensorName.QUAT_MADGE_9DOF_W;//"Quat_Madge_9DOF_W"; 
+			public static String QUAT_MADGE_9DOF_X = OrientationModule9DOF.ObjectClusterSensorName.QUAT_MADGE_9DOF_X;//"Quat_Madge_9DOF_X"; 
+			public static String QUAT_MADGE_9DOF_Y = OrientationModule9DOF.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y;//"Quat_Madge_9DOF_Y"; 
+			public static String QUAT_MADGE_9DOF_Z = OrientationModule9DOF.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z;//"Quat_Madge_9DOF_Z";
 			
 			//axis angle 
-			public static String AXIS_ANGLE_6DOF_A = "Axis_Angle_6DOF_A"; 
-			public static String AXIS_ANGLE_6DOF_X = "Axis_Angle_6DOF_X"; 
-			public static String AXIS_ANGLE_6DOF_Y = "Axis_Angle_6DOF_Y"; 
-			public static String AXIS_ANGLE_6DOF_Z = "Axis_Angle_6DOF_Z"; 
-			public static String AXIS_ANGLE_9DOF_A = "Axis_Angle_9DOF_A"; 
-			public static String AXIS_ANGLE_9DOF_X = "Axis_Angle_9DOF_X"; 
-			public static String AXIS_ANGLE_9DOF_Y = "Axis_Angle_9DOF_Y"; 
-			public static String AXIS_ANGLE_9DOF_Z = "Axis_Angle_9DOF_Z"; 
+			public static String AXIS_ANGLE_6DOF_A = OrientationModule6DOF.ObjectClusterSensorName.AXIS_ANGLE_6DOF_A;//"Axis_Angle_6DOF_A"; 
+			public static String AXIS_ANGLE_6DOF_X = OrientationModule6DOF.ObjectClusterSensorName.AXIS_ANGLE_6DOF_X;//"Axis_Angle_6DOF_X"; 
+			public static String AXIS_ANGLE_6DOF_Y = OrientationModule6DOF.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y;//"Axis_Angle_6DOF_Y"; 
+			public static String AXIS_ANGLE_6DOF_Z = OrientationModule6DOF.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z;//"Axis_Angle_6DOF_Z"; 
+			public static String AXIS_ANGLE_9DOF_A = OrientationModule9DOF.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A;//"Axis_Angle_9DOF_A"; 
+			public static String AXIS_ANGLE_9DOF_X = OrientationModule9DOF.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X;//"Axis_Angle_9DOF_X"; 
+			public static String AXIS_ANGLE_9DOF_Y = OrientationModule9DOF.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y;//"Axis_Angle_9DOF_Y"; 
+			public static String AXIS_ANGLE_9DOF_Z = OrientationModule9DOF.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Z;//"Axis_Angle_9DOF_Z"; 
 			
 			//Euler
-			public static String EULER_6DOF_YAW = "Euler_6DOF_Yaw"; 
-			public static String EULER_6DOF_PITCH = "Euler_6DOF_Pitch"; 
-			public static String EULER_6DOF_ROLL = "Euler_6DOF_Roll"; 
-			public static String EULER_9DOF_YAW = "Euler_9DOF_Yaw"; 
-			public static String EULER_9DOF_PITCH = "Euler_9DOF_Pitch"; 
-			public static String EULER_9DOF_ROLL = "Euler_9DOF_Roll"; 
+			public static String EULER_6DOF_YAW = OrientationModule6DOF.ObjectClusterSensorName.EULER_6DOF_YAW;//"Euler_6DOF_Yaw"; 
+			public static String EULER_6DOF_PITCH = OrientationModule6DOF.ObjectClusterSensorName.EULER_6DOF_PITCH;//"Euler_6DOF_Pitch"; 
+			public static String EULER_6DOF_ROLL = OrientationModule6DOF.ObjectClusterSensorName.EULER_6DOF_ROLL;//"Euler_6DOF_Roll"; 
+			public static String EULER_9DOF_YAW = OrientationModule9DOF.ObjectClusterSensorName.EULER_9DOF_YAW;//"Euler_9DOF_Yaw"; 
+			public static String EULER_9DOF_PITCH = OrientationModule9DOF.ObjectClusterSensorName.EULER_9DOF_PITCH;//"Euler_9DOF_Pitch"; 
+			public static String EULER_9DOF_ROLL = OrientationModule9DOF.ObjectClusterSensorName.EULER_9DOF_ROLL;//"Euler_9DOF_Roll"; 
 			
 			//TODO: axis angle 9DOF vs 6DOF??
-			public static String AXIS_ANGLE_A = "Axis_Angle_A"; 
-			public static String AXIS_ANGLE_X = "Axis_Angle_X"; 
-			public static String AXIS_ANGLE_Y = "Axis_Angle_Y"; 
-			public static String AXIS_ANGLE_Z = "Axis_Angle_Z"; 
+//			public static String AXIS_ANGLE_A = "Axis_Angle_A"; 
+//			public static String AXIS_ANGLE_X = "Axis_Angle_X"; 
+//			public static String AXIS_ANGLE_Y = "Axis_Angle_Y"; 
+//			public static String AXIS_ANGLE_Z = "Axis_Angle_Z"; 
 			
 //			// Moved by JC to algorithm module
 //			public static String ECG_TO_HR_LA_RA = "ECGtoHR_LA-RA";
@@ -1396,11 +1398,11 @@ public class Configuration {
 //	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception);
 	        aMap.putAll(ShimmerClock.mSensorMapRef);
 
-	        if(!ShimmerObject.USE_KIONIX_SENSOR_CLASS){
+	        if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_LN){
 		        aMap.putAll(SensorKionixKXRB52042.mSensorMapRef);
 	        }
 			aMap.putAll(SensorMPU9X50.mSensorMapRef);
-			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
+			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.putAll(SensorLSM303DLHC.mSensorMapRef);
 			}
 			aMap.putAll(SensorGSR.mSensorMapRef);
@@ -1439,7 +1441,7 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
 //			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
 
-	        if(!ShimmerObject.USE_KIONIX_SENSOR_CLASS){
+	        if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_LN){
 	        	aMap.putAll(SensorKionixKXRB52042.mChannelMapRef);
 	        }
 			aMap.putAll(SensorBattVoltage.mChannelMapRef);
@@ -1447,7 +1449,7 @@ public class Configuration {
 			aMap.putAll(SensorBridgeAmp.mChannelMapRef);
 			aMap.putAll(SensorGSR.mChannelMapRef);
 			aMap.putAll(SensorMPU9X50.mChannelMapRef);
-			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
+			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.putAll(SensorLSM303DLHC.mChannelMapRef);
 			}
 //			aMap.putAll(SensorBMP180.mChannelMapRef);
@@ -1478,17 +1480,17 @@ public class Configuration {
 			//Sensor Grouping for Configuration Panel 'tile' generation. 
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.STREAMING_PROPERTIES.ordinal(), ShimmerClock.sensorGroupStreamingProperties);
 
-	        if(!ShimmerObject.USE_KIONIX_SENSOR_CLASS){
+	        if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_LN){
 				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL.ordinal(), SensorKionixKXRB52042.sensorGroupLnAccelKXRB52042);
 	        }
-			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
+			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), SensorLSM303DLHC.sensorGroupLsmAccel);
 			}
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.ordinal(), new SensorGroupingDetails(
 					Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.tileText,
 					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
+			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG.ordinal(), SensorLSM303DLHC.sensorGroupLsmMag);
 			}
 			
@@ -1644,7 +1646,7 @@ public class Configuration {
 											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 											CompatibilityInfoForMaps.listOfCompatibleVersionInfoStreaming));
 			
-			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
+			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE,SensorLSM303DLHC.configOptionAccelRange);
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE,SensorLSM303DLHC.configOptionAccelRate);
 			}
@@ -1665,7 +1667,7 @@ public class Configuration {
 			
 			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_RANGE, SensorMPU9X50.configOptionMpu9150GyroRange);
 
-			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
+			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, SensorLSM303DLHC.configOptionMagRange);
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE, SensorLSM303DLHC.configOptionMagRate);
 			}
@@ -1722,13 +1724,13 @@ public class Configuration {
 
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
+			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,SensorLSM303DLHC.configOptionAccelLpm);
 			}
 			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9150_GYRO_LPM, SensorMPU9X50.configOptionMpu9150GyroLpm);
 			
 			//XXX-RS-LSM-SensorClass? 
-			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
+			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM, 
 						new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			}

@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensors;
+package com.shimmerresearch.sensors.shimmer2;
 
 import java.util.LinkedHashMap;
 import java.util.TreeMap;
@@ -14,6 +14,8 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.sensors.AbstractSensor;
+import com.shimmerresearch.sensors.ActionSetting;
 
 /**
  * Shimmer2r holder for Accel range and calibration settings.
@@ -241,6 +243,14 @@ public class SensorMMA736x extends AbstractSensor {
 
 	public void updateCurrentAccelCalibInUse(){
 		mCurrentCalibDetailsAccel = getCurrentCalibDetails(Configuration.Shimmer2.SensorMapKey.ACCEL, getAccelRange());
+	}
+
+	public CalibDetailsKinematic getCurrentCalibDetailsAccelLn(){
+		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, getAccelRange());
+		if(calibPerSensor!=null){
+			return (CalibDetailsKinematic) calibPerSensor;
+		}
+		return null;
 	}
 
 	public CalibDetailsKinematic getCurrentCalibDetails(int sensorMapKey, int range){

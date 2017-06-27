@@ -558,7 +558,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		}
 	}
 	
-	protected boolean checkLowPowerMag() {
+	public boolean checkLowPowerMag() {
 		setLowPowerMag((getLSM303MagRate() <= 4)? true:false);
 		return isLowPowerMagEnabled();
 	}

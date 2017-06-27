@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -18,6 +19,10 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
+/** This is the newer (post-July 2017) low-noise accelerometer used in the Shimmer3
+ * @author Mark Nolan
+ *
+ */
 public class SensorKionixKXTC92050 extends SensorKionixAccel {
 
 	private static final long serialVersionUID = -4547873490496111518L;
@@ -177,6 +182,30 @@ public class SensorKionixKXTC92050 extends SensorKionixAccel {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL.ordinal(), sensorGroupLnAccelKXTC92050);
 		super.updateSensorGroupingMap();	
+	}
+
+	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
+		String channel = "";
+		if (dbColumn.equals(SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_X)) {
+			channel = Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
+		} else if (dbColumn.equals(SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Y)) {
+			channel = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
+		} else if (dbColumn.equals(SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Z)) {
+			channel = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
+		}
+		return channel;
+	}
+
+	public static String parseFromGUIChannelsToDBColumn(String channel) {
+		String dbColumn = "";
+		if (channel.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_X)) {
+			dbColumn = SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_X;
+		} else if (channel.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y)) {
+			dbColumn = SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Y;
+		} else if (channel.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z)) {
+			dbColumn = SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Z;
+		}
+		return dbColumn;
 	}
 
 

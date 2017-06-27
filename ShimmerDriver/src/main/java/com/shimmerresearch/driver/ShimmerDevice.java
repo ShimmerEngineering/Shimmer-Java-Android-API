@@ -3489,6 +3489,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return null;
 	}
 
+	public void addSensorClass(AbstractSensor abstractSensor){
+		addSensorClass(abstractSensor.mSensorType, abstractSensor);
+	}
+
 	public void addSensorClass(AbstractSensor.SENSORS sensorClassKey, AbstractSensor abstractSensor){
 		mMapOfSensorClasses.put(sensorClassKey, abstractSensor);
 		//TODO not sure if this is needed
