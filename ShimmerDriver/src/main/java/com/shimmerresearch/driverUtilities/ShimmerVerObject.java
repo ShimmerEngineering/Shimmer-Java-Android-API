@@ -207,11 +207,7 @@ public class ShimmerVerObject implements Serializable {
 
 	private void parseShimmerVerDetails() {
 		if(mHardwareVersion!=HW_ID.UNKNOWN){
-			if (ShimmerVerDetails.mMapOfShimmerRevisions.containsKey(mHardwareVersion)) {
-				mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(mHardwareVersion);
-			} else {
-				mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID.UNKNOWN);
-			}
+			mHardwareVersionParsed = getHardwareVersionParsed(mHardwareVersion);
 			
 			mFirmwareIdentifierParsed = FW_LABEL.UNKNOWN;
 			// Set default on Shimmer2R
@@ -300,6 +296,17 @@ public class ShimmerVerObject implements Serializable {
 
 	public int getHardwareVersion() {
 		return mHardwareVersion;
+	}
+
+	public String getHardwareVersionParsed() {
+		return mHardwareVersionParsed;
+	}
+
+	public static String getHardwareVersionParsed(int hardwareVersion) {
+		if(ShimmerVerDetails.mMapOfShimmerHardware.containsKey(hardwareVersion)){
+			return ShimmerVerDetails.mMapOfShimmerHardware.get(hardwareVersion);
+		}
+		return ShimmerVerDetails.mMapOfShimmerHardware.get(HW_ID_SR_CODES.UNKNOWN);
 	}
 
 	public int getFirmwareVersionMajor() {

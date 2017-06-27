@@ -65,6 +65,12 @@ public class SensorBMP280 extends SensorBMPX80 {
 		public static final String DIG_P7 = "BMP280_DIG_P7";
 		public static final String DIG_P8 = "BMP280_DIG_P8";
 		public static final String DIG_P9 = "BMP280_DIG_P9";
+		
+		public static final List<String> LIST_OF_CALIB_HANDLES = Arrays.asList(
+				DatabaseConfigHandle.DIG_T1, DatabaseConfigHandle.DIG_T2, DatabaseConfigHandle.DIG_T3,
+				DatabaseConfigHandle.DIG_P1, DatabaseConfigHandle.DIG_P2, DatabaseConfigHandle.DIG_P3,
+				DatabaseConfigHandle.DIG_P4, DatabaseConfigHandle.DIG_P5, DatabaseConfigHandle.DIG_P6,
+				DatabaseConfigHandle.DIG_P7, DatabaseConfigHandle.DIG_P8, DatabaseConfigHandle.DIG_P9);
 	}
 	
 	public static class ObjectClusterSensorName{

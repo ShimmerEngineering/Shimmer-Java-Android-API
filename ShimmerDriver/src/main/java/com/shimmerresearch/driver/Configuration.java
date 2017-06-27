@@ -72,7 +72,6 @@ import com.shimmerresearch.sensors.SensorBridgeAmp;
 import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
-import com.shimmerresearch.sensors.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
@@ -81,6 +80,8 @@ import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
+import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
+import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 
@@ -863,7 +864,7 @@ public class Configuration {
 		 */
 		public enum GuiLabelSensorTiles{
 			STREAMING_PROPERTIES(ShimmerClock.GuiLabelSensorTiles.STREAMING_PROPERTIES),
-			LOW_NOISE_ACCEL(SensorKionixKXRB52042.GuiLabelSensorTiles.LOW_NOISE_ACCEL),
+			LOW_NOISE_ACCEL(SensorKionixAccel.GuiLabelSensorTiles.LOW_NOISE_ACCEL),
 			WIDE_RANGE_ACCEL(SensorLSM303.GuiLabelSensorTiles.WIDE_RANGE_ACCEL),
 			GYRO(SensorMPU9X50.GuiLabelSensorTiles.GYRO),
 			MAG(SensorLSM303.GuiLabelSensorTiles.MAG),
@@ -1031,9 +1032,9 @@ public class Configuration {
 
 			public static String TIMESTAMP_OFFSET = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET;//"Offset";
 
-			public static String ACCEL_LN_X = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_X;
-			public static String ACCEL_LN_Y = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Y;
-			public static String ACCEL_LN_Z = SensorKionixKXRB52042.ObjectClusterSensorName.ACCEL_LN_Z;
+			public static String ACCEL_LN_X = SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_X;
+			public static String ACCEL_LN_Y = SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Y;
+			public static String ACCEL_LN_Z = SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Z;
 			
 			public static String BATTERY = SensorBattVoltage.ObjectClusterSensorName.BATTERY;
 			public static final String BATT_PERCENTAGE = SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE;
@@ -1312,6 +1313,9 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303AH = Arrays.asList(
 					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream);  
 
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXTC92050 = Arrays.asList(
+					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream);  
+
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					svoBrAmpSdLog, svoBrAmpBtStream, svoBrAmpLogAndStream,  
 					svoBrAmpUnifiedSdLog,  svoBrAmpUnifiedBtStream, svoBrAmpUnifiedLogAndStream,
@@ -1392,7 +1396,9 @@ public class Configuration {
 //	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception);
 	        aMap.putAll(ShimmerClock.mSensorMapRef);
 
-	        aMap.putAll(SensorKionixKXRB52042.mSensorMapRef);
+	        if(!ShimmerObject.USE_KIONIX_SENSOR_CLASS){
+		        aMap.putAll(SensorKionixKXRB52042.mSensorMapRef);
+	        }
 			aMap.putAll(SensorMPU9X50.mSensorMapRef);
 			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
 				aMap.putAll(SensorLSM303DLHC.mSensorMapRef);
@@ -1433,7 +1439,9 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
 //			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
 
-			aMap.putAll(SensorKionixKXRB52042.mChannelMapRef);
+	        if(!ShimmerObject.USE_KIONIX_SENSOR_CLASS){
+	        	aMap.putAll(SensorKionixKXRB52042.mChannelMapRef);
+	        }
 			aMap.putAll(SensorBattVoltage.mChannelMapRef);
 			aMap.putAll(SensorADC.mChannelMapRef);
 			aMap.putAll(SensorBridgeAmp.mChannelMapRef);
@@ -1470,11 +1478,9 @@ public class Configuration {
 			//Sensor Grouping for Configuration Panel 'tile' generation. 
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.STREAMING_PROPERTIES.ordinal(), ShimmerClock.sensorGroupStreamingProperties);
 
-	        //XXX-RS-AA-SensorClass?
-			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL.ordinal(), new SensorGroupingDetails(
-					SensorKionixKXRB52042.GuiLabelSensorTiles.LOW_NOISE_ACCEL,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+	        if(!ShimmerObject.USE_KIONIX_SENSOR_CLASS){
+				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL.ordinal(), SensorKionixKXRB52042.sensorGroupLnAccelKXRB52042);
+	        }
 			if(!ShimmerObject.USE_LSM_SENSOR_CLASS){
 				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), SensorLSM303DLHC.sensorGroupLsmAccel);
 			}
