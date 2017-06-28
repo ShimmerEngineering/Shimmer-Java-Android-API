@@ -8588,6 +8588,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	private void setShimmer2rMagRate(int magRate) {
 		if(USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
+			if(mSensorShimmer2Mag!=null)
 			mSensorShimmer2Mag.setShimmer2rMagRate(magRate);
 		} else {
 			mShimmer2MagRate = magRate;
