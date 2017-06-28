@@ -42,6 +42,8 @@ public class EnableSensorsDialog {
 		 Map<Integer, SensorDetails> sensorMap = shimmer.getSensorMap();
 		 List<SensorDetails> enabledSensorsList = shimmer.getListOfEnabledSensors();
 		 
+		 ShimmerPC clone = shimmer.deepClone();
+		 
 		 int count = sensorMap.size();
 		 int count2 = count;
 		 
