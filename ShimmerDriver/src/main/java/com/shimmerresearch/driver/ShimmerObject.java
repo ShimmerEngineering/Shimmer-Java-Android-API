@@ -670,7 +670,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//Shimmer3 Calibration - Copied from SensorKionixKXRB52042
 	@Deprecated
 	private CalibDetailsKinematic calibDetailsAccelLn2g = new CalibDetailsKinematic(
-			SensorKionixAccel.LN_ACCEL_RANGE_CONSTANT, "+/- 2g", 
+			SensorKionixAccel.LN_ACCEL_RANGE_VALUE, "+/- 2g", 
 			SensorKionixAccel.AlignmentMatrixLowNoiseAccelShimmer3, SensorKionixAccel.SensitivityMatrixLowNoiseAccel2gShimmer3, SensorKionixAccel.OffsetVectorLowNoiseAccelShimmer3);
 	
 	@Deprecated
@@ -6849,7 +6849,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if(USE_SENSOR_CLASS_ACCEL_LN){
 				mSensorKionixAccel.updateCurrentAccelLnCalibInUse();
 			} else {
-				mCurrentCalibDetailsAccelLn = (CalibDetailsKinematic) mCalibMapAccelAnalogShimmer3.get(SensorKionixAccel.LN_ACCEL_RANGE_CONSTANT);
+				mCurrentCalibDetailsAccelLn = (CalibDetailsKinematic) mCalibMapAccelAnalogShimmer3.get(SensorKionixAccel.LN_ACCEL_RANGE_VALUE);
 			}
 		}
 	}
@@ -8587,11 +8587,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	private void setShimmer2rMagRate(int magRate) {
-		if(USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-			if(mSensorShimmer2Mag!=null)
-			mSensorShimmer2Mag.setShimmer2rMagRate(magRate);
-		} else {
-			mShimmer2MagRate = magRate;
+		if(isShimmerGen2()){
+			if(USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
+				mSensorShimmer2Mag.setShimmer2rMagRate(magRate);
+			} else {
+				mShimmer2MagRate = magRate;
+			}
 		}
 	}
 
