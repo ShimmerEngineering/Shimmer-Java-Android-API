@@ -727,4 +727,22 @@ public abstract class AbstractSensor implements Serializable{
 	
 	//--------- Optional methods to override in Sensor Class end -------- 
 
+	
+	public static String parseFromDBColumnToGUIChannel(Map<String, ChannelDetails> channelMapRef, String databaseChannelHandle) {
+		for(ChannelDetails channelDetails:channelMapRef.values()){
+			if(channelDetails.getDatabaseChannelHandle().equals(databaseChannelHandle)){
+				return channelDetails.mObjectClusterName;
+			}
+		}
+		return "";
+	}
+
+	public static String parseFromGUIChannelsToDBColumn(Map<String, ChannelDetails> channelMapRef, String objectClusterName) {
+		ChannelDetails channelDetails = channelMapRef.get(objectClusterName);
+		if(channelDetails!=null){
+			return channelDetails.getDatabaseChannelHandle();
+		}
+		return "";
+	}
+
 }

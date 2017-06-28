@@ -15,6 +15,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -184,28 +185,34 @@ public class SensorKionixKXTC92050 extends SensorKionixAccel {
 		super.updateSensorGroupingMap();	
 	}
 
-	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
-		String channel = "";
-		if (dbColumn.equals(SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_X)) {
-			channel = Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
-		} else if (dbColumn.equals(SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Y)) {
-			channel = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
-		} else if (dbColumn.equals(SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Z)) {
-			channel = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
-		}
-		return channel;
+	public static String parseFromDBColumnToGUIChannel(String databaseChannelHandle) {
+		//TODO Old approach, can be removed
+//		String objectClusterName = "";
+//		if (databaseChannelHandle.equals(SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_X)) {
+//			objectClusterName = Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
+//		} else if (databaseChannelHandle.equals(SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Y)) {
+//			objectClusterName = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y;
+//		} else if (databaseChannelHandle.equals(SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Z)) {
+//			objectClusterName = Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z;
+//		}
+//		return objectClusterName;
+		
+		return AbstractSensor.parseFromDBColumnToGUIChannel(mChannelMapRef, databaseChannelHandle);
 	}
 
-	public static String parseFromGUIChannelsToDBColumn(String channel) {
-		String dbColumn = "";
-		if (channel.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_X)) {
-			dbColumn = SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_X;
-		} else if (channel.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y)) {
-			dbColumn = SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Y;
-		} else if (channel.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z)) {
-			dbColumn = SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Z;
-		}
-		return dbColumn;
+	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
+		//TODO Old approach, can be removed
+//		String databaseChannelHandle = "";
+//		if (objectClusterName.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_X)) {
+//			databaseChannelHandle = SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_X;
+//		} else if (objectClusterName.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y)) {
+//			databaseChannelHandle = SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Y;
+//		} else if (objectClusterName.equals(Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z)) {
+//			databaseChannelHandle = SensorKionixKXTC92050.DatabaseChannelHandles.LN_ACC_Z;
+//		}
+//		return databaseChannelHandle;
+		
+		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
 	}
 
 

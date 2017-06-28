@@ -764,7 +764,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 
 	public String getHardwareVersionParsed(){
-		return mShimmerVerObject.mHardwareVersionParsed;
+		return mShimmerVerObject.getHardwareVersionParsed();
 	}
 
 	
@@ -3740,7 +3740,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			byte[] svoBytes = Arrays.copyOfRange(calibBytesAll, 2, 10);
 			ShimmerVerObject svo = new ShimmerVerObject(svoBytes);
 
-			mCalibBytesDescriptions.put(2, "HwID_LSB (" + svo.mHardwareVersionParsed + ")");
+			mCalibBytesDescriptions.put(2, "HwID_LSB (" + svo.getHardwareVersionParsed() + ")");
 			mCalibBytesDescriptions.put(3, "HwID_MSB");
 			mCalibBytesDescriptions.put(4, "FwID_LSB (" + svo.mFirmwareIdentifierParsed + ")");
 			mCalibBytesDescriptions.put(5, "FwID_MSB");
