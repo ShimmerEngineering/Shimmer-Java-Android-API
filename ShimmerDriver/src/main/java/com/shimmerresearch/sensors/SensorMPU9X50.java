@@ -2932,151 +2932,154 @@ public class SensorMPU9X50 extends AbstractSensor implements Serializable {
 //		return dbColumn;
 //	}
 
-	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
-		String channel = "";
+	public static String parseFromDBColumnToGUIChannel(String databaseChannelHandle) {
+		//TODO Old approach, can be removed
+//		String objectClusterName = "";
+//		if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.GYRO_X)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.GYRO_X;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.GYRO_Y)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.GYRO_Y;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.GYRO_Z)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.GYRO_Z;
+//			
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_X)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_X;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Y)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Y;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Z)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Z;
+//		
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_W)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_W;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_X)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_X;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Y)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Y;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Z)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Z;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_X)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_X;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Y)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Y;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Z)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Z;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_HEADING)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.MPL_HEADING;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_TEMP)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.MPL_TEMPERATURE;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_CNT)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_CNT;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_TIME)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_TIME;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.TAP_DIR_AND_CNT)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.TAPDIRANDTAPCNT;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MOTION_AND_ORIENT)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.MOTIONANDORIENT;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_X)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_X;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Y)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Y;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Z)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Z;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_X)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_X;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Y)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Y;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Z)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Z;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_X)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_X;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Y)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Y;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Z)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Z;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_W)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_W;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_X)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_X;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Y)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Y;
+//		} else if (databaseChannelHandle.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Z)) {
+//			objectClusterName = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Z;
+//		}
+//		return objectClusterName;
 		
-		if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.GYRO_X)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.GYRO_X;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.GYRO_Y)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.GYRO_Y;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.GYRO_Z)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.GYRO_Z;
-			
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_X)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_X;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Y)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Y;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Z)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Z;
-		
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_W)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_W;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_X)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_X;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Y)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Y;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Z)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Z;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_X)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_X;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Y)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Y;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Z)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Z;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_HEADING)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.MPL_HEADING;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_TEMP)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.MPL_TEMPERATURE;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_CNT)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_CNT;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_TIME)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_TIME;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.TAP_DIR_AND_CNT)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.TAPDIRANDTAPCNT;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MOTION_AND_ORIENT)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.MOTIONANDORIENT;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_X)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_X;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Y)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Y;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Z)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Z;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_X)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_X;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Y)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Y;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Z)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Z;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_X)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_X;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Y)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Y;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Z)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Z;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_W)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_W;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_X)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_X;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Y)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Y;
-		} else if (dbColumn.equals(SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Z)) {
-			channel = SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Z;
-		}
-		return channel;
+		return AbstractSensor.parseFromDBColumnToGUIChannel(mChannelMapRef, databaseChannelHandle);
 	}
 
-	public static String parseFromGUIChannelsToDBColumn(String channel) {
-		String dbColumn = "";
+	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
+		//TODO Old approach, can be removed
+//		String databaseChannelHandle = "";
+//		if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_X)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.GYRO_X;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_Y)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.GYRO_Y;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_Z)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.GYRO_Z;
+//			
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_X)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_X;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Y)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Y;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Z)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Z;
+//	
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_W)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_W;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_X)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_X;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Y)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Y;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Z)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Z;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_X)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_X;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Y)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Y;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Z)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Z;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.MPL_HEADING)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_HEADING;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.MPL_TEMPERATURE)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_TEMP;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_CNT)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_CNT;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_TIME)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_TIME;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.TAPDIRANDTAPCNT)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.TAP_DIR_AND_CNT;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.MOTIONANDORIENT)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MOTION_AND_ORIENT;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_X)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_X;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Y)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Y;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Z)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Z;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_X)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_X;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Y)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Y;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Z)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Z;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_X)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_X;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Y)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Y;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Z)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Z;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_W)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_W;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_X)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_X;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Y)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Y;
+//		} else if (objectClusterName.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Z)) {
+//			databaseChannelHandle = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Z;
+//		}
+//		return databaseChannelHandle;
 		
-		if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_X)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.GYRO_X;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_Y)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.GYRO_Y;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_Z)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.GYRO_Z;
-			
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_X)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_X;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Y)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Y;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_Z)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.ALTERNATIVE_ACC_Z;
-	
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_W)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_W;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_X)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_X;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Y)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Y;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_MPL_6DOF_Z)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_Z;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_X)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_X;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Y)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Y;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.EULER_MPL_6DOF_Z)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_EULER_6DOF_Z;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.MPL_HEADING)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_HEADING;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.MPL_TEMPERATURE)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_TEMP;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_CNT)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_CNT;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.MPL_PEDOM_TIME)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.PEDOMETER_TIME;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.TAPDIRANDTAPCNT)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.TAP_DIR_AND_CNT;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.MOTIONANDORIENT)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MOTION_AND_ORIENT;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_X)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_X;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Y)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Y;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.GYRO_MPU_MPL_Z)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_GYRO_Z;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_X)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_X;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Y)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Y;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.ACCEL_MPU_MPL_Z)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_ACC_Z;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_X)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_X;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Y)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Y;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.MAG_MPU_MPL_Z)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_MPL_MAG_Z;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_W)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_W;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_X)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_X;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Y)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Y;
-		} else if (channel.equals(SensorMPU9X50.ObjectClusterSensorName.QUAT_DMP_6DOF_Z)) {
-			dbColumn = SensorMPU9X50.DatabaseChannelHandles.MPU_QUAT_6DOF_DMP_Z;
-		}
-
-		return dbColumn;
+		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
 	}
 
 
