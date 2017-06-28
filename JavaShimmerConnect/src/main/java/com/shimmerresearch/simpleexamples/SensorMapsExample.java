@@ -17,12 +17,16 @@ import javax.swing.JButton;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JMenu;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class SensorMapsExample extends BasicProcessWithCallBack {
 	
 	private JFrame frame;
 	private JTextField textField;
-	ShimmerPC shimmer = new ShimmerPC("ShimmerDevice", true);
+	JTextPane textPaneStatus;
+	static ShimmerPC shimmer = new ShimmerPC("ShimmerDevice");
 	
 	/**
 	 * Initialize the contents of the frame
@@ -33,16 +37,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.setBounds(100, 100, 560, 487);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 536, 27);
-		frame.getContentPane().add(menuBar);
-		
-		JMenuItem mntmEnableSensors = new JMenuItem("Enable Sensors");
-		menuBar.add(mntmEnableSensors);
-		
-		JMenuItem mntmConfigureShimmer = new JMenuItem("Configure Shimmer");
-		menuBar.add(mntmConfigureShimmer);
 		
 		JLabel lblSetComPort = new JLabel("Set COM Port");
 		lblSetComPort.setBounds(0, 60, 119, 23);
@@ -59,7 +53,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				shimmer.connect(textField.getText(),"");
-				//Connect to the Shimmer device here
 				
 			}
 		});
@@ -71,7 +64,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				//Disconnect from Shimmer device here
 				try {
 					shimmer.disconnect();
 				} catch(ShimmerException e1) {
@@ -88,10 +80,41 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		lblShimmerStatus.setBounds(0, 139, 144, 23);
 		frame.getContentPane().add(lblShimmerStatus);
 		
-		JTextPane txtpnDisconnected = new JTextPane();
-		txtpnDisconnected.setText("disconnected");
-		txtpnDisconnected.setBounds(0, 181, 144, 36);
-		frame.getContentPane().add(txtpnDisconnected);
+		textPaneStatus = new JTextPane();
+		textPaneStatus.setBounds(0, 181, 144, 36);
+		frame.getContentPane().add(textPaneStatus);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, 0, 536, 23);
+		frame.getContentPane().add(menuBar);
+		
+		JMenu mnTools = new JMenu("Tools");
+		menuBar.add(mnTools);
+		
+		JMenuItem mntmSelectSensors = new JMenuItem("Select sensors");
+		mntmSelectSensors.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				//Ensure the Shimmer is not streaming or SD logging before configuring it
+				if(shimmer.isConnected()) {
+					if(!shimmer.isStreaming() || !shimmer.isSDLogging()) {
+						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer);
+						sensorsDialog.initialize();
+					}
+				}
+			}
+		});
+		mnTools.add(mntmSelectSensors);
+		
+		JMenuItem mntmDeviceConfiguration = new JMenuItem("Device configuration");
+		mntmDeviceConfiguration.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+			}
+		});
+		mnTools.add(mntmDeviceConfiguration);
 		
 	}
 
@@ -99,10 +122,14 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		SensorMapsExample s = new SensorMapsExample();
 		s.initialize();
 		s.frame.setVisible(true);
+		s.setWaitForData(shimmer);
 	}
 	
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+		// TODO Auto-generated method stub
+
+		// TODO Auto-generated method stub
 		  int ind = shimmerMSG.mIdentifier;
 
 		  Object object = (Object) shimmerMSG.mB;
@@ -111,30 +138,33 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			CallbackObject callbackObject = (CallbackObject)object;
 			
 			if (callbackObject.mState == BT_STATE.CONNECTING) {
-				
+				textPaneStatus.setText("connecting...");
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
-				//System.out.println("Connected");
+				textPaneStatus.setText("connected");
 			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
 //					|| callbackObject.mState == BT_STATE.NONE
 					|| callbackObject.mState == BT_STATE.CONNECTION_LOST){
-				System.out.println("Shimmer DISCONNECTED or CONNECTION LOST");				
+				textPaneStatus.setText("disconnected");				
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject)object;
 			int msg = callbackObject.mIndicator;
 			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
-				System.out.println("Shimmer FULLY INITIALIZED");
+				textPaneStatus.setText("device fully initialized");
 			}
 			if (msg == ShimmerPC.NOTIFICATION_SHIMMER_STOP_STREAMING) {
-				
+				textPaneStatus.setText("device stopped streaming");
 			} else if (msg == ShimmerPC.NOTIFICATION_SHIMMER_START_STREAMING) {
-				
+				textPaneStatus.setText("device streaming");
 			} else {}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
 			System.out.println("Shimmer MSG_IDENTIFIER_DATA_PACKET");
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL) {
 			
 		}
-
+	
+	
+		
+		
 	}
 }
