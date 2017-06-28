@@ -76,7 +76,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.driver.CallbackObject;
-import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
+import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 
@@ -104,6 +104,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	//TODO switch to using rather then using JSSC directly in this class 
 //	private SerialPortCommJssc SerialPortCommJssc = new SerialPortCommJssc(comPort, uniqueId, baudToUse);
 	
+	//--------------- Constructors start ----------------------------
+
 	/**
 	 * Constructor. Prepares a new Bluetooth session. Upon Connection the configuration of the device is read back and used. No device setup is done. To setup device see other Constructors. 
 	 * This constructor was created as a simple constructor for use with MATLAB.
@@ -162,11 +164,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		setAccelRange(accelRange);
 		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
-		mLowPowerMag = enableLowPowerMag;
-		mLowPowerAccelWR = enableLowPowerAccel;
-		mLowPowerGyro = enableLowPowerGyro;
+		setLowPowerMag(enableLowPowerMag);
+		setLowPowerAccelWR(enableLowPowerAccel);
+		setLowPowerGyro(enableLowPowerGyro);
 		setGyroRange(gyroRange);
-		setMagRange(magRange);
+		setLSM303MagRange(magRange);
 		mSetupEXG = true;
 		setEXG1RegisterArray(exg1);
 		setEXG2RegisterArray(exg2);
@@ -190,7 +192,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		this(myName, continousSync);
 
 		setAccelRange(accelRange);
-		setMagRange(magGain);
+		setLSM303MagRange(magGain);
 		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
 
@@ -216,15 +218,27 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
     	setSamplingRateShimmer(samplingRate);
 	}
     
+    
 	/** Replaces ShimmerDocked
 	 * @param dockId
 	 * @param slotNumber
 	 */
-	public ShimmerPC(String dockId, int slotNumber, COMMUNICATION_TYPE connectionType) {
+	public ShimmerPC(String dockId, int slotNumber, COMMUNICATION_TYPE communicationType){
 		setDockInfo(dockId, slotNumber);
-		addCommunicationRoute(connectionType);
+		addCommunicationRoute(communicationType);
     	setSamplingRateShimmer(128);
 	}
+	
+	/** Replaces ShimmerDocked
+	 * @param dockId
+	 * @param slotNumber
+	 */
+	public ShimmerPC(String dockId, int slotNumber, String macId, COMMUNICATION_TYPE communicationType){
+		this(dockId, slotNumber, communicationType);
+		setMacIdFromUart(macId);
+	}
+
+	//--------------- Constructors End ----------------------------
 
 	/**
 	 * Connect to device specified by address
@@ -792,11 +806,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 	@Override
-	public void clearShimmerVersionObject() {
-		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());
-	}
-
-	@Override
 	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
@@ -810,7 +819,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public void createConfigBytesLayout() {
-		mInfoMemLayout = new InfoMemLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
 
 	

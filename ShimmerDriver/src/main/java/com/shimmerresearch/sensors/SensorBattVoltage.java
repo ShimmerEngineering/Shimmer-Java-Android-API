@@ -112,7 +112,7 @@ public class SensorBattVoltage extends AbstractSensor{
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
   	
-    public static final SensorGroupingDetails sensorBattVoltage = new SensorGroupingDetails(
+    public static final SensorGroupingDetails sensorGroupBattVoltage = new SensorGroupingDetails(
 			GuiLabelSensorTiles.BATTERY_MONITORING,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
@@ -183,7 +183,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4() || mShimmerVerObject.isSweatchDevice()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING.ordinal(), sensorBattVoltage);
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING.ordinal(), sensorGroupBattVoltage);
 		}
 		super.updateSensorGroupingMap();
 	}

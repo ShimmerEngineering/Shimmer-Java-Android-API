@@ -19,7 +19,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  * @author Mark Nolan
  *
  */
-public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable {
+public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serializable {
 
 	/**
 	 * 
@@ -205,8 +205,8 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	//Config Byte3
 	public int bitShiftMPU9150AccelRange =              6;
 	public int maskMPU9150AccelRange =                  0x03;
-	public int bitShiftBMP180PressureResolution =       4;
-	public int maskBMP180PressureResolution =           0x03;
+	public int bitShiftBMPX80PressureResolution =       4;
+	public int maskBMPX80PressureResolution =           0x03;
 	public int bitShiftGSRRange =                       1;
 	public int maskGSRRange =                           0x07;
 	public int bitShiftEXPPowerEnable =                 0;
@@ -474,7 +474,7 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 //	public int GYRO_AND_MAG =                 0x02;
 //	public int GYRO_AND_SOME_MAG =            0x03;
 	
-	public InfoMemLayoutShimmer3() {
+	public ConfigByteLayoutShimmer3() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -491,10 +491,10 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 	 * @param firmwareVersionMinor
 	 * @param firmwareVersionInternal
 	 */
-	public InfoMemLayoutShimmer3(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
+	public ConfigByteLayoutShimmer3(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 		mShimmerVerObject = new ShimmerVerObject(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 		
-		mInfoMemSize = calculateInfoMemByteLength();
+		mInfoMemSize = calculateConfigByteLength();
 
 		//Include changes to mapping below in order of oldest to newest in separate "if statements"
 		
@@ -563,7 +563,7 @@ public class InfoMemLayoutShimmer3 extends InfoMemLayout implements Serializable
 
 	}
 	
-	public int calculateInfoMemByteLength(ShimmerVerObject shimmerVersionObject) {
+	public int calculateConfigByteLength(ShimmerVerObject shimmerVersionObject) {
 		
 		//TODO: should add full FW version checking here to support different size InfoMems in the future
 //		if(Util.compareVersions(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionRelease,

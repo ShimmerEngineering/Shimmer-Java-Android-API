@@ -19,7 +19,7 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
  * @author Mark Nolan
  *
  */
-public abstract class InfoMemLayout implements Serializable {
+public abstract class ConfigByteLayout implements Serializable {
 
 	private static final long serialVersionUID = -5729543049033754281L;
 	
@@ -40,11 +40,11 @@ public abstract class InfoMemLayout implements Serializable {
 	public int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
 //	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE;
 	
-	public abstract int calculateInfoMemByteLength(ShimmerVerObject shimmerVerObject);
+	public abstract int calculateConfigByteLength(ShimmerVerObject shimmerVerObject);
 
 	
-	public int calculateInfoMemByteLength(){
-		return calculateInfoMemByteLength(mShimmerVerObject);
+	public int calculateConfigByteLength(){
+		return calculateConfigByteLength(mShimmerVerObject);
 	}
 
 	/**
@@ -53,8 +53,8 @@ public abstract class InfoMemLayout implements Serializable {
 	 * 
 	 * @return byte array
 	 */
-	public byte[] createEmptyInfoMemByteArray() {
-		return createEmptyInfoMemByteArray(calculateInfoMemByteLength());
+	public byte[] createEmptyConfigByteArray() {
+		return createEmptyConfigByteArray(calculateConfigByteLength());
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public abstract class InfoMemLayout implements Serializable {
 	 * @param size the size of the byte array to create.
 	 * @return byte array
 	 */
-	public static byte[] createEmptyInfoMemByteArray(int size) {
+	public static byte[] createEmptyConfigByteArray(int size) {
 		byte[] newArray = new byte[size];
 		for(byte b:newArray) {
 			b = (byte)0xFF;
@@ -73,7 +73,7 @@ public abstract class InfoMemLayout implements Serializable {
 		return newArray;
 	}
 	
-	public static boolean checkInfoMemValid(byte[] infoMemContents){
+	public static boolean checkConfigBytesValid(byte[] infoMemContents){
 		// Check first 6 bytes of InfoMem for 0xFF to determine if contents are valid 
 		byte[] comparisonBuffer = new byte[]{-1,-1,-1,-1,-1,-1};
 		byte[] detectionBuffer = new byte[comparisonBuffer.length];
