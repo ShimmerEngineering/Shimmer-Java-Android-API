@@ -25,7 +25,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.sensors.SensorLSM303.DatabaseConfigHandle;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC.DatabaseConfigHandle;
 
 public abstract class AbstractSensor implements Serializable{
 	
@@ -47,6 +47,8 @@ public abstract class AbstractSensor implements Serializable{
 		ADC("ADC"),
 		Battery("Battery"),
 		Bridge_Amplifier("Bridge Amplifier"),
+		MMA776X("Shimmer2r Accelerometer"),
+		KIONIXKXTC92050("Analog Accelerometer"),
 		
 		NONIN_ONYX_II("Nonin Onyx II"),
 		QTI_DIRECT_TEMP("QTI DirectTemp"),
@@ -55,7 +57,8 @@ public abstract class AbstractSensor implements Serializable{
 		STC3100("STC3100"),
 		WEBCAM_FRAME_NUMBER("Frame Number"),
 		HOST_CPU_USAGE("Cpu Usage"),
-		SWEATCH_ADC("Sweatch ADC");
+		SWEATCH_ADC("Sweatch ADC"),
+		SHIMMER2R_MAG("Shimmer2r Mag");
 		
 	    private final String text;
 
@@ -91,12 +94,12 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void generateSensorMap();
 	public abstract void generateConfigOptionsMap();
 	public abstract void generateSensorGroupMapping();
-	public abstract void checkShimmerConfigBeforeConfiguring();
 
 	/** for use only if a custom parser is required, i.e. for calibrated data. Use in conjunction with createLocalSensorMapWithCustomParser()*/ 
 	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimeStamp);
 //	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
+	public abstract void checkShimmerConfigBeforeConfiguring();
 	public abstract void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes);
 	public abstract void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes);
 	public abstract Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet);
@@ -119,6 +122,7 @@ public abstract class AbstractSensor implements Serializable{
 
 	// --------------- Abstract methods end ----------------	
 
+	public SENSORS mSensorType = null;
 	protected String mSensorName = "";
 	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
@@ -138,6 +142,7 @@ public abstract class AbstractSensor implements Serializable{
     protected ShimmerDevice mShimmerDevice = null;
     
 	public AbstractSensor(SENSORS sensorType){
+		mSensorType = sensorType;
 		setSensorName(sensorType.toString());
 	}
 	
@@ -339,6 +344,11 @@ public abstract class AbstractSensor implements Serializable{
 	}
 
 	public boolean isSensorEnabled(int sensorMapKey){
+		//below Shouldn't be needed
+//		if(mShimmerDevice!=null){
+//			return mShimmerDevice.isSensorEnabled(sensorMapKey);
+//		}
+
 		if(mSensorMap!=null) {
 			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
 			if(sensorDetails!=null){
@@ -399,12 +409,12 @@ public abstract class AbstractSensor implements Serializable{
 		for(Integer sensorMapKey:mSensorMap.keySet()){
 			TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfSensorCalibration.get(sensorMapKey);
 			if(mapOfCalibPerSensor!=null){
-				addCalibrationPerSensor(sensorMapKey, mapOfCalibPerSensor);
+				setCalibrationMapPerSensor(sensorMapKey, mapOfCalibPerSensor);
 			}
 		}
 	}
 
-	protected void addCalibrationPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
 		mCalibMap.put(sensorMapKey, mapOfSensorCalibration);
 //		System.out.println("Calib make check");
 	}
@@ -632,6 +642,34 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 	
+	public static void addCalibDetailsToDbMap(
+			LinkedHashMap<String, Object> configMapForDb,
+			List<String> listOfCalibHandles,
+			double[][] offsetVector, 
+			double[][] sensitivityMatrix, 
+			double[][] alignmentMatrix) {
+		
+		configMapForDb.put(listOfCalibHandles.get(0), offsetVector[0][0]);
+		configMapForDb.put(listOfCalibHandles.get(1), offsetVector[1][0]);
+		configMapForDb.put(listOfCalibHandles.get(2), offsetVector[2][0]);
+
+		configMapForDb.put(listOfCalibHandles.get(3), sensitivityMatrix[0][0]);
+		configMapForDb.put(listOfCalibHandles.get(4), sensitivityMatrix[1][1]);
+		configMapForDb.put(listOfCalibHandles.get(5), sensitivityMatrix[2][2]);
+	
+		configMapForDb.put(listOfCalibHandles.get(6), alignmentMatrix[0][0]);
+		configMapForDb.put(listOfCalibHandles.get(7), alignmentMatrix[0][1]);
+		configMapForDb.put(listOfCalibHandles.get(8), alignmentMatrix[0][2]);
+		
+		configMapForDb.put(listOfCalibHandles.get(9), alignmentMatrix[1][0]);
+		configMapForDb.put(listOfCalibHandles.get(10), alignmentMatrix[1][1]);
+		configMapForDb.put(listOfCalibHandles.get(11), alignmentMatrix[1][2]);
+		
+		configMapForDb.put(listOfCalibHandles.get(12), alignmentMatrix[2][0]);
+		configMapForDb.put(listOfCalibHandles.get(13), alignmentMatrix[2][1]);
+		configMapForDb.put(listOfCalibHandles.get(14), alignmentMatrix[2][2]);
+	}
+
 
 	/** 
 	 * @see ShimmerObject.parseCalibDetailsKinematicFromDb

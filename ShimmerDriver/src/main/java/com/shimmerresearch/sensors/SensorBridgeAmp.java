@@ -239,13 +239,13 @@ public class SensorBridgeAmp extends AbstractSensor{
 
 	// --------------------------- Channel info end ----------------------------------------
 
-	public static final SensorGroupingDetails sensorBridgeAmp =  new SensorGroupingDetails(
+	public static final SensorGroupingDetails sensorGroupBrAmp =  new SensorGroupingDetails(
 			GuiLabelSensorTiles.BRIDGE_AMPLIFIER,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
 					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp);
 
-	public static final SensorGroupingDetails sensorBATemp = new SensorGroupingDetails(
+	public static final SensorGroupingDetails sensorGroupBrAmpTemperature = new SensorGroupingDetails(
 			GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP,
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp);
@@ -292,8 +292,8 @@ public class SensorBridgeAmp extends AbstractSensor{
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER.ordinal(), sensorBridgeAmp );
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP.ordinal(), sensorBATemp);
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER.ordinal(), sensorGroupBrAmp );
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP.ordinal(), sensorGroupBrAmpTemperature);
 		}
 		super.updateSensorGroupingMap();
 
