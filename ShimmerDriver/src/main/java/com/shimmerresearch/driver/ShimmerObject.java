@@ -30,6 +30,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
+import com.shimmerresearch.driver.ShimmerObject.DatabaseConfigHandleShimmerObject;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
@@ -61,7 +62,6 @@ import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.SensorBridgeAmp;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
-import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
@@ -74,6 +74,9 @@ import com.shimmerresearch.sensors.kionix.SensorKionixKXTC92050;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303AH;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9250;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.sensors.shimmer2.SensorMMA736x;
 import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Mag;
 import com.shimmerresearch.algorithms.orientation.GradDes3DOrientation9DoF;
@@ -597,7 +600,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected static final boolean USE_SENSOR_CLASS_ACCEL_WR_AND_MAG = true;
 	protected static final boolean USE_SENSOR_CLASS_ACCEL_LN = true;
 	//TODO
-//	protected static final boolean USE_SENSOR_CLASS_MPU9250 = true;
+	protected static final boolean USE_SENSOR_CLASS_MPU9X50 = false;
 
 	
 	/**
@@ -10492,51 +10495,54 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		*/
 		
 		
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_RATE);
-//		configValues.add((double) shimmerObject.getMPU9150GyroAccelRate());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.GYRO_RATE, (double) getMPU9150GyroAccelRate());
-		
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_RANGE);
-//		configValues.add((double) shimmerObject.getGyroRange());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.GYRO_RANGE, (double) getGyroRange());
+		if(!USE_SENSOR_CLASS_MPU9X50){
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_RATE);
+//			configValues.add((double) shimmerObject.getMPU9150GyroAccelRate());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.GYRO_RATE, (double) getMPU9150GyroAccelRate());
+			
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_RANGE);
+//			configValues.add((double) shimmerObject.getGyroRange());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.GYRO_RANGE, (double) getGyroRange());
 
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE);
-//		configValues.add((double) shimmerObject.getMPU9150AccelRange());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE, (double) getMPU9150AccelRange());
-//		configColumns.add(SensorGSR.DatabaseConfigHandle.GSR_RANGE);
-//		configValues.add((double) shimmerObject.getGSRRange());
-		configMapForDb.put(SensorGSR.DatabaseConfigHandle.GSR_RANGE, (double) getGSRRange());
-		
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_DMP);
-//		configValues.add((double) shimmerObject.getMPU9150DMP());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_DMP, (double) getMPU9150DMP());
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_LPF);
-//		configValues.add((double) shimmerObject.getMPU9150LPF());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_LPF, (double) getMPU9150LPF());
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MOT_CAL_CFG);
-//		configValues.add((double) shimmerObject.getMPU9150MotCalCfg());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_MOT_CAL_CFG, (double) getMPU9150MotCalCfg());
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE);
-//		configValues.add((double) shimmerObject.getMPU9150MPLSamplingRate());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE, (double) getMPU9150MPLSamplingRate());
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE);
-//		configValues.add((double) shimmerObject.getMPU9150MagSamplingRate());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE, (double) getMPU9150MagSamplingRate());
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION);
-//		configValues.add((double) shimmerObject.getMPLSensorFusion());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION, (double) getMPLSensorFusion());
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_GYRO_TC);
-//		configValues.add((double) shimmerObject.getMPLGyroCalTC());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_GYRO_TC, (double) getMPLGyroCalTC());
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_VECT_COMP);
-//		configValues.add((double) shimmerObject.getMPLVectCompCal());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_VECT_COMP, (double) getMPLVectCompCal());
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_DIST);
-//		configValues.add((double) shimmerObject.getMPLMagDistCal());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_DIST, (double) getMPLMagDistCal());
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_ENABLE);
-//		configValues.add((double) shimmerObject.getMPLEnable());
-		configMapForDb.put(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_ENABLE, (double) getMPLEnable());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE);
+//			configValues.add((double) shimmerObject.getMPU9150AccelRange());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE, (double) getMPU9150AccelRange());
+//			configColumns.add(SensorGSR.DatabaseConfigHandle.GSR_RANGE);
+//			configValues.add((double) shimmerObject.getGSRRange());
+			configMapForDb.put(SensorGSR.DatabaseConfigHandle.GSR_RANGE, (double) getGSRRange());
+			
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_DMP);
+//			configValues.add((double) shimmerObject.getMPU9150DMP());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_DMP, (double) getMPU9150DMP());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_LPF);
+//			configValues.add((double) shimmerObject.getMPU9150LPF());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_LPF, (double) getMPU9150LPF());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MOT_CAL_CFG);
+//			configValues.add((double) shimmerObject.getMPU9150MotCalCfg());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_MOT_CAL_CFG, (double) getMPU9150MotCalCfg());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE);
+//			configValues.add((double) shimmerObject.getMPU9150MPLSamplingRate());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE, (double) getMPU9150MPLSamplingRate());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE);
+//			configValues.add((double) shimmerObject.getMPU9150MagSamplingRate());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE, (double) getMPU9150MagSamplingRate());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION);
+//			configValues.add((double) shimmerObject.getMPLSensorFusion());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION, (double) getMPLSensorFusion());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_GYRO_TC);
+//			configValues.add((double) shimmerObject.getMPLGyroCalTC());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_GYRO_TC, (double) getMPLGyroCalTC());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_VECT_COMP);
+//			configValues.add((double) shimmerObject.getMPLVectCompCal());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_VECT_COMP, (double) getMPLVectCompCal());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_DIST);
+//			configValues.add((double) shimmerObject.getMPLMagDistCal());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_MAG_DIST, (double) getMPLMagDistCal());
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MPL_ENABLE);
+//			configValues.add((double) shimmerObject.getMPLEnable());
+			configMapForDb.put(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_ENABLE, (double) getMPLEnable());			
+		}
+
 		
 //		configColumns.add(ShimmerDevice.DatabaseConfigHandle.USER_BUTTON);
 //		configValues.add((double) shimmerObject.getButtonStart());
@@ -10585,32 +10591,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			configValues.add((double) (exg2Array[i] & 0xFF));
 		SensorEXG.addExgConfigToDbConfigMap(configMapForDb, getEXG1RegisterArray(), getEXG2RegisterArray());
 
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_OFFSET_X);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_OFFSET_Y);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_OFFSET_Z);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_GAIN_X);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_GAIN_Y);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_GAIN_Z);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_XX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_XY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_XZ);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_YX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_YY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_YZ);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_ZX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_ZY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_ZZ);
-//		double[][] offsetVectorGyroscope = shimmerObject.getOffsetVectorMatrixGyro();
-//		double[][] sensitivityMatrixGyroscope = shimmerObject.getSensitivityMatrixGyro();
-//		double[][] alignmentMatrixGyroscope = shimmerObject.getAlignmentMatrixGyro();
-//		addCalibKinematicToDbConfigValues(configValues, offsetVectorGyroscope, sensitivityMatrixGyroscope, alignmentMatrixGyroscope);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_CALIB_TIME);
-//		configValues.add((double) shimmerObject.getCalibTimeGyro());
-		AbstractSensor.addCalibDetailsToDbMap(configMapForDb, 
-				getCurrentCalibDetailsGyro(), 
-				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
-				SensorMPU9X50.DatabaseConfigHandle.GYRO_CALIB_TIME);
-
 		//Now done in the Kionix sensor classes
 		/*
 //		configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_OFFSET_X);
@@ -10640,83 +10620,111 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC,
 				SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_CALIB_TIME);
 		*/
-
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_OFFSET_X);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_OFFSET_Y);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_OFFSET_Z);
-//		double[][] offsetVectorMPLAccel = shimmerObject.getOffsetVectorMPLAccel();
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_GAIN_X);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_GAIN_Y);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_GAIN_Z);
-//		double[][] sensitivityMatrixMPLAccel = shimmerObject.getSensitivityMatrixMPLAccel();
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_XX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_XY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_XZ);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_YX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_YY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_YZ);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_ZX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_ZY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_ZZ);
-//		double[][] alignmentMatrixMPLAccel = shimmerObject.getAlignmentMatrixMPLAccel();
-////		addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLAccel, sensitivityMatrixMPLAccel, alignmentMatrixMPLAccel);
-		AbstractSensor.addCalibDetailsToDbMap(configMapForDb, 
-				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC,
-				getOffsetVectorMPLAccel(),
-				getSensitivityMatrixMPLAccel(),
-				getAlignmentMatrixMPLAccel());
 		
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_OFFSET_X);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_OFFSET_Y);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_OFFSET_Z);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_GAIN_X);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_GAIN_Y);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_GAIN_Z);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_XX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_XY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_XZ);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_YX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_YY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_YZ);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_ZX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_ZY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_ZZ);
-//		//MPL Mag Calibration Configuration
-//		double[][] offsetVectorMPLMag = shimmerObject.getOffsetVectorMPLMag();
-//		double[][] sensitivityMatrixMPLMag = shimmerObject.getSensitivityMatrixMPLMag();
-//		double[][] alignmentMatrixMPLMag = shimmerObject.getAlignmentMatrixMPLMag();
-//		addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLMag, sensitivityMatrixMPLMag, alignmentMatrixMPLMag);
-		AbstractSensor.addCalibDetailsToDbMap(configMapForDb, 
-				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG,
-				getOffsetVectorMPLMag(),
-				getSensitivityMatrixMPLMag(),
-				getAlignmentMatrixMPLMag());
+		if(!USE_SENSOR_CLASS_MPU9X50){
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_OFFSET_X);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_OFFSET_Y);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_OFFSET_Z);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_GAIN_X);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_GAIN_Y);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_GAIN_Z);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_XX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_XY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_XZ);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_YX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_YY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_YZ);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_ZX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_ZY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_ZZ);
+	//		double[][] offsetVectorGyroscope = shimmerObject.getOffsetVectorMatrixGyro();
+	//		double[][] sensitivityMatrixGyroscope = shimmerObject.getSensitivityMatrixGyro();
+	//		double[][] alignmentMatrixGyroscope = shimmerObject.getAlignmentMatrixGyro();
+	//		addCalibKinematicToDbConfigValues(configValues, offsetVectorGyroscope, sensitivityMatrixGyroscope, alignmentMatrixGyroscope);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_CALIB_TIME);
+	//		configValues.add((double) shimmerObject.getCalibTimeGyro());
+			AbstractSensor.addCalibDetailsToDbMap(configMapForDb, 
+					getCurrentCalibDetailsGyro(), 
+					SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
+					SensorMPU9150.DatabaseConfigHandle.GYRO_CALIB_TIME);
 
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_OFFSET_X);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_OFFSET_Y);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_OFFSET_Z);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_GAIN_X);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_GAIN_Y);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_GAIN_Z);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_XX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_XY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_XZ);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_YX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_YY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_YZ);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_ZX);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_ZY);
-//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_ZZ);
-//		//MPL Gyro Calibration Configuration
-//		double[][] offsetVectorMPLGyro = shimmerObject.getOffsetVectorMPLGyro();
-//		double[][] sensitivityMatrixMPLGyro = shimmerObject.getSensitivityMatrixMPLGyro();
-//		double[][] alignmentMatrixMPLGyro = shimmerObject.getAlignmentMatrixMPLGyro();
-//		addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLGyro, sensitivityMatrixMPLGyro, alignmentMatrixMPLGyro);
-		AbstractSensor.addCalibDetailsToDbMap(configMapForDb, 
-				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO,
-				getOffsetVectorMPLGyro(),
-				getSensitivityMatrixMPLGyro(),
-				getAlignmentMatrixMPLGyro());
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_OFFSET_X);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_OFFSET_Y);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_OFFSET_Z);
+	//		double[][] offsetVectorMPLAccel = shimmerObject.getOffsetVectorMPLAccel();
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_GAIN_X);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_GAIN_Y);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_GAIN_Z);
+	//		double[][] sensitivityMatrixMPLAccel = shimmerObject.getSensitivityMatrixMPLAccel();
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_XX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_XY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_XZ);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_YX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_YY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_YZ);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_ZX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_ZY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_ZZ);
+	//		double[][] alignmentMatrixMPLAccel = shimmerObject.getAlignmentMatrixMPLAccel();
+	////		addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLAccel, sensitivityMatrixMPLAccel, alignmentMatrixMPLAccel);
+			AbstractSensor.addCalibDetailsToDbMap(configMapForDb, 
+					SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC,
+					getOffsetVectorMPLAccel(),
+					getSensitivityMatrixMPLAccel(),
+					getAlignmentMatrixMPLAccel());
+			
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_OFFSET_X);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_OFFSET_Y);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_OFFSET_Z);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_GAIN_X);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_GAIN_Y);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_GAIN_Z);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_XX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_XY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_XZ);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_YX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_YY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_YZ);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_ZX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_ZY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_ZZ);
+	//		//MPL Mag Calibration Configuration
+	//		double[][] offsetVectorMPLMag = shimmerObject.getOffsetVectorMPLMag();
+	//		double[][] sensitivityMatrixMPLMag = shimmerObject.getSensitivityMatrixMPLMag();
+	//		double[][] alignmentMatrixMPLMag = shimmerObject.getAlignmentMatrixMPLMag();
+	//		addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLMag, sensitivityMatrixMPLMag, alignmentMatrixMPLMag);
+			AbstractSensor.addCalibDetailsToDbMap(configMapForDb, 
+					SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG,
+					getOffsetVectorMPLMag(),
+					getSensitivityMatrixMPLMag(),
+					getAlignmentMatrixMPLMag());
+	
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_OFFSET_X);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_OFFSET_Y);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_OFFSET_Z);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_GAIN_X);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_GAIN_Y);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_GAIN_Z);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_XX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_XY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_XZ);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_YX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_YY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_YZ);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_ZX);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_ZY);
+	//		configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_ZZ);
+	//		//MPL Gyro Calibration Configuration
+	//		double[][] offsetVectorMPLGyro = shimmerObject.getOffsetVectorMPLGyro();
+	//		double[][] sensitivityMatrixMPLGyro = shimmerObject.getSensitivityMatrixMPLGyro();
+	//		double[][] alignmentMatrixMPLGyro = shimmerObject.getAlignmentMatrixMPLGyro();
+	//		addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLGyro, sensitivityMatrixMPLGyro, alignmentMatrixMPLGyro);
+			AbstractSensor.addCalibDetailsToDbMap(configMapForDb, 
+					SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO,
+					getOffsetVectorMPLGyro(),
+					getSensitivityMatrixMPLGyro(),
+					getAlignmentMatrixMPLGyro());
+		}
 		
 //		configColumns.add(ShimmerDevice.DatabaseConfigHandle.INITIAL_TIMESTAMP);
 //		configValues.add((double) shimmerObject.getInitialTimeStamp());
@@ -10753,15 +10761,46 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		super.parseConfigMapFromDb(svo, mapOfConfigPerShimmer);
 		
-		if(mapOfConfigPerShimmer.containsKey(SensorMPU9X50.DatabaseConfigHandle.GYRO_RATE)){
-			setMPU9150GyroAccelRate(((Double) mapOfConfigPerShimmer.get(SensorMPU9X50.DatabaseConfigHandle.GYRO_RATE)).intValue());
+		if(!USE_SENSOR_CLASS_MPU9X50){
+			if(mapOfConfigPerShimmer.containsKey(SensorMPU9150.DatabaseConfigHandle.GYRO_RATE)){
+				setMPU9150GyroAccelRate(((Double) mapOfConfigPerShimmer.get(SensorMPU9150.DatabaseConfigHandle.GYRO_RATE)).intValue());
+			}
+			if(mapOfConfigPerShimmer.containsKey(SensorMPU9150.DatabaseConfigHandle.GYRO_RANGE)){
+				setGyroRange(((Double) mapOfConfigPerShimmer.get(SensorMPU9150.DatabaseConfigHandle.GYRO_RANGE)).intValue());
+			}
+			if(mapOfConfigPerShimmer.containsKey(SensorMPU9150.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)){
+				setMPU9150AccelRange(((Double) mapOfConfigPerShimmer.get(SensorMPU9150.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)).intValue());
+			}
+			
+			//Gyroscope Calibration Configuration
+			parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 
+					getGyroRange(), 
+					SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
+					SensorMPU9150.DatabaseConfigHandle.GYRO_CALIB_TIME);
+
+			//TODO
+			//MPL Accel Calibration Configuration
+			parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, 
+					getMPU9150AccelRange(), 
+					SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
+
+			//TODO
+			//MPL Mag Calibration Configuration
+			parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, 
+					0, 
+					SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
+			
+			//TODO
+			//MPL Gyro Calibration Configuration
+			parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, 
+					getGyroRange(), 
+					SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
 		}
-		if(mapOfConfigPerShimmer.containsKey(SensorMPU9X50.DatabaseConfigHandle.GYRO_RANGE)){
-			setGyroRange(((Double) mapOfConfigPerShimmer.get(SensorMPU9X50.DatabaseConfigHandle.GYRO_RANGE)).intValue());
-		}
-		if(mapOfConfigPerShimmer.containsKey(SensorMPU9X50.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)){
-			setMPU9150AccelRange(((Double) mapOfConfigPerShimmer.get(SensorMPU9X50.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)).intValue());
-		}
+		
 		if(mapOfConfigPerShimmer.containsKey(SensorGSR.DatabaseConfigHandle.GSR_RANGE)){
 			setGSRRange(((Double) mapOfConfigPerShimmer.get(SensorGSR.DatabaseConfigHandle.GSR_RANGE)).intValue());
 		}
@@ -10818,13 +10857,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		}
 		exgBytesGetConfigFrom(exg1Bytes, exg2Bytes);
 		checkExgResolutionFromEnabledSensorsVar();
-		
-		//Gyroscope Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer,
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 
-				getGyroRange(), 
-				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
-				SensorMPU9X50.DatabaseConfigHandle.GYRO_CALIB_TIME);
 		
 		//Moved to SensorKionix
 		if(!USE_SENSOR_CLASS_ACCEL_LN){
@@ -10909,28 +10941,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					SensorLSM303DLHC.DatabaseConfigHandle.MAG_CALIB_TIME);
 		}
 
-		//TODO
-		//MPL Accel Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, 
-				getMPU9150AccelRange(), 
-				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
-
-		//TODO
-		//MPL Mag Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, 
-				0, 
-				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
-		
-		//TODO
-		//MPL Gyro Calibration Configuration
-		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, 
-				getGyroRange(), 
-				SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
-
-		
 		//Initial TimeStamp
 		if(mapOfConfigPerShimmer.containsKey(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)){
 			setInitialTimeStamp(((Double) mapOfConfigPerShimmer.get(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
@@ -10992,6 +11002,305 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					alignZx, alignZy, alignZz);
 		}
 	}
+	
+	@Deprecated
+	public static List<String> getShimmer3ConfigColumnsLegacy(ShimmerVerObject svo, ExpansionBoardDetails ebd){
+		List<String> configColumns = new ArrayList<String>();
+
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.SAMPLE_RATE);
+
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.ENABLE_SENSORS);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.DERIVED_SENSORS);
+
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.add(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_RATE);
+			configColumns.add(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_RANGE);
+			configColumns.add(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_LPM);
+			configColumns.add(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_HRM);
+		} else {
+			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RATE);
+			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RANGE);
+			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_LPM);
+			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_HRM);
+		}
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.GYRO_RATE);
+		} else {
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.GYRO_RATE);
+		}
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.add(SensorLSM303AH.DatabaseConfigHandle.MAG_RANGE);
+			configColumns.add(SensorLSM303AH.DatabaseConfigHandle.MAG_RATE);
+		} else {
+			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RANGE);
+			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_RATE);
+		}
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.GYRO_RANGE);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE);
+		} else {
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.GYRO_RANGE);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE);
+		}
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedBmp280(svo, ebd)){
+			configColumns.add(SensorBMP280.DatabaseConfigHandle.PRESSURE_PRECISION_BMP280);
+		} else {
+			configColumns.add(SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION_BMP180);
+		}
+		configColumns.add(SensorGSR.DatabaseConfigHandle.GSR_RANGE);
+		
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.EXP_PWR);
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_DMP);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_LPF);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MOT_CAL_CFG);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_GYRO_TC);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_VECT_COMP);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MAG_DIST);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_ENABLE);
+		} else {
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_DMP);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_LPF);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MOT_CAL_CFG);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_GYRO_TC);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_VECT_COMP);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MAG_DIST);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_ENABLE);
+		}
+		
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.USER_BUTTON);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.RTC_SOURCE);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.MASTER_CONFIG);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.SINGLE_TOUCH_START);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.TXCO);
+
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.SHIMMER_VERSION);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.FW_VERSION);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.FW_VERSION_MAJOR);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.FW_VERSION_MINOR);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.FW_VERSION_INTERNAL);
+
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.CONFIG_TIME);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.REAL_TIME_CLOCK_DIFFERENCE);
+
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_CONFIG_1);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_CONFIG_2);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_LEAD_OFF);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_CH1_SET);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_CH2_SET);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_RLD_SENSE);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_LEAD_OFF_SENSE);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_LEAD_OFF_STATUS);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_RESPIRATION_1);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG1_RESPIRATION_2);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_CONFIG_1);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_CONFIG_2);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_LEAD_OFF);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_CH1_SET);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_CH2_SET);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_RLD_SENSE);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_LEAD_OFF_SENSE);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_LEAD_OFF_STATUS);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_RESPIRATION_1);
+		configColumns.add(SensorEXG.DatabaseConfigHandle.EXG2_RESPIRATION_2);
+
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.addAll(SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL);
+		} else {
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_OFFSET_X);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_OFFSET_Y);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_OFFSET_Z);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_GAIN_X);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_GAIN_Y);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_GAIN_Z);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_ALIGN_XX);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_ALIGN_XY);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_ALIGN_XZ);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_ALIGN_YX);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_ALIGN_YY);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_ALIGN_YZ);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_ALIGN_ZX);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_ALIGN_ZY);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_ALIGN_ZZ);
+			configColumns.addAll(SensorLSM303DLHC.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL);
+		}
+
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.addAll(SensorMPU9250.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
+		} else {
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_OFFSET_X);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_OFFSET_Y);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_OFFSET_Z);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_GAIN_X);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_GAIN_Y);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_GAIN_Z);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_XX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_XY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_XZ);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_YX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_YY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_YZ);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_ZX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_ZY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.GYRO_ALIGN_ZZ);
+			configColumns.addAll(SensorMPU9250.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO);
+		}
+
+
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.addAll(SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG);
+		} else {
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_OFFSET_X);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_OFFSET_Y);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_OFFSET_Z);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_GAIN_X);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_GAIN_Y);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_GAIN_Z);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_ALIGN_XX);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_ALIGN_XY);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_ALIGN_XZ);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_ALIGN_YX);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_ALIGN_YY);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_ALIGN_YZ);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_ALIGN_ZX);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_ALIGN_ZY);
+//			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_ALIGN_ZZ);
+			configColumns.addAll(SensorLSM303DLHC.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG);
+		}
+
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.addAll(SensorKionixKXTC92050.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC);
+		} else {
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_OFFSET_X);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_OFFSET_Y);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_OFFSET_Z);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_GAIN_X);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_GAIN_Y);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_GAIN_Z);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_ALIGN_XX);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_ALIGN_XY);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_ALIGN_XZ);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_ALIGN_YX);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_ALIGN_YY);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_ALIGN_YZ);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_ALIGN_ZX);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_ALIGN_ZY);
+//			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_ALIGN_ZZ);
+			configColumns.addAll(SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC);
+		}
+
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.addAll(SensorBMP280.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES);
+		} else {
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC1);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC2);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC3);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC4);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC5);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_AC6);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B1);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_B2);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MB);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MC);
+//			configColumns.add(SensorBMP180.DatabaseConfigHandle.TEMP_PRES_MD);
+			configColumns.addAll(SensorBMP180.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES);
+		}
+
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.addAll(SensorMPU9250.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
+			configColumns.addAll(SensorMPU9250.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
+			configColumns.addAll(SensorMPU9250.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);			
+		} else {
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_OFFSET_X);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_OFFSET_Y);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_OFFSET_Z);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_GAIN_X);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_GAIN_Y);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_GAIN_Z);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_XX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_XY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_XZ);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_YX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_YY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_YZ);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_ZX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_ZY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_ACC_ALIGN_ZZ);
+			configColumns.addAll(SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
+
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_OFFSET_X);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_OFFSET_Y);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_OFFSET_Z);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_GAIN_X);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_GAIN_Y);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_GAIN_Z);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_XX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_XY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_XZ);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_YX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_YY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_YZ);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_ZX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_ZY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_MAG_ALIGN_ZZ);
+			configColumns.addAll(SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
+
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_OFFSET_X);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_OFFSET_Y);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_OFFSET_Z);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_GAIN_X);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_GAIN_Y);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_GAIN_Z);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_XX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_XY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_XZ);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_YX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_YY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_YZ);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_ZX);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_ZY);
+//			configColumns.add(SensorMPU9X50.DatabaseConfigHandle.MPU_GYRO_ALIGN_ZZ);
+			configColumns.addAll(SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);			
+		}
+
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.INITIAL_TIMESTAMP);
+
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.EXP_BOARD_ID);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.EXP_BOARD_REV);
+		configColumns.add(ShimmerDevice.DatabaseConfigHandle.EXP_BOARD_REV_SPEC);
+
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.add(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
+			configColumns.add(SensorLSM303AH.DatabaseConfigHandle.MAG_CALIB_TIME);
+		}
+		else {
+			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
+			configColumns.add(SensorLSM303DLHC.DatabaseConfigHandle.MAG_CALIB_TIME);
+		}
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.GYRO_CALIB_TIME);
+		} else {
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.GYRO_CALIB_TIME);
+		}
+		if(svo!=null && ebd!=null && ShimmerObject.isSupportedNewImuSensors(svo, ebd)){
+			configColumns.add(SensorKionixKXTC92050.DatabaseConfigHandle.LN_ACC_CALIB_TIME);
+		} else {
+			configColumns.add(SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_CALIB_TIME);
+		}
+
+		configColumns.add(DatabaseConfigHandleShimmerObject.SYNC_WHEN_LOGGING);
+		configColumns.add(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED);
+		configColumns.add(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM);
+
+		return configColumns;
+	}
+	
 	
 	@Deprecated
 	public List<Double> getShimmerConfigToInsertInDBLegacy(){

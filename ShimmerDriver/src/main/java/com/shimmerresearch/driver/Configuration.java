@@ -74,7 +74,6 @@ import com.shimmerresearch.sensors.SensorBridgeAmp;
 import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
-import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
@@ -86,6 +85,8 @@ import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a
@@ -1401,7 +1402,9 @@ public class Configuration {
 	        if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_LN){
 		        aMap.putAll(SensorKionixKXRB52042.mSensorMapRef);
 	        }
-			aMap.putAll(SensorMPU9X50.mSensorMapRef);
+	        if(!ShimmerObject.USE_SENSOR_CLASS_MPU9X50){
+	        	aMap.putAll(SensorMPU9X50.mSensorMapRef);
+	        }
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.putAll(SensorLSM303DLHC.mSensorMapRef);
 			}
@@ -1448,7 +1451,9 @@ public class Configuration {
 			aMap.putAll(SensorADC.mChannelMapRef);
 			aMap.putAll(SensorBridgeAmp.mChannelMapRef);
 			aMap.putAll(SensorGSR.mChannelMapRef);
-			aMap.putAll(SensorMPU9X50.mChannelMapRef);
+	        if(!ShimmerObject.USE_SENSOR_CLASS_MPU9X50){
+	        	aMap.putAll(SensorMPU9150.mChannelMapRef);
+	        }
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.putAll(SensorLSM303DLHC.mChannelMapRef);
 			}
@@ -2056,6 +2061,5 @@ public class Configuration {
 	}
 	
 }
-
 
 
