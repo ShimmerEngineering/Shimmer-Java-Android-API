@@ -12,8 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -100,6 +102,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					if(!shimmer.isStreaming() || !shimmer.isSDLogging()) {
 						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer);
 						sensorsDialog.initialize();
+						sensorsDialog.main(null);
+					} else {
+						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
 				}
 			}
@@ -115,6 +120,18 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		mnTools.add(mntmDeviceConfiguration);
+		
+		//TODO: Test
+//		JCheckBox[] cBoxTest = new JCheckBox[3];
+//		cBoxTest[0] = new JCheckBox("Test 0", true);
+//		cBoxTest[0].setBounds(50, 50, 50, 50);
+//		frame.getContentPane().add(cBoxTest[0]);
+//		cBoxTest[0].setVisible(true);
+//		
+//		cBoxTest[1] = new JCheckBox("Test 1", true);
+//		cBoxTest[1].setBounds(75, 100, 100, 100);
+//		frame.getContentPane().add(cBoxTest[1]);
+//		cBoxTest[1].setVisible(true);
 		
 	}
 
