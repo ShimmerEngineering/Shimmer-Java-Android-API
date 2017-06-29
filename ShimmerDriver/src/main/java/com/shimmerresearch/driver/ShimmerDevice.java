@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,9 +57,11 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG;
@@ -388,7 +391,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			HashMap<String, ConfigOptionDetailsSensor> configOptionsMapPerSensor = abstractSensor.getConfigOptionsMap();
 				
 			if(configOptionsMapPerSensor!=null && configOptionsMapPerSensor.keySet().size()>0){
-				mConfigOptionsMap.putAll(configOptionsMapPerSensor);
+//				mConfigOptionsMap.putAll(configOptionsMapPerSensor);
+				loadCompatibleConfigOptionGroupEntries(configOptionsMapPerSensor);
+				
 				// taking out duplicates for orientation algorithm config options 
 //					for(String s: configOptionsMapPerSensor.keySet()){
 //						if(mConfigOptionsMap.containsKey(s)){
@@ -406,10 +411,35 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//New approach - should not be run when using ShimmerObject
 	public void generateSensorGroupingMap(){
 		mSensorGroupingMap = new TreeMap<Integer, SensorGroupingDetails>(); 
-		for(AbstractSensor sensor:mMapOfSensorClasses.values()){
-			Map<Integer, SensorGroupingDetails> sensorGroupingMap = sensor.getSensorGroupingMap(); 
-			if(sensorGroupingMap!=null){
-				mSensorGroupingMap.putAll(sensorGroupingMap);
+		
+		Iterator<AbstractSensor> iteratorSensors = mMapOfSensorClasses.values().iterator();
+		while(iteratorSensors.hasNext()){
+			AbstractSensor sensor = iteratorSensors.next();
+//			mSensorGroupingMap.putAll(sensor.getSensorGroupingMap());
+			loadCompatibleSensorGroupEntries(sensor.getSensorGroupingMap());
+		}
+	}
+
+	protected void loadCompatibleSensorGroupEntries(Map<Integer, SensorGroupingDetails> groupMapRef) {
+		if(groupMapRef!=null){
+			Iterator<Entry<Integer, SensorGroupingDetails>> iteratorSensorGroupMap = groupMapRef.entrySet().iterator();
+			while(iteratorSensorGroupMap.hasNext()){
+				Entry<Integer, SensorGroupingDetails> entry = iteratorSensorGroupMap.next();
+				if(isVerCompatibleWithAnyOf(entry.getValue().mListOfCompatibleVersionInfo)){
+					mSensorGroupingMap.put(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+	}
+
+	protected void loadCompatibleConfigOptionGroupEntries(Map<String, ConfigOptionDetailsSensor> configOptionMapRef) {
+		if(configOptionMapRef!=null){
+			Iterator<Entry<String, ConfigOptionDetailsSensor>> iteratorConfigOptionMap = configOptionMapRef.entrySet().iterator();
+			while(iteratorConfigOptionMap.hasNext()){
+				Entry<String, ConfigOptionDetailsSensor> entry = iteratorConfigOptionMap.next();
+				if(isVerCompatibleWithAnyOf(entry.getValue().mListOfCompatibleVersionInfo)){
+					mConfigOptionsMap.put(entry.getKey(), entry.getValue());
+				}
 			}
 		}
 	}
@@ -1540,6 +1570,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_ALL):
 				setMapOfSensorCalibrationAll((TreeMap<Integer, TreeMap<Integer, CalibDetails>>) valueToSet);
 				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_PER_SENSOR):
+				setSensorCalibrationPerSensor(Integer.parseInt(identifier), (TreeMap<Integer, CalibDetails>) valueToSet);
+				//TODO decide whether to include the below
+//				returnValue = valueToSet;
+				break;
 	        default:
 	        	break;
 		}
@@ -1589,6 +1624,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			case(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME):
 	        	returnValue = getConfigTimeParsed();
 	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_PER_SENSOR):
+				Integer sensorMapKey = Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR;
+				try{
+					sensorMapKey = Integer.parseInt(identifier);
+				} catch (NumberFormatException nFE){
+					//Do nothing
+				}
+
+				returnValue = getMapOfSensorCalibrationPerSensor(sensorMapKey);
+				break;
 			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_ALL):
 				returnValue = getMapOfSensorCalibrationAll();
 				break;
@@ -3038,7 +3083,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return
 	 */
 	protected double calcMaxSamplingRate() {
-		return 2048.0;
+		double maxGUISamplingRate = 2048.0;
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			double sensorMaxRate = abstractSensor.calcMaxSamplingRate();
+			maxGUISamplingRate = Math.min(maxGUISamplingRate, sensorMaxRate);
+		}
+		return maxGUISamplingRate;
 	}
 
 	/**

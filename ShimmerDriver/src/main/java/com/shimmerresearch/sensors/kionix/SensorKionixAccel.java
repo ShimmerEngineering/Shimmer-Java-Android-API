@@ -16,6 +16,8 @@ import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.OldCalDetails;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driver.ConfigByteLayout;
+import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -205,29 +207,34 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	
 	
 	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
-//		int idxAnalogAccelCalibration = 31;
-		//fix for newer firmware -> see InfomemLayoutShimmer3
-		int idxAnalogAccelCalibration =		34;
-		int lengthGeneralCalibrationBytes = 21;
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		
-		//Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = generateCalParamAnalogAccel();
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, idxAnalogAccelCalibration, lengthGeneralCalibrationBytes);
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+			
+			// Analog Accel Calibration Parameters
+			byte[] bufferCalibrationParameters = generateCalParamByteArrayAccelLn();
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxAnalogAccelCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+		}
 	}
 	
 	
 	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-//		int idxAnalogAccelCalibration = 31;
-		//fix for newer firmware -> see InfomemLayoutShimmer3
-		int idxAnalogAccelCalibration =		34;
-		int lengthGeneralCalibrationBytes = 21;
-
-		//Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
-		System.arraycopy(mInfoMemBytes, idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
-		parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);	
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+			
+			if (shimmerDevice.isConnected()){
+				getCurrentCalibDetailsAccelLn().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+			}
+			
+			// Analog Accel Calibration Parameters
+			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+			System.arraycopy(configBytes, configByteLayoutCast.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
+		}
 	}
 
 
@@ -355,11 +362,6 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 		return mCurrentCalibDetailsAccelLn.getValidOffsetVector();
 	}
 	
-	public CalibDetailsKinematic getCurrentCalibDetails(int sensorMapKey, int range){
-		CalibDetailsKinematic calibPerSensor = (CalibDetailsKinematic) super.getCalibForSensor(sensorMapKey, range);
-		return calibPerSensor;
-	}
-	
 	public void updateCurrentAccelLnCalibInUse(){
 		mCurrentCalibDetailsAccelLn = getCurrentCalibDetailsAccelLn();
 	}
@@ -372,6 +374,16 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 		return null;
 	}
 	
+	/**
+	 * Converts the Analog Accel calibration variables from Shimmer Object
+	 * into a byte array for sending to the Shimmer.
+	 * 
+	 * @return the bytes array containing the Analog Accel Calibration
+	 */
+	public byte[] generateCalParamByteArrayAccelLn(){
+		return getCurrentCalibDetailsAccelLn().generateCalParamByteArray();
+	}
+
 	//--------- Sensor specific methods end --------------
 
 

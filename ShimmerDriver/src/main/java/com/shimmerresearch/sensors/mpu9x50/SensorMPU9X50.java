@@ -24,9 +24,11 @@ import com.shimmerresearch.driver.calibration.CalibDetailsKinematic.CALIBRATION_
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
+import com.shimmerresearch.driverUtilities.OnTheFlyCalGyro;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
@@ -37,6 +39,8 @@ import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.driver.ConfigByteLayout;
+import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -51,7 +55,13 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/** * */
 	private static final long serialVersionUID = -1137540822708521997L;
 	
+	protected int mSensorMapKeyAccel = -1;
+	protected int mSensorMapKeyMag = -1;
+	protected int mSensorMapKeyGyro = -1;
+
 	//--------- Sensor specific variables start --------------
+	private boolean debugGyroRate = false;
+
 	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
 	private int mGyroRange = 1;													 
 	protected boolean mLowPowerGyro = false;
@@ -100,11 +110,11 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 
 	// ----------   Gyro start ---------------
 
-	//TODO Shimmer2 doesn't belong here
-	//Default values Shimmer2
-	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
-	protected static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
+//	//TODO Shimmer2 doesn't belong here
+//	//Default values Shimmer2
+//	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
+//	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
+//	protected static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
 	//Shimmer3
 	public static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	public static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};	
@@ -113,16 +123,6 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	public static final double[][] SensitivityMatrixGyro1000dpsShimmer3 = {{32.8,0,0},{0,32.8,0},{0,0,32.8}};
 	public static final double[][] SensitivityMatrixGyro2000dpsShimmer3 = {{16.4,0,0},{0,16.4,0},{0,0,16.4}};
 		
-    public static final Map<String, OldCalDetails> mOldCalRangeMap;
-    static {
-        Map<String, OldCalDetails> aMap = new LinkedHashMap<String, OldCalDetails>();
-        aMap.put("gyro_250dps", new OldCalDetails("gyro_250dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 0));
-        aMap.put("gyro_500dps", new OldCalDetails("gyro_500dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 1));
-        aMap.put("gyro_1000ps", new OldCalDetails("gyro_1000ps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 2));
-        aMap.put("gyro_2000dps", new OldCalDetails("gyro_2000dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 3));
-
-        mOldCalRangeMap = Collections.unmodifiableMap(aMap);
-    }
 	
 	private CalibDetailsKinematic calibDetailsGyro250 = new CalibDetailsKinematic(
 			ListofMPU9150GyroRangeConfigValues[0], 
@@ -299,15 +299,8 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		public static String ORIENT = "Orient";
 	}
 	
-	public boolean mEnableOntheFlyGyroOVCal = false;
+	transient protected OnTheFlyCalGyro mOnTheFlyCalGyro = new OnTheFlyCalGyro(); 
 
-	public double mGyroXOVCalThreshold = 1.2;
-	DescriptiveStatistics mGyroXX;
-	DescriptiveStatistics mGyroXY;
-	DescriptiveStatistics mGyroXZ;
-	DescriptiveStatistics mGyroXXRaw;
-	DescriptiveStatistics mGyroXYRaw;
-	DescriptiveStatistics mGyroXZRaw;
 	public boolean mEnableXCalibration = true;
 	public byte[] mInquiryResponseXBytes;
 	
@@ -462,41 +455,6 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	//TODO fill in all conflicting sensors for each sensor listed below -> not all were done in Configuration.Shimmer3
 	//TODO should MPU9150_MPL_RATE be in all mListOfConfigOptionKeysAssociated??
 
-	public static final SensorDetailsRef sensorMpu9150GyroRef = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.GYRO,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO),
-			Arrays.asList(
-					GuiLabelConfig.MPU9X50_GYRO_RANGE, 
-					GuiLabelConfig.MPU9X50_GYRO_RATE),
-			Arrays.asList(
-					ObjectClusterSensorName.GYRO_X, 
-					ObjectClusterSensorName.GYRO_Y, 
-					ObjectClusterSensorName.GYRO_Z),
-			false);
-//	{
-//		sensorMpu9150GyroRef.mCalibSensorKey = 0x01;
-//	}
-	
-	public static final SensorDetailsRef sensorMpu9150AccelRef = new SensorDetailsRef(0x40<<(2*8), 0x40<<(2*8), GuiLabelSensors.ACCEL_MPU,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer4,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL), 
-			Arrays.asList(GuiLabelConfig.MPU9X50_ACCEL_RANGE),
-			Arrays.asList(
-					ObjectClusterSensorName.ACCEL_MPU_X,
-					ObjectClusterSensorName.ACCEL_MPU_Y,
-					ObjectClusterSensorName.ACCEL_MPU_Z),
-			false);
-
-	public static final SensorDetailsRef sensorMpu9150MagRef = new SensorDetailsRef(0x20<<(2*8), 0x20<<(2*8), GuiLabelSensors.MAG_MPU,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer4,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG),
-			Arrays.asList(GuiLabelConfig.MPU9X50_MAG_RATE),
-			Arrays.asList(
-					ObjectClusterSensorName.MAG_MPU_X,
-					ObjectClusterSensorName.MAG_MPU_Y,
-					ObjectClusterSensorName.MAG_MPU_Z),
-			false);
-	
    // ------------ Check byte index for Temp----------------
 //	public static final SensorDetailsRef sensorMpu9150TempRef = new SensorDetailsRef(0x02<<(streamingByteIndex*8), 0x02<<(logHeaderByteIndex*8), Shimmer3.GuiLabelSensors.MPL_TEMPERATURE));
 	public static final SensorDetailsRef sensorMpu9150TempRef = new SensorDetailsRef(0x02<<(2*8), 0x02<<(2*8), GuiLabelSensors.MPL_TEMPERATURE,
@@ -588,7 +546,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	//MPL calibrated sensors
 	public static final SensorDetailsRef sensorMpu9150MplGyro = new SensorDetailsRef((long)0, (long)0x80<<(4*8), GuiLabelSensors.GYRO_MPU_MPL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_GYRO_RANGE,
 					GuiLabelConfig.MPU9X50_GYRO_RATE,
@@ -602,7 +560,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 
 	public static final SensorDetailsRef sensorMpu9150MplAccel = new SensorDetailsRef((long)0, (long)0x40<<(4*8), GuiLabelSensors.ACCEL_MPU_MPL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_ACCEL_RANGE,
 					GuiLabelConfig.MPU9X50_MPL_LPF),
@@ -614,7 +572,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplMag = new SensorDetailsRef((long)0, (long)0x20<<(4*8), GuiLabelSensors.MAG_MPU_MPL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_MPL_LPF),
 			Arrays.asList(
@@ -635,13 +593,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 			false);
 
 	
-    public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
+    public static final Map<Integer, SensorDetailsRef> mSensorMapRefCommon;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, SensorMPU9X50.sensorMpu9150GyroRef);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL, SensorMPU9X50.sensorMpu9150AccelRef);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG,SensorMPU9X50.sensorMpu9150MagRef);
-
 		//TODO decide what to do with below -> update, I can't remember why I added this message
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
 
@@ -658,7 +612,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, SensorMPU9X50.sensorMpu9150MplMag);
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW, SensorMPU9X50.sensorMpu9150MplQuat6DofRaw);
 
-		mSensorMapRef = Collections.unmodifiableMap(aMap);
+		mSensorMapRefCommon = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
     
@@ -676,6 +630,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	public SensorMPU9X50(SENSORS sensorType, ShimmerDevice shimmerDevice) {
 		super(sensorType, shimmerDevice);
 	}
+	
     //--------- Constructors for this class end --------------
 
 	
@@ -701,55 +656,6 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		mConfigOptionsMap.put(GuiLabelConfig.MPU9X50_GYRO_LPM,configOptionMpu9150GyroLpm); 
 	}
 
-	@Override
-	public void generateSensorGroupMapping() {
-		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-
-//		if((mShimmerVerObject.isShimmerGen3() && mShimmerVerObject.getFirmwareIdentifier()==FW_ID.SDLOG) //){
-//				|| mShimmerVerObject.isShimmerGen4()){
-			
-			if(mShimmerVerObject.isShimmerGen4()){
-				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU.ordinal(), new SensorGroupingDetails(
-						GuiLabelSensorTiles.MPU,
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG),
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			}
-			
-			if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.ordinal(), new SensorGroupingDetails(
-						GuiLabelSensorTiles.GYRO,
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			}
-
-			if(mShimmerVerObject.isSupportedMpl()){
-				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG.ordinal(), new SensorGroupingDetails(
-						GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG,
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG),
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-				
-				mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER.ordinal(), new SensorGroupingDetails(
-						GuiLabelSensorTiles.MPU_OTHER,
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP,
-									Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF),
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
-			}
-
-//		}
-//		else {
-//			mSensorGroupingMap.put(GuiLabelSensorTiles.GYRO, new SensorGroupingDetails(
-//					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)));
-//			mSensorGroupingMap.get(GuiLabelSensorTiles.GYRO).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW;
-//		}
-		
-		super.updateSensorGroupingMap();
-	}
-	
-	
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 
@@ -783,19 +689,13 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 					}
 				}
 	
-				double[] gyroCalibratedData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, mCurrentCalibDetailsGyro);
+				double[] gyroCalibratedData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, getCurrentCalibDetailsGyro());
 //				double[] gyroCalibratedData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 //				//for testing
 ////				double[] gyroCalibratedData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3);
 				
-				if (mEnableOntheFlyGyroOVCal){
-					mGyroXX.addValue(gyroCalibratedData[0]);
-					mGyroXY.addValue(gyroCalibratedData[1]);
-					mGyroXZ.addValue(gyroCalibratedData[2]);
-	
-					if (mGyroXX.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXY.getStandardDeviation()<mGyroXOVCalThreshold && mGyroXZ.getStandardDeviation()<mGyroXOVCalThreshold){
-						mCurrentCalibDetailsGyro.updateCurrentOffsetVector(mGyroXXRaw.getMean(), mGyroXYRaw.getMean(), mGyroXZRaw.getMean());
-					}
+				if (isGyroOnTheFlyCalEnabled()){
+					getOnTheFlyCalGyro().updateGyroOnTheFlyGyroOVCal(getCurrentCalibDetailsGyro(), gyroCalibratedData, unCalibratedGyroData[0], unCalibratedGyroData[1], unCalibratedGyroData[2]);
 				}
 				
 				//Add calibrated data to Object cluster
@@ -1057,193 +957,131 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	}
 	
 	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte4 = 128+0;
-		int idxConfigSetupByte5 = 128+1;
-		int idxConfigSetupByte6 = 128+4;	
-		int idxConfigSetupByte1 = 7;
-		int idxConfigSetupByte2 = 8;
-		int idxConfigSetupByte3 = 9;
-//		int idxMPU9150GyroCalibration = 52;
-		//fix for newer firmware -> see InfomemLayoutShimmer3
-		int idxMPU9150GyroCalibration =     55;
-		//Config Byte1
-		int bitShiftMPU9150AccelGyroSamplingRate =	0;
-		int maskMPU9150AccelGyroSamplingRate = 0xFF;
-		//Config Byte2
-		int bitShiftMPU9150GyroRange = 0;
-		int maskMPU9150GyroRange = 0x03;
-		//Config Byte3
-		int bitShiftMPU9150AccelRange = 6;
-		int maskMPU9150AccelRange = 0x03;
-		// MPL related
-		int bitShiftMPU9150DMP = 7;
-		int maskMPU9150DMP = 0x01;
-		int bitShiftMPU9150LPF = 3;
-		int maskMPU9150LPF = 0x07;
-		int bitShiftMPU9150MotCalCfg = 0;
-		int maskMPU9150MotCalCfg = 0x07;
-		int bitShiftMPU9150MPLSamplingRate = 5;
-		int maskMPU9150MPLSamplingRate = 0x07;
-		int bitShiftMPU9150MagSamplingRate = 2;
-//		int maskMPU9150MagSamplingRate = 0x07;
-		int lengthGeneralCalibrationBytes =	21;
-		int bitShiftMPLSensorFusion = 7;
-		int maskMPLSensorFusion = 0x01;
-		int bitShiftMPLGyroCalTC = 6;
-		int maskMPLGyroCalTC = 0x01;
-		int bitShiftMPLVectCompCal = 5;
-		int maskMPLVectCompCal = 0x01;
-		int bitShiftMPLMagDistCal = 4;
-		int maskMPLMagDistCal = 0x01;
-		int bitShiftMPLEnable = 3;
-		int maskMPLEnable = 0x01;
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+		
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+			
+			configBytes[configByteLayoutCast.idxConfigSetupByte1] |= (byte) ((getMPU9X50GyroAccelRate() & configByteLayoutCast.maskMPU9150AccelGyroSamplingRate) << configByteLayoutCast.bitShiftMPU9150AccelGyroSamplingRate);
+			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getGyroRange() & configByteLayoutCast.maskMPU9150GyroRange) << configByteLayoutCast.bitShiftMPU9150GyroRange);
+			configBytes[configByteLayoutCast.idxConfigSetupByte3] |= (byte) ((getMPU9X50AccelRange() & configByteLayoutCast.maskMPU9150AccelRange) << configByteLayoutCast.bitShiftMPU9150AccelRange);
+			
+			// MPU9150 Gyroscope Calibration Parameters
+			byte[] bufferCalibrationParameters = generateCalParamGyroscope();
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxMPU9150GyroCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
 
-		mInfoMemBytes[idxConfigSetupByte1] |= (byte) ((mMPU9150GyroAccelRate & maskMPU9150AccelGyroSamplingRate) << bitShiftMPU9150AccelGyroSamplingRate);
-		mInfoMemBytes[idxConfigSetupByte2] |= (byte) ((getGyroRange() & maskMPU9150GyroRange) << bitShiftMPU9150GyroRange);
-		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mMPU9150AccelRange & maskMPU9150AccelRange) << bitShiftMPU9150AccelRange);
+			if(shimmerDevice.getShimmerVerObject().isSupportedMpl()) {
+				configBytes[configByteLayoutCast.idxConfigSetupByte4] = (byte) (0x00);
+				configBytes[configByteLayoutCast.idxConfigSetupByte5] = (byte) (0x00);
+				configBytes[configByteLayoutCast.idxConfigSetupByte6] = (byte) (0x00);
 
-		// MPU9150 Gyroscope Calibration Parameters
-		byte[] bufferCalibrationParameters = generateCalParamGyroscope();
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, idxMPU9150GyroCalibration, lengthGeneralCalibrationBytes);
+				configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((mMPU9150DMP & configByteLayoutCast.maskMPU9150DMP) << configByteLayoutCast.bitShiftMPU9150DMP);
+				configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & configByteLayoutCast.maskMPU9150LPF) << configByteLayoutCast.bitShiftMPU9150LPF);
+				configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & configByteLayoutCast.maskMPU9150MotCalCfg) << configByteLayoutCast.bitShiftMPU9150MotCalCfg);
 
-		//if(getFirmwareIdentifier()==FW_ID.SDLOG) {
-		mInfoMemBytes[idxConfigSetupByte4] |= (byte) ((mMPU9150DMP & maskMPU9150DMP) << bitShiftMPU9150DMP);
-		mInfoMemBytes[idxConfigSetupByte4] |= (byte) ((mMPU9150LPF & maskMPU9150LPF) << bitShiftMPU9150LPF);
-		mInfoMemBytes[idxConfigSetupByte4] |= (byte) ((mMPU9150MotCalCfg & maskMPU9150MotCalCfg) << bitShiftMPU9150MotCalCfg);
+				configBytes[configByteLayoutCast.idxConfigSetupByte5] |= (byte) ((mMPU9150MPLSamplingRate & configByteLayoutCast.maskMPU9150MPLSamplingRate) << configByteLayoutCast.bitShiftMPU9150MPLSamplingRate);
+				configBytes[configByteLayoutCast.idxConfigSetupByte5] |= (byte) ((mMPU9150MagSamplingRate & configByteLayoutCast.maskMPU9150MPLSamplingRate) << configByteLayoutCast.bitShiftMPU9150MagSamplingRate);
 
-		mInfoMemBytes[idxConfigSetupByte5] |= (byte) ((mMPU9150MPLSamplingRate & maskMPU9150MPLSamplingRate) << bitShiftMPU9150MPLSamplingRate);
-		mInfoMemBytes[idxConfigSetupByte5] |= (byte) ((mMPU9150MagSamplingRate & maskMPU9150MPLSamplingRate) << bitShiftMPU9150MagSamplingRate);
+				configBytes[configByteLayoutCast.idxSensors3] = (byte) ((shimmerDevice.getEnabledSensors() >> configByteLayoutCast.bitShiftSensors3) & 0xFF);
+				configBytes[configByteLayoutCast.idxSensors4] = (byte) ((shimmerDevice.getEnabledSensors() >> configByteLayoutCast.bitShiftSensors4) & 0xFF);
 
-		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLSensorFusion & maskMPLSensorFusion) << bitShiftMPLSensorFusion);
-		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLGyroCalTC & maskMPLGyroCalTC) << bitShiftMPLGyroCalTC);
-		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLVectCompCal & maskMPLVectCompCal) << bitShiftMPLVectCompCal);
-		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLMagDistCal & maskMPLMagDistCal) << bitShiftMPLMagDistCal);
-		mInfoMemBytes[idxConfigSetupByte6] |= (byte) ((mMPLEnable & maskMPLEnable) << bitShiftMPLEnable);
-
+				configBytes[configByteLayoutCast.idxConfigSetupByte6] |= (byte) ((mMPLSensorFusion & configByteLayoutCast.maskMPLSensorFusion) << configByteLayoutCast.bitShiftMPLSensorFusion);
+				configBytes[configByteLayoutCast.idxConfigSetupByte6] |= (byte) ((mMPLGyroCalTC & configByteLayoutCast.maskMPLGyroCalTC) << configByteLayoutCast.bitShiftMPLGyroCalTC);
+				configBytes[configByteLayoutCast.idxConfigSetupByte6] |= (byte) ((mMPLVectCompCal & configByteLayoutCast.maskMPLVectCompCal) << configByteLayoutCast.bitShiftMPLVectCompCal);
+				configBytes[configByteLayoutCast.idxConfigSetupByte6] |= (byte) ((mMPLMagDistCal & configByteLayoutCast.maskMPLMagDistCal) << configByteLayoutCast.bitShiftMPLMagDistCal);
+				configBytes[configByteLayoutCast.idxConfigSetupByte6] |= (byte) ((mMPLEnable & configByteLayoutCast.maskMPLEnable) << configByteLayoutCast.bitShiftMPLEnable);
+				
+				//TODO: decide what to do
+				//MPL Accel Calibration Parameters
+				//MPL Mag Calibration Configuration
+				//MPL Gyro Calibration Configuration
+			}
+		}
 	}
 
 	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte4 = 128+0;
-		int idxConfigSetupByte5 = 128+1;
-		int idxConfigSetupByte6 = 128+4;	
-		int idxConfigSetupByte1 = 7;
-		int idxConfigSetupByte2 = 8;
-		int idxConfigSetupByte3 = 9;
-//		int idxMPU9150GyroCalibration = 52;
-		//fix for newer firmware -> see InfomemLayoutShimmer3
-		int idxMPU9150GyroCalibration =     55;
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+		
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+			
+			setMPU9X50GyroAccelRate((configBytes[configByteLayoutCast.idxConfigSetupByte1] >> configByteLayoutCast.bitShiftMPU9150AccelGyroSamplingRate) & configByteLayoutCast.maskMPU9150AccelGyroSamplingRate);
+			checkLowPowerGyro(); // check rate to determine if Sensor is in LPM mode
 
-		int idxMPLAccelCalibration = 128+5; //+21
-		int idxMPLMagCalibration = 128+26; //+21
-		int idxMPLGyroCalibration = 128+47; //+12
-		//Config Byte1
-		int bitShiftMPU9150AccelGyroSamplingRate =	0;
-		int maskMPU9150AccelGyroSamplingRate = 0xFF;
-		//Config Byte2
-		int bitShiftMPU9150GyroRange = 0;
-		int maskMPU9150GyroRange = 0x03;
-		//Config Byte3
-		int bitShiftMPU9150AccelRange = 6;
-		int maskMPU9150AccelRange = 0x03;
-		// MPL related
-		int bitShiftMPU9150DMP = 7;
-		int maskMPU9150DMP = 0x01;
-		int bitShiftMPU9150LPF = 3;
-		int maskMPU9150LPF = 0x07;
-		int bitShiftMPU9150MotCalCfg = 0;
-		int maskMPU9150MotCalCfg = 0x07;
-		int bitShiftMPU9150MPLSamplingRate = 5;
-		int maskMPU9150MPLSamplingRate = 0x07;
-		int bitShiftMPU9150MagSamplingRate = 2;
-		int maskMPU9150MagSamplingRate = 0x07;
-		int lengthGeneralCalibrationBytes =	21;
-		int bitShiftMPLSensorFusion = 7;
-		int maskMPLSensorFusion = 0x01;
-		int bitShiftMPLGyroCalTC = 6;
-		int maskMPLGyroCalTC = 0x01;
-		int bitShiftMPLVectCompCal = 5;
-		int maskMPLVectCompCal = 0x01;
-		int bitShiftMPLMagDistCal = 4;
-		int maskMPLMagDistCal = 0x01;
-		int bitShiftMPLEnable = 3;
-		int maskMPLEnable = 0x01;
+			setGyroRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftMPU9150GyroRange) & configByteLayoutCast.maskMPU9150GyroRange);
+			
+			setMPU9150AccelRange((configBytes[configByteLayoutCast.idxConfigSetupByte3] >> configByteLayoutCast.bitShiftMPU9150AccelRange) & configByteLayoutCast.maskMPU9150AccelRange);
 
-		mMPU9150GyroAccelRate = (mInfoMemBytes[idxConfigSetupByte1] >> bitShiftMPU9150AccelGyroSamplingRate) & maskMPU9150AccelGyroSamplingRate;
-		checkLowPowerGyro(); // check rate to determine if Sensor is in LPM mode
-
-		setGyroRange((mInfoMemBytes[idxConfigSetupByte2] >> bitShiftMPU9150GyroRange) & maskMPU9150GyroRange);
-		mMPU9150AccelRange = (mInfoMemBytes[idxConfigSetupByte3] >> bitShiftMPU9150AccelRange) & maskMPU9150AccelRange;
-
-		// MPU9150 Gyroscope Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
-		System.arraycopy(mInfoMemBytes, idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 ,lengthGeneralCalibrationBytes);
-		parseCalibParamFromPacketGyro(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
-
-		// InfoMem C - Start - used by SdLog and LogAndStream
-		if(mShimmerVerObject.getFirmwareIdentifier()==FW_ID.SDLOG) {
-			mMPU9150DMP = (mInfoMemBytes[idxConfigSetupByte4] >> bitShiftMPU9150DMP) & maskMPU9150DMP;
-			mMPU9150LPF = (mInfoMemBytes[idxConfigSetupByte4] >> bitShiftMPU9150LPF) & maskMPU9150LPF;
-			mMPU9150MotCalCfg =  (mInfoMemBytes[idxConfigSetupByte4] >> bitShiftMPU9150MotCalCfg) & maskMPU9150MotCalCfg;
-	
-			mMPU9150MPLSamplingRate = (mInfoMemBytes[idxConfigSetupByte5] >> bitShiftMPU9150MPLSamplingRate) & maskMPU9150MPLSamplingRate;
-			mMPU9150MagSamplingRate = (mInfoMemBytes[idxConfigSetupByte5] >> bitShiftMPU9150MagSamplingRate) & maskMPU9150MagSamplingRate;
-	
-	
-	
-			mMPLSensorFusion = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLSensorFusion) & maskMPLSensorFusion;
-			mMPLGyroCalTC = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLGyroCalTC) & maskMPLGyroCalTC;
-			mMPLVectCompCal = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLVectCompCal) & maskMPLVectCompCal;
-			mMPLMagDistCal = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLMagDistCal) & maskMPLMagDistCal;
-			mMPLEnable = (mInfoMemBytes[idxConfigSetupByte6] >> bitShiftMPLEnable) & maskMPLEnable;
-	
-			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
-	
-			//MPL Accel Calibration Parameters
-			bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
-			System.arraycopy(mInfoMemBytes, idxMPLAccelCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
-			int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
-			double[] AM=new double[9];
-			for (int i=0;i<9;i++) {
-				AM[i]=((double)formattedPacket[6+i])/100;
+			if (shimmerDevice.isConnected()){
+				getCurrentCalibDetailsGyro().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 			}
-			double[][] alignmentMatrixMPLA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-			double[][] sensitivityMatrixMPLA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-			double[][] offsetVectorMPLA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-			AlignmentMatrixMPLAccel = alignmentMatrixMPLA; 			
-			SensitivityMatrixMPLAccel = sensitivityMatrixMPLA; 	
-			OffsetVectorMPLAccel = offsetVectorMPLA;
-	
-			//MPL Mag Calibration Configuration
-			bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
-			System.arraycopy(mInfoMemBytes, idxMPLMagCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
-			formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
-			AM=new double[9];
-			for (int i=0;i<9;i++) {
-				AM[i]=((double)formattedPacket[6+i])/100;
+			// MPU9150 Gyroscope Calibration Parameters
+			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+			System.arraycopy(configBytes, configByteLayoutCast.idxMPU9150GyroCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			parseCalibParamFromPacketGyro(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
+
+			if(shimmerDevice.getShimmerVerObject().isSupportedMpl()) {
+				setMPU9150DMP((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftMPU9150DMP) & configByteLayoutCast.maskMPU9150DMP);
+				setMPU9150LPF((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftMPU9150LPF) & configByteLayoutCast.maskMPU9150LPF);
+				setMPU9150MotCalCfg( (configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftMPU9150MotCalCfg) & configByteLayoutCast.maskMPU9150MotCalCfg);
+				
+				setMPU9150MPLSamplingRate((configBytes[configByteLayoutCast.idxConfigSetupByte5] >> configByteLayoutCast.bitShiftMPU9150MPLSamplingRate) & configByteLayoutCast.maskMPU9150MPLSamplingRate);
+				setMPU9150MagSamplingRate((configBytes[configByteLayoutCast.idxConfigSetupByte5] >> configByteLayoutCast.bitShiftMPU9150MagSamplingRate) & configByteLayoutCast.maskMPU9150MagSamplingRate);
+				
+				setMPLSensorFusion((configBytes[configByteLayoutCast.idxConfigSetupByte6] >> configByteLayoutCast.bitShiftMPLSensorFusion) & configByteLayoutCast.maskMPLSensorFusion);
+				setMPLGyroCalTC((configBytes[configByteLayoutCast.idxConfigSetupByte6] >> configByteLayoutCast.bitShiftMPLGyroCalTC) & configByteLayoutCast.maskMPLGyroCalTC);
+				setMPLVectCompCal((configBytes[configByteLayoutCast.idxConfigSetupByte6] >> configByteLayoutCast.bitShiftMPLVectCompCal) & configByteLayoutCast.maskMPLVectCompCal);
+				setMPLMagDistCal((configBytes[configByteLayoutCast.idxConfigSetupByte6] >> configByteLayoutCast.bitShiftMPLMagDistCal) & configByteLayoutCast.maskMPLMagDistCal);
+				setMPLEnabled((configBytes[configByteLayoutCast.idxConfigSetupByte6] >> configByteLayoutCast.bitShiftMPLEnable) & configByteLayoutCast.maskMPLEnable);
+				
+				String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
+				//MPL Accel Calibration Parameters
+				bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+				System.arraycopy(configBytes, configByteLayoutCast.idxMPLAccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+				int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
+				double[] AM=new double[9];
+				for (int i=0;i<9;i++) {
+					AM[i]=((double)formattedPacket[6+i])/100;
+				}
+				double[][] alignmentMatrixMPLA = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+				double[][] sensitivityMatrixMPLA = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+				double[][] offsetVectorMPLA = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+				AlignmentMatrixMPLAccel = alignmentMatrixMPLA; 			
+				SensitivityMatrixMPLAccel = sensitivityMatrixMPLA; 	
+				OffsetVectorMPLAccel = offsetVectorMPLA;
+		
+				//MPL Mag Calibration Configuration
+				bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+				System.arraycopy(configBytes, configByteLayoutCast.idxMPLMagCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+				formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
+				AM=new double[9];
+				for (int i=0;i<9;i++) {
+					AM[i]=((double)formattedPacket[6+i])/100;
+				}
+				double[][] alignmentMatrixMPLMag = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+				double[][] sensitivityMatrixMPLMag = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+				double[][] offsetVectorMPLMag = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+				AlignmentMatrixMPLMag = alignmentMatrixMPLMag; 			
+				SensitivityMatrixMPLMag = sensitivityMatrixMPLMag; 	
+				OffsetVectorMPLMag = offsetVectorMPLMag;
+		
+				//MPL Gyro Calibration Configuration
+				bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+				System.arraycopy(configBytes, configByteLayoutCast.idxMPLGyroCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+				formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
+				AM=new double[9];
+				for (int i=0;i<9;i++) {
+					AM[i]=((double)formattedPacket[6+i])/100;
+				}
+				double[][] alignmentMatrixMPLGyro = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
+				double[][] sensitivityMatrixMPLGyro = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
+				double[][] offsetVectorMPLGyro = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
+				AlignmentMatrixMPLGyro = alignmentMatrixMPLGyro; 			
+				SensitivityMatrixMPLGyro = sensitivityMatrixMPLGyro; 	
+				OffsetVectorMPLGyro = offsetVectorMPLGyro;
 			}
-			double[][] alignmentMatrixMPLMag = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-			double[][] sensitivityMatrixMPLMag = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-			double[][] offsetVectorMPLMag = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-			AlignmentMatrixMPLMag = alignmentMatrixMPLMag; 			
-			SensitivityMatrixMPLMag = sensitivityMatrixMPLMag; 	
-			OffsetVectorMPLMag = offsetVectorMPLMag;
-	
-			//MPL Gyro Calibration Configuration
-			bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
-			System.arraycopy(mInfoMemBytes, idxMPLGyroCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
-			formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);
-			AM=new double[9];
-			for (int i=0;i<9;i++) {
-				AM[i]=((double)formattedPacket[6+i])/100;
-			}
-			double[][] alignmentMatrixMPLGyro = {{AM[0],AM[1],AM[2]},{AM[3],AM[4],AM[5]},{AM[6],AM[7],AM[8]}}; 				
-			double[][] sensitivityMatrixMPLGyro = {{formattedPacket[3],0,0},{0,formattedPacket[4],0},{0,0,formattedPacket[5]}}; 
-			double[][] offsetVectorMPLGyro = {{formattedPacket[0]},{formattedPacket[1]},{formattedPacket[2]}};
-			AlignmentMatrixMPLGyro = alignmentMatrixMPLGyro; 			
-			SensitivityMatrixMPLGyro = sensitivityMatrixMPLGyro; 	
-			OffsetVectorMPLGyro = offsetVectorMPLGyro;
 		}
 	}
 		
@@ -1256,83 +1094,71 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 
 		switch(configLabel){
 //Booleans
-			case(GuiLabelConfig.MPU9X50_DMP):
-		    	setMPU9150DMP((boolean)valueToSet);
-		    	break;
-			case(GuiLabelConfig.MPU9X50_MPL):
-		    	setMPLEnable((boolean)valueToSet);
-		    	break;
-			case(GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION):
-		    	setMPLSensorFusion((boolean)valueToSet);
-		    	break;
-			case(GuiLabelConfig.MPU9X50_MPL_GYRO_CAL):
-		    	setMPLGyroCalTC((boolean)valueToSet);
-		    	break;
-			case(GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL):
-		    	setMPLVectCompCal((boolean)valueToSet);
-		    	break;
-			case(GuiLabelConfig.MPU9X50_MPL_MAG_CAL):
-		    	setMPLMagDistCal((boolean)valueToSet);
-		    	break;
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM):
+				setLowPowerGyro((boolean)valueToSet);
+	        	break;
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP):
+	        	setMPU9150DMP((boolean)valueToSet);
+	        	break;
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL):
+	        	setMPLEnabled((boolean)valueToSet);
+	        	break;
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION):
+	        	setMPLSensorFusion((boolean)valueToSet);
+	        	break;
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_GYRO_CAL):
+	        	setMPLGyroCalTC((boolean)valueToSet);
+	        	break;
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL):
+	        	setMPLVectCompCal((boolean)valueToSet);
+	        	break;
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_MAG_CAL):
+	        	setMPLMagDistCal((boolean)valueToSet);
+	        	break;
 //Integers
-			case(GuiLabelConfig.MPU9X50_GYRO_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE):
 	        	setMPU9150GyroRange((int)valueToSet);
 	        	break;
-
-			case(GuiLabelConfig.MPU9X50_ACCEL_RANGE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE):
 				setMPU9150AccelRange((int)valueToSet);
 	        	break;
-			case(GuiLabelConfig.MPU9X50_DMP_GYRO_CAL):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP_GYRO_CAL):
 				setMPU9150MotCalCfg((int)valueToSet);
 	        	break;
-			case(GuiLabelConfig.MPU9X50_MPL_LPF):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_LPF):
 				setMPU9150LPF((int)valueToSet);
 	        	break;
-			case(GuiLabelConfig.MPU9X50_MPL_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_RATE):
 				setMPU9150MPLSamplingRate((int)valueToSet);
 	        	break;
-			case(GuiLabelConfig.MPU9X50_MAG_RATE):
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE):
 				setMPU9150MagSamplingRate((int)valueToSet);
 	        	break;
-
 //Strings
-			case(GuiLabelConfig.MPU9X50_GYRO_RATE):
-            	double bufDouble = 4.0; // Minimum = 4Hz
-            	if(((String)valueToSet).isEmpty()) {
-            		bufDouble = 4.0;
-            	}
-            	else {
-            		bufDouble = Double.parseDouble((String)valueToSet);
-            	}
-            	
-            	// Since user is manually entering a freq., clear low-power mode so that their chosen rate will be set correctly. Tick box will be re-enabled automatically if they enter LPM freq. 
-            	setLowPowerGyro(false); 
-        		setMPU9150GyroAccelRateFromFreq(bufDouble);
-
-        		returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
-//        		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
-
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE):
+	        	double bufDouble = 4.0; // Minimum = 4Hz
+	        	if(((String)valueToSet).isEmpty()) {
+	        		bufDouble = 4.0;
+	        	}
+	        	else {
+	        		bufDouble = Double.parseDouble((String)valueToSet);
+	        	}
+	        	
+	        	// Since user is manually entering a freq., clear low-power mode so that their chosen rate will be set correctly. Tick box will be re-enabled automatically if they enter LPM freq. 
+	        	setLowPowerGyro(false); 
+				if(debugGyroRate && mShimmerDevice!=null)
+					System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tGuiLabelConfig\t" + bufDouble);
+	    		setMPU9150GyroAccelRateFromFreq(bufDouble);
+	
+	    		returnValue = Double.toString((double)Math.round(getMPU9X50GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+	//    		System.out.println("Gyro Sampling rate: " + getMPU9X50GyroAccelRateInHz() + " " + returnValue);
+	
 	        	break;
-			case(GuiLabelConfig.MPU9X50_GYRO_RATE_HZ):
-//				returnValue = getMPU9150GyroAccelRateInHz();
-	        	break;
-			
-			case(GuiLabelConfigCommon.RANGE):
-				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-					this.setConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_GYRO_RANGE, valueToSet);
-				}
-				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
-					this.setConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_ACCEL_RANGE, valueToSet);
-				}
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE_HZ):
+				System.err.print("BUG");
+	//			returnValue = getMPU9X50GyroAccelRateInHz();
 				break;
-			case(GuiLabelConfigCommon.RATE):
-				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
-					this.setConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_GYRO_RATE, valueToSet);
-				}
-				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
-					this.setConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_GYRO_RATE, valueToSet);
-				}
-				break;			
+
 			
 	        default:
 	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
@@ -1347,6 +1173,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		Object returnValue = null;
 		switch(configLabel){
 //Booleans
+			case(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM):
+				returnValue = checkLowPowerGyro();
+	        	break;
 			case(GuiLabelConfig.MPU9X50_DMP):
 				returnValue = isMPU9150DMP();
 	        	break;
@@ -1372,43 +1201,43 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	        	break;
 
 			case(GuiLabelConfig.MPU9X50_ACCEL_RANGE):
-				returnValue = getMPU9150AccelRange();
+				returnValue = getMPU9X50AccelRange();
 		    	break;
 			case(GuiLabelConfig.MPU9X50_DMP_GYRO_CAL):
-				returnValue = getMPU9150MotCalCfg();
+				returnValue = getMPU9X50MotCalCfg();
 		    	break;
 			case(GuiLabelConfig.MPU9X50_MPL_LPF):
-				returnValue = getMPU9150LPF();
+				returnValue = getMPU9X50LPF();
 		    	break;
 			case(GuiLabelConfig.MPU9X50_MPL_RATE):
-				returnValue = getMPU9150MPLSamplingRate();
+				returnValue = getMPU9X50MPLSamplingRate();
 				break;
 			case(GuiLabelConfig.MPU9X50_MAG_RATE):
-				returnValue = getMPU9150MagSamplingRate();
+				returnValue = getMPU9X50MagSamplingRate();
 		    	break;
 		    	
 //Strings
 			case(GuiLabelConfig.MPU9X50_GYRO_RATE):
-				returnValue = Double.toString((double)Math.round(getMPU9150GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
-//    		    		System.out.println("Gyro Sampling rate: " + getMPU9150GyroAccelRateInHz() + " " + returnValue);
+				returnValue = Double.toString((double)Math.round(getMPU9X50GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+//    		    		System.out.println("Gyro Sampling rate: " + getMPU9X50GyroAccelRateInHz() + " " + returnValue);
 	        	break;
 			case(GuiLabelConfig.MPU9X50_GYRO_RATE_HZ):
-				returnValue = getMPU9150GyroAccelRateInHz();
+				returnValue = getMPU9X50GyroAccelRateInHz();
 				break;
 				
 			case(GuiLabelConfigCommon.RANGE):
-				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+				if(sensorMapKey==mSensorMapKeyGyro){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_GYRO_RANGE);
 				}
-				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+				else if(sensorMapKey==mSensorMapKeyAccel){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_ACCEL_RANGE);
 				}
 				break;
 			case(GuiLabelConfigCommon.RATE):
-				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+				if(sensorMapKey==mSensorMapKeyGyro){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_GYRO_RATE);
 				}
-				else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+				else if(sensorMapKey==mSensorMapKeyAccel){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_GYRO_RATE);
 				}
 				break;
@@ -1449,6 +1278,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	public void setSensorSamplingRate(double samplingRateHz) {
 		setLowPowerGyro(false);
 
+		if(debugGyroRate && mShimmerDevice!=null)
+			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tsetSamplingRateSensors\t" + samplingRateHz);
+
 		setMPU9150GyroAccelRateFromFreq(samplingRateHz);
 		setMPU9150MagRateFromFreq(samplingRateHz);
 		if(mShimmerVerObject.isSupportedMpl()){
@@ -1461,14 +1293,13 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			//RS (30/5/2016) - commented in ShimmerObject			
-			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL){
+			if(sensorMapKey==mSensorMapKeyAccel){
 				setDefaultMpu9150AccelSensorConfig(isSensorEnabled);
 			}
-			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+			else if(sensorMapKey==mSensorMapKeyGyro){
 				setDefaultMpu9150GyroSensorConfig(isSensorEnabled);
 			}
-			else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG){
+			else if(sensorMapKey==mSensorMapKeyMag){
 		//		setMPU9150MagRateFromFreq(getSamplingRateShimmer());
 				setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
 			}
@@ -1483,6 +1314,8 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		return false;
 	}
 	
+	
+	
 	// ----------- MPU9X50 options start -------------------------
 
 	/**
@@ -1493,6 +1326,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	public int setMPU9150GyroAccelRateFromFreq(double freq) {
+		if(debugGyroRate && mShimmerDevice!=null)
+			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\t" + freq);
+		
 		boolean setFreq = false;
 		// Check if channel is enabled 
 		if(checkIfAnyMplChannelEnabled()){
@@ -1520,17 +1356,17 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 				if(result>255) {
 					result = 255;
 				}
-				mMPU9150GyroAccelRate = result;
+				setMPU9X50GyroAccelRate(result);
 	
 			}
 			else {
-				mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
+				setMPU9X50GyroAccelRate(0xFF); // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
 			}
 		}
 		else {
-			mMPU9150GyroAccelRate = 0xFF; // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
+			setMPU9X50GyroAccelRate(0xFF); // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
 		}
-		return mMPU9150GyroAccelRate;
+		return getMPU9X50GyroAccelRate();			
 	}
 	
 	/**
@@ -1540,13 +1376,13 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 * @param freq
 	 * @return int the rate configuration setting for the respective sensor
 	 */
-	private int setMPU9150MagRateFromFreq(double freq) {
+	public int setMPU9150MagRateFromFreq(double freq) {
 		boolean setFreq = false;
 		// Check if channel is enabled 
 		if(checkIfAnyMplChannelEnabled()){
 			setFreq = true;
 		}
-		else if (isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)) {
+		else if (isSensorEnabled(mSensorMapKeyMag)) {
 			setFreq = true;
 		}
 		
@@ -1576,7 +1412,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 * @param freq
 	 * @return int the rate configuration setting for the respective sensor
 	 */
-	private int setMPU9150MplRateFromFreq(double freq) {
+	public int setMPU9150MplRateFromFreq(double freq) {
 		// Check if channel is enabled 
 		if(!checkIfAnyMplChannelEnabled()){
 			mMPU9150MPLSamplingRate = 0; // 10 Hz
@@ -1597,9 +1433,10 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		return mMPU9150MPLSamplingRate;
 	}
 	
-	private void setDefaultMpu9150GyroSensorConfig(boolean isSensorEnabled) {
+	//TODO check why is the Accel SensorMapKey is referenced here
+	public void setDefaultMpu9150GyroSensorConfig(boolean isSensorEnabled) {
 		if(!checkIfAnyMplChannelEnabled()) {
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)) {
+			if(!isSensorEnabled(mSensorMapKeyAccel)) {
 				if(isSensorEnabled) {
 					setLowPowerGyro(false);
 				}
@@ -1610,7 +1447,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 			
 			setGyroRange(1);
 //			if(!state){
-//				setGyroRange(1); // 500dps
+//				mGyroRange=1; // 500dps
 //			}
 		}
 		else {
@@ -1618,9 +1455,10 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		}
 	}
 	
-	private void setDefaultMpu9150AccelSensorConfig(boolean isSensorEnabled) {
+	//TODO check why is the Gyro SensorMapKey is referenced here
+	public void setDefaultMpu9150AccelSensorConfig(boolean isSensorEnabled) {
 		if(!checkIfAnyMplChannelEnabled()) {
-			if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)) {
+			if(!isSensorEnabled(mSensorMapKeyGyro)) {
 				if(isSensorEnabled) {
 					setLowPowerGyro(false);
 				}
@@ -1638,20 +1476,20 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		}
 	}
 	
-	private void setDefaultMpu9150MplSensorConfig(boolean isSensorEnabled) {
+	public void setDefaultMpu9150MplSensorConfig(boolean isSensorEnabled) {
+		mMPU9150DMP = isSensorEnabled? 1:0;
+		mMPLEnable = isSensorEnabled? 1:0;
+		mMPU9150LPF = isSensorEnabled? 1:0; // 1 = 188Hz
+		mMPU9150MotCalCfg = isSensorEnabled? 1:0; // 1= Fast Calibration
+		mMPLGyroCalTC = isSensorEnabled? 1:0;
+		mMPLVectCompCal = isSensorEnabled? 1:0;
+		mMPLMagDistCal = isSensorEnabled? 1:0;
+		mMPLSensorFusion = 0;
+
 		if(isSensorEnabled){
-			mMPU9150DMP = 1;
-			mMPLEnable = 1;
-			mMPU9150LPF = 1; // 188Hz
-			mMPU9150MotCalCfg = 1; // Fast Calibration
-			mMPLGyroCalTC = 1;
-			mMPLVectCompCal = 1;
-			mMPLMagDistCal = 1;
-			mMPLSensorFusion = 0;
-			
 //			//Gyro rate can not be set to 250dps when DMP is on
-//			if(getGyroRange()==0){
-//				setGyroRange(1);
+//			if(mGyroRange==0){
+//				mGyroRange=1;
 //			}
 			
 			//force gyro range to be 2000dps and accel range to be +-2g - others untested
@@ -1659,36 +1497,26 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 			mMPU9150AccelRange= 0; // 2g
 			
 			setLowPowerGyro(false);
-			setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
-			setMPU9150MplRateFromFreq(mMaxSetShimmerSamplingRate);
 		}
 		else {
-			mMPU9150DMP = 0;
-			mMPLEnable = 0;
-			mMPU9150LPF = 0;
-			mMPU9150MotCalCfg = 0;
-			mMPLGyroCalTC = 0;
-			mMPLVectCompCal = 0;
-			mMPLMagDistCal = 0;
-			mMPLSensorFusion = 0;
-			
 			if(checkIfAMpuGyroOrAccelEnabled()){
+				if(debugGyroRate && mShimmerDevice!=null)
+					System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tMPL off but Gyro/Accel still enabled\t" + mShimmerDevice.getSamplingRateShimmer());
 				setMPU9150GyroAccelRateFromFreq(mMaxSetShimmerSamplingRate);
 			}
 			else {
 				setLowPowerGyro(true);
 			}
-			
-			setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
-			setMPU9150MplRateFromFreq(mMaxSetShimmerSamplingRate);
 		}
+		setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
+		setMPU9150MplRateFromFreq(mMaxSetShimmerSamplingRate);
 	}
 	
-	private boolean checkIfAMpuGyroOrAccelEnabled(){
-		if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)) {
+	public boolean checkIfAMpuGyroOrAccelEnabled(){
+		if(isSensorEnabled(mSensorMapKeyGyro)) {
 			return true;
 		}
-		if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)) {
+		if(isSensorEnabled(mSensorMapKeyAccel)) {
 			return true;
 		}
 //		if(mSensorMap.get(SensorMapKey.SHIMMER_MPU9150_MAG) != null) {
@@ -1699,16 +1527,11 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		return false;
 	}	
 	
-	private boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
-		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
+	public boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
+		if(mShimmerVerObject.isSupportedMpl()){
 			if(mSensorMap.keySet().size()>0){
-				
 				for(int key:SensorMPU9X50.mListOfMplChannels){
-//				for(int key:mListOfMplChannels){
-					if(key==sensorMapKey){
-						continue;
-					}
-					if(isSensorEnabled(key)) {
+					if(key!=sensorMapKey && isSensorEnabled(key)) {
 						return true;
 					}
 				}
@@ -1717,10 +1540,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		return false;
 	}
 			
-	protected boolean checkIfAnyMplChannelEnabled(){
-		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
+	public boolean checkIfAnyMplChannelEnabled(){
+		if(mShimmerVerObject.isSupportedMpl()){
 			if(mSensorMap.keySet().size()>0){
-				
 				for(int key:SensorMPU9X50.mListOfMplChannels){
 //					for(int key:mListOfMplChannels){
 					if(isSensorEnabled(key)) {
@@ -1735,75 +1557,76 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/**
 	 * @return the mMPU9150AccelRange
 	 */
-	public int getMPU9150AccelRange() {
+	public int getMPU9X50AccelRange() {
 		return mMPU9150AccelRange;
 	}
 
 	/**
 	 * @return the mMPU9150GyroAccelRate
 	 */
-	public int getMPU9150GyroAccelRate() {
+	public int getMPU9X50GyroAccelRate() {
 		return mMPU9150GyroAccelRate;
 	}
 
 	/**
 	 * @return the mMPU9150MotCalCfg
 	 */
-	public int getMPU9150MotCalCfg() {
+	public int getMPU9X50MotCalCfg() {
 		return mMPU9150MotCalCfg;
 	}
 	/**
 	 * @return the mMPU9150LPF
 	 */
-	public int getMPU9150LPF() {
+	public int getMPU9X50LPF() {
 		return mMPU9150LPF;
 	}
 	
-	public int getMPU9150DMP() {
+	public int getMPU9X50DMP() {
 		return mMPU9150DMP;
 	}
 
 	/**
 	 * @return the mMPU9150MPLSamplingRate
 	 */
-	public int getMPU9150MPLSamplingRate() {
+	public int getMPU9X50MPLSamplingRate() {
 		return mMPU9150MPLSamplingRate;
 	}
 
 	/**
 	 * @return the mMPU9150MagSamplingRate
 	 */
-	public int getMPU9150MagSamplingRate() {
+	public int getMPU9X50MagSamplingRate() {
 		return mMPU9150MagSamplingRate;
 	}
 	
 	/**
 	 * @return the mMPU9150GyroAccelRate in Hz
 	 */
-	public double getMPU9150GyroAccelRateInHz() {
+	public double getMPU9X50GyroAccelRateInHz() {
 		// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
 		double numerator = 1000.0;
 		if(mMPU9150LPF == 0) {
 			numerator = 8000.0;
 		}
 		
-		if(mMPU9150GyroAccelRate == 0) {
+		if(getMPU9X50GyroAccelRate() == 0) {
 			return numerator;
 		}
 		else {
-			return (numerator / (mMPU9150GyroAccelRate + 1));
+			return (numerator / (getMPU9X50GyroAccelRate()+1));
 		}
 	}
 	
 	/**
 	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
 	 */
-	protected void setMPU9150AccelRange(int i) {
-		if(checkIfAnyMplChannelEnabled()){
-			i=0; // 2g
+	public void setMPU9150AccelRange(int i) {
+		if(ArrayUtils.contains(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues, i)){
+			if(checkIfAnyMplChannelEnabled()){
+				i=0; // 2g
+			}
+			mMPU9150AccelRange = i;
 		}
-		
-		mMPU9150AccelRange = i;
 	}
 	
 	public int getGyroRange(){
@@ -1814,7 +1637,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		setMPU9150GyroRange(gyroRange);
 	}
 	
-	protected void setMPU9150GyroRange(int i){
+	public void setMPU9150GyroRange(int i){
 		if(ArrayUtils.contains(ListofMPU9150GyroRangeConfigValues, i)){
 //			//Gyro rate can not be set to 250dps when DMP is on
 //			if((checkIfAnyMplChannelEnabled()) && (i==0)){
@@ -1833,14 +1656,14 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/**
 	 * @param mMPU9150MPLSamplingRate the mMPU9150MPLSamplingRate to set
 	 */
-	protected void setMPU9150MPLSamplingRate(int mMPU9150MPLSamplingRate) {
+	public void setMPU9150MPLSamplingRate(int mMPU9150MPLSamplingRate) {
 		this.mMPU9150MPLSamplingRate = mMPU9150MPLSamplingRate;
 	}
 
 	/**
 	 * @param mMPU9150MagSamplingRate the mMPU9150MagSamplingRate to set
 	 */
-	protected void setMPU9150MagSamplingRate(int mMPU9150MagSamplingRate) {
+	public void setMPU9150MagSamplingRate(int mMPU9150MagSamplingRate) {
 		this.mMPU9150MagSamplingRate = mMPU9150MagSamplingRate;
 	}
 	
@@ -1856,8 +1679,8 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/**
 	 * @param state the mMPU9150DMP state to set
 	 */
-	protected void setMPU9150DMP(boolean state) {
-		mMPU9150DMP = state? 1:0;
+	public void setMPU9150DMP(boolean state) {
+		setMPU9150DMP((state? 1:0));
 	}
 	
 	public void setMPU9150DMP(int i) {
@@ -1874,22 +1697,19 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/**
 	 * @param state the mMPLEnable state to set
 	 */
-	protected void setMPLEnable(boolean state) {
-		mMPLEnable = state? 1:0;
+	public void setMPLEnabled(boolean state) {
+		setMPLEnabled(state? 1:0);
 	}
 
 	/**
-	 * @return the mMPLSensorFusion
+	 * @param state the mMPLEnable state to set
 	 */
-	public boolean isMPLSensorFusion() {
-		return (mMPLSensorFusion>0)? true:false;
+	public void setMPLEnabled(int state) {
+		mMPLEnable = state;
 	}
 
-	/**
-	 * @param state the mMPLSensorFusion state to set
-	 */
-	protected void setMPLSensorFusion(boolean state) {
-		mMPLSensorFusion = state? 1:0;
+	public int getMPLEnable() {
+		return mMPLEnable;
 	}
 
 	/**
@@ -1902,8 +1722,16 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/**
 	 * @param state the mMPLGyroCalTC state to set
 	 */
-	protected void setMPLGyroCalTC(boolean state) {
+	public void setMPLGyroCalTC(boolean state) {
 		mMPLGyroCalTC = state? 1:0;
+	}
+	
+	public void setMPLGyroCalTC(int state) {
+		mMPLGyroCalTC = state;
+	}
+	
+	public int getMPLGyroCalTC() {
+		return mMPLGyroCalTC;
 	}
 
 	/**
@@ -1916,8 +1744,24 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/**
 	 * @param state the mMPLVectCompCal state to set
 	 */
-	protected void setMPLVectCompCal(boolean state) {
-		mMPLVectCompCal = state? 1:0;
+	public void setMPLVectCompCal(boolean state) {
+		setMPLVectCompCal(state? 1:0);
+	}
+	
+	/**
+	 * @param state the mMPLVectCompCal state to set
+	 */
+	public void setMPLVectCompCal(int state) {
+		this.mMPLVectCompCal = state;
+	}
+	
+	public int getMPLVectCompCal() {
+		return mMPLVectCompCal;
+	}
+
+	
+	public int getMPLMagDistCal() {
+		return mMPLMagDistCal;
 	}
 
 	/**
@@ -1930,36 +1774,62 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/**
 	 * @param state the mMPLMagDistCal state to set
 	 */
-	protected void setMPLMagDistCal(boolean state) {
-		mMPLMagDistCal = state? 1:0;
+	public void setMPLMagDistCal(boolean state) {
+		setMPLMagDistCal(state? 1:0);
 	}
+
 	
+	/**
+	 * @param state the mMPLMagDistCal state to set
+	 */
+	public void setMPLMagDistCal(int state) {
+		mMPLMagDistCal = state;
+	}
+
 	/**
 	 * @return the mMPLSensorFusion
 	 */
-	public boolean getmMPLSensorFusion() {
+	public int getMPLSensorFusion() {
+		return mMPLSensorFusion;
+	}
+
+	/**
+	 * @return the mMPLSensorFusion
+	 */
+	public boolean isMPLSensorFusion() {
 		return (mMPLSensorFusion>0)? true:false;
 	}
 
 	/**
 	 * @param state the mMPLSensorFusion state to set
 	 */
-	protected void setmMPLSensorFusion(boolean state) {
-		mMPLSensorFusion = state? 1:0;
+	public void setMPLSensorFusion(boolean state) {
+		setMPLSensorFusion(state? 1:0);
+	}
+
+	public void setMPLSensorFusion(int state) {
+		mMPLSensorFusion = state;
 	}
 
 
 	/**
 	 * @param mMPU9150MotCalCfg the mMPU9150MotCalCfg to set
 	 */
-	protected void setMPU9150MotCalCfg(int mMPU9150MotCalCfg) {
-		this.mMPU9150MotCalCfg = mMPU9150MotCalCfg;
+	public void setMPU9150MotCalCfg(boolean state) {
+		setMPU9150MotCalCfg(state? 1:0);
+	}
+
+	/**
+	 * @param mMPU9150MotCalCfg the mMPU9150MotCalCfg to set
+	 */
+	public void setMPU9150MotCalCfg(int state) {
+		this.mMPU9150MotCalCfg = state;
 	}
 
 	/**
 	 * @param mMPU9150LPF the mMPU9150LPF to set
 	 */
-	protected void setMPU9150LPF(int mMPU9150LPF) {
+	public void setMPU9150LPF(int mMPU9150LPF) {
 		this.mMPU9150LPF = mMPU9150LPF;
 	}
 	
@@ -1967,13 +1837,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 * @return the mMPU9150GyroAccelRate
 	 */
 
-	public void setMPU9150GyroAccelRate(int rate) {
+	public void setMPU9X50GyroAccelRate(int rate) {
 		mMPU9150GyroAccelRate = rate;
 	}
-    public boolean isGyroOnTheFlyCalEnabled(){
-		return mEnableOntheFlyGyroOVCal;
-	}
-    
     
 	public byte[] generateCalParamGyroscope(){
 		return mCurrentCalibDetailsGyro.generateCalParamByteArray();
@@ -2052,7 +1918,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 * 
 	 * @param enable
 	 */
-	protected void setLowPowerGyro(boolean enable){
+	public void setLowPowerGyro(boolean enable){
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			if(!checkIfAnyMplChannelEnabled()) {
 				mLowPowerGyro = enable;
@@ -2060,15 +1926,15 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 			else{
 				mLowPowerGyro = false;
 			}
+			
+			if(debugGyroRate && mShimmerDevice!=null)
+				System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tsetLowPowerGyro\t" + mShimmerDevice.getSamplingRateShimmer());
 			setMPU9150GyroAccelRateFromFreq(mMaxSetShimmerSamplingRate);
 		}
 	}
 	
 	public int getLowPowerGyroEnabled() {
-		if(mLowPowerGyro)
-			return 1;
-		else
-			return 0;
+		return mLowPowerGyro? 1:0;
 	}
 
 	/**
@@ -2123,20 +1989,45 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		
 		setLowPowerGyro(false);
 		
-		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO)){
+		if(!isSensorEnabled(mSensorMapKeyGyro)){
 			setDefaultMpu9150GyroSensorConfig(false);
 		}
-		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL)){
+		if(!isSensorEnabled(mSensorMapKeyAccel)){
 			setDefaultMpu9150AccelSensorConfig(false);
 		}
-		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG)){
+		if(!isSensorEnabled(mSensorMapKeyMag)){
 //			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
 			setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
 		}
 		if(!checkIfAnyMplChannelEnabled()) {
 			setDefaultMpu9150MplSensorConfig(false);
 		}
+		
+		//Added this for Conensys 1.0.0 release - assumes individual sampling rates of each sensor matches the Shimmer sampling
+		setLowPowerGyro(false);
 	}
+	
+	/**
+	 * @param enable this enables the calibration of the gyroscope while streaming
+	 * @param bufferSize sets the buffersize of the window used to determine the new calibration parameters, see implementation for more details
+	 * @param threshold sets the threshold of when to use the incoming data to recalibrate gyroscope offset, this is in degrees, and the default value is 1.2
+	 */
+	public void enableOnTheFlyGyroCal(boolean state, int bufferSize, double threshold){
+		mOnTheFlyCalGyro.enableOnTheFlyGyroCal(state, bufferSize, threshold);
+	}
+	
+	public void setOnTheFlyGyroCal(boolean state){
+		mOnTheFlyCalGyro.setOnTheFlyGyroCal(state);
+	}
+
+    public boolean isGyroOnTheFlyCalEnabled(){
+    	return mOnTheFlyCalGyro.isGyroOnTheFlyCalEnabled();
+	}
+
+    public OnTheFlyCalGyro getOnTheFlyCalGyro(){
+    	return mOnTheFlyCalGyro;
+    }
+
 	
 	//--------- Optional methods to override in Sensor Class start --------	
 	@Override
@@ -2149,7 +2040,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		calibMapGyro.put(calibDetailsGyro1000.mRangeValue, calibDetailsGyro1000);
 		calibMapGyro.put(calibDetailsGyro2000.mRangeValue, calibDetailsGyro2000);
 		
-		mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, calibMapGyro);
+		mCalibMap.put(mSensorMapKeyGyro, calibMapGyro);
 		updateCurrentGyroCalibInUse();
 	}
 
@@ -2158,39 +2049,36 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 */
 	@Override
 	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
-		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO){
+		if(sensorMapKey==mSensorMapKeyGyro){
 			return isUsingDefaultGyroParam();
 		}
 		return false;
 	}
-	
+
+	@Override
+	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+		updateCurrentGyroCalibInUse();
+	}
+
+	@Override
+	public double calcMaxSamplingRate() {
+		//check if an MPL channel is enabled - limit rate to 51.2Hz
+		if(checkIfAnyMplChannelEnabled() && mShimmerVerObject.isSupportedMpl()){
+			return 51.2;
+		} else {
+			return super.calcMaxSamplingRate();
+		}
+	}
 	//--------- Optional methods to override in Sensor Class end -------- 
 	
 	public void updateCurrentGyroCalibInUse(){
-		mCurrentCalibDetailsGyro = getCurrentCalibDetailsGyro();
+		mCurrentCalibDetailsGyro = getCurrentCalibDetailsIfKinematic(mSensorMapKeyGyro, getGyroRange());
 	}
 	
 	public CalibDetailsKinematic getCurrentCalibDetailsGyro(){
-		CalibDetails calibPerSensor = super.getCalibForSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, getGyroRange());
-		if(calibPerSensor!=null){
-			return (CalibDetailsKinematic) calibPerSensor;
-		}
-		return null;
+		return mCurrentCalibDetailsGyro;
 	}
-
-//	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
-//		String channel = "";
-//
-//		return channel;
-//	}
-//
-//	public static String parseFromGUIChannelsToDBColumn(String channel) {
-//		String dbColumn = "";
-//
-//		return dbColumn;
-//	}
-
-
 
 
 
