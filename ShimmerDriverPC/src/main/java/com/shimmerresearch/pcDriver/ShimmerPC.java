@@ -122,6 +122,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param myName  To allow the user to set a unique identifier for each Shimmer device
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 */
+	@Deprecated
 	public ShimmerPC(String myName, Boolean continousSync) {
 		mShimmerUserAssignedName=myName;
 		setContinuousSync(continousSync);
