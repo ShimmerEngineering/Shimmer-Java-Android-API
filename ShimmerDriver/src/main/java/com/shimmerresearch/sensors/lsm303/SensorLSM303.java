@@ -1,6 +1,7 @@
 package com.shimmerresearch.sensors.lsm303;
 
 import java.util.Arrays;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -26,7 +27,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	private static final long serialVersionUID = -4885535001690922548L;
 
-	
 	protected int mSensorMapKeyAccel = -1;
 	protected int mSensorMapKeyMag = -1;
 	
@@ -133,9 +133,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-		setLowPowerAccelWR(false);
-		setLowPowerMag(false);
-		
 		if(!isSensorEnabled(mSensorMapKeyAccel)) {
 			setDefaultLsm303AccelSensorConfig(false);
 		}
@@ -143,6 +140,10 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		if(!isSensorEnabled(mSensorMapKeyMag)) {
 			setDefaultLsm303MagSensorConfig(false);
 		}
+		
+		//Added this for Conensys 1.0.0 release - assumes individual sampling rates of each sensor matches the Shimmer sampling
+		setLowPowerAccelWR(false);
+		setLowPowerMag(false);
 	}
 	
 	@Override 
@@ -161,13 +162,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	//--------- Abstract methods implemented end --------------
 
-	@Override
-	public void initialise() {
-		super.initialise();
-		updateCurrentAccelWrCalibInUse();
-		updateCurrentMagCalibInUse();
-	}
-	
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override 
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
@@ -519,6 +513,13 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		return false;
 	}
 
+	@Override
+	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+		updateCurrentAccelWrCalibInUse();
+		updateCurrentMagCalibInUse();
+	}
+
 	//--------- Optional methods to override in Sensor Class end --------
 	
 	
@@ -672,14 +673,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		return mCurrentCalibDetailsMag.isUsingDefaultParameters(); 
 	}
 
-	public CalibDetailsKinematic getCurrentCalibDetails(int sensorMapKey, int range){
-		CalibDetails calibPerSensor = getCalibForSensor(sensorMapKey, range);
-		if(calibPerSensor!=null){
-			return (CalibDetailsKinematic) calibPerSensor;
-		}
-		return null;
-	}
-
 	public double[][] getAlignmentMatrixWRAccel(){
 		return mCurrentCalibDetailsAccelWr.getValidAlignmentMatrix();
 	}
@@ -710,12 +703,12 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	public void updateCurrentMagCalibInUse(){
 //		mCurrentCalibDetailsMag = getCurrentCalibDetailsMag();
-		mCurrentCalibDetailsMag = getCurrentCalibDetails(mSensorMapKeyMag, getMagRange());
+		mCurrentCalibDetailsMag = getCurrentCalibDetailsIfKinematic(mSensorMapKeyMag, getMagRange());
 	}
 	
 	public void updateCurrentAccelWrCalibInUse(){
 //		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsAccelWr();
-		mCurrentCalibDetailsAccelWr = getCurrentCalibDetails(mSensorMapKeyAccel, getAccelRange());
+		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsIfKinematic(mSensorMapKeyAccel, getAccelRange());
 	}
 
 	

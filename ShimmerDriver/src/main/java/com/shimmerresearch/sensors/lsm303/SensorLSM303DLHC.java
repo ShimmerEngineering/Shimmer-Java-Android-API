@@ -685,6 +685,9 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL;
 		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG;
 		super.initialise();
+		
+		updateCurrentAccelWrCalibInUse();
+		updateCurrentMagCalibInUse();
 	}
 
 	@Override

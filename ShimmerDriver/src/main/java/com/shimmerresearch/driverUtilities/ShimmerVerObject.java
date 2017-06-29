@@ -332,7 +332,8 @@ public class ShimmerVerObject implements Serializable {
 	}
 
 	public static boolean isSupportedMpl(ShimmerVerObject svo, int hwVer, int fwId) {
-		if (compareVersions(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 7, 0)
+		if ((compareVersions(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 7, 0)
+				&& !compareVersions(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 8, 0))
 //				|| (hwVer==HW_ID.SHIMMER_4_SDK)
 				){
 			return true;

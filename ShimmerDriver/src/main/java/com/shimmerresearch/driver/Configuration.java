@@ -683,18 +683,21 @@ public class Configuration {
 
 			//Digital channels begin
 			public static final int SHIMMER_MPU9150_GYRO = 30;
+			public static final int SHIMMER_MPU9250_GYRO = 31;
 			/** Shimmer3 Wide-range digital accelerometer */
-			public static final int SHIMMER_LSM303DLHC_ACCEL = 31;
-			public static final int SHIMMER_LSM303AH_ACCEL = 32;
-			public static final int SHIMMER_LSM303DLHC_MAG = 33;
-			public static final int SHIMMER_LSM303AH_MAG = 34;
+			public static final int SHIMMER_LSM303DLHC_ACCEL = 32;
+			public static final int SHIMMER_LSM303AH_ACCEL = 33;
+			public static final int SHIMMER_LSM303DLHC_MAG = 34;
+			public static final int SHIMMER_LSM303AH_MAG = 35;
 			/** Shimmer3 Alternative accelerometer */
-			public static final int SHIMMER_MPU9150_ACCEL = 35;
+			public static final int SHIMMER_MPU9150_ACCEL = 36;
+			public static final int SHIMMER_MPU9250_ACCEL = 37;
 			/** Shimmer3 Alternative magnetometer */
-			public static final int SHIMMER_MPU9150_MAG = 36;
-			public static final int SHIMMER_MPU9150_TEMP = 37;
-			public static final int SHIMMER_BMP180_PRESSURE = 38;
-			public static final int SHIMMER_BMP280_PRESSURE = 39;
+			public static final int SHIMMER_MPU9150_MAG = 38;
+			public static final int SHIMMER_MPU9250_MAG = 39;
+			public static final int SHIMMER_MPU9150_TEMP = 40;
+			public static final int SHIMMER_BMP180_PRESSURE = 41;
+			public static final int SHIMMER_BMP280_PRESSURE = 42;
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
@@ -1313,6 +1316,10 @@ public class Configuration {
 					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
 					svoShimmer4Stock);  
 
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPU9250 = Arrays.asList(
+					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
+					svoShimmer4Stock);  
+
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303AH = Arrays.asList(
 					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream);  
 
@@ -1402,8 +1409,9 @@ public class Configuration {
 	        if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_LN){
 		        aMap.putAll(SensorKionixKXRB52042.mSensorMapRef);
 	        }
-	        if(!ShimmerObject.USE_SENSOR_CLASS_MPU9X50){
-	        	aMap.putAll(SensorMPU9X50.mSensorMapRef);
+	        if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
+	        	aMap.putAll(SensorMPU9X50.mSensorMapRefCommon);
+	        	aMap.putAll(SensorMPU9150.mSensorMapRef);
 	        }
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.putAll(SensorLSM303DLHC.mSensorMapRef);
@@ -1411,7 +1419,6 @@ public class Configuration {
 			aMap.putAll(SensorGSR.mSensorMapRef);
 			aMap.putAll(SensorADC.mSensorMapRef);
 			aMap.putAll(SensorBattVoltage.mSensorMapRef);
-			aMap.putAll(SensorADC.mSensorMapRef);
 //			aMap.putAll(SensorBMP180.mSensorMapRef);
 			aMap.putAll(SensorEXG.mSensorMapRef);
 			// Derived Channels - Bridge Amp Board
@@ -1451,7 +1458,7 @@ public class Configuration {
 			aMap.putAll(SensorADC.mChannelMapRef);
 			aMap.putAll(SensorBridgeAmp.mChannelMapRef);
 			aMap.putAll(SensorGSR.mChannelMapRef);
-	        if(!ShimmerObject.USE_SENSOR_CLASS_MPU9X50){
+	        if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
 	        	aMap.putAll(SensorMPU9150.mChannelMapRef);
 	        }
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
@@ -1491,10 +1498,12 @@ public class Configuration {
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), SensorLSM303DLHC.sensorGroupLsmAccel);
 			}
-			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.ordinal(), new SensorGroupingDetails(
-					Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.tileText,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
+				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.ordinal(), new SensorGroupingDetails(
+						Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.tileText,
+						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
+						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			}
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG.ordinal(), SensorLSM303DLHC.sensorGroupLsmMag);
 			}
@@ -1670,7 +1679,9 @@ public class Configuration {
 //												ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 //			}
 			
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, SensorMPU9X50.configOptionMpu9150GyroRange);
+			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, SensorMPU9X50.configOptionMpu9150GyroRange);
+			}
 
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, SensorLSM303DLHC.configOptionMagRange);
@@ -1694,29 +1705,31 @@ public class Configuration {
 			aMap.put(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ, SensorEXG.configOptionExgRespirationDetectFreq);
 			aMap.put(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE, SensorEXG.configOptionExgRespirationDetectPhase);
 
-			//MPL Options
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE,SensorMPU9X50.configOptionMpu9150AccelRange);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP_GYRO_CAL, SensorMPU9X50.configOptionMpu9150DmpGyroCal);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_LPF, SensorMPU9X50.configOptionMpu9150MplLpf);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_RATE, SensorMPU9X50.configOptionMpu9150MplRate);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE, SensorMPU9X50.configOptionMpu9150MagRate);
-
-		    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
-		    	      new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfOnOff, 
-				    	        Configuration.Shimmer3.ListOfOnOffConfigValues,
-				    	        ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-			
-			//MPL CheckBoxes
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP, SensorMPU9X50.configOptionMpu9150Dmp); 
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL, SensorMPU9X50.configOptionMpu9150Mpl);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION, SensorMPU9X50.configOptionMpu9150Mpl9DofSensorFusion); 
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_GYRO_CAL, SensorMPU9X50.configOptionMpu9150MplGyroCal);
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL, SensorMPU9X50.configOptionMpu9150MplVectorCal); 
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_MAG_CAL, SensorMPU9X50.configOptionMpu9150MplMagCal);
-			
-			//General Config
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE, SensorMPU9X50.configOptionMpu9150GyroRate); 
-//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
+				//MPL Options
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE,SensorMPU9X50.configOptionMpu9150AccelRange);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP_GYRO_CAL, SensorMPU9X50.configOptionMpu9150DmpGyroCal);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_LPF, SensorMPU9X50.configOptionMpu9150MplLpf);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_RATE, SensorMPU9X50.configOptionMpu9150MplRate);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE, SensorMPU9X50.configOptionMpu9150MagRate);
+	
+			    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
+			    	      new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfOnOff, 
+					    	        Configuration.Shimmer3.ListOfOnOffConfigValues,
+					    	        ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+				
+				//MPL CheckBoxes
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP, SensorMPU9X50.configOptionMpu9150Dmp); 
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL, SensorMPU9X50.configOptionMpu9150Mpl);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION, SensorMPU9X50.configOptionMpu9150Mpl9DofSensorFusion); 
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_GYRO_CAL, SensorMPU9X50.configOptionMpu9150MplGyroCal);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL, SensorMPU9X50.configOptionMpu9150MplVectorCal); 
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_MAG_CAL, SensorMPU9X50.configOptionMpu9150MplMagCal);
+				
+				//General Config
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE, SensorMPU9X50.configOptionMpu9150GyroRate); 
+	//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			}
 			
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
 					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
@@ -1732,9 +1745,10 @@ public class Configuration {
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,SensorLSM303DLHC.configOptionAccelLpm);
 			}
-			aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM, SensorMPU9X50.configOptionMpu9150GyroLpm);
+			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM, SensorMPU9X50.configOptionMpu9150GyroLpm);
+			}
 			
-			//XXX-RS-LSM-SensorClass? 
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM, 
 						new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));

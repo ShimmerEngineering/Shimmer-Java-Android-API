@@ -242,7 +242,7 @@ public class SensorMMA736x extends AbstractSensor {
 	}
 
 	public void updateCurrentAccelCalibInUse(){
-		mCurrentCalibDetailsAccel = getCurrentCalibDetails(Configuration.Shimmer2.SensorMapKey.ACCEL, getAccelRange());
+		mCurrentCalibDetailsAccel = getCurrentCalibDetailsIfKinematic(Configuration.Shimmer2.SensorMapKey.ACCEL, getAccelRange());
 	}
 
 	public CalibDetailsKinematic getCurrentCalibDetailsAccelLn(){
@@ -253,7 +253,7 @@ public class SensorMMA736x extends AbstractSensor {
 		return null;
 	}
 
-	public CalibDetailsKinematic getCurrentCalibDetails(int sensorMapKey, int range){
+	public CalibDetailsKinematic getCurrentCalibDetailsIfKinematic(int sensorMapKey, int range){
 		CalibDetails calibPerSensor = getCalibForSensor(sensorMapKey, range);
 		if(calibPerSensor!=null){
 			return (CalibDetailsKinematic) calibPerSensor;

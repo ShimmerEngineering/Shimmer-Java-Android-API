@@ -442,6 +442,9 @@ public class SensorLSM303AH extends SensorLSM303 {
 		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_ACCEL;
 		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_MAG;
 		super.initialise();
+		
+		updateCurrentAccelWrCalibInUse();
+		updateCurrentMagCalibInUse();
 	}
 
 	@Override
@@ -595,4 +598,5 @@ public class SensorLSM303AH extends SensorLSM303 {
 
 	//--------- Sensor specific methods end --------------
 
+	
 }
