@@ -64,15 +64,15 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	boolean mClearGraphatLimit = false;
 	Chart2D mChart = null;
 	public int mWindowSize = 0;
-	private int mUpdateCounterForHRLabel = 0;
-	private double mLastKnownMarkerValue=-1;
+
+
 	
 	public HashMap<String,Double> mMapofHalfWindowSize = new HashMap<String,Double>();
 	
 	public static float DEFAULT_LINE_THICKNESS=2;
 	
-	double mCurrentXValue = 0;
-	private boolean mIsPlotPaused = false;
+	protected double mCurrentXValue = 0;
+	protected boolean mIsPlotPaused = false;
 	public boolean mIsLegendLabelsPainted = true;
 	public boolean mIsScaleLabelsPainted = true;
 	public boolean mIsAxisLabelsPainted = true;
@@ -991,82 +991,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 	
 	
 	
-public void adjustSingleTraceLengthUsingSetSize(double percentage,String tracename, int downSampleV) {
-		
-		Iterator <ITrace2D> entries = mListofTraces.iterator();
-		while (entries.hasNext()) {
-			ITrace2D trace = entries.next();
-			if(trace != null){
-				String name = trace.getName();
-				if (name.contains(tracename)){
-					if(mMapofDefaultXAxisSizes.get(name) != null){
-						int newSize = (int)Math.round((mMapofDefaultXAxisSizes.get(name)*percentage));
-						//System.out.println("%: " + percentage +"   Size: " +mMapofDefaultXAxisSizes.get(name));
-						System.err.println("TRACE: " +name + " OLD SIZE: " + trace.getMaxSize() + " SIZE: " +newSize);
-						int traceDSV = trace.getMaxSize()/newSize;
-						Iterator<ITracePoint2D> entriespoints =  ((Trace2DLtd)trace).iterator();
-						int size = trace.getSize();
-						int count = 0;
-						List<ITracePoint2D> listPoints = new ArrayList<ITracePoint2D>();
-						
-						//now downsample the data in the current trace
-						//this is a really inefficient way of doing this, but the remove method doesn't seem to work only removeall
-						while (entriespoints.hasNext()) { 
-							ITracePoint2D traceP = entriespoints.next();
-							listPoints.add(traceP);
-							int sizel = listPoints.size();
-							/*
-							if (listPoints.size()>2)
-							System.out.println((listPoints.get(sizel-1).getX()-listPoints.get(sizel-2).getX()));
-						*/
-						}
-						trace.removeAllPoints();
-						for (ITracePoint2D traceP:listPoints){
-							if (count%traceDSV==0){
-								boolean t = trace.addPoint(traceP);
 
-								//System.out.println(t);
-							} else {
-								if (trace.getName().contains(InternalFrameWithPlotManager.EVENT_MARKER_PLOT_TITLE))
-								{
-									if (traceP.getY()!=-1){										
-										if (mLastKnownMarkerValue==-1){
-											mLastKnownMarkerValue=traceP.getY();
-											trace.addPoint(traceP);
-										} else if (mLastKnownMarkerValue!=traceP.getY()){
-											trace.addPoint(traceP);
-										}
-									} else {
-										mLastKnownMarkerValue=-1;
-									}
-								}
-							}
-							count++;
-						}
-						((Trace2DLtd)trace).setMaxSize(newSize);
-						//System.err.println("(Trace2DLtd)trace).setMaxSize: " +newSize);
-					}
-					else{
-						//System.err.println("mMapofDefaultXAxisSizes.get(name) is NULL");
-					}
-				}
-			}
-		}
-		/*
-		for (ITrace2D trace : mListofTraces){
-			String name = trace.getName();
-			if(mMapofDefaultXAxisSizes.get(name) != null){
-				int newSize = (int)Math.round((mMapofDefaultXAxisSizes.get(name)*percentage));
-				System.out.println("PlotManagerPC %: " + percentage +"   Size: " +mMapofDefaultXAxisSizes.get(name));
-				((Trace2DLtd)trace).setMaxSize(newSize);
-		        //System.err.println("(Trace2DLtd)trace).setMaxSize: " +newSize);
-			}
-			else{
-				//System.err.println("mMapofDefaultXAxisSizes.get(name) is NULL");
-			}
-		}*/
-	}
-	
 	
 	public int getTraceLengthMaxSize(String name){
 		return mMapofDefaultXAxisSizes.get(name);
@@ -1363,21 +1288,7 @@ public void adjustSingleTraceLengthUsingSetSize(double percentage,String tracena
 		}
 	}
 	
-	public void setTraceVisible(String channelName){
-		for (ITrace2D trace: mListofTraces){
-			String[] props = trace.getName().split(" ");
-			if (props[1].equals(channelName)
-					|| channelName.equals("all")
-					|| trace.getName().contains(InternalFrameWithPlotManager.EVENT_MARKER_PLOT_TITLE)){
-				//trace.removeAllPoints();
-				//trace.removeAllPointHighlighters();
-				trace.setVisible(true);
-			}
-			else{
-				trace.setVisible(false);
-			}
-		}
-	}
+	
 	
 	public void setSingleTraceVisible(String channelName){
 		for (ITrace2D trace: mListofTraces){
@@ -1410,11 +1321,7 @@ public void adjustSingleTraceLengthUsingSetSize(double percentage,String tracena
 		}
 		return false;
 	}
-	
-	public void setAllGQTraceVisible(){
-		setTraceVisible("all");
-	}
-	
+
 	public void resizeBarPlots(){
 		
         int width = mChart.getWidth();
@@ -1430,114 +1337,7 @@ public void adjustSingleTraceLengthUsingSetSize(double percentage,String tracena
 		}
 	}
 	
-	/**This plots the data of the specified signals 
-	 * 
-	 * @param ojc ObjectCluster holding the data
-	 * @throws Exception When signal is not found
-	 */
-	public void filterDataAndPlot(ObjectCluster ojc) throws Exception {
-		if(!mIsPlotPaused){
-//			System.err.println("PLOTMANGERPC -> STAGE1");
-			String shimmerName = ojc.getShimmerName();
-			
-			double xData = getXDataForPlotting(shimmerName, ojc);
-//			System.err.println("PLOTMANGERPC -> STAGE2");
-			
-			//Sometimes the first x data point of a new graphs comes back with a zero so return if it does  
-			if(xData==0){
-				return;
-			};
-			
-			//MN testing trying to get rid of legend flutter
-//			for(ITrace2D trace:mChart.getTraces()){
-//				String[] props = trace.getName().split(" ");
-				
-			for (int i=0; i<mListofPropertiestoPlot.size(); i++){
-				String[] props = mListofPropertiestoPlot.get(i);
-				String traceName = joinChannelStringArray(props);
-				
-				//prevent eventmarkers from plotting back in time
-				boolean eventMarker=false;
-				if (props[0].equals(InternalFrameWithPlotManager.EVENT_MARKER_PLOT_TITLE)){
-					if (xData>mCurrentXValue){
-						eventMarker=true;
-					} else { // skip any data which is in the past, as there are multiple shimmer devices, this is possible
-						//JC: Just to be safe, do a check to ensure a marker is not missed, this is probably not needed..
-						FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
-						if(f == null){
-							//System.out.println("mChart.getName(): " +mChart.getName());
-							throw new Exception("Signal not found: (" + traceName + ")");
-						}
-						
-						double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
-						if (yData!=-1){ //marker detected
-							xData=mCurrentXValue; //ensure the timestamp doesnt go back in time
-							eventMarker=true;
-						} else {
-							eventMarker=false;
-						}
-					}
-				}
-				
-				if (shimmerName.equals(props[0]) || eventMarker){
-					
-					FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
-					if(f == null){
-						//System.out.println("mChart.getName(): " +mChart.getName());
-						throw new Exception("Signal not found: (" + traceName + ")");
-					}
-					
-					double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
-					
-					if (i>mListofTraces.size()){
-						throw new Exception("Trace does not exist: (" + traceName + ")");
-					}
-					ITrace2D currentTrace = mListofTraces.get(i); 
-					//System.err.println(currentTrace.getMaxY());
-											
-					mCurrentXValue = xData;
-
-					printSignalProps(ojc, currentTrace, props, xData, yData);
-					
-					updateHrPanelIfVisible(props, ojc);
-
-					Double halfWindowSize = mMapofHalfWindowSize.get(traceName);
-					if (halfWindowSize!=null){
-						currentTrace.getTracePainters();
-						addPointToTrace(currentTrace, xData-halfWindowSize, yData);
-					} 
-					else {
-						if(isXAxisTime()){
-							addTracePoint(currentTrace, xData, yData);
-						}
-						else if(isXAxisFrequency()){
-							//TODO buffer data for FFT calculation
-							FftCalculateDetails fftCalculateDetails = mMapOfFftsToPlot.get(traceName);
-							if(fftCalculateDetails!=null){
-								fftCalculateDetails.addData(xData, yData);
-							}
-						}
-					}
-					
-					// the below isn't used.. yet..
-//						if(InternalFrameWithPlotManager.mShowInstantaneousValuesPanel){
-//							if(mCurrentXValue%12 == 0) {
-//								String compareNames = props[0]+"_"+props[1];
-//								for(String key : InternalFrameWithPlotManager.instantaneousValuesTextFields.keySet()) {
-//									if(compareNames.equals(key)) {
-//										DecimalFormat dc = new DecimalFormat("0.00");
-//										String formattedText = dc.format(f.mData);
-//										InternalFrameWithPlotManager.instantaneousValuesTextFields.get(key).setText(formattedText);
-//									}
-//								}
-//							}
-//						}
-				}
-			}
-		}
-	}
-	
-	private void addTracePoint(ITrace2D currentTrace, double xData, double yData) {
+	protected void addTracePoint(ITrace2D currentTrace, double xData, double yData) {
 		addPointToTrace(currentTrace, xData, yData);
 		saveLastDataPoint(currentTrace.getName(), yData);
 	}
@@ -1558,7 +1358,7 @@ public void adjustSingleTraceLengthUsingSetSize(double percentage,String tracena
 		trace.addPoint(xData, yData);
 	}
 
-	private double checkAndCorrectData(String shimmerUserAssignedName, String channelName, String traceName, double data) throws Exception {
+	protected double checkAndCorrectData(String shimmerUserAssignedName, String channelName, String traceName, double data) throws Exception {
 		
 		double yData = data;
 		if (Double.isNaN(yData)){
@@ -1585,65 +1385,6 @@ public void adjustSingleTraceLengthUsingSetSize(double percentage,String tracena
 //		}
 //	}
 	
-	private void updateHrPanelIfVisible(String[] props, ObjectCluster ojc) {
-		if(mIsHRVisible){
-			if(mUpdateCounterForHRLabel > 128){ //update HR panel after 128 object clusters (and for the next 10 object clusters) received to limit number of update calls
-				setPnlHR(props, ojc);
-			}
-			mUpdateCounterForHRLabel++;
-			if(mUpdateCounterForHRLabel > 138){ // only reset when 10 greater than the threshold i.e. 128 to ensure each JLabel on the GUi receives a new data value to update with
-				mUpdateCounterForHRLabel = 0;
-			}
-		}
-	}
-
-	private double getXDataForPlotting(String shimmerName, ObjectCluster ojc) throws Exception {
-		double xData = 0;
-		//first check is x axis signal exist
-		if (mMapofXAxis.size()>0){ 
-			if (mMapofXAxis.get(shimmerName)==null && !mMapofXAxis.containsKey(InternalFrameWithPlotManager.EVENT_MARKER_PLOT_TITLE)){
-				//check if generated x axis exist
-				if (mMapofXAxisGeneratedValue.get(shimmerName)==null){
-					mMapofXAxisGeneratedValue.put(shimmerName, xData);
-				} else {
-					//if exist take the value
-					xData = mMapofXAxisGeneratedValue.get(shimmerName);
-	//				System.err.println("X1 VALUE: " +xData);
-				}
-				 
-				//check if x is the max value 
-				if (xData==mCurrentXValue){
-					xData=xData+1;
-	//				System.err.println("X2 VALUE: " +xData);
-					mMapofXAxisGeneratedValue.remove(shimmerName);
-					mMapofXAxisGeneratedValue.put(shimmerName, xData);
-				} else {
-					xData=mCurrentXValue;
-					mMapofXAxisGeneratedValue.remove(shimmerName);
-					mMapofXAxisGeneratedValue.put(shimmerName, xData);
-				}
-			} 
-			else {
-				String[] props = mMapofXAxis.get(shimmerName);
-				if(props == null){
-					props = mMapofXAxis.get(InternalFrameWithPlotManager.EVENT_MARKER_PLOT_TITLE);
-				}
-				
-				FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
-				if(f!=null){
-					xData = f.mData;
-				}
-				else{
-					System.err.println("ERROR PLOTMANGERPC -> NO X DATA");
-					throw new Exception("No X data: (" + joinChannelStringArray(props) + ")");
-				}
-			}
-		}
-		else{
-			System.err.println("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
-		}
-		return xData;
-	}
 
 	/**This plots the data of the specified signals where the signal to be plotted from ojc holds multiple samples
 	 * This method is not used in Consensys or ConsensysGQ currently, it's just used in GUI Medica Balance, GUI Test Balance
@@ -1731,7 +1472,7 @@ public void adjustSingleTraceLengthUsingSetSize(double percentage,String tracena
 		return xData;
 	}
 
-	private void printSignalProps(ObjectCluster ojc, ITrace2D currentTrace, String[] props, double xData, double yData){
+	protected void printSignalProps(ObjectCluster ojc, ITrace2D currentTrace, String[] props, double xData, double yData){
 		if(mIsDebugMode){
 			System.err.println(
 					"ChartName:" + mChart.getName()
@@ -1744,41 +1485,19 @@ public void adjustSingleTraceLengthUsingSetSize(double percentage,String tracena
 		}
 	}
 	
-	private void setPnlHR(String[] props, ObjectCluster ojc) {
-
-		FormatCluster f = getFormatCluster(props, ojc);
-
-		if (InternalFrameWithPlotManager.mShowHRPlotManagerPC) { // Change
-			String signal = joinChannelStringArray(props);
-			String plotTitleWithSignal = getPlotTitleWithSignal(signal); 
-			for (String key : InternalFrameWithPlotManager.mMapOfHRLabels.keySet()) {
-				if (plotTitleWithSignal.equals(key)) {
-					//System.err.println("plotTitleWithSignal(): " +plotTitleWithSignal);
-					setLblHRValue(key, f);
-				}
-			}
-		}
-	}
+	
 	
 	public String getPlotTitleWithSignal(String signal){
 		return  getTitle() + "_" + signal;
 	}
 
-	private FormatCluster getFormatCluster(String[] props, ObjectCluster ojc) {
+	protected FormatCluster getFormatCluster(String[] props, ObjectCluster ojc) {
 		return ObjectCluster.returnFormatCluster(ojc.getPropertyCluster().get(props[1]), props[2]);
 	}
 
-	private void setLblHRValue(String key, FormatCluster f) {
-		String formattedText = getHRvalue(f);
-		JLabel lblHR = InternalFrameWithPlotManager.mMapOfHRLabels.get(key);
-		if(lblHR != null){
-			lblHR.setText(formattedText);
-			lblHR.revalidate();
-			lblHR.repaint();
-		}
-	}
 
-	private String getHRvalue(FormatCluster f) {
+
+	protected String getHRvalue(FormatCluster f) {
 		DecimalFormat dc = new DecimalFormat("0");
 		String formattedText = " " + dc.format(f.mData) + " ";  // Padding String so that single ECGtoValue wont overflow on gui 
 		return formattedText;
