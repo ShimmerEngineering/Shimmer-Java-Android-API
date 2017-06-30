@@ -56,6 +56,7 @@ import com.shimmerresearch.guiUtilities.AbstractPlotManager;
 
 public class BasicPlotManagerPC extends AbstractPlotManager {
 	
+	protected String mEventMarkerCheck="";
 	int mXAxisLimit = 500;
 	int mXAxisTimeDuraton = 5;
 	public List<ITrace2D> mListofTraces = new ArrayList<ITrace2D>();
@@ -1611,6 +1612,186 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		}
 	}
 	
+	public void setTraceVisible(String channelName){
+		for (ITrace2D trace: mListofTraces){
+			String[] props = trace.getName().split(" ");
+			if (props[1].equals(channelName)
+					|| channelName.equals("all")
+					|| trace.getName().contains(mEventMarkerCheck)){
+				//trace.removeAllPoints();
+				//trace.removeAllPointHighlighters();
+				trace.setVisible(true);
+			}
+			else{
+				trace.setVisible(false);
+			}
+		}
+	}
+
+
+	/**This plots the data of the specified signals 
+	 * 
+	 * @param ojc ObjectCluster holding the data
+	 * @throws Exception When signal is not found
+	 */
+	public void filterDataAndPlot(ObjectCluster ojc) throws Exception {
+		if(!mIsPlotPaused){
+			//		System.err.println("PLOTMANGERPC -> STAGE1");
+			String shimmerName = ojc.getShimmerName();
+
+			double xData = getXDataForPlotting(shimmerName, ojc);
+			//		System.err.println("PLOTMANGERPC -> STAGE2");
+
+			//Sometimes the first x data point of a new graphs comes back with a zero so return if it does  
+			if(xData==0){
+				return;
+			};
+
+			//MN testing trying to get rid of legend flutter
+			//		for(ITrace2D trace:mChart.getTraces()){
+			//			String[] props = trace.getName().split(" ");
+
+			for (int i=0; i<mListofPropertiestoPlot.size(); i++){
+				String[] props = mListofPropertiestoPlot.get(i);
+				String traceName = joinChannelStringArray(props);
+
+				//prevent eventmarkers from plotting back in time
+				boolean eventMarker=false;
+				if (props[0].equals(mEventMarkerCheck)){
+					if (xData>mCurrentXValue){
+						eventMarker=true;
+					} else { // skip any data which is in the past, as there are multiple shimmer devices, this is possible
+						//JC: Just to be safe, do a check to ensure a marker is not missed, this is probably not needed..
+						FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
+						if(f == null){
+							//System.out.println("mChart.getName(): " +mChart.getName());
+							throw new Exception("Signal not found: (" + traceName + ")");
+						}
+
+						double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
+						if (yData!=-1){ //marker detected
+							xData=mCurrentXValue; //ensure the timestamp doesnt go back in time
+							eventMarker=true;
+						} else {
+							eventMarker=false;
+						}
+					}
+				}
+
+				if (shimmerName.equals(props[0]) || eventMarker){
+
+					FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
+					if(f == null){
+						//System.out.println("mChart.getName(): " +mChart.getName());
+						throw new Exception("Signal not found: (" + traceName + ")");
+					}
+
+					double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
+
+					if (i>mListofTraces.size()){
+						throw new Exception("Trace does not exist: (" + traceName + ")");
+					}
+					ITrace2D currentTrace = mListofTraces.get(i); 
+					//System.err.println(currentTrace.getMaxY());
+
+					mCurrentXValue = xData;
+
+					printSignalProps(ojc, currentTrace, props, xData, yData);
+
+					updateHrPanelIfVisible(props, ojc);
+
+					Double halfWindowSize = mMapofHalfWindowSize.get(traceName);
+					if (halfWindowSize!=null){
+						currentTrace.getTracePainters();
+						addPointToTrace(currentTrace, xData-halfWindowSize, yData);
+					} 
+					else {
+						if(isXAxisTime()){
+							addTracePoint(currentTrace, xData, yData);
+						}
+						else if(isXAxisFrequency()){
+							//TODO buffer data for FFT calculation
+							FftCalculateDetails fftCalculateDetails = mMapOfFftsToPlot.get(traceName);
+							if(fftCalculateDetails!=null){
+								fftCalculateDetails.addData(xData, yData);
+							}
+						}
+					}
+
+					// the below isn't used.. yet..
+					//					if(InternalFrameWithPlotManager.mShowInstantaneousValuesPanel){
+					//						if(mCurrentXValue%12 == 0) {
+					//							String compareNames = props[0]+"_"+props[1];
+					//							for(String key : InternalFrameWithPlotManager.instantaneousValuesTextFields.keySet()) {
+					//								if(compareNames.equals(key)) {
+					//									DecimalFormat dc = new DecimalFormat("0.00");
+					//									String formattedText = dc.format(f.mData);
+					//									InternalFrameWithPlotManager.instantaneousValuesTextFields.get(key).setText(formattedText);
+					//								}
+					//							}
+					//						}
+					//					}
+				}
+			}
+		}
+	}
+
+
+	//used by advance plot manager
+	protected void updateHrPanelIfVisible(String[] props, ObjectCluster ojc) {
+		//Does nothing in basic
+		
+	}
+
+	private double getXDataForPlotting(String shimmerName, ObjectCluster ojc) throws Exception {
+		double xData = 0;
+		//first check is x axis signal exist
+		if (mMapofXAxis.size()>0){ 
+			if (mMapofXAxis.get(shimmerName)==null && !mMapofXAxis.containsKey(mEventMarkerCheck)){
+				//check if generated x axis exist
+				if (mMapofXAxisGeneratedValue.get(shimmerName)==null){
+					mMapofXAxisGeneratedValue.put(shimmerName, xData);
+				} else {
+					//if exist take the value
+					xData = mMapofXAxisGeneratedValue.get(shimmerName);
+					//				System.err.println("X1 VALUE: " +xData);
+				}
+
+				//check if x is the max value 
+				if (xData==mCurrentXValue){
+					xData=xData+1;
+					//				System.err.println("X2 VALUE: " +xData);
+					mMapofXAxisGeneratedValue.remove(shimmerName);
+					mMapofXAxisGeneratedValue.put(shimmerName, xData);
+				} else {
+					xData=mCurrentXValue;
+					mMapofXAxisGeneratedValue.remove(shimmerName);
+					mMapofXAxisGeneratedValue.put(shimmerName, xData);
+				}
+			} 
+			else {
+				String[] props = mMapofXAxis.get(shimmerName);
+				if(props == null){
+					props = mMapofXAxis.get(mEventMarkerCheck);
+				}
+
+				FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
+				if(f!=null){
+					xData = f.mData;
+				}
+				else{
+					System.err.println("ERROR PLOTMANGERPC -> NO X DATA");
+					throw new Exception("No X data: (" + joinChannelStringArray(props) + ")");
+				}
+			}
+		}
+		else{
+			System.err.println("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
+		}
+		return xData;
+	}
+	
+	
 	public void setXAisType(CHANNEL_AXES xAxisType) {
 		mXAisType = xAxisType;
 		initializeAxes(1000);//Any value
@@ -1691,4 +1872,6 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 	
 	//----------------------FFT timer test code start ---------------------
 
+	
+	
 }
