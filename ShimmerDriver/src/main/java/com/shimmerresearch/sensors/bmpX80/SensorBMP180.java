@@ -28,6 +28,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280.DatabaseConfigHandle;
 
@@ -47,7 +48,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	}
 	
 	public static final class DatabaseConfigHandle{
-		public static final String PRESSURE_PRECISION = "BMP180_Pressure_Precision";
+		public static final String PRESSURE_PRECISION_BMP180 = "BMP180_Pressure_Precision";
 		
 		public static final String TEMP_PRES_AC1 = "BMP180_AC1";
 		public static final String TEMP_PRES_AC2 = "BMP180_AC2";
@@ -347,7 +348,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, getPressureResolution());
+		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION_BMP180, getPressureResolution());
 
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC1, getPressTempAC1());
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC2, getPressTempAC2());
@@ -366,8 +367,8 @@ public class SensorBMP180 extends SensorBMPX80 {
 
 	@Override
 	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION)){
-			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION)).intValue());
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION_BMP180)){
+			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION_BMP180)).intValue());
 		}
 		//PRESSURE (BMP180) CAL PARAMS
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_AC1)
@@ -536,26 +537,30 @@ public class SensorBMP180 extends SensorBMPX80 {
 	}
 
 
-	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
-		String channel = "";
+	public static String parseFromDBColumnToGUIChannel(String databaseChannelHandle) {
+		//TODO Old approach, can be removed
+//		String objectClusterName = "";
+//		if (databaseChannelHandle.equals(SensorBMP180.DatabaseChannelHandles.TEMPERATURE_BMP180)) {
+//			objectClusterName = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180;
+//		} else if (databaseChannelHandle.equals(SensorBMP180.DatabaseChannelHandles.PRESSURE_BMP180)) {
+//			objectClusterName = SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;
+//		}
+//		return objectClusterName;
 		
-		if (dbColumn.equals(SensorBMP180.DatabaseChannelHandles.TEMPERATURE_BMP180)) {
-			channel = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180;
-		} else if (dbColumn.equals(SensorBMP180.DatabaseChannelHandles.PRESSURE_BMP180)) {
-			channel = SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;
-		}
-		
-		return channel;
+		return AbstractSensor.parseFromDBColumnToGUIChannel(mChannelMapRef, databaseChannelHandle);
 	}
 
-	public static String parseFromGUIChannelsToDBColumn(String channel) {
-		String dbColumn = "";
-		if (channel.equals(SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180)) {
-			dbColumn = SensorBMP180.DatabaseChannelHandles.TEMPERATURE_BMP180;
-		} else if (channel.equals(SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180)) {
-			dbColumn = SensorBMP180.DatabaseChannelHandles.PRESSURE_BMP180;
-		}
-		return dbColumn;
+	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
+		//TODO Old approach, can be removed
+//		String databaseChannelHandle = "";
+//		if (objectClusterName.equals(SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180)) {
+//			databaseChannelHandle = SensorBMP180.DatabaseChannelHandles.TEMPERATURE_BMP180;
+//		} else if (objectClusterName.equals(SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180)) {
+//			databaseChannelHandle = SensorBMP180.DatabaseChannelHandles.PRESSURE_BMP180;
+//		}
+//		return databaseChannelHandle;
+		
+		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
 	}
 
 	

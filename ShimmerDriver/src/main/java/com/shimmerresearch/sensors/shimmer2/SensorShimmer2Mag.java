@@ -169,8 +169,8 @@ public class SensorShimmer2Mag extends AbstractSensor {
 
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
-		// TODO Auto-generated method stub
-		
+		setShimmer2rMagRateFromFreq(samplingRateHz);
+		checkLowPowerMag();
 	}
 
 	@Override
@@ -228,7 +228,13 @@ public class SensorShimmer2Mag extends AbstractSensor {
 		}
 		setCalibrationMapPerSensor(Configuration.Shimmer2.SensorMapKey.MAG, calibMapMag);
 
-		updateCurrentMagCalibInUse();
+		updateCurrentCalibInUse();
+	}
+	
+	@Override
+	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+		updateCurrentCalibInUse();
 	}
 	
 	//--------- Optional methods to override in Sensor Class end --------
@@ -300,16 +306,8 @@ public class SensorShimmer2Mag extends AbstractSensor {
 		return mMagRange;
 	}
 
-	public void updateCurrentMagCalibInUse(){
-		mCurrentCalibDetailsMag = getCurrentCalibDetails(Configuration.Shimmer2.SensorMapKey.MAG, getMagRange());
-	}
-
-	public CalibDetailsKinematic getCurrentCalibDetails(int sensorMapKey, int range){
-		CalibDetails calibPerSensor = getCalibForSensor(sensorMapKey, range);
-		if(calibPerSensor!=null){
-			return (CalibDetailsKinematic) calibPerSensor;
-		}
-		return null;
+	public void updateCurrentCalibInUse(){
+		mCurrentCalibDetailsMag = getCurrentCalibDetailsIfKinematic(Configuration.Shimmer2.SensorMapKey.MAG, getMagRange());
 	}
 
 	
