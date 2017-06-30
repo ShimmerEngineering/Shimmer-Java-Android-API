@@ -16,6 +16,8 @@ public class ConfigOptionDetails implements Serializable {
 		JPANEL
 	};
 	
+	public String mGuiHandle = "";
+	public String mDbHandle = "";
 	public String[] mGuiValues = null;
 	String mGuiFriendlyName;
 	public Integer[] mConfigValues;
