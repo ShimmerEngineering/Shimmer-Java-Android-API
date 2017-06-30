@@ -1209,7 +1209,7 @@ public class Shimmer4 extends ShimmerDevice {
 	public void generateConfigOptionsMap() {
 		super.generateConfigOptionsMap();
 		
-		mConfigOptionsMap.putAll(Configuration.Shimmer4.mConfigOptionsMapRef);
+		mConfigOptionsMapSensors.putAll(Configuration.Shimmer4.mConfigOptionsMapRef);
 	}
 	
 	@Override
