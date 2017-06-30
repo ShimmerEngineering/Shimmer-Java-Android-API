@@ -33,6 +33,7 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303.ObjectClusterSensorName;
 
@@ -684,6 +685,9 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL;
 		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG;
 		super.initialise();
+		
+		updateCurrentAccelWrCalibInUse();
+		updateCurrentMagCalibInUse();
 	}
 
 	@Override
@@ -791,40 +795,46 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 		return magRate;
 	}
 
-	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
-		String channel = "";
-		if (dbColumn.equals(SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_X)) {
-			channel = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
-		} else if (dbColumn.equals(SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_Y)) {
-			channel = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y;
-		} else if (dbColumn.equals(SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_Z)) {
-			channel = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z;
-		} else if (dbColumn.equals(SensorLSM303DLHC.DatabaseChannelHandles.MAG_X)) {
-			channel = SensorLSM303.ObjectClusterSensorName.MAG_X;
-		} else if (dbColumn.equals(SensorLSM303DLHC.DatabaseChannelHandles.MAG_Y)) {
-			channel = SensorLSM303.ObjectClusterSensorName.MAG_Y;
-		} else if (dbColumn.equals(SensorLSM303DLHC.DatabaseChannelHandles.MAG_Z)) {
-			channel = SensorLSM303.ObjectClusterSensorName.MAG_Z;
-		}
-		return channel;
+	public static String parseFromDBColumnToGUIChannel(String databaseChannelHandle) {
+		//TODO Old approach, can be removed
+//		String objectClusterName = "";
+//		if (databaseChannelHandle.equals(SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_X)) {
+//			objectClusterName = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X;
+//		} else if (databaseChannelHandle.equals(SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_Y)) {
+//			objectClusterName = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y;
+//		} else if (databaseChannelHandle.equals(SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_Z)) {
+//			objectClusterName = SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z;
+//		} else if (databaseChannelHandle.equals(SensorLSM303DLHC.DatabaseChannelHandles.MAG_X)) {
+//			objectClusterName = SensorLSM303.ObjectClusterSensorName.MAG_X;
+//		} else if (databaseChannelHandle.equals(SensorLSM303DLHC.DatabaseChannelHandles.MAG_Y)) {
+//			objectClusterName = SensorLSM303.ObjectClusterSensorName.MAG_Y;
+//		} else if (databaseChannelHandle.equals(SensorLSM303DLHC.DatabaseChannelHandles.MAG_Z)) {
+//			objectClusterName = SensorLSM303.ObjectClusterSensorName.MAG_Z;
+//		}
+//		return objectClusterName;
+		
+		return AbstractSensor.parseFromDBColumnToGUIChannel(mChannelMapRef, databaseChannelHandle);
 	}
 
-	public static String parseFromGUIChannelsToDBColumn(String channel) {
-		String dbColumn = "";
-		if (channel.equals(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X)) {
-			dbColumn = SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_X;
-		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y)) {
-			dbColumn = SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_Y;
-		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z)) {
-			dbColumn = SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_Z;
-		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.MAG_X)) {
-			dbColumn = SensorLSM303DLHC.DatabaseChannelHandles.MAG_X;
-		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.MAG_Y)) {
-			dbColumn = SensorLSM303DLHC.DatabaseChannelHandles.MAG_Y;
-		} else if (channel.equals(SensorLSM303.ObjectClusterSensorName.MAG_Z)) {
-			dbColumn = SensorLSM303DLHC.DatabaseChannelHandles.MAG_Z;
-		}
-		return dbColumn;
+	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
+		//TODO Old approach, can be removed
+//		String databaseChannelHandle = "";
+//		if (objectClusterName.equals(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_X)) {
+//			databaseChannelHandle = SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_X;
+//		} else if (objectClusterName.equals(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Y)) {
+//			databaseChannelHandle = SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_Y;
+//		} else if (objectClusterName.equals(SensorLSM303.ObjectClusterSensorName.ACCEL_WR_Z)) {
+//			databaseChannelHandle = SensorLSM303DLHC.DatabaseChannelHandles.WR_ACC_Z;
+//		} else if (objectClusterName.equals(SensorLSM303.ObjectClusterSensorName.MAG_X)) {
+//			databaseChannelHandle = SensorLSM303DLHC.DatabaseChannelHandles.MAG_X;
+//		} else if (objectClusterName.equals(SensorLSM303.ObjectClusterSensorName.MAG_Y)) {
+//			databaseChannelHandle = SensorLSM303DLHC.DatabaseChannelHandles.MAG_Y;
+//		} else if (objectClusterName.equals(SensorLSM303.ObjectClusterSensorName.MAG_Z)) {
+//			databaseChannelHandle = SensorLSM303DLHC.DatabaseChannelHandles.MAG_Z;
+//		}
+//		return dbColumn;
+		
+		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
 	}
 	
 	//--------- Sensor specific methods end --------------

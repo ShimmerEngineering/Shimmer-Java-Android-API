@@ -21,7 +21,7 @@ public class ConfigOptionDetails implements Serializable {
 	public Integer[] mConfigValues;
 	public GUI_COMPONENT_TYPE mGuiComponentType;
 	
-	public List<ShimmerVerObject> mCompatibleVersionInfo = null;  
+	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = null;  
 
 	/**
 	 * Used in Consensys to hold Shimmer configuration GUI information for
@@ -36,7 +36,7 @@ public class ConfigOptionDetails implements Serializable {
 	 */
 	public ConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
 		mGuiComponentType = guiComponentType;
-		mCompatibleVersionInfo = compatibleVersionInfo;
+		mListOfCompatibleVersionInfo = compatibleVersionInfo;
 		
 		if(mGuiComponentType==GUI_COMPONENT_TYPE.CHECKBOX){
 			mGuiValues = new String[]{"Off", "On"};
@@ -109,7 +109,7 @@ public class ConfigOptionDetails implements Serializable {
 		}
 		
 		if(listSVO!=null){
-			mCompatibleVersionInfo = listSVO;
+			mListOfCompatibleVersionInfo = listSVO;
 		}
 	}
 

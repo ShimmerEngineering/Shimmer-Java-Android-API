@@ -58,7 +58,8 @@ public abstract class AbstractSensor implements Serializable{
 		WEBCAM_FRAME_NUMBER("Frame Number"),
 		HOST_CPU_USAGE("Cpu Usage"),
 		SWEATCH_ADC("Sweatch ADC"),
-		SHIMMER2R_MAG("Shimmer2r Mag");
+		SHIMMER2R_MAG("Shimmer2r Mag"),
+		SHIMMER2R_GYRO("Shimmer2r Gyro");
 		
 	    private final String text;
 
@@ -724,7 +725,39 @@ public abstract class AbstractSensor implements Serializable{
 					alignZx, alignZy, alignZz);
 		}
 	}
-	
+
+	public double calcMaxSamplingRate() {
+		return Double.POSITIVE_INFINITY;
+	}
+
 	//--------- Optional methods to override in Sensor Class end -------- 
+
+	
+	public static String parseFromDBColumnToGUIChannel(Map<String, ChannelDetails> channelMapRef, String databaseChannelHandle) {
+		for(ChannelDetails channelDetails:channelMapRef.values()){
+			if(channelDetails.getDatabaseChannelHandle().equals(databaseChannelHandle)){
+				return channelDetails.mObjectClusterName;
+			}
+		}
+		return "";
+	}
+
+	public static String parseFromGUIChannelsToDBColumn(Map<String, ChannelDetails> channelMapRef, String objectClusterName) {
+		ChannelDetails channelDetails = channelMapRef.get(objectClusterName);
+		if(channelDetails!=null){
+			return channelDetails.getDatabaseChannelHandle();
+		}
+		return "";
+	}
+	
+	public CalibDetailsKinematic getCurrentCalibDetailsIfKinematic(int sensorMapKey, int range){
+		CalibDetails calibPerSensor = getCalibForSensor(sensorMapKey, range);
+		if(calibPerSensor!=null && calibPerSensor instanceof CalibDetailsKinematic){
+			return (CalibDetailsKinematic) calibPerSensor;
+		}
+		return null;
+	}
+	
+
 
 }

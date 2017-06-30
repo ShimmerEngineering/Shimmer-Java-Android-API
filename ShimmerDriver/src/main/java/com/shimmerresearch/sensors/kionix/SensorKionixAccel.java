@@ -16,6 +16,8 @@ import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.OldCalDetails;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driver.ConfigByteLayout;
+import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -49,18 +51,19 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
 	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
 
-	public static final int LN_ACCEL_RANGE_CONSTANT = 0;
+	public static final int LN_ACCEL_RANGE_VALUE = 0;
+	public static final String LN_ACCEL_RANGE_STRING = "+/- 2g";
 	public static final String OldCalRangeLN2g = "accel_ln_2g";
 	
     public static final Map<String, OldCalDetails> mOldCalRangeMap;
     static {
         Map<String, OldCalDetails> aMap = new LinkedHashMap<String, OldCalDetails>();
-        aMap.put("accel_ln_2g", new OldCalDetails("accel_ln_2g", Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_CONSTANT));
+        aMap.put("accel_ln_2g", new OldCalDetails("accel_ln_2g", Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_VALUE));
         mOldCalRangeMap = Collections.unmodifiableMap(aMap);
     }
 
 	private CalibDetailsKinematic calibDetailsAccelLn2g = new CalibDetailsKinematic(
-			LN_ACCEL_RANGE_CONSTANT, "+/- 2g", 
+			LN_ACCEL_RANGE_VALUE, LN_ACCEL_RANGE_STRING, 
 			AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3);
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn = calibDetailsAccelLn2g;
 
@@ -204,29 +207,34 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	
 	
 	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice,byte[] mInfoMemBytes) {
-//		int idxAnalogAccelCalibration = 31;
-		//fix for newer firmware -> see InfomemLayoutShimmer3
-		int idxAnalogAccelCalibration =		34;
-		int lengthGeneralCalibrationBytes = 21;
+	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		
-		//Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = generateCalParamAnalogAccel();
-		System.arraycopy(bufferCalibrationParameters, 0, mInfoMemBytes, idxAnalogAccelCalibration, lengthGeneralCalibrationBytes);
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+			
+			// Analog Accel Calibration Parameters
+			byte[] bufferCalibrationParameters = generateCalParamByteArrayAccelLn();
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxAnalogAccelCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+		}
 	}
 	
 	
 	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-//		int idxAnalogAccelCalibration = 31;
-		//fix for newer firmware -> see InfomemLayoutShimmer3
-		int idxAnalogAccelCalibration =		34;
-		int lengthGeneralCalibrationBytes = 21;
-
-		//Accel Calibration Parameters
-		byte[] bufferCalibrationParameters = new byte[lengthGeneralCalibrationBytes];
-		System.arraycopy(mInfoMemBytes, idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , lengthGeneralCalibrationBytes);
-		parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);	
+	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+			
+			if (shimmerDevice.isConnected()){
+				getCurrentCalibDetailsAccelLn().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+			}
+			
+			// Analog Accel Calibration Parameters
+			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+			System.arraycopy(configBytes, configByteLayoutCast.idxAnalogAccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
+		}
 	}
 
 
@@ -354,23 +362,28 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 		return mCurrentCalibDetailsAccelLn.getValidOffsetVector();
 	}
 	
-	public CalibDetailsKinematic getCurrentCalibDetails(int sensorMapKey, int range){
-		CalibDetailsKinematic calibPerSensor = (CalibDetailsKinematic) super.getCalibForSensor(sensorMapKey, range);
-		return calibPerSensor;
-	}
-	
 	public void updateCurrentAccelLnCalibInUse(){
 		mCurrentCalibDetailsAccelLn = getCurrentCalibDetailsAccelLn();
 	}
 	
 	public CalibDetailsKinematic getCurrentCalibDetailsAccelLn(){
-		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_CONSTANT);
+		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_VALUE);
 		if(calibPerSensor!=null){
 			return (CalibDetailsKinematic) calibPerSensor;
 		}
 		return null;
 	}
 	
+	/**
+	 * Converts the Analog Accel calibration variables from Shimmer Object
+	 * into a byte array for sending to the Shimmer.
+	 * 
+	 * @return the bytes array containing the Analog Accel Calibration
+	 */
+	public byte[] generateCalParamByteArrayAccelLn(){
+		return getCurrentCalibDetailsAccelLn().generateCalParamByteArray();
+	}
+
 	//--------- Sensor specific methods end --------------
 
 

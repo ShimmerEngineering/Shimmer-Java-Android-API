@@ -25,6 +25,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180.DatabaseConfigHandle;
@@ -428,26 +429,30 @@ public class SensorBMP280 extends SensorBMPX80 {
 		}
 	}
 
-	public static String parseFromDBColumnToGUIChannel(String dbColumn) {
-		String channel = "";
-
-		if (dbColumn.equals(SensorBMP280.DatabaseChannelHandles.TEMPERATURE_BMP280)) {
-			channel = SensorBMP280.ObjectClusterSensorName.TEMPERATURE_BMP280;
-		} else if (dbColumn.equals(SensorBMP280.DatabaseChannelHandles.PRESSURE_BMP280)) {
-			channel = SensorBMP280.ObjectClusterSensorName.PRESSURE_BMP280;
-		}
+	public static String parseFromDBColumnToGUIChannel(String databaseChannelHandle) {
+		//TODO Old approach, can be removed
+//		String objectClusterName = "";
+//		if (databaseChannelHandle.equals(SensorBMP280.DatabaseChannelHandles.TEMPERATURE_BMP280)) {
+//			objectClusterName = SensorBMP280.ObjectClusterSensorName.TEMPERATURE_BMP280;
+//		} else if (databaseChannelHandle.equals(SensorBMP280.DatabaseChannelHandles.PRESSURE_BMP280)) {
+//			objectClusterName = SensorBMP280.ObjectClusterSensorName.PRESSURE_BMP280;
+//		}
+//		return objectClusterName;
 		
-		return channel;
+		return AbstractSensor.parseFromDBColumnToGUIChannel(mChannelMapRef, databaseChannelHandle);
 	}
 
-	public static String parseFromGUIChannelsToDBColumn(String channel) {
-		String dbColumn = "";
-		if (channel.equals(SensorBMP280.ObjectClusterSensorName.TEMPERATURE_BMP280)) {
-			dbColumn = SensorBMP280.DatabaseChannelHandles.TEMPERATURE_BMP280;
-		} else if (channel.equals(SensorBMP280.ObjectClusterSensorName.PRESSURE_BMP280)) {
-			dbColumn = SensorBMP280.DatabaseChannelHandles.PRESSURE_BMP280;
-		}
-		return dbColumn;
+	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
+		//TODO Old approach, can be removed
+//		String databaseChannelHandle = "";
+//		if (objectClusterName.equals(SensorBMP280.ObjectClusterSensorName.TEMPERATURE_BMP280)) {
+//			databaseChannelHandle = SensorBMP280.DatabaseChannelHandles.TEMPERATURE_BMP280;
+//		} else if (objectClusterName.equals(SensorBMP280.ObjectClusterSensorName.PRESSURE_BMP280)) {
+//			databaseChannelHandle = SensorBMP280.DatabaseChannelHandles.PRESSURE_BMP280;
+//		}
+//		return databaseChannelHandle;
+		
+		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
 	}
 	
 
