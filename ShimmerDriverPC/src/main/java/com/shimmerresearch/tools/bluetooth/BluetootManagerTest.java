@@ -7,7 +7,7 @@ public class BluetootManagerTest {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		BasicShimmerBluetoothManagerPc manager = new BasicShimmerBluetoothManagerPc();
-		manager.connectShimmerThroughCommPort("35");
+		manager.connectShimmerThroughCommPort("COM35");
 		JFrame n = new JFrame();
 				n.setVisible(true);
 		n.setSize(200, 200);

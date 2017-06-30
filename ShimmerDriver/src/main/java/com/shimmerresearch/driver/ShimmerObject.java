@@ -6234,6 +6234,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public String getMacId() {
+		if(mMacIdFromUart!=null){
 		if(!mMacIdFromUart.isEmpty()){
 			return mMacIdFromUart; 
 		}
@@ -6250,6 +6251,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		}
+		} else{
+			return mMyBluetoothAddress; 
+		}
+		
 	}
 	
 // YYY - Implemented in SensorBattVoltage
