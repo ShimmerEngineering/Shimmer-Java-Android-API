@@ -99,13 +99,15 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 				//Ensure the Shimmer is not streaming or SD logging before configuring it
 				if(shimmer.isConnected()) {
-					if(!shimmer.isStreaming() || !shimmer.isSDLogging()) {
+					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
 						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer);
 						sensorsDialog.initialize();
 						sensorsDialog.main(null);
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
+				} else {
+					JOptionPane.showMessageDialog(frame, "No device connected!", "Info", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
@@ -115,7 +117,16 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mntmDeviceConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				
+				if(shimmer.isConnected()) {
+					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
+						SensorConfigDialog configDialog = new SensorConfigDialog();
+						configDialog.initialize(shimmer);
+					} else {
+						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
+					}
+				} else {
+					JOptionPane.showMessageDialog(frame, "No device connected!", "Info", JOptionPane.WARNING_MESSAGE);
+				}
 				
 			}
 		});
