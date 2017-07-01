@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.algorithms.AlgorithmDetails;
-import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -16,6 +15,7 @@ import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 
 public class OrientationModule6DOF extends OrientationModule{
@@ -283,7 +283,7 @@ public class OrientationModule6DOF extends OrientationModule{
 	
 	public static final AlgorithmDetails algo6DoFOrientation_LN_Acc = new AlgorithmDetails(
 			AlgorithmName.ORIENTATION_6DOF_LN, 
-			OrientationModule.GuiFriendlyLabelConfig.ORIENTATAION_LN, 
+			OrientationModule.GuiLabelConfig.ORIENTATAION_LN, 
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z,
@@ -298,7 +298,7 @@ public class OrientationModule6DOF extends OrientationModule{
 
 	public static final AlgorithmDetails algo6DoFOrientation_WR_Acc = new AlgorithmDetails(
 			AlgorithmName.ORIENTATION_6DOF_WR, 
-			OrientationModule.GuiFriendlyLabelConfig.ORIENTATAION_WR, 
+			OrientationModule.GuiLabelConfig.ORIENTATAION_WR, 
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,
@@ -345,15 +345,17 @@ public class OrientationModule6DOF extends OrientationModule{
 //		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
 //		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
 
-		final ConfigOptionDetailsAlgorithm configOptionQuatOutput = new ConfigOptionDetailsAlgorithm(
+		final ConfigOptionDetails configOptionQuatOutput = new ConfigOptionDetails(
+				OrientationModule.GuiLabelConfig.QUATERNION_OUTPUT,
+				null,
 				QUATERNION_OPTIONS, 
-				GuiFriendlyLabelConfig.QUATERNION_OUTPUT,
 				GUI_COMPONENT_TYPE.COMBOBOX,
 				null);
 
-		final ConfigOptionDetailsAlgorithm configOptionEulerOutput = new ConfigOptionDetailsAlgorithm(
+		final ConfigOptionDetails configOptionEulerOutput = new ConfigOptionDetails(
+				OrientationModule.GuiLabelConfig.EULER_OUTPUT,
+				null,
 				EULER_OPTIONS, 
-				GuiFriendlyLabelConfig.EULER_OUTPUT,
 				GUI_COMPONENT_TYPE.COMBOBOX,
 				null);
 
@@ -368,24 +370,28 @@ public class OrientationModule6DOF extends OrientationModule{
 	
 
 	public OrientationModule6DOF(AlgorithmDetails algorithmDetails, double samplingRate) {
-		// TODO Auto-generated constructor stub
-		mAlgorithmDetails = algorithmDetails;
-		mAlgorithmName = algorithmDetails.mAlgorithmName;
+		super(algorithmDetails);
+		setupAlgorithm();
+
+		this.samplingRate = samplingRate;
+	}
+
+	@Override
+	public void setupAlgorithm() {
+		super.setupAlgorithm();
 		
 		mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
 		mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
 //		mAlgorithmGroupingName = "6DOF";
 
-		this.samplingRate = samplingRate;
 
 		try {
 			initialize();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
-
+	
 	@Override
 	public void setGeneralAlgorithmName() {
 		// TODO Auto-generated method stub
@@ -439,10 +445,10 @@ public class OrientationModule6DOF extends OrientationModule{
 		}
 
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
-			setAccelerometer(GuiFriendlyLabelConfig.ORIENTATAION_LN);
+			setAccelerometer(OrientationModule.GuiLabelConfig.ORIENTATAION_LN);
 		}
 		else{
-			setAccelerometer(GuiFriendlyLabelConfig.ORIENTATAION_WR);
+			setAccelerometer(OrientationModule.GuiLabelConfig.ORIENTATAION_WR);
 		}
 	}
 

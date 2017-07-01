@@ -167,12 +167,16 @@ public class SensorLSM303AH extends SensorLSM303 {
 	public static final Integer[] ListofLSM303AHAccelRateLpmConfigValues={0,8,9,10,11,12,13,14,15};
 
 	public static final ConfigOptionDetailsSensor configOptionAccelRange = new ConfigOptionDetailsSensor(
+			SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE,
+			SensorLSM303AH.DatabaseConfigHandle.WR_ACC_RANGE,
 			ListofLSM303AccelRange, 
 			ListofLSM303AccelRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
 
 	public static final ConfigOptionDetailsSensor configOptionAccelRate = new ConfigOptionDetailsSensor(
+			SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE,
+			SensorLSM303AH.DatabaseConfigHandle.WR_ACC_RATE,
 			ListofLSM303AHAccelRateHr, 
 			ListofLSM303AHAccelRateHrConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
@@ -189,16 +193,25 @@ public class SensorLSM303AH extends SensorLSM303 {
 	public static final Integer[] ListofLSM303AHMagRangeConfigValues={1};  
 
 	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
+			SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE,
+			SensorLSM303AH.DatabaseConfigHandle.MAG_RANGE,
 			ListofLSM303AHMagRange, 
 			ListofLSM303AHMagRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
 	
 	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
+			SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE,
+			SensorLSM303AH.DatabaseConfigHandle.MAG_RATE,
 			ListofLSM303AHMagRate, 
 			ListofLSM303AHMagRateConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
+
+	public static final ConfigOptionDetailsSensor configOptionAccelLpm = new ConfigOptionDetailsSensor(
+			SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,
+			SensorLSM303AH.DatabaseConfigHandle.WR_ACC_LPM,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX);
 
 	//--------- Configuration options end --------------
 
@@ -338,11 +351,11 @@ public class SensorLSM303AH extends SensorLSM303 {
 
 	@Override
 	public void generateConfigOptionsMap() {
-		mConfigOptionsMap.put(GuiLabelConfig.LSM303_ACCEL_RANGE, configOptionAccelRange);
-		mConfigOptionsMap.put(GuiLabelConfig.LSM303_MAG_RANGE, configOptionMagRange);
-		mConfigOptionsMap.put(GuiLabelConfig.LSM303_ACCEL_RATE, configOptionAccelRate);
-		mConfigOptionsMap.put(GuiLabelConfig.LSM303_MAG_RATE, configOptionMagRate);
-		mConfigOptionsMap.put(GuiLabelConfig.LSM303_ACCEL_LPM, configOptionAccelLpm);
+		addConfigOption(configOptionAccelRange);
+		addConfigOption(configOptionMagRange);
+		addConfigOption(configOptionAccelRate);
+		addConfigOption(configOptionMagRate);
+		addConfigOption(configOptionAccelLpm);
 	}
 
 	@Override
