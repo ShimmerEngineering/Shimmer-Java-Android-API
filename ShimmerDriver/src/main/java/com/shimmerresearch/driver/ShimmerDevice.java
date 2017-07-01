@@ -25,7 +25,6 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
-import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
@@ -102,7 +101,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	protected Map<String, AlgorithmDetails> mMapOfAlgorithmDetails = new LinkedHashMap<String, AlgorithmDetails>();
 	/** for tile generation in GUI configuration */ 
 	protected TreeMap<Integer, SensorGroupingDetails> mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
-	protected Map<String, ConfigOptionDetailsAlgorithm> mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetailsAlgorithm>();
+	protected Map<String, ConfigOptionDetails> mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetails>();
 
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
 
@@ -213,6 +212,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			new OrientationModule9DOFLoader());
 
 	public static final class DatabaseConfigHandle{
+		public static final String TRIAL_NAME = "Trial_Name";
+		
+		public static final String SHIMMER_NAME = "Shimmer_Name";
+		
 		public static final String SAMPLE_RATE = "Sample_Rate";
 		public static final String ENABLE_SENSORS = "Enable_Sensors";
 		public static final String DERIVED_SENSORS = "Derived_Sensors";
@@ -461,7 +464,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/** 
 	 * @return the mConfigOptionsMap
 	 */
-	public Map<String, ConfigOptionDetailsAlgorithm> getConfigOptionsMapAlorithms() {
+	public Map<String, ConfigOptionDetails> getConfigOptionsMapAlorithms() {
 		return mConfigOptionsMapAlgorithms;
 	}
 	
@@ -2771,9 +2774,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	protected void generateMapOfAlgorithmConfigOptions(){
-		mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetailsAlgorithm>();
+		mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetails>();
 		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
-			HashMap<String, ConfigOptionDetailsAlgorithm> configOptionsMapPerAlgorithm = abstractAlgorithm.getConfigOptionsMap();
+			HashMap<String, ConfigOptionDetails> configOptionsMapPerAlgorithm = abstractAlgorithm.getConfigOptionsMap();
 			
 			if(configOptionsMapPerAlgorithm!=null && configOptionsMapPerAlgorithm.keySet().size()>0){
 				// taking out duplicates for orientation algorithm config options 
