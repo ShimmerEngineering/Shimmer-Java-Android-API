@@ -1165,7 +1165,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			printLogDataForDebugging("Inquiry Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferInquiry));
 			
 			interpretInqResponse(bufferInquiry);
-			prepareAllMapsAfterConfigRead();
+//			prepareAllMapsAfterConfigRead();
 			
 			inquiryDone();
 			
@@ -1294,7 +1294,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 
 			if (mEnabledSensors!=0){
-				prepareAllMapsAfterConfigRead();
+//				prepareAllMapsAfterConfigRead();
+				setEnabledAndDerivedSensorsAndUpdateMaps(mEnabledSensors, mDerivedSensors);
 				inquiryDone();
 			}
 		}
@@ -1333,7 +1334,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==MAG_GAIN_RESPONSE) {
 			byte[] bufferAns = readBytes(1, responseCommand); 
 			if(bufferAns!=null){
-				setMagRange(bufferAns[0]);
+				setLSM303MagRange(bufferAns[0]);
 			}
 		} 
 		else if(responseCommand==MAG_SAMPLING_RATE_RESPONSE) {
@@ -1347,7 +1348,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==ACCEL_SAMPLING_RATE_RESPONSE) {
 			byte[] bufferAns = readBytes(1, responseCommand); 
 			if(bufferAns!=null){
-				mLSM303DigitalAccelRate=bufferAns[0];
+				setLSM303DigitalAccelRate(bufferAns[0]);
 			}
 		}
 		else if(responseCommand==BMP180_CALIBRATION_COEFFICIENTS_RESPONSE){
@@ -1377,6 +1378,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			pressureResoRes = readBytes(24, responseCommand);
 			if(pressureResoRes!=null){
 				retrievePressureCalibrationParametersFromPacket(pressureResoRes,CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
+				printLogDataForDebugging("BMP280 CALIB Received:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(pressureResoRes));
 			}
 		} 
 		else if(responseCommand==EXG_REGS_RESPONSE){
@@ -1477,13 +1479,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==LSM303DLHC_ACCEL_LPMODE_RESPONSE) {
 			byte[] responseData = readBytes(1, responseCommand);
 			if(responseData!=null){
-				mLowPowerAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
+				setLowPowerAccelWR(((int)(responseData[0]&0xFF))>=1? true:false);
 			}
 		} 
 		else if(responseCommand==LSM303DLHC_ACCEL_HRMODE_RESPONSE) {
 			byte[] responseData = readBytes(1, responseCommand);
 			if(responseData!=null){
-				mHighResAccelWR = (((int)(responseData[0]&0xFF))>=1? true:false);
+				setHighResAccelWR(((int)(responseData[0]&0xFF))>=1? true:false);
 			}
 		} 
 		else if(responseCommand==MYID_RESPONSE) {
@@ -1847,7 +1849,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mLSM303MagRate = mTempIntValue;
 				}
 				else if(currentCommand==SET_ACCEL_SAMPLING_RATE_COMMAND){
-					mLSM303DigitalAccelRate = mTempIntValue;
+					setLSM303DigitalAccelRate(mTempIntValue);
 				}
 				else if(currentCommand==SET_MPU9150_SAMPLING_RATE_COMMAND){
 					mMPU9150GyroAccelRate = mTempIntValue;
@@ -1873,7 +1875,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					byteStack.clear(); // Always clear the packetStack after setting the sensors, this is to ensure a fresh start
 				}
 				else if(currentCommand==SET_MAG_GAIN_COMMAND){
-					setMagRange((int)((byte [])getListofInstructions().get(0))[1]);
+					setLSM303MagRange((int)((byte [])getListofInstructions().get(0))[1]);
 //					if(mDefaultCalibrationParametersMag){
 //						if(getHardwareVersion()==HW_ID.SHIMMER_3){
 //							mAlignmentMatrixMagnetometer = AlignmentMatrixMagShimmer3;
@@ -1931,7 +1933,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					
 					if (mEnabledSensors!=0){
-						prepareAllMapsAfterConfigRead();
+//						prepareAllMapsAfterConfigRead();
+						setEnabledAndDerivedSensorsAndUpdateMaps(mEnabledSensors, mDerivedSensors);
 						inquiryDone();
 					}
 				}
@@ -1988,10 +1991,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					// to do anything here
 				}
 				else if(currentCommand==SET_LSM303DLHC_ACCEL_LPMODE_COMMAND) {
-					mLowPowerAccelWR = ((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
+					setLowPowerAccelWR((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
 				} 
 				else if(currentCommand==SET_LSM303DLHC_ACCEL_HRMODE_COMMAND) {
-					mHighResAccelWR = ((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
+					setHighResAccelWR((int)((byte [])getListofInstructions().get(0))[1]>1? true:false);
 				}
 				else if(currentCommand==SET_MYID_COMMAND){
 					mTrialId = (int)((byte [])getListofInstructions().get(0))[1];
@@ -2243,7 +2246,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected synchronized void initialize() {	    	//See two constructors for Shimmer
 		//InstructionsThread instructionsThread = new InstructionsThread();
 		//instructionsThread.start();
-		clearShimmerVersionInfo();
+		clearShimmerVersionObjectAndCreateSensorMaps();
 		
 		stopTimerReadStatus();
 		stopTimerCheckForAckOrResp();
@@ -2316,7 +2319,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	private void initializeShimmer3(){
-		initialise(HW_ID.SHIMMER_3);
+		setHardwareVersionAndCreateSensorMaps(HW_ID.SHIMMER_3);
+//		initialise(HW_ID.SHIMMER_3);
+		
 		mHaveAttemptedToReadConfig = true;
 		
 		if(mSendProgressReport){
@@ -2914,6 +2919,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(getHardwareVersion()==HW_ID.SHIMMER_3){
 			if(getFirmwareVersionCode()>1){
 				if(isSupportedBmp280()){
+//					writeInstruction(InstructionsGet.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND_VALUE);
+//					writeInstruction(LiteProtocol.Temp.InstructionsGet.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND);
 					writeInstruction(GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND);
 				}
 				else {
@@ -3434,7 +3441,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
 				
 				writeMagSamplingRate(mLSM303MagRate);
-				writeAccelSamplingRate(mLSM303DigitalAccelRate);
+				writeAccelSamplingRate(getLSM303DigitalAccelRate());
 				writeGyroSamplingRate(mMPU9150GyroAccelRate);
 				writeExgSamplingRate(rate);
 				
@@ -3950,8 +3957,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void readConfigBytes(){
 		if(this.getFirmwareVersionCode()>=6){
 //			int size = InfoMemLayoutShimmer3.calculateInfoMemByteLength(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-			int size = mInfoMemLayout.calculateInfoMemByteLength();
-			readConfigBytes(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
+			int size = mConfigByteLayout.calculateConfigByteLength();
+			readConfigBytes(mConfigByteLayout.MSP430_5XX_INFOMEM_D_ADDRESS, size, mConfigByteLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS);
 		}
 	}
 
@@ -4025,13 +4032,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	public void writeConfigBytes(boolean readBackAfter){
 		if(this.getFirmwareVersionCode()>=6){
-			writeConfigBytes(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, generateInfoMemBytesForWritingToShimmer(), mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS, readBackAfter);
+			writeConfigBytes(mConfigByteLayout.MSP430_5XX_INFOMEM_D_ADDRESS, generateInfoMemBytesForWritingToShimmer(), mConfigByteLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS, readBackAfter);
 		}
 	}
 
 	public void writeConfigBytes(byte[] buf){
 		if(this.getFirmwareVersionCode()>=6){
-			writeConfigBytes(mInfoMemLayout.MSP430_5XX_INFOMEM_D_ADDRESS, buf, mInfoMemLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS, true);
+			writeConfigBytes(mConfigByteLayout.MSP430_5XX_INFOMEM_D_ADDRESS, buf, mConfigByteLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS, true);
 		}
 	}
 
@@ -4290,7 +4297,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void enableLowPowerAccel(boolean enable){
 		enableHighResolutionMode(!enable);
-		writeAccelSamplingRate(mLSM303DigitalAccelRate);
+		writeAccelSamplingRate(getLSM303DigitalAccelRate());
 	}
 
 	private void enableHighResolutionMode(boolean enable) {
@@ -4975,7 +4982,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if((enabledSensors & SENSOR_INT_ADC_A14) > 0){
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_INT_A14;
 			}
-			if  ((enabledSensors & SENSOR_BMP180) > 0){
+			if  ((enabledSensors & SENSOR_BMPX80) > 0){
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_BMP180;
 			} 
 			if((enabledSensors & SENSOR_GSR) > 0){

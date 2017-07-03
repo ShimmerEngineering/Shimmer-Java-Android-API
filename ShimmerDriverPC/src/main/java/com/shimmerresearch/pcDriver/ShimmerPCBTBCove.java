@@ -145,11 +145,11 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		mShimmerUserAssignedName = myName;
 		setSetupDeviceWhileConnecting(true);
 		setContinuousSync(continousSync);
-		mLowPowerMag = enableLowPowerMag;
-		mLowPowerAccelWR = enableLowPowerAccel;
-		mLowPowerGyro = enableLowPowerGyro;
+		setLowPowerMag(enableLowPowerMag);
+		setLowPowerAccelWR(enableLowPowerAccel);
+		setLowPowerGyro(enableLowPowerGyro);
 		setGyroRange(gyroRange);
-		setMagRange(magRange);
+		setLSM303MagRange(magRange);
 		mSetupEXG = true;
 		mEXG1RegisterArray = exg1;
 		mEXG2RegisterArray = exg2;
@@ -168,7 +168,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		mBluetoothRadioState = BT_STATE.DISCONNECTED;
 		setSamplingRateShimmer(samplingRate);
 		setAccelRange(accelRange);
-		setMagRange(magGain);
+		setLSM303MagRange(magGain);
 		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
 		mShimmerUserAssignedName = myName;

@@ -28,7 +28,9 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP280.DatabaseConfigHandle;
 
 /**
  * @author Ronan McCormack
@@ -41,11 +43,12 @@ public class SensorBMP180 extends SensorBMPX80 {
 	private static final long serialVersionUID = 4559709230029277863L;
 	
 	public static class DatabaseChannelHandles{
-		public static final String PRESSURE = "BMP180_Pressure";
-		public static final String TEMPERATURE = "BMP180_Temperature";
+		public static final String PRESSURE_BMP180 = "BMP180_Pressure";
+		public static final String TEMPERATURE_BMP180 = "BMP180_Temperature";
 	}
+	
 	public static final class DatabaseConfigHandle{
-		public static final String PRESSURE_PRECISION = "BMP180_Pressure_Precision";
+		public static final String PRESSURE_PRECISION_BMP180 = "BMP180_Pressure_Precision";
 		
 		public static final String TEMP_PRES_AC1 = "BMP180_AC1";
 		public static final String TEMP_PRES_AC2 = "BMP180_AC2";
@@ -59,11 +62,16 @@ public class SensorBMP180 extends SensorBMPX80 {
 		public static final String TEMP_PRES_MC = "BMP180_MC";
 		public static final String TEMP_PRES_MD = "BMP180_MD";
 		
+		public static final List<String> LIST_OF_CALIB_HANDLES = Arrays.asList(
+				DatabaseConfigHandle.TEMP_PRES_AC1, DatabaseConfigHandle.TEMP_PRES_AC2, DatabaseConfigHandle.TEMP_PRES_AC3,
+				DatabaseConfigHandle.TEMP_PRES_AC4, DatabaseConfigHandle.TEMP_PRES_AC5, DatabaseConfigHandle.TEMP_PRES_AC6,
+				DatabaseConfigHandle.TEMP_PRES_B1, DatabaseConfigHandle.TEMP_PRES_B2,
+				DatabaseConfigHandle.TEMP_PRES_MB, DatabaseConfigHandle.TEMP_PRES_MC, DatabaseConfigHandle.TEMP_PRES_MD);
 	}
 	
-	public static class ObjectClusterSensorName{
-		public static String TEMPERATURE_BMP180 = "Temperature_BMP180";
-		public static String PRESSURE_BMP180 = "Pressure_BMP180";
+	public static final class ObjectClusterSensorName{
+		public static final String TEMPERATURE_BMP180 = "Temperature_BMP180";
+		public static final String PRESSURE_BMP180 = "Pressure_BMP180";
 	}
 	//--------- Sensor specific variables end --------------
 
@@ -123,13 +131,20 @@ public class SensorBMP180 extends SensorBMPX80 {
         aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
+    
+    public static final SensorGroupingDetails sensorGroupBmp180 = new SensorGroupingDetails(
+			GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+
 	//--------- Sensor info end --------------
     
 	//--------- Channel info start --------------
 	public static final ChannelDetails channelBmp180Press = new ChannelDetails(
 			ObjectClusterSensorName.PRESSURE_BMP180,
 			ObjectClusterSensorName.PRESSURE_BMP180,
-			DatabaseChannelHandles.PRESSURE,
+			DatabaseChannelHandles.PRESSURE_BMP180,
 			CHANNEL_DATA_TYPE.UINT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.KPASCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -144,7 +159,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	public static final ChannelDetails channelBmp180Temp = new ChannelDetails(
 			ObjectClusterSensorName.TEMPERATURE_BMP180,
 			ObjectClusterSensorName.TEMPERATURE_BMP180,
-			DatabaseChannelHandles.TEMPERATURE,
+			DatabaseChannelHandles.TEMPERATURE_BMP180,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.DEGREES_CELSUIS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -163,6 +178,7 @@ public class SensorBMP180 extends SensorBMPX80 {
         aMap.put(ObjectClusterSensorName.TEMPERATURE_BMP180, SensorBMP180.channelBmp180Temp);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
+    
 	//--------- Channel info end --------------
     
 	//--------- Constructors for this class start --------------
@@ -198,12 +214,9 @@ public class SensorBMP180 extends SensorBMPX80 {
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
+		//TODO Extra version check here not needed because compatability info already contained in SensorGroupingDetails?
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE.ordinal();
-			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180));
+			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP180.ordinal(), sensorGroupBmp180);
 		}
 		super.updateSensorGroupingMap();
 	}
@@ -233,7 +246,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.PRESSURE_BMP180)){
 				rawDataUP = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.PRESSURE_BMP180), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				rawDataUP = rawDataUP/Math.pow(2,8-mPressureResolution);
+//				rawDataUP = rawDataUP/Math.pow(2,8-mPressureResolution);
 			}
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.TEMPERATURE_BMP180)){
 				rawDataUT = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(ObjectClusterSensorName.TEMPERATURE_BMP180), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
@@ -241,7 +254,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 		}
 
 		//Calibration
-		double[] bmp180caldata = mCalibDetailsBmpX80.calibratePressureSensorData(rawDataUP, rawDataUT);
+		double[] bmp180caldata = calibratePressureSensorData(rawDataUP, rawDataUT);
 		bmp180caldata[0] = bmp180caldata[0]/1000;
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -262,25 +275,6 @@ public class SensorBMP180 extends SensorBMPX80 {
 //				new String[]{ObjectClusterSensorName.TEMPERATURE_BMP180, CHANNEL_TYPE.CAL.toString()}));
 		
 		return objectCluster;
-	}
-
-	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte3 = 9;
-		int bitShiftBMP180PressureResolution = 4;
-		int maskBMP180PressureResolution = 0x03;
-		mInfoMemBytes[idxConfigSetupByte3] |= (byte) ((mPressureResolution & maskBMP180PressureResolution) << bitShiftBMP180PressureResolution);
-	}
-
-	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
-		int idxConfigSetupByte3 = 9;
-		int bitShiftBMP180PressureResolution = 4;
-		int maskBMP180PressureResolution = 0x03;
-		setPressureResolution((mInfoMemBytes[idxConfigSetupByte3] >> bitShiftBMP180PressureResolution) & maskBMP180PressureResolution);
-		mPressureResolution = getPressureResolution();
-//		System.out.println("Info Mem Pressure resolution:\t" + mPressureResolution);
-//		System.out.println("Check");
 	}
 
 	@Override
@@ -354,8 +348,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION, getPressureResolution());
-
+		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION_BMP180, getPressureResolution());
 
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC1, getPressTempAC1());
 		mapOfConfig.put(DatabaseConfigHandle.TEMP_PRES_AC2, getPressTempAC2());
@@ -374,8 +367,8 @@ public class SensorBMP180 extends SensorBMPX80 {
 
 	@Override
 	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION)){
-			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION)).intValue());
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION_BMP180)){
+			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION_BMP180)).intValue());
 		}
 		//PRESSURE (BMP180) CAL PARAMS
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.TEMP_PRES_AC1)
@@ -508,37 +501,66 @@ public class SensorBMP180 extends SensorBMPX80 {
 		updateCurrentPressureCalibInUse();
 	}
 
-
 	@Override
-	public List<Double> getPressTempConfigValues() {
+	public double[] calibratePressureSensorData(double UP, double UT) {
+		UP=UP/Math.pow(2,8-getPressureResolution());
+		return super.calibratePressureSensorData(UP, UT);
+	}
+	
+	@Override
+	public List<Double> getPressTempConfigValuesLegacy() {
 		List<Double> configValues = new ArrayList<Double>();
 
-//		CalibDetailsBmp180 calibDetailsBmp180 = ((CalibDetailsBmp180)mCalibDetailsBmpX80);
-//		configValues.add(calibDetailsBmp180.AC1);
-//		configValues.add(calibDetailsBmp180.AC2);
-//		configValues.add(calibDetailsBmp180.AC3);
-//		configValues.add(calibDetailsBmp180.AC4);
-//		configValues.add(calibDetailsBmp180.AC5);
-//		configValues.add(calibDetailsBmp180.AC6);
-//		configValues.add(calibDetailsBmp180.B1);
-//		configValues.add(calibDetailsBmp180.B2);
-//		configValues.add(calibDetailsBmp180.MB);
-//		configValues.add(calibDetailsBmp180.MC);
-//		configValues.add(calibDetailsBmp180.MD);
-
-		configValues.add(getPressTempAC1());
-		configValues.add(getPressTempAC2());
-		configValues.add(getPressTempAC3());
-		configValues.add(getPressTempAC4());
-		configValues.add(getPressTempAC5());
-		configValues.add(getPressTempAC6());
-		configValues.add(getPressTempB1());
-		configValues.add(getPressTempB2());
-		configValues.add(getPressTempMB());
-		configValues.add(getPressTempMC());
-		configValues.add(getPressTempMD());
+		CalibDetailsBmp180 calibDetailsBmp180 = ((CalibDetailsBmp180)mCalibDetailsBmpX80);
+		configValues.add(calibDetailsBmp180.AC1);
+		configValues.add(calibDetailsBmp180.AC2);
+		configValues.add(calibDetailsBmp180.AC3);
+		configValues.add(calibDetailsBmp180.AC4);
+		configValues.add(calibDetailsBmp180.AC5);
+		configValues.add(calibDetailsBmp180.AC6);
+		configValues.add(calibDetailsBmp180.B1);
+		configValues.add(calibDetailsBmp180.B2);
+		configValues.add(calibDetailsBmp180.MB);
+		configValues.add(calibDetailsBmp180.MC);
+		configValues.add(calibDetailsBmp180.MD);
 		
 		return configValues;
+	}
+
+	public void setDefaultBmp180PressureSensorConfig(boolean isSensorEnabled) {
+		//RS (30/5/2016) - from ShimmerObject:
+		if(isSensorEnabled) {
+		}
+		else{
+			mPressureResolution = 0;
+		}
+	}
+
+
+	public static String parseFromDBColumnToGUIChannel(String databaseChannelHandle) {
+		//TODO Old approach, can be removed
+//		String objectClusterName = "";
+//		if (databaseChannelHandle.equals(SensorBMP180.DatabaseChannelHandles.TEMPERATURE_BMP180)) {
+//			objectClusterName = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180;
+//		} else if (databaseChannelHandle.equals(SensorBMP180.DatabaseChannelHandles.PRESSURE_BMP180)) {
+//			objectClusterName = SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;
+//		}
+//		return objectClusterName;
+		
+		return AbstractSensor.parseFromDBColumnToGUIChannel(mChannelMapRef, databaseChannelHandle);
+	}
+
+	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
+		//TODO Old approach, can be removed
+//		String databaseChannelHandle = "";
+//		if (objectClusterName.equals(SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180)) {
+//			databaseChannelHandle = SensorBMP180.DatabaseChannelHandles.TEMPERATURE_BMP180;
+//		} else if (objectClusterName.equals(SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180)) {
+//			databaseChannelHandle = SensorBMP180.DatabaseChannelHandles.PRESSURE_BMP180;
+//		}
+//		return databaseChannelHandle;
+		
+		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
 	}
 
 	

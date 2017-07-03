@@ -4,8 +4,8 @@ import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 /**
- * BMP280 Calibration details based on information from 
- * https://cdn-shop.adafruit.com/datasheets/BST-BMP280-DS001-11.pdf
+ * BMP280 Calibration details based on information from sensor datasheet
+ * https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BMP280-DS001-18.pdf
  * and sample parsing code from 
  * https://github.com/ControlEverythingCommunity/BMP280/blob/master/Java/BMP280.java
  * 
@@ -113,68 +113,50 @@ public class CalibDetailsBmp280 extends CalibDetailsBmpX80 {
 		this.dig_P9 = P9;
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see com.shimmerresearch.sensors.bmpX80.CalibDetailsBmpX80#calibratePressureSensorData(double, double)
+	 */
 	@Override
 	public double[] calibratePressureSensorData(double UP, double UT){
-		double var1 = (UT / 16384.0 - (dig_T1) / 1024.0) * (dig_T2); 
-		double var2 = ((UT / 131072.0 - (dig_T1) / 8192.0) * (UT/131072.0 - (dig_T1)/8192.0)) * (dig_T3); 
-		double t_fine = var1 + var2; 
-		double cTemp = t_fine / 5120.0; //Celsius 
-//		double fTemp = cTemp * 1.8 + 32; // Fahrenheit
+		double adc_T = UT;
+		double adc_P = UP;
 		
-		// Pressure offset calculations
-		var1 = (t_fine / 2.0) - 64000.0;
-		var2 = var1 * var1 * (dig_P6) / 32768.0;
-		var2 = var2 + var1 * (dig_P5) * 2.0;
-		var2 = (var2 / 4.0) + ((dig_P4) * 65536.0);
-		var1 = (( dig_P3) * var1 * var1 / 524288.0 + ( dig_P2) * var1) / 524288.0;
-		var1 = (1.0 + var1 / 32768.0) * (dig_P1);
-		double p = 1048576.0 - UP;
+//		double x1  = (((UT >> Math.pow(2, 3)) - (dig_T1 << 1)) * dig_T2) >> 11;
+//		double x2 = (((((UT>>4) - (dig_T1)) * ((UT>>4) - (dig_T1))) >> 12) * (dig_T3)) >> 14;
+//		double t_fine = x1 + x2;
+//		double T = (t_fine * 5 + 128) >> 8;
+		
+		// Returns temperature in DegC, double precision. Output value of “51.23” equals 51.23 DegC.
+		// t_fine carries fine temperature as global value
+		double var1 = ((adc_T)/16384.0 - dig_T1/1024.0) * dig_T2;
+		double var2 = (((adc_T)/131072.0 - dig_T1/8192.0) * (adc_T/131072.0 - dig_T1/8192.0)) * dig_T3;
+		double t_fine = var1 + var2;
+		double T = t_fine / 5120.0;
+//		double fTemp = T * 1.8 + 32; // Fahrenheit
+//		T = T/100.0;
+		
+		// Returns pressure in Pa as double. Output value of “96386.2” equals 96386.2 Pa = 963.862 hPa
+		var1 = (t_fine/2.0) - 64000.0;
+		var2 = var1 * var1 * dig_P6 / 32768.0;
+		var2 = var2 + var1 * dig_P5 * 2.0;
+		var2 = (var2/4.0)+(dig_P4 * 65536.0);
+		var1 = (dig_P3 * var1 * var1 / 524288.0 + dig_P2 * var1) / 524288.0;
+		var1 = (1.0 + var1 / 32768.0)*dig_P1;
+		if (var1 == 0.0) {
+//			return 0; // avoid exception caused by division by zero
+		}
+		double p = 1048576.0 - adc_P;
 		p = (p - (var2 / 4096.0)) * 6250.0 / var1;
-		var1 = ( dig_P9) * p * p / 2147483648.0;
-		var2 = p * ( dig_P8) / 32768.0;
-		double pressure = (p + (var1 + var2 + (dig_P7)) / 16.0) / 100;
+		var1 = dig_P9 * p * p / 2147483648.0;
+		var2 = p * dig_P8 / 32768.0;
+		p = p + (var1 + var2 + dig_P7) / 16.0;
+
 		
 		double[] caldata = new double[2];
-		caldata[0]=pressure;
-		caldata[1]=cTemp;///10; // TODO divided by 10 in BMP180, needed here?
+		caldata[0]=p;
+		caldata[1]=T;///10; // TODO divided by 10 in BMP180, needed here?
 		return caldata;
 	}
 	
-	//C code from datasheet
-
-//	// Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
-//	// t_fine carries fine temperature as global value
-//	BMP280_S32_t t_fine;
-//	BMP280_S32_t bmp280_compensate_T_int32(BMP280_S32_t adc_T)
-//	{
-//	BMP280_S32_t var1, var2, T;
-//	var1 = ((((adc_T>>3) – ((BMP280_S32_t)dig_T1<<1))) * ((BMP280_S32_t)dig_T2)) >> 11;
-//	var2 = (((((adc_T>>4) – ((BMP280_S32_t)dig_T1)) * ((adc_T>>4) – ((BMP280_S32_t)dig_T1))) >> 12) *
-//	((BMP280_S32_t)dig_T3)) >> 14;
-//	t_fine = var1 + var2;
-//	T = (t_fine * 5 + 128) >> 8;
-//	return T;
-//	}
-//	“”–
-//	// Returns pressure in Pa as unsigned 32 bit integer in Q24.8 format (24 integer bits and 8 fractional bits).
-//	// Output value of “24674867” represents 24674867/256 = 96386.2 Pa = 963.862 hPa
-//	BMP280_U32_t bmp280_compensate_P_int64(BMP280_S32_t adc_P)
-//	{
-//	BMP280_S64_t var1, var2, p;
-//	var1 = ((BMP280_S64_t)t_fine) – 128000;
-//	var2 = var1 * var1 * (BMP280_S64_t)dig_P6;
-//	var2 = var2 + ((var1*(BMP280_S64_t)dig_P5)<<17);
-//	var2 = var2 + (((BMP280_S64_t)dig_P4)<<35);
-//	var1 = ((var1 * var1 * (BMP280_S64_t)dig_P3)>>8) + ((var1 * (BMP280_S64_t)dig_P2)<<12);
-//	var1 = (((((BMP280_S64_t)1)<<47)+var1))*((BMP280_S64_t)dig_P1)>>33;
-//	if (var1 == 0)
-//	{
-//	return 0; // avoid exception caused by division by zero
-//	}
-//	p = 1048576-adc_P;
-//	p = (((p<<31)-var2)*3125)/var1;
-//	var1 = (((BMP280_S64_t)dig_P9) * (p>>13) * (p>>13)) >> 25;
-//	var2 = (((BMP280_S64_t)dig_P8) * p) >> 19;
-//	p = ((p + var1 + var2) >> 8) + (((BMP280_S64_t)dig_P7)<<4);
-//	return (BMP280_U32_t)p;
 }

@@ -43,51 +43,51 @@ public class OrientationModule6DOF extends OrientationModule{
 	protected static String LN = "_LN";
 
 	public static class ObjectClusterSensorName{
-		public static String QUAT_MADGE_6DOF_W = Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W; 
+		public static String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W; 
 		public static String QUAT_MADGE_6DOF_W_LN = QUAT_MADGE_6DOF_W + LN; 
 		public static String QUAT_MADGE_6DOF_W_WR = QUAT_MADGE_6DOF_W + WR; 
-		public static String QUAT_MADGE_6DOF_X = Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X; 
+		public static String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X; 
 		public static String QUAT_MADGE_6DOF_X_LN = QUAT_MADGE_6DOF_X + LN; 
 		public static String QUAT_MADGE_6DOF_X_WR = QUAT_MADGE_6DOF_X + WR; 
-		public static String QUAT_MADGE_6DOF_Y = Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y; 
+		public static String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y; 
 		public static String QUAT_MADGE_6DOF_Y_LN = QUAT_MADGE_6DOF_Y + LN; 
 		public static String QUAT_MADGE_6DOF_Y_WR = QUAT_MADGE_6DOF_Y + WR; 
-		public static String QUAT_MADGE_6DOF_Z = Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z; 
+		public static String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z; 
 		public static String QUAT_MADGE_6DOF_Z_LN = QUAT_MADGE_6DOF_Z + LN; 
 		public static String QUAT_MADGE_6DOF_Z_WR = QUAT_MADGE_6DOF_Z + WR; 
 
-		public static String AXIS_ANGLE_6DOF_A = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_A; 
+		public static String AXIS_ANGLE_6DOF_A = "Axis_Angle_6DOF_A";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_A; 
 		public static String AXIS_ANGLE_6DOF_A_LN = AXIS_ANGLE_6DOF_A + LN; 
 		public static String AXIS_ANGLE_6DOF_A_WR = AXIS_ANGLE_6DOF_A + WR; 
-		public static String AXIS_ANGLE_6DOF_X = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_X; 
+		public static String AXIS_ANGLE_6DOF_X = "Axis_Angle_6DOF_X";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_X; 
 		public static String AXIS_ANGLE_6DOF_X_LN = AXIS_ANGLE_6DOF_X + LN; 
 		public static String AXIS_ANGLE_6DOF_X_WR = AXIS_ANGLE_6DOF_X + WR; 
-		public static String AXIS_ANGLE_6DOF_Y = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y; 
+		public static String AXIS_ANGLE_6DOF_Y = "Axis_Angle_6DOF_Y";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y; 
 		public static String AXIS_ANGLE_6DOF_Y_LN = AXIS_ANGLE_6DOF_Y + LN; 
 		public static String AXIS_ANGLE_6DOF_Y_WR = AXIS_ANGLE_6DOF_Y + WR; 
-		public static String AXIS_ANGLE_6DOF_Z = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z; 
+		public static String AXIS_ANGLE_6DOF_Z = "Axis_Angle_6DOF_Z";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z; 
 		public static String AXIS_ANGLE_6DOF_Z_LN = AXIS_ANGLE_6DOF_Z + LN; 
 		public static String AXIS_ANGLE_6DOF_Z_WR = AXIS_ANGLE_6DOF_Z + WR; 
 		
-		public static String EULER_6DOF_YAW = Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_YAW; 
+		public static String EULER_6DOF_YAW = "Euler_6DOF_Yaw";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_YAW; 
 		public static String EULER_6DOF_YAW_LN = EULER_6DOF_YAW + LN; 
 		public static String EULER_6DOF_YAW_WR = EULER_6DOF_YAW + WR; 
-		public static String EULER_6DOF_PITCH = Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_PITCH; 
+		public static String EULER_6DOF_PITCH = "Euler_6DOF_Pitch";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_PITCH; 
 		public static String EULER_6DOF_PITCH_LN = EULER_6DOF_PITCH + LN; 
 		public static String EULER_6DOF_PITCH_WR = EULER_6DOF_PITCH + WR; 
-		public static String EULER_6DOF_ROLL = Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_ROLL; 
+		public static String EULER_6DOF_ROLL = "Euler_6DOF_Roll";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_ROLL; 
 		public static String EULER_6DOF_ROLL_LN = EULER_6DOF_ROLL + LN; 
 		public static String EULER_6DOF_ROLL_WR = EULER_6DOF_ROLL + WR; 
 
 
-		@Deprecated //need to describe axis angle 9DOF vs 6DOF
-		public static String AXIS_ANGLE_A = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A; 
-		@Deprecated //need to describe axis angle 9DOF vs 6DOF
-		public static String AXIS_ANGLE_X = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X; 
-		@Deprecated //need to describe axis angle 9DOF vs 6DOF
-		public static String AXIS_ANGLE_Y = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y; 
-		@Deprecated //need to describe axis angle 9DOF vs 6DOF
-		public static String AXIS_ANGLE_Z = Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z; 
+//		@Deprecated //need to describe axis angle 9DOF vs 6DOF
+//		public static String AXIS_ANGLE_A = "Axis_Angle_A";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A; 
+//		@Deprecated //need to describe axis angle 9DOF vs 6DOF
+//		public static String AXIS_ANGLE_X = "Axis_Angle_X";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X; 
+//		@Deprecated //need to describe axis angle 9DOF vs 6DOF
+//		public static String AXIS_ANGLE_Y = "Axis_Angle_Y";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y; 
+//		@Deprecated //need to describe axis angle 9DOF vs 6DOF
+//		public static String AXIS_ANGLE_Z = "Axis_Angle_Z";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z; 
 	}
 	
 	public static class DatabaseChannelHandles{
@@ -606,6 +606,19 @@ public class OrientationModule6DOF extends OrientationModule{
 		}
 	}
 
+	@Override
+	public LinkedHashMap<String, Object> getConfigMapForDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public ObjectCluster addQuaternionToObjectCluster(Orientation3DObject quaternion, ObjectCluster objectCluster){
 
 
@@ -652,6 +665,7 @@ public class OrientationModule6DOF extends OrientationModule{
 
 		return objectCluster;
 	}
+
 	
 }
 

@@ -20,7 +20,7 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 	private static final long serialVersionUID = -8894717489924237791L;
 
 	public static final class VALUE_INDEXES {
-		public static final class LSM303DLHC_ACCEL_RATE{
+		public static final class LSM303_ACCEL_RATE{
 			public static final int NOT_LPM = 0;
 			public static final int IS_LPM = 1;
 		}

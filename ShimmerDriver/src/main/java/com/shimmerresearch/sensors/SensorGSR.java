@@ -527,7 +527,8 @@ public class SensorGSR extends AbstractSensor {
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
-		mapOfConfig.put(DatabaseConfigHandle.GSR_RANGE, getGSRRange());
+		mapOfConfig.put(SensorGSR.DatabaseConfigHandle.GSR_RANGE, (double) getGSRRange());
+		
 		return mapOfConfig;
 	}
 

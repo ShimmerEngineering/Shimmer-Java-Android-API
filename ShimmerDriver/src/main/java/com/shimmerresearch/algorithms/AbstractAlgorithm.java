@@ -3,6 +3,7 @@ package com.shimmerresearch.algorithms;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -182,7 +183,9 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	 * @param shimmerMSG
 	 */
 	public abstract void eventDataReceived(ShimmerMsg shimmerMSG);
-	
+
+	public abstract LinkedHashMap<String, Object> getConfigMapForDb();
+	public abstract void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer);
 
 	public AbstractAlgorithm(){
 		setGeneralAlgorithmName();

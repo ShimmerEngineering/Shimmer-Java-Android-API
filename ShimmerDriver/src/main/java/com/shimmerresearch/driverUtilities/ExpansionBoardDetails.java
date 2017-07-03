@@ -152,4 +152,12 @@ public class ExpansionBoardDetails implements Serializable {
 		return byteArray;
 	}
 
+	public int getExpansionBoardId() {
+		return mExpansionBoardId;
+	}
+
+	public int getExpansionBoardRev() {
+		return mExpansionBoardRev;
+	}
+
 }
