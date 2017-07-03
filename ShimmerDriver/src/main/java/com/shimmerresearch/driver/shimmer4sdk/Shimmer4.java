@@ -1263,11 +1263,12 @@ public class Shimmer4 extends ShimmerDevice {
 
 	//TODO TEMP here to sync booleans in ShimmerDevice with mCommsProtocolRadio
 	@Override
-	public void setIsDocked(boolean state) {
-		super.setIsDocked(state);
+	public boolean setIsDocked(boolean state) {
+		boolean changed = super.setIsDocked(state);
 		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null && mCommsProtocolRadio.mRadioProtocol instanceof LiteProtocol){
 			((LiteProtocol)(mCommsProtocolRadio.mRadioProtocol)).mIsDocked = state;
 		}
+		return changed;
 	}
 
 	@Override
