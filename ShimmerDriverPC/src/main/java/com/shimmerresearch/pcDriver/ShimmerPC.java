@@ -603,8 +603,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	public void setBluetoothRadioState(BT_STATE state) {
-		super.setBluetoothRadioState(state);
+	public boolean setBluetoothRadioState(BT_STATE state) {
+		boolean changed = super.setBluetoothRadioState(state);
 
 		if(mBluetoothRadioState==BT_STATE.CONNECTED){
 			mIsInitialised = true;
@@ -625,6 +625,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
 		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		return changed;
 	}
 	
 	@Override
