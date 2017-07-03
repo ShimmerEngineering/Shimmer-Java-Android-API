@@ -44,6 +44,7 @@ repositories {
 //		url = "http://repo1.maven.org/maven2/"
 //		url = "http://repo2.maven.org/maven2/"
 //		url = "http://repo.fusesource.com/maven2"
+   		url  "http://dl.bintray.com/jongchern/testshimmer"
 	}
 	
 //	flatDir {
@@ -180,4 +181,9 @@ dependencies {
 	compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
 	// https://mvnrepository.com/artifact/javax.microedition/cldc
 	compile group: 'javax.microedition', name: 'cldc', version: '1.1'
+	compile ('com.shimmerresearch.managers.bluetoothmanager:ShimmerBluetoothManager:1.1c') {
+                // excluding org.json which is provided by Android
+                exclude group: 'io.netty'
+        //exclude group: 'com.google.protobuf'
+            }
 }
