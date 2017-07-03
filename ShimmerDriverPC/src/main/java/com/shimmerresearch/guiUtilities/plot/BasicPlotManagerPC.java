@@ -1135,6 +1135,14 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		}
 	}
 	
+	public void setAxisLinePainted(boolean isAxisLinePainted){
+		IAxis<?> axisX = mChart.getAxisX();
+		IAxis<?> axisY = mChart.getAxisY();
+		
+		axisX.setVisible(false);
+		axisY.setVisible(false);
+	}
+	
 	public void setYaxisTitles(String yAxisTitleLeft, String yAxisTitleRight){
 		setYaxisTitleLeft(yAxisTitleLeft);
 		setYaxisTitleRight(yAxisTitleRight);
