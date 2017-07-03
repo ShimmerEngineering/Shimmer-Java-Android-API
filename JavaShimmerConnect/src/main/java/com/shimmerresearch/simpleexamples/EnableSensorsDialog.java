@@ -17,6 +17,9 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JList;
 
 public class EnableSensorsDialog {
@@ -45,6 +48,11 @@ public class EnableSensorsDialog {
 		 dialog.setSize(600, 500);
 		 
 		 JButton btnWriteConfig = new JButton("Save");
+		 btnWriteConfig.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+		 		//TODO: Write the config from clone to shimmer here
+		 	}
+		 });
 		 btnWriteConfig.setToolTipText("Write the current sensors configuration to the Shimmer device");
 		 dialog.getContentPane().add(btnWriteConfig, BorderLayout.SOUTH);
 		 
@@ -70,8 +78,8 @@ public class EnableSensorsDialog {
 			 }
 		 }
 		 
-		 String arraySensors[] = new String[count];
-		 final boolean[] listEnabled = new boolean[count];
+//		 String arraySensors[] = new String[count];
+//		 final boolean[] listEnabled = new boolean[count];
 		 final int[] sensorKeys = new int[count];
 		 JCheckBox[] listOfSensors = new JCheckBox[count];
 		 count = 0;
@@ -93,11 +101,27 @@ public class EnableSensorsDialog {
 				 String sensorName = sd.mSensorDetailsRef.mGuiFriendlyLabel;
 				 listOfSensors[count] = new JCheckBox(sensorName, sd.isEnabled());
 				 panel.add(listOfSensors[count]);
-				 //dialog.getContentPane().add(listOfSensors[count], BorderLayout.NORTH);
-				 //listOfSensors[count].setBounds(10, 10+(20*count), 150, 15);
+								 
 				 sensorKeys[count] = key;
 				 count++;
 			 }
+		 }
+		 
+		 for(int i=0; i<listOfSensors.length; i++) {
+			 final int a = i;
+			 listOfSensors[a].addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						
+						if(listOfSensors[a].isSelected()) {
+							clone.setSensorEnabledState(sensorKeys[a], true);
+						} else {
+							clone.setSensorEnabledState(sensorKeys[a], false);
+						}
+						
+						updateCheckboxes(listOfSensors, clone, sensorKeys);
+						
+					}
+				});
 		 }
 		 
 		 
@@ -106,6 +130,19 @@ public class EnableSensorsDialog {
 		 		 
 		 
 		 
+	}
+	
+	private void updateCheckboxes(JCheckBox[] checkboxes, ShimmerPC shimmer, int[] sensorKeys) {
+		
+		for(int i=0; i<checkboxes.length; i++) {
+			
+			if(shimmer.isSensorEnabled(sensorKeys[i])) {
+				checkboxes[i].setSelected(true);
+			} else {
+				checkboxes[i].setSelected(false);
+			}
+			
+		}
 	}
 	
 	
