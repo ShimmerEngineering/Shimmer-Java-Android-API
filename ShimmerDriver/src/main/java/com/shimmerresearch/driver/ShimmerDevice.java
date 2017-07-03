@@ -136,7 +136,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected boolean mIsSensing = false;
 	protected boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
 	protected boolean mIsInitialised = false;
-	protected boolean mIsDocked = false;
+	private boolean mIsDocked = false;
 	protected boolean mHaveAttemptedToReadConfig = false;
 
 	//BSL related start
@@ -194,6 +194,77 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected String mComPort = "";
 	public transient CommsProtocolRadio mCommsProtocolRadio = null;
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
+	public DOCK_STATE mDockState = DOCK_STATE.UNDOCKED;
+	
+	//TODO:
+	public enum DOCK_STATE{
+		DOCKED("Docked"),
+		UNDOCKED("Undocked");
+//		RECORDING("Recording");
+		
+	    private final String text;
+
+	    /**
+	     * @param text
+	     */
+	    private DOCK_STATE(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
+	
+	public enum SD_STATE{
+		LOGGING("Logging"),
+		NOT_LOGGING("Not_Logging");
+//		RECORDING("Recording");
+		
+	    private final String text;
+
+	    /**
+	     * @param text
+	     */
+	    private SD_STATE(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
+	
+	public enum SENSING_STATE{
+		SENSING("Sensing"),
+		NOT_SENSING("Not Sensing");
+//		RECORDING("Recording");
+		
+	    private final String text;
+
+	    /**
+	     * @param text
+	     */
+	    private SENSING_STATE(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
 	
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
 	
@@ -881,8 +952,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param docked the mDocked to set
 	 */
-	public void setIsDocked(boolean docked) {
+	public boolean setIsDocked(boolean docked) {
+		boolean changed=false;
+		if (mIsDocked!=docked){
+			changed = true;
+		}
 		mIsDocked = docked;
+		if (mIsDocked){
+			
+		}else {
+			
+		}
+		return changed;
 	}
 
 	/**
