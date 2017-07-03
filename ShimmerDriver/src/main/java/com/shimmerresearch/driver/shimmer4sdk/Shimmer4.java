@@ -953,8 +953,8 @@ public class Shimmer4 extends ShimmerDevice {
 
 	//TODO copied from ShimmerPC
 	@Override
-	public void setBluetoothRadioState(BT_STATE state){
-		super.setBluetoothRadioState(state);
+	public boolean setBluetoothRadioState(BT_STATE state){
+		boolean changed = super.setBluetoothRadioState(state);
 
 //		if (mBluetoothRadioState.equals(BT_STATE.CONNECTED)){
 //			setIsConnected(true);
@@ -991,6 +991,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacIdFromUart(), getComPort());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		return changed;
 	}
 	
 
