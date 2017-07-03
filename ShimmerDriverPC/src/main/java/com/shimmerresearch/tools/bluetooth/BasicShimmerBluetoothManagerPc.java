@@ -1,11 +1,16 @@
 package com.shimmerresearch.tools.bluetooth;
 
+import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerRadioInitializer;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
+import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.shimmer4sdk.Shimmer4;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
@@ -25,7 +30,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	@Override
 	public void addCallBack(BasicProcessWithCallBack basicProcess) {
 		// TODO Auto-generated method stub
-		
+		callBackObject.setWaitForDataWithSingleInstanceCheck(basicProcess);
 	}
 
 	@Override
@@ -121,6 +126,19 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	}
 	
 	protected void setupShimmer3BluetoothForBtManager(ShimmerDevice shimmerDevice) {}
+	
+
+
+	//-------------- Callback methods start -----------------------------
+	
+	public BasicProcessWithCallBack callBackObject = new BasicProcessWithCallBack() {
+		
+		@Override
+		protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
+			sendCallBackMsg(shimmerMSG);
+		}
+	};
+	
 	
 }
 
