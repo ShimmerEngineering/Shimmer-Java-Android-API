@@ -8,6 +8,8 @@ import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JMenuBar;
@@ -29,6 +31,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	private JTextField textField;
 	JTextPane textPaneStatus;
 	static ShimmerPC shimmer = new ShimmerPC("ShimmerDevice");
+	static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
 	
 	/**
 	 * Initialize the contents of the frame
@@ -54,7 +57,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				shimmer.connect(textField.getText(),"");
+				btManager.connectShimmerThroughCommPort(textField.getText());
+				//shimmer.connect(textField.getText(),"");
 				
 			}
 		});
@@ -66,11 +70,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				try {
-					shimmer.disconnect();
-				} catch(ShimmerException e1) {
-					e1.printStackTrace();
-				}
+				//btManager.disconnectShimmer(shimmerDevice);
+//				try {
+//					shimmer.disconnect();
+//				} catch(ShimmerException e1) {
+//					e1.printStackTrace();
+//				}
 				
 			}
 		});
@@ -150,7 +155,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		SensorMapsExample s = new SensorMapsExample();
 		s.initialize();
 		s.frame.setVisible(true);
-		s.setWaitForData(shimmer);
+		s.setWaitForData(btManager.callBackObject);		
+		//s.setWaitForData(shimmer);
 	}
 	
 	@Override
