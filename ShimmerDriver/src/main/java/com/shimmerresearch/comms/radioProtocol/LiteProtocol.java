@@ -29,15 +29,18 @@ import com.shimmerresearch.sensors.SensorSTC3100Details;
 
 public class LiteProtocol extends AbstractCommsProtocol{
 
+	//Using this as a staging post to add new BT commands before the ProtoBuf auto-code generation is run.
 	public class Temp{
 		public class InstructionsSet{
-			 public static final int SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE = 0x9C;
+//			 public static final int SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE = 0x9C;
 		}
 		public class InstructionsResponse{
-			 public static final int RSP_I2C_BATT_STATUS_COMMAND_VALUE = 0x9D;
+//			 public static final int RSP_I2C_BATT_STATUS_COMMAND_VALUE = 0x9D;
+			public static final int BMP280_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE = 0x9F;
 		}
 		public class InstructionsGet{
-			 public static final int GET_I2C_BATT_STATUS_COMMAND_VALUE = 0x9E;
+//			 public static final int GET_I2C_BATT_STATUS_COMMAND_VALUE = 0x9E;
+			 public static final int GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 0xA0;
 		}
 	}
 
@@ -1170,7 +1173,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					}
 				}
 			}
-			else if(responseCommand==Temp.InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
+			else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE) {
 				byte[] responseData = readBytes(10); 
 				System.err.println("STC3100 response = " + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseData));
 			}
@@ -1573,7 +1576,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					eventNewResponse(responseData);
 				}
 			}
-			else if(inStreamResponseCommand==Temp.InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
+			else if(inStreamResponseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE) {
 				byte[] responseData = readBytes(10); 
 				SensorSTC3100Details sensorSTC3100Details = new SensorSTC3100Details(responseData); 
 				eventResponseReceived(inStreamResponseCommand, sensorSTC3100Details);
@@ -1914,7 +1917,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			byte[] buf = new byte[2];
 			buf[0] = (byte) (periodInSec&0xFF);
 			buf[1] = (byte) ((periodInSec>>8)&0xFF);
-			writeInstruction(new byte[]{(byte) (Temp.InstructionsSet.SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE&0xFF), buf[0], buf[1]});
+			writeInstruction(new byte[]{(byte) (InstructionsSet.SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE_VALUE&0xFF), buf[0], buf[1]});
 		}
 	}
 
@@ -1923,7 +1926,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	@Override
 	public void readBattStatusPeriod() {
 		if(getShimmerVersion()==HW_ID.SHIMMER_4_SDK){
-			writeInstruction(Temp.InstructionsGet.GET_I2C_BATT_STATUS_COMMAND_VALUE);
+			writeInstruction(InstructionsGet.GET_I2C_BATT_STATUS_COMMAND_VALUE_VALUE);
 		}
 	}
 

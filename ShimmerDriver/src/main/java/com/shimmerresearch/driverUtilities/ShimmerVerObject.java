@@ -7,6 +7,7 @@ import java.util.List;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_LABEL;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 /**
  * Holds HW, FW and expansion board infomation. Used for docked Shimmers current
@@ -20,7 +21,7 @@ public class ShimmerVerObject implements Serializable {
 	private static final long serialVersionUID = -1966526754185423783L;
 	
 	public int mHardwareVersion = HW_ID.UNKNOWN;
-	public String mHardwareVersionParsed = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
+//	public String mHardwareVersionParsed = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 	
 	public int mFirmwareIdentifier = FW_ID.UNKNOWN;
 	public int mFirmwareVersionMajor = FW_ID.UNKNOWN;
@@ -31,9 +32,12 @@ public class ShimmerVerObject implements Serializable {
 	public String mFirmwareVersionParsed = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 	public String mFirmwareVersionParsedJustVersionNumber = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 
-	//TODO MNtoMN: below is a bad implementation, consider using ExpansionBoardDetails 
-	public int mShimmerExpansionBoardId = ShimmerVerDetails.ANY_VERSION;//0;
-//	public ExpansionBoardDetails ExpansionBoardDetails = 
+	/**
+	 * only used for driver version checking. If a current Shimmers expansion
+	 * board info is needed, refer to the ExpansionBoardDetails declared in the
+	 * ShimmerDevice instance
+	 */
+	private ExpansionBoardDetails mExpansionBoardDetails = new ExpansionBoardDetails(ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION); 
 	
 	//TODO handle SPAN_VERSION for SPANs? It is obtained from the PlatformHwManager
 	//public SPAN_VERSION hardwareVersion = SPAN_VERSION.UNKNOWN;
@@ -41,6 +45,10 @@ public class ShimmerVerObject implements Serializable {
 	public ShimmerVerObject() {
 		// TODO Auto-generated constructor stub
 	}
+	
+//	public ShimmerVerObject(int hardwareVersion){
+//		mHardwareVersion = hardwareVersion;
+//	}
 	
 	/**Not enough to parseShimmerVerDetails
 	 * @param firmwareIdentifier
@@ -103,13 +111,42 @@ public class ShimmerVerObject implements Serializable {
 			int firmwareVersionInternal,
 			int shimmerExpansionBoardId) {
 
+		this(hardwareVersion,
+				firmwareIdentifier,
+				firmwareVersionMajor,
+				firmwareVersionMinor,
+				firmwareVersionInternal,
+				shimmerExpansionBoardId,
+				ShimmerVerDetails.ANY_VERSION);
+	}
+	
+	/**
+	 * Used specifically for compatible version checking
+	 * 
+	 * @param hardwareVersion
+	 * @param firmwareIdentifier
+	 * @param firmwareVersionMajor
+	 * @param firmwareVersionMinor
+	 * @param firmwareVersionInternal
+	 * @param shimmerExpansionBoardId
+	 */
+	public ShimmerVerObject(
+			int hardwareVersion, 
+			int firmwareIdentifier,
+			int firmwareVersionMajor, 
+			int firmwareVersionMinor, 
+			int firmwareVersionInternal,
+			int shimmerExpansionBoardId,
+			int shimmerExpansionBoardRev) {
+
 		this(firmwareIdentifier,
 				firmwareVersionMajor,
 				firmwareVersionMinor,
 				firmwareVersionInternal);
 
 		mHardwareVersion = hardwareVersion;
-		mShimmerExpansionBoardId = shimmerExpansionBoardId;
+//		mShimmerExpansionBoardId = shimmerExpansionBoardId;
+		mExpansionBoardDetails = new ExpansionBoardDetails(shimmerExpansionBoardId, shimmerExpansionBoardRev, ShimmerVerDetails.ANY_VERSION);
 		parseShimmerVerDetails();
 	}
 	
@@ -170,11 +207,7 @@ public class ShimmerVerObject implements Serializable {
 
 	private void parseShimmerVerDetails() {
 		if(mHardwareVersion!=HW_ID.UNKNOWN){
-			if (ShimmerVerDetails.mMapOfShimmerRevisions.containsKey(mHardwareVersion)) {
-				mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(mHardwareVersion);
-			} else {
-				mHardwareVersionParsed = ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID.UNKNOWN);
-			}
+//			mHardwareVersionParsed = getHardwareVersionParsed(mHardwareVersion);
 			
 			mFirmwareIdentifierParsed = FW_LABEL.UNKNOWN;
 			// Set default on Shimmer2R
@@ -265,6 +298,18 @@ public class ShimmerVerObject implements Serializable {
 		return mHardwareVersion;
 	}
 
+	public String getHardwareVersionParsed() {
+//		return mHardwareVersionParsed;
+		return getHardwareVersionParsed(mHardwareVersion);
+	}
+
+	public static String getHardwareVersionParsed(int hardwareVersion) {
+		if(ShimmerVerDetails.mMapOfShimmerRevisions.containsKey(hardwareVersion)){
+			return ShimmerVerDetails.mMapOfShimmerRevisions.get(hardwareVersion);
+		}
+		return ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID_SR_CODES.UNKNOWN);
+	}
+
 	public int getFirmwareVersionMajor() {
 		return mFirmwareVersionMajor;
 	}
@@ -287,7 +332,8 @@ public class ShimmerVerObject implements Serializable {
 	}
 
 	public static boolean isSupportedMpl(ShimmerVerObject svo, int hwVer, int fwId) {
-		if (compareVersions(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 7, 0)
+		if ((compareVersions(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 7, 0)
+				&& !compareVersions(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 8, 0))
 //				|| (hwVer==HW_ID.SHIMMER_4_SDK)
 				){
 			return true;
@@ -425,7 +471,7 @@ public class ShimmerVerObject implements Serializable {
 		}
 		return false;
 	}
-
+	
 	public boolean isShimmerHardware() {
 		return isShimmerHardware(getHardwareVersion());
 	}
@@ -547,6 +593,14 @@ public class ShimmerVerObject implements Serializable {
 	public static boolean compareVersions(ShimmerVerObject svo, int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 		return UtilShimmer.compareVersions(svo.getFirmwareIdentifier(), svo.getFirmwareVersionMajor(), svo.getFirmwareVersionMinor(), svo.getFirmwareVersionInternal(),
 				firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	}
+
+	public int getShimmerExpansionBoardId() {
+		return mExpansionBoardDetails.mExpansionBoardId;
+	}
+	
+	public int getShimmerExpansionBoardRev() {
+		return mExpansionBoardDetails.mExpansionBoardRev;
 	}
 
 

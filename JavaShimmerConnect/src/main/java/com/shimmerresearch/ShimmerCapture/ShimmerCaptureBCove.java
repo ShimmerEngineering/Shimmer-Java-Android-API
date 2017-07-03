@@ -95,9 +95,9 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.pcDriver.ShimmerPCBTBCove;
 import com.shimmerresearch.sensors.SensorGSR;
-import com.shimmerresearch.sensors.SensorLSM303;
-import com.shimmerresearch.sensors.SensorMPU9X50;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.algorithms.*;
 
@@ -979,15 +979,15 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 				for (int i=0; i<samplingFreqS3.length; i++) {
 					comboBoxSamplingRate.addItem(samplingFreqS3[i]);
 				}
-				for (int j=0; j<SensorLSM303.ListofAccelRange.length; j++) {
-					comboBoxAccelRange.addItem(SensorLSM303.ListofAccelRange[j]);
+				for (int j=0; j<SensorLSM303DLHC.ListofLSM303AccelRange.length; j++) {
+					comboBoxAccelRange.addItem(SensorLSM303DLHC.ListofLSM303AccelRange[j]);
 				}
 				for (int k=0; k<SensorMPU9X50.ListofGyroRange.length; k++) {
 					System.out.print("SetComboBox");
 					comboBoxGyroRange.addItem(SensorMPU9X50.ListofGyroRange[k]);
 				}
-				for (int l=0; l<SensorLSM303.ListofMagRange.length; l++) {
-					comboBoxMagRange.addItem(SensorLSM303.ListofMagRange[l]);
+				for (int l=0; l<SensorLSM303DLHC.ListofLSM303DLHCMagRange.length; l++) {
+					comboBoxMagRange.addItem(SensorLSM303DLHC.ListofLSM303DLHCMagRange[l]);
 				}
 				for (int m=0; m<SensorGSR.ListofGSRRangeResistance.length; m++) {
 					comboBoxGsrRange.addItem(SensorGSR.ListofGSRRangeResistance[m]);
@@ -1558,7 +1558,7 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_INT_ADC_A14;
         	}
 	        if (listOfSensorsShimmer3[12].isSelected()) {
-	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BMP180;
+	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_BMPX80;
 	       	}
 	       	if (listOfSensorsShimmer3[13].isSelected()){
 	       		mReturnEnabledSensors=mReturnEnabledSensors | ShimmerPC.SENSOR_GSR;

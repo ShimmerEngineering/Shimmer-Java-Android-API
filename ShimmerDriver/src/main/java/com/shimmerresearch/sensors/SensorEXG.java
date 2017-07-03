@@ -12,12 +12,12 @@ import java.util.Map;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
-import com.shimmerresearch.driver.InfoMemLayout;
-import com.shimmerresearch.driver.InfoMemLayoutShimmer3;
+import com.shimmerresearch.driver.ConfigByteLayout;
+import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.shimmerGq.InfoMemLayoutShimmerGq802154;
+import com.shimmerresearch.driver.shimmerGq.ConfigByteLayoutShimmerGq802154;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -152,6 +152,10 @@ public class SensorEXG extends AbstractSensor{
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
+	
+	public static final String BIT_16 = "_16BIT";
+	public static final String BIT_24 = "_24BIT";
+	
 	public class GuiLabelConfig{
 		public static final String EXG_RESOLUTION = "Resolution";
 		public static final String EXG_GAIN = "Gain";
@@ -240,23 +244,15 @@ public class SensorEXG extends AbstractSensor{
 		
 		public static final String ECG_LL_LA_16BITS = ObjectClusterSensorName.ECG_LL_LA_16BIT.replace("-", "_");
 		public static final String ECG_LL_LA_24BITS = ObjectClusterSensorName.ECG_LL_LA_24BIT.replace("-", "_");
-
-		public static final String EXT_ADC_A7 = "F5437a_Ext_A7"; //channel
-		public static final String EXT_ADC_A6 = "F5437a_Ext_A6"; //channel
-		
-		public static final String EXT_ADC_A15 = "F5437a_Ext_A15"; //channel
-		public static final String INT_ADC_A1 = "F5437a_Int_A1";   //channel
-		public static final String INT_ADC_A12 = "F5437a_Int_A12"; //channel
-		public static final String INT_ADC_A13 = "F5437a_Int_A13"; //channel
-		public static final String INT_ADC_A14 = "F5437a_Int_A14"; //channel
 	}
 	
 	public static final class DatabaseConfigHandle{
+		//Not used
 		public static final String EXG1_24BITS = "ADS1292R_1_24BIT";
 		public static final String EXG2_24BITS = "ADS1292R_2_24BIT";
-		
 		public static final String EXG1_16BITS = "ADS1292R_1_16BIT";
 		public static final String EXG2_16BITS = "ADS1292R_2_16BIT";
+		
 		
 		public static final String EXG1_CONFIG_1 = "ADS1292R_1_Config1";
 		public static final String EXG1_CONFIG_2 = "ADS1292R_1_Config2";
@@ -278,7 +274,6 @@ public class SensorEXG extends AbstractSensor{
 		public static final String EXG2_LEAD_OFF_STATUS = "ADS1292R_2_LOff_Status";
 		public static final String EXG2_RESPIRATION_1 = "ADS1292R_2_Resp1";
 		public static final String EXG2_RESPIRATION_2 = "ADS1292R_2_Resp2";
-		
 	}
 	
 	//Chip 1 - 24-bit
@@ -1492,7 +1487,12 @@ public class SensorEXG extends AbstractSensor{
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 
-		byte[] exg1Array = getEXG1RegisterArray();
+		addExgConfigToDbConfigMap(mapOfConfig, getEXG1RegisterArray(), getEXG2RegisterArray());
+		
+		return mapOfConfig;
+	}
+	
+	public static void addExgConfigToDbConfigMap(LinkedHashMap<String, Object> mapOfConfig, byte[] exg1Array, byte[] exg2Array) {
 		mapOfConfig.put(DatabaseConfigHandle.EXG1_CONFIG_1,(double) (exg1Array[0] & 0xFF));
 		mapOfConfig.put(DatabaseConfigHandle.EXG1_CONFIG_2,(double) (exg1Array[1] & 0xFF));
 		mapOfConfig.put(DatabaseConfigHandle.EXG1_LEAD_OFF,(double) (exg1Array[2] & 0xFF));
@@ -1504,21 +1504,18 @@ public class SensorEXG extends AbstractSensor{
 		mapOfConfig.put(DatabaseConfigHandle.EXG1_RESPIRATION_1,(double) (exg1Array[8] & 0xFF));
 		mapOfConfig.put(DatabaseConfigHandle.EXG1_RESPIRATION_2,(double) (exg1Array[9] & 0xFF));
 
-		byte[] exg2Array = getEXG2RegisterArray();
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_CONFIG_1,(double) (exg1Array[0] & 0xFF));
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_CONFIG_2,(double) (exg1Array[1] & 0xFF));
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_LEAD_OFF,(double) (exg1Array[2] & 0xFF));
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_CH1_SET,(double) (exg1Array[3] & 0xFF));
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_CH2_SET,(double) (exg1Array[4] & 0xFF));
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_RLD_SENSE,(double) (exg1Array[5] & 0xFF));
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_LEAD_OFF_SENSE,(double) (exg1Array[6] & 0xFF));
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_LEAD_OFF_STATUS,(double) (exg1Array[7] & 0xFF));
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_RESPIRATION_1,(double) (exg1Array[8] & 0xFF));
-		mapOfConfig.put(DatabaseConfigHandle.EXG2_RESPIRATION_2,(double) (exg1Array[9] & 0xFF));
-
-		return mapOfConfig;
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_CONFIG_1,(double) (exg2Array[0] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_CONFIG_2,(double) (exg2Array[1] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_LEAD_OFF,(double) (exg2Array[2] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_CH1_SET,(double) (exg2Array[3] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_CH2_SET,(double) (exg2Array[4] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_RLD_SENSE,(double) (exg2Array[5] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_LEAD_OFF_SENSE,(double) (exg2Array[6] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_LEAD_OFF_STATUS,(double) (exg2Array[7] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_RESPIRATION_1,(double) (exg2Array[8] & 0xFF));
+		mapOfConfig.put(DatabaseConfigHandle.EXG2_RESPIRATION_2,(double) (exg2Array[9] & 0xFF));
 	}
-	
+
 	@Override
 	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
@@ -2044,18 +2041,18 @@ public class SensorEXG extends AbstractSensor{
 	}
 	
 	protected void checkExgResolutionFromEnabledSensorsVar(){
-		InfoMemLayout infoMemLayout = mShimmerDevice.getInfoMemLayout();
+		ConfigByteLayout infoMemLayout = mShimmerDevice.getConfigByteLayout();
 		long enabledSensors = mShimmerDevice.getEnabledSensors();
 		
-		if(infoMemLayout instanceof InfoMemLayoutShimmer3){
-			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mShimmerDevice.getInfoMemLayout();
+		if(infoMemLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 infoMemLayoutCast = (ConfigByteLayoutShimmer3)mShimmerDevice.getConfigByteLayout();
 			mIsExg1_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_24bitFlag)>0)? true:false;
 			mIsExg2_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg2_24bitFlag)>0)? true:false;
 			mIsExg1_16bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_16bitFlag)>0)? true:false;
 			mIsExg2_16bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg2_16bitFlag)>0)? true:false;
 		}
-		else if(infoMemLayout instanceof InfoMemLayoutShimmerGq802154){
-			InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154)mShimmerDevice.getInfoMemLayout();
+		else if(infoMemLayout instanceof ConfigByteLayoutShimmerGq802154){
+			ConfigByteLayoutShimmerGq802154 infoMemLayoutCast = (ConfigByteLayoutShimmerGq802154)mShimmerDevice.getConfigByteLayout();
 			mIsExg1_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_24bitFlag)>0)? true:false;
 			mIsExg2_24bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg2_24bitFlag)>0)? true:false;
 			mIsExg1_16bitEnabled = ((enabledSensors & infoMemLayoutCast.maskExg1_16bitFlag)>0)? true:false;
@@ -2071,12 +2068,12 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	private void updateEnabledSensorsFromExgResolution(){
-		InfoMemLayout infoMemLayout = mShimmerDevice.getInfoMemLayout();
+		ConfigByteLayout infoMemLayout = mShimmerDevice.getConfigByteLayout();
 		long enabledSensors = mShimmerDevice.getEnabledSensors();
 
 		
-		if(infoMemLayout instanceof InfoMemLayoutShimmer3){
-			InfoMemLayoutShimmer3 infoMemLayoutCast = (InfoMemLayoutShimmer3)mShimmerDevice.getInfoMemLayout();
+		if(infoMemLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 infoMemLayoutCast = (ConfigByteLayoutShimmer3)mShimmerDevice.getConfigByteLayout();
 			
 			//JC: should this be here -> checkExgResolutionFromEnabledSensorsVar()
 			
@@ -2092,8 +2089,8 @@ public class SensorEXG extends AbstractSensor{
 			enabledSensors &= ~infoMemLayoutCast.maskExg2_16bitFlag;
 			enabledSensors |= (mIsExg2_16bitEnabled? infoMemLayoutCast.maskExg2_16bitFlag:0);
 		}
-		else if(infoMemLayout instanceof InfoMemLayoutShimmerGq802154){
-			InfoMemLayoutShimmerGq802154 infoMemLayoutCast = (InfoMemLayoutShimmerGq802154)mShimmerDevice.getInfoMemLayout();
+		else if(infoMemLayout instanceof ConfigByteLayoutShimmerGq802154){
+			ConfigByteLayoutShimmerGq802154 infoMemLayoutCast = (ConfigByteLayoutShimmerGq802154)mShimmerDevice.getConfigByteLayout();
 			
 			//JC: should this be here -> checkExgResolutionFromEnabledSensorsVar()
 			

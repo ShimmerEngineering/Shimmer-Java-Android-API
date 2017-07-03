@@ -27,6 +27,8 @@ public class SensorGroupingDetails implements Serializable {
 
 	//For algorithm grouping
 	public List<AlgorithmDetails> mListOfAlgorithmDetails = new ArrayList<AlgorithmDetails>();
+	
+	public boolean mIsPermanentGroup = false;
 
 	/**
 	 * Holds all information related the sensor 'tiles' used in Consensys for
@@ -44,13 +46,13 @@ public class SensorGroupingDetails implements Serializable {
 	 * Holds all information related the sensor 'tiles' used in Consensys for
 	 * dynamic GUI and configuration purposes.
 	 * 
-	 * @param listOfChannelMapKeysAssociated
+	 * @param listOfSensorMapKeysAssociated
 	 * @param listOfCompatibleVersionInfo
 	 */
 	public SensorGroupingDetails(String groupName, 
-			List<Integer> listOfChannelMapKeysAssociated, 
+			List<Integer> listOfSensorMapKeysAssociated, 
 			List<ShimmerVerObject> listOfCompatibleVersionInfo) {
-		this(groupName, listOfChannelMapKeysAssociated);
+		this(groupName, listOfSensorMapKeysAssociated);
 		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 	}
 
@@ -74,6 +76,13 @@ public class SensorGroupingDetails implements Serializable {
 			mListOfConfigOptionKeysAssociated = listOfConfigOptionKeysAssociated;
 		}
 	}
-	
+
+	public SensorGroupingDetails(String groupName,
+			List<Integer> listOfSensorMapKeysAssociated,
+			List<ShimmerVerObject> listOfCompatibleVersionInfo,
+			boolean isConfigurable) {
+		this(groupName, listOfSensorMapKeysAssociated, listOfCompatibleVersionInfo);
+		mIsPermanentGroup = isConfigurable;
+	}
 	
 }
