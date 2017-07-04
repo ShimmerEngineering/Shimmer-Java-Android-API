@@ -32,6 +32,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	private JTextField textField;
 	JTextPane textPaneStatus;
 	static ShimmerPC shimmer = new ShimmerPC("ShimmerDevice"); 
+	static ShimmerDevice shimmerDevice;
 	static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
 	String btComport;
 	
@@ -112,6 +113,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				} else {
 					JOptionPane.showMessageDialog(frame, "No device connected!", "Info", JOptionPane.WARNING_MESSAGE);
 				}
+				
+//				EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmerDevice);
+//				sensorsDialog.initialize();
 			}
 		});
 		mnTools.add(mntmSelectSensors);
@@ -174,6 +178,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				textPaneStatus.setText("connected");
 				shimmer = (ShimmerPC) btManager.getShimmerDeviceBtConnected(btComport);
+//				shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
 				//shimmer.startStreaming();
 			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
 //					|| callbackObject.mState == BT_STATE.NONE

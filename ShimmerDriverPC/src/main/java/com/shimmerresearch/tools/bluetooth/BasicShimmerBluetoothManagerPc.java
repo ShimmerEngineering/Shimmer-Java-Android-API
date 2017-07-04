@@ -11,6 +11,7 @@ import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.shimmer4sdk.Shimmer4;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
@@ -125,7 +126,9 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		
 	}
 	
-	protected void setupShimmer3BluetoothForBtManager(ShimmerDevice shimmerDevice) {}
+	protected void setupShimmer3BluetoothForBtManager(ShimmerDevice shimmerDevice) {
+		shimmerDevice.addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+	}
 	
 
 

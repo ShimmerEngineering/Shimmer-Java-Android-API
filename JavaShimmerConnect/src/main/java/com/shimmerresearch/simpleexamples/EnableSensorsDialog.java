@@ -1,5 +1,6 @@
 package com.shimmerresearch.simpleexamples;
 
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 
@@ -25,11 +26,16 @@ import javax.swing.JList;
 public class EnableSensorsDialog {
 
 	ShimmerPC shimmer;
+//	ShimmerDevice shimmer;
 	private static JDialog dialog = new JDialog();
 	
 	public EnableSensorsDialog(ShimmerPC shimmerPC) {
 		shimmer = shimmerPC;
 	}
+	
+//	public EnableSensorsDialog(ShimmerDevice shimmerDevice) {
+//		shimmer = shimmerDevice;
+//	}
 	
 	public static void main(String[] args) {
 		
@@ -65,6 +71,7 @@ public class EnableSensorsDialog {
 		 
 		 //Create a clone device
 		 ShimmerPC clone = shimmer.deepClone();
+//		 ShimmerDevice clone = shimmer.deepClone();
 		 
 		 //Setup the list of sensors checkboxes
 		 
@@ -124,10 +131,10 @@ public class EnableSensorsDialog {
 				});
 		 }
 		 
-		 
+		
+		 updateCheckboxes(listOfSensors, clone, sensorKeys);		 
 		 dialog.setVisible(true);
 
-		 		 
 		 
 		 
 	}
