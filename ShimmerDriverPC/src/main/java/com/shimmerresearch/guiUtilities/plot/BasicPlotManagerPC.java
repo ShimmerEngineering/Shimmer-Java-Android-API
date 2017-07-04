@@ -492,7 +492,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public void setYAxisTickSpacing(double tickSpacing){
 		IAxis<?> y = mChart.getAxisY();
 		yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
-		yAxis.setMajorTickSpacing(tickSpacing);
+		yAxis.setMajorTickSpacing(tickSpacing);	
 	}
 	
 	public void setYAxisTickSize(double miny,double maxy){
@@ -1095,6 +1095,16 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		}
 	}
 	
+	public void setXAxisScaleLabelPainted(boolean state){
+		IAxis<?> axisX = mChart.getAxisX();
+		axisX.setPaintScale(state);
+	}
+	
+	public void setYAxisScaleLabelPainted(boolean state){
+		IAxis<?> axisY = mChart.getAxisY();
+		axisY.setPaintScale(state);
+	}
+	
 	public boolean isScaleLabelsPainted(){
 		return mIsScaleLabelsPainted;
 	}
@@ -1123,6 +1133,14 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		if(yAxisRight != null){
 			yAxisRight.getAxisTitle().setTitle(null);
 		}
+	}
+	
+	public void setAxisLinePainted(boolean isAxisLinePainted){
+		IAxis<?> axisX = mChart.getAxisX();
+		IAxis<?> axisY = mChart.getAxisY();
+		
+		axisX.setVisible(false);
+		axisY.setVisible(false);
 	}
 	
 	public void setYaxisTitles(String yAxisTitleLeft, String yAxisTitleRight){

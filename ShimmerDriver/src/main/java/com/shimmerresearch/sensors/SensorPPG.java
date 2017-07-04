@@ -141,18 +141,24 @@ public static class DatabaseConfigHandle{
     static List <Integer> FixedConflictingSensorMapKeysList = Arrays.asList(FixedConflictingSensorMapKeys);
     
     public static final ConfigOptionDetailsSensor configOptionPpgAdcSelection = new ConfigOptionDetailsSensor(
+    		SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION,
+    		null,
     		ListOfPpgAdcSelection, 
 			ListOfPpgAdcSelectionConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
     
     public static final ConfigOptionDetailsSensor configOptionPpg1AdcSelection = new ConfigOptionDetailsSensor(
+    		SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION,
+    		null,
     		ListOfPpg1AdcSelection, 
 			ListOfPpg1AdcSelectionConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
     
     public static final ConfigOptionDetailsSensor configOptionPpg2AdcSelection = new ConfigOptionDetailsSensor(
+    		SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION,
+    		null,
     		ListOfPpg2AdcSelection, 
 			ListOfPpg2AdcSelectionConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
@@ -533,9 +539,9 @@ public static class DatabaseConfigHandle{
 	@Override
 	public void generateConfigOptionsMap() {
 		mConfigOptionsMap.clear();
-		mConfigOptionsMap.put(GuiLabelConfig.PPG_ADC_SELECTION , configOptionPpgAdcSelection); 
-		mConfigOptionsMap.put(GuiLabelConfig.PPG1_ADC_SELECTION, configOptionPpg1AdcSelection); 
-		mConfigOptionsMap.put(GuiLabelConfig.PPG2_ADC_SELECTION, configOptionPpg2AdcSelection); 
+		addConfigOption(configOptionPpgAdcSelection);
+		addConfigOption(configOptionPpg1AdcSelection);
+		addConfigOption(configOptionPpg2AdcSelection);
 //		mConfigOptionsMap.put(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, mConfigOptionsMapRef.get(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG)); 
 	}
 	
