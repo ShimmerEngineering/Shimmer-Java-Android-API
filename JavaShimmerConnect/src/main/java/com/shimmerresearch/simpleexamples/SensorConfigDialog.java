@@ -19,17 +19,22 @@ import java.util.Map;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 
 public class SensorConfigDialog {
 
 	ShimmerPC cloneDevice;
+	BasicShimmerBluetoothManagerPc bluetoothManager;
 	
 	public static void main(String[] args) {
 		
@@ -38,7 +43,7 @@ public class SensorConfigDialog {
 	/**
 	 * @wbp.parser.entryPoint
 	 */
-	public void initialize(ShimmerPC shimmerDevice) {
+	public void initialize(ShimmerPC shimmerDevice, BasicShimmerBluetoothManagerPc bluetoothManager) {
 		JDialog dialog = new JDialog();
 		dialog.setTitle("Sensors Configuration");
 		dialog.setSize(300, 500);
@@ -46,6 +51,14 @@ public class SensorConfigDialog {
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
 		JButton btnSav = new JButton("Save");
+		btnSav.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+		 		//TODO: Write the config from clone to shimmer here
+		 		AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
+		 		bluetoothManager.configureShimmer(cloneDevice);
+		 	
+			}
+		});
 		btnSav.setToolTipText("Writes the config to the Shimmer");
 		dialog.getContentPane().add(btnSav, BorderLayout.SOUTH);
 		
