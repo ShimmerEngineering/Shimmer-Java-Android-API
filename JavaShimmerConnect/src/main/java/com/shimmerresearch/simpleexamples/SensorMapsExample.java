@@ -61,7 +61,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 				btComport = textField.getText();
 				btManager.connectShimmerThroughCommPort(btComport);
-				textPaneStatus.setText("connecting...");
+				//textPaneStatus.setText("connecting...");
 				//shimmer.connect(textField.getText(),"");
 				
 			}
