@@ -959,13 +959,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		mIsDocked = docked;
 		if (mIsDocked){
-			
+			mDockState = DOCK_STATE.DOCKED;
 		}else {
-			
+			mDockState = DOCK_STATE.UNDOCKED;
+		}
+		if(changed){
+			stateHandler(mDockState);
 		}
 		return changed;
 	}
 
+	public void stateHandler(Object obj){
+		
+	}
+	
 	/**
 	 * @return the mDocked
 	 */
