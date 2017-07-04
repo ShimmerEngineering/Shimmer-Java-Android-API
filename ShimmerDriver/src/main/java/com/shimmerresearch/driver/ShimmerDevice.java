@@ -63,6 +63,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
@@ -1735,6 +1736,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return returnValue;		
 	}
 	
+	public String getConfigGuiValueUsingConfigLabel(Integer sensorMapKey, String configLabel){
+		String guiValue = "";
+
+		Object configValue = getConfigValueUsingConfigLabel(sensorMapKey, configLabel);
+		if(configValue!=null){
+			if(configValue instanceof String){
+				guiValue = (String) configValue;
+			} else if(configValue instanceof Boolean){
+				
+			} else if(configValue instanceof Integer){
+				int configInt = (int) configValue;
+				Map<String, ConfigOptionDetailsSensor> mapOfConfigOptions = getConfigOptionsMap();
+				if(mapOfConfigOptions!=null && mapOfConfigOptions.containsKey(configLabel) && mapOfConfigOptions.get(configLabel)!=null){
+					ConfigOptionDetails configOption = getConfigOptionsMap().get(configLabel);
+					
+					guiValue = ConfigOptionDetails.getConfigStringFromConfigValue(configOption.mConfigValues, configOption.mGuiValues, configInt);
+					
+				} else {
+					guiValue = Integer.toString(configInt);
+				}
+				
+			}
+	}
+
+		return guiValue;
+	}
+
+	
 	private Object setSensorClassSetting(String identifier, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		//TODO check sensor classes return a null if the setting is successfully found
@@ -2053,7 +2082,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mSensorMap
 	 */
-	public Map<Integer, SensorDetails> getSensorMap() {
+	public LinkedHashMap<Integer, SensorDetails> getSensorMap() {
 		return mSensorMap;
 	}
 
@@ -3382,8 +3411,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return mapOfEnabledChannelsForStoringToDb;
 	}
-	
-	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDb(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType) {
+
+	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDb(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName) {
 		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = new LinkedHashMap<String, ChannelDetails>();
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
@@ -3396,7 +3425,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					}
 					
 					if(channelDetails.mStoreToDatabase){
-						mapOfChannelsForStoringToDb.put(channelDetails.mObjectClusterName, channelDetails);
+						String key = (isKeyOJCName? channelDetails.mObjectClusterName:channelDetails.getDatabaseChannelHandle());
+						mapOfChannelsForStoringToDb.put(key, channelDetails);
 					}
 				}
 			}
@@ -3412,12 +3442,31 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 
 				if(channelDetails.mStoreToDatabase){
-					mapOfChannelsForStoringToDb.put(channelDetails.mObjectClusterName, channelDetails);
+					String key = (isKeyOJCName? channelDetails.mObjectClusterName:channelDetails.getDatabaseChannelHandle());
+					mapOfChannelsForStoringToDb.put(key, channelDetails);
 				}
 			}
 		}
 		
 		return mapOfChannelsForStoringToDb;
+	}
+
+	public List<String> getListOfGuiChannelsFromDbHandles(List<String> listOfDbChannelHandles) {
+		List<String> listOfGuiChannels = new ArrayList<String>();
+		LinkedHashMap<String, ChannelDetails> channelDetailsMap = getMapOfAllChannelsForStoringToDb(null, CHANNEL_TYPE.CAL, false);
+		
+		for(String dbChannelHandle:listOfDbChannelHandles){
+			String guiChannelName = dbChannelHandle;
+
+			ChannelDetails channelDetails = channelDetailsMap.get(dbChannelHandle);
+			if(channelDetails!=null){
+				guiChannelName = channelDetails.mGuiName;
+			}
+			
+			listOfGuiChannels.add(guiChannelName);
+		}
+		
+		return listOfGuiChannels;
 	}
 
 	

@@ -25,7 +25,7 @@ project(':ShimmerDriverPC').projectDir = new File(settingsDir, '../../Shimmer-Ja
 include ':ShimmerPlatformManager'
 project(':ShimmerPlatformManager').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPlatformManager')
 include ':ShimmerBluetoothManager'
-project(':ShimmerBluetoothManager').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerBluetoothManager')
+project(':ShimmerBluetoothManager').projectDir = new File(settingsDir, '../../Shimmer-Java-Android-API/ShimmerBluetoothManager')
 include ':ShimmerPluginManager'
 project(':ShimmerPluginManager').projectDir = new File(settingsDir, '../../Shimmer-Advance-API/ShimmerPluginManager')
 include ':ShimmerAlgorithms'
