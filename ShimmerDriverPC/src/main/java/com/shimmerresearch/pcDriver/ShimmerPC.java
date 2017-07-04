@@ -624,7 +624,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		consolePrintLn("State change: " + mBluetoothRadioState.toString());
 
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
-		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		if (changed){
+			sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		}
 		return changed;
 	}
 	
