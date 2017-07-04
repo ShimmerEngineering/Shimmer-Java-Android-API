@@ -110,7 +110,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				//Ensure the Shimmer is not streaming or SD logging before configuring it
 				if(shimmer.isConnected()) {
 					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
-						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer);
+						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer,btManager);
 						sensorsDialog.initialize();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -132,7 +132,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				if(shimmer.isConnected()) {
 					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
 						SensorConfigDialog configDialog = new SensorConfigDialog();
-						configDialog.initialize(shimmer);
+						configDialog.initialize(shimmer,btManager);
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
@@ -147,9 +147,11 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JPanel plotPanel = new JPanel();
 		plotPanel.setBounds(10, 236, 611, 272);
 		frame.getContentPane().add(plotPanel);
+		plotPanel.setLayout(null);
 		
 		final Chart2D mChart = new Chart2D();
-		mChart.setSize(300, 300);
+		mChart.setLocation(12, 13);
+		mChart.setSize(587, 246);
 		plotPanel.add(mChart);
 		
 		JButton btnStartStreaming = new JButton("START STREAMING");
