@@ -1888,6 +1888,10 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		System.out.println("");
 	}
 	
+	public void addChart(Chart2D chart) {
+		mChart = chart;
+	}
+	
 	//----------------------FFT timer test code start ---------------------
 
 	
