@@ -127,7 +127,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	}
 	
 	protected void setupShimmer3BluetoothForBtManager(ShimmerDevice shimmerDevice) {
-		shimmerDevice.addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+		((ShimmerPC)shimmerDevice).setUseInfoMemConfigMethod(USE_INFOMEM_CONFIG_METHOD);
 	}
 	
 
