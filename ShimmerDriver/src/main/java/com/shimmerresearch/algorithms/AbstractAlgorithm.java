@@ -14,6 +14,8 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
@@ -139,7 +141,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	 * algorithm settings to users, take note that for combo box there is an
 	 * extra string array of values which need to be declared as options for the
 	 * comobobox */
-	public HashMap<String,ConfigOptionDetailsAlgorithm> mConfigOptionsMap = new HashMap<String,ConfigOptionDetailsAlgorithm>();//Define the gui to be generated
+	public HashMap<String,ConfigOptionDetails> mConfigOptionsMap = new HashMap<String,ConfigOptionDetails>();//Define the gui to be generated
 	public HashMap<String, AlgorithmDetails> mAlgorithmChannelsMap = new HashMap<String,AlgorithmDetails>();//Defines algorithm requirements
 	
 	public TreeMap<Integer, SensorGroupingDetails> mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
@@ -189,14 +191,20 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 
 	public AbstractAlgorithm(){
 		setGeneralAlgorithmName();
-		setupAlgorithm();
+//		setupAlgorithm();
 	}
 	
 	public AbstractAlgorithm(AlgorithmDetails algorithmDetails) {
 		setAlgorithmDetails(algorithmDetails);
-		setupAlgorithm();
+//		setupAlgorithm();
 	}
-	
+
+	public AbstractAlgorithm(ShimmerDevice shimmerDevice, AlgorithmDetails algorithmDetails) {
+		setAlgorithmDetails(algorithmDetails);
+		mShimmerDevice = shimmerDevice;
+//		setupAlgorithm();
+	}
+
 	private void setAlgorithmDetails(AlgorithmDetails algorithmDetails) {
 		mAlgorithmDetails = algorithmDetails;
 //		setSignalName(algorithmDetails.mAlgorithmName);
@@ -205,7 +213,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		mAlgorithmChannelsMap.put(mAlgorithmName, mAlgorithmDetails);
 	}
 	
-	private void setupAlgorithm() {
+	public void setupAlgorithm() {
 		setFilteringOption();
 		setMinSamplingRateForAlgorithm();
 		setSupportedVerInfo();
@@ -278,7 +286,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return mTimeStampFormat;
 	}
 
-	public HashMap<String, ConfigOptionDetailsAlgorithm> getConfigOptionsMap() {
+	public HashMap<String, ConfigOptionDetails> getConfigOptionsMap() {
 		return mConfigOptionsMap;
 	}
 	
@@ -480,6 +488,11 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public double getShimmerSamplingRate(){
 		return mShimmerSamplingRate;
 	}
+	
+	public void addConfigOption(ConfigOptionDetails configOptionDetails) {
+		mConfigOptionsMap.put(configOptionDetails.mGuiHandle, configOptionDetails); 
+	}
+	
 	
 	protected void consolePrintLn(String message) {
 		if(mShimmerDevice!=null){

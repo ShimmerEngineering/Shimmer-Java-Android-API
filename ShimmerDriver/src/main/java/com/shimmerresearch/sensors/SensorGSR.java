@@ -105,6 +105,8 @@ public class SensorGSR extends AbstractSensor {
 	public static final Integer[] ListofGSRRangeConfigValues = {0,1,2,3,4};
 
 	public static final ConfigOptionDetailsSensor configOptionGsrRange = new ConfigOptionDetailsSensor(
+			SensorGSR.GuiLabelConfig.GSR_RANGE,
+			SensorGSR.DatabaseConfigHandle.GSR_RANGE,
 			ListofGSRRangeResistance, 
 			ListofGSRRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
@@ -252,7 +254,7 @@ public class SensorGSR extends AbstractSensor {
 	
 	@Override
 	public void generateConfigOptionsMap() {
-		mConfigOptionsMap.put(GuiLabelConfig.GSR_RANGE, configOptionGsrRange); 
+		addConfigOption(configOptionGsrRange);
 	}
 
 	

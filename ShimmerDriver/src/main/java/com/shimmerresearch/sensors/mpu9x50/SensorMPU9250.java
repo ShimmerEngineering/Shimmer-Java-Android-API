@@ -12,6 +12,7 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -19,10 +20,6 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
-import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50.GuiLabelConfig;
-import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50.GuiLabelSensorTiles;
-import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50.GuiLabelSensors;
-import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50.ObjectClusterSensorName;
 
 public class SensorMPU9250 extends SensorMPU9X50 {
 
@@ -272,6 +269,46 @@ public class SensorMPU9250 extends SensorMPU9X50 {
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
+    
+	//--------- Configuration options start --------------
+
+	public static final ConfigOptionDetailsSensor configOptionMpu9250GyroRange = new ConfigOptionDetailsSensor(
+			SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE,
+			SensorMPU9250.DatabaseConfigHandle.GYRO_RANGE,
+			ListofGyroRange, 
+			ListofMPU9150GyroRangeConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	//MPL Options
+	public static final ConfigOptionDetailsSensor configOptionMpu9250AccelRange = new ConfigOptionDetailsSensor(
+			SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE,
+			SensorMPU9250.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE,
+			ListofMPU9150AccelRange, 
+			ListofMPU9150AccelRangeConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
+	
+	public static final ConfigOptionDetailsSensor configOptionMpu9250MagRate = new ConfigOptionDetailsSensor(
+			SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE,
+			SensorMPU9250.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE,
+			ListofMPU9150MagRate, 
+			ListofMPU9150MagRateConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
+	//General Config
+	public static final ConfigOptionDetailsSensor configOptionMpu9250GyroRate = new ConfigOptionDetailsSensor(
+			SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE,
+			SensorMPU9250.DatabaseConfigHandle.GYRO_RATE,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+
+	public static final ConfigOptionDetailsSensor configOptionMpu9250GyroLpm = new ConfigOptionDetailsSensor(
+			SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM,
+			null,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+	//--------- Configuration options end --------------
+
 
 	//--------- Sensor specific variables end --------------
 
@@ -314,6 +351,18 @@ public class SensorMPU9250 extends SensorMPU9X50 {
 	}
 
     //--------- Constructors for this class end --------------
+
+	@Override
+	public void generateConfigOptionsMap() {
+		mConfigOptionsMap.clear();
+		addConfigOption(configOptionMpu9250GyroRange);
+		//MPL Options
+		addConfigOption(configOptionMpu9250AccelRange);
+		addConfigOption(configOptionMpu9250MagRate);
+		//General Config
+		addConfigOption(configOptionMpu9250GyroRate);
+		addConfigOption(configOptionMpu9250GyroLpm);
+	}
 
 	@Override
 	public void generateSensorMap() {

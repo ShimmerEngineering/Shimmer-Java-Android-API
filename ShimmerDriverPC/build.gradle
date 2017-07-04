@@ -163,6 +163,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
 	compile project (':ShimmerDriver')
+	compile project (':ShimmerBluetoothManager')
     
        //compile name: 'jssc'
    // https://mvnrepository.com/artifact/org.scream3r/jssc
@@ -181,9 +182,5 @@ dependencies {
 	compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
 	// https://mvnrepository.com/artifact/javax.microedition/cldc
 	compile group: 'javax.microedition', name: 'cldc', version: '1.1'
-	compile ('com.shimmerresearch.managers.bluetoothmanager:ShimmerBluetoothManager:1.1c') {
-                // excluding org.json which is provided by Android
-                exclude group: 'io.netty'
-        //exclude group: 'com.google.protobuf'
-            }
+
 }
