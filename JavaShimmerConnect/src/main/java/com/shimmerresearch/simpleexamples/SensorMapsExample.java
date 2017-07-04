@@ -8,6 +8,7 @@ import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.exceptions.ShimmerException;
+import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 
@@ -25,6 +26,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenu;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.Canvas;
 
 public class SensorMapsExample extends BasicProcessWithCallBack {
 	
@@ -34,6 +36,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	static ShimmerPC shimmer = new ShimmerPC("ShimmerDevice"); 
 	static ShimmerDevice shimmerDevice;
 	static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
+	BasicPlotManagerPC plotManager = new BasicPlotManagerPC();
 	String btComport;
 	
 	/**
@@ -42,7 +45,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	 */
 	public void initialize() {
 		frame = new JFrame("Shimmer SensorMaps Example");
-		frame.setBounds(100, 100, 560, 487);
+		frame.setBounds(100, 100, 662, 591);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -92,7 +95,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(textPaneStatus);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 536, 23);
+		menuBar.setBounds(0, 0, 638, 23);
 		frame.getContentPane().add(menuBar);
 		
 		JMenu mnTools = new JMenu("Tools");
@@ -138,6 +141,13 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		mnTools.add(mntmDeviceConfiguration);
+		
+		JPanel plotPanel = new JPanel();
+		plotPanel.setBounds(10, 236, 611, 272);
+		frame.getContentPane().add(plotPanel);
+		
+		plotManager.setTitle("Plot");
+		
 		
 		//TODO: Test
 //		JCheckBox[] cBoxTest = new JCheckBox[3];
