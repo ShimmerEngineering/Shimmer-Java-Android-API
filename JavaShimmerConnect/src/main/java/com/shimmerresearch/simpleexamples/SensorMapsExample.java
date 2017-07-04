@@ -12,6 +12,8 @@ import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 
+import info.monitorenter.gui.chart.Chart2D;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JMenuBar;
@@ -145,6 +147,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JPanel plotPanel = new JPanel();
 		plotPanel.setBounds(10, 236, 611, 272);
 		frame.getContentPane().add(plotPanel);
+		
+		final Chart2D mChart = new Chart2D();
+		mChart.setSize(300, 300);
+		plotPanel.add(mChart);
 		
 		plotManager.setTitle("Plot");
 		
