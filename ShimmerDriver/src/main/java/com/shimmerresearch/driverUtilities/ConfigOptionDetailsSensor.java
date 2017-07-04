@@ -66,8 +66,8 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetailsSensor(GUI_COMPONENT_TYPE guiComponentType) {
-		super(guiComponentType);
+	public ConfigOptionDetailsSensor(String guiFriendlyName, String dbHandle, GUI_COMPONENT_TYPE guiComponentType) {
+		super(guiFriendlyName, dbHandle, guiComponentType);
 	}
 	
 	/**
@@ -81,8 +81,8 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetailsSensor(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
-		super(guiComponentType, compatibleVersionInfo);
+	public ConfigOptionDetailsSensor(String guiFriendlyName, String dbHandle, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
+		super(guiFriendlyName, dbHandle, guiComponentType, compatibleVersionInfo);
 	}
 
 	/**
@@ -96,8 +96,8 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType) {
-		super(guiValues, configValues, guiComponentType);
+	public ConfigOptionDetailsSensor(String guiFriendlyName, String dbHandle, String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType) {
+		super(guiFriendlyName, dbHandle, guiValues, configValues, guiComponentType);
 	}
 	
 	/**
@@ -111,8 +111,8 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
-		super(guiValues, configValues, guiComponentType, compatibleVersionInfo);
+	public ConfigOptionDetailsSensor(String guiFriendlyName, String dbHandle, String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
+		super(guiFriendlyName, dbHandle, guiValues, configValues, guiComponentType, compatibleVersionInfo);
 	}
 	
 	/**
@@ -126,8 +126,8 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, COMMUNICATION_TYPE commType) {
-		super(guiValues, configValues, guiComponentType);
+	public ConfigOptionDetailsSensor(String guiFriendlyName, String dbHandle, String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, COMMUNICATION_TYPE commType) {
+		super(guiFriendlyName, dbHandle, guiValues, configValues, guiComponentType);
 		mCommunicationType = commType;
 	}
 	
@@ -142,13 +142,13 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,COMMUNICATION_TYPE commType) {
-		super(guiValues, configValues, guiComponentType, compatibleVersionInfo);
+	public ConfigOptionDetailsSensor(String guiFriendlyName, String dbHandle, String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo,COMMUNICATION_TYPE commType) {
+		super(guiFriendlyName, dbHandle, guiValues, configValues, guiComponentType, compatibleVersionInfo);
 		setmCommunicationType(commType);
 	}
 	
-	public ConfigOptionDetailsSensor(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo, List<ConfigOptionObject> configOptionsList) {
-		this(guiValues, configValues, guiComponentType, compatibleVersionInfo);
+	public ConfigOptionDetailsSensor(String guiFriendlyName, String dbHandle, String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo, List<ConfigOptionObject> configOptionsList) {
+		this(guiFriendlyName, dbHandle, guiValues, configValues, guiComponentType, compatibleVersionInfo);
 		setConfigOptions(configOptionsList);
 	}
 

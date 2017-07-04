@@ -2160,7 +2160,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param statusByte
 	 */
 	private void parseStatusByte(byte statusByte){
-		Boolean savedDockedState = mIsDocked;
+		Boolean savedDockedState = isDocked();
 		
 		setIsDocked(((statusByte & (0x01 << 0)) > 0)? true:false);
 		setIsSensing(((statusByte & (0x01 << 1)) > 0)? true:false);
@@ -2179,7 +2179,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		
 		consolePrintLn("\nStatus Response = \n" + UtilShimmer.byteToHexStringFormatted(statusByte) 
-				+ "\t" + "IsDocked = " + mIsDocked
+				+ "\t" + "IsDocked = " + isDocked()
 				+ "\t" + "IsSensing = " + mIsSensing
 				+ "\t" + "IsRtcSet = " + mIsRtcSet
 				+ "\t" + "IsSDLogging = "+ isSDLogging()
@@ -2188,7 +2188,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				+ "\t" + "mIsSdPresent = " + isSDPresent()
 				+ "\t" + "mIsRedLedOn = " + mIsRedLedOn);
 		
-		if(savedDockedState!=mIsDocked){
+		if(savedDockedState!=isDocked()){
 			dockedStateChange();
 		}
 	}

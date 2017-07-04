@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.vecmath.Vector3d;
 
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
+import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
@@ -49,7 +50,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		public static final String ORIENTATION_6DOF_WR = "WR_Acc_6DoF";
 	}
 	
-	public class GuiFriendlyLabelConfig{
+	public class GuiLabelConfig{
 		public static final String ORIENTATAION_LN = "Low-Noise Accel";
 		public static final String ORIENTATAION_WR = "Wide-Range Accel";
 		public static final String QUATERNION_OUTPUT = "Quaternion";
@@ -100,6 +101,10 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 //	}
 	
 
+
+	public OrientationModule(AlgorithmDetails algorithmDetails) {
+		super(algorithmDetails);
+	}
 
 	@Override
 	public AlgorithmResultObject processDataRealTime(ObjectCluster object) throws Exception {

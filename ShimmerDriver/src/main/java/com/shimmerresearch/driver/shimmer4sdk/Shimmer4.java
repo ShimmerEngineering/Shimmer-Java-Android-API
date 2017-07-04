@@ -953,8 +953,8 @@ public class Shimmer4 extends ShimmerDevice {
 
 	//TODO copied from ShimmerPC
 	@Override
-	public void setBluetoothRadioState(BT_STATE state){
-		super.setBluetoothRadioState(state);
+	public boolean setBluetoothRadioState(BT_STATE state){
+		boolean changed = super.setBluetoothRadioState(state);
 
 //		if (mBluetoothRadioState.equals(BT_STATE.CONNECTED)){
 //			setIsConnected(true);
@@ -991,6 +991,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacIdFromUart(), getComPort());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		return changed;
 	}
 	
 
@@ -1209,7 +1210,7 @@ public class Shimmer4 extends ShimmerDevice {
 	public void generateConfigOptionsMap() {
 		super.generateConfigOptionsMap();
 		
-		mConfigOptionsMap.putAll(Configuration.Shimmer4.mConfigOptionsMapRef);
+		mConfigOptionsMapSensors.putAll(Configuration.Shimmer4.mConfigOptionsMapRef);
 	}
 	
 	@Override
@@ -1262,11 +1263,12 @@ public class Shimmer4 extends ShimmerDevice {
 
 	//TODO TEMP here to sync booleans in ShimmerDevice with mCommsProtocolRadio
 	@Override
-	public void setIsDocked(boolean state) {
-		super.setIsDocked(state);
+	public boolean setIsDocked(boolean state) {
+		boolean changed = super.setIsDocked(state);
 		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null && mCommsProtocolRadio.mRadioProtocol instanceof LiteProtocol){
 			((LiteProtocol)(mCommsProtocolRadio.mRadioProtocol)).mIsDocked = state;
 		}
+		return changed;
 	}
 
 	@Override
