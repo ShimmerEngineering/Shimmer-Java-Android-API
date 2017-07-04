@@ -5466,7 +5466,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 
 				mSensorGroupingMap.putAll(Configuration.ShimmerGqBle.mSensorGroupingMapRef);
-				mConfigOptionsMap.putAll(Configuration.ShimmerGqBle.mConfigOptionsMapRef);
+				mConfigOptionsMapSensors.putAll(Configuration.ShimmerGqBle.mConfigOptionsMapRef);
 				
 				updateSensorMapChannelsFromChannelMap(mSensorMap);
 			}
@@ -5547,8 +5547,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//TODO 2016-05-18 feed below into sensor map classes
 	@Override
 	public void checkConfigOptionValues(String stringKey) {
-		if(mConfigOptionsMap!=null){
-			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
+		if(mConfigOptionsMapSensors!=null){
+			ConfigOptionDetails configOptions = mConfigOptionsMapSensors.get(stringKey);
 			if(configOptions!=null){
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					int nonStandardIndex = -1;
@@ -8185,8 +8185,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private void checkWhichExgRespPhaseValuesToUse(){
 		String stringKey = SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
-		if(mConfigOptionsMap!=null){
-			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
+		if(mConfigOptionsMapSensors!=null){
+			ConfigOptionDetails configOptions = mConfigOptionsMapSensors.get(stringKey);
 			if(configOptions!=null){
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					int nonStandardIndex = -1;
@@ -8214,8 +8214,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private void checkWhichExgRefElectrodeValuesToUse(){
 		String stringKey = SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
-		if(mConfigOptionsMap!=null){
-			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
+		if(mConfigOptionsMapSensors!=null){
+			ConfigOptionDetails configOptions = mConfigOptionsMapSensors.get(stringKey);
 			if(configOptions!=null){
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					int nonStandardIndex = -1;

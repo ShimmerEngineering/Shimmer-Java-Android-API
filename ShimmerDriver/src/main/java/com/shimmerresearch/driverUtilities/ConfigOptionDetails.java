@@ -16,8 +16,9 @@ public class ConfigOptionDetails implements Serializable {
 		JPANEL
 	};
 	
+	public String mGuiHandle = "";
+	public String mDbHandle = "";
 	public String[] mGuiValues = null;
-	String mGuiFriendlyName;
 	public Integer[] mConfigValues;
 	public GUI_COMPONENT_TYPE mGuiComponentType;
 	
@@ -34,7 +35,15 @@ public class ConfigOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
+	public ConfigOptionDetails(
+			String guiFriendlyName,
+			String dbHandle,
+			GUI_COMPONENT_TYPE guiComponentType, 
+			List<ShimmerVerObject> compatibleVersionInfo) {
+		
+		mGuiHandle = guiFriendlyName;
+		mDbHandle = dbHandle;
+
 		mGuiComponentType = guiComponentType;
 		mListOfCompatibleVersionInfo = compatibleVersionInfo;
 		
@@ -42,6 +51,8 @@ public class ConfigOptionDetails implements Serializable {
 			mGuiValues = new String[]{"Off", "On"};
 		}
 	}
+	
+	
 
 	/**
 	 * Used in Consensys to hold Shimmer configuration GUI information for
@@ -54,16 +65,33 @@ public class ConfigOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo) {
-		this(guiComponentType, compatibleVersionInfo);
+	public ConfigOptionDetails(
+			String guiFriendlyName,
+			String dbHandle,
+			String[] guiValues, 
+			Integer[] configValues, 
+			GUI_COMPONENT_TYPE guiComponentType, 
+			List<ShimmerVerObject> compatibleVersionInfo) {
+		
+		this(guiFriendlyName, dbHandle, guiComponentType, compatibleVersionInfo);
 		mGuiValues = guiValues;
 		mConfigValues = configValues;
 	}
 	
-	public ConfigOptionDetails(String[] guiValues, GUI_COMPONENT_TYPE guiComponentType, List<ShimmerVerObject> compatibleVersionInfo, String guiFriendlyName) {
-		this(guiComponentType, compatibleVersionInfo);
+	public ConfigOptionDetails(
+			String guiFriendlyName,
+			String dbHandle,
+			String[] guiValues, 
+			GUI_COMPONENT_TYPE guiComponentType, 
+			List<ShimmerVerObject> compatibleVersionInfo) {
+		
+		this(guiFriendlyName, dbHandle, guiComponentType, compatibleVersionInfo);
 		mGuiValues = guiValues;
-		mGuiFriendlyName = guiFriendlyName;
+		
+		mConfigValues = new Integer[guiValues.length];
+		for(int i=0;i<mConfigValues.length;i++){
+			mConfigValues[i] = i;
+		}
 	}
 	
 	/**
@@ -77,8 +105,12 @@ public class ConfigOptionDetails implements Serializable {
 	 * @param configValues
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetails(GUI_COMPONENT_TYPE guiComponentType) {
-		this(guiComponentType, null);
+	public ConfigOptionDetails(
+			String guiFriendlyName,
+			String dbHandle,
+			GUI_COMPONENT_TYPE guiComponentType) {
+		
+		this(guiFriendlyName, dbHandle, guiComponentType, null);
 	}
 
 	/**
@@ -92,33 +124,23 @@ public class ConfigOptionDetails implements Serializable {
 	 * @param configValues bit/bytes values written to the Shimmer corresponding to the shown GUI options.
 	 * @param guiComponentType
 	 */
-	public ConfigOptionDetails(String[] guiValues, Integer[] configValues, GUI_COMPONENT_TYPE guiComponentType) {
-		this(guiValues, configValues, guiComponentType, null);
-	}
-	
-	
 	public ConfigOptionDetails(
-			String[] guiValues,
-			GUI_COMPONENT_TYPE guiComponentType, 
-			List<ShimmerVerObject> listSVO) {
-		mGuiValues = guiValues;
-		mConfigValues = new Integer[guiValues.length];
-		mGuiComponentType = guiComponentType;
-		for(int i=0;i<mConfigValues.length;i++){
-			mConfigValues[i] = i;
-		}
+			String guiFriendlyName,
+			String dbHandle,
+			String[] guiValues, 
+			Integer[] configValues, 
+			GUI_COMPONENT_TYPE guiComponentType) {
 		
-		if(listSVO!=null){
-			mListOfCompatibleVersionInfo = listSVO;
-		}
+		this(guiFriendlyName, dbHandle, guiValues, configValues, guiComponentType, null);
 	}
+	
 
 	public String[] getGuiValues() {
 		return mGuiValues;
 	}
 	
 	public String getGuiFriendlyName() {
-		return mGuiFriendlyName;
+		return mGuiHandle;
 	}
 
 	public Integer[] getConfigValues() {

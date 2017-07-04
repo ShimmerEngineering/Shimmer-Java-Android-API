@@ -22,6 +22,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303.GuiLabelConfig;
 
 public abstract class SensorLSM303 extends AbstractSensor {
 
@@ -76,8 +77,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	public static final String[] ListofLSM303AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};  
 	public static final Integer[] ListofLSM303AccelRangeConfigValues={0,1,2,3};  
 	
-	public static final ConfigOptionDetailsSensor configOptionAccelLpm = new ConfigOptionDetailsSensor(
-			 ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX);
 
 	//--------- Configuration options end --------------
 
