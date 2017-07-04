@@ -1,0 +1,4 @@
+#org.springsource.ide.eclipse.gradle.core.preferences.GradleProjectPreferences
+#Fri Nov 04 09:55:19 GMT 2016
+build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;../../Shimmer-Java-Android-API/ShimmerDriver;
+org.springsource.ide.eclipse.gradle.rootprojectloc=
