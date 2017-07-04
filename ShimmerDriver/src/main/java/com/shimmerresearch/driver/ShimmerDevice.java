@@ -1736,10 +1736,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return returnValue;		
 	}
 	
-	public String getConfigGuiValueUsingConfigLabel(Integer sensorMapKey, String configLabel){
+	public String getConfigGuiValueUsingConfigLabel(Object sensorMapKey, String configLabel){
 		String guiValue = "";
 
-		Object configValue = getConfigValueUsingConfigLabel(sensorMapKey, configLabel);
+		Object configValue = null;
+		if(sensorMapKey instanceof Integer){
+			configValue = getConfigValueUsingConfigLabel((Integer)sensorMapKey, configLabel);
+		} else if(sensorMapKey instanceof String){
+			configValue = getConfigValueUsingConfigLabel((String)sensorMapKey, configLabel);
+		}
+		
 		if(configValue!=null){
 			if(configValue instanceof String){
 				guiValue = (String) configValue;
@@ -3451,22 +3457,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfChannelsForStoringToDb;
 	}
 
-	public List<String> getListOfGuiChannelsFromDbHandles(List<String> listOfDbChannelHandles) {
-		List<String> listOfGuiChannels = new ArrayList<String>();
+	public LinkedHashMap<String, ChannelDetails> getListOfGuiChannelsFromDbHandles(List<String> listOfDbChannelHandles) {
+		LinkedHashMap<String, ChannelDetails> mapOfChannelsFound = new LinkedHashMap<String, ChannelDetails>();
 		LinkedHashMap<String, ChannelDetails> channelDetailsMap = getMapOfAllChannelsForStoringToDb(null, CHANNEL_TYPE.CAL, false);
 		
 		for(String dbChannelHandle:listOfDbChannelHandles){
-			String guiChannelName = dbChannelHandle;
-
 			ChannelDetails channelDetails = channelDetailsMap.get(dbChannelHandle);
 			if(channelDetails!=null){
-				guiChannelName = channelDetails.mGuiName;
+				mapOfChannelsFound.put(channelDetails.mGuiName, channelDetails);
 			}
-			
-			listOfGuiChannels.add(guiChannelName);
 		}
 		
-		return listOfGuiChannels;
+		return mapOfChannelsFound;
 	}
 
 	
