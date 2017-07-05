@@ -73,7 +73,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(161, 90, 154, 31);
+		btnConnect.setBounds(161, 90, 199, 31);
 		frame.getContentPane().add(btnConnect);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
@@ -85,7 +85,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(377, 90, 154, 31);
+		btnDisconnect.setBounds(392, 90, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
@@ -144,6 +144,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		});
 		mnTools.add(mntmDeviceConfiguration);
 		
+		JMenuItem mntmSignalsToPlot = new JMenuItem("Signals to plot");
+		mnTools.add(mntmSignalsToPlot);
+		
 		JPanel plotPanel = new JPanel();
 		plotPanel.setBounds(10, 236, 611, 272);
 		frame.getContentPane().add(plotPanel);
@@ -172,7 +175,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 			}
 		});
-		btnStopStreaming.setBounds(377, 181, 187, 31);
+		btnStopStreaming.setBounds(392, 181, 187, 31);
 		frame.getContentPane().add(btnStopStreaming);
 		
 		plotManager.setTitle("Plot");
