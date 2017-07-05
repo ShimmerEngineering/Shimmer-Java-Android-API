@@ -72,7 +72,9 @@ public class SensorConfigDialog {
 		
 		for(String key : listOfKeys) {
 			ConfigOptionDetailsSensor cods = configOptionsMap.get(key);
-			String[] cs = cods.getGuiValues();
+			
+			String[] cs = null;
+			cs = cods.getGuiValues();
 			
 			System.out.println("For key: " + key + " configValue is: " + cloneDevice.getConfigValueUsingConfigLabel(key));
 			
