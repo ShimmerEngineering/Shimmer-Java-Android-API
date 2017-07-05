@@ -14,6 +14,12 @@ public class AssembleShimmerConfig {
 	public static List<ShimmerDevice> listForConfiguringDocked = new ArrayList<ShimmerDevice>();
 	public static List<ShimmerDevice> listForConfiguringBT = new ArrayList<ShimmerDevice>();
 	
+	public static void generateSingleShimmerConfig(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType){
+		List<ShimmerDevice> cloneList = new ArrayList<ShimmerDevice>();
+        cloneList.add(0, shimmerDevice);
+        generateMultipleShimmerConfig(cloneList, commType);
+	}
+	
 	public static void generateMultipleShimmerConfig(List<ShimmerDevice> listOfShimmersToConfigureClone, COMMUNICATION_TYPE commType){
 		generateMultipleShimmerConfig(listOfShimmersToConfigureClone, commType, true, true, true);
 	}

@@ -73,7 +73,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(161, 90, 199, 31);
+		btnConnect.setBounds(161, 90, 154, 31);
 		frame.getContentPane().add(btnConnect);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
@@ -85,7 +85,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(392, 90, 187, 31);
+		btnDisconnect.setBounds(377, 90, 154, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
@@ -110,7 +110,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				//Ensure the Shimmer is not streaming or SD logging before configuring it
 				if(shimmer.isConnected()) {
 					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
-						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer);
+						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer,btManager);
 						sensorsDialog.initialize();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -132,7 +132,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				if(shimmer.isConnected()) {
 					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
 						SensorConfigDialog configDialog = new SensorConfigDialog();
-						configDialog.initialize(shimmer);
+						configDialog.initialize(shimmer,btManager);
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
@@ -144,15 +144,14 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		});
 		mnTools.add(mntmDeviceConfiguration);
 		
-		JMenuItem mntmSignalsToPlot = new JMenuItem("Signals to plot");
-		mnTools.add(mntmSignalsToPlot);
-		
 		JPanel plotPanel = new JPanel();
 		plotPanel.setBounds(10, 236, 611, 272);
 		frame.getContentPane().add(plotPanel);
+		plotPanel.setLayout(null);
 		
 		final Chart2D mChart = new Chart2D();
-		mChart.setSize(300, 300);
+		mChart.setLocation(12, 13);
+		mChart.setSize(587, 246);
 		plotPanel.add(mChart);
 		
 		JButton btnStartStreaming = new JButton("START STREAMING");
@@ -175,7 +174,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 			}
 		});
-		btnStopStreaming.setBounds(392, 181, 187, 31);
+		btnStopStreaming.setBounds(377, 181, 187, 31);
 		frame.getContentPane().add(btnStopStreaming);
 		
 		plotManager.setTitle("Plot");
@@ -249,3 +248,4 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		
 	}
 }
+
