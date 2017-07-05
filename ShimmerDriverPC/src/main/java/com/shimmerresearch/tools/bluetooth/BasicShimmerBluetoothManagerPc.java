@@ -13,6 +13,7 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.shimmer4sdk.Shimmer4;
+import com.shimmerresearch.exceptions.ConnectionExceptionListener;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 import com.shimmerresearch.pcDriver.ShimmerPC;
@@ -116,8 +117,32 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	@Override
 	public void connectShimmerThroughCommPort(String comPort){
 		directConnectUnknownShimmer=true;
+
+		super.setConnectionExceptionListener(new ConnectionExceptionListener() {
+
+			@Override
+			public void onConnectionStart(String connectionHandle) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onConnectionException(Exception exception) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onConnectStartException(String connectionHandle) {
+				// TODO Auto-generated method stub
+				CallbackObject cbo = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, BT_STATE.DISCONNECTED, "", connectionHandle);
+				callBackObject.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, cbo);
+				
+			}});
+		
 		ConnectThread connectThread = new ConnectThread(comPort, null, null);
 		connectThread.start();
+		
 	}
 
 	@Override
