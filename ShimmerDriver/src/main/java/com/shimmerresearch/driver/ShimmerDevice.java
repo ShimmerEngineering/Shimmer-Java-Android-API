@@ -196,6 +196,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
 	public DOCK_STATE mDockState = DOCK_STATE.UNDOCKED;
 	
+	private boolean mUpdateOnlyWhenStateChanges=false;
+	
 	//TODO:
 	public enum DOCK_STATE{
 		DOCKED("Docked"),
@@ -969,6 +971,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		if(changed){
 			stateHandler(mDockState);
+		}
+		if(!mUpdateOnlyWhenStateChanges){
+			return true;
 		}
 		return changed;
 	}
@@ -2661,6 +2666,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		BT_STATE stateStored = mBluetoothRadioState;
 		mBluetoothRadioState = state;
 		consolePrintLn("State change: Was:" + stateStored.toString() + "\tIs now:" + mBluetoothRadioState);
+		if(!mUpdateOnlyWhenStateChanges){
+			return true;
+		}
 		return changed;
 	}
 	
