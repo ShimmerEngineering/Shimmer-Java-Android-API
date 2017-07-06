@@ -30,6 +30,7 @@ import info.monitorenter.util.Range;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -469,14 +470,22 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		return mTitle;
 	}
 	
-	public void setYAxisLabel(String label){
+	public void setYAxisLabel(String label, Font font){
 		IAxis<?> y = mChart.getAxisY();
-		y.setAxisTitle(new AxisTitle(label));
+		AxisTitle axisTitle = new AxisTitle(label);
+		if(font != null){
+			axisTitle.setTitleFont(font);
+		}
+		y.setAxisTitle(axisTitle);
 	}
 	
-	public void setXAxisLabel(String label){
+	public void setXAxisLabel(String label, Font font){
 		IAxis<?> x = mChart.getAxisX();
-		x.setAxisTitle(new AxisTitle(label));
+		AxisTitle axisTitle = new AxisTitle(label);
+		if(font != null){
+			axisTitle.setTitleFont(font);
+		}
+		x.setAxisTitle(axisTitle);
 	}
 	
 	public void setXAxisRange(double miny,double maxy){
@@ -489,13 +498,19 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		y.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
 	}
 	
-	public void setYAxisTickSpacing(double tickSpacing){
+	public void setYAxisMajorTickSpacing(double tickSpacing){
 		IAxis<?> y = mChart.getAxisY();
 		yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
 		yAxis.setMajorTickSpacing(tickSpacing);	
 	}
 	
-	public void setYAxisTickSize(double miny,double maxy){
+	public void setYAxisMinorTickSpacing(double tickSpacing){
+		IAxis<?> y = mChart.getAxisY();
+		yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
+		yAxis.setMinorTickSpacing(tickSpacing);	
+	}
+	
+	public void setYAxisTickSize(double miny, double maxy){
 		IAxis<?> y = mChart.getAxisY();
 		y.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
 	}
@@ -528,7 +543,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 		else if(isXAxisFrequency()){
 			initializeAxesAutoUnits();
-			setXAxisLabel("Freq (Hz)");
+			setXAxisLabel("Freq (Hz)", null);
 //			setYAxisLabel("Power (dB)");
 //			setXAxisRange(0, 100);
 		}
