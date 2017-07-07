@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.exceptions.ShimmerException;
@@ -73,7 +74,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(161, 90, 154, 31);
+		btnConnect.setBounds(161, 90, 199, 31);
 		frame.getContentPane().add(btnConnect);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
@@ -85,7 +86,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(377, 90, 154, 31);
+		btnDisconnect.setBounds(401, 90, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
@@ -144,6 +145,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		});
 		mnTools.add(mntmDeviceConfiguration);
 		
+		
 		JPanel plotPanel = new JPanel();
 		plotPanel.setBounds(10, 236, 611, 272);
 		frame.getContentPane().add(plotPanel);
@@ -153,13 +155,22 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mChart.setLocation(12, 13);
 		mChart.setSize(587, 246);
 		plotPanel.add(mChart);
+		plotManager.addChart(mChart);
+		
+		JMenuItem mntmSignalsToPlot = new JMenuItem("Signals to plot");
+		mntmSignalsToPlot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SignalsToPlotDialog signalsToPlotDialog = new SignalsToPlotDialog();
+				signalsToPlotDialog.initialize(shimmer, plotManager, mChart);
+			}
+		});
+		mnTools.add(mntmSignalsToPlot);
 		
 		JButton btnStartStreaming = new JButton("START STREAMING");
 		btnStartStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				shimmer.startStreaming();
-				plotManager.addChart(mChart);
 				
 			}
 		});
@@ -174,7 +185,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 			}
 		});
-		btnStopStreaming.setBounds(377, 181, 187, 31);
+		btnStopStreaming.setBounds(401, 181, 187, 31);
 		frame.getContentPane().add(btnStopStreaming);
 		
 		plotManager.setTitle("Plot");
@@ -239,6 +250,14 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			} else {}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
 			System.out.println("Shimmer MSG_IDENTIFIER_DATA_PACKET");
+			ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
+			
+			try {
+				plotManager.filterDataAndPlot(objc);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL) {
 			
 		}
@@ -248,3 +267,4 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		
 	}
 }
+
