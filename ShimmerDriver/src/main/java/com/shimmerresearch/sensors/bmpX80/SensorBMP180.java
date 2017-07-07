@@ -108,6 +108,8 @@ public class SensorBMP180 extends SensorBMPX80 {
 	public static final Integer[] ListofPressureResolutionConfigValues = {0,1,2,3};
 
 	public static final ConfigOptionDetailsSensor configOptionPressureResolution = new ConfigOptionDetailsSensor(
+			SensorBMPX80.GuiLabelConfig.PRESSURE_RESOLUTION,
+			SensorBMP180.DatabaseConfigHandle.PRESSURE_PRECISION_BMP180,
 			ListofPressureResolution, 
 			ListofPressureResolutionConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
@@ -207,7 +209,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	
 	@Override
 	public void generateConfigOptionsMap() {
-		mConfigOptionsMap.put(GuiLabelConfig.PRESSURE_RESOLUTION, configOptionPressureResolution); 
+		addConfigOption(configOptionPressureResolution);
 	}
 	
 	

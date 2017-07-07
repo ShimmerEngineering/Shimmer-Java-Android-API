@@ -25,7 +25,6 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
-import com.shimmerresearch.algorithms.ConfigOptionDetailsAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
@@ -64,6 +63,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
@@ -93,7 +93,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected LinkedHashMap<Integer, SensorDetails> mSensorMap = new LinkedHashMap<Integer, SensorDetails>();
 	/** The contents of Parser are kept in a fixed order based on the SensorMapKey */ 
 	protected HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>> mParserMap = new HashMap<COMMUNICATION_TYPE, TreeMap<Integer, SensorDetails>>();
-	protected Map<String, ConfigOptionDetailsSensor> mConfigOptionsMap = new HashMap<String, ConfigOptionDetailsSensor>();
+	protected Map<String, ConfigOptionDetailsSensor> mConfigOptionsMapSensors = new HashMap<String, ConfigOptionDetailsSensor>();
 	protected TreeMap<Integer, SensorGroupingDetails> mSensorGroupingMap = new TreeMap<Integer, SensorGroupingDetails>();
 	
 	/** Contains all loaded Algorithm modules */
@@ -102,7 +102,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	protected Map<String, AlgorithmDetails> mMapOfAlgorithmDetails = new LinkedHashMap<String, AlgorithmDetails>();
 	/** for tile generation in GUI configuration */ 
 	protected TreeMap<Integer, SensorGroupingDetails> mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
-	protected Map<String, ConfigOptionDetailsAlgorithm> mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetailsAlgorithm>();
+	protected Map<String, ConfigOptionDetails> mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetails>();
 
 	public List<COMMUNICATION_TYPE> mListOfAvailableCommunicationTypes = new ArrayList<COMMUNICATION_TYPE>();
 
@@ -136,7 +136,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected boolean mIsSensing = false;
 	protected boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
 	protected boolean mIsInitialised = false;
-	protected boolean mIsDocked = false;
+	private boolean mIsDocked = false;
 	protected boolean mHaveAttemptedToReadConfig = false;
 
 	//BSL related start
@@ -194,6 +194,79 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected String mComPort = "";
 	public transient CommsProtocolRadio mCommsProtocolRadio = null;
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
+	public DOCK_STATE mDockState = DOCK_STATE.UNDOCKED;
+	
+	private boolean mUpdateOnlyWhenStateChanges=false;
+	
+	//TODO:
+	public enum DOCK_STATE{
+		DOCKED("Docked"),
+		UNDOCKED("Undocked");
+//		RECORDING("Recording");
+		
+	    private final String text;
+
+	    /**
+	     * @param text
+	     */
+	    private DOCK_STATE(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
+	
+	public enum SD_STATE{
+		LOGGING("Logging"),
+		NOT_LOGGING("Not_Logging");
+//		RECORDING("Recording");
+		
+	    private final String text;
+
+	    /**
+	     * @param text
+	     */
+	    private SD_STATE(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
+	
+	public enum SENSING_STATE{
+		SENSING("Sensing"),
+		NOT_SENSING("Not Sensing");
+//		RECORDING("Recording");
+		
+	    private final String text;
+
+	    /**
+	     * @param text
+	     */
+	    private SENSING_STATE(final String text) {
+	        this.text = text;
+	    }
+
+	    /* (non-Javadoc)
+	     * @see java.lang.Enum#toString()
+	     */
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
 	
 	protected int mInternalExpPower=-1;													// This shows whether the internal exp power is enabled.
 	
@@ -213,6 +286,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			new OrientationModule9DOFLoader());
 
 	public static final class DatabaseConfigHandle{
+		public static final String TRIAL_NAME = "Trial_Name";
+		
+		public static final String SHIMMER_NAME = "Shimmer_Name";
+		
 		public static final String SAMPLE_RATE = "Sample_Rate";
 		public static final String ENABLE_SENSORS = "Enable_Sensors";
 		public static final String DERIVED_SENSORS = "Derived_Sensors";
@@ -386,7 +463,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void generateConfigOptionsMap() {
-		mConfigOptionsMap = new HashMap<String, ConfigOptionDetailsSensor>();
+		mConfigOptionsMapSensors = new HashMap<String, ConfigOptionDetailsSensor>();
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
 			HashMap<String, ConfigOptionDetailsSensor> configOptionsMapPerSensor = abstractSensor.getConfigOptionsMap();
 				
@@ -438,7 +515,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			while(iteratorConfigOptionMap.hasNext()){
 				Entry<String, ConfigOptionDetailsSensor> entry = iteratorConfigOptionMap.next();
 				if(isVerCompatibleWithAnyOf(entry.getValue().mListOfCompatibleVersionInfo)){
-					mConfigOptionsMap.put(entry.getKey(), entry.getValue());
+					mConfigOptionsMapSensors.put(entry.getKey(), entry.getValue());
 				}
 			}
 		}
@@ -455,13 +532,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return the mConfigOptionsMap
 	 */
 	public Map<String, ConfigOptionDetailsSensor> getConfigOptionsMap() {
-		return mConfigOptionsMap;
+		return mConfigOptionsMapSensors;
 	}
 	
 	/** 
 	 * @return the mConfigOptionsMap
 	 */
-	public Map<String, ConfigOptionDetailsAlgorithm> getConfigOptionsMapAlorithms() {
+	public Map<String, ConfigOptionDetails> getConfigOptionsMapAlorithms() {
 		return mConfigOptionsMapAlgorithms;
 	}
 	
@@ -881,10 +958,30 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @param docked the mDocked to set
 	 */
-	public void setIsDocked(boolean docked) {
+	public boolean setIsDocked(boolean docked) {
+		boolean changed=false;
+		if (mIsDocked!=docked){
+			changed = true;
+		}
 		mIsDocked = docked;
+		if (mIsDocked){
+			mDockState = DOCK_STATE.DOCKED;
+		}else {
+			mDockState = DOCK_STATE.UNDOCKED;
+		}
+		if(changed){
+			stateHandler(mDockState);
+		}
+		if(!mUpdateOnlyWhenStateChanges){
+			return true;
+		}
+		return changed;
 	}
 
+	public void stateHandler(Object obj){
+		
+	}
+	
 	/**
 	 * @return the mDocked
 	 */
@@ -1644,6 +1741,40 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return returnValue;		
 	}
 	
+	public String getConfigGuiValueUsingConfigLabel(Object sensorMapKey, String configLabel){
+		String guiValue = "";
+
+		Object configValue = null;
+		if(sensorMapKey instanceof Integer){
+			configValue = getConfigValueUsingConfigLabel((Integer)sensorMapKey, configLabel);
+		} else if(sensorMapKey instanceof String){
+			configValue = getConfigValueUsingConfigLabel((String)sensorMapKey, configLabel);
+		}
+		
+		if(configValue!=null){
+			if(configValue instanceof String){
+				guiValue = (String) configValue;
+			} else if(configValue instanceof Boolean){
+				
+			} else if(configValue instanceof Integer){
+				int configInt = (int) configValue;
+				Map<String, ConfigOptionDetailsSensor> mapOfConfigOptions = getConfigOptionsMap();
+				if(mapOfConfigOptions!=null && mapOfConfigOptions.containsKey(configLabel) && mapOfConfigOptions.get(configLabel)!=null){
+					ConfigOptionDetails configOption = getConfigOptionsMap().get(configLabel);
+					
+					guiValue = ConfigOptionDetails.getConfigStringFromConfigValue(configOption.mConfigValues, configOption.mGuiValues, configInt);
+					
+				} else {
+					guiValue = Integer.toString(configInt);
+				}
+				
+			}
+	}
+
+		return guiValue;
+	}
+
+	
 	private Object setSensorClassSetting(String identifier, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		//TODO check sensor classes return a null if the setting is successfully found
@@ -1962,7 +2093,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mSensorMap
 	 */
-	public Map<Integer, SensorDetails> getSensorMap() {
+	public LinkedHashMap<Integer, SensorDetails> getSensorMap() {
 		return mSensorMap;
 	}
 
@@ -2527,10 +2658,18 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	//TODO tidy up implementation of below, overwritten and handled differently in Shimmer4, ShimmerPC, NoninOnyxII
-	public void setBluetoothRadioState(BT_STATE state){
+	public boolean setBluetoothRadioState(BT_STATE state){
+		boolean changed=true;
+		if (mBluetoothRadioState.toString().equals(state.toString())){
+			changed=false;
+		}
 		BT_STATE stateStored = mBluetoothRadioState;
 		mBluetoothRadioState = state;
 		consolePrintLn("State change: Was:" + stateStored.toString() + "\tIs now:" + mBluetoothRadioState);
+		if(!mUpdateOnlyWhenStateChanges){
+			return true;
+		}
+		return changed;
 	}
 	
 	
@@ -2771,9 +2910,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	protected void generateMapOfAlgorithmConfigOptions(){
-		mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetailsAlgorithm>();
+		mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetails>();
 		for(AbstractAlgorithm abstractAlgorithm:mMapOfAlgorithmModules.values()){
-			HashMap<String, ConfigOptionDetailsAlgorithm> configOptionsMapPerAlgorithm = abstractAlgorithm.getConfigOptionsMap();
+			HashMap<String, ConfigOptionDetails> configOptionsMapPerAlgorithm = abstractAlgorithm.getConfigOptionsMap();
 			
 			if(configOptionsMapPerAlgorithm!=null && configOptionsMapPerAlgorithm.keySet().size()>0){
 				// taking out duplicates for orientation algorithm config options 
@@ -3199,13 +3338,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	//---------- Storing to Database related - start --------------------
 	
-	public List<String> getSensorsAndAlgorithmChannelsToStoreInDB(){
-		return getSensorsAndAlgorithmChannelsToStoreInDB(null, null);
+	public List<String> getSensorsAndAlgorithmChannelsOjcNamesToStoreInDB(){
+		return getSensorsAndAlgorithmChannelsOjcNamesToStoreInDB(null, null);
 	}
 	
-	public List<String> getSensorsAndAlgorithmChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
-		Set<String> setOfSensorsAndAlgorithms = getSensorChannelsToStoreInDB(commType, channelType);
-		Set<String> setOfAlgorithms = getAlgortihmChannelsToStoreInDB(commType, channelType);
+	public List<String> getSensorsAndAlgorithmChannelsOjcNamesToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
+		Set<String> setOfSensorsAndAlgorithms = getSensorChannelOjcNamesToStoreInDB(commType, channelType);
+		Set<String> setOfAlgorithms = getEnabledAlgortihmChannelOjcNamesToStoreInDB(commType, channelType);
 		setOfSensorsAndAlgorithms.addAll(setOfAlgorithms);
 		
 		List<String> listOfObjectClusterSensors = new ArrayList<String>(setOfSensorsAndAlgorithms.size());
@@ -3214,31 +3353,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfObjectClusterSensors;
 	}
 	
-	//get the enabled sensors
-//	Map<String, ChannelDetails> mapOfChannels = shimmerDevice.getMapOfEnabledSensorChannelsForStoringToDb(commType);
-//	listOfObjectClusterSensors = new ArrayList<String>(mapOfChannels.keySet());
-	
+	//TODO MN&AS: shouldn't this be using the mDatabaseChannelHandle rather then the mObjectClusterName??
+	//TODO AS: use this one better?? MN: yes it is so I don't know why it isn't like the one below and if we change will it mess anything up  
+	public Set<String> getEnabledAlgortihmChannelOjcNamesToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
+		Map<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfEnabledAlgortihmChannelsToStoreInDB(commType, channelType);
 
-	
-	//2017-02-01 MN: Old code
-//	private Set<String> getAlgortihmChannelsToStoreInDB(){
-//		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
-//		for(AbstractAlgorithm algortihm: getListOfEnabledAlgorithmModules()){
-//			List<ChannelDetails> listOfDetails = algortihm.getChannelDetails();
-//			for(ChannelDetails details:listOfDetails){
-//				if(details.mStoreToDatabase){
-//					setOfObjectClusterChannels.add(details.mObjectClusterName);
-////					setOfObjectClusterSensors.add(details.mDatabaseChannelHandle); AS: use this one better??
-//				}
-//			}
-//		}
-//		return setOfObjectClusterChannels;
-//	}
-	
-	//2017-02-01 MN: New code
-	//TODO get algorithm isenabled per commType
-	private Set<String> getAlgortihmChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
 		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
+		setOfObjectClusterChannels.addAll(mapOfEnabledChannelsForStoringToDb.keySet());
+
+		return setOfObjectClusterChannels;
+	}
+	
+	//TODO get algorithm isenabled per commType
+	public Map<String, ChannelDetails> getMapOfEnabledAlgortihmChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType) {
+		Map<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = new HashMap<String, ChannelDetails>();
+
 		Iterator<AbstractAlgorithm> iteratorAlgorithms = getListOfEnabledAlgorithmModules().iterator();
 		while(iteratorAlgorithms.hasNext()){
 			AbstractAlgorithm algorithm = iteratorAlgorithms.next();
@@ -3249,27 +3378,27 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 
 				if(channelDetails.mStoreToDatabase){
-					setOfObjectClusterChannels.add(channelDetails.mObjectClusterName);
-					//TODO AS: use this one better?? MN: yes it is so I don't know why it isn't like the one below and if we change will it mess anything up  
-//					setOfObjectClusterSensors.add(channelDetails.mDatabaseChannelHandle);
+					mapOfEnabledChannelsForStoringToDb.put(channelDetails.mObjectClusterName, channelDetails);
 				}
 			}
 		}
-		return setOfObjectClusterChannels;
-	}
-	
-	private Set<String> getSensorChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
-		Map<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDb(commType, channelType);
-		
-		Set<String> setOfObjectClusterSensors = new LinkedHashSet<String>();
-		//TODO MN&AS: shouldn't this be using the mDatabaseChannelHandle rather then the mObjectClusterName??
-		setOfObjectClusterSensors.addAll(mapOfEnabledChannelsForStoringToDb.keySet());
-		
-		return setOfObjectClusterSensors;
+
+		return mapOfEnabledChannelsForStoringToDb;
 	}
 
-	public Map<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType) {
-		HashMap<String, ChannelDetails> listOfChannels = new HashMap<String, ChannelDetails>();
+	//TODO MN&AS: shouldn't this be using the mDatabaseChannelHandle rather then the mObjectClusterName??
+	//TODO AS: use this one better?? MN: yes it is so I don't know why it isn't like the one below and if we change will it mess anything up  
+	private Set<String> getSensorChannelOjcNamesToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
+		LinkedHashMap<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDb(commType, channelType);
+		
+		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
+		setOfObjectClusterChannels.addAll(mapOfEnabledChannelsForStoringToDb.keySet());
+		
+		return setOfObjectClusterChannels;
+	}
+
+	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType) {
+		LinkedHashMap<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = new LinkedHashMap<String, ChannelDetails>();
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
 			SensorDetails sensorDetails = iterator.next();
@@ -3289,13 +3418,67 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					}
 					
 					if(channelDetails.mStoreToDatabase){
-						listOfChannels.put(channelDetails.mObjectClusterName, channelDetails);
+						mapOfEnabledChannelsForStoringToDb.put(channelDetails.mObjectClusterName, channelDetails);
 					}
 				}
 			}
 		}
-		return listOfChannels;
+		return mapOfEnabledChannelsForStoringToDb;
 	}
+
+	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDb(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName) {
+		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = new LinkedHashMap<String, ChannelDetails>();
+		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
+		while(iterator.hasNext()){
+			SensorDetails sensorDetails = iterator.next();
+			
+			if(!sensorDetails.mSensorDetailsRef.mIsDummySensor){
+				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
+						continue;
+					}
+					
+					if(channelDetails.mStoreToDatabase){
+						String key = (isKeyOJCName? channelDetails.mObjectClusterName:channelDetails.getDatabaseChannelHandle());
+						mapOfChannelsForStoringToDb.put(key, channelDetails);
+					}
+				}
+			}
+		}
+		
+		Iterator<AbstractAlgorithm> iteratorAlgorithms = mMapOfAlgorithmModules.values().iterator();
+		while(iteratorAlgorithms.hasNext()){
+			AbstractAlgorithm algorithm = iteratorAlgorithms.next();
+			List<ChannelDetails> listOfDetails = algorithm.getChannelDetails();
+			for(ChannelDetails channelDetails:listOfDetails){
+				if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
+					continue;
+				}
+
+				if(channelDetails.mStoreToDatabase){
+					String key = (isKeyOJCName? channelDetails.mObjectClusterName:channelDetails.getDatabaseChannelHandle());
+					mapOfChannelsForStoringToDb.put(key, channelDetails);
+				}
+			}
+		}
+		
+		return mapOfChannelsForStoringToDb;
+	}
+
+	public LinkedHashMap<String, ChannelDetails> getListOfGuiChannelsFromDbHandles(List<String> listOfDbChannelHandles) {
+		LinkedHashMap<String, ChannelDetails> mapOfChannelsFound = new LinkedHashMap<String, ChannelDetails>();
+		LinkedHashMap<String, ChannelDetails> channelDetailsMap = getMapOfAllChannelsForStoringToDb(null, CHANNEL_TYPE.CAL, false);
+		
+		for(String dbChannelHandle:listOfDbChannelHandles){
+			ChannelDetails channelDetails = channelDetailsMap.get(dbChannelHandle);
+			if(channelDetails!=null){
+				mapOfChannelsFound.put(channelDetails.mGuiName, channelDetails);
+			}
+		}
+		
+		return mapOfChannelsFound;
+	}
+
 	
 	public LinkedHashMap<String, Object> getConfigMapForDb(){
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();

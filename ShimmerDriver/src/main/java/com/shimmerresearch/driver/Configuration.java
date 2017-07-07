@@ -619,9 +619,6 @@ public class Configuration {
 		public static final String[] ListofBluetoothBaudRates = {"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
 		public static final Integer[] ListofBluetoothBaudRatesConfigValues = {0,1,2,3,4,5,6,7,8,9,10};
 		
-		public static final String[] ListOfOnOff = {"On","Off"};
-		public static final Integer[] ListOfOnOffConfigValues = {0x01,0x00};
-
 		//TODO Remove the need for this, standalone strings are too hardcoded and should be based on sensor/channel maps etc.
 		@Deprecated 
 		public static final String[] ListofCompatibleSensors = {
@@ -645,6 +642,12 @@ public class Configuration {
 			"EXG2 16Bit", 
 			"Bridge Amplifier"}; 
 		
+		
+		/**
+		 * Some of these sensors are listed in order of how they appear in the
+		 * data packets. The firmware also uses the IMU IDs as Sensor IDs in the
+		 * IMU/BMP calibration bytes. 
+		 */
 		public class SensorMapKey{
 			public static final int RESERVED_ANY_SENSOR = -1;
 			
@@ -683,21 +686,23 @@ public class Configuration {
 
 			//Digital channels begin
 			public static final int SHIMMER_MPU9150_GYRO = 30;
-			public static final int SHIMMER_MPU9250_GYRO = 31;
 			/** Shimmer3 Wide-range digital accelerometer */
-			public static final int SHIMMER_LSM303DLHC_ACCEL = 32;
-			public static final int SHIMMER_LSM303AH_ACCEL = 33;
-			public static final int SHIMMER_LSM303DLHC_MAG = 34;
-			public static final int SHIMMER_LSM303AH_MAG = 35;
+			public static final int SHIMMER_LSM303DLHC_ACCEL = 31;
+			public static final int SHIMMER_LSM303DLHC_MAG = 32;
 			/** Shimmer3 Alternative accelerometer */
-			public static final int SHIMMER_MPU9150_ACCEL = 36;
-			public static final int SHIMMER_MPU9250_ACCEL = 37;
+			public static final int SHIMMER_MPU9150_ACCEL = 33;
 			/** Shimmer3 Alternative magnetometer */
-			public static final int SHIMMER_MPU9150_MAG = 38;
-			public static final int SHIMMER_MPU9250_MAG = 39;
-			public static final int SHIMMER_MPU9150_TEMP = 40;
-			public static final int SHIMMER_BMP180_PRESSURE = 41;
-			public static final int SHIMMER_BMP280_PRESSURE = 42;
+			public static final int SHIMMER_MPU9150_MAG = 34;
+			public static final int SHIMMER_MPU9150_TEMP = 35;
+			public static final int SHIMMER_BMP180_PRESSURE = 36;
+			
+			//New BMP IMU sensors
+			public static final int SHIMMER_BMP280_PRESSURE = 37;
+			public static final int SHIMMER_MPU9250_GYRO = 38;
+			public static final int SHIMMER_LSM303AH_ACCEL = 39;
+			public static final int SHIMMER_LSM303AH_MAG = 40;
+			public static final int SHIMMER_MPU9250_ACCEL = 41;
+			public static final int SHIMMER_MPU9250_MAG = 42;
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
@@ -1616,49 +1621,64 @@ public class Configuration {
 	        Map<String, ConfigOptionDetailsSensor> aMap = new LinkedHashMap<String, ConfigOptionDetailsSensor>();
 	        
 			// Assemble the channel configuration options map
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
-//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
-//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
-//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
-//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
-//			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, 
-//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-//											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME,
+					ShimmerDevice.DatabaseConfigHandle.SHIMMER_NAME,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE,
+					ShimmerDevice.DatabaseConfigHandle.SAMPLE_RATE,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME,
+					ShimmerDevice.DatabaseConfigHandle.CONFIG_TIME,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME,
+					ShimmerDevice.DatabaseConfigHandle.TRIAL_NAME,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID,
+					ShimmerDevice.DatabaseConfigHandle.TRIAL_ID,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-											new ArrayList(){}));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS,
+					ShimmerDevice.DatabaseConfigHandle.N_SHIMMER,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL,
+					ShimmerDevice.DatabaseConfigHandle.BROADCAST_INTERVAL,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					new ArrayList(){}));
 			
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE, 
-					new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofBluetoothBaudRates, 
-											Configuration.Shimmer3.ListofBluetoothBaudRatesConfigValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-											CompatibilityInfoForMaps.listOfCompatibleVersionInfoStreaming));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE,
+					ShimmerDevice.DatabaseConfigHandle.BAUD_RATE,
+					Configuration.Shimmer3.ListofBluetoothBaudRates, 
+					Configuration.Shimmer3.ListofBluetoothBaudRatesConfigValues, 
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoStreaming));
 			
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE,SensorLSM303DLHC.configOptionAccelRange);
@@ -1680,7 +1700,7 @@ public class Configuration {
 //			}
 			
 			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, SensorMPU9X50.configOptionMpu9150GyroRange);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, SensorMPU9150.configOptionMpu9150GyroRange);
 			}
 
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
@@ -1707,71 +1727,93 @@ public class Configuration {
 
 			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
 				//MPL Options
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE,SensorMPU9X50.configOptionMpu9150AccelRange);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP_GYRO_CAL, SensorMPU9X50.configOptionMpu9150DmpGyroCal);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_LPF, SensorMPU9X50.configOptionMpu9150MplLpf);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_RATE, SensorMPU9X50.configOptionMpu9150MplRate);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE, SensorMPU9X50.configOptionMpu9150MagRate);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE,SensorMPU9150.configOptionMpu9150AccelRange);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP_GYRO_CAL, SensorMPU9150.configOptionMpu9150DmpGyroCal);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_LPF, SensorMPU9150.configOptionMpu9150MplLpf);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_RATE, SensorMPU9150.configOptionMpu9150MplRate);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE, SensorMPU9150.configOptionMpu9150MagRate);
 	
-			    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
-			    	      new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfOnOff, 
-					    	        Configuration.Shimmer3.ListOfOnOffConfigValues,
-					    	        ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+			    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, new ConfigOptionDetailsSensor(
+			    		Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER,
+			    		ShimmerDevice.DatabaseConfigHandle.EXP_PWR,
+			    		Configuration.ShimmerDeviceCommon.ListOfOnOff, 
+		    	        Configuration.ShimmerDeviceCommon.ListOfOnOffConfigValues,
+		    	        ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 				
 				//MPL CheckBoxes
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP, SensorMPU9X50.configOptionMpu9150Dmp); 
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL, SensorMPU9X50.configOptionMpu9150Mpl);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION, SensorMPU9X50.configOptionMpu9150Mpl9DofSensorFusion); 
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_GYRO_CAL, SensorMPU9X50.configOptionMpu9150MplGyroCal);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL, SensorMPU9X50.configOptionMpu9150MplVectorCal); 
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_MAG_CAL, SensorMPU9X50.configOptionMpu9150MplMagCal);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP, SensorMPU9150.configOptionMpu9150Dmp); 
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL, SensorMPU9150.configOptionMpu9150Mpl);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION, SensorMPU9150.configOptionMpu9150Mpl9DofSensorFusion); 
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_GYRO_CAL, SensorMPU9150.configOptionMpu9150MplGyroCal);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL, SensorMPU9150.configOptionMpu9150MplVectorCal); 
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_MAG_CAL, SensorMPU9150.configOptionMpu9150MplMagCal);
 				
 				//General Config
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE, SensorMPU9X50.configOptionMpu9150GyroRate); 
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE, SensorMPU9150.configOptionMpu9150GyroRate); 
 	//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			}
 			
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START,
+					ShimmerDevice.DatabaseConfigHandle.USER_BUTTON,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START,
+					ShimmerDevice.DatabaseConfigHandle.SINGLE_TOUCH_START,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER,
+					ShimmerDevice.DatabaseConfigHandle.MASTER_CONFIG,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING,
+					ShimmerDevice.DatabaseConfigHandle.SYNC_CONFIG,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
 
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
 				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,SensorLSM303DLHC.configOptionAccelLpm);
 			}
 			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM, SensorMPU9X50.configOptionMpu9150GyroLpm);
+				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM, SensorMPU9150.configOptionMpu9150GyroLpm);
 			}
 			
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM, 
-						new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM, SensorLSM303DLHC.configOptionMagLpm);
 			}
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
 
 			aMap.put(SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION, SensorPPG.configOptionPpgAdcSelection);
 			aMap.put(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION, SensorPPG.configOptionPpg1AdcSelection);
 			aMap.put(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION, SensorPPG.configOptionPpg2AdcSelection);
 	        
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC,  
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
-							Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12),
-									new ShimmerVerObject(FW_ID.SDLOG, 0, 11, 3))));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD,  
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
-							Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0,  
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
-							Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12),
+							new ShimmerVerObject(FW_ID.SDLOG, 0, 11, 3))));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.TCX0,
+					ShimmerDevice.DatabaseConfigHandle.TXCO,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw));
 
 	        mConfigOptionsMapRef = Collections.unmodifiableMap(aMap);
 	    }
@@ -1965,16 +2007,22 @@ public class Configuration {
 	//		aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, 
 	//				new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
 	//						listOfCompatibleVersionInfoGq));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE,
+					ShimmerDevice.DatabaseConfigHandle.SAMPLE_RATE,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
 	//		aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM, 
 	//				new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-							Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
-							Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME,
+					ShimmerDevice.DatabaseConfigHandle.CONFIG_TIME,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME,
+					ShimmerDevice.DatabaseConfigHandle.TRIAL_NAME,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
 	//		aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, 
 	//				new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
 	//						Configuration.ShimmerGQ.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
@@ -1984,43 +2032,63 @@ public class Configuration {
 	
 			aMap.put(SensorGSR.GuiLabelConfig.GSR_RANGE, SensorGSR.configOptionGsrRange);  
 
-			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR, 
-					new ConfigOptionDetailsSensor(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
-											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL,   //XXX-RS-LSM-SensorClass?
-					new ConfigOptionDetailsSensor(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
-											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, 
-					new ConfigOptionDetailsSensor(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
-											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT, 
-					new ConfigOptionDetailsSensor(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
-											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_BEACON, 
-					new ConfigOptionDetailsSensor(Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
-											Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
-											ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR, new ConfigOptionDetailsSensor(
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_GSR,
+					null,
+					Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+					Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+			//XXX-RS-LSM-SensorClass?
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL, new ConfigOptionDetailsSensor(
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_LSM303DLHC_ACCEL,
+					null,
+					Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+					Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, new ConfigOptionDetailsSensor(
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG,
+					null,
+					Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+					Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT, new ConfigOptionDetailsSensor(
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT,
+					null,
+					Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+					Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+			aMap.put(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_BEACON, new ConfigOptionDetailsSensor(
+					Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_BEACON,
+					null,
+					Configuration.ShimmerGqBle.ListofSamplingRateDividers, 
+					Configuration.ShimmerGqBle.ListofSamplingRateDividersValues, 
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 	
-		    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, 
-		    	      new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListOfOnOff, 
-				    	        Configuration.Shimmer3.ListOfOnOffConfigValues,
-				    	        ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
+		    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, new ConfigOptionDetailsSensor(
+		    		Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER,
+					ShimmerDevice.DatabaseConfigHandle.EXP_PWR,
+		    		Configuration.ShimmerDeviceCommon.ListOfOnOff, 
+	    	        Configuration.ShimmerDeviceCommon.ListOfOnOffConfigValues,
+	    	        ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
 			
 			//General Config
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START,
+					ShimmerDevice.DatabaseConfigHandle.USER_BUTTON,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START,
+					ShimmerDevice.DatabaseConfigHandle.SINGLE_TOUCH_START,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					Configuration.ShimmerGqBle.CompatibilityInfoForMaps.listOfCompatibleVersionInfoGq));
 	
-			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,  //XXX-RS-LSM-SensorClass?
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
+			aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM, SensorLSM303DLHC.configOptionAccelLpm);
 			
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, 
-					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
 			
 			
 			mConfigOptionsMapRef = Collections.unmodifiableMap(aMap);
@@ -2035,11 +2103,15 @@ public class Configuration {
 		}
 		
 		public static final ConfigOptionDetailsSensor configOptionIntExpBrdPowerInteger = new ConfigOptionDetailsSensor(
-				Configuration.Shimmer3.ListOfOnOff, 
-				Configuration.Shimmer3.ListOfOnOffConfigValues, 
+	    		Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER,
+				ShimmerDevice.DatabaseConfigHandle.EXP_PWR,
+				Configuration.ShimmerDeviceCommon.ListOfOnOff, 
+				Configuration.ShimmerDeviceCommon.ListOfOnOffConfigValues, 
 				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX);
 
 		public static final ConfigOptionDetailsSensor configOptionIntExpBrdPowerBoolean = new ConfigOptionDetailsSensor(
+				Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN,
+				null,
 				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX);
 		
 		
@@ -2073,6 +2145,13 @@ public class Configuration {
 			}
 		}
 	}
+
+	public static final class ShimmerDeviceCommon {
+
+		public static final String[] ListOfOnOff = {"On","Off"};
+		public static final Integer[] ListOfOnOffConfigValues = {0x01,0x00};
+	}
+	
 	
 }
 

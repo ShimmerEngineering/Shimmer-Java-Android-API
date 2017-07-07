@@ -13,10 +13,10 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ConfigByteLayout;
-import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.shimmerGq.ConfigByteLayoutShimmerGq802154;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -944,14 +944,17 @@ public class SensorEXG extends AbstractSensor{
 		super.updateSensorGroupingMap();
 	}
 
- 
 	public static final ConfigOptionDetailsSensor configOptionExgGain = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_GAIN,
+			null,
 			ListOfExGGain, 
 			ListOfExGGainConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
 
 	public static final ConfigOptionDetailsSensor configOptionExgResolution = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_RESOLUTION,
+			null,
 			ListOfExGResolutions, 
 			ListOfExGResolutionsConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
@@ -975,6 +978,8 @@ public class SensorEXG extends AbstractSensor{
 //	}
 
 	public static final ConfigOptionDetailsSensor configOptionExgRefElectrode = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+			null,
 			ListOfECGReferenceElectrode, 
 			ListOfECGReferenceElectrodeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
@@ -987,40 +992,54 @@ public class SensorEXG extends AbstractSensor{
 					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.UNIPOLAR, ListOfUnipolarReferenceElectrode, ListOfUnipolarReferenceElectrodeConfigValues)));
 
 	public static final ConfigOptionDetailsSensor configOptionExgBytes = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_BYTES,
+			null,
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.JPANEL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
 
 	public static final ConfigOptionDetailsSensor configOptionExgRate = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_RATE,
+			null,
 			ListOfExGRate, 
 			ListOfExGRateConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
 
 	public static final ConfigOptionDetailsSensor configOptionExgLeadOffDetection = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
+			null,
 			ListOfExGLeadOffDetection, 
 			ListOfExGLeadOffDetectionConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
 
 	public static final ConfigOptionDetailsSensor configOptionExgLeadOffCurrent = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
+			null,
 			ListOfExGLeadOffCurrent, 
 			ListOfExGLeadOffCurrentConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
 
 	public static final ConfigOptionDetailsSensor configOptionExgLeadOffComparator = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
+			null,
 			ListOfExGLeadOffComparator, 
 			ListOfExGLeadOffComparatorConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
 
 	public static final ConfigOptionDetailsSensor configOptionExgRespirationDetectFreq = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
+			null,
 			ListOfExGRespirationDetectFreq, 
 			ListOfExGRespirationDetectFreqConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration);
 
 	public static final ConfigOptionDetailsSensor configOptionExgRespirationDetectPhase = new ConfigOptionDetailsSensor(
+			SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE,
+			null,
 			ListOfExGRespirationDetectPhase32khz, 
 			ListOfExGRespirationDetectPhase32khzConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
@@ -1034,16 +1053,16 @@ public class SensorEXG extends AbstractSensor{
 
 	@Override
 	public void generateConfigOptionsMap() {
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_GAIN, configOptionExgGain);
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_RESOLUTION, configOptionExgResolution);
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_REFERENCE_ELECTRODE, configOptionExgRefElectrode);
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_BYTES, configOptionExgBytes);
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_RATE, configOptionExgRate);
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_LEAD_OFF_DETECTION, configOptionExgLeadOffDetection);
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_LEAD_OFF_CURRENT, configOptionExgLeadOffCurrent);
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR, configOptionExgLeadOffComparator);
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ, configOptionExgRespirationDetectFreq);
-		mConfigOptionsMap.put(GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE, configOptionExgRespirationDetectPhase);
+		addConfigOption(configOptionExgGain);
+		addConfigOption(configOptionExgResolution);
+		addConfigOption(configOptionExgRefElectrode);
+		addConfigOption(configOptionExgBytes);
+		addConfigOption(configOptionExgRate);
+		addConfigOption(configOptionExgLeadOffDetection);
+		addConfigOption(configOptionExgLeadOffCurrent);
+		addConfigOption(configOptionExgLeadOffComparator);
+		addConfigOption(configOptionExgRespirationDetectFreq);
+		addConfigOption(configOptionExgRespirationDetectPhase);
 	}
 
 	@Override

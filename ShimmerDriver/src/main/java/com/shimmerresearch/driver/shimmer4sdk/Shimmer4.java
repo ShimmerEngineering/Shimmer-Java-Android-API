@@ -23,12 +23,12 @@ import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ConfigByteLayout;
-import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -953,8 +953,8 @@ public class Shimmer4 extends ShimmerDevice {
 
 	//TODO copied from ShimmerPC
 	@Override
-	public void setBluetoothRadioState(BT_STATE state){
-		super.setBluetoothRadioState(state);
+	public boolean setBluetoothRadioState(BT_STATE state){
+		boolean changed = super.setBluetoothRadioState(state);
 
 //		if (mBluetoothRadioState.equals(BT_STATE.CONNECTED)){
 //			setIsConnected(true);
@@ -991,6 +991,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacIdFromUart(), getComPort());
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		return changed;
 	}
 	
 
@@ -1209,7 +1210,7 @@ public class Shimmer4 extends ShimmerDevice {
 	public void generateConfigOptionsMap() {
 		super.generateConfigOptionsMap();
 		
-		mConfigOptionsMap.putAll(Configuration.Shimmer4.mConfigOptionsMapRef);
+		mConfigOptionsMapSensors.putAll(Configuration.Shimmer4.mConfigOptionsMapRef);
 	}
 	
 	@Override
@@ -1262,11 +1263,12 @@ public class Shimmer4 extends ShimmerDevice {
 
 	//TODO TEMP here to sync booleans in ShimmerDevice with mCommsProtocolRadio
 	@Override
-	public void setIsDocked(boolean state) {
-		super.setIsDocked(state);
+	public boolean setIsDocked(boolean state) {
+		boolean changed = super.setIsDocked(state);
 		if(mCommsProtocolRadio!=null && mCommsProtocolRadio.mRadioProtocol!=null && mCommsProtocolRadio.mRadioProtocol instanceof LiteProtocol){
 			((LiteProtocol)(mCommsProtocolRadio.mRadioProtocol)).mIsDocked = state;
 		}
+		return changed;
 	}
 
 	@Override
