@@ -296,7 +296,7 @@ public class FftCalculateDetails{
 		double[] frequency = psdFrequenciesAndAmplitudes[0];
 		double[] amplitude = psdFrequenciesAndAmplitudes[1];
 		
-		double maxAmplitude = 0.0;
+		double maxAmplitude = Double.NEGATIVE_INFINITY;
 		int indexOfMaxAmplitude = 0;
 		
 		for(int index=0; index<amplitude.length; index++){
