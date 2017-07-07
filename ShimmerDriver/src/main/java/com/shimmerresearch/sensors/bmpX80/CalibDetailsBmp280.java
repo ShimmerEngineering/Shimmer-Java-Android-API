@@ -122,11 +122,6 @@ public class CalibDetailsBmp280 extends CalibDetailsBmpX80 {
 		double adc_T = UT;
 		double adc_P = UP;
 		
-//		double x1  = (((UT >> Math.pow(2, 3)) - (dig_T1 << 1)) * dig_T2) >> 11;
-//		double x2 = (((((UT>>4) - (dig_T1)) * ((UT>>4) - (dig_T1))) >> 12) * (dig_T3)) >> 14;
-//		double t_fine = x1 + x2;
-//		double T = (t_fine * 5 + 128) >> 8;
-		
 		// Returns temperature in DegC, double precision. Output value of “51.23” equals 51.23 DegC.
 		// t_fine carries fine temperature as global value
 		double var1 = ((adc_T)/16384.0 - dig_T1/1024.0) * dig_T2;

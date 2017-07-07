@@ -5,9 +5,16 @@ import javax.swing.JFrame;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.exceptions.ShimmerException;
+import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
+
+import info.monitorenter.gui.chart.Chart2D;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JMenuBar;
@@ -22,13 +29,18 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenu;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.Canvas;
 
 public class SensorMapsExample extends BasicProcessWithCallBack {
 	
 	private JFrame frame;
 	private JTextField textField;
 	JTextPane textPaneStatus;
-	static ShimmerPC shimmer = new ShimmerPC("ShimmerDevice");
+	static ShimmerPC shimmer = new ShimmerPC("ShimmerDevice"); 
+	static ShimmerDevice shimmerDevice;
+	static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
+	BasicPlotManagerPC plotManager = new BasicPlotManagerPC();
+	String btComport;
 	
 	/**
 	 * Initialize the contents of the frame
@@ -36,7 +48,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	 */
 	public void initialize() {
 		frame = new JFrame("Shimmer SensorMaps Example");
-		frame.setBounds(100, 100, 560, 487);
+		frame.setBounds(100, 100, 662, 591);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -54,28 +66,27 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				shimmer.connect(textField.getText(),"");
+				btComport = textField.getText();
+				btManager.connectShimmerThroughCommPort(btComport);
+				//textPaneStatus.setText("connecting...");
+				//shimmer.connect(textField.getText(),"");
 				
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(161, 90, 154, 31);
+		btnConnect.setBounds(161, 90, 199, 31);
 		frame.getContentPane().add(btnConnect);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				try {
-					shimmer.disconnect();
-				} catch(ShimmerException e1) {
-					e1.printStackTrace();
-				}
+				btManager.disconnectShimmer(shimmer);
 				
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(332, 90, 154, 31);
+		btnDisconnect.setBounds(401, 90, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
@@ -87,7 +98,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(textPaneStatus);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 536, 23);
+		menuBar.setBounds(0, 0, 638, 23);
 		frame.getContentPane().add(menuBar);
 		
 		JMenu mnTools = new JMenu("Tools");
@@ -99,14 +110,18 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 				//Ensure the Shimmer is not streaming or SD logging before configuring it
 				if(shimmer.isConnected()) {
-					if(!shimmer.isStreaming() || !shimmer.isSDLogging()) {
-						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer);
+					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
+						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer,btManager);
 						sensorsDialog.initialize();
-						sensorsDialog.main(null);
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
+				} else {
+					JOptionPane.showMessageDialog(frame, "No device connected!", "Info", JOptionPane.WARNING_MESSAGE);
 				}
+				
+//				EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmerDevice);
+//				sensorsDialog.initialize();
 			}
 		});
 		mnTools.add(mntmSelectSensors);
@@ -115,11 +130,66 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mntmDeviceConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				
+				if(shimmer.isConnected()) {
+					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
+						SensorConfigDialog configDialog = new SensorConfigDialog();
+						configDialog.initialize(shimmer,btManager);
+					} else {
+						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
+					}
+				} else {
+					JOptionPane.showMessageDialog(frame, "No device connected!", "Info", JOptionPane.WARNING_MESSAGE);
+				}
 				
 			}
 		});
 		mnTools.add(mntmDeviceConfiguration);
+		
+		
+		JPanel plotPanel = new JPanel();
+		plotPanel.setBounds(10, 236, 611, 272);
+		frame.getContentPane().add(plotPanel);
+		plotPanel.setLayout(null);
+		
+		final Chart2D mChart = new Chart2D();
+		mChart.setLocation(12, 13);
+		mChart.setSize(587, 246);
+		plotPanel.add(mChart);
+		plotManager.addChart(mChart);
+		
+		JMenuItem mntmSignalsToPlot = new JMenuItem("Signals to plot");
+		mntmSignalsToPlot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SignalsToPlotDialog signalsToPlotDialog = new SignalsToPlotDialog();
+				signalsToPlotDialog.initialize(shimmer, plotManager, mChart);
+			}
+		});
+		mnTools.add(mntmSignalsToPlot);
+		
+		JButton btnStartStreaming = new JButton("START STREAMING");
+		btnStartStreaming.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				shimmer.startStreaming();
+				
+			}
+		});
+		btnStartStreaming.setBounds(161, 181, 199, 31);
+		frame.getContentPane().add(btnStartStreaming);
+		
+		JButton btnStopStreaming = new JButton("STOP STREAMING");
+		btnStopStreaming.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				shimmer.stopStreaming();
+				
+			}
+		});
+		btnStopStreaming.setBounds(401, 181, 187, 31);
+		frame.getContentPane().add(btnStopStreaming);
+		
+		plotManager.setTitle("Plot");
+		
 		
 		//TODO: Test
 //		JCheckBox[] cBoxTest = new JCheckBox[3];
@@ -139,7 +209,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		SensorMapsExample s = new SensorMapsExample();
 		s.initialize();
 		s.frame.setVisible(true);
-		s.setWaitForData(shimmer);
+		s.setWaitForData(btManager.callBackObject);		
+		//s.setWaitForData(shimmer);
 	}
 	
 	@Override
@@ -158,6 +229,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				textPaneStatus.setText("connecting...");
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				textPaneStatus.setText("connected");
+				shimmer = (ShimmerPC) btManager.getShimmerDeviceBtConnected(btComport);
+//				shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
+				//shimmer.startStreaming();
 			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
 //					|| callbackObject.mState == BT_STATE.NONE
 					|| callbackObject.mState == BT_STATE.CONNECTION_LOST){
@@ -176,6 +250,14 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			} else {}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
 			System.out.println("Shimmer MSG_IDENTIFIER_DATA_PACKET");
+			ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
+			
+			try {
+				plotManager.filterDataAndPlot(objc);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL) {
 			
 		}
@@ -185,3 +267,4 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		
 	}
 }
+

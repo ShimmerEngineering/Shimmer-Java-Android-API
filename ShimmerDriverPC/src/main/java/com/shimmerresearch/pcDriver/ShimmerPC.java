@@ -71,12 +71,12 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.driver.CallbackObject;
-import com.shimmerresearch.driver.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 
@@ -603,8 +603,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	public void setBluetoothRadioState(BT_STATE state) {
-		super.setBluetoothRadioState(state);
+	public boolean setBluetoothRadioState(BT_STATE state) {
+		boolean changed = super.setBluetoothRadioState(state);
 
 		if(mBluetoothRadioState==BT_STATE.CONNECTED){
 			mIsInitialised = true;
@@ -624,7 +624,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		consolePrintLn("State change: " + mBluetoothRadioState.toString());
 
 		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
-		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		if (changed){
+			sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		}
+		return changed;
 	}
 	
 	@Override

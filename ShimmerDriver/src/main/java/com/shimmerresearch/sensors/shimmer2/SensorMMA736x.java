@@ -34,7 +34,6 @@ public class SensorMMA736x extends AbstractSensor {
 
 	private int mAccelRange = 0;
 	
-	//--------- Sensor specific variables start --------------	
 	
 	//Shimmer2/2r Calibration - Default Values
 	protected static final double[][] AlignmentMatrixAccelShimmer2 =  {{-1,0,0},{0,-1,0},{0,0,1}}; 			
@@ -73,6 +72,16 @@ public class SensorMMA736x extends AbstractSensor {
 	
 	public CalibDetailsKinematic mCurrentCalibDetailsAccel = calibDetailsShimmer2r2g;
 
+	public class GuiLabelConfig{
+		public static final String ACCEL_LOW_POWER_MODE = "Accel Low Power Mode";
+		public static final String ACCEL_RANGE = "Accel Range";
+	}
+
+	public static final class DatabaseConfigHandle{
+		public static final String ACCEL_LOW_POWER_MODE = "MMA736x_Low_Power_Mode";
+		public static final String ACCEL_RANGE = "MMA736x_Range";
+	}
+	
 	//--------- Sensor specific variables end --------------	
 
 	//--------- Configuration options start --------------
@@ -83,7 +92,28 @@ public class SensorMMA736x extends AbstractSensor {
 	public static final Integer[] ListofMMA7360AccelRangeConfigValues={0,1};  
 
 	public static final ConfigOptionDetailsSensor configOptionAccelLpm = new ConfigOptionDetailsSensor(
-			 ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX);
+			SensorMMA736x.GuiLabelConfig.ACCEL_LOW_POWER_MODE,
+			SensorMMA736x.DatabaseConfigHandle.ACCEL_LOW_POWER_MODE,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX);
+	
+//	//TODO
+//	public static final ConfigOptionDetailsSensor configOptionAccelRange7360 = new ConfigOptionDetailsSensor(
+//			SensorMMA736x.GuiLabelConfig.ACCEL_RANGE,
+//			SensorMMA736x.DatabaseConfigHandle.ACCEL_RANGE,
+//			ListofMMA7360AccelRange, 
+//			ListofMMA7360AccelRangeConfigValues, 
+//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer2);
+//
+//	//TODO
+//	public static final ConfigOptionDetailsSensor configOptionAccelRange7361 = new ConfigOptionDetailsSensor(
+//			SensorMMA736x.GuiLabelConfig.ACCEL_RANGE,
+//			SensorMMA736x.DatabaseConfigHandle.ACCEL_RANGE,
+//			ListofMMA7361AccelRange, 
+//			ListofMMA7361AccelRangeConfigValues, 
+//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer2r);
+
 	//--------- Configuration options end --------------
 
 	
@@ -106,8 +136,7 @@ public class SensorMMA736x extends AbstractSensor {
 
 	@Override
 	public void generateConfigOptionsMap() {
-		// TODO Auto-generated method stub
-		
+		addConfigOption(configOptionAccelLpm);
 	}
 
 	@Override

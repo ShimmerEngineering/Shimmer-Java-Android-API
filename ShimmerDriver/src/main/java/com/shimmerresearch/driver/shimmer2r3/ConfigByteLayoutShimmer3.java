@@ -1,8 +1,9 @@
-package com.shimmerresearch.driver;
+package com.shimmerresearch.driver.shimmer2r3;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
+import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;

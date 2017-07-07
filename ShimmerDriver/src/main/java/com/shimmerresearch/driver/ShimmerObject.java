@@ -36,6 +36,7 @@ import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
+import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.shimmerGq.ConfigByteLayoutShimmerGq802154;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
@@ -5466,7 +5467,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 
 				mSensorGroupingMap.putAll(Configuration.ShimmerGqBle.mSensorGroupingMapRef);
-				mConfigOptionsMap.putAll(Configuration.ShimmerGqBle.mConfigOptionsMapRef);
+				mConfigOptionsMapSensors.putAll(Configuration.ShimmerGqBle.mConfigOptionsMapRef);
 				
 				updateSensorMapChannelsFromChannelMap(mSensorMap);
 			}
@@ -5547,8 +5548,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//TODO 2016-05-18 feed below into sensor map classes
 	@Override
 	public void checkConfigOptionValues(String stringKey) {
-		if(mConfigOptionsMap!=null){
-			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
+		if(mConfigOptionsMapSensors!=null){
+			ConfigOptionDetails configOptions = mConfigOptionsMapSensors.get(stringKey);
 			if(configOptions!=null){
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					int nonStandardIndex = -1;
@@ -6234,6 +6235,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public String getMacId() {
+		if(mMacIdFromUart!=null){
 		if(!mMacIdFromUart.isEmpty()){
 			return mMacIdFromUart; 
 		}
@@ -6250,6 +6252,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		}
+		} else{
+			return mMyBluetoothAddress; 
+		}
+		
 	}
 	
 // YYY - Implemented in SensorBattVoltage
@@ -8180,8 +8186,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private void checkWhichExgRespPhaseValuesToUse(){
 		String stringKey = SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE;
-		if(mConfigOptionsMap!=null){
-			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
+		if(mConfigOptionsMapSensors!=null){
+			ConfigOptionDetails configOptions = mConfigOptionsMapSensors.get(stringKey);
 			if(configOptions!=null){
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					int nonStandardIndex = -1;
@@ -8209,8 +8215,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private void checkWhichExgRefElectrodeValuesToUse(){
 		String stringKey = SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE;
-		if(mConfigOptionsMap!=null){
-			ConfigOptionDetails configOptions = mConfigOptionsMap.get(stringKey);
+		if(mConfigOptionsMapSensors!=null){
+			ConfigOptionDetails configOptions = mConfigOptionsMapSensors.get(stringKey);
 			if(configOptions!=null){
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					int nonStandardIndex = -1;
@@ -12226,9 +12232,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
 				(expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=3)
-				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=2)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=3)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev>=2)
 				|| (expBrdId==HW_ID_SR_CODES.SHIMMER3 && expBrdRev>=6)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE && expBrdRev>=3)//??????
+//				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI && expBrdRev>=3) //??????
 				)){
 			return true;
 		}

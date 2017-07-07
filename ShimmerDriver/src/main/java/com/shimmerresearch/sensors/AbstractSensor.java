@@ -25,6 +25,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.sensors.SensorGSR.GuiLabelConfig;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC.DatabaseConfigHandle;
 
 public abstract class AbstractSensor implements Serializable{
@@ -756,6 +757,10 @@ public abstract class AbstractSensor implements Serializable{
 			return (CalibDetailsKinematic) calibPerSensor;
 		}
 		return null;
+	}
+	
+	public void addConfigOption(ConfigOptionDetailsSensor configOptionDetails) {
+		mConfigOptionsMap.put(configOptionDetails.mGuiHandle, configOptionDetails); 
 	}
 	
 
