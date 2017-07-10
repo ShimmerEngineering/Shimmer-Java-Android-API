@@ -53,12 +53,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().setLayout(null);
 		
 		JLabel lblSetComPort = new JLabel("Set COM Port");
-		lblSetComPort.setBounds(0, 60, 119, 23);
+		lblSetComPort.setBounds(10, 60, 119, 23);
 		frame.getContentPane().add(lblSetComPort);
 		
 		textField = new JTextField();
 		textField.setToolTipText("for example COM1, COM2, etc");
-		textField.setBounds(0, 91, 144, 29);
+		textField.setBounds(10, 91, 144, 29);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
@@ -74,7 +74,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(161, 90, 199, 31);
+		btnConnect.setBounds(185, 90, 199, 31);
 		frame.getContentPane().add(btnConnect);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
@@ -86,15 +86,15 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(401, 90, 187, 31);
+		btnDisconnect.setBounds(415, 90, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
-		lblShimmerStatus.setBounds(0, 139, 144, 23);
+		lblShimmerStatus.setBounds(10, 139, 144, 23);
 		frame.getContentPane().add(lblShimmerStatus);
 		
 		textPaneStatus = new JTextPane();
-		textPaneStatus.setBounds(0, 181, 144, 36);
+		textPaneStatus.setBounds(10, 181, 144, 36);
 		frame.getContentPane().add(textPaneStatus);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -174,7 +174,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 			}
 		});
-		btnStartStreaming.setBounds(161, 181, 199, 31);
+		btnStartStreaming.setBounds(185, 181, 199, 31);
 		frame.getContentPane().add(btnStartStreaming);
 		
 		JButton btnStopStreaming = new JButton("STOP STREAMING");
@@ -185,7 +185,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 			}
 		});
-		btnStopStreaming.setBounds(401, 181, 187, 31);
+		btnStopStreaming.setBounds(415, 181, 187, 31);
 		frame.getContentPane().add(btnStopStreaming);
 		
 		plotManager.setTitle("Plot");

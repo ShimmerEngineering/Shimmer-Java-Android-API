@@ -8,6 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 
 import java.awt.BorderLayout;
+import java.awt.Checkbox;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -18,6 +21,7 @@ import java.util.Map;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneLayout;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
@@ -46,25 +50,29 @@ public class SensorConfigDialog {
 	public void initialize(ShimmerPC shimmerDevice, BasicShimmerBluetoothManagerPc bluetoothManager) {
 		JDialog dialog = new JDialog();
 		dialog.setTitle("Sensors Configuration");
-		dialog.setSize(300, 500);
 		dialog.setModal(true);
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		
+				
 		JButton btnSav = new JButton("Save");
 		btnSav.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		 		//TODO: Write the config from clone to shimmer here
 		 		AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
 		 		bluetoothManager.configureShimmer(cloneDevice);
-		 	
+		 		dialog.dispose();
 			}
 		});
 		btnSav.setToolTipText("Writes the config to the Shimmer");
 		dialog.getContentPane().add(btnSav, BorderLayout.SOUTH);
 		
 		JPanel panel = new JPanel();
-		 panel.setLayout((LayoutManager) new BoxLayout(panel, BoxLayout.Y_AXIS));
-		dialog.getContentPane().add(panel, BorderLayout.CENTER);
+		panel.setLayout((LayoutManager) new BoxLayout(panel, BoxLayout.Y_AXIS));
+		//dialog.getContentPane().add(panel, BorderLayout.CENTER);
+		
+		//JScrollPane scrollPane = new JScrollPane();
+		//scrollPane.setLayout((LayoutManager) new ScrollPaneLayout());
+		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneLayout.VERTICAL_SCROLLBAR_AS_NEEDED);
+		//dialog.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
 //		Box verticalBox = Box.createVerticalBox();
 //		panel.add(verticalBox);
@@ -81,13 +89,15 @@ public class SensorConfigDialog {
 		}
 		
 		//Box[] box = Box.createVerticalBox();
-		
+		int dialogHeight = 0;
 		
 		for(String key : listOfKeys) {
 			ConfigOptionDetailsSensor cods = configOptionsMap.get(key);
+			
+			if(cods != null) {
 			String[] cs = cods.getGuiValues();
 			
-			System.out.println("For key: " + key + " configValue is: " + cloneDevice.getConfigValueUsingConfigLabel(key));
+			//System.out.println("For key: " + key + " configValue is: " + cloneDevice.getConfigValueUsingConfigLabel(key));
 			
 			Box box = Box.createVerticalBox();
 			JLabel label = new JLabel();
@@ -99,7 +109,6 @@ public class SensorConfigDialog {
 				JCheckBox[] checkBox = new JCheckBox[numOfCheckboxes];
 				if(cods.mGuiComponentType == ConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX) {
 					
-					//int currentConfigIndex = (int) cloneDevice.getConfigValueUsingConfigLabel(key);
 					String currentConfigLabel = getConfigValueLabelFromConfigLabel(key);
 					
 					for(int i=0; i<numOfCheckboxes; i++) {
@@ -119,7 +128,7 @@ public class SensorConfigDialog {
 									cloneDevice.setConfigValueUsingConfigLabel(key, cods.mConfigValues[a]);
 									clearOtherCheckboxes(checkBox, a);
 								} else {
-									//The current config setting has been selected - maintain the state of the checkbox as true
+									//The current config setting has been selected again: maintain the state of the checkbox as true
 									checkBox[a].setSelected(true);
 								}
 								
@@ -130,25 +139,25 @@ public class SensorConfigDialog {
 						
 					}
 				}
-			}
 				
-//				if(cods.mGuiComponentType == ConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX) {
-//					if(cs != null) {
-//						for(int i=0; i<numOfCheckboxes; i++) {
-//							checkBox[i] = new JCheckBox(cs[i], false);
-//							box.add(checkBox[i]);
-//						}					
-//					}
-//				}				
-//				else if(cods.mGuiComponentType == ConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD) {
-				if(cods.mGuiComponentType == ConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD) {
-					JPanel textPanel = new JPanel();
-					textPanel.setLayout((LayoutManager) new BoxLayout(textPanel, BoxLayout.X_AXIS));
-					textPanel.setSize(50, 15);
+				dialogHeight = dialogHeight + (checkBox.length*20) + 20;
+			}
+			
+			if(cods.mGuiComponentType == ConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD) {
+//					JPanel textPanel = new JPanel();
+//					textPanel.setLayout((LayoutManager) new BoxLayout(textPanel, BoxLayout.X_AXIS));
+//					textPanel.setMaximumSize(new Dimension(200, 20));
+				
+				Box textFieldBox = Box.createVerticalBox();
+				
+				
 					
 					JTextField textField = new JTextField();
 					textField.setToolTipText("Values are in Hz");
 					textField.setText((String) cloneDevice.getConfigValueUsingConfigLabel(key));
+					textField.setMaximumSize(new Dimension(150, 20));
+					
+					textFieldBox.add(textField);
 					
 					JButton saveTextButton = new JButton("set");
 					saveTextButton.addActionListener(new ActionListener() {
@@ -165,22 +174,32 @@ public class SensorConfigDialog {
 							}
 						}
 					});
-
-					textPanel.add(textField);
-					textPanel.add(saveTextButton);
 					
-					box.add(textPanel);
+					textFieldBox.add(saveTextButton);
+
+//					textPanel.add(textField);
+//					textPanel.add(saveTextButton);
+					
+					//textFieldBox.setMaximumSize(new Dimension(200, 20));
+					box.add(textFieldBox);
 					box.setSize(10, 15);
+					dialogHeight = dialogHeight + 50;
 				}
-
+			
 			panel.add(box);
-
+			//scrollPane.add(box);
+			
+			}
 		}
 		
+		JScrollPane scroller = new JScrollPane(panel);
+		scroller.setVerticalScrollBarPolicy(ScrollPaneLayout.VERTICAL_SCROLLBAR_ALWAYS);
+		scroller.getVerticalScrollBar().setUnitIncrement(20);
+		dialog.getContentPane().add(scroller, BorderLayout.CENTER);
+		
 		System.out.println("TEXTFIELD: " + ConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD + "\nCOMBOBOX: " + ConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX);
-		
+		dialog.setSize(300, dialogHeight+75);
 		dialog.setVisible(true);
-		
 		
 	}
 	
