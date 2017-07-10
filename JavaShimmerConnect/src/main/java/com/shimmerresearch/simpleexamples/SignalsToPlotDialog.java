@@ -7,7 +7,9 @@ import java.util.List;
 
 import javax.swing.JDialog;
 
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 
@@ -23,6 +25,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneLayout;
 
 public class SignalsToPlotDialog {
 
@@ -37,22 +41,10 @@ public class SignalsToPlotDialog {
 		dialog.setTitle("Select Signals to Plot");
 		dialog.setSize(300, 1000);
 		
-		JButton btnSet = new JButton("Set");
-		btnSet.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				
-			}
-		});
-		dialog.getContentPane().add(btnSet, BorderLayout.SOUTH);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout((LayoutManager) new BoxLayout(panel, BoxLayout.Y_AXIS));
-		dialog.getContentPane().add(panel, BorderLayout.CENTER);
 		
-//		String[] channelSignals = shimmerDevice.getListofEnabledChannelSignals();
-//		List<String[]> signalsFormatsList = shimmerDevice.getListofEnabledChannelSignalsandFormats();
 		List<String[]> listOfEnabledChannelsAndFormats = new ArrayList<String[]>();
 		List<String> sensorList = new ArrayList<String>();
 		
@@ -97,49 +89,50 @@ public class SignalsToPlotDialog {
 			sensorList.add(i, s);	
 		}
 					
-		
-		
-		
 		JCheckBox[] checkBoxList = new JCheckBox[sensorList.size()];
 		
-		int count = 0;
-		
+		int count = 0;	
 		for(String item : sensorList) {
-			
 			checkBoxList[count] = new JCheckBox(item, false);
-
-			final int a = count;
-			
-			
-			checkBoxList[count].addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						if(plotManager.checkIfPropertyExist(mList.get(a))) {
-							plotManager.removeSignal(mList.get(a));
-						}
-						else {
-							try {
-								plotManager.addSignal(mList.get(a), chart);
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-					}
-				});
-			
 			panel.add(checkBoxList[count]);
-			
 			count++;
 		}
 		
-//		for(int i=0; i<checkBox.length; i++) {
-//			
-//			checkBox[i] = new JCheckBox(sensorList[i], false);
-//			
-//			
-//		}
-		
-			
+		JScrollPane scrollPane = new JScrollPane(panel);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneLayout.VERTICAL_SCROLLBAR_AS_NEEDED);
+		dialog.getContentPane().add(scrollPane, BorderLayout.CENTER);
+				
+		JButton btnSet = new JButton("Set");
+		btnSet.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				for(int i = 0; i<checkBoxList.length; i++) {
+					if(checkBoxList[i].isSelected()) {
+						if(!plotManager.checkIfPropertyExist(mList.get(i))) {
+							try {
+								plotManager.addSignal(mList.get(i), chart);
+								String[] xAxis = new String[3];
+								xAxis[0] = shimmerName;
+								xAxis[1] = Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT;
+								xAxis[2] = CHANNEL_TYPE.CAL.toString(); 
+								plotManager.addXAxis(xAxis);
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
+						}
+					}
+					else {
+						if(plotManager.checkIfPropertyExist(mList.get(i))) {
+							plotManager.removeSignal(mList.get(i));
+						}
+					}
+				}
+				
+				dialog.dispose();
+				
+			}
+		});
+		dialog.getContentPane().add(btnSet, BorderLayout.SOUTH);
 		
 		dialog.setVisible(true);
 	}
