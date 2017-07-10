@@ -5540,6 +5540,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	private void createConfigOptionMapShimmer3() {
+		generateConfigOptionsMap();
 		Map<String, ConfigOptionDetailsSensor> configOptionsMapRef = Configuration.Shimmer3.mConfigOptionsMapRef;
 		loadCompatibleConfigOptionGroupEntries(configOptionsMapRef);
 	}
