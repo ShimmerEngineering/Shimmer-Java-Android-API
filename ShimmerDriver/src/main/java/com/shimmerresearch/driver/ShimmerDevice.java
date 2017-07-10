@@ -3432,7 +3432,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		while(iterator.hasNext()){
 			SensorDetails sensorDetails = iterator.next();
 			
-			if(!sensorDetails.mSensorDetailsRef.mIsDummySensor){
+			boolean isEnabled = false;
+			if(commType==null){
+				isEnabled = sensorDetails.isEnabled();
+			}
+			else{
+				isEnabled = sensorDetails.isEnabled(commType);
+			}
+			
+			if(isEnabled && !sensorDetails.mSensorDetailsRef.mIsDummySensor){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
 						continue;
