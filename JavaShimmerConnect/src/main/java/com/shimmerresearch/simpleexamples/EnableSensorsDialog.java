@@ -57,7 +57,6 @@ public class EnableSensorsDialog {
 		 dialog.setModal(true);
 		 dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		 dialog.setTitle("Enable Sensors");
-		 dialog.setSize(600, 500);
 		 //Create a clone device
 		 clone = shimmer.deepClone();
 		 JButton btnWriteConfig = new JButton("Save");
@@ -66,6 +65,7 @@ public class EnableSensorsDialog {
 		 		//TODO: Write the config from clone to shimmer here
 		 		AssembleShimmerConfig.generateSingleShimmerConfig(clone, COMMUNICATION_TYPE.BLUETOOTH);
 		 		bluetoothManager.configureShimmer(clone);
+		 		dialog.dispose();
 		 	}
 		 });
 		 btnWriteConfig.setToolTipText("Write the current sensors configuration to the Shimmer device");
@@ -140,7 +140,11 @@ public class EnableSensorsDialog {
 		 }
 		 
 		
-		 updateCheckboxes(listOfSensors, clone, sensorKeys);		 
+		 updateCheckboxes(listOfSensors, clone, sensorKeys);
+		 
+		 int dialogHeight = 75+(listOfSensors.length*25);
+		 dialog.setSize(300, dialogHeight);
+		 
 		 dialog.setVisible(true);
 
 		 
