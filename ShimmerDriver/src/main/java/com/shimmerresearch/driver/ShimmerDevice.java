@@ -3465,7 +3465,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfChannelsForStoringToDb;
 	}
 
-	public LinkedHashMap<String, ChannelDetails> getListOfGuiChannelsFromDbHandles(List<String> listOfDbChannelHandles) {
+	public LinkedHashMap<String, ChannelDetails> getMapOfChannelsDetailsFromDbHandles(List<String> listOfDbChannelHandles) {
 		LinkedHashMap<String, ChannelDetails> mapOfChannelsFound = new LinkedHashMap<String, ChannelDetails>();
 		LinkedHashMap<String, ChannelDetails> channelDetailsMap = getMapOfAllChannelsForStoringToDb(null, CHANNEL_TYPE.CAL, false);
 		
