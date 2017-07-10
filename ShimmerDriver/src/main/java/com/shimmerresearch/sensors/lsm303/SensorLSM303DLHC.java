@@ -376,7 +376,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 			0x10<<8, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
 			GuiLabelSensors.ACCEL_WR,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(GuiLabelConfig.LSM303_ACCEL_RANGE,GuiLabelConfig.LSM303_ACCEL_RATE),
+			Arrays.asList(GuiLabelConfig.LSM303_ACCEL_RANGE),//GuiLabelConfig.LSM303_ACCEL_RATE),
 			Arrays.asList(ObjectClusterSensorName.ACCEL_WR_X,
 					ObjectClusterSensorName.ACCEL_WR_Y,
 					ObjectClusterSensorName.ACCEL_WR_Z));
@@ -386,7 +386,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 			0x20, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
 			GuiLabelSensors.MAG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(GuiLabelConfig.LSM303_MAG_RANGE,GuiLabelConfig.LSM303_MAG_RATE),
+			Arrays.asList(GuiLabelConfig.LSM303_MAG_RANGE),//GuiLabelConfig.LSM303_MAG_RATE),
 			//MAG channel order is XZY instead of XYZ
 			Arrays.asList(ObjectClusterSensorName.MAG_X,
 					ObjectClusterSensorName.MAG_Z,
