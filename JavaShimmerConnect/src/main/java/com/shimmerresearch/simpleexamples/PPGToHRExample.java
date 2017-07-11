@@ -9,13 +9,16 @@ import com.shimmerresearch.biophysicalprocessing.PPGtoHRAlgorithm;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 
 public class PPGToHRExample extends BasicProcessWithCallBack {
@@ -23,10 +26,10 @@ public class PPGToHRExample extends BasicProcessWithCallBack {
 	ShimmerPC shimmerDevice = new ShimmerPC("ShimmerDevice");
 	static BasicShimmerBluetoothManagerPc bluetoothManager = new BasicShimmerBluetoothManagerPc();
 	private PPGtoHRAlgorithm heartRateCalculation;
-	
+	private boolean mConfigureOnFirstTime=true;
 	//Put your device COM port here:
-	final static String deviceComPort = "COM9";
-	
+	final static String deviceComPort = "COM12";
+	Filter lpf = null, hpf = null;
 	public static void main(String args[]) {
 		PPGToHRExample ppg = new PPGToHRExample();
 		ppg.initialize();
@@ -56,7 +59,27 @@ public class PPGToHRExample extends BasicProcessWithCallBack {
 				shimmerDevice = (ShimmerPC) bluetoothManager.getShimmerDeviceBtConnected(deviceComPort);
 				//checkECGEnabled();	//Check if ECG is enabled first before streaming
 				//5 beats to average
-				heartRateCalculation = new PPGtoHRAlgorithm(shimmerDevice.getSamplingRateShimmer(), 5, 10);
+				if (mConfigureOnFirstTime){
+					shimmerDevice.writeEnabledSensors(Shimmer3.SensorBitmap.SENSOR_INT_A13);
+					shimmerDevice.writeInternalExpPower(1);
+					shimmerDevice.writeDerivedChannels(DerivedSensorsBitMask.PPG_12_13);
+					heartRateCalculation = new PPGtoHRAlgorithm(shimmerDevice.getSamplingRateShimmer(), 5, 10);
+					
+					
+			
+					
+					try{
+						double [] cutoff = {5.0};
+						lpf = new Filter(Filter.LOW_PASS, shimmerDevice.getSamplingRateShimmer(), cutoff);
+						cutoff[0] = 0.5;
+						hpf = new Filter(Filter.HIGH_PASS, shimmerDevice.getSamplingRateShimmer(), cutoff);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+					mConfigureOnFirstTime = false;
+				}
 				//shimmerDevice.startStreaming();
 			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
 //					|| callbackObject.mState == BT_STATE.NONE
@@ -78,24 +101,13 @@ public class PPGToHRExample extends BasicProcessWithCallBack {
 			
 			double dataArrayPPG = 0;
 			double heartRate = Double.NaN;
-			Filter lpf = null, hpf = null;
-			
-			try{
-				double [] cutoff = {5.0};
-				lpf = new Filter(Filter.LOW_PASS, shimmerDevice.getSamplingRateShimmer(), cutoff);
-				cutoff[0] = 0.5;
-				hpf = new Filter(Filter.HIGH_PASS, shimmerDevice.getSamplingRateShimmer(), cutoff);
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 
 			
 			int INVALID_RESULT = -1;
 
 			ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
 			
-			Collection<FormatCluster> adcFormats = objc.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
+			Collection<FormatCluster> adcFormats = objc.getCollectionOfFormatClusters(SensorPPG.ObjectClusterSensorName.PPG_A13);
 			FormatCluster format = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats, CHANNEL_TYPE.CAL.toString())); // retrieve the calibrated data
 			
 			if(format != null) {
