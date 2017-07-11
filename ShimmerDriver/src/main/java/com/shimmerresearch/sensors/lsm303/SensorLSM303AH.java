@@ -36,7 +36,7 @@ public class SensorLSM303AH extends SensorLSM303 {
 
 	// ----------   Wide-range accel start ---------------
 
-	public static final double[][] DefaultAlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}};	
+	public static final double[][] DefaultAlignmentMatrixWideRangeAccelShimmer3 = {{0,-1,0},{1,0,0},{0,0,-1}};	
 	public static final double[][] DefaultOffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};	
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};
@@ -71,9 +71,12 @@ public class SensorLSM303AH extends SensorLSM303 {
 	// ----------   Wide-range accel end ---------------
 
 	// ----------   Mag start ---------------
-	public static final double[][] DefaultAlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
+	public static final double[][] DefaultAlignmentMatrixMagShimmer3 = {{0,-1,0},{1,0,0},{0,0,-1}}; 				
 	public static final double[][] DefaultOffsetVectorMagShimmer3 = {{0},{0},{0}};	
+	//  Based on a manufacturer stated, 1.5 mgauss/LSB (or 667 LSB/mgauss) over a full range of +-49.152 gauss 
+	// [16-bit ADC -> 0-65536 for 0-98.304gauss -> 65536 LSBs/98304 mgauss = 0.6666 LSB/mgauss]
 	public static final double[][] DefaultSensitivityMatrixMag50GaShimmer3 = {{667,0,0},{0,667,0},{0,0,667}};
+	//TODO figure out if the output units are correct give that the above sensitivity calculation is off by 1000 
 
 	private CalibDetailsKinematic calibDetailsMag50Ga = new CalibDetailsKinematic(
 			ListofLSM303AHMagRangeConfigValues[0],
@@ -241,8 +244,8 @@ public class SensorLSM303AH extends SensorLSM303 {
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_ACCEL, SensorLSM303AH.sensorLSM303AHAccel);  
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_MAG, SensorLSM303AH.sensorLSM303AHMag);	
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, SensorLSM303AH.sensorLSM303AHAccel);  
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, SensorLSM303AH.sensorLSM303AHMag);	
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -317,12 +320,12 @@ public class SensorLSM303AH extends SensorLSM303 {
     
     public static final SensorGroupingDetails sensorGroupLsmAccel = new SensorGroupingDetails(
 			GuiLabelSensorTiles.WIDE_RANGE_ACCEL,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_ACCEL),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
     
     public static final SensorGroupingDetails sensorGroupLsmMag = new SensorGroupingDetails(
 			GuiLabelSensorTiles.MAG,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_MAG),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
 
     
@@ -434,14 +437,14 @@ public class SensorLSM303AH extends SensorLSM303 {
 		
 		//Digital Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_ACCEL, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL, 
 				getAccelRange(), 
 				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
 				SensorLSM303AH.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
 		
 		//Magnetometer Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_MAG, 
+				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, 
 				getMagRange(), 
 				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
 				SensorLSM303AH.DatabaseConfigHandle.MAG_CALIB_TIME);
@@ -452,8 +455,8 @@ public class SensorLSM303AH extends SensorLSM303 {
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override
 	public void initialise() {
-		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_ACCEL;
-		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_MAG;
+		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL;
+		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG;
 		super.initialise();
 		
 		updateCurrentAccelWrCalibInUse();
@@ -547,10 +550,6 @@ public class SensorLSM303AH extends SensorLSM303 {
 	
 	@Override
 	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq, boolean isLowPowerMode) {
-		return SensorLSM303AH.getMagRateFromFreq(isEnabled, freq, isLowPowerMode);
-	}
-
-	public static int getMagRateFromFreq(boolean isEnabled, double freq, boolean isLowPowerMode) {
 		int magRate = 0; // 10Hz
 
 		if(isEnabled){

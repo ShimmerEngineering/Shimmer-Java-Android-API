@@ -74,7 +74,12 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	}
 
 	//--------- Configuration options start --------------
-	public static final String[] ListofLSM303AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};  
+//	public static final String[] ListofLSM303AccelRange={"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};  
+	public static final String[] ListofLSM303AccelRange={
+			UtilShimmer.UNICODE_PLUS_MINUS + " 2g",
+			UtilShimmer.UNICODE_PLUS_MINUS + " 4g",
+			UtilShimmer.UNICODE_PLUS_MINUS + " 8g",
+			UtilShimmer.UNICODE_PLUS_MINUS + " 16g"};  
 	public static final Integer[] ListofLSM303AccelRangeConfigValues={0,1,2,3};  
 	
 

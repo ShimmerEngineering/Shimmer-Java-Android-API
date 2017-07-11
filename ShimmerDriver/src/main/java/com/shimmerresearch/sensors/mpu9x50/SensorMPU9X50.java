@@ -125,28 +125,28 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		
 	
 	private CalibDetailsKinematic calibDetailsGyro250 = new CalibDetailsKinematic(
-			ListofMPU9150GyroRangeConfigValues[0], 
+			ListofMPU9X50GyroRangeConfigValues[0], 
 			ListofGyroRange[0],
 			AlignmentMatrixGyroShimmer3,
 			SensitivityMatrixGyro250dpsShimmer3,
 			OffsetVectorGyroShimmer3,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro500 = new CalibDetailsKinematic(
-			ListofMPU9150GyroRangeConfigValues[1], 
+			ListofMPU9X50GyroRangeConfigValues[1], 
 			ListofGyroRange[1],
 			AlignmentMatrixGyroShimmer3, 
 			SensitivityMatrixGyro500dpsShimmer3,
 			OffsetVectorGyroShimmer3,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro1000 = new CalibDetailsKinematic(
-			ListofMPU9150GyroRangeConfigValues[2], 
+			ListofMPU9X50GyroRangeConfigValues[2], 
 			ListofGyroRange[2],
 			AlignmentMatrixGyroShimmer3, 
 			SensitivityMatrixGyro1000dpsShimmer3, 
 			OffsetVectorGyroShimmer3,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	private CalibDetailsKinematic calibDetailsGyro2000 = new CalibDetailsKinematic(
-			ListofMPU9150GyroRangeConfigValues[3],
+			ListofMPU9X50GyroRangeConfigValues[3],
 			ListofGyroRange[3],
 			AlignmentMatrixGyroShimmer3, 
 			SensitivityMatrixGyro2000dpsShimmer3, 
@@ -350,14 +350,14 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	//--------- Bluetooth commands end --------------
 	
 	//--------- Configuration options start --------------
+	    
 	public static final String[] ListofGyroRange = {"+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps"};
-	public static final Integer[] ListofMPU9150GyroRangeConfigValues = {0,1,2,3};
+	public static final Integer[] ListofMPU9X50GyroRangeConfigValues = {0,1,2,3};
 	
-	
-	public static final String[] ListofMPU9150AccelRange = {"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
-	public static final Integer[] ListofMPU9150AccelRangeConfigValues = {0,1,2,3};
-	public static final String[] ListofMPU9150MagRate = {"10.0Hz","20.0Hz","40.0Hz","50.0Hz","100.0Hz"};
-	public static final Integer[] ListofMPU9150MagRateConfigValues = {0,1,2,3,4};
+	public static final String[] ListofMPU9X50AccelRange = {"+/- 2g","+/- 4g","+/- 8g","+/- 16g"};
+	public static final Integer[] ListofMPU9X50AccelRangeConfigValues = {0,1,2,3};
+	public static final String[] ListofMPU9X50MagRate = {"10.0Hz","20.0Hz","40.0Hz","50.0Hz","100.0Hz"};
+	public static final Integer[] ListofMPU9X50MagRateConfigValues = {0,1,2,3,4};
 
 	public static final String[] ListofMPU9150MplCalibrationOptions = {"No Cal","Fast Cal","1s no motion","2s no motion","5s no motion","10s no motion","30s no motion","60s no motion"};
 	public static final Integer[] ListofMPU9150MplCalibrationOptionsConfigValues = {0,1,2,3,4,5,6,7};
@@ -1531,7 +1531,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
 	 */
 	public void setMPU9150AccelRange(int i) {
-		if(ArrayUtils.contains(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues, i)){
+		if(ArrayUtils.contains(SensorMPU9X50.ListofMPU9X50GyroRangeConfigValues, i)){
 			if(checkIfAnyMplChannelEnabled()){
 				i=0; // 2g
 			}
@@ -1548,7 +1548,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	}
 	
 	public void setMPU9150GyroRange(int i){
-		if(ArrayUtils.contains(ListofMPU9150GyroRangeConfigValues, i)){
+		if(ArrayUtils.contains(ListofMPU9X50GyroRangeConfigValues, i)){
 //			//Gyro rate can not be set to 250dps when DMP is on
 //			if((checkIfAnyMplChannelEnabled()) && (i==0)){
 //				i=1;

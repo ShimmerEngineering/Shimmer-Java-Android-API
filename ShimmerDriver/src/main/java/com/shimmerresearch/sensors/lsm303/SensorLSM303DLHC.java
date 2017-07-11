@@ -75,11 +75,17 @@ public class SensorLSM303DLHC extends SensorLSM303 {
         mOldCalRangeMap = Collections.unmodifiableMap(aMap);
     }
 
-	public static final double[][] DefaultAlignmentMatrixWideRangeAccelShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}};	
+	public static final double[][] DefaultAlignmentLSM303DLHC = {{-1,0,0},{0,1,0},{0,0,-1}};	
+
+	public static final double[][] DefaultAlignmentMatrixWideRangeAccelShimmer3 = DefaultAlignmentLSM303DLHC;	
 	public static final double[][] DefaultOffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};	
+	// Manufacturer stated: 1 mg/LSB for +-2g -> 16-bit left-aligned data -> [65536/39.24 = 1670]
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};
+	// Manufacturer stated: 2 mg/LSB for +-4g -> 16-bit left-aligned data -> [65536/78.48 = 835.1]
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};
+	// Manufacturer stated: 4 mg/LSB for +-8g -> 16-bit left-aligned data -> [65536/156.96 = 417.53]
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};
+	// Manufacturer stated: 12 mg/LSB for +-16g -> 16-bit left-aligned data -> [65536/313.92 = 208.77]
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};
 
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
@@ -111,14 +117,21 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	// ----------   Wide-range accel end ---------------
 
 	// ----------   Mag start ---------------
-	public static final double[][] DefaultAlignmentMatrixMagShimmer3 = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
+	public static final double[][] DefaultAlignmentMatrixMagShimmer3 = DefaultAlignmentLSM303DLHC; 				
 	public static final double[][] DefaultOffsetVectorMagShimmer3 = {{0},{0},{0}};	
+	// Manufacturer stated: X any Y axis @ 1100 LSB/gauss, Z axis @ 980 LSB/gauss
 	public static final double[][] DefaultSensitivityMatrixMag1p3GaShimmer3 = {{1100,0,0},{0,1100,0},{0,0,980}};
+	// Manufacturer stated: X any Y axis @ 855 LSB/gauss, Z axis @ 760 LSB/gauss
 	public static final double[][] DefaultSensitivityMatrixMag1p9GaShimmer3 = {{855,0,0},{0,855,0},{0,0,760}};
+	// Manufacturer stated: X any Y axis @ 670 LSB/gauss, Z axis @ 600 LSB/gauss
 	public static final double[][] DefaultSensitivityMatrixMag2p5GaShimmer3 = {{670,0,0},{0,670,0},{0,0,600}};
+	// Manufacturer stated: X any Y axis @ 450 LSB/gauss, Z axis @ 400 LSB/gauss
 	public static final double[][] DefaultSensitivityMatrixMag4GaShimmer3 = {{450,0,0},{0,450,0},{0,0,400}};
+	// Manufacturer stated: X any Y axis @ 400 LSB/gauss, Z axis @ 355 LSB/gauss
 	public static final double[][] DefaultSensitivityMatrixMag4p7GaShimmer3 = {{400,0,0},{0,400,0},{0,0,355}};
+	// Manufacturer stated: X any Y axis @ 330 LSB/gauss, Z axis @ 295 LSB/gauss
 	public static final double[][] DefaultSensitivityMatrixMag5p6GaShimmer3 = {{330,0,0},{0,330,0},{0,0,295}};
+	// Manufacturer stated: X any Y axis @ 230 LSB/gauss, Z axis @ 205 LSB/gauss
 	public static final double[][] DefaultSensitivityMatrixMag8p1GaShimmer3 = {{230,0,0},{0,230,0},{0,0,205}};
 
 	private CalibDetailsKinematic calibDetailsMag1p3 = new CalibDetailsKinematic(
@@ -376,7 +389,8 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 			0x10<<8, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
 			GuiLabelSensors.ACCEL_WR,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(GuiLabelConfig.LSM303_ACCEL_RANGE),//GuiLabelConfig.LSM303_ACCEL_RATE),
+			Arrays.asList(GuiLabelConfig.LSM303_ACCEL_RANGE,
+				GuiLabelConfig.LSM303_ACCEL_RATE),
 			Arrays.asList(ObjectClusterSensorName.ACCEL_WR_X,
 					ObjectClusterSensorName.ACCEL_WR_Y,
 					ObjectClusterSensorName.ACCEL_WR_Z));
@@ -386,7 +400,8 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 			0x20, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
 			GuiLabelSensors.MAG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(GuiLabelConfig.LSM303_MAG_RANGE),//GuiLabelConfig.LSM303_MAG_RATE),
+			Arrays.asList(GuiLabelConfig.LSM303_MAG_RANGE,
+					GuiLabelConfig.LSM303_MAG_RATE),
 			//MAG channel order is XZY instead of XYZ
 			Arrays.asList(ObjectClusterSensorName.MAG_X,
 					ObjectClusterSensorName.MAG_Z,

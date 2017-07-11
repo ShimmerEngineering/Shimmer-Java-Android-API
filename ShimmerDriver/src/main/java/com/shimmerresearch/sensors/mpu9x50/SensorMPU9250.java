@@ -263,9 +263,9 @@ public class SensorMPU9250 extends SensorMPU9X50 {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9250_GYRO, SensorMPU9150.sensorMpu9150GyroRef);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9250_ACCEL, SensorMPU9150.sensorMpu9150AccelRef);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9250_MAG,SensorMPU9150.sensorMpu9150MagRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, SensorMPU9150.sensorMpu9150GyroRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL, SensorMPU9150.sensorMpu9150AccelRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG,SensorMPU9150.sensorMpu9150MagRef);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -276,23 +276,23 @@ public class SensorMPU9250 extends SensorMPU9X50 {
 			SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE,
 			SensorMPU9250.DatabaseConfigHandle.GYRO_RANGE,
 			ListofGyroRange, 
-			ListofMPU9150GyroRangeConfigValues, 
+			ListofMPU9X50GyroRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	//MPL Options
 	public static final ConfigOptionDetailsSensor configOptionMpu9250AccelRange = new ConfigOptionDetailsSensor(
 			SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE,
 			SensorMPU9250.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE,
-			ListofMPU9150AccelRange, 
-			ListofMPU9150AccelRangeConfigValues, 
+			ListofMPU9X50AccelRange, 
+			ListofMPU9X50AccelRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	
 	public static final ConfigOptionDetailsSensor configOptionMpu9250MagRate = new ConfigOptionDetailsSensor(
 			SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE,
 			SensorMPU9250.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE,
-			ListofMPU9150MagRate, 
-			ListofMPU9150MagRateConfigValues, 
+			ListofMPU9X50MagRate, 
+			ListofMPU9X50MagRateConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	//General Config
@@ -340,9 +340,9 @@ public class SensorMPU9250 extends SensorMPU9X50 {
 
 	@Override
 	public void initialise() {
-		mSensorMapKeyGyro = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9250_GYRO;
-		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9250_ACCEL;
-		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9250_MAG;
+		mSensorMapKeyGyro = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO;
+		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL;
+		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG;
 
 		super.initialise();
 

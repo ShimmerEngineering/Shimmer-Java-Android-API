@@ -27,6 +27,7 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -36,7 +37,7 @@ import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 
-/** Sensorclass for KionixKXRB52042 - analog/low-noise accelerometer
+/** Parent Sensor Class for the Kionix analog/low-noise accelerometers
  * 
  * @author Ruud Stolk
  * @author Mark Nolan
@@ -47,26 +48,12 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	private static final long serialVersionUID = -5027305280613145453L;
 	
 	//--------- Sensor specific variables start --------------
-	public static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
-	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2047},{2047},{2047}};
-	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{83,0,0},{0,83,0},{0,0,83}};
 
 	public static final int LN_ACCEL_RANGE_VALUE = 0;
-	public static final String LN_ACCEL_RANGE_STRING = "+/- 2g";
+	public static final String LN_ACCEL_RANGE_STRING = UtilShimmer.UNICODE_PLUS_MINUS + " 2g" ;//"+/- 2g";
 	public static final String OldCalRangeLN2g = "accel_ln_2g";
 	
-    public static final Map<String, OldCalDetails> mOldCalRangeMap;
-    static {
-        Map<String, OldCalDetails> aMap = new LinkedHashMap<String, OldCalDetails>();
-        aMap.put("accel_ln_2g", new OldCalDetails("accel_ln_2g", Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_VALUE));
-        mOldCalRangeMap = Collections.unmodifiableMap(aMap);
-    }
-
-	private CalibDetailsKinematic calibDetailsAccelLn2g = new CalibDetailsKinematic(
-			LN_ACCEL_RANGE_VALUE, LN_ACCEL_RANGE_STRING, 
-			AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3);
-	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn = calibDetailsAccelLn2g;
-
+	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn = null;
 
 	public class GuiLabelConfig{
 		public static final String KIONIX_ACCEL_DEFAULT_CALIB = "Low Noise Accel Default Calibration";
@@ -391,18 +378,6 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	
 	//--------- Optional methods to override in Sensor Class start --------
 	
-	@Override
-	public void generateCalibMap() {
-		super.generateCalibMap();
-		
-		TreeMap<Integer, CalibDetails> calibMapAccelLn = new TreeMap<Integer, CalibDetails>();
-		calibMapAccelLn.put(calibDetailsAccelLn2g.mRangeValue, calibDetailsAccelLn2g);
-		
-		setCalibrationMapPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, calibMapAccelLn);
-		
-		updateCurrentAccelLnCalibInUse();
-	}
-	
 	/* (non-Javadoc)
 	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
 	 */
@@ -414,7 +389,12 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 		return false;
 	}
 	
-	
+	@Override
+	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+		updateCurrentAccelLnCalibInUse();
+	}
+
 	//--------- Optional methods to override in Sensor Class end --------
 
 }
