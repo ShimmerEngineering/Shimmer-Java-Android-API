@@ -60,6 +60,7 @@ public class PPGToHRExample extends BasicProcessWithCallBack {
 				//checkECGEnabled();	//Check if ECG is enabled first before streaming
 				//5 beats to average
 				if (mConfigureOnFirstTime){
+					shimmerDevice.writeShimmerAndSensorsSamplingRate(128);
 					shimmerDevice.writeEnabledSensors(Shimmer3.SensorBitmap.SENSOR_INT_A13);
 					shimmerDevice.writeInternalExpPower(1);
 					shimmerDevice.writeDerivedChannels(DerivedSensorsBitMask.PPG_12_13);
