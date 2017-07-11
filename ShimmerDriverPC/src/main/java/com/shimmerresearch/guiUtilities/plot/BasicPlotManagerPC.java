@@ -693,6 +693,15 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 	
+	public void setAllTraceThickness(float thickness) {
+		for(int i=0; i<mListofTraces.size(); i++) {
+			ITrace2D trace = mListofTraces.get(i);
+			BasicStroke stroke = ((BasicStroke)trace.getStroke());
+			BasicStroke newstroke = new BasicStroke(thickness,stroke.getEndCap(),stroke.getLineJoin(),stroke.getMiterLimit(),stroke.getDashArray(),stroke.getDashPhase());
+			trace.setStroke(newstroke);
+		}
+	}
+	
 	public void increaseAllTraceThickness() {
 		for (int index=0;index<mListofTraces.size();index++) {
 			BasicStroke stroke = ((BasicStroke)mListofTraces.get(index).getStroke());
