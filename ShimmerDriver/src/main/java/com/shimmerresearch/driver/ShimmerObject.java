@@ -5540,6 +5540,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	private void createConfigOptionMapShimmer3() {
+		generateConfigOptionsMap();
 		Map<String, ConfigOptionDetailsSensor> configOptionsMapRef = Configuration.Shimmer3.mConfigOptionsMapRef;
 		loadCompatibleConfigOptionGroupEntries(configOptionsMapRef);
 	}
@@ -5736,19 +5737,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (getHardwareVersion() == HW_ID.SHIMMER_3) {
 			//Used for Shimmer GSR hardware
 			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY){
-				if((super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12))||(super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13)))
+				if((super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12))
+						|| (super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13)))
 					return true;
 				else
 					return false;
 			}
 			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY){
-				if((super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12))||(super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13)))
+				if((super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12))
+						|| (super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13)))
 					return true;
 				else
 					return false;
 			}
 			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY){
-				if((super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1))||(super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14)))
+				if((super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1))
+						|| (super.isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14)))
 					return true;
 				else
 					return false;
