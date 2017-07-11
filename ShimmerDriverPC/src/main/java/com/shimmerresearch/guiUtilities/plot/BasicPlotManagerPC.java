@@ -470,6 +470,10 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		return mTitle;
 	}
 	
+	public void setYAxisLabel(String label){
+		setYAxisLabel(label, null);
+	}
+	
 	public void setYAxisLabel(String label, Font font){
 		IAxis<?> y = mChart.getAxisY();
 		AxisTitle axisTitle = new AxisTitle(label);
@@ -478,7 +482,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 		y.setAxisTitle(axisTitle);
 	}
-	
+
+	public void setXAxisLabel(String label){
+		setXAxisLabel(label, null);
+	}
+
 	public void setXAxisLabel(String label, Font font){
 		IAxis<?> x = mChart.getAxisX();
 		AxisTitle axisTitle = new AxisTitle(label);
