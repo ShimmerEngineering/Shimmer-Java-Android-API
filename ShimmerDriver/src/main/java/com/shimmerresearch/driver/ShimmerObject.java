@@ -676,7 +676,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	@Deprecated
 	private CalibDetailsKinematic calibDetailsAccelLn2g = new CalibDetailsKinematic(
 			SensorKionixAccel.LN_ACCEL_RANGE_VALUE, "+/- 2g", 
-			SensorKionixAccel.AlignmentMatrixLowNoiseAccelShimmer3, SensorKionixAccel.SensitivityMatrixLowNoiseAccel2gShimmer3, SensorKionixAccel.OffsetVectorLowNoiseAccelShimmer3);
+			SensorKionixKXRB52042.AlignmentMatrixLowNoiseAccelShimmer3, SensorKionixKXRB52042.SensitivityMatrixLowNoiseAccel2gShimmer3, SensorKionixKXRB52042.OffsetVectorLowNoiseAccelShimmer3);
 	
 	@Deprecated
 	protected TreeMap<Integer, CalibDetails> mCalibMapAccelAnalogShimmer3 = new TreeMap<Integer, CalibDetails>(); 
@@ -976,7 +976,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//Shimmer3 Calibration - Copied from SensorLSM303
 	@Deprecated
 	private CalibDetailsKinematic calibDetailsGyro250 = new CalibDetailsKinematic(
-			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[0], 
+			SensorMPU9X50.ListofMPU9X50GyroRangeConfigValues[0], 
 			SensorMPU9X50.ListofGyroRange[0],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3,
 			SensorMPU9X50.SensitivityMatrixGyro250dpsShimmer3,
@@ -984,7 +984,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	@Deprecated
 	private CalibDetailsKinematic calibDetailsGyro500 = new CalibDetailsKinematic(
-			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[1], 
+			SensorMPU9X50.ListofMPU9X50GyroRangeConfigValues[1], 
 			SensorMPU9X50.ListofGyroRange[1],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3, 
 			SensorMPU9X50.SensitivityMatrixGyro500dpsShimmer3,
@@ -992,7 +992,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	@Deprecated
 	private CalibDetailsKinematic calibDetailsGyro1000 = new CalibDetailsKinematic(
-			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[2], 
+			SensorMPU9X50.ListofMPU9X50GyroRangeConfigValues[2], 
 			SensorMPU9X50.ListofGyroRange[2],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3, 
 			SensorMPU9X50.SensitivityMatrixGyro1000dpsShimmer3, 
@@ -1000,7 +1000,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	@Deprecated
 	private CalibDetailsKinematic calibDetailsGyro2000 = new CalibDetailsKinematic(
-			SensorMPU9X50.ListofMPU9150GyroRangeConfigValues[3],
+			SensorMPU9X50.ListofMPU9X50GyroRangeConfigValues[3],
 			SensorMPU9X50.ListofGyroRange[3],
 			SensorMPU9X50.AlignmentMatrixGyroShimmer3, 
 			SensorMPU9X50.SensitivityMatrixGyro2000dpsShimmer3, 
@@ -4601,13 +4601,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, true);
-				if(isSupportedNewImuSensors()){
-					setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9250_GYRO, true);
-					setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303AH_MAG, true);
-				} else {
+//				if(isSupportedNewImuSensors()){
+//					setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, true);
+//					setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, true);
+//				} else {
 					setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, true);
 					setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG, true);
-				}
+//				}
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, true);
 			}
 
@@ -9558,7 +9558,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(USE_SENSOR_CLASS_GYRO){
 			mSensorMpu9x50.setMPU9150AccelRange(i);
 		} else {
-			if(ArrayUtils.contains(SensorMPU9X50.ListofMPU9150GyroRangeConfigValues, i)){
+			if(ArrayUtils.contains(SensorMPU9X50.ListofMPU9X50GyroRangeConfigValues, i)){
 				if(checkIfAnyMplChannelEnabled()){
 					i=0; // 2g
 				}

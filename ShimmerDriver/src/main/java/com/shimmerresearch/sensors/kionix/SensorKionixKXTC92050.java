@@ -5,11 +5,15 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.calibration.CalibDetails;
+import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
+import com.shimmerresearch.driver.calibration.OldCalDetails;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
@@ -20,7 +24,10 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
-/** This is the newer (post-July 2017) low-noise accelerometer used in the Shimmer3
+/**
+ * This is the newer (post-July 2017) low-noise accelerometer used in the
+ * Shimmer3 (i.e. Kionix KXTC9-2050)
+ * 
  * @author Mark Nolan
  *
  */
@@ -29,6 +36,19 @@ public class SensorKionixKXTC92050 extends SensorKionixAccel {
 	private static final long serialVersionUID = -4547873490496111518L;
 
 	//--------- Sensor specific variables start --------------
+	
+	public static final double[][] AlignmentMatrixLowNoiseAccelShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}};
+	// Based on a manufacturer stated, typical zero-g offset of 1.65V per axis over an input of 0v to 3v
+	// [(1.65/3)*4096 = 2252.8]
+	public static final double[][] OffsetVectorLowNoiseAccelShimmer3 = {{2253},{2253},{2253}}; 
+	// Based on a manufacturer stated, typical sensitivity of 660mV/g per axis over an input of 0v to 3v
+	// [+-2g full-range so 4g (or 39.24 m/s2) over 2.64V -> (2.64/3*4096)/39.24 = 91.85]
+	public static final double[][] SensitivityMatrixLowNoiseAccel2gShimmer3 = {{92,0,0},{0,92,0},{0,0,92}};  
+
+	private CalibDetailsKinematic calibDetailsAccelLn2g = new CalibDetailsKinematic(
+			LN_ACCEL_RANGE_VALUE, LN_ACCEL_RANGE_STRING, 
+			AlignmentMatrixLowNoiseAccelShimmer3, SensitivityMatrixLowNoiseAccel2gShimmer3, OffsetVectorLowNoiseAccelShimmer3);
+	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn = calibDetailsAccelLn2g;
 
 	public static class DatabaseChannelHandles{
 		public static final String LN_ACC_X = "KXTC9_2050_X";
@@ -217,5 +237,27 @@ public class SensorKionixKXTC92050 extends SensorKionixAccel {
 
 
 	//--------- Abstract methods implemented end --------------
+	
+	//--------- Optional methods to override in Sensor Class start --------
+	@Override
+	public void initialise() {
+		super.initialise();
+		
+		updateCurrentAccelLnCalibInUse();
+	}
+	
+	@Override
+	public void generateCalibMap() {
+		super.generateCalibMap();
+		
+		TreeMap<Integer, CalibDetails> calibMapAccelLn = new TreeMap<Integer, CalibDetails>();
+		calibMapAccelLn.put(calibDetailsAccelLn2g.mRangeValue, calibDetailsAccelLn2g);
+		
+		setCalibrationMapPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, calibMapAccelLn);
+		
+		updateCurrentAccelLnCalibInUse();
+	}
+
+	//--------- Optional methods to override in Sensor Class end --------
 
 }

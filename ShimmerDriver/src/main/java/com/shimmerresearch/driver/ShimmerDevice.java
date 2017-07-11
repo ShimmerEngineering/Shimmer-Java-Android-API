@@ -3389,7 +3389,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//TODO MN&AS: shouldn't this be using the mDatabaseChannelHandle rather then the mObjectClusterName??
 	//TODO AS: use this one better?? MN: yes it is so I don't know why it isn't like the one below and if we change will it mess anything up  
 	private Set<String> getSensorChannelOjcNamesToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
-		LinkedHashMap<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDb(commType, channelType);
+		LinkedHashMap<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDb(commType, channelType, true);
 		
 		Set<String> setOfObjectClusterChannels = new LinkedHashSet<String>();
 		setOfObjectClusterChannels.addAll(mapOfEnabledChannelsForStoringToDb.keySet());
@@ -3397,7 +3397,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return setOfObjectClusterChannels;
 	}
 
-	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType) {
+	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDb(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName) {
 		LinkedHashMap<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = new LinkedHashMap<String, ChannelDetails>();
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
 		while(iterator.hasNext()){
@@ -3418,7 +3418,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					}
 					
 					if(channelDetails.mStoreToDatabase){
-						mapOfEnabledChannelsForStoringToDb.put(channelDetails.mObjectClusterName, channelDetails);
+						String key = (isKeyOJCName? channelDetails.mObjectClusterName:channelDetails.getDatabaseChannelHandle());
+						mapOfEnabledChannelsForStoringToDb.put(key, channelDetails);
 					}
 				}
 			}
@@ -3427,32 +3428,25 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDb(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName) {
-		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = new LinkedHashMap<String, ChannelDetails>();
-		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
-		while(iterator.hasNext()){
-			SensorDetails sensorDetails = iterator.next();
-			
-			boolean isEnabled = false;
-			if(commType==null){
-				isEnabled = sensorDetails.isEnabled();
-			}
-			else{
-				isEnabled = sensorDetails.isEnabled(commType);
-			}
-			
-			if(isEnabled && !sensorDetails.mSensorDetailsRef.mIsDummySensor){
-				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-					if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
-						continue;
-					}
-					
-					if(channelDetails.mStoreToDatabase){
-						String key = (isKeyOJCName? channelDetails.mObjectClusterName:channelDetails.getDatabaseChannelHandle());
-						mapOfChannelsForStoringToDb.put(key, channelDetails);
-					}
-				}
-			}
-		}
+//		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = new LinkedHashMap<String, ChannelDetails>();
+//		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
+//		while(iterator.hasNext()){
+//			SensorDetails sensorDetails = iterator.next();
+//			
+//			if(!sensorDetails.mSensorDetailsRef.mIsDummySensor){
+//				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+//					if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
+//						continue;
+//					}
+//					
+//					if(channelDetails.mStoreToDatabase){
+//						String key = (isKeyOJCName? channelDetails.mObjectClusterName:channelDetails.getDatabaseChannelHandle());
+//						mapOfChannelsForStoringToDb.put(key, channelDetails);
+//					}
+//				}
+//			}
+//		}
+		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDb(commType, channelType, isKeyOJCName);
 		
 		Iterator<AbstractAlgorithm> iteratorAlgorithms = mMapOfAlgorithmModules.values().iterator();
 		while(iteratorAlgorithms.hasNext()){
@@ -3479,6 +3473,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		for(String dbChannelHandle:listOfDbChannelHandles){
 			ChannelDetails channelDetails = channelDetailsMap.get(dbChannelHandle);
+			
+//			if(channelDetails==null){
+//				channelDetails = new ChannelDetails();
+//				channelDetails.mGuiName = dbChannelHandle;
+//				channelDetails.mObjectClusterName = dbChannelHandle;
+//				channelDetails.setDatabaseChannelHandle(dbChannelHandle);
+//			}
+			
 			if(channelDetails!=null){
 				mapOfChannelsFound.put(channelDetails.mGuiName, channelDetails);
 			}

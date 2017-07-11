@@ -337,7 +337,11 @@ public class ChannelDetails implements Serializable {
 			return getChannelObjectClusterName();
 		}
 	}
-	
+
+	public void setDatabaseChannelHandle(String databaseChannelHandle){
+		mDatabaseChannelHandle = databaseChannelHandle;
+	}
+
 	public boolean isShowWhileStreaming(){
 		return mShowWhileStreaming;
 	}

@@ -498,14 +498,16 @@ public class ShimmerVerObject implements Serializable {
 		return isShimmer3Gen(getHardwareVersion(), getFirmwareIdentifier());
 	}
 
+	//TODO GQ should be kept separate - probably used in some places to indicate MSP430 model is being used?
 	public static boolean isShimmer3Gen(int hwVer) {
-		if(hwVer==HW_ID.SHIMMER_3 || hwVer==HW_ID.SHIMMER_GQ_BLE || hwVer==HW_ID.SHIMMER_GQ_802154_LR || hwVer==HW_ID.SHIMMER_GQ_802154_NR){
+		if(hwVer==HW_ID.SHIMMER_3 || hwVer==HW_ID.SHIMMER_3_EXG_EXTENDED 
+				|| hwVer==HW_ID.SHIMMER_GQ_BLE || hwVer==HW_ID.SHIMMER_GQ_802154_LR || hwVer==HW_ID.SHIMMER_GQ_802154_NR){
 			return true;
 		}
 		return false;
 	}
 
-	//TODO decide whether GQ belongs here or not
+	//TODO GQ should be kept separate - probably used in some places to indicate MSP430 model is being used?
 	public static boolean isShimmer3Gen(int hwVer, int fwId) {
 		if(isShimmer3Gen(hwVer) && ((fwId==FW_ID.BTSTREAM)||(fwId==FW_ID.SDLOG)||(fwId==FW_ID.LOGANDSTREAM)||(fwId==FW_ID.GQ_BLE))){
 			return true;

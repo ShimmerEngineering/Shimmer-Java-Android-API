@@ -727,15 +727,15 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 			SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE,
 			SensorMPU9150.DatabaseConfigHandle.GYRO_RANGE,
 			ListofGyroRange, 
-			ListofMPU9150GyroRangeConfigValues, 
+			ListofMPU9X50GyroRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	//MPL Options
 	public static final ConfigOptionDetailsSensor configOptionMpu9150AccelRange = new ConfigOptionDetailsSensor(
 			SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE,
 			SensorMPU9150.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE,
-			ListofMPU9150AccelRange, 
-			ListofMPU9150AccelRangeConfigValues, 
+			ListofMPU9X50AccelRange, 
+			ListofMPU9X50AccelRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	
@@ -766,8 +766,8 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 	public static final ConfigOptionDetailsSensor configOptionMpu9150MagRate = new ConfigOptionDetailsSensor(
 			SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE,
 			SensorMPU9150.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE,
-			ListofMPU9150MagRate, 
-			ListofMPU9150MagRateConfigValues, 
+			ListofMPU9X50MagRate, 
+			ListofMPU9X50MagRateConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors);
 	//MPL CheckBoxes

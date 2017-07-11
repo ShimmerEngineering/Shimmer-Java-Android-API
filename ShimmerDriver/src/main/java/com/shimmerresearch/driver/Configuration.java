@@ -139,9 +139,9 @@ public class Configuration {
 		public static final String FREQUENCY = "Hz";
 		public static final String POWER = "dB";
 
-		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE; //XXX-RS-LSM-SensorClass?
+		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
 		public static final String GYRO_CAL_UNIT = DEGREES_PER_SECOND;
-		public static final String MAG_CAL_UNIT = LOCAL_FLUX;  //XXX-RS-LSM-SensorClass?
+		public static final String MAG_CAL_UNIT = LOCAL_FLUX;
 
 //		public static final String ACCEL_DEFAULT_CAL_UNIT = METER_PER_SECOND_SQUARE+"*";
 //		public static final String GYRO_DEFAULT_CAL_UNIT = DEGREES_PER_SECOND+"*";
@@ -697,12 +697,13 @@ public class Configuration {
 			public static final int SHIMMER_BMP180_PRESSURE = 36;
 			
 			//New BMP IMU sensors
-			public static final int SHIMMER_BMP280_PRESSURE = 37;
-			public static final int SHIMMER_MPU9250_GYRO = 38;
-			public static final int SHIMMER_LSM303AH_ACCEL = 39;
-			public static final int SHIMMER_LSM303AH_MAG = 40;
-			public static final int SHIMMER_MPU9250_ACCEL = 41;
-			public static final int SHIMMER_MPU9250_MAG = 42;
+//			public static final int SHIMMER_BMP280_PRESSURE = 37;
+//			public static final int SHIMMER_MPU9250_GYRO = 38;
+//			public static final int SHIMMER_LSM303AH_ACCEL = 39;
+//			public static final int SHIMMER_LSM303AH_MAG = 40;
+//			public static final int SHIMMER_MPU9250_ACCEL = 41;
+//			public static final int SHIMMER_MPU9250_MAG = 42;
+			
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
