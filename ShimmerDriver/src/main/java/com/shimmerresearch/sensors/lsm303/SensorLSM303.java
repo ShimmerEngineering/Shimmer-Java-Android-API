@@ -22,7 +22,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303.GuiLabelConfig;
 
 public abstract class SensorLSM303 extends AbstractSensor {
 
@@ -34,6 +33,10 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	public abstract int getAccelRateFromFreqForSensor(boolean isEnabled, double freq, boolean isLowPowerMode);
 	public abstract int getMagRateFromFreqForSensor(boolean isEnabled, double freq, boolean isLowPowerMode);
 	public abstract void setLSM303MagRange(int valueToSet);
+	public abstract void setLSM303DigitalAccelRate(int valueToSet);
+	public abstract boolean checkLowPowerMag();
+	public abstract void setLSM303AccelRange(int valueToSet);
+
 	
 	// ----------   Wide-range accel start ---------------
 	
@@ -80,7 +83,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 			UtilShimmer.UNICODE_PLUS_MINUS + " 4g",
 			UtilShimmer.UNICODE_PLUS_MINUS + " 8g",
 			UtilShimmer.UNICODE_PLUS_MINUS + " 16g"};  
-	public static final Integer[] ListofLSM303AccelRangeConfigValues={0,1,2,3};  
 	
 
 	//--------- Configuration options end --------------
@@ -555,19 +557,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		setLSM303AccelRateFromFreq(mMaxSetShimmerSamplingRate);
 	}
 	
-	public void setLSM303DigitalAccelRate(int valueToSet) {
-		mLSM303DigitalAccelRate = valueToSet;
-		//LPM is not compatible with mLSM303DigitalAccelRate == 8, set to next higher rate
-		if(mLowPowerAccelWR && (valueToSet==8)) {
-			mLSM303DigitalAccelRate = 9;
-		}
-	}
-	
-	public boolean checkLowPowerMag() {
-		setLowPowerMag((getLSM303MagRate() <= 4)? true:false);
-		return isLowPowerMagEnabled();
-	}
-	
 	public void	setLowPowerMag(boolean enable){
 		mLowPowerMag = enable;
 		setLSM303MagRateFromFreq(mMaxSetShimmerSamplingRate);
@@ -715,13 +704,6 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsIfKinematic(mSensorMapKeyAccel, getAccelRange());
 	}
 
-	
-	public void setLSM303AccelRange(int valueToSet){
-		if(ArrayUtils.contains(ListofLSM303AccelRangeConfigValues, valueToSet)){
-			mAccelRange = valueToSet;
-			updateCurrentAccelWrCalibInUse();
-		}
-	}
 	
 	public int getAccelRange() {
 		return mAccelRange;

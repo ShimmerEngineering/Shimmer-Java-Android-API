@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
@@ -36,12 +38,18 @@ public class SensorLSM303AH extends SensorLSM303 {
 
 	// ----------   Wide-range accel start ---------------
 
-	public static final double[][] DefaultAlignmentMatrixWideRangeAccelShimmer3 = {{0,-1,0},{1,0,0},{0,0,-1}};	
+	public static final double[][] DefaultAlignmentLSM303AH = {{0,-1,0},{1,0,0},{0,0,-1}};	
+
+	public static final double[][] DefaultAlignmentMatrixWideRangeAccelShimmer3 = DefaultAlignmentLSM303AH;	
 	public static final double[][] DefaultOffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};	
-	public static final double[][] DefaultSensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};
-	public static final double[][] DefaultSensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};
-	public static final double[][] DefaultSensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};
-	public static final double[][] DefaultSensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};
+	// Manufacturer stated +-2g -> 0.061 mg/LSB -> or 16393.4 LSB/g or 1671.1 LSB/(m/s2) 
+	public static final double[][] DefaultSensitivityMatrixWideRangeAccel2gShimmer3 = {{1671,0,0},{0,1671,0},{0,0,1671}};
+	// Manufacturer stated +-4g -> 0.122 mg/LSB -> or 8196.72 LSB/g or 835.55 LSB/(m/s2) 
+	public static final double[][] DefaultSensitivityMatrixWideRangeAccel4gShimmer3 = {{836,0,0},{0,836,0},{0,0,836}};
+	// Manufacturer stated +-8g -> 0.244 mg/LSB -> or 4098.36 LSB/g or 417.77 LSB/(m/s2) 
+	public static final double[][] DefaultSensitivityMatrixWideRangeAccel8gShimmer3 = {{418,0,0},{0,418,0},{0,0,418}};
+	// Manufacturer stated +-16g -> 0.488 mg/LSB -> or 2049.18 LSB/g or 208.89 LSB/(m/s2) 
+	public static final double[][] DefaultSensitivityMatrixWideRangeAccel16gShimmer3 = {{209,0,0},{0,209,0},{0,0,209}};
 
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
 			ListofLSM303AccelRangeConfigValues[0],
@@ -71,7 +79,7 @@ public class SensorLSM303AH extends SensorLSM303 {
 	// ----------   Wide-range accel end ---------------
 
 	// ----------   Mag start ---------------
-	public static final double[][] DefaultAlignmentMatrixMagShimmer3 = {{0,-1,0},{1,0,0},{0,0,-1}}; 				
+	public static final double[][] DefaultAlignmentMatrixMagShimmer3 = DefaultAlignmentLSM303AH; 				
 	public static final double[][] DefaultOffsetVectorMagShimmer3 = {{0},{0},{0}};	
 	//  Based on a manufacturer stated, 1.5 mgauss/LSB (or 667 LSB/mgauss) over a full range of +-49.152 gauss 
 	// [16-bit ADC -> 0-65536 for 0-98.304gauss -> 65536 LSBs/98304 mgauss = 0.6666 LSB/mgauss]
@@ -163,6 +171,8 @@ public class SensorLSM303AH extends SensorLSM303 {
 	
 	//--------- Configuration options start --------------
 	
+	public static final Integer[] ListofLSM303AccelRangeConfigValues={0,2,3,1};  
+
 	public static final String[] ListofLSM303AHAccelRateHr={"Power-down","12.5Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","400.0Hz","800.0Hz","1600.0Hz","3200.0Hz","6400.0Hz"};
 	public static final Integer[] ListofLSM303AHAccelRateHrConfigValues={0,1,2,3,4,5,6,7,8,9,10};
 
@@ -225,7 +235,8 @@ public class SensorLSM303AH extends SensorLSM303 {
 			0x10<<8, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
 			GuiLabelSensors.ACCEL_WR,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH,
-			Arrays.asList(GuiLabelConfig.LSM303_ACCEL_RANGE,GuiLabelConfig.LSM303_ACCEL_RATE),
+			Arrays.asList(GuiLabelConfig.LSM303_ACCEL_RANGE,
+					GuiLabelConfig.LSM303_ACCEL_RATE),
 			Arrays.asList(ObjectClusterSensorName.ACCEL_WR_X,
 					ObjectClusterSensorName.ACCEL_WR_Y,
 					ObjectClusterSensorName.ACCEL_WR_Z));
@@ -235,7 +246,8 @@ public class SensorLSM303AH extends SensorLSM303 {
 			0x20, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
 			GuiLabelSensors.MAG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH,
-			Arrays.asList(GuiLabelConfig.LSM303_MAG_RANGE,GuiLabelConfig.LSM303_MAG_RATE),
+			Arrays.asList(GuiLabelConfig.LSM303_MAG_RANGE,
+					GuiLabelConfig.LSM303_MAG_RATE),
 			//MAG channel order is XZY instead of XYZ
 			Arrays.asList(ObjectClusterSensorName.MAG_X,
 					ObjectClusterSensorName.MAG_Z,
@@ -488,6 +500,42 @@ public class SensorLSM303AH extends SensorLSM303 {
 	
 	//--------- Sensor specific methods start --------------
 
+	@Override
+	public void setLSM303AccelRange(int valueToSet){
+		if(ArrayUtils.contains(ListofLSM303AccelRangeConfigValues, valueToSet)){
+			mAccelRange = valueToSet;
+			updateCurrentAccelWrCalibInUse();
+		}
+	}
+
+	@Override
+	public void setLSM303DigitalAccelRate(int valueToSet) {
+		mLSM303DigitalAccelRate = valueToSet;
+		if(mLowPowerAccelWR){
+			//LPM is not compatible with mLSM303DigitalAccelRate == 1 to 7, set to next higher rate
+			for(Integer i:SensorLSM303AH.ListofLSM303AHAccelRateLpmConfigValues){
+				if(i==valueToSet){
+					return;
+				}
+			}
+			mLSM303DigitalAccelRate = SensorLSM303AH.ListofLSM303AHAccelRateLpmConfigValues[SensorLSM303AH.ListofLSM303AHAccelRateLpmConfigValues.length-1];
+		} else {
+			//HR is not compatible with mLSM303DigitalAccelRate > 10, set to higher rate
+			for(Integer i:SensorLSM303AH.ListofLSM303AHAccelRateHrConfigValues){
+				if(i==valueToSet){
+					return;
+				}
+			}
+			mLSM303DigitalAccelRate = SensorLSM303AH.ListofLSM303AHAccelRateHrConfigValues[SensorLSM303AH.ListofLSM303AHAccelRateHrConfigValues.length-1];
+		}
+	}
+
+
+	@Override
+	public boolean checkLowPowerMag() {
+		setLowPowerMag((getLSM303MagRate() == 0)? true:false); // ==10Hz
+		return isLowPowerMagEnabled();
+	}
 
 	@Override
 	public void setLSM303MagRange(int valueToSet) {

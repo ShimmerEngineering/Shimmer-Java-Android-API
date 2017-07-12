@@ -41,7 +41,8 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303.ObjectClusterSensorName;
  * Sensor class for the LSM303DLHC combined Accelerometer and Magnetometer 
  * (commonly referred to as the wide-range accel in Shimmer literature)
  * 
- * Accelerometer: one 12-bit reading (left-justified) per axis, LSB. 
+ * Accelerometer: If HR=1 -> 12-bit reading (left-justified) per axis, LSB. 
+ * Accelerometer: If HR=0 -> 10-bit reading (left-justified) per axis, LSB. 
  * Magnetometer: one 12-bit reading (right-justified) per axis, MSB.
  * 
  * @author Ruud Stolk
@@ -79,13 +80,13 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 
 	public static final double[][] DefaultAlignmentMatrixWideRangeAccelShimmer3 = DefaultAlignmentLSM303DLHC;	
 	public static final double[][] DefaultOffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};	
-	// Manufacturer stated: 1 mg/LSB for +-2g -> 16-bit left-aligned data -> [65536/39.24 = 1670]
+	// Manufacturer stated +-2g: 1 mg/LSB -> or 1000 LSB/g with 16-bit left-aligned data -> bitshift by dividing by 16 and then by gravity -> 1631 LSB/(m/s2) 
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};
-	// Manufacturer stated: 2 mg/LSB for +-4g -> 16-bit left-aligned data -> [65536/78.48 = 835.1]
+	// Manufacturer stated +-4g: 2 mg/LSB -> or 500 LSB/g with 16-bit left-aligned data -> bitshift by dividing by 16 and then by gravity -> 815.49 LSB/(m/s2)
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};
-	// Manufacturer stated: 4 mg/LSB for +-8g -> 16-bit left-aligned data -> [65536/156.96 = 417.53]
+	// Manufacturer stated +-8g: 4 mg/LSB -> or 250 LSB/g with 16-bit left-aligned data -> bitshift by dividing by 16 and then by gravity -> 407.75 LSB/(m/s2)
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};
-	// Manufacturer stated: 12 mg/LSB for +-16g -> 16-bit left-aligned data -> [65536/313.92 = 208.77]
+	// Manufacturer stated +-16g: 12 mg/LSB -> or 83.3 LSB/g with 16-bit left-aligned data -> bitshift by dividing by 16 and then by gravity -> 135.92 LSB/(m/s2)
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};
 
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
@@ -317,6 +318,8 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 
 	//--------- Configuration options start --------------
 	
+	public static final Integer[] ListofLSM303AccelRangeConfigValues={0,1,2,3};  
+
 	public static final String[] ListofLSM303DLHCAccelRateHr={"Power-down","1.0Hz","10.0Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","400.0Hz","1344.0Hz"};
 	public static final Integer[] ListofLSM303DLHCAccelRateHrConfigValues={0,1,2,3,4,5,6,7,9};
 
@@ -756,6 +759,13 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 
 	//--------- Sensor specific methods start --------------
 	
+	@Override
+	public void setLSM303AccelRange(int valueToSet){
+		if(ArrayUtils.contains(ListofLSM303AccelRangeConfigValues, valueToSet)){
+			mAccelRange = valueToSet;
+			updateCurrentAccelWrCalibInUse();
+		}
+	}
 
 	@Override
 	public void setLSM303MagRange(int valueToSet){
@@ -769,9 +779,26 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	}
 	
 	@Override
+	public boolean checkLowPowerMag() {
+		setLowPowerMag((getLSM303MagRate() <= 4)? true:false); // <=15Hz
+		return isLowPowerMagEnabled();
+	}
+
+	
+	@Override
 	public int getAccelRateFromFreqForSensor(boolean isEnabled, double freq, boolean isLowPowerMode) {
 		return SensorLSM303DLHC.getAccelRateFromFreq(isEnabled, freq, isLowPowerMode);
 	}
+	
+	@Override
+	public void setLSM303DigitalAccelRate(int valueToSet) {
+		mLSM303DigitalAccelRate = valueToSet;
+		//LPM is not compatible with mLSM303DigitalAccelRate == 8, set to next higher rate
+		if(mLowPowerAccelWR && valueToSet==8) {
+			mLSM303DigitalAccelRate = 9;
+		}
+	}
+
 
 	/**
 	 * Unused: 8 = 1.620kHz (only low-power mode), 9 = 1.344kHz (normal-mode) / 5.376kHz (low-power mode)
