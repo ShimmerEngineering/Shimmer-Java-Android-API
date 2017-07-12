@@ -4611,6 +4611,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, true);
 			}
 
+			setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_ECG, true);
+
 			mTrialName = DEFAULT_EXPERIMENT_NAME;
 			
 			mTrialNumberOfShimmers = 1;

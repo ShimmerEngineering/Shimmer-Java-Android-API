@@ -89,7 +89,9 @@ public class SensorKionixKXTC92050 extends SensorKionixAccel {
 			GuiLabelSensors.ACCEL_LN,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXTC92050,
 			null,
-			Arrays.asList(ObjectClusterSensorName.ACCEL_LN_X,ObjectClusterSensorName.ACCEL_LN_Y,ObjectClusterSensorName.ACCEL_LN_Z));
+			Arrays.asList(SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_X,
+					SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Y,
+					SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Z));
 //	{
 //		sensorKionixKXTC92050.mCalibSensorKey = 0x01;
 //	}
