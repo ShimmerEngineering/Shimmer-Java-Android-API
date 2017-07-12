@@ -32,7 +32,9 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -61,14 +63,13 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	int mXAxisLimit = 500;
 	int mXAxisTimeDuraton = 5;
 	public List<ITrace2D> mListofTraces = new ArrayList<ITrace2D>();
+	public HashMap<String, ArrayList< Point2D.Double>> mMapofPoints = new HashMap<String, ArrayList< Point2D.Double>>();
 	public HashMap<String,Integer> mMapofDefaultXAxisSizes = new HashMap<String,Integer>();
 	int numberOfRowPropertiestoCheck = 2;
 	boolean mClearGraphatLimit = false;
 	Chart2D mChart = null;
 	public int mWindowSize = 0;
 
-
-	
 	public HashMap<String,Double> mMapofHalfWindowSize = new HashMap<String,Double>();
 	
 	public static float DEFAULT_LINE_THICKNESS=2;
@@ -82,6 +83,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mIsHRVisible = false;
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
+	private boolean mIsBufferData = false;
 	
 	private String mTitle = "";
 	
@@ -690,6 +692,15 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				BasicStroke newstroke = new BasicStroke(thickness,stroke.getEndCap(),stroke.getLineJoin(),stroke.getMiterLimit(),stroke.getDashArray(),stroke.getDashPhase());
 				trace.setStroke(newstroke);
 			}
+		}
+	}
+	
+	public void setAllTraceThickness(float thickness) {
+		for(int i=0; i<mListofTraces.size(); i++) {
+			ITrace2D trace = mListofTraces.get(i);
+			BasicStroke stroke = ((BasicStroke)trace.getStroke());
+			BasicStroke newstroke = new BasicStroke(thickness,stroke.getEndCap(),stroke.getLineJoin(),stroke.getMiterLimit(),stroke.getDashArray(),stroke.getDashPhase());
+			trace.setStroke(newstroke);
 		}
 	}
 	
@@ -1397,9 +1408,29 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			yData = 0.000001;
 		}
 
+		if(mIsBufferData){
+			String traceName = trace.getName();
+			if(traceName != null){
+				if(!mMapofPoints.containsKey(traceName)){
+					mMapofPoints.put(traceName, new ArrayList< Point2D.Double>(trace.getMaxSize()));
+				}
+				ArrayList< Point2D.Double> listOfPoints = mMapofPoints.get(traceName);
+				if(listOfPoints != null){
+					listOfPoints.add(new Point2D.Double(xData, yData));
+				}
+			}
+		}
 		trace.addPoint(xData, yData);
 	}
 
+	public ArrayList< Point2D.Double> getTraceData(String traceName){
+		ArrayList< Point2D.Double> listOfPoints = mMapofPoints.get(traceName);
+		if(listOfPoints != null){
+			return listOfPoints;
+		}
+		return null;
+	}
+	
 	protected double checkAndCorrectData(String shimmerUserAssignedName, String channelName, String traceName, double data) throws Exception {
 		
 		double yData = data;
@@ -1710,6 +1741,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 						}
 
 						double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
+						
 						if (yData!=-1){ //marker detected
 							xData=mCurrentXValue; //ensure the timestamp doesnt go back in time
 							eventMarker=true;
