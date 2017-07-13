@@ -50,6 +50,8 @@ import java.util.TimerTask;
 
 import javax.swing.JLabel;
 
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
+
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -63,7 +65,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	int mXAxisLimit = 500;
 	int mXAxisTimeDuraton = 5;
 	public List<ITrace2D> mListofTraces = new ArrayList<ITrace2D>();
-	public HashMap<String, ArrayList< Point2D.Double>> mMapofPoints = new HashMap<String, ArrayList< Point2D.Double>>();
+	public HashMap<String, CircularFifoBuffer> mMapofPoints = new HashMap<String, CircularFifoBuffer>();
+	//public HashMap<String, ArrayList< Point2D.Double>> mMapofPoints = new HashMap<String, ArrayList< Point2D.Double>>();
 	public HashMap<String,Integer> mMapofDefaultXAxisSizes = new HashMap<String,Integer>();
 	int numberOfRowPropertiestoCheck = 2;
 	boolean mClearGraphatLimit = false;
@@ -1314,6 +1317,12 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			ITrace2D trace = iterator.next();
 			trace.removeAllPoints();
 		}
+		if(mIsBufferData){
+			for(CircularFifoBuffer circularFifoBuffer : mMapofPoints.values()){
+				circularFifoBuffer.clear();
+				System.err.println("circularFifoBuffer size: " +circularFifoBuffer.size());
+			}
+		}
 	}
 
 	public void clearDataBufferAndMakeTraceVisible(String deviceName){
@@ -1412,23 +1421,35 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			String traceName = trace.getName();
 			if(traceName != null){
 				if(!mMapofPoints.containsKey(traceName)){
-					mMapofPoints.put(traceName, new ArrayList< Point2D.Double>(trace.getMaxSize()));
+					//mMapofPoints.put(traceName, new ArrayList< Point2D.Double>(trace.getMaxSize()));
+					mMapofPoints.put(traceName, new CircularFifoBuffer(trace.getMaxSize()));
 				}
-				ArrayList< Point2D.Double> listOfPoints = mMapofPoints.get(traceName);
-				if(listOfPoints != null){
-					listOfPoints.add(new Point2D.Double(xData, yData));
+				//ArrayList< Point2D.Double> listOfPoints = mMapofPoints.get(traceName);
+				CircularFifoBuffer circularFifoBuffer = mMapofPoints.get(traceName);
+				
+//				if(listOfPoints != null){
+//					listOfPoints.add(new Point2D.Double(xData, yData));
+//				}
+				if(circularFifoBuffer != null){
+					circularFifoBuffer.add(new Point2D.Double(xData, yData));
+					//listOfPoints.add(new Point2D.Double(xData, yData));
 				}
 			}
 		}
 		trace.addPoint(xData, yData);
 	}
-
-	public ArrayList< Point2D.Double> getTraceData(String traceName){
-		ArrayList< Point2D.Double> listOfPoints = mMapofPoints.get(traceName);
-		if(listOfPoints != null){
+	
+	public CircularFifoBuffer getTraceData(String traceName){
+		//ArrayList< Point2D.Double> listOfPoints = mMapofPoints.get(traceName);
+		CircularFifoBuffer listOfPoints = mMapofPoints.get(traceName);
+		if(listOfPoints != null){ 
 			return listOfPoints;
 		}
 		return null;
+	}
+	
+	public void setBufferData(boolean isDataBuffered){
+		mIsBufferData = isDataBuffered;
 	}
 	
 	protected double checkAndCorrectData(String shimmerUserAssignedName, String channelName, String traceName, double data) throws Exception {
