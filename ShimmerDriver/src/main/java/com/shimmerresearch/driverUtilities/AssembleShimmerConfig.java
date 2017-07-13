@@ -124,7 +124,7 @@ public class AssembleShimmerConfig {
 					}
 
 					shimmerPcmss.setConfigFileCreationFlag(true);
-					shimmerPcmss.generateInfoMemBytesForWritingToShimmer();
+					shimmerPcmss.generateConfigBytesForWritingToShimmer();
 	        		index++;
 	        	}
 	        	else {

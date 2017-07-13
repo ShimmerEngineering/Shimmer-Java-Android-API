@@ -4032,7 +4032,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	public void writeConfigBytes(boolean readBackAfter){
 		if(this.getFirmwareVersionCode()>=6){
-			writeConfigBytes(mConfigByteLayout.MSP430_5XX_INFOMEM_D_ADDRESS, generateInfoMemBytesForWritingToShimmer(), mConfigByteLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS, readBackAfter);
+			writeConfigBytes(mConfigByteLayout.MSP430_5XX_INFOMEM_D_ADDRESS, generateConfigBytesForWritingToShimmer(), mConfigByteLayout.MSP430_5XX_INFOMEM_LAST_ADDRESS, readBackAfter);
 		}
 	}
 
@@ -5109,7 +5109,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 *         is called to generate the InfoMem bytes for writing to the
 	 *         Shimmer.
 	 */
-	public byte[] generateInfoMemBytesForWritingToShimmer() {
+	public byte[] generateConfigBytesForWritingToShimmer() {
 		super.setConfigFileCreationFlag(true);
 		return super.configBytesGenerate(true);
 	}

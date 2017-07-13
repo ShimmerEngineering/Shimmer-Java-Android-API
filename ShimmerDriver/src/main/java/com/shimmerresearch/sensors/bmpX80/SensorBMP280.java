@@ -1,5 +1,6 @@
 package com.shimmerresearch.sensors.bmpX80;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -417,8 +418,23 @@ public class SensorBMP280 extends SensorBMPX80 {
 
 	@Override
 	public List<Double> getPressTempConfigValuesLegacy() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Double> configValues = new ArrayList<Double>();
+
+		CalibDetailsBmp280 calibDetailsBmp280 = ((CalibDetailsBmp280)mCalibDetailsBmpX80);
+		configValues.add(calibDetailsBmp280.dig_T1);
+		configValues.add(calibDetailsBmp280.dig_T2);
+		configValues.add(calibDetailsBmp280.dig_T3);
+		configValues.add(calibDetailsBmp280.dig_P1);
+		configValues.add(calibDetailsBmp280.dig_P2);
+		configValues.add(calibDetailsBmp280.dig_P3);
+		configValues.add(calibDetailsBmp280.dig_P4);
+		configValues.add(calibDetailsBmp280.dig_P5);
+		configValues.add(calibDetailsBmp280.dig_P6);
+		configValues.add(calibDetailsBmp280.dig_P7);
+		configValues.add(calibDetailsBmp280.dig_P8);
+		configValues.add(calibDetailsBmp280.dig_P9);
+		
+		return configValues;
 	}
 	
 	private void setDefaultBmp280PressureSensorConfig(boolean isSensorEnabled) {
