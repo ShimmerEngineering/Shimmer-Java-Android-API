@@ -80,13 +80,17 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 
 	public static final double[][] DefaultAlignmentMatrixWideRangeAccelShimmer3 = DefaultAlignmentLSM303DLHC;	
 	public static final double[][] DefaultOffsetVectorWideRangeAccelShimmer3 = {{0},{0},{0}};	
-	// Manufacturer stated +-2g: 1 mg/LSB -> or 1000 LSB/g with 16-bit left-aligned data -> bitshift by dividing by 16 and then by gravity -> 1631 LSB/(m/s2) 
+	// Manufacturer stated +-2g: 1 mg/LSB -> or 1000 LSB/g with 16-bit left-aligned data 
+	// -> bitshift by dividing by 16 and then by gravity -> 1631 LSB/(m/s2) 
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel2gShimmer3 = {{1631,0,0},{0,1631,0},{0,0,1631}};
-	// Manufacturer stated +-4g: 2 mg/LSB -> or 500 LSB/g with 16-bit left-aligned data -> bitshift by dividing by 16 and then by gravity -> 815.49 LSB/(m/s2)
+	// Manufacturer stated +-4g: 2 mg/LSB -> or 500 LSB/g with 16-bit left-aligned data 
+	// -> bitshift by dividing by 16 and then by gravity -> 815.49 LSB/(m/s2)
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel4gShimmer3 = {{815,0,0},{0,815,0},{0,0,815}};
-	// Manufacturer stated +-8g: 4 mg/LSB -> or 250 LSB/g with 16-bit left-aligned data -> bitshift by dividing by 16 and then by gravity -> 407.75 LSB/(m/s2)
+	// Manufacturer stated +-8g: 4 mg/LSB -> or 250 LSB/g with 16-bit left-aligned data 
+	// -> bitshift by dividing by 16 and then by gravity -> 407.75 LSB/(m/s2)
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel8gShimmer3 = {{408,0,0},{0,408,0},{0,0,408}};
-	// Manufacturer stated +-16g: 12 mg/LSB -> or 83.3 LSB/g with 16-bit left-aligned data -> bitshift by dividing by 16 and then by gravity -> 135.92 LSB/(m/s2)
+	// Manufacturer stated +-16g: 12 mg/LSB -> or 83.3 LSB/g with 16-bit left-aligned data 
+	// -> bitshift by dividing by 16 and then by gravity -> 135.92 LSB/(m/s2)
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel16gShimmer3 = {{135,0,0},{0,135,0},{0,0,135}};
 
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
