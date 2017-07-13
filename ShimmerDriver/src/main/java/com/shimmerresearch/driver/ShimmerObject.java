@@ -6299,7 +6299,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @return the mShimmerInfoMemBytes generated from an empty byte array. This is called to generate the InfoMem bytes for writing to the Shimmer.
 	 */
-	protected byte[] generateInfoMemBytesForWritingToShimmer() {
+	protected byte[] generateConfigBytesForWritingToShimmer() {
 //		System.out.println("SlotDetails:" + this.mUniqueIdentifier + " " + mShimmerInfoMemBytes[3]);
 		return configBytesGenerate(true);
 	}
