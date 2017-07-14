@@ -90,6 +90,12 @@ public class FixedShimmerConfigs {
 						Shimmer3.SensorMapKey.HOST_ECG, 
 						SensorEXG.GuiLabelConfig.EXG_RESOLUTION,
 						1);
+				
+				//setting ECG Reference Electrode to Fixed Potential
+				shimmerDevice.setConfigValueUsingConfigLabel(
+						Shimmer3.SensorMapKey.HOST_ECG, 
+						SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
+						0);
 			}
 	
 			//setting sampling rate 1024Hz hardcoded -> ExG data rate should update automatically in the driver
