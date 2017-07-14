@@ -41,8 +41,10 @@
  */
 package com.shimmerresearch.driver;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
@@ -553,6 +555,25 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 	public void setShimmerCalibratedTimeStamp(double mShimmerCalibratedTimeStamp) {
 		this.mShimmerCalibratedTimeStamp = mShimmerCalibratedTimeStamp;
+	}
+	
+	public ObjectCluster deepClone() {
+//		System.out.println("Cloning:" + mUniqueID);
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (ObjectCluster) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }
