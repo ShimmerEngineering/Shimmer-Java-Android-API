@@ -65,7 +65,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	int mXAxisLimit = 500;
 	int mXAxisTimeDuraton = 5;
 	public List<ITrace2D> mListofTraces = new ArrayList<ITrace2D>();
-	public HashMap<String, CircularFifoBuffer> mMapofPoints = new HashMap<String, CircularFifoBuffer>();
+	public HashMap<String, CircularFifoBuffer> mMapOfCirculurBufferedTraceDataPoints = new HashMap<String, CircularFifoBuffer>();
 	//public HashMap<String, ArrayList< Point2D.Double>> mMapofPoints = new HashMap<String, ArrayList< Point2D.Double>>();
 	public HashMap<String,Integer> mMapofDefaultXAxisSizes = new HashMap<String,Integer>();
 	int numberOfRowPropertiestoCheck = 2;
@@ -86,7 +86,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mIsHRVisible = false;
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
-	private boolean mIsBufferData = false;
+	private boolean mIsTraceDataBuffered = false;
 	
 	private String mTitle = "";
 	
@@ -1317,10 +1317,9 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			ITrace2D trace = iterator.next();
 			trace.removeAllPoints();
 		}
-		if(mIsBufferData){
-			for(CircularFifoBuffer circularFifoBuffer : mMapofPoints.values()){
+		if(mIsTraceDataBuffered){
+			for(CircularFifoBuffer circularFifoBuffer : mMapOfCirculurBufferedTraceDataPoints.values()){
 				circularFifoBuffer.clear();
-				System.err.println("circularFifoBuffer size: " +circularFifoBuffer.size());
 			}
 		}
 	}
@@ -1384,6 +1383,13 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		return false;
 	}
 
+	public String getFirstTraceName(){
+		if(mListofTraces != null && mListofTraces.size() > 0){
+			return mListofTraces.get(0).getName();
+		}
+		return null;
+	}
+	
 	public void resizeBarPlots(){
 		
         int width = mChart.getWidth();
@@ -1417,43 +1423,34 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			yData = 0.000001;
 		}
 
-		if(mIsBufferData){
+		if(mIsTraceDataBuffered){
 			String traceName = trace.getName();
 			if(traceName != null){
-				if(!mMapofPoints.containsKey(traceName)){
-					//mMapofPoints.put(traceName, new ArrayList< Point2D.Double>(trace.getMaxSize()));
-					mMapofPoints.put(traceName, new CircularFifoBuffer(trace.getMaxSize()));
+				if(!mMapOfCirculurBufferedTraceDataPoints.containsKey(traceName)){
+					mMapOfCirculurBufferedTraceDataPoints.put(traceName, new CircularFifoBuffer(trace.getMaxSize()));
 				}
-				//ArrayList< Point2D.Double> listOfPoints = mMapofPoints.get(traceName);
-				CircularFifoBuffer circularFifoBuffer = mMapofPoints.get(traceName);
-				
-//				if(listOfPoints != null){
-//					listOfPoints.add(new Point2D.Double(xData, yData));
-//				}
+				CircularFifoBuffer circularFifoBuffer = mMapOfCirculurBufferedTraceDataPoints.get(traceName);
 				if(circularFifoBuffer != null){
 					circularFifoBuffer.add(new Point2D.Double(xData, yData));
-					//listOfPoints.add(new Point2D.Double(xData, yData));
 				}
 			}
 		}
 		trace.addPoint(xData, yData);
 	}
 	
-	public CircularFifoBuffer getTraceData(String traceName){
-		//ArrayList< Point2D.Double> listOfPoints = mMapofPoints.get(traceName);
-		CircularFifoBuffer listOfPoints = mMapofPoints.get(traceName);
-		if(listOfPoints != null){ 
-			return listOfPoints;
+	public CircularFifoBuffer getCirculurBufferedTraceData(String traceName){
+		CircularFifoBuffer circularFifoBuffer = mMapOfCirculurBufferedTraceDataPoints.get(traceName);
+		if(circularFifoBuffer != null){ 
+			return circularFifoBuffer;
 		}
 		return null;
 	}
 	
-	public void setBufferData(boolean isDataBuffered){
-		mIsBufferData = isDataBuffered;
+	public void setIsTraceDataBuffered(boolean isTraceDataBuffered){
+		mIsTraceDataBuffered = isTraceDataBuffered;
 	}
 	
 	protected double checkAndCorrectData(String shimmerUserAssignedName, String channelName, String traceName, double data) throws Exception {
-		
 		double yData = data;
 		if (Double.isNaN(yData)){
 			throw new Exception("Signal data is NaN: (" + traceName + ")");
