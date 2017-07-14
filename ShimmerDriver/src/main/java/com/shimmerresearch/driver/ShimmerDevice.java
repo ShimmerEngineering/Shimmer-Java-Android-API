@@ -1762,7 +1762,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				if(mapOfConfigOptions!=null && mapOfConfigOptions.containsKey(configLabel) && mapOfConfigOptions.get(configLabel)!=null){
 					ConfigOptionDetails configOption = getConfigOptionsMap().get(configLabel);
 					
-					guiValue = ConfigOptionDetails.getConfigStringFromConfigValue(configOption.mConfigValues, configOption.mGuiValues, configInt);
+					guiValue = configOption.getConfigStringFromConfigValue(configInt);
 					
 				} else {
 					guiValue = Integer.toString(configInt);

@@ -860,7 +860,7 @@ public class Configuration {
 			public static final String EXPERIMENT_MASTER_SHIMMER = "Master Shimmer";
 			public static final String EXPERIMENT_SYNC_WHEN_LOGGING = "Sync When Logging";
 
-			public static final String TCX0 = "TCX0";
+			public static final String TCXO = "TCX0";
 			public static final String INT_EXP_BRD_POWER_BOOLEAN = "Internal Expansion Board Power";
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 			public static final String ENABLE_ERROR_LEDS_RTC = "RTC Error LEDs";
@@ -1810,8 +1810,8 @@ public class Configuration {
 					null,
 					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 					Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
-			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCX0, new ConfigOptionDetailsSensor(
-					Configuration.Shimmer3.GuiLabelConfig.TCX0,
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCXO, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.TCXO,
 					ShimmerDevice.DatabaseConfigHandle.TXCO,
 					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw));
