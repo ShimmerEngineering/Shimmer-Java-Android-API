@@ -926,7 +926,9 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
 		mapOfConfig.put(DatabaseConfigHandle.GYRO_RATE, getMPU9X50GyroAccelRate());
-		
+
+		mapOfConfig.put(DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE, getMPU9X50AccelRange());
+
 		mapOfConfig.put(DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE, getMPU9X50MPLSamplingRate());
 		mapOfConfig.put(DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE, getMPU9X50MagSamplingRate());
 		mapOfConfig.put(DatabaseConfigHandle.MPU_MOT_CAL_CFG, getMPU9X50MotCalCfg());
