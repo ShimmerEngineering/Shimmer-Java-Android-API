@@ -147,6 +147,11 @@ public class ConfigOptionDetails implements Serializable {
 		return mConfigValues;
 	}
 
+	
+	public String getConfigStringFromConfigValue(Integer configValueToFind){
+		return getConfigStringFromConfigValue(mConfigValues, mGuiValues, configValueToFind);
+	}
+
 	public static String getConfigStringFromConfigValue(Integer[] listOfConfigValues, String[] listOfConfigValueStrings, Integer configValueToFind){
 		int index = Arrays.asList(listOfConfigValues).indexOf(configValueToFind);
 		if(index>=0 && listOfConfigValueStrings.length>index){
