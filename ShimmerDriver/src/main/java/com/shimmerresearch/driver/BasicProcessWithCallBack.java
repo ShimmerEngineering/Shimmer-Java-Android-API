@@ -100,7 +100,9 @@ public abstract class BasicProcessWithCallBack {
 			mWaitForData = new WaitForData(b);
 		}
 		
-		printListOfThreads();
+		if(mIsDebug){
+			printListOfThreads();
+		}
 	};
 
 	/** TODO needs work to include all cases in "setWaitForData" */
