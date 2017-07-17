@@ -10159,7 +10159,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					returnValue = false;
 				}
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
+			case(Configuration.Shimmer3.GuiLabelConfig.TCXO):
 				returnValue = isTCXO();
 	        	break;
 //			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
@@ -10461,7 +10461,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setLowPowerGyro((boolean)valueToSet);
 				setLowPowerMag((boolean)valueToSet);
 	        	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.TCX0):
+			case(Configuration.Shimmer3.GuiLabelConfig.TCXO):
             	setTCXO((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
