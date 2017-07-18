@@ -3184,7 +3184,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				} 
 				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_X;
-					signalDataTypeArray[i+1] = "i16r";			
+					if(isSupportedNewImuSensors()){
+						signalDataTypeArray[i+1] = "i16";			
+					} else {
+						signalDataTypeArray[i+1] = "i16r";			
+					}
 					packetSize=packetSize+2;
 					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_MAG;
 				} 
@@ -3205,7 +3209,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				} 
 				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Y;
-					signalDataTypeArray[i+1] = "i16r";			
+					if(isSupportedNewImuSensors()){
+						signalDataTypeArray[i+1] = "i16";			
+					} else {
+						signalDataTypeArray[i+1] = "i16r";			
+					}
 					packetSize=packetSize+2;
 					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_MAG;
 				} 
@@ -3225,7 +3233,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				} 
 				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_Z;
-					signalDataTypeArray[i+1] = "i16r";			
+					if(isSupportedNewImuSensors()){
+						signalDataTypeArray[i+1] = "i16";			
+					} else {
+						signalDataTypeArray[i+1] = "i16r";			
+					}
 					packetSize=packetSize+2;
 					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_MAG;
 				} 
@@ -12242,12 +12254,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int expBrdRev = ebd.getExpansionBoardRev();
 		
 		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
-				(expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=3)
-				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=3)
-				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev>=2)
-				|| (expBrdId==HW_ID_SR_CODES.SHIMMER3 && expBrdRev>=6)
-				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE && expBrdRev>=3)//??????
-//				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI && expBrdRev>=3) //??????
+				(expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=3)			// >= SR47-3-0
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=3) 		// >= SR48-3-0
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev>=2)	// >= SR49-2-0
+				|| (expBrdId==HW_ID_SR_CODES.SHIMMER3 && expBrdRev>=6)					// >= SR31-6-0
+				|| (expBrdRev==171)														// == SRx-x-171 -> any expansion board attached to a new IMU base board 
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE && expBrdRev>=3)		// Future unified board
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI && expBrdRev>=3)		// Future unified board
 				)){
 			return true;
 		}
