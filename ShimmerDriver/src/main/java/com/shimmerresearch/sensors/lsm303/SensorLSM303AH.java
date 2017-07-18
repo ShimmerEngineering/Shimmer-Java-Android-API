@@ -248,10 +248,10 @@ public class SensorLSM303AH extends SensorLSM303 {
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH,
 			Arrays.asList(GuiLabelConfig.LSM303_MAG_RANGE,
 					GuiLabelConfig.LSM303_MAG_RATE),
-			//MAG channel order is XZY instead of XYZ
+			//MAG channel order is XYZ for the LSM303AH
 			Arrays.asList(ObjectClusterSensorName.MAG_X,
-					ObjectClusterSensorName.MAG_Z,
-					ObjectClusterSensorName.MAG_Y));
+					ObjectClusterSensorName.MAG_Y,
+					ObjectClusterSensorName.MAG_Z));
 	
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
