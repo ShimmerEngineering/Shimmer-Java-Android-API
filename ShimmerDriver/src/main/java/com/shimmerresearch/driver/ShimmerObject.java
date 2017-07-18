@@ -4623,7 +4623,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, true);
 			}
 
-			setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_ECG, true);
+//			setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_ECG, true);
 
 			mTrialName = DEFAULT_EXPERIMENT_NAME;
 			
@@ -11519,9 +11519,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					alignZx, alignZy, alignZz);
 		}
 	}
-	
+
 	@Deprecated
-	public static List<String> getShimmer3ConfigColumnsLegacy(ShimmerVerObject svo, ExpansionBoardDetails ebd){
+	public List<String> getConfigColumnsToInsertInDBLegacy(){
+		return getConfigColumnsShimmer3Legacy(getShimmerVerObject(), getExpansionBoardDetails());
+	}
+
+	@Deprecated
+	public static List<String> getConfigColumnsShimmer3Legacy(ShimmerVerObject svo, ExpansionBoardDetails ebd){
 		List<String> configColumns = new ArrayList<String>();
 
 		configColumns.add(ShimmerDevice.DatabaseConfigHandle.SAMPLE_RATE);
@@ -11572,23 +11577,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_LPF);
 //			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MOT_CAL_CFG);
 //			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE);
-//			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE);
 //			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION);
 //			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_GYRO_TC);
 //			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_VECT_COMP);
 //			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MAG_DIST);
 //			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MPL_ENABLE);
+			configColumns.add(SensorMPU9250.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE);
 		} else {
 			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_DMP);
 			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_LPF);
 			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MOT_CAL_CFG);
 			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE);
-			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE);
 			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION);
 			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_GYRO_TC);
 			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_VECT_COMP);
 			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MAG_DIST);
 			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_ENABLE);
+			configColumns.add(SensorMPU9150.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE);
 		}
 		
 		configColumns.add(ShimmerDevice.DatabaseConfigHandle.USER_BUTTON);
@@ -11820,8 +11825,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	
 	@Deprecated
-	public List<Double> getShimmerConfigToInsertInDBLegacy(){
-		return getDbConfigFromShimmerLegacy(this);
+	public List<Double> getShimmerConfigValuesToInsertInDBLegacy(){
+		return getDbConfigValuesFromShimmerLegacy(this);
 	}
 
 	/** This method only needs to support Shimmer3. ShimmerGQ is handled in the ShimmerGQ class and >=Shimmer4 is via a config map
@@ -11829,7 +11834,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * This corresponds to the Database column labels declared in DatabaseHandler.getShimmer3ConfigColumns()
 	 *  */
 	@Deprecated
-	public static List<Double> getDbConfigFromShimmerLegacy(ShimmerDevice shimmerDevice){
+	public static List<Double> getDbConfigValuesFromShimmerLegacy(ShimmerDevice shimmerDevice){
 		if (shimmerDevice instanceof ShimmerObject){
 			ShimmerObject shimmerObject = (ShimmerObject) shimmerDevice;
 			List<Double> configValues = new ArrayList<Double>();
@@ -11860,7 +11865,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				configValues.add((double) shimmerObject.getMPU9X50LPF());
 				configValues.add((double) shimmerObject.getMPU9X50MotCalCfg());
 				configValues.add((double) shimmerObject.getMPU9X50MPLSamplingRate());
-				configValues.add((double) shimmerObject.getMPU9X50MagSamplingRate());
 				
 				configValues.add((double) shimmerObject.getMPLSensorFusion());
 				configValues.add((double) shimmerObject.getMPLGyroCalTC());
@@ -11868,6 +11872,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				configValues.add((double) shimmerObject.getMPLMagDistCal());
 				configValues.add((double) shimmerObject.getMPLEnable());
 			}
+			configValues.add((double) shimmerObject.getMPU9X50MagSamplingRate());
+
 			configValues.add((double) shimmerObject.getButtonStart());
 
 			configValues.add((double) shimmerObject.getRTCSetByBT());// RTC source, 1 = it comes from the BT, 0 = from dock
@@ -11929,19 +11935,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//PRESSURE (BMP180) CAL PARAMS
 			configValues.addAll(shimmerObject.mSensorBMPX80.getPressTempConfigValuesLegacy());
 
-			if(!shimmerObject.isSupportedNewImuSensors()){
-				//MPL Accel Calibration Configuration
-				double[][] offsetVectorMPLAccel = shimmerObject.getOffsetVectorMPLAccel();
-				double[][] sensitivityMatrixMPLAccel = shimmerObject.getSensitivityMatrixMPLAccel();
-				double[][] alignmentMatrixMPLAccel = shimmerObject.getAlignmentMatrixMPLAccel();
-				addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLAccel, sensitivityMatrixMPLAccel, alignmentMatrixMPLAccel);
-	
-				//MPL Mag Calibration Configuration
-				double[][] offsetVectorMPLMag = shimmerObject.getOffsetVectorMPLMag();
-				double[][] sensitivityMatrixMPLMag = shimmerObject.getSensitivityMatrixMPLMag();
-				double[][] alignmentMatrixMPLMag = shimmerObject.getAlignmentMatrixMPLMag();
-				addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLMag, sensitivityMatrixMPLMag, alignmentMatrixMPLMag);
+			//MPL Accel Calibration Configuration
+			double[][] offsetVectorMPLAccel = shimmerObject.getOffsetVectorMPLAccel();
+			double[][] sensitivityMatrixMPLAccel = shimmerObject.getSensitivityMatrixMPLAccel();
+			double[][] alignmentMatrixMPLAccel = shimmerObject.getAlignmentMatrixMPLAccel();
+			addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLAccel, sensitivityMatrixMPLAccel, alignmentMatrixMPLAccel);
+
+			//MPL Mag Calibration Configuration
+			double[][] offsetVectorMPLMag = shimmerObject.getOffsetVectorMPLMag();
+			double[][] sensitivityMatrixMPLMag = shimmerObject.getSensitivityMatrixMPLMag();
+			double[][] alignmentMatrixMPLMag = shimmerObject.getAlignmentMatrixMPLMag();
+			addCalibKinematicToDbConfigValues(configValues, offsetVectorMPLMag, sensitivityMatrixMPLMag, alignmentMatrixMPLMag);
 				
+			if(!shimmerObject.isSupportedNewImuSensors()){
 				//MPL Gyro Calibration Configuration
 				double[][] offsetVectorMPLGyro = shimmerObject.getOffsetVectorMPLGyro();
 				double[][] sensitivityMatrixMPLGyro = shimmerObject.getSensitivityMatrixMPLGyro();
@@ -12254,13 +12260,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int expBrdRev = ebd.getExpansionBoardRev();
 		
 		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
-				(expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=3)			// >= SR47-3-0
-				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=3) 		// >= SR48-3-0
-				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev>=2)	// >= SR49-2-0
-				|| (expBrdId==HW_ID_SR_CODES.SHIMMER3 && expBrdRev>=6)					// >= SR31-6-0
-				|| (expBrdRev==171)														// == SRx-x-171 -> any expansion board attached to a new IMU base board 
-				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE && expBrdRev>=3)		// Future unified board
-				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI && expBrdRev>=3)		// Future unified board
+				(expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.EXG_UNIFIED)			// >= SR47-3-0
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.GSR_UNIFIED) 		// >= SR48-3-0
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.BRIDGE_AMP)	// >= SR49-2-0
+				|| (expBrdId==HW_ID_SR_CODES.SHIMMER3 && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.IMU)							// >= SR31-6-0
+				|| (expBrdRev==Configuration.Shimmer3.NEW_IMU_EXP_REV.ANY_EXP_BRD_WITH_SPECIAL_REV)													// == SRx-x-171
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.PROTO3_DELUXE)	// Future unified board
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.PROTO3_MINI)		// Future unified board
 				)){
 			return true;
 		}

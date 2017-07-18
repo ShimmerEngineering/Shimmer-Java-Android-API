@@ -1970,6 +1970,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 						continue;
 					}
 				}
+			} else {
+				//TODO add support for New IMU Shimmer3 with any attached Expansion board (i.e. SRx-x-171)
 			}
 			
 			if(isThisVerCompatibleWith( 
@@ -2134,9 +2136,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				boolean result = sensorDetails.isEnabled();
 				boolean successfullySet = result==state? true:false; 
 				if(!successfullySet){
-					consolePrintErrLn("Failed to setSensorEnabledState for sensor:\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+					consolePrintLn("WARNING!!! Failed to setSensorEnabledState for sensor:\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
+					UtilShimmer.consolePrintCurrentStackTrace();
 				}
 				return successfullySet;
+			} else {
+				consolePrintLn("WARNING!!! SensorMapKey not found:" + sensorMapKey);
+				UtilShimmer.consolePrintCurrentStackTrace();
 			}
 			return false;
 		}

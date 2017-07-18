@@ -924,21 +924,21 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		mapOfConfig.put(DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
-		mapOfConfig.put(DatabaseConfigHandle.GYRO_RATE, getMPU9X50GyroAccelRate());
+		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
+		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.GYRO_RATE, getMPU9X50GyroAccelRate());
 
-		mapOfConfig.put(DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE, getMPU9X50AccelRange());
+		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE, getMPU9X50AccelRange());
 
-		mapOfConfig.put(DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE, getMPU9X50MPLSamplingRate());
-		mapOfConfig.put(DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE, getMPU9X50MagSamplingRate());
-		mapOfConfig.put(DatabaseConfigHandle.MPU_MOT_CAL_CFG, getMPU9X50MotCalCfg());
-		mapOfConfig.put(DatabaseConfigHandle.MPU_DMP, getMPU9X50DMP());
-		mapOfConfig.put(DatabaseConfigHandle.MPU_LPF, getMPU9X50LPF());
+		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE, getMPU9X50MPLSamplingRate());
+		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE, getMPU9X50MagSamplingRate());
+		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.MPU_MOT_CAL_CFG, getMPU9X50MotCalCfg());
+		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.MPU_DMP, getMPU9X50DMP());
+		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.MPU_LPF, getMPU9X50LPF());
 
 		super.addCalibDetailsToDbMap(mapOfConfig, 
 				getCurrentCalibDetailsGyro(), 
-				DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
-				DatabaseConfigHandle.GYRO_CALIB_TIME);
+				SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
+				SensorMPU9150.DatabaseConfigHandle.GYRO_CALIB_TIME);
 		
 		AbstractSensor.addCalibDetailsToDbMap(mapOfConfig, 
 				SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC,
