@@ -8,6 +8,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL;
 import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails;
@@ -174,6 +175,10 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		
 		// process data originating from the Shimmer
 		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		
+		if(this instanceof SensorLSM303DLHC){
+			//TODO swap Y and Z channels 
+		}
 		
 		//Calibration
 		if(mEnableCalibration){
