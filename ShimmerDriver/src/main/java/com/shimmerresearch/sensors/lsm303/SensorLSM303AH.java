@@ -203,7 +203,7 @@ public class SensorLSM303AH extends SensorLSM303 {
 	public static final Integer[] ListofLSM303AHMagRateConfigValues={0,1,2,3};
 
 	public static final String[] ListofLSM303AHMagRange={"+/- 49.152Ga"}; 
-	public static final Integer[] ListofLSM303AHMagRangeConfigValues={1};  
+	public static final Integer[] ListofLSM303AHMagRangeConfigValues={0};  
 
 	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
 			SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE,
@@ -470,6 +470,8 @@ public class SensorLSM303AH extends SensorLSM303 {
 		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL;
 		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG;
 		super.initialise();
+		
+		mMagRange = ListofLSM303AHMagRangeConfigValues[0];
 		
 		updateCurrentAccelWrCalibInUse();
 		updateCurrentMagCalibInUse();
