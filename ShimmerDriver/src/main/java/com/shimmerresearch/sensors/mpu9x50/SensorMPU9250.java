@@ -395,10 +395,12 @@ public class SensorMPU9250 extends SensorMPU9X50 {
 	@Override
 	public LinkedHashMap<String, Object> getConfigMapForDb() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
-		mapOfConfig.put(DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
-		mapOfConfig.put(DatabaseConfigHandle.GYRO_RATE, getMPU9X50GyroAccelRate());
+		mapOfConfig.put(SensorMPU9250.DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
+		mapOfConfig.put(SensorMPU9250.DatabaseConfigHandle.GYRO_RATE, getMPU9X50GyroAccelRate());
 		
-		mapOfConfig.put(DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE, getMPU9X50MagSamplingRate());
+		mapOfConfig.put(SensorMPU9250.DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE, getMPU9X50AccelRange());
+
+		mapOfConfig.put(SensorMPU9250.DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE, getMPU9X50MagSamplingRate());
 
 		super.addCalibDetailsToDbMap(mapOfConfig, 
 				getCurrentCalibDetailsGyro(), 

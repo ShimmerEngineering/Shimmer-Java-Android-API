@@ -409,10 +409,10 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(GuiLabelConfig.LSM303_MAG_RANGE,
 					GuiLabelConfig.LSM303_MAG_RATE),
-			//MAG channel order is XZY instead of XYZ
+			//MAG channel parsing order is XZY instead of XYZ but it would be better to represent it on the GUI in XYZ
 			Arrays.asList(ObjectClusterSensorName.MAG_X,
-					ObjectClusterSensorName.MAG_Z,
-					ObjectClusterSensorName.MAG_Y));
+					ObjectClusterSensorName.MAG_Y,
+					ObjectClusterSensorName.MAG_Z));
 	
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {

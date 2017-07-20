@@ -145,11 +145,40 @@ public class ShimmerVerObject implements Serializable {
 				firmwareVersionInternal);
 
 		mHardwareVersion = hardwareVersion;
-//		mShimmerExpansionBoardId = shimmerExpansionBoardId;
 		mExpansionBoardDetails = new ExpansionBoardDetails(shimmerExpansionBoardId, shimmerExpansionBoardRev, ShimmerVerDetails.ANY_VERSION);
 		parseShimmerVerDetails();
 	}
-	
+
+	/**
+	 * Used specifically for compatible version checking
+	 * 
+	 * @param hardwareVersion
+	 * @param firmwareIdentifier
+	 * @param firmwareVersionMajor
+	 * @param firmwareVersionMinor
+	 * @param firmwareVersionInternal
+	 * @param shimmerExpansionBoardId
+	 */
+	public ShimmerVerObject(
+			int hardwareVersion, 
+			int firmwareIdentifier,
+			int firmwareVersionMajor, 
+			int firmwareVersionMinor, 
+			int firmwareVersionInternal,
+			int shimmerExpansionBoardId,
+			int shimmerExpansionBoardRev,
+			int shimmerExpansionBoardSpecialRev) {
+
+		this(firmwareIdentifier,
+				firmwareVersionMajor,
+				firmwareVersionMinor,
+				firmwareVersionInternal);
+
+		mHardwareVersion = hardwareVersion;
+		mExpansionBoardDetails = new ExpansionBoardDetails(shimmerExpansionBoardId, shimmerExpansionBoardRev, shimmerExpansionBoardSpecialRev);
+		parseShimmerVerDetails();
+	}
+
 	/**
 	 * Empty constructor used when finding the current information from a docked
 	 * Shimmer/SPAN through the dock's UART communication channel.
