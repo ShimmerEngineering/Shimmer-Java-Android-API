@@ -61,7 +61,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	 */
 	protected boolean mLowPowerMag = false;
 
-	protected int mMagRange = 1;
+	protected int mMagRange = 0;
 
 	public CalibDetailsKinematic mCurrentCalibDetailsMag = null;//calibDetailsMag1p3;
 	// ----------   Mag end ---------------
@@ -628,6 +628,9 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	public CalibDetailsKinematic getCurrentCalibDetailsMag(){
 //		return getCurrentCalibDetails(mSensorMapKeyMag, getMagRange());
+		if(mCurrentCalibDetailsMag==null){
+			updateCurrentMagCalibInUse();
+		}
 		return mCurrentCalibDetailsMag;
 	}
 
@@ -642,7 +645,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	
 	
 	public byte[] generateCalParamLSM303DLHCMag(){
-		return mCurrentCalibDetailsMag.generateCalParamByteArray();
+		return getCurrentCalibDetailsMag().generateCalParamByteArray();
 	}
 	
 	public void parseCalibParamFromPacketAccelLsm(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
@@ -650,7 +653,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	}
 
 	public void parseCalibParamFromPacketMag(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
-		mCurrentCalibDetailsMag.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
+		getCurrentCalibDetailsMag().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 	
 	
@@ -660,7 +663,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	public void setDefaultCalibrationShimmer3Mag() {
-		mCurrentCalibDetailsMag.resetToDefaultParameters();
+		getCurrentCalibDetailsMag().resetToDefaultParameters();
 	}
 
 	public boolean isUsingDefaultWRAccelParam(){
@@ -668,7 +671,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	}
 	
 	public boolean isUsingDefaultMagParam(){
-		return mCurrentCalibDetailsMag.isUsingDefaultParameters(); 
+		return getCurrentCalibDetailsMag().isUsingDefaultParameters(); 
 	}
 
 	public double[][] getAlignmentMatrixWRAccel(){
@@ -687,15 +690,15 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	public double[][] getAlignmentMatrixMag(){
-		return mCurrentCalibDetailsMag.getValidAlignmentMatrix();
+		return getCurrentCalibDetailsMag().getValidAlignmentMatrix();
 	}
 
 	public double[][] getSensitivityMatrixMag(){
-		return mCurrentCalibDetailsMag.getValidSensitivityMatrix();
+		return getCurrentCalibDetailsMag().getValidSensitivityMatrix();
 	}
 
 	public double[][] getOffsetVectorMatrixMag(){
-		return mCurrentCalibDetailsMag.getValidOffsetVector();
+		return getCurrentCalibDetailsMag().getValidOffsetVector();
 	}
 
 
