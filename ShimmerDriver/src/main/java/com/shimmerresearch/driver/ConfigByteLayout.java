@@ -66,9 +66,12 @@ public abstract class ConfigByteLayout implements Serializable {
 	 */
 	public static byte[] createEmptyConfigByteArray(int size) {
 		byte[] newArray = new byte[size];
-		for(byte b:newArray) {
-			b = (byte)0xFF;
-//			b = (byte)0x00;
+//		for(byte b:newArray) {
+//			b = (byte)0xFF;
+////			b = (byte)0x00;
+//		}
+		for(int i=0;i<size;i++){
+			newArray[i] = (byte)0xFF; 
 		}
 		return newArray;
 	}

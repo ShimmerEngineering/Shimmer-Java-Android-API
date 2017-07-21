@@ -557,7 +557,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mConfigFileCreationFlag = true;
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
 	protected boolean mIsCrcEnabled = false;
-	protected boolean mIsBtFactoryReset = false;
 
 	protected byte[] mInquiryResponseBytes;	
 	
@@ -4595,10 +4594,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	public void setBtFactoryReset(boolean isBtFactoryReset) {
-		mIsBtFactoryReset = isBtFactoryReset;
-	}
-	
 	/* Need to override here because ShimmerDevice uses a different sensormap
 	 * (non-Javadoc)
 	 * @see com.shimmerresearch.driver.ShimmerDevice#setDefaultShimmerConfiguration()
@@ -4964,10 +4959,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mConfigFileCreationFlag = false;
 				}
 
-				if(configByteLayoutCast.idxBtFactoryReset>0){
-					mIsBtFactoryReset = ((configBytes[configByteLayoutCast.idxBtFactoryReset]&0xFF)==0xAA)? true:false;
-				}
-				
 				//Removed below because it was never fully used and has be removed from LogAndStream v0.6.5 onwards
 //				if(((infoMemBytes[infoMemLayoutCast.idxSDConfigDelayFlag]>>infoMemLayoutCast.bitShiftSDCalibFileWriteFlag)&infoMemLayoutCast.maskSDCalibFileWriteFlag) == infoMemLayoutCast.maskSDCalibFileWriteFlag) {
 //					mCalibFileCreationFlag = true;
@@ -5298,10 +5289,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 						mConfigBytes[configByteLayoutCast.idxSDConfigDelayFlag] |= configByteLayoutCast.bitShiftSDCfgFileWriteFlag;
 						
-						if(configByteLayoutCast.idxBtFactoryReset>0){
-							mConfigBytes[configByteLayoutCast.idxBtFactoryReset] = (byte) (mIsBtFactoryReset? 0xAA:0x00);
-						}
-	
 						//Removed below because it was never fully used and has be removed from LogAndStream v0.6.5 onwards
 //						 // Tells the Shimmer to create a new calibration files on undock/power cycle
 //						byte calibFileWriteBit = (byte) (mCalibFileCreationFlag? (infoMemLayout.maskSDCalibFileWriteFlag << infoMemLayout.bitShiftSDCalibFileWriteFlag):0x00);
