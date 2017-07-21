@@ -13,8 +13,10 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.pcDriver.ShimmerPC;
@@ -60,15 +62,13 @@ public class PPGToHRExample extends BasicProcessWithCallBack {
 				//checkECGEnabled();	//Check if ECG is enabled first before streaming
 				//5 beats to average
 				if (mConfigureOnFirstTime){
-					shimmerDevice.writeShimmerAndSensorsSamplingRate(128);
-					shimmerDevice.writeEnabledSensors(Shimmer3.SensorBitmap.SENSOR_INT_A13);
-					shimmerDevice.writeInternalExpPower(1);
-					shimmerDevice.writeDerivedChannels(DerivedSensorsBitMask.PPG_12_13);
+					ShimmerPC cloneDevice = shimmerDevice.deepClone();
+					cloneDevice.setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13, true);
+					AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
+			 		bluetoothManager.configureShimmer(cloneDevice);
+			 		shimmerDevice.writeShimmerAndSensorsSamplingRate(128);
 					heartRateCalculation = new PPGtoHRAlgorithm(shimmerDevice.getSamplingRateShimmer(), 5, 10);
-					
-					
-			
-					
+									
 					try{
 						double [] cutoff = {5.0};
 						lpf = new Filter(Filter.LOW_PASS, shimmerDevice.getSamplingRateShimmer(), cutoff);
