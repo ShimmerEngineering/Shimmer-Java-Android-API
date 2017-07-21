@@ -7,6 +7,8 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 
+import come.shimmerresearch.bluetoothmanager.guiUtilities.AbstractEnableSensorsDialog;
+
 import javax.swing.JDialog;
 import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
