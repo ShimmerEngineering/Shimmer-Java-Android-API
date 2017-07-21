@@ -144,7 +144,7 @@ public class UtilShimmer implements Serializable {
 	}
 	
 	public static String convertMilliSecondsToHrMinSecUTC(long milliSeconds) {
-		DateFormat dfLocal = new SimpleDateFormat("dd:HH:mm:ss");
+		DateFormat dfLocal = new SimpleDateFormat("HH:mm:ss");
 		dfLocal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		// int style = DateFormat.MEDIUM;
 		// dfLocal = DateFormat.getDateInstance("HH:mm:ss", Locale.UK);

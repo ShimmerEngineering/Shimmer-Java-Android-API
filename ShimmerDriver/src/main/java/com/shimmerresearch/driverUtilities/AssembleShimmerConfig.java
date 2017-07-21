@@ -24,7 +24,11 @@ public class AssembleShimmerConfig {
 		generateMultipleShimmerConfig(listOfShimmersToConfigureClone, commType, true, true, true);
 	}
 	
-	public static void generateMultipleShimmerConfig(List<ShimmerDevice> listOfShimmersToConfigureClone, COMMUNICATION_TYPE commType, boolean isBasic, boolean overrideShowErrorLedsRtc, boolean overrideShowErrorLedsSd){
+	public static void generateMultipleShimmerConfig(List<ShimmerDevice> listOfShimmersToConfigureClone, 
+			COMMUNICATION_TYPE commType, 
+			boolean isBasic, 
+			boolean overrideShowErrorLedsRtc, 
+			boolean overrideShowErrorLedsSd){
 		
 		listForConfiguringDocked.clear();
 		listForConfiguringBT.clear();
@@ -140,6 +144,9 @@ public class AssembleShimmerConfig {
 							!shimmerDevice.isStreaming() 
 							&& commType==COMMUNICATION_TYPE.DOCK){
 						listForConfiguringDocked.add(shimmerDevice.deepClone());
+						
+						System.err.println("Fs (Hz): " +shimmerDevice.getSamplingRateShimmer());
+						System.err.println("PRE-CONFIG");
 					}
 					// Configure for bluetooth. 
 					else if(((shimmerDevice instanceof ShimmerBluetooth) || (shimmerDevice instanceof Shimmer4)) 

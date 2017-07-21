@@ -719,7 +719,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		updateSamplingRatesMapWithCommsTypes();
 	}
 	//------------------- Communication route related End -------------------------------
-
+	
 	//------------------- SD card related Start -------------------------------
 	public boolean isFirstSdAccess() {
 		return mShimmerSDCardDetails.isFirstSdAccess();
@@ -828,6 +828,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	//------------------- SD card related End -------------------------------
 
+	
+	public boolean isConfigurationReadSuccess(){
+		return mConfigurationReadSuccess;
+	}
+	
+	public void setConfigurationReadSuccess(boolean configurationReadSuccess){
+		mConfigurationReadSuccess = configurationReadSuccess;
+	}
 	
 	public ShimmerVerObject getShimmerVerObject() {
 		return mShimmerVerObject;
@@ -1538,7 +1546,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void setFirstDockRead() {
 		setFirstSdAccess(true);
-		mConfigurationReadSuccess = false;
+		setConfigurationReadSuccess(false);
 		mReadHwFwSuccess = false;
 		mReadDaughterIDSuccess = false;
 		writeRealWorldClockFromPcTimeSuccess = false;
