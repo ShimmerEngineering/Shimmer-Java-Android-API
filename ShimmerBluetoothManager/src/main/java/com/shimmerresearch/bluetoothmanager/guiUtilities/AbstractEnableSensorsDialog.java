@@ -16,6 +16,8 @@ public abstract class AbstractEnableSensorsDialog {
 	ShimmerBluetoothManager bluetoothManager;
 	protected Object[] listOfSensors;
 	protected int[] sensorKeys;
+	protected String[] arraySensors;
+	protected boolean[] listEnabled;
 	public AbstractEnableSensorsDialog(ShimmerDevice shimmer,ShimmerBluetoothManager btManager) {
 		this.shimmer = shimmer;
 		clone = shimmer.deepClone();
@@ -54,6 +56,8 @@ public abstract class AbstractEnableSensorsDialog {
 		 }
 		 sensorKeys = new int[count];
 		 listOfSensors = new Object[count];
+		 arraySensors = new String[count];
+		 listEnabled = new boolean[count];
 		 count = 0;
 		 
 		 
@@ -64,6 +68,8 @@ public abstract class AbstractEnableSensorsDialog {
 				 //filter out names
 				 createCheckBox(sensorName,sd.isEnabled(),count);
 				 sensorKeys[count] = key;
+				 arraySensors[count] = sd.mSensorDetailsRef.mGuiFriendlyLabel;
+				 listEnabled[count] = sd.isEnabled();
 				 count++;
 			 }
 		 }
