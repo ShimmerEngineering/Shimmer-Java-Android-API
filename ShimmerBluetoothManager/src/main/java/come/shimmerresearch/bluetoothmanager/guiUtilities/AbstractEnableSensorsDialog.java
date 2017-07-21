@@ -1,4 +1,4 @@
-package com.shimmerresearch.simpleexamples;
+package come.shimmerresearch.bluetoothmanager.guiUtilities;
 
 import java.util.Map;
 
@@ -10,11 +10,11 @@ import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 
 public abstract class AbstractEnableSensorsDialog {
 
-	ShimmerDevice shimmer;
-	ShimmerDevice clone;
+	protected ShimmerDevice shimmer;
+	protected ShimmerDevice clone;
 //	ShimmerDevice shimmer;
 	ShimmerBluetoothManager bluetoothManager;
-	Object[] listOfSensors;
+	protected Object[] listOfSensors;
 	protected int[] sensorKeys;
 	public AbstractEnableSensorsDialog(ShimmerDevice shimmer,ShimmerBluetoothManager btManager) {
 		this.shimmer = shimmer;
