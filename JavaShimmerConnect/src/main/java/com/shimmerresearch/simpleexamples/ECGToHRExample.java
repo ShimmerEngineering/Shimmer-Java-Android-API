@@ -9,12 +9,16 @@ import com.shimmerresearch.biophysicalprocessing.ECGtoHRAdaptive;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.SensorBitmap;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 
@@ -53,9 +57,15 @@ public class ECGToHRExample extends BasicProcessWithCallBack{
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				shimmerDevice = (ShimmerPC) bluetoothManager.getShimmerDeviceBtConnected(deviceComPort);
 				if (mConfigureOnFirstTime){
-					shimmerDevice.writeEnabledSensors(SensorBitmap.SENSOR_EXG1_24BIT|SensorBitmap.SENSOR_EXG2_24BIT);
-					shimmerDevice.enableDefaultECGConfiguration();
-					shimmerDevice.writeShimmerAndSensorsSamplingRate(256);
+					ShimmerPC cloneDevice = shimmerDevice.deepClone();
+					cloneDevice.setEnabledAndDerivedSensorsAndUpdateMaps(0, 0);
+					cloneDevice.setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_ECG, true);
+					cloneDevice.setDefaultECGConfiguration(256);
+					AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
+			 		bluetoothManager.configureShimmer(cloneDevice);
+			 		shimmerDevice.writeShimmerAndSensorsSamplingRate(256);
+					//shimmerDevice.writeEnabledSensors(SensorBitmap.SENSOR_EXG1_24BIT|SensorBitmap.SENSOR_EXG2_24BIT);
+					//shimmerDevice.enableDefaultECGConfiguration();
 					//checkECGEnabled();	//Check if ECG is enabled first before streaming
 					heartRateCalculationECG = new ECGtoHRAdaptive(shimmerDevice.getSamplingRateShimmer());
 					shimmerDevice.startStreaming();
