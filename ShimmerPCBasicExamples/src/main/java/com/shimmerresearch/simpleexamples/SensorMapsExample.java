@@ -132,8 +132,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 				if(shimmer.isConnected()) {
 					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
-						SensorConfigDialog configDialog = new SensorConfigDialog();
-						configDialog.initialize(shimmer,btManager);
+						SensorConfigDialog configDialog = new SensorConfigDialog(shimmer,btManager);
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
