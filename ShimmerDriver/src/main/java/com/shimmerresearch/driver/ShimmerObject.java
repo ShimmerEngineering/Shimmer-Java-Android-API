@@ -4717,7 +4717,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			byte samplingRateMSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate+1] & configByteLayoutCast.maskShimmerSamplingRate);
 			byte samplingRateLSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate] & configByteLayoutCast.maskShimmerSamplingRate);
 			double samplingRate = convertSamplingRateBytesToFreq(samplingRateLSB, samplingRateMSB);
-			setSamplingRateShimmer(samplingRate);
+			setShimmerAndSensorsSamplingRate(samplingRate);
 	
 			mBufferSize = (int)(configBytes[configByteLayoutCast.idxBufferSize] & configByteLayoutCast.maskBufferSize);
 			
