@@ -128,7 +128,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public ShimmerSDCardDetails mShimmerSDCardDetails = new ShimmerSDCardDetails(); 
 
 	public boolean mReadHwFwSuccess = false;
-	public boolean mConfigurationReadSuccess = false;
+	private boolean mConfigurationReadSuccess = false;
 	public boolean mReadDaughterIDSuccess = false;
 	public boolean writeRealWorldClockFromPcTimeSuccess = false;
 	
