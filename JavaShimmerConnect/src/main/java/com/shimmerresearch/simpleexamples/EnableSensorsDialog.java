@@ -52,19 +52,6 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 	public void initialize() {
 		super.initialize();
 	}
-	
-	private void updateCheckboxes(JCheckBox[] checkboxes, ShimmerDevice shimmer, int[] sensorKeys) {
-		
-		for(int i=0; i<checkboxes.length; i++) {
-			
-			if(shimmer.isSensorEnabled(sensorKeys[i])) {
-				checkboxes[i].setSelected(true);
-			} else {
-				checkboxes[i].setSelected(false);
-			}
-			
-		}
-	}
 
 	@Override
 	protected void createWriteButton() {
