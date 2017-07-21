@@ -1,4 +1,4 @@
-package come.shimmerresearch.bluetoothmanager.guiUtilities;
+package com.shimmerresearch.bluetoothmanager.guiUtilities;
 
 import java.util.Map;
 

@@ -1,13 +1,12 @@
 package com.shimmerresearch.simpleexamples;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.bluetoothmanager.guiUtilities.AbstractEnableSensorsDialog;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
-
-import come.shimmerresearch.bluetoothmanager.guiUtilities.AbstractEnableSensorsDialog;
 
 import javax.swing.JDialog;
 import javax.swing.AbstractButton;
