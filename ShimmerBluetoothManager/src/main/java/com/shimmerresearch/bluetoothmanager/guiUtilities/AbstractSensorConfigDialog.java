@@ -17,6 +17,7 @@ import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 public abstract class AbstractSensorConfigDialog {
 
 	protected ShimmerDevice cloneDevice;
+	protected ShimmerDevice shimmer;
 	protected ShimmerBluetoothManager bluetoothManager;
 	public abstract void createComboBox(int numOfOptions,String key,ConfigOptionDetailsSensor cods,Object[] checkBox);
 	public abstract void createEditText(String key);
@@ -24,9 +25,12 @@ public abstract class AbstractSensorConfigDialog {
 	public abstract void createFrame();
 	public abstract void showFrame();
 	protected int dialogHeight = 0;
-	
+	protected List<String> listOfKeys;
+	protected Map<Integer, SensorDetails> sensorMap;
+	protected Map<String, ConfigOptionDetailsSensor> configOptionsMap;
 	public AbstractSensorConfigDialog(ShimmerDevice shimmerDevice, ShimmerBluetoothManager bluetoothManager){
 		cloneDevice = shimmerDevice.deepClone();
+		shimmer = shimmerDevice;
 		this.bluetoothManager = bluetoothManager;
 		createFrame();
 		initialize(shimmerDevice, bluetoothManager);
@@ -43,9 +47,9 @@ public abstract class AbstractSensorConfigDialog {
 	public void initialize(ShimmerDevice shimmerDevice, ShimmerBluetoothManager bluetoothManager) {
 				
 		cloneDevice = shimmerDevice.deepClone();
-		Map<Integer, SensorDetails> sensorMap = cloneDevice.getSensorMap();
-		Map<String, ConfigOptionDetailsSensor> configOptionsMap = cloneDevice.getConfigOptionsMap();
-		List<String> listOfKeys = new ArrayList<String>();
+		sensorMap = cloneDevice.getSensorMap();
+		configOptionsMap = cloneDevice.getConfigOptionsMap();
+		listOfKeys = new ArrayList<String>();
 		
 		for(SensorDetails sd : sensorMap.values()) {
 			if(sd.mSensorDetailsRef.mListOfConfigOptionKeysAssociated!=null && sd.isEnabled()) {
@@ -55,6 +59,20 @@ public abstract class AbstractSensorConfigDialog {
 		dialogHeight=0;
 		//Box[] box = Box.createVerticalBox();
 
+		//Taken from Android is this needed - start
+		List<String> keysToRemove = new ArrayList<String>();
+
+        for(String key : listOfKeys) {
+            ConfigOptionDetailsSensor cods = configOptionsMap.get(key);
+            if(cods == null) {
+                keysToRemove.add(key);
+            }
+        }
+
+        for(String key : keysToRemove) {
+            listOfKeys.remove(key);
+        }
+      //Taken from ANdroid is this needed - end
 		
 		for(String key : listOfKeys) {
 			ConfigOptionDetailsSensor cods = configOptionsMap.get(key);
