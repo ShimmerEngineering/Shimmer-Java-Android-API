@@ -3544,7 +3544,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		mSignalNameArray=signalNameArray;
 		mSignalDataTypeArray=signalDataTypeArray;
-		mPacketSize=packetSize;
+		setPacketSize(packetSize);
 	}
 
 	/**
@@ -3827,7 +3827,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected void interpretInqResponse(byte[] bufferInquiry){
 		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
-			mPacketSize = mTimeStampPacketByteSize +bufferInquiry[3]*2; 
+			setPacketSize(mTimeStampPacketByteSize +bufferInquiry[3]*2); 
 			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
 			if (getLSM303MagRate()==3 && getSamplingRateShimmer()>10){
 				setLowPowerMag(true);
@@ -5055,7 +5055,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		byte[] configByteBackup = mConfigBytes.clone();
 		
 		// InfoMem defaults to 0xFF on firmware flash
-		mConfigBytes = configByteLayoutCast.createEmptyConfigByteArray(mConfigBytes.length);
+		mConfigBytes = configByteLayoutCast.createConfigByteArrayEmpty(mConfigBytes.length);
 //		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray();
 		
 		if(getHardwareVersion()==HW_ID.SHIMMER_3){

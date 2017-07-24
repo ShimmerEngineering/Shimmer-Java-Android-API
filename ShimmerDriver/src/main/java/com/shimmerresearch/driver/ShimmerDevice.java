@@ -155,9 +155,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public long mShimmerLastReadRealTimeClockValue = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
 	protected ConfigByteLayout mConfigByteLayout;// = new InfoMemLayoutShimmer3(); //default
-	protected byte[] mConfigBytes = ConfigByteLayout.createEmptyConfigByteArray(512);
+	protected byte[] mConfigBytes = ConfigByteLayout.createConfigByteArrayEmpty(512);
 	/**shows the original contents of the Infomem any configuration is changed */
-	protected byte[] mInfoMemBytesOriginal = ConfigByteLayout.createEmptyConfigByteArray(512);
+	protected byte[] mInfoMemBytesOriginal = ConfigByteLayout.createConfigByteArrayEmpty(512);
 	
 	public byte[] mCalibBytes = new byte[]{};
 	public HashMap<Integer, String> mCalibBytesDescriptions = new HashMap<Integer, String>();
@@ -2352,7 +2352,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		sensorMapUpdateFromEnabledSensorsVars(commsType);
 		algorithmMapUpdateFromEnabledSensorsVars();
 		
-		setShimmerAndSensorsSamplingRate(getSamplingRateShimmer());
+//		setShimmerAndSensorsSamplingRate(getSamplingRateShimmer());
+		setSamplingRateSensors(getSamplingRateShimmer());
+		setSamplingRateAlgorithms(getSamplingRateShimmer());
 		
 		generateParserMap();
 	}
@@ -3109,6 +3111,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void setSamplingRateShimmer(double rateHz){
+		//For debugging sampling rate issues
+//		if(rateHz!=256){
+//			System.out.println("Shimmer:" + getMacId() + "\tSetting Shimmer sampling rate to " + rateHz);
+//			UtilShimmer.consolePrintCurrentStackTrace();
+//		}
+		
 		Iterator<COMMUNICATION_TYPE> iterator = mMapOfSamplingRatesShimmer.keySet().iterator();
 		while(iterator.hasNext()){
 			setSamplingRateShimmer(iterator.next(), rateHz);

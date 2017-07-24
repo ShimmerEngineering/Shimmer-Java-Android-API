@@ -2502,6 +2502,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	@Override
 	public void startStreaming() {
 		//mCurrentLEDStatus=-1;	
+		super.startStreaming();
 		
 		initialiseStreaming();
 
@@ -2533,7 +2534,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		mFirstPacketParsed=true;
 		resetCalibratedTimeStamp();
-		resetPacketLossVariables();
+//		resetPacketLossVariables();
 		mSync=true; // a backup sync done every time you start streaming
 	}
 	
