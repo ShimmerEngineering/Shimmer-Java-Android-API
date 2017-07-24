@@ -53,10 +53,25 @@ public abstract class ConfigByteLayout implements Serializable {
 	 * 
 	 * @return byte array
 	 */
-	public byte[] createEmptyConfigByteArray() {
-		return createEmptyConfigByteArray(calculateConfigByteLength());
+	public byte[] createConfigByteArrayEmpty() {
+		return createConfigByteArrayEmpty(calculateConfigByteLength());
 	}
 	
+	/**
+	 * Creates an empty byte array for the purposes of generating the
+	 * configuration bytes to write to the Shimmer.
+	 * 
+	 * @param size the size of the byte array to create.
+	 * @return byte array
+	 */
+	public static byte[] createConfigByteArrayEmpty(int size) {
+		byte[] newArray = new byte[size];
+		for(int i=0;i<size;i++){
+			newArray[i] = (byte)0x00;
+		}
+		return newArray;
+	}
+
 	/**
 	 * Creates an empty byte array for the purposes of generating the
 	 * configuration bytes to write to the Shimmer (default all bytes = 0xFF).
@@ -64,18 +79,14 @@ public abstract class ConfigByteLayout implements Serializable {
 	 * @param size the size of the byte array to create.
 	 * @return byte array
 	 */
-	public static byte[] createEmptyConfigByteArray(int size) {
+	public static byte[] createConfigByteArrayDefaultMemoryValues(int size) {
 		byte[] newArray = new byte[size];
-//		for(byte b:newArray) {
-//			b = (byte)0xFF;
-////			b = (byte)0x00;
-//		}
 		for(int i=0;i<size;i++){
 			newArray[i] = (byte)0xFF; 
 		}
 		return newArray;
 	}
-	
+
 	public static boolean checkConfigBytesValid(byte[] infoMemContents){
 		// Check first 6 bytes of InfoMem for 0xFF to determine if contents are valid 
 		byte[] comparisonBuffer = new byte[]{-1,-1,-1,-1,-1,-1};
