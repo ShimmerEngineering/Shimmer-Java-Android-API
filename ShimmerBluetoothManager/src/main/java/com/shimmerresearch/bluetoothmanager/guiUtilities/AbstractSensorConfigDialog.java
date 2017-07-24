@@ -32,9 +32,6 @@ public abstract class AbstractSensorConfigDialog {
 		cloneDevice = shimmerDevice.deepClone();
 		shimmer = shimmerDevice;
 		this.bluetoothManager = bluetoothManager;
-		createFrame();
-		initialize(shimmerDevice, bluetoothManager);
-		showFrame();
 	}
 	
 	public static void main(String[] args) {

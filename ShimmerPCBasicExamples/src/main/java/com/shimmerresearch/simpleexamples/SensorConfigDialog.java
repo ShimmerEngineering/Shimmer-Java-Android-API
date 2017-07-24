@@ -43,7 +43,9 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 	
 	public SensorConfigDialog(ShimmerPC shimmerDevice, BasicShimmerBluetoothManagerPc bluetoothManager) {
 		super(shimmerDevice, bluetoothManager);
-		// TODO Auto-generated constructor stub
+		createFrame();
+		initialize(shimmerDevice, bluetoothManager);
+		showFrame();
 	}
 
 	
