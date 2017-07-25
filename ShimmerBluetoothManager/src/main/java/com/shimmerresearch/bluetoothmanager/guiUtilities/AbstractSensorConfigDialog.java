@@ -112,23 +112,23 @@ public abstract class AbstractSensorConfigDialog {
 	
 
 	//JC: Can this replaced by getConfigValueUsingConfigLabel ? in Shimmer Device Class
-    private String getConfigValueLabelFromConfigLabel(String label){
-        ConfigOptionDetailsSensor cods = cloneDevice.getConfigOptionsMap().get(label);
-        int currentConfigInt = (int) cloneDevice.getConfigValueUsingConfigLabel(label);
-        int index = -1;
-        Integer[] values = cods.getConfigValues();
-        String[] valueLabels = cods.getGuiValues();
-        for (int i=0;i<values.length;i++){
-            if (currentConfigInt==values[i]){
-                index=i;
-            }
-        }
-        if (index==-1){
-            System.out.println();
-            return "";
-        }
-        return valueLabels[index];
-    }
+//    private String getConfigValueLabelFromConfigLabel(String label){
+//        ConfigOptionDetailsSensor cods = cloneDevice.getConfigOptionsMap().get(label);
+//        int currentConfigInt = (int) cloneDevice.getConfigValueUsingConfigLabel(label);
+//        int index = -1;
+//        Integer[] values = cods.getConfigValues();
+//        String[] valueLabels = cods.getGuiValues();
+//        for (int i=0;i<values.length;i++){
+//            if (currentConfigInt==values[i]){
+//                index=i;
+//            }
+//        }
+//        if (index==-1){
+//            System.out.println();
+//            return "";
+//        }
+//        return valueLabels[index];
+//    }
 
 	protected void writeConfiguration(){
 		AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
