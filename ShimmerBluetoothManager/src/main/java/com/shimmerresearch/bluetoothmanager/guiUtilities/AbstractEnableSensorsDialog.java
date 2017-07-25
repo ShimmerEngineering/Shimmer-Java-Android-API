@@ -1,6 +1,9 @@
 package com.shimmerresearch.bluetoothmanager.guiUtilities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -23,6 +26,8 @@ public abstract class AbstractEnableSensorsDialog {
 		clone = shimmer.deepClone();
 		this.bluetoothManager = btManager;
 	}
+	protected boolean mEnableFilter = false;
+	protected List<Integer> keysToFilter = null;
 	
 //	public EnableSensorsDialog(ShimmerDevice shimmerDevice) {
 //		shimmer = shimmerDevice;
@@ -54,6 +59,20 @@ public abstract class AbstractEnableSensorsDialog {
 				 count++;
 			 }
 		 }
+		 
+		 //Retrieve the key set and filter out keys if filter is enabled
+		 Set<Integer> tempKeySet = sensorMap.keySet();
+		 List<Integer> sensorKeySet = new ArrayList<Integer>();
+		 
+		 if(mEnableFilter = true && keysToFilter != null) {
+			 for(Integer key : tempKeySet) {
+				 if(!keysToFilter.contains(key)) {
+					 //Only add the key if it's not contained in the filter list
+					 sensorKeySet.add(key);
+				 }
+			 }
+		 }
+
 		 sensorKeys = new int[count];
 		 listOfSensors = new Object[count];
 		 arraySensors = new String[count];
@@ -61,15 +80,15 @@ public abstract class AbstractEnableSensorsDialog {
 		 count = 0;
 		 
 		 
-		 for(int key : sensorMap.keySet()) {
+		 for(int key : sensorKeySet) {
 			 SensorDetails sd = sensorMap.get(key);
 			 if(clone.isVerCompatibleWithAnyOf(sd.mSensorDetailsRef.mListOfCompatibleVersionInfo)) {
 				 String sensorName = sd.mSensorDetailsRef.mGuiFriendlyLabel;
-				 //filter out names
-				 createCheckBox(sensorName,sd.isEnabled(),count);
-				 sensorKeys[count] = key;
-				 arraySensors[count] = sd.mSensorDetailsRef.mGuiFriendlyLabel;
-				 listEnabled[count] = sd.isEnabled();
+					 createCheckBox(sensorName,sd.isEnabled(),count);
+					 sensorKeys[count] = key;
+					 arraySensors[count] = sd.mSensorDetailsRef.mGuiFriendlyLabel;
+					 listEnabled[count] = sd.isEnabled();
+				 
 				 count++;
 			 }
 		 }
@@ -80,6 +99,16 @@ public abstract class AbstractEnableSensorsDialog {
 	protected void writeConfiguration(){
 		AssembleShimmerConfig.generateSingleShimmerConfig(clone, COMMUNICATION_TYPE.BLUETOOTH);
  		bluetoothManager.configureShimmer(clone);
+	}
+	
+	/**
+	 * This allows the removal of certain keys from the list of keys and list of sensors in the dialog
+	 * @param keysToRemove	List of keys to be filtered out of the dialog's GUI 
+	 * @param enableFilter	Tells whether to enable the key filter
+	 */
+	public void setFilterKeys(List<Integer> keysToRemove, boolean enableFilter) {
+		mEnableFilter = enableFilter;
+		keysToFilter = keysToRemove;
 	}
 	
 	
