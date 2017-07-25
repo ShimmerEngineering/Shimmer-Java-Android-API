@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -29,6 +30,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenu;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.Canvas;
 
 public class SensorMapsExample extends BasicProcessWithCallBack {
@@ -112,6 +115,11 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				if(shimmer.isConnected()) {
 					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
 						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer,btManager);
+						//Filter out the sensors we don't want before initializing the dialog:
+						List<Integer> sensorKeysToFilter = new ArrayList<Integer>();
+						sensorKeysToFilter.add(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY);
+						sensorKeysToFilter.add(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM);
+						sensorsDialog.setFilterKeys(sensorKeysToFilter, true);
 						sensorsDialog.initialize();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
