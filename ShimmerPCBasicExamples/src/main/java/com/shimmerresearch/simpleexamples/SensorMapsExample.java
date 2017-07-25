@@ -119,7 +119,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 						List<Integer> sensorKeysToFilter = new ArrayList<Integer>();
 						sensorKeysToFilter.add(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY);
 						sensorKeysToFilter.add(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM);
-						sensorsDialog.setFilterKeys(sensorKeysToFilter, true);
+						sensorsDialog.setSensorKeysFilter(sensorKeysToFilter, true);
 						sensorsDialog.initialize();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -134,13 +134,20 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		});
 		mnTools.add(mntmSelectSensors);
 		
-		JMenuItem mntmDeviceConfiguration = new JMenuItem("Device configuration");
+		JMenuItem mntmDeviceConfiguration = new JMenuItem("Sensor configuration");
 		mntmDeviceConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				if(shimmer.isConnected()) {
 					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
 						SensorConfigDialog configDialog = new SensorConfigDialog(shimmer,btManager);
+						//Filter out the sensors we don't want to display before initializing the dialog:
+						List<String> filterList = new ArrayList<String>();
+						filterList.add("Wide Range Accel Rate");
+						configDialog.setSensorKeysFilter(filterList, true);	
+						configDialog.createFrame();
+						configDialog.initialize();
+						configDialog.showFrame();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}

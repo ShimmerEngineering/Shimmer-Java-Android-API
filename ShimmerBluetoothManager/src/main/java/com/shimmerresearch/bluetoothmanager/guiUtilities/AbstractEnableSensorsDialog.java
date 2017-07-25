@@ -61,15 +61,11 @@ public abstract class AbstractEnableSensorsDialog {
 		 }
 		 
 		 //Retrieve the key set and filter out keys if filter is enabled
-		 Set<Integer> tempKeySet = sensorMap.keySet();
-		 List<Integer> sensorKeySet = new ArrayList<Integer>();
+		 Set<Integer> sensorKeySet = sensorMap.keySet();
 		 
-		 if(mEnableFilter = true && keysToFilter != null) {
-			 for(Integer key : tempKeySet) {
-				 if(!keysToFilter.contains(key)) {
-					 //Only add the key if it's not contained in the filter list
-					 sensorKeySet.add(key);
-				 }
+		 if(mEnableFilter == true && keysToFilter != null) {
+			 for(Integer key : keysToFilter) {
+				 sensorKeySet.remove(key);
 			 }
 		 }
 
@@ -102,11 +98,11 @@ public abstract class AbstractEnableSensorsDialog {
 	}
 	
 	/**
-	 * This allows the removal of certain keys from the list of keys and list of sensors in the dialog
+	 * This allows the removal of sensor keys from the list of keys to generate the sensor list
 	 * @param keysToRemove	List of keys to be filtered out of the dialog's GUI 
 	 * @param enableFilter	Tells whether to enable the key filter
 	 */
-	public void setFilterKeys(List<Integer> keysToRemove, boolean enableFilter) {
+	public void setSensorKeysFilter(List<Integer> keysToRemove, boolean enableFilter) {
 		mEnableFilter = enableFilter;
 		keysToFilter = keysToRemove;
 	}
