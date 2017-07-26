@@ -95,8 +95,6 @@ public class ShimmerClock extends AbstractSensor {
 		public static final String TIMESTAMP_SYNC_EXPORT = "TimestampSync";
 //		public static final String REAL_TIME_CLOCK_SYNC = "RealTimeSync";
 		public static final String REAL_TIME_CLOCK = "Real_Time_Clock";
-		
-		public static final String EVENT_CHANNEL = "Event";
 	}
 	
 	public static final class DatabaseConfigHandle{
@@ -317,9 +315,9 @@ public class ShimmerClock extends AbstractSensor {
 
 	//TODO: Move to separate class
 	public static final ChannelDetails channelEventMarker = new ChannelDetails(
-			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
-			Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER,
-			DatabaseChannelHandles.EVENT_CHANNEL,
+			ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER,
+			ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER,
+			ShimmerStreamingProperties.DatabaseChannelHandles.EVENT_CHANNEL,
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
