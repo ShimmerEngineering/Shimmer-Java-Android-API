@@ -365,19 +365,38 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		// TODO Auto-generated method stub
 		return mSignalOutputUnitArray;
 	}
-	
+
+	/** Returns a list of channel details from enabled channels.
+	 * @return
+	 */
 	public List<ChannelDetails> getChannelDetails(){
+		return getChannelDetails(false);
+	}
+
+	/**
+	 * Generally returns a list of channel details from enabled channels. Can be
+	 * overridden in Algorithm classes depending on whether extra channels are
+	 * enabled by config options within the algorithm.
+	 * 
+	 * @param showDisabledChannels
+	 * @return
+	 */
+	public List<ChannelDetails> getChannelDetails(boolean showDisabledChannels){
 		if(mAlgorithmDetails!=null){
 			return mAlgorithmDetails.getChannelDetails();
 		}
 		return null;
 	}
 	
-	//TODO EN
-	//returns enabled channels
+	/** returns enabled channels
+	 * @return
+	 */
 	public Integer getNumberOfEnabledChannels(){
-		//redo with channels enabled
-		return mAlgorithmDetails.getChannelDetails().size();
+		List<ChannelDetails> listOfChannels = getChannelDetails(false);
+		if(listOfChannels!=null){
+			return listOfChannels.size();
+		}
+		return 0;
 	}
 
 	/**

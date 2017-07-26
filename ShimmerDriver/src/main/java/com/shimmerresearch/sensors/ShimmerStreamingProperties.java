@@ -33,6 +33,11 @@ public class ShimmerStreamingProperties extends AbstractSensor {
 		public static final String SENSOR_DISTANCE = "Distance";
 	}
 	
+	public static class DatabaseChannelHandles{
+		public static final String EVENT_CHANNEL = "Event";
+	}
+
+	
 	public static final ChannelDetails channelRssi = new ChannelDetails(
 			ObjectClusterSensorName.RSSI,
 			ObjectClusterSensorName.RSSI,

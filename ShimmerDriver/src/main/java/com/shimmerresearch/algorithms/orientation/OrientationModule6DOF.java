@@ -466,29 +466,29 @@ public class OrientationModule6DOF extends OrientationModule{
 
 
 	@Override
-	public List<ChannelDetails> getChannelDetails() {
+	public List<ChannelDetails> getChannelDetails(boolean showDisabledChannels) {
 
 		List<ChannelDetails> listOfChannelDetails = new ArrayList<ChannelDetails>();
 
 		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
-			if(isQuaternionOutput()){
+			if(showDisabledChannels || isQuaternionOutput()){
 				listOfChannelDetails.addAll(listChannelsQuat6DOF_WR);
 			}
-			if(isEulerOutput()){
+			if(showDisabledChannels || isEulerOutput()){
 				listOfChannelDetails.addAll(listChannelsEuler6DOF_WR);
 			}
-			if(isAxisAngleOutput()){
+			if(showDisabledChannels || isAxisAngleOutput()){
 				listOfChannelDetails.addAll(listChannelsAxisAngle6DOF_WR);
 			}
 		}
 		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
-			if(isQuaternionOutput()){
+			if(showDisabledChannels || isQuaternionOutput()){
 				listOfChannelDetails.addAll(listChannelsQuat6DOF_LN);
 			}
-			if(isEulerOutput()){
+			if(showDisabledChannels || isEulerOutput()){
 				listOfChannelDetails.addAll(listChannelsEuler6DOF_LN);
 			}
-			if(isAxisAngleOutput()){
+			if(showDisabledChannels || isAxisAngleOutput()){
 				listOfChannelDetails.addAll(listChannelsAxisAngle6DOF_LN);
 			}
 		}
