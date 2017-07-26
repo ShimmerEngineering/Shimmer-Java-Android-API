@@ -17,7 +17,7 @@ import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 public abstract class AbstractSensorConfigDialog {
 
 	protected ShimmerDevice cloneDevice;
-	protected ShimmerDevice shimmer;
+	protected ShimmerDevice shimmerDevice;
 	protected ShimmerBluetoothManager bluetoothManager;
 	public abstract void createComboBox(int numOfOptions,String key,ConfigOptionDetailsSensor cods,Object[] checkBox);
 	public abstract void createEditText(String key);
@@ -30,10 +30,9 @@ public abstract class AbstractSensorConfigDialog {
 	protected Map<String, ConfigOptionDetailsSensor> configOptionsMap;
 	
 	
-	public AbstractSensorConfigDialog(ShimmerDevice shimmerDevice, ShimmerBluetoothManager bluetoothManager){
-		cloneDevice = shimmerDevice.deepClone();
-		shimmer = shimmerDevice;
-		this.bluetoothManager = bluetoothManager;
+	public AbstractSensorConfigDialog(ShimmerDevice shimmer, ShimmerBluetoothManager btManager){
+		this.shimmerDevice = shimmer;
+		this.bluetoothManager = btManager;
 	}
 	
 	
@@ -50,7 +49,7 @@ public abstract class AbstractSensorConfigDialog {
 //	public void initialize(ShimmerDevice shimmerDevice, ShimmerBluetoothManager bluetoothManager) {
 	public void initialize() {
 				
-		cloneDevice = shimmer.deepClone();
+		cloneDevice = shimmerDevice.deepClone();
 		sensorMap = cloneDevice.getSensorMap();
 		configOptionsMap = cloneDevice.getConfigOptionsMap();
 		listOfKeys = new ArrayList<String>();
