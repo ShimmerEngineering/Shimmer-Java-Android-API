@@ -13,7 +13,7 @@ import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 
 public abstract class AbstractEnableSensorsDialog {
 
-	protected ShimmerDevice shimmer;
+	protected ShimmerDevice shimmerDevice;
 	protected ShimmerDevice clone;
 //	ShimmerDevice shimmer;
 	ShimmerBluetoothManager bluetoothManager;
@@ -22,8 +22,7 @@ public abstract class AbstractEnableSensorsDialog {
 	protected String[] arraySensors;
 	protected boolean[] listEnabled;
 	public AbstractEnableSensorsDialog(ShimmerDevice shimmer,ShimmerBluetoothManager btManager) {
-		this.shimmer = shimmer;
-		clone = shimmer.deepClone();
+		this.shimmerDevice = shimmer;
 		this.bluetoothManager = btManager;
 	}
 	protected boolean mEnableFilter = false;
@@ -50,6 +49,7 @@ public abstract class AbstractEnableSensorsDialog {
 
 		 createFrame();
 		 createWriteButton();
+		 clone = shimmerDevice.deepClone();
 		 Map<Integer, SensorDetails> sensorMap = clone.getSensorMap();
 		 int count = 0;
 		 

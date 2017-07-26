@@ -71,8 +71,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 				btComport = textField.getText();
 				btManager.connectShimmerThroughCommPort(btComport);
-				//textPaneStatus.setText("connecting...");
-				//shimmer.connect(textField.getText(),"");
 				
 			}
 		});
@@ -144,6 +142,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 						//Filter out the sensors we don't want to display before initializing the dialog:
 						List<String> filterList = new ArrayList<String>();
 						filterList.add("Wide Range Accel Rate");
+						configDialog.setSensorKeysFilter(filterList, true);
+						configDialog.showDialog();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
@@ -198,21 +198,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnStopStreaming.setBounds(415, 181, 187, 31);
 		frame.getContentPane().add(btnStopStreaming);
 		
-		plotManager.setTitle("Plot");
-		
-		
-		//TODO: Test
-//		JCheckBox[] cBoxTest = new JCheckBox[3];
-//		cBoxTest[0] = new JCheckBox("Test 0", true);
-//		cBoxTest[0].setBounds(50, 50, 50, 50);
-//		frame.getContentPane().add(cBoxTest[0]);
-//		cBoxTest[0].setVisible(true);
-//		
-//		cBoxTest[1] = new JCheckBox("Test 1", true);
-//		cBoxTest[1].setBounds(75, 100, 100, 100);
-//		frame.getContentPane().add(cBoxTest[1]);
-//		cBoxTest[1].setVisible(true);
-		
+		plotManager.setTitle("Plot");		
 	}
 
 	public static void main(String args[]) {
