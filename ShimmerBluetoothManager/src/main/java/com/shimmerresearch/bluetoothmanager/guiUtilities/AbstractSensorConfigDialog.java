@@ -36,6 +36,7 @@ public abstract class AbstractSensorConfigDialog {
 		this.bluetoothManager = bluetoothManager;
 	}
 	
+	
 	protected boolean mEnableFilter = false;
 	protected List<String> keysToFilter = null;
 	

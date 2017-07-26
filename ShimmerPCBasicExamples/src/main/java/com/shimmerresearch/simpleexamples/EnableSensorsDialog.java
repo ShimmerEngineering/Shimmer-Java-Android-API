@@ -48,9 +48,10 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 	}
 	
 	/**
+	 * Call this to initialize and display the dialog.
 	 * @wbp.parser.entryPoint
 	 */
-	public void initialize() {
+	public void showDialog() {
 		super.initialize();
 	}
 
@@ -78,9 +79,6 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 		 panel.setLayout((LayoutManager) new BoxLayout(panel, BoxLayout.Y_AXIS));
 
 		 dialog.getContentPane().add(panel, BorderLayout.CENTER);
-		 
-		 
-		 
 	}
 
 	@Override
