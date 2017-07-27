@@ -685,25 +685,16 @@ public class Configuration {
 			public static final int SHIMMER_GSR = 19;// Based on ADC1
 
 			//Digital channels begin
-			public static final int SHIMMER_MPU9150_GYRO = 30;
+			public static final int SHIMMER_MPU9X50_GYRO = 30;
 			/** Shimmer3 Wide-range digital accelerometer */
-			public static final int SHIMMER_LSM303DLHC_ACCEL = 31;
-			public static final int SHIMMER_LSM303DLHC_MAG = 32;
+			public static final int SHIMMER_LSM303_ACCEL = 31;
+			public static final int SHIMMER_LSM303_MAG = 32;
 			/** Shimmer3 Alternative accelerometer */
-			public static final int SHIMMER_MPU9150_ACCEL = 33;
+			public static final int SHIMMER_MPU9X50_ACCEL = 33;
 			/** Shimmer3 Alternative magnetometer */
-			public static final int SHIMMER_MPU9150_MAG = 34;
-			public static final int SHIMMER_MPU9150_TEMP = 35;
-			public static final int SHIMMER_BMP180_PRESSURE = 36;
-			
-			//New BMP IMU sensors
-//			public static final int SHIMMER_BMP280_PRESSURE = 37;
-//			public static final int SHIMMER_MPU9250_GYRO = 38;
-//			public static final int SHIMMER_LSM303AH_ACCEL = 39;
-//			public static final int SHIMMER_LSM303AH_MAG = 40;
-//			public static final int SHIMMER_MPU9250_ACCEL = 41;
-//			public static final int SHIMMER_MPU9250_MAG = 42;
-			
+			public static final int SHIMMER_MPU9X50_MAG = 34;
+			public static final int SHIMMER_MPU9X50_TEMP = 35;
+			public static final int SHIMMER_BMPX80_PRESSURE = 36;
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
@@ -1556,7 +1547,7 @@ public class Configuration {
 			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
 				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.ordinal(), new SensorGroupingDetails(
 						Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.tileText,
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
+						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO),
 						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 			}
 			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){

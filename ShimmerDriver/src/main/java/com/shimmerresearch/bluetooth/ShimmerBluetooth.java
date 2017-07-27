@@ -737,11 +737,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					if(mCurrentCommand==STOP_STREAMING_COMMAND 
 							|| mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
 						stopTimerCheckForAckOrResp();
+						
+						// Wait to ensure the packet has been fully received and serial port buffer is filled with any remaining data packets
+						threadSleep(200); 
+
 						mIsStreaming=false;
 						mTransactionCompleted=true;
 						mWaitForAck=false;
 						
-						delayForBtResponse(200); // Wait to ensure the packet has been fully received
+//						delayForBtResponse(200); // Wait to ensure the packet has been fully received
 						byteStack.clear();
 	
 						clearSerialBuffer();

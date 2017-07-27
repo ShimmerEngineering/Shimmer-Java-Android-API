@@ -130,13 +130,13 @@ public class SensorBMP180 extends SensorBMPX80 {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE, SensorBMP180.sensorBmp180);
+        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMPX80_PRESSURE, SensorBMP180.sensorBmp180);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
     
     public static final SensorGroupingDetails sensorGroupBmp180 = new SensorGroupingDetails(
 			GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMPX80_PRESSURE),
 //			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 
@@ -312,7 +312,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorMapKey)){
-			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE) {
+			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_BMPX80_PRESSURE) {
 				setDefaultBmp180PressureSensorConfig(isSensorEnabled);
 				return true;
 				}
@@ -425,7 +425,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 //		if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
 //			setDefaultShimmerName();
 //		}	
-		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMP180_PRESSURE)) {
+		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMPX80_PRESSURE)) {
 			setDefaultBmp180PressureSensorConfig(false);
 		}
 	}

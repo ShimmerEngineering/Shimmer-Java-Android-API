@@ -367,7 +367,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	public static final Integer[] ListofMPU9150MplRateConfigValues = {0,1,2,3,4};
 	
 	public static final List<Integer> mListOfMplChannels = Arrays.asList(
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP,
+			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_TEMP,
 			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF,
 			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_9DOF,
 			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_6DOF,
@@ -529,7 +529,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
 		//TODO decide what to do with below -> update, I can't remember why I added this message
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
 
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF, SensorMPU9X50.sensorMpu9150MplQuat6Dof);
 		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_9DOF, SensorMPU9X50.sensorMpu9150MplQuat9Dof);
