@@ -97,13 +97,13 @@ public class ShimmerStreamingProperties extends AbstractSensor {
 	}
 
 	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		// TODO Auto-generated method stub
 		
 	}

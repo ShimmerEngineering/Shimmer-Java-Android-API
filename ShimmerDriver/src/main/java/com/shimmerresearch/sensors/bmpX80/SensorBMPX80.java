@@ -98,7 +98,7 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 	}
 
 	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
@@ -111,7 +111,7 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 	}
 
 	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;

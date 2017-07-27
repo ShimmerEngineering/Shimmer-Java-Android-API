@@ -739,7 +739,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						stopTimerCheckForAckOrResp();
 						
 						// Wait to ensure the packet has been fully received and serial port buffer is filled with any remaining data packets
-						threadSleep(200); 
+						threadSleep(400); 
 
 						mIsStreaming=false;
 						mTransactionCompleted=true;
@@ -1344,7 +1344,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(responseCommand==MAG_SAMPLING_RATE_RESPONSE) {
 			byte[] bufferAns = readBytes(1, responseCommand);
 			if(bufferAns!=null){
-				mLSM303MagRate=bufferAns[0];
+				setMagRate(bufferAns[0]);
 				
 				printLogDataForDebugging("Mag Sampling Rate Response Received: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(bufferAns));
 			}
@@ -1850,13 +1850,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //					}
 				} 
 				else if(currentCommand==SET_MAG_SAMPLING_RATE_COMMAND){
-					mLSM303MagRate = mTempIntValue;
+					setMagRate(mTempIntValue);
 				}
 				else if(currentCommand==SET_ACCEL_SAMPLING_RATE_COMMAND){
 					setLSM303DigitalAccelRate(mTempIntValue);
 				}
 				else if(currentCommand==SET_MPU9150_SAMPLING_RATE_COMMAND){
-					mMPU9150GyroAccelRate = mTempIntValue;
+					setMPU9150GyroAccelRate(mTempIntValue);
 				}
 				else if(currentCommand==SET_EXG_REGS_COMMAND){
 					byte[] bytearray = getListofInstructions().get(0);
@@ -2071,10 +2071,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(21, ACCEL_CALIBRATION_RESPONSE);
 		if(bufferCalibrationParameters!=null){
-			mAccelCalRawParams = new byte[22];
-			System.arraycopy(bufferCalibrationParameters, 0, mAccelCalRawParams, 1, 21);
-			mAccelCalRawParams[0] = ACCEL_CALIBRATION_RESPONSE;
-	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
+//			mAccelCalRawParams = new byte[22];
+//			System.arraycopy(bufferCalibrationParameters, 0, mAccelCalRawParams, 1, 21);
+//			mAccelCalRawParams[0] = ACCEL_CALIBRATION_RESPONSE;
+//	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, ACCEL_CALIBRATION_RESPONSE);
 			parseCalibParamFromPacketAccelAnalog(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 		}
 	}
@@ -2086,10 +2086,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(21, GYRO_CALIBRATION_RESPONSE);
 		if(bufferCalibrationParameters!=null){
-			mGyroCalRawParams = new byte[22];
-			System.arraycopy(bufferCalibrationParameters, 0, mGyroCalRawParams, 1, 21);
-			mGyroCalRawParams[0] = GYRO_CALIBRATION_RESPONSE;
-	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
+//			mGyroCalRawParams = new byte[22];
+//			System.arraycopy(bufferCalibrationParameters, 0, mGyroCalRawParams, 1, 21);
+//			mGyroCalRawParams[0] = GYRO_CALIBRATION_RESPONSE;
+//	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, GYRO_CALIBRATION_RESPONSE);
 			parseCalibParamFromPacketGyro(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 		}
 	} 
@@ -2101,10 +2101,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(21, MAG_CALIBRATION_RESPONSE);
 		if(bufferCalibrationParameters!=null){
-			mMagCalRawParams = new byte[22];
-			System.arraycopy(bufferCalibrationParameters, 0, mMagCalRawParams, 1, 21);
-			mMagCalRawParams[0] = MAG_CALIBRATION_RESPONSE;
-	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
+//			mMagCalRawParams = new byte[22];
+//			System.arraycopy(bufferCalibrationParameters, 0, mMagCalRawParams, 1, 21);
+//			mMagCalRawParams[0] = MAG_CALIBRATION_RESPONSE;
+//	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, MAG_CALIBRATION_RESPONSE);
 			parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 		}
 	} 
@@ -2116,10 +2116,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		delayForBtResponse(100); // Wait to ensure the packet has been fully received
 		byte[] bufferCalibrationParameters = readBytes(21, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
 		if(bufferCalibrationParameters!=null){
-			mDigiAccelCalRawParams = new byte[22];
-			System.arraycopy(bufferCalibrationParameters, 0, mDigiAccelCalRawParams, 1, 21);
-			mDigiAccelCalRawParams[0] = LSM303DLHC_ACCEL_CALIBRATION_RESPONSE;
-	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
+//			mDigiAccelCalRawParams = new byte[22];
+//			System.arraycopy(bufferCalibrationParameters, 0, mDigiAccelCalRawParams, 1, 21);
+//			mDigiAccelCalRawParams[0] = LSM303DLHC_ACCEL_CALIBRATION_RESPONSE;
+//	//		retrieveKinematicCalibrationParametersFromPacket(bufferCalibrationParameters, LSM303DLHC_ACCEL_CALIBRATION_RESPONSE);
 			parseCalibParamFromPacketAccelLsm(bufferCalibrationParameters, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 		}
 	}
@@ -3438,16 +3438,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			setShimmerAndSensorsSamplingRate(rate);
 			if(getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 
-				writeMagSamplingRate(mShimmer2MagRate);
+				writeMagSamplingRate(getMagRate());
 				
 				int samplingByteValue = (int) (1024/getSamplingRateShimmer()); //the equivalent hex setting
 				writeInstruction(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(samplingByteValue), 0x00});
 			} 
 			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
 				
-				writeMagSamplingRate(mLSM303MagRate);
+				writeMagSamplingRate(getMagRate());
 				writeAccelSamplingRate(getLSM303DigitalAccelRate());
-				writeGyroSamplingRate(mMPU9150GyroAccelRate);
+				writeGyroSamplingRate(getMPU9X50GyroAccelRate());
 				writeExgSamplingRate(rate);
 				
 				byte[] buf = convertSamplingRateFreqBytes(getSamplingRateShimmer());
@@ -4355,7 +4355,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void enableLowPowerGyro(boolean enable){
 		setLowPowerGyro(enable);
-		writeGyroSamplingRate(mMPU9150GyroAccelRate);
+		writeGyroSamplingRate(getMPU9X50GyroAccelRate());
 	}
 	
 	/**
@@ -4367,7 +4367,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void enableLowPowerMag(boolean enable){
 		setLowPowerMag(enable);
-		writeMagSamplingRate(mLSM303MagRate);
+		writeMagSamplingRate(getMagRate());
 	}
 	
 	/**

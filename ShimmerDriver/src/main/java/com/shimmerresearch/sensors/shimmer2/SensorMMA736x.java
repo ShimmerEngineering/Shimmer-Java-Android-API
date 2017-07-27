@@ -16,6 +16,7 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 
 /**
  * Shimmer2r holder for Accel range and calibration settings.
@@ -159,27 +160,44 @@ public class SensorMMA736x extends AbstractSensor {
 	}
 
 	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
-		// TODO Auto-generated method stub
-		return null;
+		Object returnValue = null;
+		switch(configLabel){
+//			case(GuiLabelConfigCommon.RANGE):
+//	    		break;
+	        default:
+	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
+	        	break;
+		}
+		return returnValue;
 	}
 
 	@Override
 	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
-		// TODO Auto-generated method stub
-		return null;
+		Object returnValue = null;
+		switch(configLabel){
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+					returnValue = 0;
+				}
+				break;
+			default:
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
+				break;
+		}
+		return returnValue;
 	}
 
 	@Override
@@ -289,5 +307,12 @@ public class SensorMMA736x extends AbstractSensor {
 		}
 		return null;
 	}
+	
+	@Override
+	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+		updateCurrentAccelCalibInUse();
+	}
+
 
 }

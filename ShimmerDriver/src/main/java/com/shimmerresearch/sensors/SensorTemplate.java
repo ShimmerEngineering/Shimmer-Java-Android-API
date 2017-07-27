@@ -223,13 +223,13 @@ public class SensorTemplate extends AbstractSensor{
 	}
 
 	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
 
 	}

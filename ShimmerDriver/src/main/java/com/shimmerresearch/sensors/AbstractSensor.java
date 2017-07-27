@@ -102,8 +102,8 @@ public abstract class AbstractSensor implements Serializable{
 //	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
 	public abstract void checkShimmerConfigBeforeConfiguring();
-	public abstract void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes);
-	public abstract void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes);
+	public abstract void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes);
+	public abstract void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes);
 	public abstract Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet);
 	public abstract Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel);
 
@@ -577,6 +577,9 @@ public abstract class AbstractSensor implements Serializable{
 				//TODO decide whether to include the below
 //				returnValue = valueToSet;
 				break;
+			case(GuiLabelConfigCommon.CALIBRATION_PER_SENSOR):
+				setCalibrationMapPerSensor(sensorMapKey, (TreeMap<Integer, CalibDetails>) valueToSet);
+				break;
 	        default:
 	        	break;
 		}
@@ -672,6 +675,10 @@ public abstract class AbstractSensor implements Serializable{
 		configMapForDb.put(listOfCalibHandles.get(14), alignmentMatrix[2][2]);
 	}
 
+
+	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles) {
+		this.parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, sensorMapKey, range, listOfCalibHandles, "");
+	}
 
 	/** 
 	 * @see ShimmerObject.parseCalibDetailsKinematicFromDb
