@@ -263,9 +263,9 @@ public class SensorMPU9250 extends SensorMPU9X50 {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, SensorMPU9150.sensorMpu9150GyroRef);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL, SensorMPU9150.sensorMpu9150AccelRef);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG,SensorMPU9150.sensorMpu9150MagRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO, SensorMPU9150.sensorMpu9150GyroRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_ACCEL, SensorMPU9150.sensorMpu9150AccelRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_MAG,SensorMPU9150.sensorMpu9150MagRef);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -340,9 +340,9 @@ public class SensorMPU9250 extends SensorMPU9X50 {
 
 	@Override
 	public void initialise() {
-		mSensorMapKeyGyro = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO;
-		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL;
-		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG;
+		mSensorMapKeyGyro = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO;
+		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_ACCEL;
+		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_MAG;
 
 		super.initialise();
 

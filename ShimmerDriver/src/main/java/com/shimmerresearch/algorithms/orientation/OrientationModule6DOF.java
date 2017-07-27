@@ -292,7 +292,7 @@ public class OrientationModule6DOF extends OrientationModule{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 			(DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO),
 					CHANNEL_UNITS.NO_UNITS,
 					listChannelsEuler6DOF_LN);
 
@@ -306,8 +306,8 @@ public class OrientationModule6DOF extends OrientationModule{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 			(DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT|DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER), 
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO),
 					CHANNEL_UNITS.NO_UNITS,
 					listChannelsQuat6DOF_WR);
 
