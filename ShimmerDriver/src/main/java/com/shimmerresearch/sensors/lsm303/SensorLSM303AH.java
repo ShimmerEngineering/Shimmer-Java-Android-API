@@ -439,20 +439,20 @@ public class SensorLSM303AH extends SensorLSM303 {
 		if(mapOfConfigPerShimmer.containsKey(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_HRM)){
 			setHighResAccelWR(((Double) mapOfConfigPerShimmer.get(SensorLSM303AH.DatabaseConfigHandle.WR_ACC_HRM))>0? true:false);
 		}
-		
-		if(mapOfConfigPerShimmer.containsKey(SensorLSM303AH.DatabaseConfigHandle.MAG_RANGE)){
-			setLSM303MagRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303AH.DatabaseConfigHandle.MAG_RANGE)).intValue());
-		}
-		if(mapOfConfigPerShimmer.containsKey(SensorLSM303AH.DatabaseConfigHandle.MAG_RATE)){
-			setLSM303MagRate(((Double) mapOfConfigPerShimmer.get(SensorLSM303AH.DatabaseConfigHandle.MAG_RATE)).intValue());
-		}
-		
+
 		//Digital Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
 				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL, 
 				getAccelRange(), 
 				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
 				SensorLSM303AH.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
+
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303AH.DatabaseConfigHandle.MAG_RANGE)){
+			setLSM303MagRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303AH.DatabaseConfigHandle.MAG_RANGE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303AH.DatabaseConfigHandle.MAG_RATE)){
+			setLSM303MagRate(((Double) mapOfConfigPerShimmer.get(SensorLSM303AH.DatabaseConfigHandle.MAG_RATE)).intValue());
+		}
 		
 		//Magnetometer Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 

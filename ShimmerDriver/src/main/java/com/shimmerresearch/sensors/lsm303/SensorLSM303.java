@@ -3,12 +3,9 @@ package com.shimmerresearch.sensors.lsm303;
 import java.util.Arrays;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL;
 import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails;
@@ -277,7 +274,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	@Override 
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
@@ -309,7 +306,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	@Override 
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) { 
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) { 
 		
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
@@ -400,7 +397,12 @@ public abstract class SensorLSM303 extends AbstractSensor {
 			default:
 				returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
 				break;
-		}		
+		}	
+		
+        if(configLabel.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE)){
+        	checkConfigOptionValues(configLabel);
+        }
+		
 		return returnValue;
 	}
 
