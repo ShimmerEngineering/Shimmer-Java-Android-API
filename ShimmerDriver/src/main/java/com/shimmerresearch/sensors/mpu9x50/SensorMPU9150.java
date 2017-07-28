@@ -702,9 +702,9 @@ public class SensorMPU9150 extends SensorMPU9X50 {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, SensorMPU9150.sensorMpu9150GyroRef);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL, SensorMPU9150.sensorMpu9150AccelRef);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG,SensorMPU9150.sensorMpu9150MagRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO, SensorMPU9150.sensorMpu9150GyroRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_ACCEL, SensorMPU9150.sensorMpu9150AccelRef);
+		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_MAG,SensorMPU9150.sensorMpu9150MagRef);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -712,10 +712,10 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 	public static final Map<String, OldCalDetails> mOldCalRangeMap;
 	static {
 	    Map<String, OldCalDetails> aMap = new LinkedHashMap<String, OldCalDetails>();
-	    aMap.put("gyro_250dps", new OldCalDetails("gyro_250dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 0));
-	    aMap.put("gyro_500dps", new OldCalDetails("gyro_500dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 1));
-	    aMap.put("gyro_1000ps", new OldCalDetails("gyro_1000ps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 2));
-	    aMap.put("gyro_2000dps", new OldCalDetails("gyro_2000dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO, 3));
+	    aMap.put("gyro_250dps", new OldCalDetails("gyro_250dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO, 0));
+	    aMap.put("gyro_500dps", new OldCalDetails("gyro_500dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO, 1));
+	    aMap.put("gyro_1000ps", new OldCalDetails("gyro_1000ps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO, 2));
+	    aMap.put("gyro_2000dps", new OldCalDetails("gyro_2000dps", Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO, 3));
 	    mOldCalRangeMap = Collections.unmodifiableMap(aMap);
 	}
 
@@ -848,9 +848,9 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 
 	@Override
 	public void initialise() {
-		mSensorMapKeyGyro = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO;
-		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_ACCEL;
-		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MAG;
+		mSensorMapKeyGyro = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO;
+		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_ACCEL;
+		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_MAG;
 
 		super.initialise();
 
@@ -911,7 +911,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 			
 			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER.ordinal(), new SensorGroupingDetails(
 					GuiLabelSensorTiles.MPU_OTHER,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP,
+					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_TEMP,
 								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors));
 		}

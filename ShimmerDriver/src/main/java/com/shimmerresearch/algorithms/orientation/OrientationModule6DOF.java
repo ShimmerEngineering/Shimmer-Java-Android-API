@@ -39,55 +39,55 @@ public class OrientationModule6DOF extends OrientationModule{
 
 	transient Object orientationAlgorithm;
 
-	protected static String WR = "_WR";
-	protected static String LN = "_LN";
+	protected static final String WR = "_WR";
+	protected static final String LN = "_LN";
 
 	public static class ObjectClusterSensorName{
-		public static String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W; 
-		public static String QUAT_MADGE_6DOF_W_LN = QUAT_MADGE_6DOF_W + LN; 
-		public static String QUAT_MADGE_6DOF_W_WR = QUAT_MADGE_6DOF_W + WR; 
-		public static String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X; 
-		public static String QUAT_MADGE_6DOF_X_LN = QUAT_MADGE_6DOF_X + LN; 
-		public static String QUAT_MADGE_6DOF_X_WR = QUAT_MADGE_6DOF_X + WR; 
-		public static String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y; 
-		public static String QUAT_MADGE_6DOF_Y_LN = QUAT_MADGE_6DOF_Y + LN; 
-		public static String QUAT_MADGE_6DOF_Y_WR = QUAT_MADGE_6DOF_Y + WR; 
-		public static String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z; 
-		public static String QUAT_MADGE_6DOF_Z_LN = QUAT_MADGE_6DOF_Z + LN; 
-		public static String QUAT_MADGE_6DOF_Z_WR = QUAT_MADGE_6DOF_Z + WR; 
+		public static final String QUAT_MADGE_6DOF_W = "Quat_Madge_6DOF_W";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_W; 
+		public static final String QUAT_MADGE_6DOF_W_LN = QUAT_MADGE_6DOF_W + LN; 
+		public static final String QUAT_MADGE_6DOF_W_WR = QUAT_MADGE_6DOF_W + WR; 
+		public static final String QUAT_MADGE_6DOF_X = "Quat_Madge_6DOF_X";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_X; 
+		public static final String QUAT_MADGE_6DOF_X_LN = QUAT_MADGE_6DOF_X + LN; 
+		public static final String QUAT_MADGE_6DOF_X_WR = QUAT_MADGE_6DOF_X + WR; 
+		public static final String QUAT_MADGE_6DOF_Y = "Quat_Madge_6DOF_Y";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Y; 
+		public static final String QUAT_MADGE_6DOF_Y_LN = QUAT_MADGE_6DOF_Y + LN; 
+		public static final String QUAT_MADGE_6DOF_Y_WR = QUAT_MADGE_6DOF_Y + WR; 
+		public static final String QUAT_MADGE_6DOF_Z = "Quat_Madge_6DOF_Z";//Configuration.Shimmer3.ObjectClusterSensorName.QUAT_MADGE_6DOF_Z; 
+		public static final String QUAT_MADGE_6DOF_Z_LN = QUAT_MADGE_6DOF_Z + LN; 
+		public static final String QUAT_MADGE_6DOF_Z_WR = QUAT_MADGE_6DOF_Z + WR; 
 
-		public static String AXIS_ANGLE_6DOF_A = "Axis_Angle_6DOF_A";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_A; 
-		public static String AXIS_ANGLE_6DOF_A_LN = AXIS_ANGLE_6DOF_A + LN; 
-		public static String AXIS_ANGLE_6DOF_A_WR = AXIS_ANGLE_6DOF_A + WR; 
-		public static String AXIS_ANGLE_6DOF_X = "Axis_Angle_6DOF_X";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_X; 
-		public static String AXIS_ANGLE_6DOF_X_LN = AXIS_ANGLE_6DOF_X + LN; 
-		public static String AXIS_ANGLE_6DOF_X_WR = AXIS_ANGLE_6DOF_X + WR; 
-		public static String AXIS_ANGLE_6DOF_Y = "Axis_Angle_6DOF_Y";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y; 
-		public static String AXIS_ANGLE_6DOF_Y_LN = AXIS_ANGLE_6DOF_Y + LN; 
-		public static String AXIS_ANGLE_6DOF_Y_WR = AXIS_ANGLE_6DOF_Y + WR; 
-		public static String AXIS_ANGLE_6DOF_Z = "Axis_Angle_6DOF_Z";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z; 
-		public static String AXIS_ANGLE_6DOF_Z_LN = AXIS_ANGLE_6DOF_Z + LN; 
-		public static String AXIS_ANGLE_6DOF_Z_WR = AXIS_ANGLE_6DOF_Z + WR; 
+		public static final String AXIS_ANGLE_6DOF_A = "Axis_Angle_6DOF_A";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_A; 
+		public static final String AXIS_ANGLE_6DOF_A_LN = AXIS_ANGLE_6DOF_A + LN; 
+		public static final String AXIS_ANGLE_6DOF_A_WR = AXIS_ANGLE_6DOF_A + WR; 
+		public static final String AXIS_ANGLE_6DOF_X = "Axis_Angle_6DOF_X";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_X; 
+		public static final String AXIS_ANGLE_6DOF_X_LN = AXIS_ANGLE_6DOF_X + LN; 
+		public static final String AXIS_ANGLE_6DOF_X_WR = AXIS_ANGLE_6DOF_X + WR; 
+		public static final String AXIS_ANGLE_6DOF_Y = "Axis_Angle_6DOF_Y";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Y; 
+		public static final String AXIS_ANGLE_6DOF_Y_LN = AXIS_ANGLE_6DOF_Y + LN; 
+		public static final String AXIS_ANGLE_6DOF_Y_WR = AXIS_ANGLE_6DOF_Y + WR; 
+		public static final String AXIS_ANGLE_6DOF_Z = "Axis_Angle_6DOF_Z";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_6DOF_Z; 
+		public static final String AXIS_ANGLE_6DOF_Z_LN = AXIS_ANGLE_6DOF_Z + LN; 
+		public static final String AXIS_ANGLE_6DOF_Z_WR = AXIS_ANGLE_6DOF_Z + WR; 
 		
-		public static String EULER_6DOF_YAW = "Euler_6DOF_Yaw";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_YAW; 
-		public static String EULER_6DOF_YAW_LN = EULER_6DOF_YAW + LN; 
-		public static String EULER_6DOF_YAW_WR = EULER_6DOF_YAW + WR; 
-		public static String EULER_6DOF_PITCH = "Euler_6DOF_Pitch";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_PITCH; 
-		public static String EULER_6DOF_PITCH_LN = EULER_6DOF_PITCH + LN; 
-		public static String EULER_6DOF_PITCH_WR = EULER_6DOF_PITCH + WR; 
-		public static String EULER_6DOF_ROLL = "Euler_6DOF_Roll";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_ROLL; 
-		public static String EULER_6DOF_ROLL_LN = EULER_6DOF_ROLL + LN; 
-		public static String EULER_6DOF_ROLL_WR = EULER_6DOF_ROLL + WR; 
+		public static final String EULER_6DOF_YAW = "Euler_6DOF_Yaw";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_YAW; 
+		public static final String EULER_6DOF_YAW_LN = EULER_6DOF_YAW + LN; 
+		public static final String EULER_6DOF_YAW_WR = EULER_6DOF_YAW + WR; 
+		public static final String EULER_6DOF_PITCH = "Euler_6DOF_Pitch";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_PITCH; 
+		public static final String EULER_6DOF_PITCH_LN = EULER_6DOF_PITCH + LN; 
+		public static final String EULER_6DOF_PITCH_WR = EULER_6DOF_PITCH + WR; 
+		public static final String EULER_6DOF_ROLL = "Euler_6DOF_Roll";//Configuration.Shimmer3.ObjectClusterSensorName.EULER_6DOF_ROLL; 
+		public static final String EULER_6DOF_ROLL_LN = EULER_6DOF_ROLL + LN; 
+		public static final String EULER_6DOF_ROLL_WR = EULER_6DOF_ROLL + WR; 
 
 
 //		@Deprecated //need to describe axis angle 9DOF vs 6DOF
-//		public static String AXIS_ANGLE_A = "Axis_Angle_A";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A; 
+//		public static final String AXIS_ANGLE_A = "Axis_Angle_A";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_A; 
 //		@Deprecated //need to describe axis angle 9DOF vs 6DOF
-//		public static String AXIS_ANGLE_X = "Axis_Angle_X";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X; 
+//		public static final String AXIS_ANGLE_X = "Axis_Angle_X";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_X; 
 //		@Deprecated //need to describe axis angle 9DOF vs 6DOF
-//		public static String AXIS_ANGLE_Y = "Axis_Angle_Y";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y; 
+//		public static final String AXIS_ANGLE_Y = "Axis_Angle_Y";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Y; 
 //		@Deprecated //need to describe axis angle 9DOF vs 6DOF
-//		public static String AXIS_ANGLE_Z = "Axis_Angle_Z";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z; 
+//		public static final String AXIS_ANGLE_Z = "Axis_Angle_Z";//Configuration.Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_Z; 
 	}
 	
 	public static class DatabaseChannelHandles{
@@ -292,7 +292,7 @@ public class OrientationModule6DOF extends OrientationModule{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 			(DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO),
 					CHANNEL_UNITS.NO_UNITS,
 					listChannelsEuler6DOF_LN);
 
@@ -306,8 +306,8 @@ public class OrientationModule6DOF extends OrientationModule{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 			(DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT|DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER), 
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_GYRO),
+			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL,
+					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO),
 					CHANNEL_UNITS.NO_UNITS,
 					listChannelsQuat6DOF_WR);
 
@@ -466,29 +466,29 @@ public class OrientationModule6DOF extends OrientationModule{
 
 
 	@Override
-	public List<ChannelDetails> getChannelDetails() {
+	public List<ChannelDetails> getChannelDetails(boolean showDisabledChannels) {
 
 		List<ChannelDetails> listOfChannelDetails = new ArrayList<ChannelDetails>();
 
 		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
-			if(isQuaternionOutput()){
+			if(showDisabledChannels || isQuaternionOutput()){
 				listOfChannelDetails.addAll(listChannelsQuat6DOF_WR);
 			}
-			if(isEulerOutput()){
+			if(showDisabledChannels || isEulerOutput()){
 				listOfChannelDetails.addAll(listChannelsEuler6DOF_WR);
 			}
-			if(isAxisAngleOutput()){
+			if(showDisabledChannels || isAxisAngleOutput()){
 				listOfChannelDetails.addAll(listChannelsAxisAngle6DOF_WR);
 			}
 		}
 		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
-			if(isQuaternionOutput()){
+			if(showDisabledChannels || isQuaternionOutput()){
 				listOfChannelDetails.addAll(listChannelsQuat6DOF_LN);
 			}
-			if(isEulerOutput()){
+			if(showDisabledChannels || isEulerOutput()){
 				listOfChannelDetails.addAll(listChannelsEuler6DOF_LN);
 			}
-			if(isAxisAngleOutput()){
+			if(showDisabledChannels || isAxisAngleOutput()){
 				listOfChannelDetails.addAll(listChannelsAxisAngle6DOF_LN);
 			}
 		}
