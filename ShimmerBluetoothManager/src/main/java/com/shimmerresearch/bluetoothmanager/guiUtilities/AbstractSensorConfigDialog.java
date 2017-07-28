@@ -17,7 +17,7 @@ import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 public abstract class AbstractSensorConfigDialog {
 
 	protected ShimmerDevice cloneDevice;
-	protected ShimmerDevice shimmer;
+	protected ShimmerDevice shimmerDevice;
 	protected ShimmerBluetoothManager bluetoothManager;
 	public abstract void createComboBox(int numOfOptions,String key,ConfigOptionDetailsSensor cods,Object[] checkBox);
 	public abstract void createEditText(String key);
@@ -28,11 +28,16 @@ public abstract class AbstractSensorConfigDialog {
 	protected List<String> listOfKeys;
 	protected Map<Integer, SensorDetails> sensorMap;
 	protected Map<String, ConfigOptionDetailsSensor> configOptionsMap;
-	public AbstractSensorConfigDialog(ShimmerDevice shimmerDevice, ShimmerBluetoothManager bluetoothManager){
-		cloneDevice = shimmerDevice.deepClone();
-		shimmer = shimmerDevice;
-		this.bluetoothManager = bluetoothManager;
+	
+	
+	public AbstractSensorConfigDialog(ShimmerDevice shimmer, ShimmerBluetoothManager btManager){
+		this.shimmerDevice = shimmer;
+		this.bluetoothManager = btManager;
 	}
+	
+	
+	protected boolean mEnableFilter = false;
+	protected List<String> keysToFilter = null;
 	
 	public static void main(String[] args) {
 		
@@ -41,7 +46,8 @@ public abstract class AbstractSensorConfigDialog {
 	/**
 	 * @wbp.parser.entryPoint
 	 */
-	public void initialize(ShimmerDevice shimmerDevice, ShimmerBluetoothManager bluetoothManager) {
+//	public void initialize(ShimmerDevice shimmerDevice, ShimmerBluetoothManager bluetoothManager) {
+	public void initialize() {
 				
 		cloneDevice = shimmerDevice.deepClone();
 		sensorMap = cloneDevice.getSensorMap();
@@ -56,7 +62,7 @@ public abstract class AbstractSensorConfigDialog {
 		dialogHeight=0;
 		//Box[] box = Box.createVerticalBox();
 
-		//Taken from Android is this needed - start
+		//Remove keys for which ConfigOptionDetailsSensor is null to avoid runtime errors:
 		List<String> keysToRemove = new ArrayList<String>();
 
         for(String key : listOfKeys) {
@@ -65,11 +71,15 @@ public abstract class AbstractSensorConfigDialog {
                 keysToRemove.add(key);
             }
         }
+        
+        //If filter is enabled, add those filter keys to the list of keys to remove as well:
+        if(mEnableFilter == true && keysToFilter != null) {
+        	keysToRemove.addAll(keysToFilter);
+        }
 
         for(String key : keysToRemove) {
             listOfKeys.remove(key);
         }
-      //Taken from ANdroid is this needed - end
 		
 		for(String key : listOfKeys) {
 			ConfigOptionDetailsSensor cods = configOptionsMap.get(key);
@@ -102,30 +112,38 @@ public abstract class AbstractSensorConfigDialog {
 	
 
 	//JC: Can this replaced by getConfigValueUsingConfigLabel ? in Shimmer Device Class
-    private String getConfigValueLabelFromConfigLabel(String label){
-        ConfigOptionDetailsSensor cods = cloneDevice.getConfigOptionsMap().get(label);
-        int currentConfigInt = (int) cloneDevice.getConfigValueUsingConfigLabel(label);
-        int index = -1;
-        Integer[] values = cods.getConfigValues();
-        String[] valueLabels = cods.getGuiValues();
-        for (int i=0;i<values.length;i++){
-            if (currentConfigInt==values[i]){
-                index=i;
-            }
-        }
-        if (index==-1){
-            System.out.println();
-            return "";
-        }
-        return valueLabels[index];
-    }
+//    private String getConfigValueLabelFromConfigLabel(String label){
+//        ConfigOptionDetailsSensor cods = cloneDevice.getConfigOptionsMap().get(label);
+//        int currentConfigInt = (int) cloneDevice.getConfigValueUsingConfigLabel(label);
+//        int index = -1;
+//        Integer[] values = cods.getConfigValues();
+//        String[] valueLabels = cods.getGuiValues();
+//        for (int i=0;i<values.length;i++){
+//            if (currentConfigInt==values[i]){
+//                index=i;
+//            }
+//        }
+//        if (index==-1){
+//            System.out.println();
+//            return "";
+//        }
+//        return valueLabels[index];
+//    }
 
 	protected void writeConfiguration(){
 		AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
  		bluetoothManager.configureShimmer(cloneDevice);
 	}
 	
-	
+	/**
+	 * Pass a String list of keys for sensors to be ignored when generating the list of config options
+	 * @param filterKeys	Keys to be filtered out from the list
+	 * @param enableFilter	To enable or disable the filter
+	 */
+	public void setSensorKeysFilter(List<String> filterKeys, boolean enableFilter) {
+		mEnableFilter = enableFilter;
+		keysToFilter = filterKeys;
+	}
 	
 }
 

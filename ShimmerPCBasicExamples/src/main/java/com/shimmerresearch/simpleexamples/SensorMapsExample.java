@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -29,6 +30,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenu;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.Canvas;
 
 public class SensorMapsExample extends BasicProcessWithCallBack {
@@ -68,8 +71,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 				btComport = textField.getText();
 				btManager.connectShimmerThroughCommPort(btComport);
-				//textPaneStatus.setText("connecting...");
-				//shimmer.connect(textField.getText(),"");
 				
 			}
 		});
@@ -112,7 +113,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				if(shimmer.isConnected()) {
 					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
 						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer,btManager);
-						sensorsDialog.initialize();
+						sensorsDialog.showDialog();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
@@ -126,13 +127,14 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		});
 		mnTools.add(mntmSelectSensors);
 		
-		JMenuItem mntmDeviceConfiguration = new JMenuItem("Device configuration");
+		JMenuItem mntmDeviceConfiguration = new JMenuItem("Sensor configuration");
 		mntmDeviceConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				if(shimmer.isConnected()) {
 					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
 						SensorConfigDialog configDialog = new SensorConfigDialog(shimmer,btManager);
+						configDialog.showDialog();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
 					}
@@ -187,21 +189,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnStopStreaming.setBounds(415, 181, 187, 31);
 		frame.getContentPane().add(btnStopStreaming);
 		
-		plotManager.setTitle("Plot");
-		
-		
-		//TODO: Test
-//		JCheckBox[] cBoxTest = new JCheckBox[3];
-//		cBoxTest[0] = new JCheckBox("Test 0", true);
-//		cBoxTest[0].setBounds(50, 50, 50, 50);
-//		frame.getContentPane().add(cBoxTest[0]);
-//		cBoxTest[0].setVisible(true);
-//		
-//		cBoxTest[1] = new JCheckBox("Test 1", true);
-//		cBoxTest[1].setBounds(75, 100, 100, 100);
-//		frame.getContentPane().add(cBoxTest[1]);
-//		cBoxTest[1].setVisible(true);
-		
+		plotManager.setTitle("Plot");		
 	}
 
 	public static void main(String args[]) {
