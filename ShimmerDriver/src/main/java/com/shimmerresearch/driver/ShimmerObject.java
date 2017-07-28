@@ -12,13 +12,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.vecmath.Quat4d;
 import javax.vecmath.Vector3d;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import com.google.common.collect.BiMap;
@@ -35,7 +33,6 @@ import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
-import com.shimmerresearch.driver.calibration.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.shimmerGq.ConfigByteLayoutShimmerGq802154;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -47,7 +44,6 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
