@@ -2,6 +2,7 @@ package com.shimmerresearch.simpleexamples;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.bluetoothmanager.guiUtilities.AbstractEnableSensorsDialog;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -48,9 +49,16 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 	}
 	
 	/**
+	 * Call this to initialize and display the dialog.
 	 * @wbp.parser.entryPoint
 	 */
-	public void initialize() {
+	public void showDialog() {
+		//Filter out the sensors we don't want before initializing the dialog:
+		List<Integer> sensorKeysToFilter = new ArrayList<Integer>();
+		sensorKeysToFilter.add(Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY);
+		sensorKeysToFilter.add(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM);
+		setSensorKeysFilter(sensorKeysToFilter, true);
+
 		super.initialize();
 	}
 
@@ -78,9 +86,6 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 		 panel.setLayout((LayoutManager) new BoxLayout(panel, BoxLayout.Y_AXIS));
 
 		 dialog.getContentPane().add(panel, BorderLayout.CENTER);
-		 
-		 
-		 
 	}
 
 	@Override

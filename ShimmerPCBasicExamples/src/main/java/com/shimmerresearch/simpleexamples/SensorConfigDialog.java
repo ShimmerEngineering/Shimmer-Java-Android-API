@@ -43,15 +43,27 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 	
 	public SensorConfigDialog(ShimmerPC shimmerDevice, BasicShimmerBluetoothManagerPc bluetoothManager) {
 		super(shimmerDevice, bluetoothManager);
-		createFrame();
-		initialize(shimmerDevice, bluetoothManager);
-		showFrame();
+//		createFrame();
+//		initialize(shimmerDevice, bluetoothManager);
+//		showFrame();
+	}
+	
+	/**
+	 * Initializes the variables and sets the list of sensor keys to be filtered out and ignored.
+	 * @param shimmerDevice
+	 * @param bluetoothManager
+	 * @param filterKeys
+	 */
+	public SensorConfigDialog(ShimmerPC shimmerDevice, BasicShimmerBluetoothManagerPc bluetoothManager, List<String> filterKeys) {
+		super(shimmerDevice, bluetoothManager);
+		setSensorKeysFilter(filterKeys, true);
 	}
 
 	
 	public static void main(String[] args) {
 		
 	}
+	
 	
 	private void clearOtherCheckboxes (Object[] checkBox, int selectedCheckbox) {
 		for(int i=0; i<checkBox.length; i++) {
@@ -60,6 +72,7 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 			}
 		}
 	}
+	
 	//JC: Can this replaced by getConfigValueUsingConfigLabel ? in Shimmer Device Class
     private String getConfigValueLabelFromConfigLabel(String label){
         ConfigOptionDetailsSensor cods = cloneDevice.getConfigOptionsMap().get(label);
@@ -79,6 +92,7 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
         return valueLabels[index];
     }
 
+    
 	@Override
 	public void createComboBox(int numOfOptions,String key,ConfigOptionDetailsSensor cods,Object[] checkBox) {
 		// TODO Auto-generated method stub
@@ -117,6 +131,7 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 	
 	}
 
+	
 	@Override
 	public void createEditText(String key) {
 
@@ -223,6 +238,20 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 		dialog.setVisible(true);
 	}
 
+	
+	/**
+	 * Call this to initialize and display the dialog.
+	 */
+	public void showDialog() {
+		//Filter out the sensors we don't want to display before initializing the dialog:
+		List<String> filterList = new ArrayList<String>();
+		filterList.add("Wide Range Accel Rate");
+		setSensorKeysFilter(filterList, true);
+
+		createFrame();
+		initialize();
+		showFrame();
+	}
 	
 	
 	
