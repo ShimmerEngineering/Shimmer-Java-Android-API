@@ -319,7 +319,7 @@ public class Shimmer4 extends ShimmerDevice {
 				getFirmwareVersionInternal());
 		
 //		byte[] infoMemBackup = mInfoMemBytes.clone();
-		mConfigBytes = infoMemLayout.createEmptyConfigByteArray();
+		mConfigBytes = infoMemLayout.createConfigByteArrayEmpty();
 		
 		refreshEnabledSensorsFromSensorMap();
 		
