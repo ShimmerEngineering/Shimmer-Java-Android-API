@@ -763,13 +763,13 @@ public class SensorEXG extends AbstractSensor{
 	public static final ChannelDetails cDEcg_LL_LA_16bit = new ChannelDetails(
 					ObjectClusterSensorName.ECG_LL_LA_16BIT,
 					ObjectClusterSensorName.ECG_LL_LA_16BIT,
-					ObjectClusterSensorName.ECG_LL_LA_16BIT,
+					DatabaseChannelHandles.ECG_LL_LA_16BITS,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL));
 	public static final ChannelDetails cDEcg_LL_LA_24bit = new ChannelDetails(
 					ObjectClusterSensorName.ECG_LL_LA_24BIT,
 					ObjectClusterSensorName.ECG_LL_LA_24BIT,
-					ObjectClusterSensorName.ECG_LL_LA_24BIT,
+					DatabaseChannelHandles.ECG_LL_LA_24BITS,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL));
 	
