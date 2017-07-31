@@ -3407,7 +3407,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfEnabledChannelsForStoringToDb;
 	}
 	
-	//TODO get algorithm isenabled per commType
+	//TODO get algorithm isEnabled per commType
 	public Map<String, ChannelDetails> getMapOfEnabledAlgortihmChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType) {
 		Map<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = new HashMap<String, ChannelDetails>();
 
@@ -3430,6 +3430,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName, boolean showDisabledChannels) {
+		//TODO use showDisabledChannels
+		
 		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDB(commType, channelType, isKeyOJCName);
 		mapOfChannelsForStoringToDb.putAll(getMapOfEnabledAlgortihmChannelsToStoreInDB(commType, channelType));
 
@@ -3437,23 +3439,51 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public LinkedHashMap<String, ChannelDetails> getMapOfChannelsDetailsFromDbHandles(List<String> listOfDbChannelHandles) {
-		LinkedHashMap<String, ChannelDetails> mapOfChannelsFound = new LinkedHashMap<String, ChannelDetails>();
-		LinkedHashMap<String, ChannelDetails> channelDetailsMap = getMapOfAllChannelsForStoringToDB(null, CHANNEL_TYPE.CAL, false, true);
+		boolean showDisabledChannels = true;
+		boolean showUnknownChannels = true;
 		
+		// 1) get enabled sensor and algorithms channels to start
+		LinkedHashMap<String, ChannelDetails> channelDetailsMap = getMapOfAllChannelsForStoringToDB(null, CHANNEL_TYPE.CAL, false, showDisabledChannels);
+		
+		// 2) Some algorithms are applied afterwards and aren't registered as
+		// being enabled so adding them here. Similarly some channels like
+		// Event_Markers are added post data-capture.
+		for(SensorDetails sensorDetails:mSensorMap.values()){
+			for(ChannelDetails channelDetails:sensorDetails.getListOfChannels()){
+				if(!channelDetailsMap.containsKey(channelDetails.getDatabaseChannelHandle())){
+					channelDetailsMap.put(channelDetails.getDatabaseChannelHandle(), channelDetails);
+				}
+			}
+		}
+		for(AbstractAlgorithm algorithm:mMapOfAlgorithmModules.values()){
+			for(ChannelDetails channelDetails:algorithm.getChannelDetails()){
+				if(!channelDetailsMap.containsKey(channelDetails.getDatabaseChannelHandle())){
+					channelDetailsMap.put(channelDetails.getDatabaseChannelHandle(), channelDetails);
+				}
+			}
+		}
+		
+
+		LinkedHashMap<String, ChannelDetails> mapOfChannelsFound = new LinkedHashMap<String, ChannelDetails>();
 		for(String dbChannelHandle:listOfDbChannelHandles){
 			ChannelDetails channelDetails = channelDetailsMap.get(dbChannelHandle);
-			
+
+			// 3) if still not found, create one anyway
 			if(channelDetails==null){
 				//not an enabled channel (could be post processed - algorithm or event marker)
-				
-//				channelDetails = new ChannelDetails();
-//				channelDetails.mGuiName = dbChannelHandle;
-//				channelDetails.mObjectClusterName = dbChannelHandle;
-//				channelDetails.setDatabaseChannelHandle(dbChannelHandle);
-				
+				if(showUnknownChannels){
+					channelDetails = new ChannelDetails();
+					channelDetails.mGuiName = dbChannelHandle;
+					channelDetails.mObjectClusterName = dbChannelHandle;
+					channelDetails.setDatabaseChannelHandle(dbChannelHandle);
+				}
 			}
 			
 			if(channelDetails!=null){
+				if(channelDetails.mObjectClusterName.contains("_DUMMY_")){
+					continue;
+				}
+
 				mapOfChannelsFound.put(channelDetails.mGuiName, channelDetails);
 			}
 		}
