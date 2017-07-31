@@ -444,18 +444,6 @@ public class SensorMPU9250 extends SensorMPU9X50 {
 				getGyroRange(), 
 				SensorMPU9250.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_GYRO,
 				SensorMPU9250.DatabaseConfigHandle.GYRO_CALIB_TIME);
-		
-//		//TODO
-//		//MPL Accel Calibration Configuration
-//		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, getMPU9150AccelRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
-//
-//		//TODO
-//		//MPL Mag Calibration Configuration
-//		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, 0, SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
-//		
-//		//TODO
-//		//MPL Gyro Calibration Configuration
-//		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, getGyroRange(), SensorMPU9X50.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
 	}
 
 

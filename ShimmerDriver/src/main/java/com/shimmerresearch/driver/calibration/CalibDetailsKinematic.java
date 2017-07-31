@@ -80,7 +80,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	public double mOffsetMin = 0.0;  
 	public int mOffsetPrecision = 0;
 	
-//	protected byte[] mCalRawParams  = new byte[21];
+	private byte[] mCalRawParamsFromShimmer  = new byte[21];
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString) {
 		this.mRangeValue = rangeValue;
@@ -247,7 +247,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			
 			setCalibReadSource(calibReadSource);
 
-//			mCalRawParams = bufferCalibrationParameters;
+			mCalRawParamsFromShimmer = bufferCalibrationParameters;
 
 			String[] dataType={"i16","i16","i16","i16","i16","i16","i8","i8","i8","i8","i8","i8","i8","i8","i8"};
 			int[] formattedPacket = UtilParseData.formatDataPacketReverse(bufferCalibrationParameters,dataType);

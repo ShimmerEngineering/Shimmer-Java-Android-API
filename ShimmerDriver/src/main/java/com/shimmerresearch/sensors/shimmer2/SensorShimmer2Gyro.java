@@ -11,8 +11,10 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.OnTheFlyCalGyro;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 
 public class SensorShimmer2Gyro extends AbstractSensor {
 
@@ -22,6 +24,8 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
 	private int mGyroRange = 1;													 
 
+	protected boolean mLowPowerGyro = false;
+	
 	/** all raw params should start with a 1 byte identifier in position [0] */
 	protected byte[] mGyroCalRawParams  = new byte[22];
 
@@ -83,27 +87,44 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	}
 
 	@Override
-	public void configByteArrayGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void configByteArrayParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
-		// TODO Auto-generated method stub
-		return null;
+		Object returnValue = null;
+		switch(configLabel){
+//			case(GuiLabelConfigCommon.RANGE):
+//	    		break;
+	        default:
+	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
+	        	break;
+		}
+		return returnValue;
 	}
 
 	@Override
 	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
-		// TODO Auto-generated method stub
-		return null;
+		Object returnValue = null;
+		switch(configLabel){
+			case(GuiLabelConfigCommon.RANGE):
+//				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+//					returnValue = 0;
+//				}
+				break;
+			default:
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
+				break;
+		}
+		return returnValue;
 	}
 
 	@Override
@@ -160,7 +181,21 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 		updateCurrentCalibInUse();
 	}
 
-	
+	@Override
+	public void generateCalibMap() {
+		super.generateCalibMap();
+		
+		TreeMap<Integer, CalibDetails> calibMapGyro = null;
+		if(mShimmerDevice.getHardwareVersion()==HW_ID.SHIMMER_2){
+			calibMapGyro = mCalibMapGyroShimmer2r;
+		} else {
+		}
+		if(calibMapGyro!=null){
+			setCalibrationMapPerSensor(Configuration.Shimmer2.SensorMapKey.GYRO, calibMapGyro);
+		}
+
+		updateCurrentCalibInUse();
+	}
 	
 	
 	public int getGyroRange(){
@@ -201,6 +236,18 @@ public class SensorShimmer2Gyro extends AbstractSensor {
     public OnTheFlyCalGyro getOnTheFlyCalGyro(){
     	return mOnTheFlyCalGyro;
     }
+
+	public void setLowPowerGyro(boolean enable) {
+		mLowPowerGyro = enable;
+	}
+
+	public int getLowPowerGyroEnabled() {
+		return mLowPowerGyro? 1:0;
+	}
+
+	public boolean checkLowPowerGyro() {
+		return mLowPowerGyro;
+	}
 
 
 }

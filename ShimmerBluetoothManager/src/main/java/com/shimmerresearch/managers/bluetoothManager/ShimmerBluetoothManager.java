@@ -361,7 +361,7 @@ public abstract class ShimmerBluetoothManager{
 							//TODO Already done in enableLowPowerAccel, enableLowPowerMag and enableLowPowerGyro
 							originalShimmer.writeAccelSamplingRate(cloneShimmerCast.getLSM303DigitalAccelRate());
 							originalShimmer.writeGyroSamplingRate(cloneShimmerCast.getMPU9X50GyroAccelRate());
-							originalShimmer.writeMagSamplingRate(cloneShimmerCast.getLSM303MagRate());
+							originalShimmer.writeMagSamplingRate(cloneShimmerCast.getMagRate());
 
 							//System.out.println("Register1\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(cloneShimmerCast.getEXG1RegisterArray()));
 							//System.out.println("Register2\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(cloneShimmerCast.getEXG2RegisterArray()));

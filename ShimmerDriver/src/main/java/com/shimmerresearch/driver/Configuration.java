@@ -1452,16 +1452,6 @@ public class Configuration {
 //	        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception);
 	        aMap.putAll(ShimmerClock.mSensorMapRef);
 
-	        if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_LN){
-		        aMap.putAll(SensorKionixKXRB52042.mSensorMapRef);
-	        }
-	        if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
-	        	aMap.putAll(SensorMPU9X50.mSensorMapRefCommon);
-	        	aMap.putAll(SensorMPU9150.mSensorMapRef);
-	        }
-			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-				aMap.putAll(SensorLSM303DLHC.mSensorMapRef);
-			}
 			aMap.putAll(SensorGSR.mSensorMapRef);
 			aMap.putAll(SensorADC.mSensorMapRef);
 			aMap.putAll(SensorBattVoltage.mSensorMapRef);
@@ -1497,21 +1487,10 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
 //			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
 
-	        if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_LN){
-	        	aMap.putAll(SensorKionixKXRB52042.mChannelMapRef);
-	        }
 			aMap.putAll(SensorBattVoltage.mChannelMapRef);
 			aMap.putAll(SensorADC.mChannelMapRef);
 			aMap.putAll(SensorBridgeAmp.mChannelMapRef);
 			aMap.putAll(SensorGSR.mChannelMapRef);
-	        if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
-	        	aMap.putAll(SensorMPU9150.mChannelMapRef);
-	        }
-			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-				aMap.putAll(SensorLSM303DLHC.mChannelMapRef);
-			}
-//			aMap.putAll(SensorBMP180.mChannelMapRef);
-//			aMap.putAll(SensorBMP280.mChannelMapRef);
 			aMap.putAll(SensorEXG.mChannelMapRef);
 			aMap.putAll(SensorPPG.mChannelMapRef);
 
@@ -1538,26 +1517,6 @@ public class Configuration {
 			//Sensor Grouping for Configuration Panel 'tile' generation. 
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.STREAMING_PROPERTIES.ordinal(), ShimmerClock.sensorGroupStreamingProperties);
 
-	        if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_LN){
-				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL.ordinal(), SensorKionixKXRB52042.sensorGroupLnAccelKXRB52042);
-	        }
-			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), SensorLSM303DLHC.sensorGroupLsmAccel);
-			}
-			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
-				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.ordinal(), new SensorGroupingDetails(
-						Configuration.Shimmer3.GuiLabelSensorTiles.GYRO.tileText,
-						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO),
-						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			}
-			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-				aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG.ordinal(), SensorLSM303DLHC.sensorGroupLsmMag);
-			}
-			
-			//BMP now loaded dynamically in ShimmerObject
-//			aMap.putAll(SensorBMP180.mSensorGroupingMap);
-//			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP180.ordinal(), SensorBMP180.sensorGroupBmp180);
-			
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING.ordinal(), SensorBattVoltage.sensorGroupBattVoltage);
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC.ordinal(), SensorADC.sensorGroupExternalExpansionADCs);
 			
@@ -1607,23 +1566,8 @@ public class Configuration {
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoHighGAccel)); //unused but accessible
 			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC.ordinal(), SensorADC.sensorGroupInternalExpansionADCs);
 			
-			// RM commented out the MPU channels prior to ConsensysPRO release as the firmware and maybe software also need update to support these channels
-			/*		aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG.ordinal(), new SensorGroupingDetails(
-					SensorMPU9X50.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL,   // RMC 22/04/2016: MPU added to sensor class, check if can delete
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG)));
-			aMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER.ordinal(), new SensorGroupingDetails(
-					SensorMPU9X50.GuiLabelSensorTiles.MPU_OTHER,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_TEMP,
-								Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF))); */
-			
 			//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
 			
-			// ChannelTiles that have compatibility considerations (used to auto generate tiles in GUI)
-			//aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_ACCEL_GYRO_MAG.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
-			//aMap.get(Configuration.Shimmer3.GuiLabelSensorTiles.MPU_OTHER.ordinal()).mListOfCompatibleVersionInfo = CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors;
-
 			
 			// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
 			for (SensorGroupingDetails sensorGroup:aMap.values()) {
@@ -1721,35 +1665,6 @@ public class Configuration {
 					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoStreaming));
 			
-			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE,SensorLSM303DLHC.configOptionAccelRange);
-				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE,SensorLSM303DLHC.configOptionAccelRate);
-			}
-			
-			//XXX-RS-LSM-SensorClass? 
-//			if(mLowPowerAccelWR) {
-//				aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-//						new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpm, 
-//												Configuration.Shimmer3.ListofLSM303DLHCAccelRateLpmConfigValues, 
-//												ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-//			}
-//			else {
-//				aMap.put(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RATE, 
-//						new ConfigOptionDetailsSensor(Configuration.Shimmer3.ListofLSM303DLHCAccelRate, 
-//												Configuration.Shimmer3.ListofLSM303DLHCAccelRateConfigValues, 
-//												ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-//			}
-			
-			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, SensorMPU9150.configOptionMpu9150GyroRange);
-			}
-
-			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, SensorLSM303DLHC.configOptionMagRange);
-				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE, SensorLSM303DLHC.configOptionMagRate);
-			}
-//			aMap.put(SensorBMP180.GuiLabelConfig.PRESSURE_RESOLUTION, SensorBMP180.configOptionPressureResolution);
-
 			aMap.put(SensorGSR.GuiLabelConfig.GSR_RANGE, SensorGSR.configOptionGsrRange);
 
 			aMap.put(SensorEXG.GuiLabelConfig.EXG_GAIN, SensorEXG.configOptionExgGain);
@@ -1766,34 +1681,6 @@ public class Configuration {
 			aMap.put(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ, SensorEXG.configOptionExgRespirationDetectFreq);
 			aMap.put(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE, SensorEXG.configOptionExgRespirationDetectPhase);
 
-			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
-				//MPL Options
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_ACCEL_RANGE,SensorMPU9150.configOptionMpu9150AccelRange);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP_GYRO_CAL, SensorMPU9150.configOptionMpu9150DmpGyroCal);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_LPF, SensorMPU9150.configOptionMpu9150MplLpf);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_RATE, SensorMPU9150.configOptionMpu9150MplRate);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MAG_RATE, SensorMPU9150.configOptionMpu9150MagRate);
-	
-			    aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER, new ConfigOptionDetailsSensor(
-			    		Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER,
-			    		ShimmerDevice.DatabaseConfigHandle.EXP_PWR,
-			    		Configuration.ShimmerDeviceCommon.ListOfOnOff, 
-		    	        Configuration.ShimmerDeviceCommon.ListOfOnOffConfigValues,
-		    	        ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX));
-				
-				//MPL CheckBoxes
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_DMP, SensorMPU9150.configOptionMpu9150Dmp); 
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL, SensorMPU9150.configOptionMpu9150Mpl);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_9DOF_SENSOR_FUSION, SensorMPU9150.configOptionMpu9150Mpl9DofSensorFusion); 
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_GYRO_CAL, SensorMPU9150.configOptionMpu9150MplGyroCal);
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_VECTOR_CAL, SensorMPU9150.configOptionMpu9150MplVectorCal); 
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_MPL_MAG_CAL, SensorMPU9150.configOptionMpu9150MplMagCal);
-				
-				//General Config
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RATE, SensorMPU9150.configOptionMpu9150GyroRate); 
-	//					new ConfigOptionDetailsSensor(ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			}
-			
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, new ConfigOptionDetailsSensor(
 					Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START,
 					ShimmerDevice.DatabaseConfigHandle.USER_BUTTON,
@@ -1820,16 +1707,7 @@ public class Configuration {
 					null,
 					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,SensorLSM303DLHC.configOptionAccelLpm);
-			}
-			if(!ShimmerObject.USE_SENSOR_CLASS_GYRO){
-				aMap.put(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM, SensorMPU9150.configOptionMpu9150GyroLpm);
-			}
 			
-			if(!ShimmerObject.USE_SENSOR_CLASS_ACCEL_WR_AND_MAG){
-				aMap.put(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM, SensorLSM303DLHC.configOptionMagLpm);
-			}
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, new ConfigOptionDetailsSensor(
 					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN,
 					null,
