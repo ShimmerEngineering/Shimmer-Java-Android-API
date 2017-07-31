@@ -239,7 +239,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				abstractSensor.configByteArrayParse(this, mConfigBytes);
+				abstractSensor.configBytesParse(this, mConfigBytes);
 			}
 			
 			//need to update parser map here as ExG config bytes change which of ECG/EMG/Resp etc. is enabled
@@ -366,7 +366,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 		// Configuration from each Sensor settings
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			abstractSensor.configByteArrayGenerate(this, mConfigBytes);
+			abstractSensor.configBytesGenerate(this, mConfigBytes);
 		}
 
 		// Shimmer Name
