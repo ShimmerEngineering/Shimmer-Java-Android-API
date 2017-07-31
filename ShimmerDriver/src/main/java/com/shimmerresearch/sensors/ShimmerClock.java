@@ -335,6 +335,8 @@ public class ShimmerClock extends AbstractSensor {
 	public void generateSensorMap() {
 		Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
 		
+		//TODO move entries that shouldn't be here to their own dedicated sensor classes
+		
 		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
 		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
 		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, ShimmerClock.channelSystemTimestampDiff);
@@ -342,27 +344,28 @@ public class ShimmerClock extends AbstractSensor {
 		if(mShimmerVerObject.isShimmerGenGq()){
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.RSSI, ShimmerStreamingProperties.channelRssi);
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.SENSOR_DISTANCE, ShimmerStreamingProperties.channelSensorDistance);
+			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER, ShimmerClock.channelEventMarker);
 		}
 		else {// if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			if(mShimmerVerObject.getFirmwareVersionCode()>=6 || mShimmerVerObject.mHardwareVersion==HW_ID.ARDUINO){
-				channelMapRef.put(ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
+				channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
 				mTimeStampPacketRawMaxValue = (int) Math.pow(2, 24);
 			}
 			else{
-				channelMapRef.put(ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
+				channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
 				mTimeStampPacketRawMaxValue = (int) Math.pow(2, 16);
 			}
-
-			channelMapRef.put(ObjectClusterSensorName.TIMESTAMP_DIFFERENCE, ShimmerClock.channelShimmerTsDiffernce);
-
-			channelMapRef.put(ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
-			channelMapRef.put(ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
+			channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE, ShimmerClock.channelShimmerTsDiffernce);
+			channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
+			channelMapRef.put(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
 			
 //			channelMapRef.put(ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, ShimmerClock.channelRealTimeClockSync);
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, ShimmerClock.channelBattPercentage);
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, ShimmerClock.channelReceptionRateTrial);
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER, ShimmerClock.channelEventMarker);
+			
+			channelMapRef.put(SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE, ShimmerClock.channelBattPercentage);
+			
+			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
+			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, ShimmerClock.channelReceptionRateTrial);
+			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER, ShimmerClock.channelEventMarker);
 		}
 		
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
