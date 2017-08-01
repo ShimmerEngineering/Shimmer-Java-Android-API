@@ -4935,6 +4935,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(sensorDetailStreamingProp!=null){
 			sensorDetailStreamingProp.setIsEnabled(true);
 		}
+		
 	}
 
 

@@ -260,7 +260,7 @@ public class ShimmerClock extends AbstractSensor {
 			ObjectClusterSensorName.REAL_TIME_CLOCK,
 			DatabaseChannelHandles.REAL_TIME_CLOCK,
 			CHANNEL_UNITS.MILLISECONDS,
-			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
 		//TODO put into above constructor
 		channelRealTimeClock.mChannelSource = CHANNEL_SOURCE.API;
