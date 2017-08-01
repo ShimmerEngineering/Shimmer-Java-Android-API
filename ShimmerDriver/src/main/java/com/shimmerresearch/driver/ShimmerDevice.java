@@ -62,7 +62,9 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.AbstractSensor;
+import com.shimmerresearch.sensors.AbstractSensor.DatabaseChannelHandlesCommon;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
@@ -3430,11 +3432,28 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName, boolean showDisabledChannels) {
-		//TODO use showDisabledChannels
+		//TODO get showDisabledChannels working
 		
 		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDB(commType, channelType, isKeyOJCName);
 		mapOfChannelsForStoringToDb.putAll(getMapOfEnabledAlgortihmChannelsToStoreInDB(commType, channelType));
 
+		//TODO temp hack. Need to move these channels to their own sensors so that they can be disabled per comm type
+		mapOfChannelsForStoringToDb = filterOutUnwantedChannels(mapOfChannelsForStoringToDb, commType, isKeyOJCName);
+		
+		return mapOfChannelsForStoringToDb;
+	}
+
+	//TODO temp hack. Need to move these channels to their own sensors so that they can be disabled per comm type
+	private LinkedHashMap<String, ChannelDetails> filterOutUnwantedChannels(LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb, COMMUNICATION_TYPE commType, boolean isKeyOJCName) {
+		String channelToRemove = "";
+		if(commType==COMMUNICATION_TYPE.SD){
+			channelToRemove = isKeyOJCName? SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP:AbstractSensor.DatabaseChannelHandlesCommon.TIMESTAMP_SYSTEM;
+		} else if(commType==COMMUNICATION_TYPE.BLUETOOTH){
+			channelToRemove = isKeyOJCName? ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK:ShimmerClock.DatabaseChannelHandles.REAL_TIME_CLOCK;
+		}
+		if(!channelToRemove.isEmpty()){
+			mapOfChannelsForStoringToDb.remove(channelToRemove);
+		}
 		return mapOfChannelsForStoringToDb;
 	}
 
@@ -3484,7 +3503,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					continue;
 				}
 
-				mapOfChannelsFound.put(channelDetails.mGuiName, channelDetails);
+				mapOfChannelsFound.put(channelDetails.getDatabaseChannelHandle(), channelDetails);
 			}
 		}
 		
