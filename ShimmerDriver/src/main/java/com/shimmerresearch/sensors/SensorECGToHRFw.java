@@ -31,7 +31,7 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	}
 
 	public static class DatabaseChannelHandles{
-		public static final String ECG_TO_HR_FW = ObjectClusterSensorName.ECG_TO_HR_FW_GQ;
+		public static final String ECG_TO_HR_FW = "ECGToHR";//ObjectClusterSensorName.ECG_TO_HR_FW_GQ;
 	}
 	//--------- Sensor specific variables end --------------
 
@@ -62,9 +62,9 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
     
 	//--------- Channel info start --------------
 	public static final ChannelDetails channelEcgToHrFw  = new ChannelDetails(
-			Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW,
-			Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW,
-			DatabaseChannelHandles.ECG_TO_HR_FW,
+			SensorECGToHRFw.ObjectClusterSensorName.ECG_TO_HR_FW_GQ,
+			SensorECGToHRFw.ObjectClusterSensorName.ECG_TO_HR_FW_GQ,
+			SensorECGToHRFw.DatabaseChannelHandles.ECG_TO_HR_FW,
 			CHANNEL_DATA_TYPE.UINT8, 1, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.BEATS_PER_MINUTE,
 			Arrays.asList(CHANNEL_TYPE.CAL));
