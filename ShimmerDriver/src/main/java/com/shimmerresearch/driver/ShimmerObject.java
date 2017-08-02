@@ -8599,12 +8599,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	        	
 	        	
 ////List<Byte[]>
-//			case(SensorEXG.GuiLabelConfig.EXG_BYTES):
-////				if(valueToSet instanceof List<?>){
-//					setEXG1RegisterArray(((List<byte[]>)valueToSet).get(0));
-//					setEXG2RegisterArray(((List<byte[]>)valueToSet).get(1));
-////				}
-//	        	break;
+			case(SensorEXG.GuiLabelConfig.EXG_BYTES):
+				if(valueToSet instanceof List<?>){
+					List<byte[]> listOfExgBytes = (List<byte[]>)valueToSet;
+					setEXG1RegisterArray(listOfExgBytes.get(0));
+					setEXG2RegisterArray(listOfExgBytes.get(1));
+				}
+	        	break;
 
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 				setLowPowerGyro(false);
