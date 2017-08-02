@@ -1,26 +1,30 @@
 package com.shimmerresearch.shimmerConfig;
 
 import com.shimmerresearch.driver.ShimmerDevice;
+
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 
 public class FixedShimmerConfigs {
 
 	//TODO change to code names for release
-    public enum FIXED_SHIMMER_CONFIG {
+    public enum FIXED_SHIMMER_CONFIG_MODE {
     	NONE,
     	CADENCE,
     	CIMIT,
-    	CALIBRATION_IMU
+    	CALIBRATION_IMU,
+    	USER
     }
     
-	public static boolean setFixedConfigWhenConnecting(ShimmerDevice shimmerDevice, FIXED_SHIMMER_CONFIG fixedConfig) {
+	public static boolean setFixedConfigWhenConnecting(ShimmerDevice shimmerDevice, FIXED_SHIMMER_CONFIG_MODE fixedConfig, LinkedHashMap<String, Object> fixedConfigMap) {
 		boolean triggerConfiguration = false;
 		
-		if(fixedConfig!=FIXED_SHIMMER_CONFIG.NONE){
+		if(fixedConfig!=FIXED_SHIMMER_CONFIG_MODE.NONE){
 	
 			int expId = shimmerDevice.getExpansionBoardId();
 	
@@ -28,17 +32,22 @@ public class FixedShimmerConfigs {
 			shimmerDevice.disableAllAlgorithms();
 			shimmerDevice.disableAllSensors();
 	
-			if(fixedConfig==FIXED_SHIMMER_CONFIG.CADENCE){
+			if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.USER && fixedConfigMap!=null){
+				for(Entry<String, Object> configEntry:fixedConfigMap.entrySet()){
+					shimmerDevice.setConfigValueUsingConfigLabel(configEntry.getKey(), configEntry.getValue());
+				}
+			}
+			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.CADENCE){
 				triggerConfiguration = true;
 				setFixedConfig0(shimmerDevice);
 			}
-			else if(fixedConfig==FIXED_SHIMMER_CONFIG.CIMIT){
+			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.CIMIT){
 				if(expId==HW_ID_SR_CODES.EXP_BRD_EXG || expId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED){
 					triggerConfiguration = true;
 					setFixedConfig1(shimmerDevice);
 				}
 			}
-			else if(fixedConfig==FIXED_SHIMMER_CONFIG.CALIBRATION_IMU){
+			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.CALIBRATION_IMU){
 				triggerConfiguration = true;
 				setFixedConfig2(shimmerDevice);
 			}

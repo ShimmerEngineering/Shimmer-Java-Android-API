@@ -32,7 +32,7 @@ import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
-import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG;
+import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.thirdpartyDevices.noninOnyxII.NoninOnyxIIDevice;
 
 public abstract class ShimmerBluetoothManager{
@@ -84,7 +84,7 @@ public abstract class ShimmerBluetoothManager{
 	// TODO Might be better to be able to set mFixedShimmerConfig and
 	// mAutoStartStreaming on a per Shimmer basis through the connect() method
 	// rather then globals
-    protected FIXED_SHIMMER_CONFIG mFixedShimmerConfig = FIXED_SHIMMER_CONFIG.NONE;
+    protected FIXED_SHIMMER_CONFIG_MODE mFixedShimmerConfig = FIXED_SHIMMER_CONFIG_MODE.NONE;
 	protected boolean mAutoStartStreaming = false;		
 
 	public ShimmerBluetoothManager() {
@@ -967,7 +967,7 @@ public abstract class ShimmerBluetoothManager{
 	/**
 	 * @param fixedConfig the mFixedConfig to set
 	 */
-	public void setFixedConfig(FIXED_SHIMMER_CONFIG fixedConfig) {
+	public void setFixedConfig(FIXED_SHIMMER_CONFIG_MODE fixedConfig) {
 		this.mFixedShimmerConfig = fixedConfig;
 	}
 	

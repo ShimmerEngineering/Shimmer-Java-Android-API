@@ -635,14 +635,30 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 		mapOfByteDescriptions.put(idxLSM303DLHCMagCalibration, "idxLSM303DLHCMagCalibration");
 		mapOfByteDescriptions.put(idxLSM303DLHCAccelCalibration, "idxLSM303DLHCAccelCalibration");
 
-		mapOfByteDescriptions.put(idxDerivedSensors0, "DerivedSensors0");
-		mapOfByteDescriptions.put(idxDerivedSensors1, "DerivedSensors1");
-		mapOfByteDescriptions.put(idxDerivedSensors2, "DerivedSensors2");
-		mapOfByteDescriptions.put(idxDerivedSensors3, "DerivedSensors3");
-		mapOfByteDescriptions.put(idxDerivedSensors4, "DerivedSensors4");
-		mapOfByteDescriptions.put(idxDerivedSensors5, "DerivedSensors5");
-		mapOfByteDescriptions.put(idxDerivedSensors6, "DerivedSensors6");
-		mapOfByteDescriptions.put(idxDerivedSensors7, "DerivedSensors7");
+		if(idxDerivedSensors0>0){
+			mapOfByteDescriptions.put(idxDerivedSensors0, "DerivedSensors0");
+		}
+		if(idxDerivedSensors1>0){
+			mapOfByteDescriptions.put(idxDerivedSensors1, "DerivedSensors1");
+		}
+		if(idxDerivedSensors2>0){
+			mapOfByteDescriptions.put(idxDerivedSensors2, "DerivedSensors2");
+		}
+		if(idxDerivedSensors3>0){
+			mapOfByteDescriptions.put(idxDerivedSensors3, "DerivedSensors3");
+		}
+		if(idxDerivedSensors4>0){
+			mapOfByteDescriptions.put(idxDerivedSensors4, "DerivedSensors4");
+		}
+		if(idxDerivedSensors5>0){
+			mapOfByteDescriptions.put(idxDerivedSensors5, "DerivedSensors5");
+		}
+		if(idxDerivedSensors6>0){
+			mapOfByteDescriptions.put(idxDerivedSensors6, "DerivedSensors6");
+		}
+		if(idxDerivedSensors7>0){
+			mapOfByteDescriptions.put(idxDerivedSensors7, "DerivedSensors7");
+		}
 
 		mapOfByteDescriptions.put(idxConfigSetupByte4, "idxConfigSetupByte4");
 		mapOfByteDescriptions.put(idxConfigSetupByte5, "idxConfigSetupByte5");
@@ -672,8 +688,11 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 		mapOfByteDescriptions.put(idxMaxExpLengthLsb, "idxMaxExpLengthLsb");
 		mapOfByteDescriptions.put(idxMacAddress, "idxMacAddress");
 		mapOfByteDescriptions.put(idxSDConfigDelayFlag, "idxSDConfigDelayFlag");
-		mapOfByteDescriptions.put(idxBtFactoryReset, "idxBtFactoryReset");
-
+		
+		if(idxBtFactoryReset>0){
+			mapOfByteDescriptions.put(idxBtFactoryReset, "idxBtFactoryReset");
+		}
+		
 		mapOfByteDescriptions.put(idxNode0, "Node0");
 		
 		return mapOfByteDescriptions;

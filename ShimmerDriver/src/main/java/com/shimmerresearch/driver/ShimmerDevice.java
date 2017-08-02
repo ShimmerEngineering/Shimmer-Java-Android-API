@@ -68,7 +68,7 @@ import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
-import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG;
+import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -279,7 +279,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean mVerboseMode = true;
 //	public static TreeMap<Integer,String> mMapOfErrorCodes = new TreeMap<Integer,String>();
 
-	protected FIXED_SHIMMER_CONFIG mFixedShimmerConfig = FIXED_SHIMMER_CONFIG.NONE;
+	protected FIXED_SHIMMER_CONFIG_MODE mFixedShimmerConfigMode = FIXED_SHIMMER_CONFIG_MODE.NONE;
+	protected LinkedHashMap<String, Object> mFixedShimmerConfigMap;
+
 	protected boolean mAutoStartStreaming = false;
 	
 	public static final int RECONNECT_ATTEMPTS_MAX = 3;
@@ -4347,10 +4349,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mAlternativeName;
 	}
 
-	public void setFixedShimmerConfig(FIXED_SHIMMER_CONFIG fixedShimmerConfig) {
-		mFixedShimmerConfig = fixedShimmerConfig;
+	public void setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE fixedShimmerConfig) {
+		mFixedShimmerConfigMode = fixedShimmerConfig;
 	}
-	
+
+	public void addFixedShimmerConfig(String configKey, Object configValue) {
+		if(mFixedShimmerConfigMap==null){
+			mFixedShimmerConfigMap = new LinkedHashMap<String, Object>();
+		}
+		mFixedShimmerConfigMap.put(configKey, configValue);
+	}
+
 	public void setAutoStartStreaming(boolean state){
 		mAutoStartStreaming = state;
 	}

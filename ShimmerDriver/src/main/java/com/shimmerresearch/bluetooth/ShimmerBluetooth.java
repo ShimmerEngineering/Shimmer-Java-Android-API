@@ -114,7 +114,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
-import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG;
+import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
 	
@@ -2336,8 +2336,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		//readExpansionBoardID();
 		
 		if (mSetupDeviceWhileConnecting){
-			if(mFixedShimmerConfig!=null && mFixedShimmerConfig!=FIXED_SHIMMER_CONFIG.NONE){
-				boolean triggerConfig = FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfig);
+			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
+				boolean triggerConfig = FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfigMode, mFixedShimmerConfigMap);
 				if(triggerConfig){
 					writeConfigBytes(false);
 				}
@@ -2407,7 +2407,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		
 		if(mSetupDeviceWhileConnecting){
-			if(mFixedShimmerConfig!=null && mFixedShimmerConfig!=FIXED_SHIMMER_CONFIG.NONE){
+			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
 				writeEnabledSensors(mEnabledSensors); //this should always be the last command
 			} else {
 				//writeAccelRange(mDigitalAccelRange);
@@ -2433,10 +2433,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	@Override
-	public void setFixedShimmerConfig(FIXED_SHIMMER_CONFIG fixedShimmerConfig) {
+	public void setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE fixedShimmerConfig) {
 		super.setFixedShimmerConfig(fixedShimmerConfig);
 		
-		if(fixedShimmerConfig!=null && fixedShimmerConfig!=FIXED_SHIMMER_CONFIG.NONE){
+		if(fixedShimmerConfig!=null && fixedShimmerConfig!=FIXED_SHIMMER_CONFIG_MODE.NONE){
 			setSetupDeviceWhileConnecting(true);
 		}
 	}

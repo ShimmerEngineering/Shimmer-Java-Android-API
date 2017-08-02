@@ -63,6 +63,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -71,11 +72,17 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
+import com.shimmerresearch.sensors.SensorEXG;
+import com.shimmerresearch.sensors.SensorGSR;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -162,21 +169,36 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2, int orientation) {
 		this(myName, continousSync);
 
-		setAccelRange(accelRange);
-		setGSRRange(gsrRange);
+		//TODO Old approach - start (migrate to new approach)
+//		setAccelRange(accelRange);
+//		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
-		setLowPowerMag(enableLowPowerMag);
-		setLowPowerAccelWR(enableLowPowerAccel);
-		setLowPowerGyro(enableLowPowerGyro);
-		setGyroRange(gyroRange);
-		setLSM303MagRange(magRange);
-		mSetupEXG = true;
-		setEXG1RegisterArray(exg1);
-		setEXG2RegisterArray(exg2);
+//		setLowPowerMag(enableLowPowerMag);
+//		setLowPowerAccelWR(enableLowPowerAccel);
+//		setLowPowerGyro(enableLowPowerGyro);
+//		setGyroRange(gyroRange);
+//		setLSM303MagRange(magRange);
+//		mSetupEXG = true;
+//		setEXG1RegisterArray(exg1);
+//		setEXG2RegisterArray(exg2);
 		
-		setSetupDeviceWhileConnecting(true);
-    	setSamplingRateShimmer(samplingRate);
+//		setSetupDeviceWhileConnecting(true);
+//    	setSamplingRateShimmer(samplingRate);
 		setupOrientation(orientation, samplingRate);
+		//TODO Old approach - end
+		
+		//TODO New approach - start
+		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
+		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM, enableLowPowerMag);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM, enableLowPowerAccel);
+		addFixedShimmerConfig(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM, enableLowPowerGyro);
+		addFixedShimmerConfig(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, gyroRange);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magRange);
+		addFixedShimmerConfig(SensorEXG.GuiLabelConfig.EXG_BYTES, Arrays.asList(exg1, exg2));
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		//TODO New approach - end
 	}
 	
 	/**
@@ -192,14 +214,24 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain, int orientation) {
 		this(myName, continousSync);
 
-		setAccelRange(accelRange);
-		setLSM303MagRange(magGain);
-		setGSRRange(gsrRange);
+		//TODO Old approach - start (migrate to new approach)
+//		setAccelRange(accelRange);
+//		setLSM303MagRange(magGain);
+//		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
 
-		setSetupDeviceWhileConnecting(true);
-    	setSamplingRateShimmer(samplingRate);
+//		setSetupDeviceWhileConnecting(true);
+//    	setSamplingRateShimmer(samplingRate);
 		setupOrientation(orientation, samplingRate);
+		//TODO Old approach - end
+
+		//TODO New approach - start
+		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magGain);
+		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		//TODO New approach - end
 	}
 	
 	// Javadoc comment follows
@@ -211,12 +243,21 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC( String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync) {
     	this(myName, continousSync);
     	
-    	setAccelRange(accelRange);
-		setGSRRange(gsrRange);
+		//TODO Old approach - start (migrate to new approach)
+//    	setAccelRange(accelRange);
+//		setGSRRange(gsrRange);
 		mSetEnabledSensors=setEnabledSensors;
 		
-		setSetupDeviceWhileConnecting(true);
-    	setSamplingRateShimmer(samplingRate);
+//		setSetupDeviceWhileConnecting(true);
+//    	setSamplingRateShimmer(samplingRate);
+		//TODO Old approach - end
+
+		//TODO New approach - start
+		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
+		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		//TODO New approach - end
 	}
     
     
