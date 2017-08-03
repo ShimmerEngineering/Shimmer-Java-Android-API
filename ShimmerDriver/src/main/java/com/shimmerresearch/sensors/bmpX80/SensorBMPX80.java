@@ -33,7 +33,7 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 	}
 	
 	// GUI Sensor Tiles
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String PRESSURE_TEMPERATURE = GuiLabelSensors.PRESS_TEMP_BMPX80;
 	}
 	

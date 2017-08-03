@@ -291,8 +291,8 @@ public class OrientationModule6DOF extends OrientationModule{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 			(DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER), 
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO),
 					CHANNEL_UNITS.NO_UNITS,
 					listChannelsEuler6DOF_LN);
 
@@ -306,8 +306,8 @@ public class OrientationModule6DOF extends OrientationModule{
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.GYRO_Z),
 			(DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT|DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER), 
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO),
 					CHANNEL_UNITS.NO_UNITS,
 					listChannelsQuat6DOF_WR);
 
@@ -341,8 +341,8 @@ public class OrientationModule6DOF extends OrientationModule{
 	{
 //		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
 //		String[] accSensors = new String[2];
-//		accSensors[0]=Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
-//		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
+//		accSensors[0]=Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL;
+//		accSensors[1]=Shimmer3.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL;
 //		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
 
 		final ConfigOptionDetails configOptionQuatOutput = new ConfigOptionDetails(
@@ -531,7 +531,7 @@ public class OrientationModule6DOF extends OrientationModule{
 			returnValue = 512;
 		break;
 //		case(GuiLabelConfig.ACCELEROMETER):
-//			returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
+//			returnValue = Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL;
 //			break;
 		case(GuiLabelConfig.QUATERNION_OUTPUT_6DOF):
 			returnValue = true;

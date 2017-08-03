@@ -67,7 +67,7 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 		public static final String ACCEL_LN = "Low-Noise Accelerometer";
 	}
 	
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String LOW_NOISE_ACCEL = GuiLabelSensors.ACCEL_LN;
 	}
 	
@@ -226,34 +226,34 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
 //			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_PER_SENSOR):
-//				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+//				if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL){
 //					TreeMap<Integer, CalibDetailsKinematic> mapOfKinematicSensorCalibration = (TreeMap<Integer, CalibDetailsKinematic>) valueToSet;
 //					setKinematicCalibration(mapOfKinematicSensorCalibration);
 //					returnValue = valueToSet;
 //				}
 //	    		break;
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
 	        	break;
 		}
 		return returnValue;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
 			case(GuiLabelConfigCommon.RANGE):
-				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+				if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL){
 					returnValue = 0;
 				}
 				break;
 			default:
-				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
 				break;
 		}
 		return returnValue;
@@ -267,8 +267,8 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	
 	
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mSensorMap.containsKey(sensorMapKey)){
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
 			updateCurrentAccelLnCalibInUse();
 			return true;
 		}
@@ -279,7 +279,7 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	@Override
 	public boolean checkConfigOptionValues(String stringKey) {
 		if(mConfigOptionsMap.containsKey(stringKey)){
-			//XXX Return true if mSensorMap contains sensorMapKey regardless of the fact there a no configuration options?
+			//XXX Return true if mSensorMap contains sensorId regardless of the fact there a no configuration options?
 			return true;
 		}
 		return false;
@@ -354,7 +354,7 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	}
 	
 	public CalibDetailsKinematic getCurrentCalibDetailsAccelLn(){
-		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_VALUE);
+		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_VALUE);
 		if(calibPerSensor!=null){
 			return (CalibDetailsKinematic) calibPerSensor;
 		}
@@ -382,16 +382,16 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
 	 */
 	@Override
-	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
-		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+	public boolean isSensorUsingDefaultCal(int sensorId) {
+		if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL){
 			return isUsingDefaultLNAccelParam();
 		}
 		return false;
 	}
 	
 	@Override
-	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
-		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+	public void setCalibrationMapPerSensor(int sensorId, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorId, mapOfSensorCalibration);
 		updateCurrentAccelLnCalibInUse();
 	}
 

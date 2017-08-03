@@ -55,9 +55,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/** * */
 	private static final long serialVersionUID = -1137540822708521997L;
 	
-	protected int mSensorMapKeyAccel = -1;
-	protected int mSensorMapKeyMag = -1;
-	protected int mSensorMapKeyGyro = -1;
+	protected int mSensorIdAccel = -1;
+	protected int mSensorIdMag = -1;
+	protected int mSensorIdGyro = -1;
 
 	//--------- Sensor specific variables start --------------
 	private boolean debugGyroRate = false;
@@ -183,7 +183,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	
 //	------------ Keep in Configuration? ------------
-//	public class SensorMapKey{
+//	public class SENSOR_ID{
 ////		public static final int MPU9150_ACCEL = 17;
 ////		public static final int MPU9150_GYRO = 1;
 ////		public static final int MPU9150_MAG = 18;
@@ -262,7 +262,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		public static final String MPL_ORIENT = "Orient"; // not currently supported
 	}
 	
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String MPU = "Kinematics";
 		public static final String GYRO = GuiLabelSensors.GYRO;
 		public static final String MPU_ACCEL_GYRO_MAG = "MPU 9DoF";
@@ -391,19 +391,19 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	public static final Integer[] ListofMPU9150MplRateConfigValues = {0,1,2,3,4};
 	
 	public static final List<Integer> mListOfMplChannels = Arrays.asList(
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_TEMP,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_9DOF,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_6DOF,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_9DOF,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_HEADING,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_PEDOMETER,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_TAP,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MOTION_ORIENT,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG,
-			Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW);
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_TEMP,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_9DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_6DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_9DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_HEADING,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_PEDOMETER,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_TAP,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MOTION_ORIENT,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW);
 
 	//--------- Configuration options end --------------
 
@@ -423,7 +423,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplQuat6Dof = new SensorDetailsRef((long)0, (long)0x80<<(3*8), GuiLabelSensors.QUAT_MPL_6DOF,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF),
+			null,//Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF),
 			Arrays.asList(GuiLabelConfig.MPU9X50_MPL_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.QUAT_MPL_6DOF_W,
@@ -435,7 +435,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplQuat9Dof = new SensorDetailsRef((long)0, (long)0x40<<(3*8), GuiLabelSensors.QUAT_MPL_9DOF,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_9DOF),
+			null,//Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_9DOF),
 			Arrays.asList(GuiLabelConfig.MPU9X50_MPL_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.QUAT_MPL_9DOF_W,
@@ -446,7 +446,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplEuler6Dof = new SensorDetailsRef((long)0, (long)0x20<<(3*8), GuiLabelSensors.EULER_ANGLES_6DOF,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_6DOF),
+			null,//Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_6DOF),
 			Arrays.asList(GuiLabelConfig.MPU9X50_MPL_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.EULER_MPL_6DOF_X,
@@ -456,7 +456,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplEuler9Dof = new SensorDetailsRef((long)0, (long)0x10<<(3*8), GuiLabelSensors.EULER_ANGLES_9DOF,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_9DOF),
+			null,//Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_9DOF),
 			Arrays.asList(GuiLabelConfig.MPU9X50_MPL_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.EULER_MPL_9DOF_X,
@@ -474,7 +474,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplPedometer = new SensorDetailsRef((long)0, (long)0x04<<(3*8), GuiLabelSensors.MPL_PEDOM_CNT,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_PEDOMETER),
+			null,//Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_PEDOMETER),
 			Arrays.asList(GuiLabelConfig.MPU9X50_MPL_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.MPL_PEDOM_CNT,
@@ -483,7 +483,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplTap = new SensorDetailsRef((long)0, (long)0x02<<(3*8), GuiLabelSensors.MPL_TAPDIRANDTAPCNT,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_TAP),
+			null,//Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_TAP),
 			Arrays.asList(GuiLabelConfig.MPU9X50_MPL_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.TAPDIR,
@@ -492,7 +492,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplMotion = new SensorDetailsRef((long)0, (long)0x01<<(3*8), GuiLabelSensors.MPL_MOTIONANDORIENT,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MOTION_ORIENT),
+			null,//Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MOTION_ORIENT),
 			Arrays.asList(GuiLabelConfig.MPU9X50_MPL_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.MOTION,
@@ -502,7 +502,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	//MPL calibrated sensors
 	public static final SensorDetailsRef sensorMpu9150MplGyro = new SensorDetailsRef((long)0, (long)0x80<<(4*8), GuiLabelSensors.GYRO_MPU_MPL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_GYRO_RANGE,
 					GuiLabelConfig.MPU9X50_GYRO_RATE,
@@ -516,7 +516,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 
 	public static final SensorDetailsRef sensorMpu9150MplAccel = new SensorDetailsRef((long)0, (long)0x40<<(4*8), GuiLabelSensors.ACCEL_MPU_MPL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_ACCEL_RANGE,
 					GuiLabelConfig.MPU9X50_MPL_LPF),
@@ -528,7 +528,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplMag = new SensorDetailsRef((long)0, (long)0x20<<(4*8), GuiLabelSensors.MAG_MPU_MPL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_MPL_LPF),
 			Arrays.asList(
@@ -539,7 +539,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplQuat6DofRaw = new SensorDetailsRef((long)0, (long)0x10<<(4*8), GuiLabelSensors.QUAT_DMP_6DOF,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			null,//Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW),
+			null,//Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW),
 			Arrays.asList(GuiLabelConfig.MPU9X50_MPL_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.QUAT_DMP_6DOF_W,
@@ -553,20 +553,20 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
 		//TODO decide what to do with below -> update, I can't remember why I added this message
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
 
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF, SensorMPU9X50.sensorMpu9150MplQuat6Dof);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_9DOF, SensorMPU9X50.sensorMpu9150MplQuat9Dof);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_6DOF, SensorMPU9X50.sensorMpu9150MplEuler6Dof);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_EULER_9DOF, SensorMPU9X50.sensorMpu9150MplEuler9Dof);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_HEADING, SensorMPU9X50.sensorMpu9150MplHeading);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_PEDOMETER, SensorMPU9X50.sensorMpu9150MplPedometer);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_TAP, SensorMPU9X50.sensorMpu9150MplTap);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MOTION_ORIENT, SensorMPU9X50.sensorMpu9150MplMotion);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, SensorMPU9X50.sensorMpu9150MplGyro);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, SensorMPU9X50.sensorMpu9150MplAccel);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, SensorMPU9X50.sensorMpu9150MplMag);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW, SensorMPU9X50.sensorMpu9150MplQuat6DofRaw);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF, SensorMPU9X50.sensorMpu9150MplQuat6Dof);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_9DOF, SensorMPU9X50.sensorMpu9150MplQuat9Dof);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_6DOF, SensorMPU9X50.sensorMpu9150MplEuler6Dof);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_9DOF, SensorMPU9X50.sensorMpu9150MplEuler9Dof);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_HEADING, SensorMPU9X50.sensorMpu9150MplHeading);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_PEDOMETER, SensorMPU9X50.sensorMpu9150MplPedometer);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_TAP, SensorMPU9X50.sensorMpu9150MplTap);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MOTION_ORIENT, SensorMPU9X50.sensorMpu9150MplMotion);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO, SensorMPU9X50.sensorMpu9150MplGyro);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL, SensorMPU9X50.sensorMpu9150MplAccel);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG, SensorMPU9X50.sensorMpu9150MplMag);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW, SensorMPU9X50.sensorMpu9150MplQuat6DofRaw);
 
 		mSensorMapRefCommon = Collections.unmodifiableMap(aMap);
     }
@@ -994,7 +994,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 
 		Object returnValue = null;
 		int buf = 0;
@@ -1068,7 +1068,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 
 			
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
 	        	break;
 		}
 		return returnValue;
@@ -1076,7 +1076,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
 //Booleans
@@ -1133,24 +1133,24 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 				break;
 				
 			case(GuiLabelConfigCommon.RANGE):
-				if(sensorMapKey==mSensorMapKeyGyro){
+				if(sensorId==mSensorIdGyro){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_GYRO_RANGE);
 				}
-				else if(sensorMapKey==mSensorMapKeyAccel){
+				else if(sensorId==mSensorIdAccel){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_ACCEL_RANGE);
 				}
 				break;
 			case(GuiLabelConfigCommon.RATE):
-				if(sensorMapKey==mSensorMapKeyGyro){
+				if(sensorId==mSensorIdGyro){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_GYRO_RATE);
 				}
-				else if(sensorMapKey==mSensorMapKeyAccel){
+				else if(sensorId==mSensorIdAccel){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.MPU9X50_GYRO_RATE);
 				}
 				break;
 				
 			default:
-				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
 				break;
 	    }
 
@@ -1198,15 +1198,15 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mSensorMap.containsKey(sensorMapKey)){
-			if(sensorMapKey==mSensorMapKeyAccel){
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
+			if(sensorId==mSensorIdAccel){
 				setDefaultMpu9150AccelSensorConfig(isSensorEnabled);
 			}
-			else if(sensorMapKey==mSensorMapKeyGyro){
+			else if(sensorId==mSensorIdGyro){
 				setDefaultMpu9150GyroSensorConfig(isSensorEnabled);
 			}
-			else if(sensorMapKey==mSensorMapKeyMag){
+			else if(sensorId==mSensorIdMag){
 				if(mShimmerDevice!=null){
 					setMPU9150MagRateFromFreq(mShimmerDevice.getSamplingRateShimmer());
 				} else {
@@ -1214,8 +1214,8 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 					setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
 				}
 			}
-			else if(SensorMPU9X50.mListOfMplChannels.contains(sensorMapKey)){ //RS (30/5/2016) - Why is a default config set if only one MPL sensor is enabled? 
-				if(!checkIfAnyOtherMplChannelEnabled(sensorMapKey)) {
+			else if(SensorMPU9X50.mListOfMplChannels.contains(sensorId)){ //RS (30/5/2016) - Why is a default config set if only one MPL sensor is enabled? 
+				if(!checkIfAnyOtherMplChannelEnabled(sensorId)) {
 					setDefaultMpu9150MplSensorConfig(isSensorEnabled);
 				}
 			}
@@ -1293,7 +1293,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		if(checkIfAnyMplChannelEnabled()){
 			setFreq = true;
 		}
-		else if (isSensorEnabled(mSensorMapKeyMag)) {
+		else if (isSensorEnabled(mSensorIdMag)) {
 			setFreq = true;
 		}
 		
@@ -1344,10 +1344,10 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		return mMPU9150MPLSamplingRate;
 	}
 	
-	//TODO check why is the Accel SensorMapKey is referenced here
+	//TODO check why is the Accel SensorId is referenced here
 	public void setDefaultMpu9150GyroSensorConfig(boolean isSensorEnabled) {
 		if(!checkIfAnyMplChannelEnabled()) {
-			if(!isSensorEnabled(mSensorMapKeyAccel)) {
+			if(!isSensorEnabled(mSensorIdAccel)) {
 				if(isSensorEnabled) {
 					setLowPowerGyro(false);
 				}
@@ -1366,10 +1366,10 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		}
 	}
 	
-	//TODO check why is the Gyro SensorMapKey is referenced here
+	//TODO check why is the Gyro SensorId is referenced here
 	public void setDefaultMpu9150AccelSensorConfig(boolean isSensorEnabled) {
 		if(!checkIfAnyMplChannelEnabled()) {
-			if(!isSensorEnabled(mSensorMapKeyGyro)) {
+			if(!isSensorEnabled(mSensorIdGyro)) {
 				if(isSensorEnabled) {
 					setLowPowerGyro(false);
 				}
@@ -1424,25 +1424,25 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	}
 	
 	public boolean checkIfAMpuGyroOrAccelEnabled(){
-		if(isSensorEnabled(mSensorMapKeyGyro)) {
+		if(isSensorEnabled(mSensorIdGyro)) {
 			return true;
 		}
-		if(isSensorEnabled(mSensorMapKeyAccel)) {
+		if(isSensorEnabled(mSensorIdAccel)) {
 			return true;
 		}
-//		if(mSensorMap.get(SensorMapKey.SHIMMER_MPU9150_MAG) != null) {
-//			if(mSensorMap.get(SensorMapKey.SHIMMER_MPU9150_MAG).mIsEnabled) {
+//		if(mSensorMap.get(SENSOR_ID.SHIMMER_MPU9150_MAG) != null) {
+//			if(mSensorMap.get(SENSOR_ID.SHIMMER_MPU9150_MAG).mIsEnabled) {
 //				return true;
 //			}
 //		}
 		return false;
 	}	
 	
-	public boolean checkIfAnyOtherMplChannelEnabled(int sensorMapKey){
+	public boolean checkIfAnyOtherMplChannelEnabled(int sensorId){
 		if(mShimmerVerObject.isSupportedMpl()){
 			if(mSensorMap.keySet().size()>0){
 				for(int key:SensorMPU9X50.mListOfMplChannels){
-					if(key!=sensorMapKey && isSensorEnabled(key)) {
+					if(key!=sensorId && isSensorEnabled(key)) {
 						return true;
 					}
 				}
@@ -1949,13 +1949,13 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		
 		setLowPowerGyro(false);
 		
-		if(!isSensorEnabled(mSensorMapKeyGyro)){
+		if(!isSensorEnabled(mSensorIdGyro)){
 			setDefaultMpu9150GyroSensorConfig(false);
 		}
-		if(!isSensorEnabled(mSensorMapKeyAccel)){
+		if(!isSensorEnabled(mSensorIdAccel)){
 			setDefaultMpu9150AccelSensorConfig(false);
 		}
-		if(!isSensorEnabled(mSensorMapKeyMag)){
+		if(!isSensorEnabled(mSensorIdMag)){
 			if(mShimmerDevice!=null){
 				setMPU9150MagRateFromFreq(mShimmerDevice.getSamplingRateShimmer());
 			} else {
@@ -2006,21 +2006,21 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		calibMapGyro.put(calibDetailsGyro1000.mRangeValue, calibDetailsGyro1000);
 		calibMapGyro.put(calibDetailsGyro2000.mRangeValue, calibDetailsGyro2000);
 		
-		mCalibMap.put(mSensorMapKeyGyro, calibMapGyro);
+		mCalibMap.put(mSensorIdGyro, calibMapGyro);
 		updateCurrentGyroCalibInUse();
 		
 		if(mShimmerVerObject.isSupportedMpl()){
 			TreeMap<Integer, CalibDetails> mCalibMapMplAccel = new TreeMap<Integer, CalibDetails>();
 			mCalibMapMplAccel.put(calibDetailsMplAccel.mRangeValue, calibDetailsMplAccel);
-			mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_ACCEL, calibMapGyro);
+			mCalibMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL, calibMapGyro);
 			
 			TreeMap<Integer, CalibDetails> mCalibMapMplMag = new TreeMap<Integer, CalibDetails>();
 			mCalibMapMplMag.put(calibDetailsMplMag.mRangeValue, calibDetailsMplMag);
-			mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_MAG, calibMapGyro);
+			mCalibMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG, calibMapGyro);
 			
 			TreeMap<Integer, CalibDetails> mCalibMapMplGyro = new TreeMap<Integer, CalibDetails>();
 			mCalibMapMplGyro.put(calibDetailsMplGyro.mRangeValue, calibDetailsMplGyro);
-			mCalibMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9150_MPL_GYRO, calibMapGyro);
+			mCalibMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO, calibMapGyro);
 		}
 	}
 
@@ -2028,16 +2028,16 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
 	 */
 	@Override
-	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
-		if(sensorMapKey==mSensorMapKeyGyro){
+	public boolean isSensorUsingDefaultCal(int sensorId) {
+		if(sensorId==mSensorIdGyro){
 			return isUsingDefaultGyroParam();
 		}
 		return false;
 	}
 
 	@Override
-	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
-		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+	public void setCalibrationMapPerSensor(int sensorId, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorId, mapOfSensorCalibration);
 		updateCurrentGyroCalibInUse();
 	}
 
@@ -2053,7 +2053,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	//--------- Optional methods to override in Sensor Class end -------- 
 	
 	public void updateCurrentGyroCalibInUse(){
-		mCurrentCalibDetailsGyro = getCurrentCalibDetailsIfKinematic(mSensorMapKeyGyro, getGyroRange());
+		mCurrentCalibDetailsGyro = getCurrentCalibDetailsIfKinematic(mSensorIdGyro, getGyroRange());
 	}
 	
 	public CalibDetailsKinematic getCurrentCalibDetailsGyro(){

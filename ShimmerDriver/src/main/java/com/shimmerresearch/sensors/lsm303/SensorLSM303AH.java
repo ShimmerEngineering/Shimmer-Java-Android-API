@@ -256,8 +256,8 @@ public class SensorLSM303AH extends SensorLSM303 {
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL, SensorLSM303AH.sensorLSM303AHAccel);  
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_MAG, SensorLSM303AH.sensorLSM303AHMag);	
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, SensorLSM303AH.sensorLSM303AHAccel);  
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG, SensorLSM303AH.sensorLSM303AHMag);	
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -331,13 +331,13 @@ public class SensorLSM303AH extends SensorLSM303 {
 	//--------- Channel info end --------------
     
     public static final SensorGroupingDetails sensorGroupLsmAccel = new SensorGroupingDetails(
-			GuiLabelSensorTiles.WIDE_RANGE_ACCEL,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL),
+			LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
     
     public static final SensorGroupingDetails sensorGroupLsmMag = new SensorGroupingDetails(
-			GuiLabelSensorTiles.MAG,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_MAG),
+			LABEL_SENSOR_TILE.MAG,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
 
     
@@ -376,8 +376,8 @@ public class SensorLSM303AH extends SensorLSM303 {
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL.ordinal(), sensorGroupLsmAccel);
-		mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.MAG.ordinal(), sensorGroupLsmMag);
+		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL.ordinal(), sensorGroupLsmAccel);
+		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.MAG.ordinal(), sensorGroupLsmMag);
 		super.updateSensorGroupingMap();	
 	}
 
@@ -442,7 +442,7 @@ public class SensorLSM303AH extends SensorLSM303 {
 
 		//Digital Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL, 
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, 
 				getAccelRange(), 
 				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
 				SensorLSM303AH.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
@@ -456,7 +456,7 @@ public class SensorLSM303AH extends SensorLSM303 {
 		
 		//Magnetometer Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_MAG, 
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG, 
 				getMagRange(), 
 				SensorLSM303AH.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
 				SensorLSM303AH.DatabaseConfigHandle.MAG_CALIB_TIME);
@@ -467,8 +467,8 @@ public class SensorLSM303AH extends SensorLSM303 {
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override
 	public void initialise() {
-		mSensorMapKeyAccel = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL;
-		mSensorMapKeyMag = Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_MAG;
+		mSensorIdAccel = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL;
+		mSensorIdMag = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG;
 		super.initialise();
 		
 		mMagRange = ListofLSM303AHMagRangeConfigValues[0];
@@ -486,13 +486,13 @@ public class SensorLSM303AH extends SensorLSM303 {
 		calibMapAccelWr.put(calibDetailsAccelWr4g.mRangeValue, calibDetailsAccelWr4g);
 		calibMapAccelWr.put(calibDetailsAccelWr8g.mRangeValue, calibDetailsAccelWr8g);
 		calibMapAccelWr.put(calibDetailsAccelWr16g.mRangeValue, calibDetailsAccelWr16g);
-		setCalibrationMapPerSensor(mSensorMapKeyAccel, calibMapAccelWr);
+		setCalibrationMapPerSensor(mSensorIdAccel, calibMapAccelWr);
 
 		updateCurrentAccelWrCalibInUse();
 
 		TreeMap<Integer, CalibDetails> calibMapMag = new TreeMap<Integer, CalibDetails>();
 		calibMapMag.put(calibDetailsMag50Ga.mRangeValue, calibDetailsMag50Ga);
-		setCalibrationMapPerSensor(mSensorMapKeyMag, calibMapMag);
+		setCalibrationMapPerSensor(mSensorIdMag, calibMapMag);
 		
 		updateCurrentMagCalibInUse();
 	}

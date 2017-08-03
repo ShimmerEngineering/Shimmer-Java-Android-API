@@ -46,7 +46,7 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
     public static final Map<String, OldCalDetails> mOldCalRangeMap;
     static {
         Map<String, OldCalDetails> aMap = new LinkedHashMap<String, OldCalDetails>();
-        aMap.put("accel_ln_2g", new OldCalDetails("accel_ln_2g", Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_VALUE));
+        aMap.put("accel_ln_2g", new OldCalDetails("accel_ln_2g", Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_VALUE));
         mOldCalRangeMap = Collections.unmodifiableMap(aMap);
     }
     
@@ -105,7 +105,7 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, SensorKionixKXRB52042.sensorKionixKXRB52042);
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, SensorKionixKXRB52042.sensorKionixKXRB52042);
 
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
@@ -156,8 +156,8 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
 	//--------- Channel info end --------------
     
     public static final SensorGroupingDetails sensorGroupLnAccelKXRB52042 = new SensorGroupingDetails(
-    		SensorKionixAccel.GuiLabelSensorTiles.LOW_NOISE_ACCEL,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL),
+    		SensorKionixAccel.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
     
     //--------- Constructors for this class start --------------
@@ -198,7 +198,7 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
 	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		//Analog Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, 
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, 
 				0, 
 				SensorKionixKXRB52042.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC,
 				SensorKionixKXRB52042.DatabaseConfigHandle.LN_ACC_CALIB_TIME);
@@ -208,7 +208,7 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL.ordinal(), sensorGroupLnAccelKXRB52042);
+			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL.ordinal(), sensorGroupLnAccelKXRB52042);
 		}
 		super.updateSensorGroupingMap();	
 	}
@@ -261,7 +261,7 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
 		TreeMap<Integer, CalibDetails> calibMapAccelLn = new TreeMap<Integer, CalibDetails>();
 		calibMapAccelLn.put(calibDetailsAccelLn2g.mRangeValue, calibDetailsAccelLn2g);
 		
-		setCalibrationMapPerSensor(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL, calibMapAccelLn);
+		setCalibrationMapPerSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, calibMapAccelLn);
 		
 		updateCurrentAccelLnCalibInUse();
 	}

@@ -31,8 +31,8 @@ public class SensorDetailsRef implements Serializable {
 //	public long mDerivedSensorBitmapID = 0;
 	
 	public String mGuiFriendlyLabel = "";
-	public List<Integer> mListOfSensorMapKeysRequired = null; //needs to be null by default
-	public List<Integer> mListOfSensorMapKeysConflicting = null; //needs to be null by default
+	public List<Integer> mListOfSensorIdsRequired = null; //needs to be null by default
+	public List<Integer> mListOfSensorIdsConflicting = null; //needs to be null by default
 	public boolean mIntExpBoardPowerRequired = false;
 	public List<String> mListOfConfigOptionKeysAssociated = null; //needs to be null by default
 	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = null; //needs to be null by default  
@@ -114,7 +114,7 @@ public class SensorDetailsRef implements Serializable {
 	 * @param sensorBitmapIDSDLogHeader
 	 * @param guiFriendlyLabel
 	 * @param listOfCompatibleVersionInfo
-	 * @param listOfSensorMapKeysConflicting
+	 * @param listOfSensorIdsConflicting
 	 * @param listOfConfigOptionKeysAssociated
 	 * @param listOfChannelsRef
 	 * @param intExpBoardPowerRequired
@@ -124,7 +124,7 @@ public class SensorDetailsRef implements Serializable {
 			long sensorBitmapIDSDLogHeader, 
 			String guiFriendlyLabel, 
 			List<ShimmerVerObject> listOfCompatibleVersionInfo, 
-			List<Integer> listOfSensorMapKeysConflicting, 
+			List<Integer> listOfSensorIdsConflicting, 
 			List<String> listOfConfigOptionKeysAssociated, 
 			List<String> listOfChannelsRef,
 			boolean intExpBoardPowerRequired) {
@@ -134,8 +134,8 @@ public class SensorDetailsRef implements Serializable {
 				listOfCompatibleVersionInfo, 
 				listOfConfigOptionKeysAssociated, 
 				listOfChannelsRef);
-		if(listOfSensorMapKeysConflicting!=null){
-			mListOfSensorMapKeysConflicting = listOfSensorMapKeysConflicting;
+		if(listOfSensorIdsConflicting!=null){
+			mListOfSensorIdsConflicting = listOfSensorIdsConflicting;
 		}
 		mIntExpBoardPowerRequired = intExpBoardPowerRequired;
 	}

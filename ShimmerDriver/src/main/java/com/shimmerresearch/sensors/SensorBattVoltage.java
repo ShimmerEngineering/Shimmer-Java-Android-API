@@ -53,7 +53,7 @@ public class SensorBattVoltage extends AbstractSensor{
 		public static final String BATTERY = "Battery Voltage";
 	}
 	
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String BATTERY_MONITORING = GuiLabelSensors.BATTERY;
 	}
 	
@@ -108,13 +108,13 @@ public class SensorBattVoltage extends AbstractSensor{
   	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT, SensorBattVoltage.sensorBattVoltageRef);  
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_VBATT, SensorBattVoltage.sensorBattVoltageRef);  
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
   	
     public static final SensorGroupingDetails sensorGroupBattVoltage = new SensorGroupingDetails(
-			GuiLabelSensorTiles.BATTERY_MONITORING,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_VBATT),
+			LABEL_SENSOR_TILE.BATTERY_MONITORING,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_VBATT),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
   	
 	//--------- Sensor info end --------------
@@ -183,7 +183,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4() || mShimmerVerObject.isSweatchDevice()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BATTERY_MONITORING.ordinal(), sensorGroupBattVoltage);
+			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BATTERY_MONITORING.ordinal(), sensorGroupBattVoltage);
 		}
 		super.updateSensorGroupingMap();
 	}
@@ -242,7 +242,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 //		if (componentName.equals(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT)){
 //		    setSamplingDividerVBatt((int)valueToSet);
@@ -251,7 +251,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		Object returnValue = null;
 //		if(componentName.equals(Configuration.ShimmerGqBle.GuiLabelConfig.SAMPLING_RATE_DIVIDER_VBATT)){
 //			returnValue = getSamplingDividerVBatt();
@@ -266,7 +266,7 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		// //Not in this class
 		return false;
 	}

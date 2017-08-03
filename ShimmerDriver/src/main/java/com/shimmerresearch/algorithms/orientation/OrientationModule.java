@@ -79,8 +79,8 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		
 //		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
 //		String[] accSensors = new String[2];
-//		accSensors[0]=Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
-//		accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
+//		accSensors[0]=Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL;
+//		accSensors[1]=Shimmer3.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL;
 //		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
 		
 	}
@@ -331,7 +331,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 //				returnValue = 512;
 //				break;
 //			case(GuiLabelConfig.ACCELEROMETER):
-//				returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
+//				returnValue = Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL;
 //				break;
 //			case(GuiLabelConfig.QUATERNION_OUTPUT):
 //				returnValue = true;

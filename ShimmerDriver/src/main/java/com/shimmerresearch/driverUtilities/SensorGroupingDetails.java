@@ -20,7 +20,7 @@ public class SensorGroupingDetails implements Serializable {
 	private static final long serialVersionUID = 4373658361698230203L;
 	
 	public String mGroupName = "";
-	public List<Integer> mListOfSensorMapKeysAssociated = new ArrayList<Integer>();
+	public List<Integer> mListOfSensorIdsAssociated = new ArrayList<Integer>();
 	public List<ShimmerVerObject> mListOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();  
 	public List<String> mListOfConfigOptionKeysAssociated = new ArrayList<String>();
 	public List<String> mListofGuiConfigNames = new ArrayList<String>();
@@ -34,25 +34,25 @@ public class SensorGroupingDetails implements Serializable {
 	 * Holds all information related the sensor 'tiles' used in Consensys for
 	 * dynamic GUI and configuration purposes.
 	 * 
-	 * @param listOfSensorMapKeysAssociated
+	 * @param listOfSensorIdsAssociated
 	 */
 	public SensorGroupingDetails(String groupName, 
-			List<Integer> listOfSensorMapKeysAssociated) {
+			List<Integer> listOfSensorIdsAssociated) {
 		mGroupName = groupName;
-		mListOfSensorMapKeysAssociated = listOfSensorMapKeysAssociated;
+		mListOfSensorIdsAssociated = listOfSensorIdsAssociated;
 	}
 
 	/**
 	 * Holds all information related the sensor 'tiles' used in Consensys for
 	 * dynamic GUI and configuration purposes.
 	 * 
-	 * @param listOfSensorMapKeysAssociated
+	 * @param listOfSensorIdsAssociated
 	 * @param listOfCompatibleVersionInfo
 	 */
 	public SensorGroupingDetails(String groupName, 
-			List<Integer> listOfSensorMapKeysAssociated, 
+			List<Integer> listOfSensorIdsAssociated, 
 			List<ShimmerVerObject> listOfCompatibleVersionInfo) {
-		this(groupName, listOfSensorMapKeysAssociated);
+		this(groupName, listOfSensorIdsAssociated);
 		mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
 	}
 
@@ -78,10 +78,10 @@ public class SensorGroupingDetails implements Serializable {
 	}
 
 	public SensorGroupingDetails(String groupName,
-			List<Integer> listOfSensorMapKeysAssociated,
+			List<Integer> listOfSensorIdsAssociated,
 			List<ShimmerVerObject> listOfCompatibleVersionInfo,
 			boolean isConfigurable) {
-		this(groupName, listOfSensorMapKeysAssociated, listOfCompatibleVersionInfo);
+		this(groupName, listOfSensorIdsAssociated, listOfCompatibleVersionInfo);
 		mIsPermanentGroup = isConfigurable;
 	}
 	
