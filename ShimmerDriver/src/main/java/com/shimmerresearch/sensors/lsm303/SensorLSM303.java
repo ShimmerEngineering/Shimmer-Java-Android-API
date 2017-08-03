@@ -436,16 +436,16 @@ public abstract class SensorLSM303 extends AbstractSensor {
 			case(GuiLabelConfig.LSM303_ACCEL_RATE): 
 				int configValue = getLSM303DigitalAccelRate(); 
 				 
-		    	if(!isLSM303DigitalAccelLPM()) {
-		        	if(configValue==8) {
-		        		//TODO:
-		        		/*RS (20/5/2016): Why returning a different value?
-		        		 * In the Set-method the compatibility-check for Accel Rates supported for Low Power Mode is made.
-		        		 * In this get-method the it should just read/get the value, not manipulating it.
-		        		 * */
-		        		configValue = 9;
-		        	}
-		    	}
+//		    	if(!isLSM303DigitalAccelLPM()) {
+//		        	if(configValue==8) {
+//		        		//TODO:
+//		        		/*RS (20/5/2016): Why returning a different value?
+//		        		 * In the Set-method the compatibility-check for Accel Rates supported for Low Power Mode is made.
+//		        		 * In this get-method the it should just read/get the value, not manipulating it.
+//		        		 * */
+//		        		configValue = 9;
+//		        	}
+//		    	}
 				returnValue = configValue;
 				break;
 			case(GuiLabelConfig.LSM303_MAG_RATE):
