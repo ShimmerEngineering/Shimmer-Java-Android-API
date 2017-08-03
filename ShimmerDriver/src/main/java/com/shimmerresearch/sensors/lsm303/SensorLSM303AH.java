@@ -584,7 +584,7 @@ public class SensorLSM303AH extends SensorLSM303 {
 					accelRate = 5; // 200Hz
 				} else if (freq<400){
 					accelRate = 6; // 400Hz
-				} else if (freq<400){
+				} else if (freq<800){
 					accelRate = 7; // 800Hz
 				} else if (freq<1600){
 					accelRate = 8; // 1600Hz
