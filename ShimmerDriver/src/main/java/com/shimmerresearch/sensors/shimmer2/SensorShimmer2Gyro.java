@@ -99,29 +99,29 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
 //			case(GuiLabelConfigCommon.RANGE):
 //	    		break;
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
 	        	break;
 		}
 		return returnValue;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
 			case(GuiLabelConfigCommon.RANGE):
-//				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+//				if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL){
 //					returnValue = 0;
 //				}
 				break;
 			default:
-				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
 				break;
 		}
 		return returnValue;
@@ -134,7 +134,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -176,8 +176,8 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	}
 	
 	@Override
-	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
-		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+	public void setCalibrationMapPerSensor(int sensorId, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorId, mapOfSensorCalibration);
 		updateCurrentCalibInUse();
 	}
 
@@ -191,7 +191,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 		} else {
 		}
 		if(calibMapGyro!=null){
-			setCalibrationMapPerSensor(Configuration.Shimmer2.SensorMapKey.GYRO, calibMapGyro);
+			setCalibrationMapPerSensor(Configuration.Shimmer2.SENSOR_ID.GYRO, calibMapGyro);
 		}
 
 		updateCurrentCalibInUse();
@@ -209,7 +209,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	
 
 	public void updateCurrentCalibInUse(){
-		mCurrentCalibDetailsGyro = getCurrentCalibDetailsIfKinematic(Configuration.Shimmer2.SensorMapKey.GYRO, getGyroRange());
+		mCurrentCalibDetailsGyro = getCurrentCalibDetailsIfKinematic(Configuration.Shimmer2.SENSOR_ID.GYRO, getGyroRange());
 	}
 
 	public CalibDetailsKinematic getCurrentCalibDetailsGyro(){

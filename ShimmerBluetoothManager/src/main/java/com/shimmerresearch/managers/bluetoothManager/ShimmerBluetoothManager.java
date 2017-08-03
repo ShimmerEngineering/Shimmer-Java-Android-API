@@ -286,13 +286,13 @@ public abstract class ShimmerBluetoothManager{
 				shimmerDevice.disableAllSensors();
 
 				//write sensors
-				if(shimmerDevice.getSensorMapKeySet().contains(Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL)){
+				if(shimmerDevice.getSensorIdsSet().contains(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL)){
 					//- setting wide range accel as only sensor
-					shimmerDevice.setSensorEnabledState(Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL, true); 
+					shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, true); 
 
 					//setting accel range +/- 4g
 					shimmerDevice.setConfigValueUsingConfigLabel(
-							Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL, 
+							Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, 
 							SensorLSM303DLHC.GuiLabelConfig.LSM303_ACCEL_RANGE,
 							1);
 				}

@@ -79,7 +79,7 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public boolean setSensorEnabledState(int sensorMapKey, boolean state) {
+	public boolean setSensorEnabledState(int sensorId, boolean state) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -55,7 +55,7 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_ECG_TO_HR_FW, sensorEcgToHr);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ECG_TO_HR_FW, sensorEcgToHr);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
 	}
 	//--------- Sensor info end --------------
@@ -96,7 +96,7 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		
 		//Update the derived sensor bit index
-		SensorDetails sensorEcgToHr = mSensorMap.get(Configuration.Shimmer3.SensorMapKey.SHIMMER_ECG_TO_HR_FW);
+		SensorDetails sensorEcgToHr = mSensorMap.get(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ECG_TO_HR_FW);
 		if(sensorEcgToHr!=null){
 			sensorEcgToHr.mDerivedSensorBitmapID = 0x80 << (8*1);
 		}
@@ -139,13 +139,13 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -157,8 +157,8 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mSensorMap.containsKey(sensorMapKey)){
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
 			//TODO set defaults for particular sensor
 			return true;
 		}

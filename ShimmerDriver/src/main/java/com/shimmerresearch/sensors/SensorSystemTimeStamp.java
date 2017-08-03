@@ -61,7 +61,7 @@ public class SensorSystemTimeStamp extends AbstractSensor {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, SensorSystemTimeStamp.sensorSystemTimeStampRef);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SYSTEM_TIMESTAMP, SensorSystemTimeStamp.sensorSystemTimeStampRef);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -151,13 +151,13 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -168,8 +168,8 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mSensorMap.containsKey(sensorMapKey)){
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
 			//TODO set defaults for particular sensor
 			return true;
 		}

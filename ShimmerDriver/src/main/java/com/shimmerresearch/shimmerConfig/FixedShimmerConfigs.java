@@ -65,13 +65,13 @@ public class FixedShimmerConfigs {
 
     
 	public static void setFixedConfig0(ShimmerDevice shimmerDevice) {
-		if(shimmerDevice.getSensorMapKeySet().contains(Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL)){
+		if(shimmerDevice.getSensorIdsSet().contains(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL)){
 			//- setting wide range accel as only sensor
-			shimmerDevice.setSensorEnabledState(Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL, true); 
+			shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, true); 
 
 			//setting accel range +/- 4g
 			shimmerDevice.setConfigValueUsingConfigLabel(
-					Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL, 
+					Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, 
 					SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE,
 					1);
 		}
@@ -84,25 +84,25 @@ public class FixedShimmerConfigs {
 		
 		int expId = shimmerDevice.getExpansionBoardId();
 		if(expId==HW_ID_SR_CODES.EXP_BRD_EXG || expId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED){
-			if(shimmerDevice.getSensorMapKeySet().contains(Shimmer3.SensorMapKey.HOST_ECG)){
+			if(shimmerDevice.getSensorIdsSet().contains(Shimmer3.SENSOR_ID.HOST_ECG)){
 				//- setting ECG as only sensor
-				shimmerDevice.setSensorEnabledState(Shimmer3.SensorMapKey.HOST_ECG, true); 
+				shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.HOST_ECG, true); 
 	
 				//setting ECG Gain to 6
 				shimmerDevice.setConfigValueUsingConfigLabel(
-						Shimmer3.SensorMapKey.HOST_ECG, 
+						Shimmer3.SENSOR_ID.HOST_ECG, 
 						SensorEXG.GuiLabelConfig.EXG_GAIN,
 						0);
 				
 				//setting ECG Resolution to 24bit
 				shimmerDevice.setConfigValueUsingConfigLabel(
-						Shimmer3.SensorMapKey.HOST_ECG, 
+						Shimmer3.SENSOR_ID.HOST_ECG, 
 						SensorEXG.GuiLabelConfig.EXG_RESOLUTION,
 						1);
 				
 				//setting ECG Reference Electrode to Fixed Potential
 				shimmerDevice.setConfigValueUsingConfigLabel(
-						Shimmer3.SensorMapKey.HOST_ECG, 
+						Shimmer3.SENSOR_ID.HOST_ECG, 
 						SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
 						0);
 			}

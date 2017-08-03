@@ -19,7 +19,7 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.bmpX80.SensorBMPX80.GuiLabelSensorTiles;
+import com.shimmerresearch.sensors.bmpX80.SensorBMPX80.LABEL_SENSOR_TILE;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
@@ -67,7 +67,7 @@ public class ShimmerClock extends AbstractSensor {
 		public static final String DEVICE_PROPERTIES = "Device Properties"; 
 	}
 
-	public static class GuiLabelSensorTiles{
+	public static class LABEL_SENSOR_TILE{
 		public static final String STREAMING_PROPERTIES = GuiLabelSensors.DEVICE_PROPERTIES; 
 	}
 
@@ -155,15 +155,15 @@ public class ShimmerClock extends AbstractSensor {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, ShimmerClock.sensorSystemTimeStampRef);
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, ShimmerClock.sensorShimmerClock);
-        aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerStreamingProperties);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SYSTEM_TIMESTAMP, ShimmerClock.sensorSystemTimeStampRef);
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_TIMESTAMP, ShimmerClock.sensorShimmerClock);
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerStreamingProperties);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
     
     public static final SensorGroupingDetails sensorGroupStreamingProperties = new SensorGroupingDetails(
-			GuiLabelSensorTiles.STREAMING_PROPERTIES,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES),
+			LABEL_SENSOR_TILE.STREAMING_PROPERTIES,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_SHIMMER_STREAMING_PROPERTIES),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			true);
 
@@ -703,13 +703,13 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		//NOT USED IN THIS CLASS
 		return null;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		//NOT USED IN THIS CLASS
 		return null;
 	}
@@ -720,8 +720,8 @@ public class ShimmerClock extends AbstractSensor {
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mSensorMap.containsKey(sensorMapKey)){
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
 			//TODO set defaults for particular sensor
 			return true;
 		}

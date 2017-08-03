@@ -30,7 +30,7 @@ public class SensorNonin extends AbstractSensor{
 	public static class GuiLabelConfig{
 //		public static final String SAMPLING_RATE_DIVIDER_PPG = "PPG Divider";
 	}
-	public static class GuiLabelSensorTiles{
+	public static class LABEL_SENSOR_TILE{
 //		public static final String PROTO3_DELUXE_SUPP = "PPG";
 	}
 	public static class GuiLabelSensors{
@@ -57,7 +57,7 @@ public class SensorNonin extends AbstractSensor{
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.THIRD_PARTY_NONIN, sensorNoninOynxII);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.THIRD_PARTY_NONIN, sensorNoninOynxII);
         mSensorMapRef = Collections.unmodifiableMap(aMap);
    }
 
@@ -168,13 +168,13 @@ public class SensorNonin extends AbstractSensor{
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -186,7 +186,7 @@ public class SensorNonin extends AbstractSensor{
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		// TODO Auto-generated method stub
 		return false;
 	}

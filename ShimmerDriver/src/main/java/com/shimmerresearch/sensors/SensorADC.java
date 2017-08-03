@@ -56,7 +56,7 @@ public class SensorADC extends AbstractSensor {
 	}
 	
 	// GUI Sensor Tiles
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String EXTERNAL_EXPANSION_ADC = "External Expansion ADCs";
 		public static final String INTERNAL_EXPANSION_ADC = "Internal Expansion ADCs";
 		
@@ -138,22 +138,22 @@ public class SensorADC extends AbstractSensor {
 	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A1Ref = new SensorDetailsRef(0x04<<(1*8), 0x04<<(1*8), GuiLabelSensors.INT_EXP_A1,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA1,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR
-//					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A1,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_SKIN_TEMPERATURE_PROBE,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT
 					),
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
 			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A1), 
@@ -165,24 +165,24 @@ public class SensorADC extends AbstractSensor {
 			GuiLabelSensors.INT_EXP_A12,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA12,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP),
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A12,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A13,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A12,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A13,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
 			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A12), 
 			false);
@@ -193,24 +193,24 @@ public class SensorADC extends AbstractSensor {
 			GuiLabelSensors.INT_EXP_A13,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA13,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A12,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG1_DUMMY,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A12,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG1_A13,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP),
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A12,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A13,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A12,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A13,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
 			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A13), 
 			false);
@@ -221,22 +221,22 @@ public class SensorADC extends AbstractSensor {
 			GuiLabelSensors.INT_EXP_A14,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA14,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG2_DUMMY,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A1,
-					Configuration.Shimmer3.SensorMapKey.HOST_PPG2_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP),
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A1,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
 			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A14), 
 			false);
@@ -244,31 +244,31 @@ public class SensorADC extends AbstractSensor {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7, sensorADC_EXT_EXP_ADC_A7Ref);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6, sensorADC_EXT_EXP_ADC_A6Ref);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15, sensorADC_EXT_EXP_ADC_A15Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A7, sensorADC_EXT_EXP_ADC_A7Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A6, sensorADC_EXT_EXP_ADC_A6Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A15, sensorADC_EXT_EXP_ADC_A15Ref);
 		
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1, sensorADC_INT_EXP_ADC_A1Ref);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12, sensorADC_INT_EXP_ADC_A12Ref);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13, sensorADC_INT_EXP_ADC_A13Ref);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14, sensorADC_INT_EXP_ADC_A14Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1, sensorADC_INT_EXP_ADC_A1Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12, sensorADC_INT_EXP_ADC_A12Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13, sensorADC_INT_EXP_ADC_A13Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14, sensorADC_INT_EXP_ADC_A14Ref);
 
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 
     public static final SensorGroupingDetails sensorGroupExternalExpansionADCs = new SensorGroupingDetails(
-			SensorADC.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A6,
-						Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A7,
-						Configuration.Shimmer3.SensorMapKey.SHIMMER_EXT_EXP_ADC_A15),
+			SensorADC.LABEL_SENSOR_TILE.EXTERNAL_EXPANSION_ADC,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A6,
+						Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A7,
+						Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A15),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 
     public static final SensorGroupingDetails sensorGroupInternalExpansionADCs = new SensorGroupingDetails(
-			GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC, 
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14),
+			LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC, 
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntAdcsGeneral);
 	
     //------------------Channel Details----------------------
@@ -385,8 +385,8 @@ public class SensorADC extends AbstractSensor {
 		
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 //		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.EXTERNAL_EXPANSION_ADC.ordinal(), sensorGroupExternalExpansionADCs);
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.INTERNAL_EXPANSION_ADC.ordinal(), sensorGroupInternalExpansionADCs);
+			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.EXTERNAL_EXPANSION_ADC.ordinal(), sensorGroupExternalExpansionADCs);
+			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC.ordinal(), sensorGroupInternalExpansionADCs);
 //		}
 		super.updateSensorGroupingMap();	
 	}
@@ -442,13 +442,13 @@ public class SensorADC extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -460,7 +460,7 @@ public class SensorADC extends AbstractSensor {
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey,
+	public boolean setDefaultConfigForSensor(int sensorId,
 			boolean isSensorEnabled) {
 		// TODO Auto-generated method stub
 		return false;

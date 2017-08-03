@@ -51,7 +51,7 @@ public class SensorBridgeAmp extends AbstractSensor{
 		//Not in this class ?
 	}
 
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String BRIDGE_AMPLIFIER = "Bridge Amplifier+";
 		public static final String BRIDGE_AMPLIFIER_SUPP ="Skin Temperature";
 	}
@@ -100,20 +100,20 @@ public class SensorBridgeAmp extends AbstractSensor{
 			GuiLabelSensors.BRIDGE_AMPLIFIER,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR
-//					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT
 					),
 			null,
 			Arrays.asList(ObjectClusterSensorName.BRIDGE_AMP_HIGH,
@@ -127,20 +127,20 @@ public class SensorBridgeAmp extends AbstractSensor{
 			GuiLabelSensors.RESISTANCE_AMP,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR
-//					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.HOST_SKIN_TEMPERATURE_PROBE,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT
 					),
 			null,
 			Arrays.asList(ObjectClusterSensorName.RESISTANCE_AMP),
@@ -152,20 +152,20 @@ public class SensorBridgeAmp extends AbstractSensor{
 			GuiLabelSensors.SKIN_TEMP_PROBE,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR
-//					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
 					),
 			null,
 			Arrays.asList(ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE),
@@ -175,9 +175,9 @@ public class SensorBridgeAmp extends AbstractSensor{
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
 	static {
 		Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,sensorBridgeAmplifierRef );
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,sensorResistanceAmpRef );
-		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE,sensorSkinTempProbeRef);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,sensorBridgeAmplifierRef );
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,sensorResistanceAmpRef );
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SKIN_TEMPERATURE_PROBE,sensorSkinTempProbeRef);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
 	}
 
@@ -240,14 +240,14 @@ public class SensorBridgeAmp extends AbstractSensor{
 	// --------------------------- Channel info end ----------------------------------------
 
 	public static final SensorGroupingDetails sensorGroupBrAmp =  new SensorGroupingDetails(
-			GuiLabelSensorTiles.BRIDGE_AMPLIFIER,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP),
+			LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp);
 
 	public static final SensorGroupingDetails sensorGroupBrAmpTemperature = new SensorGroupingDetails(
-			GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE),
+			LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER_SUPP,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_SKIN_TEMPERATURE_PROBE),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBrAmp);
 
 
@@ -266,20 +266,20 @@ public class SensorBridgeAmp extends AbstractSensor{
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
 		
 		//Update the derived sensor bit index
-		for(Integer sensorMapKey:mSensorMap.keySet()){
+		for(Integer sensorId:mSensorMap.keySet()){
 			long derivedSensorBitmapID = 0;
-			if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_SKIN_TEMPERATURE_PROBE){
+			if(sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_SKIN_TEMPERATURE_PROBE){
 				derivedSensorBitmapID = SDLogHeaderDerivedSensors.SKIN_TEMP;
 			}
-			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP){
+			else if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP){
 				derivedSensorBitmapID = SDLogHeaderDerivedSensors.BRIDGE_AMP;
 			}
-			else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP){
+			else if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP){
 				derivedSensorBitmapID = SDLogHeaderDerivedSensors.RES_AMP;
 			}
 			
 			if(derivedSensorBitmapID>0){
-				SensorDetails sensorBridgeAmp = mSensorMap.get(sensorMapKey);
+				SensorDetails sensorBridgeAmp = mSensorMap.get(sensorId);
 				sensorBridgeAmp.mDerivedSensorBitmapID = derivedSensorBitmapID;
 			}
 		}
@@ -292,8 +292,8 @@ public class SensorBridgeAmp extends AbstractSensor{
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER.ordinal(), sensorGroupBrAmp );
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.BRIDGE_AMPLIFIER_SUPP.ordinal(), sensorGroupBrAmpTemperature);
+			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER.ordinal(), sensorGroupBrAmp );
+			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER_SUPP.ordinal(), sensorGroupBrAmpTemperature);
 		}
 		super.updateSensorGroupingMap();
 
@@ -351,12 +351,12 @@ public class SensorBridgeAmp extends AbstractSensor{
 
 	}
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -366,7 +366,7 @@ public class SensorBridgeAmp extends AbstractSensor{
 
 	}
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey,
+	public boolean setDefaultConfigForSensor(int sensorId,
 			boolean isSensorEnabled) {
 		// TODO Auto-generated method stub
 		return false;

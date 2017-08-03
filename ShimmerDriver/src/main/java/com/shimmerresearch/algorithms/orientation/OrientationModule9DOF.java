@@ -291,9 +291,9 @@ public class OrientationModule9DOF extends OrientationModule {
 					Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z),
 			(DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER), 
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_MAG),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG),
 					CHANNEL_UNITS.NO_UNITS,
 					listChannelsEuler9DOF_LN);
 
@@ -310,9 +310,9 @@ public class OrientationModule9DOF extends OrientationModule {
 					Configuration.Shimmer3.ObjectClusterSensorName.MAG_Y,
 					Configuration.Shimmer3.ObjectClusterSensorName.MAG_Z),
 			(DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER), 
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_ACCEL,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_MPU9X50_GYRO,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303_MAG),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG),
 					CHANNEL_UNITS.NO_UNITS,
 					listChannelsQuat9DOF_WR);
 
@@ -347,8 +347,8 @@ public class OrientationModule9DOF extends OrientationModule {
 
 		//			mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
 		//			String[] accSensors = new String[2];
-		//			accSensors[0]=Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
-		//			accSensors[1]=Shimmer3.GuiLabelSensorTiles.WIDE_RANGE_ACCEL;
+		//			accSensors[0]=Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL;
+		//			accSensors[1]=Shimmer3.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL;
 		//			mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
 		final ConfigOptionDetails configOptionQuatOutput9DOF = new ConfigOptionDetails(
 				OrientationModule.GuiLabelConfig.QUATERNION_OUTPUT,
@@ -527,7 +527,7 @@ public class OrientationModule9DOF extends OrientationModule {
 			returnValue = 512;
 		break;
 		//				case(GuiLabelConfig.ACCELEROMETER_9DOF):
-		//					returnValue = Shimmer3.GuiLabelSensorTiles.LOW_NOISE_ACCEL;
+		//					returnValue = Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL;
 		//					break;
 		case(GuiLabelConfig.QUATERNION_OUTPUT_9DOF):
 			returnValue = true;

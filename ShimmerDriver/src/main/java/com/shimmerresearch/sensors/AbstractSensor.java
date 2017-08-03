@@ -78,7 +78,7 @@ public abstract class AbstractSensor implements Serializable{
 	    }
 	}
 	
-	//General Configurations options that are normally used in conjunction with a sensorMapKey
+	//General Configurations options that are normally used in conjunction with a sensorId
 	public class GuiLabelConfigCommon{
 		public static final String RATE = "Rate";
 		public static final String RANGE = "Range";
@@ -104,11 +104,11 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void checkShimmerConfigBeforeConfiguring();
 	public abstract void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes);
 	public abstract void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes);
-	public abstract Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet);
-	public abstract Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel);
+	public abstract Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet);
+	public abstract Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel);
 
 	public abstract void setSensorSamplingRate(double samplingRateHz);
-	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled);
+	public abstract boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled);
 	/** TODO populate in individual AbstractSensor classes the relevant entries from ShimmerObject */
 	public abstract boolean checkConfigOptionValues(String stringKey);
 
@@ -178,8 +178,8 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	private void setDefaultConfigAllSensors() {
-		for(Integer sensorMapKey:mSensorMap.keySet()){
-			setDefaultConfigForSensor(sensorMapKey, false);
+		for(Integer sensorId:mSensorMap.keySet()){
+			setDefaultConfigForSensor(sensorId, false);
 		}
 	}
 	
@@ -219,8 +219,8 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 	
-	public boolean setIsEnabledSensor(COMMUNICATION_TYPE commType, boolean state, int sensorMapKey){
-		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+	public boolean setIsEnabledSensor(COMMUNICATION_TYPE commType, boolean state, int sensorId){
+		SensorDetails sensorDetails = mSensorMap.get(sensorId);
 		if(sensorDetails!=null){
 			sensorDetails.setIsEnabled(commType, state);
 			return true;
@@ -262,7 +262,7 @@ public abstract class AbstractSensor implements Serializable{
 		for(SensorGroupingDetails sensorGroup:mSensorGroupingMap.values()) {
 			// Ok to clear here because variable is initiated in the class
 			sensorGroup.mListOfConfigOptionKeysAssociated = new ArrayList<String>();
-			for (Integer sensorKey:sensorGroup.mListOfSensorMapKeysAssociated) {
+			for (Integer sensorKey:sensorGroup.mListOfSensorIdsAssociated) {
 				SensorDetails sensorDetails = mSensorMap.get(sensorKey);
 				if(sensorDetails!=null && sensorDetails.mSensorDetailsRef!=null && sensorDetails.mSensorDetailsRef.mListOfConfigOptionKeysAssociated!=null){
 					for (String configOption:sensorDetails.mSensorDetailsRef.mListOfConfigOptionKeysAssociated) {
@@ -279,21 +279,21 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 
-	public String getSensorGuiFriendlyLabel(int sensorMapKey) {
-		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+	public String getSensorGuiFriendlyLabel(int sensorId) {
+		SensorDetails sensorDetails = mSensorMap.get(sensorId);
 		if(sensorDetails!=null){
 			return sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel;
 		}
 		return null;
 	}
 	
-	public SensorDetails getSensorDetails(int sensorMapKey){
-		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+	public SensorDetails getSensorDetails(int sensorId){
+		SensorDetails sensorDetails = mSensorMap.get(sensorId);
 		return sensorDetails;
 	}
 
-	public List<ShimmerVerObject> getSensorListOfCompatibleVersionInfo(int sensorMapKey) {
-		SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+	public List<ShimmerVerObject> getSensorListOfCompatibleVersionInfo(int sensorId) {
+		SensorDetails sensorDetails = mSensorMap.get(sensorId);
 		if(sensorDetails!=null){
 			return sensorDetails.mSensorDetailsRef.mListOfCompatibleVersionInfo;
 		}
@@ -302,18 +302,18 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public void createLocalSensorMap(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
 		mSensorMap = new TreeMap<Integer, SensorDetails>();
-		for(int sensorMapKey:sensorMapRef.keySet()){
-			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
+		for(int sensorId:sensorMapRef.keySet()){
+			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorId);
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef);
 			updateSensorDetailsWithChannels(sensorDetails, channelMapRef);
-			mSensorMap.put(sensorMapKey, sensorDetails);
+			mSensorMap.put(sensorId, sensorDetails);
 		}
 	}
 	
 	public void createLocalSensorMapWithCustomParser(Map<Integer, SensorDetailsRef> sensorMapRef, Map<String, ChannelDetails> channelMapRef) {
 		mSensorMap = new TreeMap<Integer, SensorDetails>();
-		for(int sensorMapKey:sensorMapRef.keySet()){
-			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorMapKey);
+		for(int sensorId:sensorMapRef.keySet()){
+			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorId);
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef){
 				@Override
 				public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object, boolean isTimeSyncEnabled, long pcTimestamp) {
@@ -323,7 +323,7 @@ public abstract class AbstractSensor implements Serializable{
 				}
 			};
 			updateSensorDetailsWithChannels(sensorDetails, channelMapRef);
-			mSensorMap.put(sensorMapKey, sensorDetails);
+			mSensorMap.put(sensorId, sensorDetails);
 		}
 	}
 
@@ -345,14 +345,14 @@ public abstract class AbstractSensor implements Serializable{
 		return mSensorGroupingMap;
 	}
 
-	public boolean isSensorEnabled(int sensorMapKey){
+	public boolean isSensorEnabled(int sensorId){
 		//below Shouldn't be needed
 //		if(mShimmerDevice!=null){
-//			return mShimmerDevice.isSensorEnabled(sensorMapKey);
+//			return mShimmerDevice.isSensorEnabled(sensorId);
 //		}
 
 		if(mSensorMap!=null) {
-			SensorDetails sensorDetails = mSensorMap.get(sensorMapKey);
+			SensorDetails sensorDetails = mSensorMap.get(sensorId);
 			if(sensorDetails!=null){
 				return sensorDetails.isEnabled();
 			}
@@ -376,11 +376,11 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public Object setConfigValueUsingConfigLabel(String configLabel, Object valueToSet){
-		return setConfigValueUsingConfigLabel(Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR, configLabel, valueToSet);
+		return setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.RESERVED_ANY_SENSOR, configLabel, valueToSet);
 	}
 	
 	public Object getConfigValueUsingConfigLabel(String configLabel){
-		return getConfigValueUsingConfigLabel(Configuration.Shimmer3.SensorMapKey.RESERVED_ANY_SENSOR, configLabel);
+		return getConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.RESERVED_ANY_SENSOR, configLabel);
 	}
 
 	/** Quickly implemented method to print channel data to the console
@@ -408,21 +408,21 @@ public abstract class AbstractSensor implements Serializable{
 	
 	protected void setCalibration(TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfSensorCalibration) {
 		mCalibMap = new TreeMap<Integer, TreeMap<Integer, CalibDetails>>();
-		for(Integer sensorMapKey:mSensorMap.keySet()){
-			TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfSensorCalibration.get(sensorMapKey);
+		for(Integer sensorId:mSensorMap.keySet()){
+			TreeMap<Integer, CalibDetails> mapOfCalibPerSensor = mapOfSensorCalibration.get(sensorId);
 			if(mapOfCalibPerSensor!=null){
-				setCalibrationMapPerSensor(sensorMapKey, mapOfCalibPerSensor);
+				setCalibrationMapPerSensor(sensorId, mapOfCalibPerSensor);
 			}
 		}
 	}
 
-	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
-		mCalibMap.put(sensorMapKey, mapOfSensorCalibration);
+	public void setCalibrationMapPerSensor(int sensorId, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		mCalibMap.put(sensorId, mapOfSensorCalibration);
 //		System.out.println("Calib make check");
 	}
 
-	public CalibDetails getCalibForSensor(int sensorMapKey, int range) {
-		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = getCalibrationMapForSensor(sensorMapKey); 
+	public CalibDetails getCalibForSensor(int sensorId, int range) {
+		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = getCalibrationMapForSensor(sensorId); 
 		if(calibDetailsPerSensor!=null){
 			CalibDetails calibDetails = calibDetailsPerSensor.get(range);
 			return calibDetails;
@@ -430,8 +430,8 @@ public abstract class AbstractSensor implements Serializable{
 		return null;
 	}
 
-	public TreeMap<Integer, CalibDetails> getCalibrationMapForSensor(int sensorMapKey) {
-		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = mCalibMap.get(sensorMapKey); 
+	public TreeMap<Integer, CalibDetails> getCalibrationMapForSensor(int sensorId) {
+		TreeMap<Integer, CalibDetails> calibDetailsPerSensor = mCalibMap.get(sensorId); 
 		return calibDetailsPerSensor;
 	}
 	
@@ -448,11 +448,11 @@ public abstract class AbstractSensor implements Serializable{
 	 * calibration parameters. Used, for example, in SensorLSM, SensorMPU and
 	 * SensorKionix
 	 * 
-	 * @param sensorMapKey
+	 * @param sensorId
 	 * @return boolean indicating that the sensor is using default calibration
 	 *         parameters.
 	 */
-	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
+	public boolean isSensorUsingDefaultCal(int sensorId) {
 		return false;
 	}
 
@@ -466,7 +466,7 @@ public abstract class AbstractSensor implements Serializable{
     	//USED in {SensorEXG}
 	}
 
-    public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(ShimmerDevice shimmerDevice, Integer sensorMapKey){
+    public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(ShimmerDevice shimmerDevice, Integer sensorId){
     	//NOT USED IN THIS CLASS
     	//USED in {SensorPPG, SensorEXG}
     	return false;
@@ -484,10 +484,10 @@ public abstract class AbstractSensor implements Serializable{
 		//USED in {SensorEXG}
 	}
 	
-	public int handleSpecCasesBeforeSetSensorState(int sensorMapKey, boolean state) {
+	public int handleSpecCasesBeforeSetSensorState(int sensorId, boolean state) {
 		//NOT USED IN THIS CLASS
     	//USED in {SensorPPG}	
-		return sensorMapKey;
+		return sensorId;
 	}
 	
 //	public byte[] generateAllCalibByteArray() {
@@ -496,15 +496,15 @@ public abstract class AbstractSensor implements Serializable{
 //		}
 //		
 //		byte[] calibBytesAllPerSensor = new byte[]{};
-//		for(Integer sensorMapKey:mCalibMap.keySet()){
-//			TreeMap<Integer, CalibDetails> calMapPerSensor = mCalibMap.get(sensorMapKey);
-////			SensorDetails sensorDetais = mSensorMap.get(sensorMapKey);
+//		for(Integer sensorId:mCalibMap.keySet()){
+//			TreeMap<Integer, CalibDetails> calMapPerSensor = mCalibMap.get(sensorId);
+////			SensorDetails sensorDetais = mSensorMap.get(sensorId);
 ////			Integer calibSensorKey = sensorDetais.mSensorDetailsRef.mCalibSensorKey;
-////			if(sensorMapKey!=0){
+////			if(sensorId!=0){
 //				for(Integer range:calMapPerSensor.keySet()){
 //					byte[] calibSensorKeyBytes = new byte[2];
-//					calibSensorKeyBytes[0] = (byte)((sensorMapKey>>0)&0xFF);
-//					calibSensorKeyBytes[1] = (byte)((sensorMapKey>>8)&0xFF);
+//					calibSensorKeyBytes[0] = (byte)((sensorId>>0)&0xFF);
+//					calibSensorKeyBytes[1] = (byte)((sensorId>>8)&0xFF);
 //					
 //					CalibDetails calDetailsPerRange = calMapPerSensor.get(range);		
 //					byte[] calibBytesPerRange = calDetailsPerRange.generateCalParamByteArrayWithTimestamp();
@@ -526,17 +526,17 @@ public abstract class AbstractSensor implements Serializable{
 //	}
 //	
 //	//TODO
-//	public boolean parseAllCalibByteArray(int sensorMapKey, int rangeValue, byte[] calibTimeBytesTicks, byte[] calibBytes) {
-//		if(!mSensorMap.containsKey(sensorMapKey)){
+//	public boolean parseAllCalibByteArray(int sensorId, int rangeValue, byte[] calibTimeBytesTicks, byte[] calibBytes) {
+//		if(!mSensorMap.containsKey(sensorId)){
 //			return false;
 //		}
 //		
-//		TreeMap<Integer, CalibDetails> mapOfSensorCalib = mCalibMap.get(sensorMapKey);
+//		TreeMap<Integer, CalibDetails> mapOfSensorCalib = mCalibMap.get(sensorId);
 //		if(mapOfSensorCalib==null){
-//			mCalibMap.put(sensorMapKey, new TreeMap<Integer, CalibDetails>());
+//			mCalibMap.put(sensorId, new TreeMap<Integer, CalibDetails>());
 //		}
 //		
-//		mapOfSensorCalib = mCalibMap.get(sensorMapKey);
+//		mapOfSensorCalib = mCalibMap.get(sensorId);
 //		CalibDetails calibDetailsPerRange = mapOfSensorCalib.get(rangeValue);
 //		if(calibDetailsPerRange==null){
 //			//TODO UNKOWN RANGE
@@ -555,13 +555,13 @@ public abstract class AbstractSensor implements Serializable{
 //	}
 
 	protected void setAllCalibSensitivityScaleFactor(CALIBRATION_SCALE_FACTOR sensitivityScaleFactor) {
-		for(Integer sensorMapKey:mCalibMap.keySet()){
-			setCalibSensitivityScaleFactor(sensorMapKey, sensitivityScaleFactor);
+		for(Integer sensorId:mCalibMap.keySet()){
+			setCalibSensitivityScaleFactor(sensorId, sensitivityScaleFactor);
 		}
 	}
 
-	protected void setCalibSensitivityScaleFactor(int sensorMapKey, CALIBRATION_SCALE_FACTOR sensitivityScaleFactor) {
-		TreeMap<Integer, CalibDetails> calibMapPerSensor = mCalibMap.get(sensorMapKey);
+	protected void setCalibSensitivityScaleFactor(int sensorId, CALIBRATION_SCALE_FACTOR sensitivityScaleFactor) {
+		TreeMap<Integer, CalibDetails> calibMapPerSensor = mCalibMap.get(sensorId);
 		if(calibMapPerSensor!=null){
 			for(CalibDetails calibMapPerRange:calibMapPerSensor.values()){
 				((CalibDetailsKinematic)calibMapPerRange).setSensitivityScaleFactor(sensitivityScaleFactor);
@@ -569,7 +569,7 @@ public abstract class AbstractSensor implements Serializable{
 		}
 	}
 	
-	public Object setConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabelCommon(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
 			case(GuiLabelConfigCommon.CALIBRATION_ALL):
@@ -578,18 +578,18 @@ public abstract class AbstractSensor implements Serializable{
 //				returnValue = valueToSet;
 				break;
 			case(GuiLabelConfigCommon.CALIBRATION_PER_SENSOR):
-				setCalibrationMapPerSensor(sensorMapKey, (TreeMap<Integer, CalibDetails>) valueToSet);
+				setCalibrationMapPerSensor(sensorId, (TreeMap<Integer, CalibDetails>) valueToSet);
 				break;
 	        default:
 	        	break;
 		}
 		return returnValue;
 	}
-	public Object getConfigValueUsingConfigLabelCommon(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabelCommon(Integer sensorId, String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
 			case(GuiLabelConfigCommon.CALIBRATION_PER_SENSOR):
-				returnValue = getCalibrationMapForSensor(sensorMapKey);
+				returnValue = getCalibrationMapForSensor(sensorId);
 				break;
 			case(GuiLabelConfigCommon.CALIBRATION_ALL):
 				returnValue = mCalibMap;
@@ -676,16 +676,16 @@ public abstract class AbstractSensor implements Serializable{
 	}
 
 
-	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles) {
-		this.parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, sensorMapKey, range, listOfCalibHandles, "");
+	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorId, int range, List<String> listOfCalibHandles) {
+		this.parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, sensorId, range, listOfCalibHandles, "");
 	}
 
 	/** 
 	 * @see ShimmerObject.parseCalibDetailsKinematicFromDb
 	 * */
-	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range, List<String> listOfCalibHandles, String calibTimeHandle) {
+	public void parseCalibDetailsKinematicFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorId, int range, List<String> listOfCalibHandles, String calibTimeHandle) {
 		parseCalibDetailsKinematicFromDb(
-				mapOfConfigPerShimmer, sensorMapKey, range, calibTimeHandle,
+				mapOfConfigPerShimmer, sensorId, range, calibTimeHandle,
 				listOfCalibHandles.get(0), listOfCalibHandles.get(1), listOfCalibHandles.get(2), 
 				listOfCalibHandles.get(3), listOfCalibHandles.get(4), listOfCalibHandles.get(5), 
 				listOfCalibHandles.get(6), listOfCalibHandles.get(7), listOfCalibHandles.get(8), 
@@ -697,14 +697,14 @@ public abstract class AbstractSensor implements Serializable{
 	 * @see ShimmerObject.parseCalibDetailsKinematicFromDb
 	 * */
 	public void parseCalibDetailsKinematicFromDb(
-			LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorMapKey, int range,  String calibTimeHandle,
+			LinkedHashMap<String, Object> mapOfConfigPerShimmer, int sensorId, int range,  String calibTimeHandle,
 			String offsetX, String offsetY, String offsetZ, 
 			String gainX, String gainY, String gainZ, 
 			String alignXx, String alignXy, String alignXz, 
 			String alignYx, String alignYy, String alignYz, 
 			String alignZx, String alignZy, String alignZz) {
 		
-		CalibDetails calibDetails = getCalibForSensor(sensorMapKey, range);
+		CalibDetails calibDetails = getCalibForSensor(sensorId, range);
 		parseCalibDetailsKinematicFromDb(
 				calibDetails, mapOfConfigPerShimmer, calibTimeHandle,
 				offsetX, offsetY, offsetZ, 
@@ -758,8 +758,8 @@ public abstract class AbstractSensor implements Serializable{
 		return "";
 	}
 	
-	public CalibDetailsKinematic getCurrentCalibDetailsIfKinematic(int sensorMapKey, int range){
-		CalibDetails calibPerSensor = getCalibForSensor(sensorMapKey, range);
+	public CalibDetailsKinematic getCurrentCalibDetailsIfKinematic(int sensorId, int range){
+		CalibDetails calibPerSensor = getCalibForSensor(sensorId, range);
 		if(calibPerSensor!=null && calibPerSensor instanceof CalibDetailsKinematic){
 			return (CalibDetailsKinematic) calibPerSensor;
 		}

@@ -25,8 +25,8 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	private static final long serialVersionUID = -4885535001690922548L;
 
-	protected int mSensorMapKeyAccel = -1;
-	protected int mSensorMapKeyMag = -1;
+	protected int mSensorIdAccel = -1;
+	protected int mSensorIdMag = -1;
 	
 	public abstract int getAccelRateFromFreqForSensor(boolean isEnabled, double freq, boolean isLowPowerMode);
 	public abstract int getMagRateFromFreqForSensor(boolean isEnabled, double freq, boolean isLowPowerMode);
@@ -69,7 +69,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		public static final String MAG = "Magnetometer"; 
 	}
 
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String MAG = GuiLabelSensors.MAG;
 		public static final String WIDE_RANGE_ACCEL = GuiLabelSensors.ACCEL_WR;
 	}
@@ -137,11 +137,11 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-		if(!isSensorEnabled(mSensorMapKeyAccel)) {
+		if(!isSensorEnabled(mSensorIdAccel)) {
 			setDefaultLsm303AccelSensorConfig(false);
 		}
 		
-		if(!isSensorEnabled(mSensorMapKeyMag)) {
+		if(!isSensorEnabled(mSensorIdMag)) {
 			setDefaultLsm303MagSensorConfig(false);
 		}
 		
@@ -350,7 +350,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	@Override 
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		
 		switch(configLabel){
@@ -379,23 +379,23 @@ public abstract class SensorLSM303 extends AbstractSensor {
 //				returnValue = valueToSet;
 //	    		break;
 			case(GuiLabelConfigCommon.RANGE):
-				if(sensorMapKey==mSensorMapKeyAccel){
+				if(sensorId==mSensorIdAccel){
 					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LSM303_ACCEL_RANGE, valueToSet);
 				}
-				else if(sensorMapKey==mSensorMapKeyMag){
+				else if(sensorId==mSensorIdMag){
 					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LSM303_MAG_RANGE, valueToSet);
 				}
 				break;
 			case(GuiLabelConfigCommon.RATE):
-				if(sensorMapKey==mSensorMapKeyAccel){
+				if(sensorId==mSensorIdAccel){
 					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LSM303_ACCEL_RATE, valueToSet);
 				}
-				else if(sensorMapKey==mSensorMapKeyMag){
+				else if(sensorId==mSensorIdMag){
 					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LSM303_MAG_RANGE, valueToSet);
 				}
 				break;
 			default:
-				returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
+				returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
 				break;
 		}	
 		
@@ -408,7 +408,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	@Override 
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		Object returnValue = null;
 		
 		if(configLabel.equals(GuiLabelConfig.LSM303_ACCEL_RATE)){
@@ -456,23 +456,23 @@ public abstract class SensorLSM303 extends AbstractSensor {
 //				returnValue = getKinematicCalibration();
 //				break;
 			case(GuiLabelConfigCommon.RANGE):
-				if(sensorMapKey==mSensorMapKeyAccel){
+				if(sensorId==mSensorIdAccel){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303_ACCEL_RANGE);
 				}
-				else if(sensorMapKey==mSensorMapKeyMag){
+				else if(sensorId==mSensorIdMag){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303_MAG_RANGE);
 				}
 				break;
 			case(GuiLabelConfigCommon.RATE):
-				if(sensorMapKey==mSensorMapKeyAccel){
+				if(sensorId==mSensorIdAccel){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303_ACCEL_RATE);
 				}
-				else if(sensorMapKey==mSensorMapKeyMag){
+				else if(sensorId==mSensorIdMag){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LSM303_MAG_RATE);
 				}
 				break;
 			default:
-				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
 				break;
 			
 		}
@@ -481,12 +481,12 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	}
 
 	@Override 
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mSensorMap.containsKey(sensorMapKey)){
-			if(sensorMapKey==mSensorMapKeyAccel) {
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
+			if(sensorId==mSensorIdAccel) {
 				setDefaultLsm303AccelSensorConfig(isSensorEnabled);		
 			}
-			else if(sensorMapKey==mSensorMapKeyMag) {
+			else if(sensorId==mSensorIdMag) {
 				setDefaultLsm303MagSensorConfig(isSensorEnabled);
 			}
 			return true;
@@ -516,19 +516,19 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	 * @see com.shimmerresearch.sensors.AbstractSensor#isSensorUsingDefaultCal(int)
 	 */
 	@Override
-	public boolean isSensorUsingDefaultCal(int sensorMapKey) {
-		if(sensorMapKey==mSensorMapKeyAccel){
+	public boolean isSensorUsingDefaultCal(int sensorId) {
+		if(sensorId==mSensorIdAccel){
 			return isUsingDefaultWRAccelParam();
 		}
-		else if(sensorMapKey==mSensorMapKeyMag){
+		else if(sensorId==mSensorIdMag){
 			return isUsingDefaultMagParam();
 		}
 		return false;
 	}
 
 	@Override
-	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
-		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+	public void setCalibrationMapPerSensor(int sensorId, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorId, mapOfSensorCalibration);
 		updateCurrentAccelWrCalibInUse();
 		updateCurrentMagCalibInUse();
 	}
@@ -608,7 +608,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	public int setLSM303AccelRateFromFreq(double freq) {
-		boolean isEnabled = isSensorEnabled(mSensorMapKeyAccel);
+		boolean isEnabled = isSensorEnabled(mSensorIdAccel);
 		mLSM303DigitalAccelRate = getAccelRateFromFreqForSensor(isEnabled, freq, mLowPowerAccelWR);
 		return mLSM303DigitalAccelRate;
 	}
@@ -621,7 +621,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	public int setLSM303MagRateFromFreq(double freq) {
-		boolean isEnabled = isSensorEnabled(mSensorMapKeyMag);
+		boolean isEnabled = isSensorEnabled(mSensorIdMag);
 		mLSM303MagRate = getMagRateFromFreqForSensor(isEnabled, freq, isLowPowerMagEnabled());
 		return mLSM303MagRate;
 	}
@@ -629,7 +629,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 
 	public CalibDetailsKinematic getCurrentCalibDetailsMag(){
-//		return getCurrentCalibDetails(mSensorMapKeyMag, getMagRange());
+//		return getCurrentCalibDetails(mSensorIdMag, getMagRange());
 		if(mCurrentCalibDetailsMag==null){
 			updateCurrentMagCalibInUse();
 		}
@@ -637,7 +637,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	}
 
 	public CalibDetailsKinematic getCurrentCalibDetailsAccelWr(){
-//		return getCurrentCalibDetails(mSensorMapKeyAccel, getAccelRange());
+//		return getCurrentCalibDetails(mSensorIdAccel, getAccelRange());
 		return mCurrentCalibDetailsAccelWr;
 	}
 
@@ -706,12 +706,12 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	public void updateCurrentMagCalibInUse(){
 //		mCurrentCalibDetailsMag = getCurrentCalibDetailsMag();
-		mCurrentCalibDetailsMag = getCurrentCalibDetailsIfKinematic(mSensorMapKeyMag, getMagRange());
+		mCurrentCalibDetailsMag = getCurrentCalibDetailsIfKinematic(mSensorIdMag, getMagRange());
 	}
 	
 	public void updateCurrentAccelWrCalibInUse(){
 //		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsAccelWr();
-		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsIfKinematic(mSensorMapKeyAccel, getAccelRange());
+		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsIfKinematic(mSensorIdAccel, getAccelRange());
 	}
 
 	

@@ -134,13 +134,13 @@ public class SensorBMP280 extends SensorBMPX80 {
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
 	static {
 		Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMPX80_PRESSURE, SensorBMP280.sensorBmp280);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE, SensorBMP280.sensorBmp280);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
 	}
 	
     public static final SensorGroupingDetails sensorGroupBmp280 = new SensorGroupingDetails(
-			GuiLabelSensorTiles.PRESSURE_TEMPERATURE,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMPX80_PRESSURE),
+			LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP280);
 
 	//--------- Sensor info end --------------
@@ -211,7 +211,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		//TODO Extra version check here not needed because compatability info already contained in SensorGroupingDetails?
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.PRESSURE_TEMPERATURE_BMP280.ordinal(), sensorGroupBmp280);
+			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE_BMP280.ordinal(), sensorGroupBmp280);
 		}
 		super.updateSensorGroupingMap();
 	}
@@ -225,7 +225,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_BMPX80_PRESSURE)) {
+		if(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE)) {
 			setDefaultBmp280PressureSensorConfig(false);
 		}
 	}
@@ -260,7 +260,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey,String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId,String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
 			case(GuiLabelConfig.PRESSURE_RESOLUTION):
@@ -272,7 +272,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey,String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId,String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
 		case(GuiLabelConfig.PRESSURE_RESOLUTION):
@@ -289,9 +289,9 @@ public class SensorBMP280 extends SensorBMPX80 {
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mSensorMap.containsKey(sensorMapKey)){
-			if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.SHIMMER_BMPX80_PRESSURE) {
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
+			if(sensorId == Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE) {
 				setDefaultBmp280PressureSensorConfig(isSensorEnabled);
 				return true;
 				}

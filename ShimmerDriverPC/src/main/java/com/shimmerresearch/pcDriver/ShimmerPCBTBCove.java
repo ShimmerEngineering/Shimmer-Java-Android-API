@@ -591,7 +591,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
-	public Set<Integer> getSensorMapKeySet() {
+	public Set<Integer> getSensorIdsSet() {
 		// TODO Auto-generated method stub
 		return null;
 	}

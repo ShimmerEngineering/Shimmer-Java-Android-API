@@ -288,13 +288,13 @@ public class Shimmer4 extends ShimmerDevice {
 
 	private void overwriteEnabledSensors() {
 		//Overrides - needed because there are no enabled/derived sensor bits for these
-		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true);
-		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true);
-		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SHIMMER_STREAMING_PROPERTIES, true);
+		setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.HOST_SYSTEM_TIMESTAMP, true);
+		setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_TIMESTAMP, true);
+		setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.HOST_SHIMMER_STREAMING_PROPERTIES, true);
 
 		//TODO
-//		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
-//		setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.SHIMMER_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
+//		setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.HOST_SYSTEM_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
+//		setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_TIMESTAMP, true, COMMUNICATION_TYPE.SD);
 
 //		updateExpectedDataPacketSize();
 		

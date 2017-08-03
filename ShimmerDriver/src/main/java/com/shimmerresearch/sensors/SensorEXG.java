@@ -225,7 +225,7 @@ public class SensorEXG extends AbstractSensor{
 		public static final String EXG_THREE_UNIPOLAR = "Three Unipolar Inputs";
 	}
 	
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String EXG = "ECG/EMG";
 	}
 	
@@ -332,18 +332,18 @@ public class SensorEXG extends AbstractSensor{
 	public static final SensorDetailsRef sDRefEcg = new SensorDetailsRef(0, 0, GuiLabelSensors.ECG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
 					GuiLabelConfig.EXG_GAIN,
 					GuiLabelConfig.EXG_RESOLUTION,
@@ -378,18 +378,18 @@ public class SensorEXG extends AbstractSensor{
 	public static final SensorDetailsRef sDRefExgRespiration = new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_RESPIRATION,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
 					GuiLabelConfig.EXG_GAIN,
 					GuiLabelConfig.EXG_RESOLUTION,
@@ -418,18 +418,18 @@ public class SensorEXG extends AbstractSensor{
 	public static final SensorDetailsRef sDRefExgTest = new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_TEST,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
 					GuiLabelConfig.EXG_GAIN,
 					GuiLabelConfig.EXG_RESOLUTION),
@@ -450,20 +450,20 @@ public class SensorEXG extends AbstractSensor{
 	public static final SensorDetailsRef sDRefEmg =  new SensorDetailsRef(0, 0, GuiLabelSensors.EMG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
 					GuiLabelConfig.EXG_GAIN,
 					GuiLabelConfig.EXG_RESOLUTION,
@@ -482,18 +482,18 @@ public class SensorEXG extends AbstractSensor{
 	public static final SensorDetailsRef sDRefExgCustom =  new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_CUSTOM,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
 			Arrays.asList(
 					GuiLabelConfig.EXG_GAIN,
 					GuiLabelConfig.EXG_RESOLUTION,
@@ -520,18 +520,18 @@ public class SensorEXG extends AbstractSensor{
 	public static final SensorDetailsRef sDRefExgThreeUnipolarInput =  new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_THREE_UNIPOLAR,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A12,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A13,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM),
 			Arrays.asList(
 					GuiLabelConfig.EXG_GAIN,
 					GuiLabelConfig.EXG_RESOLUTION,
@@ -556,12 +556,12 @@ public class SensorEXG extends AbstractSensor{
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_ECG, SensorEXG.sDRefEcg);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST, SensorEXG.sDRefExgTest);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION, SensorEXG.sDRefExgRespiration);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_EMG, SensorEXG.sDRefEmg);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM, SensorEXG.sDRefExgCustom);
-		aMap.put(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR, SensorEXG.sDRefExgThreeUnipolarInput);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, SensorEXG.sDRefEcg);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST, SensorEXG.sDRefExgTest);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION, SensorEXG.sDRefExgRespiration);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_EMG, SensorEXG.sDRefEmg);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM, SensorEXG.sDRefExgCustom);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR, SensorEXG.sDRefExgThreeUnipolarInput);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 
@@ -910,7 +910,7 @@ public class SensorEXG extends AbstractSensor{
 //		super.createLocalSensorMap(mSensorMapRef, mChannelMapRef);
 		if(mShimmerVerObject.isShimmerGenGq()){
 			LinkedHashMap<Integer, SensorDetailsRef> sensorMapRef = new LinkedHashMap<Integer, SensorDetailsRef>();
-			sensorMapRef.put(Configuration.Shimmer3.SensorMapKey.HOST_ECG, SensorEXG.sDRefEcg);
+			sensorMapRef.put(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, SensorEXG.sDRefEcg);
 			super.createLocalSensorMapWithCustomParser(sensorMapRef, mChannelMapRef);
 		}
 		else{
@@ -922,22 +922,22 @@ public class SensorEXG extends AbstractSensor{
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 
-		int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.EXG.ordinal();
+		int groupIndex = Configuration.Shimmer3.LABEL_SENSOR_TILE.EXG.ordinal();
 		if(mShimmerVerObject.isShimmerGenGq()){
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.EXG,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG),
+					LABEL_SENSOR_TILE.EXG,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_ECG),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 		}
 		else if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.EXG,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-								Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-								Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-								Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-								Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-								Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR),
+					LABEL_SENSOR_TILE.EXG,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
 								CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
 		}
 
@@ -1617,15 +1617,15 @@ public class SensorEXG extends AbstractSensor{
 	
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-//		if((!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_ECG))
-//				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST))
-//				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EMG))
-//				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM))
-//				&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)) ){
-//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
-//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
-//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
-//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
+//		if((!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.HOST_ECG))
+//				&&(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST))
+//				&&(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.HOST_EMG))
+//				&&(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM))
+//				&&(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION)) ){
+//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT))
+//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT))
+//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT))
+//			//					&&(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT))) {
 //			//				if(!checkIfOtherExgChannelEnabled()) {
 //			
 //			
@@ -1736,7 +1736,7 @@ public class SensorEXG extends AbstractSensor{
 //		mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 		
 		clearExgConfig();
-		setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.HOST_ECG);
+		setExgChannelBitsPerMode(Configuration.Shimmer3.SENSOR_ID.HOST_ECG);
 		
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG1.CONVERSION_MODES.CONTINUOUS);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
@@ -1772,7 +1772,7 @@ public class SensorEXG extends AbstractSensor{
 //		mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 		
 		clearExgConfig();
-		setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.HOST_EMG);
+		setExgChannelBitsPerMode(Configuration.Shimmer3.SENSOR_ID.HOST_EMG);
 		
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG1.CONVERSION_MODES.CONTINUOUS);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
@@ -1809,7 +1809,7 @@ public class SensorEXG extends AbstractSensor{
 //		mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 		
 		clearExgConfig();
-		setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST);
+		setExgChannelBitsPerMode(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST);
 		
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG1.CONVERSION_MODES.CONTINUOUS);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
@@ -1841,7 +1841,7 @@ public class SensorEXG extends AbstractSensor{
 //		mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 234,(byte) 1};
 		
 		clearExgConfig();
-		setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION);
+		setExgChannelBitsPerMode(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION);
 
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG1.CONVERSION_MODES.CONTINUOUS);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
@@ -1895,7 +1895,7 @@ public class SensorEXG extends AbstractSensor{
 //		mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 		
 		clearExgConfig();
-		setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM);
+		setExgChannelBitsPerMode(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM);
 		
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG1.CONVERSION_MODES.CONTINUOUS);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
@@ -1920,7 +1920,7 @@ public class SensorEXG extends AbstractSensor{
 //		mEXG1RegisterArray = new byte[]{(byte) 0x02,(byte) 0xA0,(byte) 0x10,(byte) 0x40,(byte) 0xc0,(byte) 0x20,(byte) 0x00,(byte) 0x00,(byte) 0x02,(byte) 0x03}; //WP ECG array
 
 		clearExgConfig();
-		setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.HOST_EMG);
+		setExgChannelBitsPerMode(Configuration.Shimmer3.SENSOR_ID.HOST_EMG);
 
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG1.CONVERSION_MODES.CONTINUOUS);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
@@ -1960,7 +1960,7 @@ public class SensorEXG extends AbstractSensor{
 	
 	public void setExgThreeUnipolarInput(double shimmerSamplingRate){
 		clearExgConfig();
-		setExgChannelBitsPerMode(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR);
+		setExgChannelBitsPerMode(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR);
 
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG1.CONVERSION_MODES.CONTINUOUS);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
@@ -2129,7 +2129,7 @@ public class SensorEXG extends AbstractSensor{
 		mShimmerDevice.setEnabledSensors(enabledSensors);
 	}
 	
-	private void setExgChannelBitsPerMode(int sensorMapKey){
+	private void setExgChannelBitsPerMode(int sensorId){
 		mIsExg1_24bitEnabled = false;
 		mIsExg2_24bitEnabled = false;
 		mIsExg1_16bitEnabled = false;
@@ -2137,19 +2137,19 @@ public class SensorEXG extends AbstractSensor{
 		
 		boolean chip1Enabled = false;
 		boolean chip2Enabled = false;
-		if(sensorMapKey==-1){
+		if(sensorId==-1){
 			chip1Enabled = false;
 			chip2Enabled = false;
 		}
-		else if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
-			|| (sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)
-			|| (sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
-			|| (sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
-			|| (sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR)){
+		else if((sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_ECG)
+			|| (sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION)
+			|| (sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM)
+			|| (sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST)
+			|| (sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR)){
 			chip1Enabled = true;
 			chip2Enabled = true;
 		}
-		else if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG){
+		else if(sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EMG){
 			chip1Enabled = true;
 			chip2Enabled = false;
 		}
@@ -2165,18 +2165,18 @@ public class SensorEXG extends AbstractSensor{
 	}
 	
 	public static boolean checkIsAnyExgChannelEnabled(Map<Integer,SensorDetails> sensorEnabledMap) {
-		for(Integer sensorMapKey:sensorEnabledMap.keySet()) {
-			if(sensorEnabledMap.get(sensorMapKey).isEnabled()) {
-				if((sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION)
-					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR)){
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)
-//					||(sensorMapKey==Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
+		for(Integer sensorId:sensorEnabledMap.keySet()) {
+			if(sensorEnabledMap.get(sensorId).isEnabled()) {
+				if((sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_ECG)
+					||(sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EMG)
+					||(sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST)
+					||(sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM)
+					||(sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION)
+					||(sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR)){
+//					||(sensorId==Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT)
+//					||(sensorId==Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT)
+//					||(sensorId==Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT)
+//					||(sensorId==Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT)) {
 					return true;
 				}
 			}
@@ -2366,23 +2366,23 @@ public class SensorEXG extends AbstractSensor{
 		
 //		if(mSensorMap != null) {
 //			if(i==0) { // 16-bit
-//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).setIsEnabled(false);
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).setIsEnabled(true);
+//				if(isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT)) {
+//					mSensorMap.get(Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT).setIsEnabled(false);
+//					mSensorMap.get(Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT).setIsEnabled(true);
 //				}
-//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).setIsEnabled(false);
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).setIsEnabled(true);
+//				if(isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT)) {
+//					mSensorMap.get(Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT).setIsEnabled(false);
+//					mSensorMap.get(Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT).setIsEnabled(true);
 //				}
 //			}
 //			else if(i==1) { // 24-bit
-//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT).setIsEnabled(false);
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT).setIsEnabled(true);
+//				if(isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT)) {
+//					mSensorMap.get(Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT).setIsEnabled(false);
+//					mSensorMap.get(Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT).setIsEnabled(true);
 //				}
-//				if(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT)) {
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT).setIsEnabled(false);
-//					mSensorMap.get(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT).setIsEnabled(true);
+//				if(isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT)) {
+//					mSensorMap.get(Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT).setIsEnabled(false);
+//					mSensorMap.get(Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT).setIsEnabled(true);
 //				}
 //			}
 //		}
@@ -2782,71 +2782,71 @@ public class SensorEXG extends AbstractSensor{
 		if(sensorMap!=null && sensorMap.keySet().size()>0){
 			if(mShimmerVerObject.isShimmerGenGq()){
 				if(isEXGUsingDefaultECGGqConfiguration()) {
-					sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(true);
+					sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(true);
 				}
 			}
 			else if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
 	//			if((mIsExg1_24bitEnabled||mIsExg2_24bitEnabled||mIsExg1_16bitEnabled||mIsExg2_16bitEnabled)){
-	//			if((isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_16BIT))
-	//					||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_16BIT))
-	//					||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG1_24BIT))
-	//					||(isSensorEnabled(Configuration.Shimmer3.SensorMapKey.EXG2_24BIT))) {
+	//			if((isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT))
+	//					||(isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT))
+	//					||(isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT))
+	//					||(isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT))) {
 					if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(true);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EMG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION).setIsEnabled(true);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
 					}
 					else if(isEXGUsingDefaultECGConfiguration()) {
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(true);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(true);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EMG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
 					}
 					else if(isEXGUsingDefaultEMGConfiguration()) {
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(true);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EMG).setIsEnabled(true);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
 					}
 					else if(isEXGUsingDefaultTestSignalConfiguration()){
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(true);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EMG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST).setIsEnabled(true);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
 					}
 					else if(isEXGUsingDefaultThreeUnipolarConfiguration()){
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(true);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EMG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(true);
 					}
 					else if(isEXGUsingCustomSignalConfiguration()){
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(true);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-						sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EMG).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM).setIsEnabled(true);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION).setIsEnabled(false);
+						sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
 					}
 					else {
-						if (sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG)!=null){
-							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_ECG).setIsEnabled(false);
-							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EMG).setIsEnabled(false);
-							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST).setIsEnabled(false);
-							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM).setIsEnabled(false);
-							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION).setIsEnabled(false);
-							sensorMap.get(Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
+						if (sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG)!=null){
+							sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(false);
+							sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EMG).setIsEnabled(false);
+							sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST).setIsEnabled(false);
+							sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM).setIsEnabled(false);
+							sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION).setIsEnabled(false);
+							sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR).setIsEnabled(false);
 						}
 					}
 				}
@@ -2920,7 +2920,7 @@ public class SensorEXG extends AbstractSensor{
 
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
 			case(GuiLabelConfig.EXG_RESOLUTION):
@@ -2980,7 +2980,7 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		
         if((configLabel.equals(GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE))
         		||(configLabel.equals(GuiLabelConfig.EXG_REFERENCE_ELECTRODE))){
@@ -3034,30 +3034,30 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mShimmerDevice.getSensorMap().containsKey(sensorMapKey)){
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mShimmerDevice.getSensorMap().containsKey(sensorId)){
 			if(isSensorEnabled) { 
-				if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION) {
+				if(sensorId == Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION) {
 					setDefaultRespirationConfiguration(mShimmerDevice.getSamplingRateShimmer());
 //					setDefaultRespirationConfiguration(mMaxSetShimmerSamplingRate);
 				}
-				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_ECG) {
+				else if(sensorId == Configuration.Shimmer3.SENSOR_ID.HOST_ECG) {
 //					System.err.println("SET ECG CHANNEL");
 					setDefaultECGConfiguration(mShimmerDevice.getSamplingRateShimmer());
 //					setDefaultECGConfiguration(mMaxSetShimmerSamplingRate);
 				}
-				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EMG) {
+				else if(sensorId == Configuration.Shimmer3.SENSOR_ID.HOST_EMG) {
 					setDefaultEMGConfiguration(mShimmerDevice.getSamplingRateShimmer());
 //					setDefaultEMGConfiguration(mMaxSetShimmerSamplingRate);
 				}
-				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST) {
+				else if(sensorId == Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST) {
 					setEXGTestSignal(mShimmerDevice.getSamplingRateShimmer());
 //					setEXGTestSignal(mMaxSetShimmerSamplingRate);
 				}
-				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR) {
+				else if(sensorId == Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR) {
 					setExgThreeUnipolarInput(mShimmerDevice.getSamplingRateShimmer());
 				}
-				else if(sensorMapKey == Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM) {
+				else if(sensorId == Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM) {
 					setEXGCustom(mShimmerDevice.getSamplingRateShimmer());
 //					setEXGCustom(mMaxSetShimmerSamplingRate);
 				}
@@ -3199,17 +3199,17 @@ public class SensorEXG extends AbstractSensor{
 	
 	public static void updateSensorMapForExgResolution(Map<Integer, SensorDetails> sensorMap, int exgResolution) {
 		//Special cases for ExG 24-bit vs. 16-bit
-		List<Integer> listOfSensorMapKeys = Arrays.asList(
-				Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-				Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-				Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-				Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-				Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-				Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR);
+		List<Integer> listOfSensorIds = Arrays.asList(
+				Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+				Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+				Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+				Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+				Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+				Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR);
 		
-		for(Integer sensorMapKey:listOfSensorMapKeys){
-			SensorDetails sensorDetails = sensorMap.get(sensorMapKey);
-			SensorDetailsRef sensorDetailsRef = mSensorMapRef.get(sensorMapKey);
+		for(Integer sensorId:listOfSensorIds){
+			SensorDetails sensorDetails = sensorMap.get(sensorId);
+			SensorDetailsRef sensorDetailsRef = mSensorMapRef.get(sensorId);
 			
 			if(sensorDetails!=null && sensorDetailsRef!=null){
 				List<ChannelDetails> listOfRefChannels = new ArrayList<ChannelDetails>();
@@ -3252,14 +3252,14 @@ public class SensorEXG extends AbstractSensor{
 	}
 	
 	@Override
-	public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(ShimmerDevice shimmerDevice, Integer sensorMapKey){
-		if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_ECG
-				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EMG
-				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST
-				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM
-				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION
-				|| sensorMapKey==Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR) {
-			mShimmerDevice.getSensorMap().get(sensorMapKey).setIsEnabled(false);
+	public boolean handleSpecCasesBeforeSensorMapUpdatePerSensor(ShimmerDevice shimmerDevice, Integer sensorId){
+		if(sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_ECG
+				|| sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EMG
+				|| sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST
+				|| sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM
+				|| sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION
+				|| sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR) {
+			mShimmerDevice.getSensorMap().get(sensorId).setIsEnabled(false);
 			return true;
 		}
 		return false;

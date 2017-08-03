@@ -41,7 +41,7 @@ public class SensorTemplate extends AbstractSensor{
 	 * 	calibration matrices           					-> alignment, sensitivity, offset matrices for each range for each (sub)sensor
 	 * 	class GuiLabelConfig           					-> class containing GUI configuration labels 
 	 * 	class GuiLabelSensors		   					-> class containing GUI sensor labels
-	 *  class GuiLabelSensorTiles      					-> class containing GUI sensor tile labels
+	 *  class LABEL_SENSOR_TILE      					-> class containing GUI sensor tile labels
 	 * 	class DatabaseChannelHandles   					-> class containing Database handles
 	 * 	class ObjectClusterSensorName  					-> class containing ObjectClusterSensorName (channel name)
 	 * 
@@ -82,7 +82,7 @@ public class SensorTemplate extends AbstractSensor{
 	//--------- Sensor info start --------------
 	/**
 	 * 	SensorDetailsRef 								-> SensorDetailsRef for each (sub)sensor; see SensorLSM303.java for an example
-	 *  mSensorMapRef - LinkedHashmap<K,V>   			-> with for each (sub)sensor:  K=SensorMapKey, V=SensorDetailsRef
+	 *  mSensorMapRef - LinkedHashmap<K,V>   			-> with for each (sub)sensor:  K=SensorId, V=SensorDetailsRef
 	 */
 	//--------- Sensor info end --------------
 
@@ -122,7 +122,7 @@ public class SensorTemplate extends AbstractSensor{
 	 *	public abstract Object setConfigValueUsingConfigLabel(String componentName, Object valueToSet);
 	 *	public abstract Object getConfigValueUsingConfigLabel(String componentName);
 	 *	public abstract void setSensorSamplingRate();
-	 *	public abstract boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled);
+	 *	public abstract boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled);
 	 *	public abstract boolean checkConfigOptionValues(String stringKey);
 	 *	public abstract Object getSettings(String componentName, COMMUNICATION_TYPE commType);
 	 *	public abstract ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType);
@@ -156,11 +156,11 @@ public class SensorTemplate extends AbstractSensor{
 		 *  put all the Sensor Grouping Details on mSensorGroupingMap and call updateSensorGroupingMap() :
 		 *  
 		 *  		if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
-		 *				mSensorGroupingMap.put(GuiLabelSensorTiles.WIDE_RANGE_ACCEL, new SensorGroupingDetails(
-		 *						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_ACCEL),
+		 *				mSensorGroupingMap.put(LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL, new SensorGroupingDetails(
+		 *						Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303DLHC_ACCEL),
 		 *						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
-		 *				mSensorGroupingMap.put(GuiLabelSensorTiles.MAG, new SensorGroupingDetails(
-		 *						Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_LSM303DLHC_MAG),
+		 *				mSensorGroupingMap.put(LABEL_SENSOR_TILE.MAG, new SensorGroupingDetails(
+		 *						Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303DLHC_MAG),
 		 *						CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
 		 *			}
 		 *			super.updateSensorGroupingMap();	
@@ -235,13 +235,13 @@ public class SensorTemplate extends AbstractSensor{
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -253,8 +253,8 @@ public class SensorTemplate extends AbstractSensor{
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mSensorMap.containsKey(sensorMapKey)){
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
 			/** Set defaults for particular sensor here if applicable. 
 			 *  Original means that if the sensor has just been enabled, leave the resolution the way it is.
 			 *  However, if it is disabled, reset the resolution to default  

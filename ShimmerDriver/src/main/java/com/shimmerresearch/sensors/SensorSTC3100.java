@@ -24,7 +24,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.SensorBattVoltage.GuiLabelSensorTiles;
+import com.shimmerresearch.sensors.SensorBattVoltage.LABEL_SENSOR_TILE;
 import com.shimmerresearch.sensors.SensorBattVoltage.GuiLabelSensors;
 import com.shimmerresearch.sensors.SensorBattVoltage.ObjectClusterSensorName;
 
@@ -75,7 +75,7 @@ public class SensorSTC3100 extends AbstractSensor{
 		public static final String STC3100 = "Battery Monitor (STC3100)";
 	}
 	
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String STC3100_MONITORING = GuiLabelSensors.STC3100;
 	}
 
@@ -127,13 +127,13 @@ public class SensorSTC3100 extends AbstractSensor{
   	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_STC3100, SensorSTC3100.sensorSTC3100Ref);  
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_STC3100, SensorSTC3100.sensorSTC3100Ref);  
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
   	
     public static final SensorGroupingDetails sensorSTC3100 = new SensorGroupingDetails(
-			GuiLabelSensorTiles.STC3100_MONITORING,
-			Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_STC3100),
+			LABEL_SENSOR_TILE.STC3100_MONITORING,
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_STC3100),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
   	
 	//--------- Sensor info end --------------
@@ -275,7 +275,7 @@ public class SensorSTC3100 extends AbstractSensor{
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(mShimmerVerObject.isShimmerGen4()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.GuiLabelSensorTiles.STC3100_MONITORING.ordinal(), sensorSTC3100);
+			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.STC3100_MONITORING.ordinal(), sensorSTC3100);
 		}
 		super.updateSensorGroupingMap();		
 	}
@@ -364,14 +364,14 @@ public class SensorSTC3100 extends AbstractSensor{
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey,
+	public Object setConfigValueUsingConfigLabel(Integer sensorId,
 			String configLabel, Object valueToSet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey,
+	public Object getConfigValueUsingConfigLabel(Integer sensorId,
 			String configLabel) {
 		// TODO Auto-generated method stub
 		return null;
@@ -384,7 +384,7 @@ public class SensorSTC3100 extends AbstractSensor{
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey,
+	public boolean setDefaultConfigForSensor(int sensorId,
 			boolean isSensorEnabled) {
 		// TODO Auto-generated method stub
 		return false;

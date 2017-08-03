@@ -157,29 +157,29 @@ public class SensorShimmer2Mag extends AbstractSensor {
 	}
 
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
 //			case(GuiLabelConfigCommon.RANGE):
 //	    		break;
 	        default:
-	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel, valueToSet);
+	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
 	        	break;
 		}
 		return returnValue;
 	}
 
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
 			case(GuiLabelConfigCommon.RANGE):
-//				if(sensorMapKey==Configuration.Shimmer3.SensorMapKey.SHIMMER_ANALOG_ACCEL){
+//				if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL){
 //					returnValue = 0;
 //				}
 				break;
 			default:
-				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorMapKey, configLabel);
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
 				break;
 		}
 		return returnValue;
@@ -192,7 +192,7 @@ public class SensorShimmer2Mag extends AbstractSensor {
 	}
 
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -245,15 +245,15 @@ public class SensorShimmer2Mag extends AbstractSensor {
 		} else {
 		}
 		if(calibMapMag!=null){
-			setCalibrationMapPerSensor(Configuration.Shimmer2.SensorMapKey.MAG, calibMapMag);
+			setCalibrationMapPerSensor(Configuration.Shimmer2.SENSOR_ID.MAG, calibMapMag);
 		}
 
 		updateCurrentCalibInUse();
 	}
 	
 	@Override
-	public void setCalibrationMapPerSensor(int sensorMapKey, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
-		super.setCalibrationMapPerSensor(sensorMapKey, mapOfSensorCalibration);
+	public void setCalibrationMapPerSensor(int sensorId, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorId, mapOfSensorCalibration);
 		updateCurrentCalibInUse();
 	}
 	
@@ -327,7 +327,7 @@ public class SensorShimmer2Mag extends AbstractSensor {
 	}
 
 	public void updateCurrentCalibInUse(){
-		mCurrentCalibDetailsMag = getCurrentCalibDetailsIfKinematic(Configuration.Shimmer2.SensorMapKey.MAG, getMagRange());
+		mCurrentCalibDetailsMag = getCurrentCalibDetailsIfKinematic(Configuration.Shimmer2.SENSOR_ID.MAG, getMagRange());
 	}
 
 	public CalibDetailsKinematic getCurrentCalibDetailsMag(){

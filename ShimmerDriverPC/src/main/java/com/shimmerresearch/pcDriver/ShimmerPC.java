@@ -884,6 +884,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	//Need to override here because ShimmerDevice class uses a different map
 	@Override
 	public String getSensorLabel(int sensorKey) {
+		//TODO 2017-08-03 MN: super does this but in a different way, don't know is either is better
+		super.getSensorLabel(sensorKey);
 		SensorDetails sensor = mSensorMap.get(sensorKey);
 	    if(sensor!=null){
 		    return sensor.mSensorDetailsRef.mGuiFriendlyLabel;
@@ -891,21 +893,25 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		return null;
 	}
 
-	//Need to override here because ShimmerDevice class uses a different map
-	@Override
-	public List<ShimmerVerObject> getListOfCompatibleVersionInfoForSensor(int sensorKey) {
-		SensorDetails sensor = mSensorMap.get(sensorKey);
-	    if(sensor!=null){
-		    return sensor.mSensorDetailsRef.mListOfCompatibleVersionInfo;
-	    }
-		return null;
-	}
+	//TODO 2017-08-03 MN: Removed as ShimmerDevice is no longer using a different map
+//	//Need to override here because ShimmerDevice class uses a different map
+//	@Override
+//	public List<ShimmerVerObject> getListOfCompatibleVersionInfoForSensor(int sensorKey) {
+////		super.getListOfCompatibleVersionInfoForSensor(sensorId);
+//		SensorDetails sensor = mSensorMap.get(sensorKey);
+//	    if(sensor!=null){
+//		    return sensor.mSensorDetailsRef.mListOfCompatibleVersionInfo;
+//	    }
+//		return null;
+//	}
 
-	//Need to override here because ShimmerDevice class uses a different map
-	@Override
-	public Set<Integer> getSensorMapKeySet() {
-		return mSensorMap.keySet();
-	}
+	//TODO 2017-08-03 MN: Removed as ShimmerDevice is no longer using a different map
+//	//Need to override here because ShimmerDevice class uses a different map
+//	@Override
+//	public Set<Integer> getSensorIdsSet() {
+////		super.getSensorIdsSet();
+//		return mSensorMap.keySet();
+//	}
 
 }
 

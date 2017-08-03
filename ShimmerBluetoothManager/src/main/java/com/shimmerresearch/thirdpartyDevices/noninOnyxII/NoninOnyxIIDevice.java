@@ -190,8 +190,8 @@ public class NoninOnyxIIDevice extends ShimmerDevice implements SerialPortListen
 		mMapOfSensorClasses.put(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(this));
 		mMapOfSensorClasses.put(SENSORS.NONIN_ONYX_II, new SensorNonin(this));
 		
-		getSensorClass(SENSORS.SYSTEM_TIMESTAMP).setIsEnabledSensor(COMMUNICATION_TYPE.BLUETOOTH, true, Configuration.Shimmer3.SensorMapKey.HOST_SYSTEM_TIMESTAMP);
-		getSensorClass(SENSORS.NONIN_ONYX_II).setIsEnabledSensor(COMMUNICATION_TYPE.BLUETOOTH, true, Configuration.Shimmer3.SensorMapKey.THIRD_PARTY_NONIN);
+		getSensorClass(SENSORS.SYSTEM_TIMESTAMP).setIsEnabledSensor(COMMUNICATION_TYPE.BLUETOOTH, true, Configuration.Shimmer3.SENSOR_ID.HOST_SYSTEM_TIMESTAMP);
+		getSensorClass(SENSORS.NONIN_ONYX_II).setIsEnabledSensor(COMMUNICATION_TYPE.BLUETOOTH, true, Configuration.Shimmer3.SENSOR_ID.THIRD_PARTY_NONIN);
 		
 		super.sensorAndConfigMapsCreateCommon();
 //		generateSensorAndParserMaps();

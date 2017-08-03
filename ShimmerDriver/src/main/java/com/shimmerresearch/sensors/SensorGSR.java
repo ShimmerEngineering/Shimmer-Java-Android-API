@@ -45,7 +45,7 @@ public class SensorGSR extends AbstractSensor {
 		public static final String GSR = "GSR";
 	}
 	
-	public class GuiLabelSensorTiles{
+	public class LABEL_SENSOR_TILE{
 		public static final String GSR = "GSR+";
 	}
 	
@@ -120,20 +120,20 @@ public class SensorGSR extends AbstractSensor {
 			GuiLabelSensors.GSR,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
 			Arrays.asList(
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A1,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_INT_EXP_ADC_A14,
-					Configuration.Shimmer3.SensorMapKey.HOST_ECG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EMG,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_TEST,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_CUSTOM,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_RESPIRATION,
-					Configuration.Shimmer3.SensorMapKey.HOST_EXG_THREE_UNIPOLAR,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_16BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG1_24BIT,
-//					Configuration.Shimmer3.SensorMapKey.EXG2_24BIT,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_RESISTANCE_AMP,
-					Configuration.Shimmer3.SensorMapKey.SHIMMER_BRIDGE_AMP),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
 			Arrays.asList(GuiLabelConfig.GSR_RANGE),
 			Arrays.asList(
 					//Comment in/out channel you want to appear as normal Shimmer channels
@@ -147,7 +147,7 @@ public class SensorGSR extends AbstractSensor {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR, SensorGSR.sensorGsrRef);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR, SensorGSR.sensorGsrRef);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -261,20 +261,20 @@ public class SensorGSR extends AbstractSensor {
 	@Override
 	public void generateSensorGroupMapping() {
 		
-		int groupIndex = Configuration.Shimmer3.GuiLabelSensorTiles.GSR.ordinal();
+		int groupIndex = Configuration.Shimmer3.LABEL_SENSOR_TILE.GSR.ordinal();
 		
 		if(mShimmerVerObject.isShimmerGenGq()){
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.GSR,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR),
+					LABEL_SENSOR_TILE.GSR,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
 		}
 		else if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
-					GuiLabelSensorTiles.GSR,
-					Arrays.asList(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR,
+					LABEL_SENSOR_TILE.GSR,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
 							//TODO PPG not working here because it's not contained within this sensor class
-								Configuration.Shimmer3.SensorMapKey.HOST_PPG_DUMMY),
+								Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
 		}
 		super.updateSensorGroupingMap();	
@@ -438,7 +438,7 @@ public class SensorGSR extends AbstractSensor {
 	
 	
 	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel, Object valueToSet) {
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 
 		switch(configLabel){
@@ -457,7 +457,7 @@ public class SensorGSR extends AbstractSensor {
 
 	
 	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorMapKey, String configLabel) {
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
 			case(GuiLabelConfig.GSR_RANGE):
@@ -479,8 +479,8 @@ public class SensorGSR extends AbstractSensor {
 
 	
 	@Override
-	public boolean setDefaultConfigForSensor(int sensorMapKey, boolean isSensorEnabled) {
-		if(mSensorMap.containsKey(sensorMapKey)){
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
 			setDefaultGsrSensorConfig(isSensorEnabled);
 			return true;
 		}
@@ -553,7 +553,7 @@ public class SensorGSR extends AbstractSensor {
 //		if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
 //			setDefaultShimmerName();
 //		}
-		if(!isSensorEnabled(Configuration.Shimmer3.SensorMapKey.SHIMMER_GSR)) {
+		if(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR)) {
 			setDefaultGsrSensorConfig(false);
 		}
 	}
