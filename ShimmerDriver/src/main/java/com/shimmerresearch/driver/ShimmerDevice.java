@@ -3367,20 +3367,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	//---------- Storing to Database related - start --------------------
 	
-//	public List<String[]> getEnabledChannelInfoToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType){
-//		List<String[]> listOfSensorsAndAlgorithmChannels = new ArrayList<String[]>(); 
-//		
-//		LinkedHashMap<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = getMapOfAllChannelsForStoringToDB(commType, channelType, false, false);
-//		for(ChannelDetails channelDetails:mapOfEnabledChannelsForStoringToDb.values()){
-//			listOfSensorsAndAlgorithmChannels.add(new String[]{
-//					channelDetails.mObjectClusterName, 
-//					channelDetails.getDatabaseChannelHandle(), 
-//					channelDetails.mDefaultCalUnits});
-//		}
-//		
-//		return listOfSensorsAndAlgorithmChannels;
-//	}
-
 	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledSensorChannelsForStoringToDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName) {
 		LinkedHashMap<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = new LinkedHashMap<String, ChannelDetails>();
 		Iterator<SensorDetails> iterator = mSensorMap.values().iterator();
@@ -3418,12 +3404,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		Iterator<AbstractAlgorithm> iteratorAlgorithms = getListOfEnabledAlgorithmModules().iterator();
 		while(iteratorAlgorithms.hasNext()){
 			AbstractAlgorithm algorithm = iteratorAlgorithms.next();
+			
+			if(!algorithm.mListOfCommunicationTypesSupported.contains(commType)){
+				continue;
+			}
+			
 			List<ChannelDetails> listOfDetails = algorithm.getChannelDetails();
 			for(ChannelDetails channelDetails:listOfDetails){
 				if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
 					continue;
 				}
-
+				
 				if(channelDetails.mStoreToDatabase){
 					mapOfEnabledChannelsForStoringToDb.put(channelDetails.mObjectClusterName, channelDetails);
 				}
@@ -3501,6 +3492,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 			
 			if(channelDetails!=null){
+				//TODO temp hack to remove a DUMMY channel from ECG (for old DBs only?)
 				if(channelDetails.mObjectClusterName.contains("_DUMMY_")){
 					continue;
 				}

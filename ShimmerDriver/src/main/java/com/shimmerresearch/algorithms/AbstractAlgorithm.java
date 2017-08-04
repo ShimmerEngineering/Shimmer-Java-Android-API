@@ -2,6 +2,7 @@ package com.shimmerresearch.algorithms;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.TreeMap;
 
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -146,6 +148,14 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	
 	public TreeMap<Integer, SensorGroupingDetails> mMapOfAlgorithmGrouping = new TreeMap<Integer, SensorGroupingDetails>();
 	
+	/**
+	 * This is a quick approach (rather then having a map with isEnabled per
+	 * commType as done in AbstractSensor and ShimmerDevice) to handle the fact
+	 * that some algorithms only support certain COMM Types (e.g., Activity or
+	 * Gait support SD data but not real-time BT)
+	 */
+	public List<COMMUNICATION_TYPE> mListOfCommunicationTypesSupported = Arrays.asList(COMMUNICATION_TYPE.values());
+	
 	//General methods used during algorithm initialisation
 	public abstract void setGeneralAlgorithmName();
 	public abstract void setFilteringOption();
@@ -189,22 +199,24 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public abstract LinkedHashMap<String, Object> getConfigMapForDb();
 	public abstract void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer);
 
+	// ------  Constructors start (should be overridden in Algorithm classes in order to setupAlgorithm() locally)
+	
 	public AbstractAlgorithm(){
 		setGeneralAlgorithmName();
-//		setupAlgorithm();
 	}
 	
 	public AbstractAlgorithm(AlgorithmDetails algorithmDetails) {
 		setAlgorithmDetails(algorithmDetails);
-//		setupAlgorithm();
 	}
 
 	public AbstractAlgorithm(ShimmerDevice shimmerDevice, AlgorithmDetails algorithmDetails) {
 		setAlgorithmDetails(algorithmDetails);
 		mShimmerDevice = shimmerDevice;
-//		setupAlgorithm();
 	}
 
+	// ------  Constructors end
+
+	
 	private void setAlgorithmDetails(AlgorithmDetails algorithmDetails) {
 		mAlgorithmDetails = algorithmDetails;
 //		setSignalName(algorithmDetails.mAlgorithmName);
@@ -226,10 +238,12 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		return mAlgorithmName;
 	}
 	
+	@Deprecated
 	public void setSignalName(String signalName){
 		mSignalName[0] = signalName;		
 	}
 
+	@Deprecated
 	public void setSignalName(String signalName, int channelNum){
 		if(channelNum >= 0 && channelNum < mSignalName.length)
 			mSignalName[channelNum] = signalName;	
@@ -237,10 +251,12 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 			throw new ArrayIndexOutOfBoundsException("Invalid attempt to set element of mSignalName array.");
 	}
 
+	@Deprecated
 	public String getSignalName(){
 		return mSignalName[0];
 	}
 	
+	@Deprecated
 	public String getSignalName(int channelNum){
 		if(channelNum >= 0 && channelNum < mSignalName.length)
 			return mSignalName[channelNum];
@@ -248,10 +264,12 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 			throw new ArrayIndexOutOfBoundsException("Invalid attempt to get element of mSignalName array.");
 	}
 	
+	@Deprecated
 	public void setSignalFormat(String signalFormat){
 		mSignalFormat[0] = signalFormat;		
 	}
 	
+	@Deprecated
 	public void setSignalFormat(String signalFormat, int channelNum){
 		if(channelNum >= 0 && channelNum < mSignalName.length)
 			mSignalFormat[channelNum] = signalFormat;		
@@ -259,10 +277,12 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 			throw new ArrayIndexOutOfBoundsException("Invalid attempt to set element of mSignalFormat array.");
 	}
 	
+	@Deprecated
 	public String getSignalFormat(){
 		return mSignalFormat[0];
 	}
 	
+	@Deprecated
 	public String getSignalFormat(int channelNum){
 		if(channelNum >= 0 && channelNum < mSignalName.length)
 			return mSignalFormat[channelNum];
@@ -488,6 +508,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		// TODO Auto-generated method stub
 		
 	}
+	
 	public void setGeneralAlgorithmName(String generalAlgorithmName) {
 		mAlgorithmName = generalAlgorithmName;
 	}
@@ -512,6 +533,13 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		mConfigOptionsMap.put(configOptionDetails.mGuiHandle, configOptionDetails); 
 	}
 	
+	protected void setListOfCommunicationTypesSupported(COMMUNICATION_TYPE commType) {
+		mListOfCommunicationTypesSupported = Arrays.asList(commType);
+	}
+
+	protected void setListOfCommunicationTypesSupported(List<COMMUNICATION_TYPE> listOfCommTypesSupported) {
+		mListOfCommunicationTypesSupported = listOfCommTypesSupported;
+	}
 	
 	protected void consolePrintLn(String message) {
 		if(mShimmerDevice!=null){
