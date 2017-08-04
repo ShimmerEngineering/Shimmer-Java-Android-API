@@ -845,6 +845,9 @@ public class Configuration {
 			public static final String BROADCAST_INTERVAL = "Broadcast Interval";
 			public static final String BLUETOOTH_BAUD_RATE = "Bluetooth Baud Rate";
 
+			public static final String ENABLED_SENSORS = "Enabled Sensors Int";
+			public static final String ENABLED_SENSORS_IDS = "Enabled SensorsIds";
+
 			public static final String USER_BUTTON_START = "User Button";
 			public static final String UNDOCK_START = "Undock/Dock";
 			public static final String SINGLE_TOUCH_START = "Single Touch Start";

@@ -8607,6 +8607,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 ////				}
 //	        	break;
 
+			case(Configuration.Shimmer3.GuiLabelConfig.ENABLED_SENSORS):
+				setEnabledAndDerivedSensorsAndUpdateMaps((int)valueToSet, mDerivedSensors);
+	    		break;
+
+			case(Configuration.Shimmer3.GuiLabelConfig.ENABLED_SENSORS_IDS):
+				setSensorIdsEnabled((Integer[])valueToSet);
+	    		break;
+
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 				setLowPowerGyro(false);
 				setLowPowerAccelWR(false);

@@ -113,6 +113,10 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
+import com.shimmerresearch.sensors.SensorEXG;
+import com.shimmerresearch.sensors.SensorGSR;
+import com.shimmerresearch.sensors.lsm303.SensorLSM303;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 
@@ -464,6 +468,32 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int NOTIFICATION_SHIMMER_STATE_CHANGE = 3;
 	public static final int NOTIFICATION_SHIMMER_STOP_STREAMING = 0; //<--????
 
+
+	public ShimmerBluetooth() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int gyroRange, int magRange) {
+		this(userAssignedName, samplingRate, sensorIdsToEnable, accelRange, gsrRange, magRange);
+		
+		addFixedShimmerConfig(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, gyroRange);
+	}
+
+	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int magGain) {
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+
+		setShimmerUserAssignedName(userAssignedName);
+		
+		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+		if(sensorIdsToEnable!=null){
+			addFixedShimmerConfig(Shimmer3.GuiLabelConfig.ENABLED_SENSORS_IDS, sensorIdsToEnable);
+		}
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
+		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magGain);
+	}
+	
 	
 	public class ProcessingThread extends Thread {
 		public boolean stop = false;

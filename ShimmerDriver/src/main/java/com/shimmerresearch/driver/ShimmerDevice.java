@@ -2114,6 +2114,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mSensorMap;
 	}
 
+	public void setSensorIdsEnabled(Integer[] sensorIds) {
+		for(Integer sensorId:mSensorMap.keySet()){
+			setSensorEnabledState(sensorId, false);
+		}
+		
+		for(Integer sensorId:sensorIds){
+			setSensorEnabledState(sensorId, true);
+		}
+	}
+	
 	/**
 	 * Used to changed the enabled state of a sensor in the sensormap. This is
 	 * only used in Consensys for dynamic configuration of a Shimmer. This
