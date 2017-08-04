@@ -184,6 +184,7 @@ public class ChannelDetails implements Serializable {
 		mGuiName = guiName;
 		mDefaultCalUnits = defaultCalibratedUnits;
 		mListOfChannelTypes = listOfChannelTypes;
+		setDatabaseChannelHandleFromChannelLabel(objectClusterName);
 	}
 
 	public ChannelDetails(String objectClusterName, 
@@ -192,7 +193,7 @@ public class ChannelDetails implements Serializable {
 			List<CHANNEL_TYPE> listOfChannelTypes, 
 			String databaseChannelHandle) {
 		this(objectClusterName, guiName, defaultCalibratedUnits, listOfChannelTypes);
-		mDatabaseChannelHandle = databaseChannelHandle;
+		setDatabaseChannelHandle(databaseChannelHandle);
 	}
 
 	public ChannelDetails(String objectClusterName, 
@@ -340,6 +341,12 @@ public class ChannelDetails implements Serializable {
 
 	public void setDatabaseChannelHandle(String databaseChannelHandle){
 		mDatabaseChannelHandle = databaseChannelHandle;
+	}
+	
+	private void setDatabaseChannelHandleFromChannelLabel(String objectClusterName) {
+		mDatabaseChannelHandle = objectClusterName;
+		mDatabaseChannelHandle = mDatabaseChannelHandle.replace(" ", "_");
+		mDatabaseChannelHandle = mDatabaseChannelHandle.replace("-", "_");
 	}
 
 	public boolean isShowWhileStreaming(){
