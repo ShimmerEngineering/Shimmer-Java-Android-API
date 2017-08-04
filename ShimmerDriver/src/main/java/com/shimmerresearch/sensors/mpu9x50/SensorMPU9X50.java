@@ -579,10 +579,6 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		super(sensorType);
 	}
 
-	public SensorMPU9X50(SENSORS sensorType, ShimmerVerObject svo) {
-		super(sensorType, svo);
-	}
-
 	public SensorMPU9X50(SENSORS sensorType, ShimmerDevice shimmerDevice) {
 		super(sensorType, shimmerDevice);
 	}
@@ -1053,8 +1049,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	        	
 	        	// Since user is manually entering a freq., clear low-power mode so that their chosen rate will be set correctly. Tick box will be re-enabled automatically if they enter LPM freq. 
 	        	setLowPowerGyro(false); 
-				if(debugGyroRate && mShimmerDevice!=null)
+				if(debugGyroRate && mShimmerDevice!=null){
 					System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tGuiLabelConfig\t" + bufDouble);
+				}
 	    		setMPU9150GyroAccelRateFromFreq(bufDouble);
 	
 	    		returnValue = Double.toString((double)Math.round(getMPU9X50GyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
@@ -1185,8 +1182,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	public void setSensorSamplingRate(double samplingRateHz) {
 		setLowPowerGyro(false);
 
-		if(debugGyroRate && mShimmerDevice!=null)
+		if(debugGyroRate && mShimmerDevice!=null){
 			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tsetSamplingRateSensors\t" + samplingRateHz);
+		}
 
 		setMPU9150GyroAccelRateFromFreq(samplingRateHz);
 		setMPU9150MagRateFromFreq(samplingRateHz);
@@ -1208,10 +1206,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 			}
 			else if(sensorId==mSensorIdMag){
 				if(mShimmerDevice!=null){
-					setMPU9150MagRateFromFreq(mShimmerDevice.getSamplingRateShimmer());
-				} else {
-					//TODO not a nice implementation -> get rid of mMaxSetShimmerSamplingRate
-					setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
+					setMPU9150MagRateFromFreq(getSamplingRateShimmer());
 				}
 			}
 			else if(SensorMPU9X50.mListOfMplChannels.contains(sensorId)){ //RS (30/5/2016) - Why is a default config set if only one MPL sensor is enabled? 
@@ -1237,8 +1232,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	public int setMPU9150GyroAccelRateFromFreq(double freq) {
-		if(debugGyroRate && mShimmerDevice!=null)
+		if(debugGyroRate && mShimmerDevice!=null){
 			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\t" + freq);
+		}
 		
 		boolean setFreq = false;
 		// Check if channel is enabled 
@@ -1411,16 +1407,21 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		}
 		else {
 			if(checkIfAMpuGyroOrAccelEnabled()){
-				if(debugGyroRate && mShimmerDevice!=null)
+				if(debugGyroRate && mShimmerDevice!=null){
 					System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tMPL off but Gyro/Accel still enabled\t" + mShimmerDevice.getSamplingRateShimmer());
-				setMPU9150GyroAccelRateFromFreq(mMaxSetShimmerSamplingRate);
+				}
+				if(mShimmerDevice!=null){
+					setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
+				}
 			}
 			else {
 				setLowPowerGyro(true);
 			}
 		}
-		setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
-		setMPU9150MplRateFromFreq(mMaxSetShimmerSamplingRate);
+		if(mShimmerDevice!=null){
+			setMPU9150MagRateFromFreq(getSamplingRateShimmer());
+			setMPU9150MplRateFromFreq(getSamplingRateShimmer());
+		}
 	}
 	
 	public boolean checkIfAMpuGyroOrAccelEnabled(){
@@ -1837,9 +1838,12 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 			mLowPowerGyro = false;
 		}
 		
-		if(debugGyroRate && mShimmerDevice!=null)
+		if(debugGyroRate && mShimmerDevice!=null){
 			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tsetLowPowerGyro\t" + mShimmerDevice.getSamplingRateShimmer());
-		setMPU9150GyroAccelRateFromFreq(mMaxSetShimmerSamplingRate);
+		}
+		if(mShimmerDevice!=null){
+			setMPU9150GyroAccelRateFromFreq(getSamplingRateShimmer());
+		}
 	}
 	
 	public int getLowPowerGyroEnabled() {
@@ -1957,10 +1961,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		}
 		if(!isSensorEnabled(mSensorIdMag)){
 			if(mShimmerDevice!=null){
-				setMPU9150MagRateFromFreq(mShimmerDevice.getSamplingRateShimmer());
-			} else {
-				//TODO not a nice implementation -> get rid of mMaxSetShimmerSamplingRate
-				setMPU9150MagRateFromFreq(mMaxSetShimmerSamplingRate);
+				setMPU9150MagRateFromFreq(getSamplingRateShimmer());
 			}
 		}
 		if(!checkIfAnyMplChannelEnabled()) {

@@ -829,15 +829,6 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 		initialise();
 	}
 
-
-	/** Constructor for this class
-	 * @param svo
-	 */
-	public SensorMPU9150(ShimmerVerObject svo){
-		super(SENSORS.MPU9X50, svo);
-		initialise();
-	}
-
 	/** Constructor for this class
 	 * @param svo
 	 */

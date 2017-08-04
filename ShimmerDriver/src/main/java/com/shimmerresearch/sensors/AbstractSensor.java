@@ -131,7 +131,7 @@ public abstract class AbstractSensor implements Serializable{
 	protected static boolean mEnableCalibration = true;
 	protected boolean mIsDebugOutput = false;
 	
-	protected Double mMaxSetShimmerSamplingRate = 51.2;
+//	protected Double mMaxSetShimmerSamplingRate = 51.2;
 	
 	//TODO implement below?
 //	protected int mFirmwareSensorIdentifier; // this is how the firmware identifies the sensor
@@ -361,8 +361,16 @@ public abstract class AbstractSensor implements Serializable{
 	}
 	
 	public void setSamplingRateFromShimmer(double maxSetRate) {
-		mMaxSetShimmerSamplingRate = maxSetRate;
-		setSensorSamplingRate(mMaxSetShimmerSamplingRate);
+//		mMaxSetShimmerSamplingRate = maxSetRate;
+		setSensorSamplingRate(maxSetRate);
+	}
+	
+	protected double getSamplingRateShimmer() {
+//		return mMaxSetShimmerSamplingRate;
+		if(mShimmerDevice!=null){
+			return mShimmerDevice.getSamplingRateShimmer();
+		}
+		return 128.0;//Double.NaN;
 	}
 	
 	public int getHardwareVersion() {

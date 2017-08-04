@@ -4762,22 +4762,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if(configOptions!=null){
 				if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					int nonStandardIndex = -1;
-			        if(stringKey.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE)) {
-			        	if(isLSM303DigitalAccelLPM()) {
-							nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303_ACCEL_RATE.IS_LPM;
-			        	}
-			        	else {
-							nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303_ACCEL_RATE.NOT_LPM;
-		        			// double check that rate is compatible with LPM (8 not compatible so set to higher rate) 
-			        		setLSM303DigitalAccelRate(getLSM303DigitalAccelRate());
-			        	}
-			        	
-						if(nonStandardIndex!=-1 && configOptions instanceof ConfigOptionDetailsSensor){
-							((ConfigOptionDetailsSensor) configOptions).setIndexOfValuesToUse(nonStandardIndex);
-						}
-
-			        }
-			        else if(stringKey.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)) {
+					//Taking out as now handled in the Sensor class
+//			        if(stringKey.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE)) {
+//			        	if(isLSM303DigitalAccelLPM()) {
+//							nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303_ACCEL_RATE.IS_LPM;
+//			        	}
+//			        	else {
+//							nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303_ACCEL_RATE.NOT_LPM;
+//		        			// double check that rate is compatible with LPM (8 not compatible so set to higher rate) 
+//			        		setLSM303DigitalAccelRate(getLSM303DigitalAccelRate());
+//			        	}
+//			        	
+//						if(nonStandardIndex!=-1 && configOptions instanceof ConfigOptionDetailsSensor){
+//							((ConfigOptionDetailsSensor) configOptions).setIndexOfValuesToUse(nonStandardIndex);
+//						}
+//
+//			        }
+			        if(stringKey.equals(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE)) {
 			        	checkWhichExgRespPhaseValuesToUse();
 			        }
 			        else if(stringKey.equals(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE)) {

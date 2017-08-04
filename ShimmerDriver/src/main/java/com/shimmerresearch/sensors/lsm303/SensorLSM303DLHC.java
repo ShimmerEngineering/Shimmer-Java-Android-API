@@ -508,11 +508,6 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 		initialise();
     }
     
-//    public SensorLSM303DLHC(ShimmerVerObject svo) {
-//		super(svo);
-//		initialise();
-//	}
-    
 	public SensorLSM303DLHC(ShimmerDevice shimmerDevice) {
 		super(shimmerDevice);
 		initialise();
@@ -677,17 +672,18 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	@Override
 	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
-		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RATE)){
-			setLSM303DigitalAccelRate(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RATE)).intValue());
-		}
-		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RANGE)){
-			setLSM303AccelRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RANGE)).intValue());
-		}
+		//Better if LPM/HRM are processed first as they can override the sampling rate
 		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_LPM)){
 			setLowPowerAccelWR(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_LPM))>0? true:false);
 		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_HRM)){
 			setHighResAccelWR(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_HRM))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RATE)){
+			setLSM303DigitalAccelRate(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RATE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RANGE)){
+			setLSM303AccelRange(((Double) mapOfConfigPerShimmer.get(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RANGE)).intValue());
 		}
 		
 		//Digital Accel Calibration Configuration
@@ -798,10 +794,10 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	
 	@Override
 	public void setLSM303DigitalAccelRate(int valueToSet) {
-		mLSM303DigitalAccelRate = valueToSet;
+		super.setLSM303DigitalAccelRateInternal(valueToSet);
 		//LPM is not compatible with mLSM303DigitalAccelRate == 8, set to next higher rate
 		if(mLowPowerAccelWR && valueToSet==8) {
-			mLSM303DigitalAccelRate = 9;
+			super.setLSM303DigitalAccelRateInternal(9);
 		}
 	}
 
