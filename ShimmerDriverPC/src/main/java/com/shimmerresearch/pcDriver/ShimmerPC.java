@@ -131,7 +131,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 */
 	@Deprecated
 	public ShimmerPC(String myName, Boolean continousSync) {
-		mShimmerUserAssignedName=myName;
+		setShimmerUserAssignedName(myName);
 		setContinuousSync(continousSync);
 		
 		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
@@ -166,13 +166,14 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param exg1 Sets the register of EXG chip 1
 	 * @param exg2 Setes the register of EXG chip 2
 	 */
-	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2, int orientation) {
-		this(myName, continousSync);
+	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2, int orientation) {
+		super(userAssignedName, samplingRate, null, accelRange, gsrRange, gyroRange, magRange);
+		setContinuousSync(continousSync);
 
 		//TODO Old approach - start (migrate to new approach)
 //		setAccelRange(accelRange);
 //		setGSRRange(gsrRange);
-		mSetEnabledSensors=setEnabledSensors;
+//		mSetEnabledSensors=setEnabledSensors;
 //		setLowPowerMag(enableLowPowerMag);
 //		setLowPowerAccelWR(enableLowPowerAccel);
 //		setLowPowerGyro(enableLowPowerGyro);
@@ -188,16 +189,21 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		//TODO Old approach - end
 		
 		//TODO New approach - start
-		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
-		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
-		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
+//		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+//		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.ENABLED_SENSORS, setEnabledSensors);
+
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_LPM, enableLowPowerMag);
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM, enableLowPowerAccel);
+//		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
+//		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magRange);
+		
 		addFixedShimmerConfig(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_LPM, enableLowPowerGyro);
-		addFixedShimmerConfig(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, gyroRange);
-		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magRange);
+//		addFixedShimmerConfig(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, gyroRange);
+//
+//		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		addFixedShimmerConfig(SensorEXG.GuiLabelConfig.EXG_BYTES, Arrays.asList(exg1, exg2));
-		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		
 		//TODO New approach - end
 	}
 	
@@ -212,13 +218,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param magGain Set mag gain
 	 */
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain, int orientation) {
-		this(myName, continousSync);
+//		this(myName, continousSync);
+		super(myName, samplingRate, null, accelRange, gsrRange, magGain);
+		setContinuousSync(continousSync);
 
 		//TODO Old approach - start (migrate to new approach)
 //		setAccelRange(accelRange);
 //		setLSM303MagRange(magGain);
 //		setGSRRange(gsrRange);
-		mSetEnabledSensors=setEnabledSensors;
+//		mSetEnabledSensors=setEnabledSensors;
 
 //		setSetupDeviceWhileConnecting(true);
 //    	setSamplingRateShimmer(samplingRate);
@@ -226,11 +234,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		//TODO Old approach - end
 
 		//TODO New approach - start
-		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
-		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
-		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magGain);
-		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
-		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+//		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+//		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.ENABLED_SENSORS, setEnabledSensors);
+//		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
+//		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magGain);
+//		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		//TODO New approach - end
 	}
 	
@@ -246,7 +255,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		//TODO Old approach - start (migrate to new approach)
 //    	setAccelRange(accelRange);
 //		setGSRRange(gsrRange);
-		mSetEnabledSensors=setEnabledSensors;
+//		mSetEnabledSensors=setEnabledSensors;
 		
 //		setSetupDeviceWhileConnecting(true);
 //    	setSamplingRateShimmer(samplingRate);
@@ -254,9 +263,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 		//TODO New approach - start
 		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.ENABLED_SENSORS, setEnabledSensors);
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
 		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
-		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
 		//TODO New approach - end
 	}
     
