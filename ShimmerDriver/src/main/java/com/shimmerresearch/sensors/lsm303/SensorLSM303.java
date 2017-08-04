@@ -504,7 +504,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 				else {
 					mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303_ACCEL_RATE.NOT_LPM);
 					// double check that rate is compatible with LPM (8 not compatible so set to higher rate) 
-					setLSM303DigitalAccelRate(mLSM303DigitalAccelRate);
+//					setLSM303DigitalAccelRate(mLSM303DigitalAccelRate);
 				}
 			}		
 			return true;
@@ -561,12 +561,16 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	public void setLowPowerAccelWR(boolean enable){
 		mLowPowerAccelWR = enable;
 		mHighResAccelWR = !enable;
-		setLSM303AccelRateFromFreq(mMaxSetShimmerSamplingRate);
+		if(mShimmerDevice!=null){
+			setLSM303AccelRateFromFreq(getSamplingRateShimmer());
+		}
 	}
 	
 	public void	setLowPowerMag(boolean enable){
 		mLowPowerMag = enable;
-		setLSM303MagRateFromFreq(mMaxSetShimmerSamplingRate);
+		if(mShimmerDevice!=null){
+			setLSM303MagRateFromFreq(getSamplingRateShimmer());
+		}
 	}
 
 	public boolean isLowPowerMagEnabled(){
@@ -609,7 +613,8 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	 */
 	public int setLSM303AccelRateFromFreq(double freq) {
 		boolean isEnabled = isSensorEnabled(mSensorIdAccel);
-		mLSM303DigitalAccelRate = getAccelRateFromFreqForSensor(isEnabled, freq, mLowPowerAccelWR);
+//		System.out.println("Setting Sampling Rate: " + freq + "\tmLowPowerAccelWR:" + mLowPowerAccelWR);
+		setLSM303DigitalAccelRateInternal(getAccelRateFromFreqForSensor(isEnabled, freq, mLowPowerAccelWR));
 		return mLSM303DigitalAccelRate;
 	}
 
@@ -794,6 +799,12 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		}else{
 			return false;
 		}
+	}
+	
+	public void setLSM303DigitalAccelRateInternal(int valueToSet) {
+		//System.out.println("Accel Rate:\t" + valueToSet);
+		//UtilShimmer.consolePrintCurrentStackTrace();
+		mLSM303DigitalAccelRate = valueToSet;
 	}
 	
 

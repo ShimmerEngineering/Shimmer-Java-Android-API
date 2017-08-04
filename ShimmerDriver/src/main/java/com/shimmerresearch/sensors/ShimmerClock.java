@@ -842,13 +842,11 @@ public class ShimmerClock extends AbstractSensor {
 	 */
 	@Deprecated 
 	public double calculatePacketReceptionRateCurrent(int intervalMs) {
-		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * mMaxSetShimmerSamplingRate;
-//		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
+		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
 		
 		if (mLastReceivedCalibratedTimeStamp!=-1){
 			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
-			double numPacketsReceived= ((timeDifference/1000) * mMaxSetShimmerSamplingRate);
-//			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
+			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
 			mShimmerDevice.setPacketReceptionRateCurrent((numPacketsReceived/numPacketsShouldHaveReceived)*100.0);
 		}	
 
