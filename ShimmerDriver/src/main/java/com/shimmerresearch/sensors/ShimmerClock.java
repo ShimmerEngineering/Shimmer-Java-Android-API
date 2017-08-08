@@ -378,7 +378,7 @@ public class ShimmerClock extends AbstractSensor {
 
 	@Override
 	public void generateSensorGroupMapping() {
-		//NOT USED IN THIS CLASS
+		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.STREAMING_PROPERTIES.ordinal(), sensorGroupStreamingProperties);
 	}
 	
 	@Override

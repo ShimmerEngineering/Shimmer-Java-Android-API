@@ -24,6 +24,7 @@ import com.shimmerresearch.driver.ShimmerShell;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
@@ -402,6 +403,12 @@ public abstract class ShimmerBluetoothManager{
 					originalShimmer.writeCalibrationDump(cloneShimmerCast.calibByteDumpGenerate());
 					
 					originalShimmer.operationStart(BT_STATE.CONFIGURING);
+				}
+			}
+			else {
+				ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmer.getMacId());
+				if(cloneShimmer.getHardwareVersion()==HW_ID.SWEATCH){
+					originalShimmerDevice.setSamplingRateShimmer(cloneShimmer.getSamplingRateShimmer());
 				}
 			}
 			
