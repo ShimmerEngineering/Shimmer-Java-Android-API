@@ -1225,9 +1225,9 @@ public class Configuration {
 //		}
 		
 		public static class NEW_IMU_EXP_REV{
-			public static final int GSR_UNIFIED = 3;		// >= SR47-3-0
-			public static final int EXG_UNIFIED = 3;		// >= SR48-3-0
-			public static final int BRIDGE_AMP = 2;			// >= SR49-2-0
+			public static final int GSR_UNIFIED = 3;		// >= SR48-3-0
+			public static final int EXG_UNIFIED = 3;		// >= SR47-3-0 (SR48-2 was skipped)
+			public static final int BRIDGE_AMP = 3;			// >= SR49-3-0 (SR49-2 was skipped)
 			public static final int IMU = 6;				// >= SR31-6-0
 			public static final int ANY_EXP_BRD_WITH_SPECIAL_REV = 171;	// == SRx-x-171 -> any expansion board attached to a new IMU base board
 			public static final int PROTO3_DELUXE = 3;		// Future unified board
@@ -1473,22 +1473,25 @@ public class Configuration {
 	    static {
 	        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
 	        
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE, SensorBattVoltage.channelBattPercentage);
+			aMap.put(SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE, SensorBattVoltage.channelBattPercentage);
 	        
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, ShimmerClock.channelReceptionRateTrial);
+			aMap.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
+			aMap.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, ShimmerClock.channelReceptionRateTrial);
 			
 			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER, ShimmerClock.channelEventMarker);
 			
 			// All Information required for parsing each of the channels
 			//TODO incorporate 3 byte timestamp change for newer firmware
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
+			aMap.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
 			
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
+			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
+			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
 			
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
-//			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
+			aMap.put(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
+//			aMap.put(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
+			aMap.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
+//			aMap.putAll(ShimmerClock.mChannelMapRef);
+			
 
 			aMap.putAll(SensorBattVoltage.mChannelMapRef);
 			aMap.putAll(SensorADC.mChannelMapRef);

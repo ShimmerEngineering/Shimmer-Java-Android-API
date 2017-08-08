@@ -3516,7 +3516,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	
-	public LinkedHashMap<String, Object> getConfigMapForDb(){
+	public LinkedHashMap<String, Object> generateConfigMap(){
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
 		//General Shimmer configuration
@@ -3541,7 +3541,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			LinkedHashMap<String, Object> configMapPerSensor = abstractSensor.getConfigMapForDb();
+			LinkedHashMap<String, Object> configMapPerSensor = abstractSensor.generateConfigMap();
 			if(configMapPerSensor!=null){
 				mapOfConfig.putAll(configMapPerSensor);
 			}
@@ -3552,7 +3552,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		while(iteratorAlgorithms.hasNext()){
 			AbstractAlgorithm abstractAlgorithm = iteratorAlgorithms.next();
 //			if(abstractAlgorithm.isEnabled()){
-				LinkedHashMap<String, Object> configMapPerAlgorithm = abstractAlgorithm.getConfigMapForDb();
+				LinkedHashMap<String, Object> configMapPerAlgorithm = abstractAlgorithm.generateConfigMap();
 				if(configMapPerAlgorithm!=null){
 					mapOfConfig.putAll(configMapPerAlgorithm);
 				}
@@ -3563,12 +3563,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		mapOfConfig.putAll(algorithmsConfig);
 		
 		//Useful for debugging
-//		printMapOfConfigForDb();
+//		printMapOfConfig();
 		
 		return mapOfConfig;
 	}
 	
-	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
 		if(svo!=null){
 			setShimmerVersionObject(svo);
@@ -3615,7 +3615,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
 			AbstractSensor abstractSensor = iterator.next();
-			abstractSensor.parseConfigMapFromDb(mapOfConfigPerShimmer);
+			abstractSensor.parseConfigMap(mapOfConfigPerShimmer);
 		}
 		
 		//Algorithm configuration
@@ -3635,12 +3635,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		printMapOfConfigForDb();
 	}
 
-	public void printMapOfConfigForDb() {
-		HashMap<String, Object> mapOfConfigForDb = getConfigMapForDb();
-		printMapOfConfigForDb(mapOfConfigForDb);
+	public void printMapOfConfig() {
+		HashMap<String, Object> mapOfConfigForDb = generateConfigMap();
+		printMapOfConfig(mapOfConfigForDb);
 	}
 
-	public static void printMapOfConfigForDb(HashMap<String, Object> mapOfConfigForDb) {
+	public static void printMapOfConfig(HashMap<String, Object> mapOfConfigForDb) {
 		System.out.println("Printing map of Config for DB, size = " + mapOfConfigForDb.keySet().size());
 		for(String configLbl:mapOfConfigForDb.keySet()){
 			String stringToPrint = configLbl + " = ";

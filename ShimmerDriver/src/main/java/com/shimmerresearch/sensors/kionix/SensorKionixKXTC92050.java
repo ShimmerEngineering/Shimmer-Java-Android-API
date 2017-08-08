@@ -181,7 +181,7 @@ public class SensorKionixKXTC92050 extends SensorKionixAccel {
 	}
 	
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		super.addCalibDetailsToDbMap(mapOfConfig, 
 				getCurrentCalibDetailsAccelLn(), 
@@ -191,7 +191,7 @@ public class SensorKionixKXTC92050 extends SensorKionixAccel {
 	}
 
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		//Analog Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
 				Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, 

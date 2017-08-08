@@ -839,7 +839,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			//OFFSET
 			if(isTimeSyncEnabled && (fwType == COMMUNICATION_TYPE.SD)){
-				int iOffset=getSignalIndex(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
+				int iOffset=getSignalIndex(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
 				double offsetValue = Double.NaN;
 				if (OFFSET_LENGTH==9){
 					if(newPacketInt[iOffset] == 1152921504606846975L){
@@ -856,8 +856,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue);
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,Double.NaN);
+				objectCluster.addDataToMap(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue);
+				objectCluster.addDataToMap(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,Double.NaN);
 				uncalibratedData[iOffset] = offsetValue;
 				calibratedData[iOffset] = Double.NaN;
 				uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
@@ -8680,7 +8680,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// --------------- Database related start --------------------------
 	
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 //		LinkedHashMap<String, Object> configMapForDb = new LinkedHashMap<String, Object>();
 
 		// New approach to storing Shimmer3 configuration to the database. The
@@ -8688,7 +8688,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		// Values moved from where they were generated in
 		// ShimmerObject.getShimmerConfigToInsertInDB()
 
-		LinkedHashMap<String, Object> configMapForDb = super.getConfigMapForDb();
+		LinkedHashMap<String, Object> configMapForDb = super.generateConfigMap();
 		
 		configMapForDb.put(SensorGSR.DatabaseConfigHandle.GSR_RANGE, (double) getGSRRange());
 		
@@ -8725,8 +8725,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	@Override
-	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-		super.parseConfigMapFromDb(svo, mapOfConfigPerShimmer);
+	public void parseConfigMap(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+		super.parseConfigMap(svo, mapOfConfigPerShimmer);
 		
 		if(mapOfConfigPerShimmer.containsKey(SensorGSR.DatabaseConfigHandle.GSR_RANGE)){
 			setGSRRange(((Double) mapOfConfigPerShimmer.get(SensorGSR.DatabaseConfigHandle.GSR_RANGE)).intValue());
@@ -9443,6 +9443,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+	
+	@Override
+	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName, boolean showDisabledChannels) {
+		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = super.getMapOfAllChannelsForStoringToDB(commType, channelType, isKeyOJCName, showDisabledChannels);
+		
+		//TODO temp hack. Need to move these channels to their own sensors so that they can be disabled per comm type
+		if(commType!=COMMUNICATION_TYPE.SD || (commType==COMMUNICATION_TYPE.SD && mSyncWhenLogging==0)){
+			mapOfChannelsForStoringToDb.remove(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET);
+		}
+		
+		return mapOfChannelsForStoringToDb;
+	}
 
 }
 

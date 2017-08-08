@@ -608,7 +608,7 @@ public class OrientationModule9DOF extends OrientationModule {
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1503,7 +1503,7 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 
 		addExgConfigToDbConfigMap(mapOfConfig, getEXG1RegisterArray(), getEXG2RegisterArray());
@@ -1536,7 +1536,7 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
 		//EXG Configuration
 		byte[] exg1Bytes = SensorEXG.parseExgConfigFromDb(mapOfConfigPerShimmer, EXG_CHIP_INDEX.CHIP1, 
