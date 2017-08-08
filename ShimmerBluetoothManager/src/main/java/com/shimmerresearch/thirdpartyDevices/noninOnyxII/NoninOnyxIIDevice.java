@@ -51,6 +51,7 @@ public class NoninOnyxIIDevice extends ShimmerDevice implements SerialPortListen
 		mUniqueID = uniqueId;
 		
 		setDefaultShimmerConfiguration();
+		mIsTrialDetailsStoredOnDevice = false;
 	}
 
 	@Override
