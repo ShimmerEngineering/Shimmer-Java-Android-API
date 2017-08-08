@@ -249,7 +249,7 @@ public class ShimmerClock extends AbstractSensor {
 			ObjectClusterSensorName.TIMESTAMP_OFFSET,
 			DatabaseChannelHandles.OFFSET_TIMESTAMP,
 			CHANNEL_UNITS.NO_UNITS,
-			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
+			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
 		//TODO put into above constructor
 		channelShimmerClockOffset.mChannelSource = CHANNEL_SOURCE.API;
@@ -747,12 +747,12 @@ public class ShimmerClock extends AbstractSensor {
 	}
 	
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public void parseConfigMapFromDb(
+	public void parseConfigMap(
 			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		//Initial TimeStamp
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.INITIAL_TIMESTAMP)){

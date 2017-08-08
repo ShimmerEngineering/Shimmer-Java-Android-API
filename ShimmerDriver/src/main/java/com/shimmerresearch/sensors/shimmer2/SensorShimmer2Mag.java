@@ -222,13 +222,13 @@ public class SensorShimmer2Mag extends AbstractSensor {
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		// TODO Auto-generated method stub
 		
 	}

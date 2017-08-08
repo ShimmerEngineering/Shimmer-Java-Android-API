@@ -914,7 +914,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 	
 	
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.GYRO_RATE, getMPU9X50GyroAccelRate());
 		mapOfConfig.put(SensorMPU9150.DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
@@ -960,7 +960,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 		return mapOfConfig;
 	}
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.GYRO_RATE)){
 			setMPU9X50GyroAccelRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.GYRO_RATE)).intValue());
 		}

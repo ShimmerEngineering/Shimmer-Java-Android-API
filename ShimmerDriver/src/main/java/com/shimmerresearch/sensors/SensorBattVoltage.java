@@ -290,13 +290,13 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		//Not in this class
 		return null;
 	}
 	
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		// TODO Auto-generated method stub
 		
 	}

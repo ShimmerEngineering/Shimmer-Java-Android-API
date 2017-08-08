@@ -348,7 +348,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		mapOfConfig.put(DatabaseConfigHandle.PRESSURE_PRECISION_BMP180, getPressureResolution());
 
@@ -368,7 +368,7 @@ public class SensorBMP180 extends SensorBMPX80 {
 	}
 
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.PRESSURE_PRECISION_BMP180)){
 			setPressureResolution(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.PRESSURE_PRECISION_BMP180)).intValue());
 		}

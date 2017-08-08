@@ -119,8 +119,8 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public abstract boolean processResponse(int responseCommand, Object parsedResponse, COMMUNICATION_TYPE commType);
 	
-	public abstract LinkedHashMap<String, Object> getConfigMapForDb();
-	public abstract void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer);
+	public abstract LinkedHashMap<String, Object> generateConfigMap();
+	public abstract void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer);
 
 	// --------------- Abstract methods end ----------------	
 

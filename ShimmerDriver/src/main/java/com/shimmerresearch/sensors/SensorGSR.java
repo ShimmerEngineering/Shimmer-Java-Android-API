@@ -526,7 +526,7 @@ public class SensorGSR extends AbstractSensor {
 	}
 	
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
 		mapOfConfig.put(SensorGSR.DatabaseConfigHandle.GSR_RANGE, (double) getGSRRange());
@@ -535,7 +535,7 @@ public class SensorGSR extends AbstractSensor {
 	}
 
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.GSR_RANGE)){
 			setGSRRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.GSR_RANGE)).intValue());
 		}
