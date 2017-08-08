@@ -283,6 +283,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected LinkedHashMap<String, Object> mFixedShimmerConfigMap;
 
 	protected boolean mAutoStartStreaming = false;
+	public boolean mIsTrialDetailsStoredOnDevice = true;
 	
 	public static final int RECONNECT_ATTEMPTS_MAX = 3;
 	public int mNumConnectionAttempts = -1;		
