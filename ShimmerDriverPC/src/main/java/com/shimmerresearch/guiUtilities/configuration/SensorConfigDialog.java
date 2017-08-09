@@ -1,4 +1,4 @@
-package com.shimmerresearch.simpleexamples;
+package com.shimmerresearch.guiUtilities.configuration;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
