@@ -103,6 +103,7 @@ import com.shimmerresearch.algorithms.*;
 
 import javax.swing.SpinnerNumberModel;
 
+@Deprecated
 public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 	
 	public static final int SHIMMER_1=0;

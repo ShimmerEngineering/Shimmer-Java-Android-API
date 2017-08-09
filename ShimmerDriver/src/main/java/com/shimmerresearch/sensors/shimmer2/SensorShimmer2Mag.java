@@ -100,6 +100,12 @@ public class SensorShimmer2Mag extends AbstractSensor {
 		mCalibMapMagShimmer2r.put(calibDetailsShimmer2rMag8p1.mRangeValue, calibDetailsShimmer2rMag8p1);
 	}
 	
+	
+	public class GuiLabelConfig{
+		public static final String MAG_LOW_POWER_MODE = "Mag Low Power Mode";
+		public static final String MAG_RANGE = "Mag Range";
+	}
+	
 	public CalibDetailsKinematic mCurrentCalibDetailsMag = null;
 
 	//--------- Sensor specific variables end --------------	
@@ -160,8 +166,9 @@ public class SensorShimmer2Mag extends AbstractSensor {
 	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
-//			case(GuiLabelConfigCommon.RANGE):
-//	    		break;
+			case(GuiLabelConfig.MAG_RANGE):
+				setMagRange((int)valueToSet);
+	    		break;
 	        default:
 	        	returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
 	        	break;
@@ -243,6 +250,7 @@ public class SensorShimmer2Mag extends AbstractSensor {
 		if(mShimmerDevice.getHardwareVersion()==HW_ID.SHIMMER_2){
 			calibMapMag = mCalibMapMagShimmer2r;
 		} else {
+			calibMapMag = mCalibMapMagShimmer2r;
 		}
 		if(calibMapMag!=null){
 			setCalibrationMapPerSensor(Configuration.Shimmer2.SENSOR_ID.MAG, calibMapMag);
@@ -326,6 +334,10 @@ public class SensorShimmer2Mag extends AbstractSensor {
 		return mMagRange;
 	}
 
+	public void setMagRange(int range){
+		mMagRange = range;
+	}
+	
 	public void updateCurrentCalibInUse(){
 		mCurrentCalibDetailsMag = getCurrentCalibDetailsIfKinematic(Configuration.Shimmer2.SENSOR_ID.MAG, getMagRange());
 	}
