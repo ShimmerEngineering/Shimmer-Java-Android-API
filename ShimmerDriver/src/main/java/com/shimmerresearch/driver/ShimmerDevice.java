@@ -1110,7 +1110,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**
 	 * @return the mShimmerInfoMemBytes
 	 */
-	public byte[] getShimmerInfoMemBytes() {
+	public byte[] getShimmerConfigBytes() {
 		return mConfigBytes;
 	}
 
