@@ -166,6 +166,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param exg1 Sets the register of EXG chip 1
 	 * @param exg2 Setes the register of EXG chip 2
 	 */
+	@Deprecated //no longer allowed to enable low power 
 	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2, int orientation) {
 		super(userAssignedName, samplingRate, null, accelRange, gsrRange, gyroRange, magRange);
 		setContinuousSync(continousSync);
@@ -213,41 +214,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param accelRange Defines the Acceleration range. Valid range setting values for the Shimmer 2 are 0 (+/- 1.5g), 1 (+/- 2g), 2 (+/- 4g) and 3 (+/- 6g). Valid range setting values for the Shimmer 2r are 0 (+/- 1.5g) and 3 (+/- 6g).
 	 * @param gsrRange Numeric value defining the desired gsr range. Valid range settings are 0 (10kOhm to 56kOhm),  1 (56kOhm to 220kOhm), 2 (220kOhm to 680kOhm), 3 (680kOhm to 4.7MOhm) and 4 (Auto Range).
 	 * @param setEnabledSensors Defines the sensors to be enabled (e.g. 'Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO' enables the Accelerometer and Gyroscope)
-	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
-	 * @param enableLowPowerAccel Enables low power Accel on the wide range accelerometer
-	 * @param enableLowPowerGyro Enables low power Gyro
-	 * @param enableLowPowerMag Enables low power Mag
 	 * @param gyroRange Sets the Gyro Range of the accelerometer
 	 * @param magRange Sets the Mag Range
-	 * @param exg1 Sets the register of EXG chip 1
-	 * @param exg2 Setes the register of EXG chip 2
 	 */
-	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int gyroRange, int magRange, int orientation) {
-		super(userAssignedName, samplingRate, null, accelRange, gsrRange, gyroRange, magRange);
-		setContinuousSync(continousSync);
-
-		//TODO Old approach - start (migrate to new approach)
-//		setAccelRange(accelRange);
-//		setGSRRange(gsrRange);
-//		mSetEnabledSensors=setEnabledSensors;
-//		setLowPowerMag(enableLowPowerMag);
-//		setLowPowerAccelWR(enableLowPowerAccel);
-//		setLowPowerGyro(enableLowPowerGyro);
-//		setGyroRange(gyroRange);
-//		setLSM303MagRange(magRange);
-//		mSetupEXG = true;
-//		setEXG1RegisterArray(exg1);
-//		setEXG2RegisterArray(exg2);
-		
-//		setSetupDeviceWhileConnecting(true);
-//    	setSamplingRateShimmer(samplingRate);
+	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, Integer[] sensorIdsToEnable, int gyroRange, int magRange, int orientation) {
+		super(userAssignedName, samplingRate, sensorIdsToEnable, accelRange, gsrRange, gyroRange, magRange);
 		setupOrientation(orientation, samplingRate);
-		//TODO Old approach - end
-		
-		//TODO New approach - start
-//		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
-//		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
-
 	}
 	
 	/**

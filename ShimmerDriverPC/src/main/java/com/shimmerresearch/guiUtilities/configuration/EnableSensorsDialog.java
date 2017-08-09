@@ -1,4 +1,4 @@
-package com.shimmerresearch.simpleexamples;
+package com.shimmerresearch.guiUtilities.configuration;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.bluetoothmanager.guiUtilities.AbstractEnableSensorsDialog;
