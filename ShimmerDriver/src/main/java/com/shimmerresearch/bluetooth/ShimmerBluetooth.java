@@ -508,14 +508,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
 		setShimmerUserAssignedName(userAssignedName);
 		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
-		
+		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		addFixedShimmerConfig(SensorMMA736x.GuiLabelConfig.ACCEL_RANGE, accelRange);
-		//addFixedShimmerConfig(SensorShimmer2Mag.GuiLabelConfig.MAG_RANGE, magRange);
-		
-		//mSensorMMA736x.setAccelRange(accelRange);
-		mGSRRange = gsrRange;
+		addFixedShimmerConfig(SensorShimmer2Mag.GuiLabelConfig.MAG_RANGE, magRange);
 		mSetEnabledSensors=enabledSensors;
-
 		mSetupDeviceWhileConnecting = true;
     	setSamplingRateShimmer(samplingRate);
 	}
@@ -2345,6 +2341,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
 		readSamplingRate();
+		readGSRRange();
 		readMagSamplingRate();
 		writeBufferSize(1);
 		readLEDCommand();
