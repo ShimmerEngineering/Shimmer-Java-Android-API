@@ -3398,9 +3398,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 						continue;
 					}
 					
-					if(channelDetails.mStoreToDatabase){
-						String key = (isKeyOJCName? channelDetails.mObjectClusterName:channelDetails.getDatabaseChannelHandle());
-						mapOfEnabledChannelsForStoringToDb.put(key, channelDetails);
+					if(channelDetails.isStoreToDatabase()){
+						String key = (isKeyOJCName ? channelDetails.mObjectClusterName : channelDetails.getDatabaseChannelHandle());
+						mapOfEnabledChannelsForStoringToDb.put(key, channelDetails);	
 					}
 				}
 			}
