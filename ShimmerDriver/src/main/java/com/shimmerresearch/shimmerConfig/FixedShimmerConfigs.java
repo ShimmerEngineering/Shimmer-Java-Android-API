@@ -36,6 +36,7 @@ public class FixedShimmerConfigs {
 				for(Entry<String, Object> configEntry:fixedConfigMap.entrySet()){
 					shimmerDevice.setConfigValueUsingConfigLabel(configEntry.getKey(), configEntry.getValue());
 				}
+				triggerConfiguration = true;
 			}
 			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.CADENCE){
 				triggerConfiguration = true;
