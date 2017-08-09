@@ -117,6 +117,8 @@ import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.sensors.shimmer2.SensorMMA736x;
+import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Mag;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 
@@ -479,7 +481,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		addFixedShimmerConfig(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, gyroRange);
 	}
 
-	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int magGain) {
+	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int magRange) {
 		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
 
 		setShimmerUserAssignedName(userAssignedName);
@@ -491,9 +493,32 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
 		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
-		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magGain);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magRange);
 	}
 	
+	/** Only for Shimmer2r note that sensormaps aren't supported on Shimmer2r devices
+	 * @param userAssignedName
+	 * @param samplingRate
+	 * @param enabledSensors
+	 * @param accelRange
+	 * @param gsrRange
+	 * @param magRange
+	 */
+	public ShimmerBluetooth(String userAssignedName, double samplingRate, int enabledSensors, int accelRange, int gsrRange, int magRange) {
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+		setShimmerUserAssignedName(userAssignedName);
+		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+		
+		addFixedShimmerConfig(SensorMMA736x.GuiLabelConfig.ACCEL_RANGE, accelRange);
+		//addFixedShimmerConfig(SensorShimmer2Mag.GuiLabelConfig.MAG_RANGE, magRange);
+		
+		//mSensorMMA736x.setAccelRange(accelRange);
+		mGSRRange = gsrRange;
+		mSetEnabledSensors=enabledSensors;
+
+		mSetupDeviceWhileConnecting = true;
+    	setSamplingRateShimmer(samplingRate);
+	}
 	
 	public class ProcessingThread extends Thread {
 		public boolean stop = false;
@@ -2326,6 +2351,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readConfigByte0();
 		readCalibrationParameters("All");
 		if(mSetupDeviceWhileConnecting){
+			FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfigMode, mFixedShimmerConfigMap);
 			writeMagRange(getMagRange()); //set to default Shimmer mag gain
 			writeAccelRange(getAccelRange());
 			writeGSRRange(getGSRRange());
@@ -3182,7 +3208,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeAccelRange(int range) {
 		writeInstruction(new byte[]{SET_ACCEL_SENSITIVITY_COMMAND, (byte)range});
 		setAccelRange((int)range);
-		
 	}
 	
 	/**Read the derived channel bytes. Currently only supported on logandstream

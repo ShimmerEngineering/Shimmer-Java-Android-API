@@ -568,11 +568,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//-------- Timestamp end --------
 
 	// Shimmer2/2r - Analog accel
-	private SensorMMA736x mSensorMMA736x = null;//new SensorMMA736x(this);
+	protected SensorMMA736x mSensorMMA736x = new SensorMMA736x(this);
 	// Shimmer2 Mag
-	private SensorShimmer2Mag mSensorShimmer2Mag = null;//new SensorShimmer2Mag(this);
+	protected SensorShimmer2Mag mSensorShimmer2Mag = new SensorShimmer2Mag(this);
 	// Shimmer2 - Gyro
-	private SensorShimmer2Gyro mSensorShimmer2Gyro = new SensorShimmer2Gyro(this);
+	protected SensorShimmer2Gyro mSensorShimmer2Gyro = new SensorShimmer2Gyro(this);
 
 	
 	// Shimmer3 - Analog accel
@@ -7626,7 +7626,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public int getMagRange(){
-		return mSensorLSM303.getMagRange();
+		if(isShimmerGen2()){
+			return mSensorShimmer2Mag.getMagRange();
+		} else {
+			return mSensorLSM303.getMagRange();
+		}
 	}
 
 	/**
