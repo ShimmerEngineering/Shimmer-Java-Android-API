@@ -6,7 +6,7 @@ apply plugin: 'com.jfrog.bintray'
 archivesBaseName = 'ShimmerBluetoothManager'
 group = 'com.shimmerresearch.managers.bluetoothmanager'
 //group = "myorg"
-version = '0.9.11beta'
+version = '0.9.14beta'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -116,7 +116,7 @@ sourceSets {
         }
     }
     */
-    
+    /*
     bintray {
         user = shimmer_bintray_username //this usually comes from gradle.properties file in ~/.gradle
         key = shimmer_bintray_api_key //this usually comes from gradle.properties file in ~/.gradle
@@ -140,7 +140,7 @@ sourceSets {
             desc = 'this is the bluetooth manager, with no OS specific code'
             websiteUrl = 'https://github.com/bintray/bintray-examples'
             issueTrackerUrl = 'https://github.com/bintray/bintray-examples/issues'
-            vcsUrl = 'https://github.com/JongChern/ShimmerTest'
+            vcsUrl = 'https://github.com/ShimmerEngineering/Shimmer-Java-Android-API'
             licenses = ['Apache-2.0']
             labels = ['example', 'gradle', 'bintray']
             publicDownloadNumbers = true
@@ -165,7 +165,7 @@ sourceSets {
             }
         }
     }
-    
+    */
 /*
 sourceSets.all { set ->
     def jarTask = task("${set.name}Jar", type: Jar) {

@@ -8,7 +8,7 @@ archivesBaseName = 'ShimmerDriver'
 /*Rev0.2
 * - fixes for shimmer2r and writeSensors not working after streaming
 */
-version = '0.9.3beta' 
+version = '0.9.6beta' 
 
     group = 'com.shimmerresearch.driver'
 
