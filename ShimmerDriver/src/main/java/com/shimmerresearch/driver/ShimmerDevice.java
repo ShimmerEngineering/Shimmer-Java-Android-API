@@ -1659,27 +1659,31 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
         		setTrialNameAndCheck((String)valueToSet);
-	        	break;
+			break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
-//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
-	          	// don't let sampling rate be empty
-	          	Double enteredSamplingRate;
-	          	if(((String)valueToSet).isEmpty()) {
-	          		enteredSamplingRate = 1.0;
-	          	}            	
-	          	else {
-	          		enteredSamplingRate = Double.parseDouble((String)valueToSet);
-	          	}
-	          	
-//	          	if(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE)){
-		      		setShimmerAndSensorsSamplingRate(enteredSamplingRate);
-//	          	}
-//	          	else if(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE)){
-//	          		setSamplingRateShimmer(enteredSamplingRate);
-//	          	}
-	      		
-	      		returnValue = Double.toString(getSamplingRateShimmer());
-				break;
+				//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
+				// don't let sampling rate be empty
+				Double enteredSamplingRate = 1.0;
+			if (valueToSet instanceof String){
+				if(((String)valueToSet).isEmpty()) {
+					enteredSamplingRate = 1.0;
+				}            	
+				else {
+					enteredSamplingRate = Double.parseDouble((String)valueToSet);
+				}
+			} else if (valueToSet instanceof Double){
+				enteredSamplingRate = (Double) valueToSet;
+			}
+
+			//	          	if(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE)){
+			setShimmerAndSensorsSamplingRate(enteredSamplingRate);
+			//	          	}
+			//	          	else if(configLabel.equals(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE)){
+			//	          		setSamplingRateShimmer(enteredSamplingRate);
+			//	          	}
+
+			returnValue = Double.toString(getSamplingRateShimmer());
+			break;
 			case(Configuration.Shimmer3.GuiLabelConfig.CALIBRATION_ALL):
 				setMapOfSensorCalibrationAll((TreeMap<Integer, TreeMap<Integer, CalibDetails>>) valueToSet);
 				break;

@@ -490,7 +490,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(sensorIdsToEnable!=null){
 			addFixedShimmerConfig(Shimmer3.GuiLabelConfig.ENABLED_SENSORS_IDS, sensorIdsToEnable);
 		}
-		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, samplingRate);
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
 		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magRange);
@@ -508,6 +508,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
 		setShimmerUserAssignedName(userAssignedName);
 		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, samplingRate);
 		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		addFixedShimmerConfig(SensorMMA736x.GuiLabelConfig.ACCEL_RANGE, accelRange);
 		addFixedShimmerConfig(SensorShimmer2Mag.GuiLabelConfig.MAG_RANGE, magRange);
