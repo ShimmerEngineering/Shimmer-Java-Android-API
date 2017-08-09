@@ -1571,7 +1571,7 @@ public class SensorEXG extends AbstractSensor{
 	}
 
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		mShimmerVerObject = shimmerDevice.mShimmerVerObject;
 //		mSensorEnabledMap = shimmerDevice.getSensorEnabledMap();
 				
@@ -1587,21 +1587,21 @@ public class SensorEXG extends AbstractSensor{
 		
 		//EXG Configuration
 		exgBytesGetFromConfig(); //update mEXG1Register and mEXG2Register
-		System.arraycopy(mEXG1RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip1Config1, 10);
+		System.arraycopy(mEXG1RegisterArray, 0, configBytes, idxEXGADS1292RChip1Config1, 10);
 		if(isTwoChipExg()){
-			System.arraycopy(mEXG2RegisterArray, 0, mInfoMemBytes, idxEXGADS1292RChip2Config1, 10);
+			System.arraycopy(mEXG2RegisterArray, 0, configBytes, idxEXGADS1292RChip2Config1, 10);
 		}
 	}
 
 	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] infoMemBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
 
 		int idxEXGADS1292RChip1Config1 =         10;// exg bytes
 		int idxEXGADS1292RChip2Config1 =         20;
 
-		System.arraycopy(infoMemBytes, idxEXGADS1292RChip1Config1, mEXG1RegisterArray, 0, 10);
+		System.arraycopy(configBytes, idxEXGADS1292RChip1Config1, mEXG1RegisterArray, 0, 10);
 		if(isTwoChipExg()){
-			System.arraycopy(infoMemBytes, idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
+			System.arraycopy(configBytes, idxEXGADS1292RChip2Config1, mEXG2RegisterArray, 0, 10);
 		}
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 		
