@@ -826,7 +826,7 @@ public class SensorEXG extends AbstractSensor{
 	public static final ChannelDetails cDExg_Test_CHIP2_CH2_24bit = new ChannelDetails(
 					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT,
 					ObjectClusterSensorName.EXG_TEST_CHIP2_CH2_24BIT,
-					DatabaseChannelHandles.EXG2_CH1_24BITS,
+					DatabaseChannelHandles.EXG2_CH2_24BITS,
 					CHANNEL_DATA_TYPE.INT24, 3, CHANNEL_DATA_ENDIAN.MSB,
 					CHANNEL_UNITS.MILLIVOLTS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));

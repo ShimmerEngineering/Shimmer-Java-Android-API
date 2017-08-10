@@ -380,4 +380,8 @@ public class ChannelDetails implements Serializable {
 		return signalProperties;
 	}
 
+	public boolean isStoreToDatabase(){
+		return mStoreToDatabase;
+	}
+	
 }
