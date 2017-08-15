@@ -4043,6 +4043,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			setDefaultShimmerName();
 			
+			clearExgConfig(); // this currently must be called before sensorAndConfigMapsCreate() as it controls ExG booleans which affect EnabledSensors
 			sensorAndConfigMapsCreate();
 			
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
@@ -4082,8 +4083,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mInitialTimeStamp = 0;
 			
 			setShimmerAndSensorsSamplingRate(51.2);
-			//setDefaultECGConfiguration(getSamplingRateShimmer()); // RM commented out for reason below
-			clearExgConfig(); // RM included this as ECG channel was being set after flashing firmware with reload config checkbox unticked
 			
 			setLSM303MagRange(getMagRange());
 			setAccelRange(getAccelRange());

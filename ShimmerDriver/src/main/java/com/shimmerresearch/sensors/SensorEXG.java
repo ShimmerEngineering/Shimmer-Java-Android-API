@@ -2090,7 +2090,6 @@ public class SensorEXG extends AbstractSensor{
 		ConfigByteLayout infoMemLayout = mShimmerDevice.getConfigByteLayout();
 		long enabledSensors = mShimmerDevice.getEnabledSensors();
 
-		
 		if(infoMemLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 infoMemLayoutCast = (ConfigByteLayoutShimmer3)mShimmerDevice.getConfigByteLayout();
 			
