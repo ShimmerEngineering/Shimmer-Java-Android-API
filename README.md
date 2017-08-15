@@ -5,8 +5,41 @@ Rev 3.00
 
 | Deprecated  | Updated |
 | ------------- | ------------- |
-| Shimmer.MESSAGE_STATE_CHANGE  | ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE  |
-| Shimmer.MESSAGE_READ  | ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET  |
+| ~~Shimmer.MESSAGE_STATE_CHANGE~~  | ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE  |
+| ~~Shimmer.MESSAGE_READ~~  | ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET  |
+
+- ~~Shimmer.MSG_STATE_FULLY_INITIALIZED~~ is deprecated the following code is the recommended use for monitoring the states of a Shimmer device
+```
+case ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE:
+                    ShimmerBluetooth.BT_STATE state = null;
+                    String macAddress = "";
+
+                    if (msg.obj instanceof ObjectCluster) {
+                        state = ((ObjectCluster) msg.obj).mState;
+                        macAddress = ((ObjectCluster) msg.obj).getMacAddress();
+                    } else if (msg.obj instanceof CallbackObject) {
+                        state = ((CallbackObject) msg.obj).mState;
+                        macAddress = ((CallbackObject) msg.obj).mBluetoothAddress;
+                    }
+
+                   switch (state) {
+                        case CONNECTED:
+                            break;
+                        case CONNECTING:
+                            break;
+                        case STREAMING:
+                            break;
+                        case STREAMING_AND_SDLOGGING:
+                            break;
+                        case SDLOGGING:
+                            break;
+                        case DISCONNECTED:
+                            break;
+                    }
+                    break;
+
+```
+
 
 Rev 2.11
 - 3 byte timestamp support
