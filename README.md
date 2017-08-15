@@ -8,13 +8,12 @@ Rev 3.00
 | ~~Shimmer.MESSAGE_STATE_CHANGE~~  | ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE  |
 | ~~Shimmer.MESSAGE_READ~~  | ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET  |
 
-- ~~Shimmer.MSG_STATE_FULLY_INITIALIZED~~ is deprecated the following code is the recommended use for monitoring the states of a Shimmer device
+- ~~Shimmer.MSG_STATE_FULLY_INITIALIZED~~, ~~Shimmer.STATE_CONNECTING~~, ~~Shimmer.STATE_NONE~~, ~~Shimmer.STATE_CONNECTED~~, is deprecated the following code is the recommended use for monitoring the states of a Shimmer device
 ```
 case ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE:
                     ShimmerBluetooth.BT_STATE state = null;
                     String macAddress = "";
-
-                    if (msg.obj instanceof ObjectCluster) {
+                    if (msg.obj instanceof ObjectCluster) { //ONLY APPLICABLE FOR ANDROID
                         state = ((ObjectCluster) msg.obj).mState;
                         macAddress = ((ObjectCluster) msg.obj).getMacAddress();
                     } else if (msg.obj instanceof CallbackObject) {
