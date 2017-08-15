@@ -1,9 +1,9 @@
-when using bintray please include your username and key via
+# Shimmer Java API
 
-bintray_username= '_ _ _'
+The Shimmer Java API, is used for both PC and Android Shimmer APIs. 
 
-bintray_api_key=  '_ _ _'
 
-in a gradle.properties file, dont commit the gradle.properties file!!
 
-if there is a problem uploading a project due to the same rev number, comment out the bintray code from the gradle build of that project so it will be ignored
+
+
+
