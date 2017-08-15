@@ -1,12 +1,12 @@
 # Shimmer-Java-Android-API
 
 Rev 3.00
-- Changes to Bluetooth States, and Handler MSGs
+- Change to Handler MSGs
 
-| First Header  | Second Header |
+| Deprecated  | Updated |
 | ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| Shimmer.MESSAGE_STATE_CHANGE  | ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE  |
+| Shimmer.MESSAGE_READ  | ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET  |
 
 Rev 2.11
 - 3 byte timestamp support
