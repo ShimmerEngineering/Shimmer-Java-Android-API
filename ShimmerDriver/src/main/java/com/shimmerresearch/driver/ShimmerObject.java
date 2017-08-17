@@ -7038,8 +7038,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							setSensorEnabledStateBasic(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR, false);
 						}
 					}
-				}
-//			}
+//				}
+			}
+			else if(isShimmerGenGq()){
+//				setSensorEnabledStateBasic(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(isEXGUsingDefaultECGGqConfiguration());
+				setSensorEnabledStateBasic(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, isEXGUsingDefaultECGConfiguration());
+			}
 		}
 	}
 	
