@@ -356,5 +356,17 @@ public class Filter implements Serializable{
 	public int getFilterType() {
 		return filterType;
 	}    
+	
+	public int getNTaps(){
+		return nTaps;
+	}
     
+	public double getMinCornerFrequency(){
+		return minCornerFrequency;
+	}
+
+	public double getMaxCornerFrequency(){
+		return maxCornerFrequency;
+	}
+
 }
