@@ -59,6 +59,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.SensorBridgeAmp;
+import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorPPG;
@@ -4592,7 +4593,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			mSensorShimmer2Gyro = new SensorShimmer2Gyro(this);
 			addSensorClass(mSensorShimmer2Gyro);
-		} else {
+		} else if(isShimmerGenGq()){
+			addSensorClass(SENSORS.CLOCK, new ShimmerClock(this));
+			addSensorClass(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+			addSensorClass(SENSORS.ECG_TO_HR, new SensorECGToHRFw(mShimmerVerObject));
+//			addSensorClass(SENSORS.EXG, new SensorEXG(this));
+		} else if(isShimmerGen3()){
 			if(isSupportedNewImuSensors()){
 				mSensorBMPX80 = new SensorBMP280(this);
 				addSensorClass(mSensorBMPX80);
@@ -4645,7 +4651,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE);
 					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE);
 					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_RANGE);
-					
+
 					mChannelMap.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE, SensorGSR.channelGsrMicroSiemensGq);
 				}
 				
@@ -4654,7 +4660,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mChannelMap.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
 				}
 
-				mSensorMap.putAll(createSensorMapShimmer3());
+				if(isShimmerGen3()){
+					mSensorMap.putAll(createSensorMapShimmer3());
+				}
+				else if(isShimmerGenGq()){
+					mSensorMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, new SensorDetails(false, 0, SensorEXG.sDRefEcg));
+				}
 
 //				mSensorGroupingMap.putAll(Configuration.Shimmer3.mSensorGroupingMapRef);
 				createSensorGroupMapShimmer3();
@@ -4817,7 +4828,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			innerloop:
 				if (mSensorMap.get(sensorId).mSensorDetailsRef.mListOfSensorIdsConflicting!=null){
 					for(Integer conflictKey:mSensorMap.get(sensorId).mSensorDetailsRef.mListOfSensorIdsConflicting) {
-						if(mSensorMap.get(conflictKey).isDerivedChannel()) {
+						if(mSensorMap.get(conflictKey)!=null && mSensorMap.get(conflictKey).isDerivedChannel()) {
 							if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
 								mSensorMap.get(sensorId).setIsEnabled(false);
 								return true;
