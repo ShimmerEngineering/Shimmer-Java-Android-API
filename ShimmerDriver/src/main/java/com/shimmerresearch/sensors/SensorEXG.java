@@ -2780,9 +2780,7 @@ public class SensorEXG extends AbstractSensor{
 		Map<Integer, SensorDetails> sensorMap = mShimmerDevice.getSensorMap();
 		if(sensorMap!=null && sensorMap.keySet().size()>0){
 			if(mShimmerVerObject.isShimmerGenGq()){
-				if(isEXGUsingDefaultECGGqConfiguration()) {
-					sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(true);
-				}
+				sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(isEXGUsingDefaultECGGqConfiguration());
 			}
 			else if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
 	//			if((mIsExg1_24bitEnabled||mIsExg2_24bitEnabled||mIsExg1_16bitEnabled||mIsExg2_16bitEnabled)){
