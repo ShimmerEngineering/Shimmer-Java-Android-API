@@ -19,7 +19,6 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
-import com.shimmerresearch.sensors.bmpX80.SensorBMPX80.LABEL_SENSOR_TILE;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
@@ -89,7 +88,7 @@ public class ShimmerClock extends AbstractSensor {
 	public static class DatabaseChannelHandles{
 		public static final String TIMESTAMP = "TimeStamp";
 		public static final String TIMESTAMP_EXPORT = "Timestamp";
-		public static final String OFFSET_TIMESTAMP = "Offset";
+		public static final String OFFSET_TIMESTAMP = "OFFSET";//"Offset";
 		
 		public static final String TIMESTAMP_SYNC = "TimeStampSync";
 		public static final String TIMESTAMP_SYNC_EXPORT = "TimestampSync";
@@ -115,10 +114,10 @@ public class ShimmerClock extends AbstractSensor {
 	public static final SensorDetailsRef sensorShimmerClock = new SensorDetailsRef(
 			GuiLabelSensors.TIMESTAMP,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(ObjectClusterSensorName.TIMESTAMP,
-					ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
-					ObjectClusterSensorName.REAL_TIME_CLOCK,
-					ObjectClusterSensorName.TIMESTAMP_OFFSET
+			Arrays.asList(ShimmerClock.ObjectClusterSensorName.TIMESTAMP,
+					ShimmerClock.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
+					ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK,
+					ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET
 //					,
 //					ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC
 					));

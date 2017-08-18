@@ -2459,8 +2459,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		consolePrintLn("SENSOR MAP");
 		for(SensorDetails sensorDetails:mSensorMap.values()){
 			consolePrintLn("\tSENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel + "\tIsEnabled:\t" + sensorDetails.isEnabled());
-			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-				consolePrintLn("\t\tChannel:\t" + channelDetails.getChannelObjectClusterName());
+			if(sensorDetails.mListOfChannels.size()==0){
+				consolePrintLn("\t\t"  + "Channels Missing!");
+			} else {
+				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					consolePrintLn("\t\tChannel:\t Channel:" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
+				}
 			}
 		}
 		consolePrintLn("");
@@ -2470,8 +2474,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			consolePrintLn("PARSER MAP\tCOMM TYPE:\t" + commType);
 			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
 				consolePrintLn("\tSENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
-				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-					consolePrintLn("\t\t"  + "NumBytes:" + channelDetails.mDefaultNumBytes + "\tChannel:" + channelDetails.getChannelObjectClusterName());
+				if(sensorDetails.mListOfChannels.size()==0){
+					consolePrintLn("\t\t"  + "Channels Missing!");
+				} else {
+					for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+						consolePrintLn("\t\t"  + "NumBytes:" + channelDetails.mDefaultNumBytes + "\tChannel:" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
+					}
 				}
 			}
 			consolePrintLn("");
@@ -2484,7 +2492,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			consolePrintLn("\tALGO\t" + abstractAlgorithm.getAlgorithmName() + "\tIsEnabled:\t" + abstractAlgorithm.isEnabled());
 			List<ChannelDetails> listOfChannelDetails = abstractAlgorithm.getChannelDetails();
 			for(ChannelDetails channelDetails:listOfChannelDetails){
-				consolePrintLn("\t\tChannel:\t" + channelDetails.getChannelObjectClusterName());
+				consolePrintLn("\t\tChannel:\t" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
 			}
 		}
 		consolePrintLn("");
@@ -3031,6 +3039,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		for (AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){
 			try {
 				if(!aa.isInitialized() && aa.isEnabled()){
+					aa.setShimmerSamplingRate(getSamplingRateShimmer());
 					aa.initialize();
 				}
 				else {
@@ -3117,16 +3126,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param rateHz
 	 */
 	public void setShimmerAndSensorsSamplingRate(double rateHz){
-		double correctedRate = correctSamplingRate(rateHz); 
-		setSamplingRateShimmer(correctedRate);
-		
-		setSamplingRateSensors(correctedRate);
-		setSamplingRateAlgorithms(correctedRate);
+		setShimmerAndSensorsSamplingRate(null, rateHz);
 	}
 
 	public void setShimmerAndSensorsSamplingRate(COMMUNICATION_TYPE communicationType, double rateHz){
 		double correctedRate = correctSamplingRate(rateHz); 
-		setSamplingRateShimmer(communicationType, correctedRate);
+		if(communicationType==null){
+			setSamplingRateShimmer(correctedRate);
+		} else {
+			setSamplingRateShimmer(communicationType, correctedRate);
+		}
 
 		setSamplingRateSensors(correctedRate);
 		setSamplingRateAlgorithms(correctedRate);
