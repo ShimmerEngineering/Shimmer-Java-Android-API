@@ -65,11 +65,13 @@ public abstract class AbstractEnableSensorsDialog {
 		 
 		 if(mEnableFilter == true && keysToFilter != null) {
 			 for(Integer key : keysToFilter) {
-				 //Only remove the key if the device is compatible with it, else count will be incorrectly decremented
 				 SensorDetails sd = sensorMap.get(key);
-				 if(clone.isVerCompatibleWithAnyOf(sd.mSensorDetailsRef.mListOfCompatibleVersionInfo)) {
-					 sensorKeySet.remove(key);
-					 count--;
+				 if(sd != null) {
+					 //Only remove the key if the device is compatible with it, else count will be incorrectly decremented
+					 if(clone.isVerCompatibleWithAnyOf(sd.mSensorDetailsRef.mListOfCompatibleVersionInfo)) {
+						 sensorKeySet.remove(key);
+						 count--;
+					 }
 				 }
 			 }
 		 }
