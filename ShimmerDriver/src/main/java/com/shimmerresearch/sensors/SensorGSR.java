@@ -52,6 +52,10 @@ public class SensorGSR extends AbstractSensor {
 	public static class DatabaseChannelHandles{
 		public static final String GSR_RESISTANCE = "F5437a_Int_A1_GSR";
 		public static final String GSR_CONDUCTANCE = "GSR_Conductance";
+		
+		// A legacy issue means this conductances based channel needs to be same
+		// DB column name as usually used by the Resistance channel just for GQ
+		public static final String GSR_GQ = DatabaseChannelHandles.GSR_RESISTANCE;
 	}
 	
 	public static final class DatabaseConfigHandle{
@@ -59,13 +63,13 @@ public class SensorGSR extends AbstractSensor {
 	}
 	
 	public static class ObjectClusterSensorName{
-		//2017-05-03 MN changed from "GSR" to "GSR_Resistance"
-		@Deprecated
-		public static String GSR_LEGACY = "GSR";
 		public static String GSR_RESISTANCE = "GSR_Skin_Resistance";
 		public static String GSR_CONDUCTANCE = "GSR_Skin_Conductance";
 		public static String GSR_RANGE = "GSR_Range";
 		public static String GSR_ADC_VALUE = "GSR_ADC_Value";
+		
+//		public static String GSR_GQ = SensorGSR.ObjectClusterSensorName.GSR_RESISTANCE;//"GSR";
+		public static String GSR_GQ = "GSR";
 	}	
 	//--------- Sensor specific variables end --------------
 	
@@ -139,7 +143,8 @@ public class SensorGSR extends AbstractSensor {
 					//Comment in/out channel you want to appear as normal Shimmer channels
 					ObjectClusterSensorName.GSR_RESISTANCE,
 					ObjectClusterSensorName.GSR_CONDUCTANCE,
-					ObjectClusterSensorName.GSR_RANGE
+					ObjectClusterSensorName.GSR_RANGE,
+					ObjectClusterSensorName.GSR_GQ
 					//ObjectClusterSensorName.GSR_ADC_VALUE
 					),
 			true);
@@ -165,9 +170,9 @@ public class SensorGSR extends AbstractSensor {
 			0x1C);
 
 	public static final ChannelDetails channelGsrMicroSiemensGq = new ChannelDetails(
-			ObjectClusterSensorName.GSR_RESISTANCE,
-			ObjectClusterSensorName.GSR_RESISTANCE,
-			DatabaseChannelHandles.GSR_RESISTANCE,
+			ObjectClusterSensorName.GSR_GQ,
+			ObjectClusterSensorName.GSR_GQ,
+			DatabaseChannelHandles.GSR_GQ,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.U_SIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -243,7 +248,7 @@ public class SensorGSR extends AbstractSensor {
 		//Allow NeuroLynQ to just use a single GSR channel based on MicroSiemens
 		if(mShimmerVerObject.isShimmerGenGq()){
 			Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE, SensorGSR.channelGsrMicroSiemensGq);
+			channelMapRef.put(SensorGSR.channelGsrMicroSiemensGq.mObjectClusterName, SensorGSR.channelGsrMicroSiemensGq);
 			super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 		}
 		else{
@@ -292,7 +297,8 @@ public class SensorGSR extends AbstractSensor {
 //			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
 			
 			//next process other data
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GSR_RESISTANCE)){
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GSR_RESISTANCE)
+					|| channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GSR_GQ)){
 
 				byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 				System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
