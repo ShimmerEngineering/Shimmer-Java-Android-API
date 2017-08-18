@@ -6,7 +6,7 @@ apply plugin: 'com.jfrog.bintray'
 archivesBaseName = 'ShimmerBluetoothManager'
 group = 'com.shimmerresearch.managers.bluetoothmanager'
 //group = "myorg"
-version = '0.9.12beta'
+version = '0.9.16beta'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
