@@ -195,7 +195,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 			overwriteEnabledSensors();
 
-			setSamplingRateShimmer(32768/(double)((int)(configBytes[configByteLayoutCast.idxShimmerSamplingRate] & configByteLayoutCast.maskShimmerSamplingRate) 
+			setSamplingRateShimmer(getSamplingClockFreq()/(double)((int)(configBytes[configByteLayoutCast.idxShimmerSamplingRate] & configByteLayoutCast.maskShimmerSamplingRate) 
 					+ ((int)(configBytes[configByteLayoutCast.idxShimmerSamplingRate+1] & configByteLayoutCast.maskShimmerSamplingRate) << 8)));
 
 			mInternalExpPower = (configBytes[configByteLayoutCast.idxConfigSetupByte3] >> configByteLayoutCast.bitShiftEXPPowerEnable) & configByteLayoutCast.maskEXPPowerEnable;
@@ -323,7 +323,7 @@ public class Shimmer4 extends ShimmerDevice {
 		
 		refreshEnabledSensorsFromSensorMap();
 		
-		int samplingRate = (int)(32768 / getSamplingRateShimmer());
+		int samplingRate = (int)(getSamplingClockFreq() / getSamplingRateShimmer());
 		mConfigBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
 		mConfigBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
 
@@ -727,7 +727,7 @@ public class Shimmer4 extends ShimmerDevice {
 //		} 
 //		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 //			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
-//			setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
+//			setSamplingRateShimmer((getSamplingClockFreq()/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
 //			mNChannels = bufferInquiry[6];
 //			mBufferSize = bufferInquiry[7];
 //			mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));

@@ -3189,7 +3189,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	private double correctSamplingRate(double rateHz) {
 		double maxSamplingRateHz = calcMaxSamplingRate();
-		double maxShimmerSamplingRateTicks = 32768.0;
+		double maxShimmerSamplingRateTicks = getSamplingClockFreq();
 		
     	// don't let sampling rate < 0 OR > maxRate
     	if(rateHz < 1) {
@@ -3213,53 +3213,53 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return actualSamplingRate;
 	}
 	
-	protected static double roundSamplingRateToSupportedValue(double originalSamplingRate) {
+	protected static double roundSamplingRateToSupportedValue(double originalSamplingRate, double samplingClockFreq) {
 		// get Shimmer compatible sampling rate
-    	Double roundedSamplingRate = 32768/Math.floor(32768/originalSamplingRate); 
+    	Double roundedSamplingRate = samplingClockFreq/Math.floor(samplingClockFreq/originalSamplingRate); 
     	// round sampling rate to two decimal places
     	roundedSamplingRate = (double)Math.round(roundedSamplingRate * 100) / 100;
     	return roundedSamplingRate;
 	}
 
-	protected static double convertSamplingRateBytesToFreq(byte samplingRateLSB, byte samplingRateMSB) {
+	protected static double convertSamplingRateBytesToFreq(byte samplingRateLSB, byte samplingRateMSB, double samplingClockFreq) {
 //		//ShimmerObject -> configBytesParse
-//		setSamplingRateShimmer((32768/(double)((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
+//		setSamplingRateShimmer((samplingClockFreq/(double)((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate] & infoMemLayoutCast.maskShimmerSamplingRate) 
 //		+ ((int)(configBytes[infoMemLayoutCast.idxShimmerSamplingRate+1] & infoMemLayoutCast.maskShimmerSamplingRate) << 8))));
 
 //		//ShimmerBluetooth -> processResponseCommand -> SAMPLING_RATE_RESPONSE
-//		setSamplingRateShimmer(32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
+//		setSamplingRateShimmer(samplingClockFreq/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
 		
 //		//ShimmerBluetooth -> processAckFromSetCommand -> SET_SAMPLING_RATE_COMMAND
-//		tempdouble = 32768/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
+//		tempdouble = samplingClockFreq/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
 
 		//ShimmerObject -> interpretInqResponse
-//		setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
+//		setSamplingRateShimmer((samplingClockFreq/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
 
-		double samplingRate = 32768.0 / (double)((int)(samplingRateLSB & 0xFF) + ((int)(samplingRateMSB & 0xFF) << 8));
+		double samplingRate = samplingClockFreq / (double)((int)(samplingRateLSB & 0xFF) + ((int)(samplingRateMSB & 0xFF) << 8));
 		return samplingRate;
 	}
 	
-	protected static byte[] convertSamplingRateFreqBytes(double samplingRateFreq){
+	protected static byte[] convertSamplingRateFreqBytes(double samplingRateFreq, double samplingClockFreq){
 		byte[] buf = new byte[2];
 		
 //		//ShimmerObject -> configBytesGenerate
 //		double samplingRateD = getSamplingRateShimmer();
-////		int samplingRate = (int)(32768.0 / samplingRateD);
-//		int samplingRate = (int) Math.round(32768.0 / samplingRateD);
+////		int samplingRate = (int)(samplingClockFreq / samplingRateD);
+//		int samplingRate = (int) Math.round(samplingClockFreq / samplingRateD);
 //		mConfigBytes[infoMemLayout.idxShimmerSamplingRate] = (byte) (samplingRate & infoMemLayout.maskShimmerSamplingRate); 
 //		mConfigBytes[infoMemLayout.idxShimmerSamplingRate+1] = (byte) ((samplingRate >> 8) & infoMemLayout.maskShimmerSamplingRate); 
 
 //		//ShimmerBluetooth -> writeShimmerAndSensorsSamplingRate
 //		// RM: get Shimmer compatible sampling rate (use ceil or floor depending on which is appropriate to the user entered sampling rate)
 //		int samplingByteValue;
-//    	if((Math.ceil(32768/getSamplingRateShimmer()) - 32768/getSamplingRateShimmer()) < 0.05){
-//    		samplingByteValue = (int)Math.ceil(32768/getSamplingRateShimmer());
+//    	if((Math.ceil(samplingClockFreq/getSamplingRateShimmer()) - samplingClockFreq/getSamplingRateShimmer()) < 0.05){
+//    		samplingByteValue = (int)Math.ceil(samplingClockFreq/getSamplingRateShimmer());
 //    	}
 //    	else{
-//    		samplingByteValue = (int)Math.floor(32768/getSamplingRateShimmer());
+//    		samplingByteValue = (int)Math.floor(samplingClockFreq/getSamplingRateShimmer());
 //    	}	
 		
-		int samplingRate = (int) Math.round(32768.0 / samplingRateFreq);
+		int samplingRate = (int) Math.round(samplingClockFreq / samplingRateFreq);
 		buf[0] = (byte) (samplingRate & 0xFF); 
 		buf[1] = (byte) ((samplingRate >> 8) & 0xFF); 
 
@@ -4378,6 +4378,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void setAutoStartStreaming(boolean state){
 		mAutoStartStreaming = state;
+	}
+
+	public double getSamplingClockFreq() {
+		return 32768.0;
 	}
 
 

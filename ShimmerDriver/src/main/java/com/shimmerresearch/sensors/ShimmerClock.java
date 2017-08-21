@@ -419,15 +419,17 @@ public class ShimmerClock extends AbstractSensor {
 						calculateTrialPacketLoss(calibratedTS);
 
 						if(commType==COMMUNICATION_TYPE.SD){
+							double samplingClockFreq = mShimmerDevice.getSamplingClockFreq();
+
 							//TIMESTAMP
 							// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
-							double unwrappedRawTimestamp = calibratedTS*32768/1000;
+							double unwrappedRawTimestamp = calibratedTS*samplingClockFreq/1000;
 							unwrappedRawTimestamp -= mFirstRawTS; //deduct this so it will start from 0
 							
 							long sdlogRawTimestamp = (long)mInitialTimeStamp + (long)unwrappedRawTimestamp;
 							timestampUnCalToSave = (double)sdlogRawTimestamp;
 							if (mEnableCalibration){
-								double sdLogCalTimestamp = (double)sdlogRawTimestamp/32768*1000;
+								double sdLogCalTimestamp = (double)sdlogRawTimestamp/samplingClockFreq*1000;
 								timestampCalToSave = sdLogCalTimestamp; 
 							}
 
@@ -437,7 +439,7 @@ public class ShimmerClock extends AbstractSensor {
 //							sensorNames[iTimeStamp]= Shimmer3.ObjectClusterSensorName.TIMESTAMP;
 				//
 //							if (mEnableCalibration){
-//								double sdLogcalTimestamp = (double)sdlogRawTimestamp/32768*1000;
+//								double sdLogcalTimestamp = (double)sdlogRawTimestamp/samplingClockFreq*1000;
 //								
 //								objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,sdLogcalTimestamp));
 //								calibratedData[iTimeStamp] = sdLogcalTimestamp;
@@ -492,18 +494,20 @@ public class ShimmerClock extends AbstractSensor {
 								
 								//RAW RTC
 								if(mRTCOffset!=0){
+									double samplingClockFreq = mShimmerDevice.getSamplingClockFreq();
+									
 									long rtctimestamp = timestampUncal + mRTCOffset;
 									double rtctimestampcal = Double.NaN;
 									if (mEnableCalibration){
 										rtctimestampcal = timestampCal;
 										if(mInitialTimeStamp!=0){
-											rtctimestampcal += ((double)mInitialTimeStamp/32768.0*1000.0);
+											rtctimestampcal += ((double)mInitialTimeStamp/samplingClockFreq*1000.0);
 										}
 										if(mRTCOffset!=0){
-											rtctimestampcal += ((double)mRTCOffset/32768.0*1000.0);
+											rtctimestampcal += ((double)mRTCOffset/samplingClockFreq*1000.0);
 										}
 										if(mFirstRawTS!=0){
-											rtctimestampcal -= (mFirstRawTS/32768.0*1000.0);
+											rtctimestampcal -= (mFirstRawTS/samplingClockFreq*1000.0);
 										}
 									}
 									objectCluster.addData(channelRealTimeClock, (double)rtctimestamp, rtctimestampcal);
@@ -517,13 +521,13 @@ public class ShimmerClock extends AbstractSensor {
 //									if (mEnableCalibration){
 //										double rtctimestampcal = calibratedTS;
 //										if(mInitialTimeStamp!=0){
-//											rtctimestampcal += ((double)mInitialTimeStamp/32768.0*1000.0);
+//											rtctimestampcal += ((double)mInitialTimeStamp/samplingClockFreq*1000.0);
 //										}
 //										if(mRTCOffset!=0){
-//											rtctimestampcal += ((double)mRTCOffset/32768.0*1000.0);
+//											rtctimestampcal += ((double)mRTCOffset/samplingClockFreq*1000.0);
 //										}
 //										if(mFirstRawTS!=0){
-//											rtctimestampcal -= (mFirstRawTS/32768.0*1000.0);
+//											rtctimestampcal -= (mFirstRawTS/samplingClockFreq*1000.0);
 //										}
 //										
 //										objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,rtctimestampcal));
@@ -769,7 +773,7 @@ public class ShimmerClock extends AbstractSensor {
 		}
 
 		mLastReceivedTimeStamp = (timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
-		calibratedTimeStamp = mLastReceivedTimeStamp/32768*1000;   // to convert into mS
+		calibratedTimeStamp = mLastReceivedTimeStamp/mShimmerDevice.getSamplingClockFreq()*1000;   // to convert into mS
 		if (!mStreamingStartTimeSaved){
 			mStreamingStartTimeSaved=true;
 			mStreamingStartTimeMs = calibratedTimeStamp;
