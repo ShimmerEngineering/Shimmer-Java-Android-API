@@ -89,6 +89,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9._]";
 	
+	private static boolean mEnableProcessMarkers = true;
+	
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
 	
@@ -665,10 +667,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void processEventMarkerCh(ObjectCluster objectCluster) {
-		//event marker channel
-//		objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers);
-		objectCluster.addCalDataToMap(ShimmerClock.channelEventMarker, mEventMarkers);
-		untriggerEventIfLastOneWasPulse();
+		if(mEnableProcessMarkers){
+			//event marker channel
+			//		objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers);
+			objectCluster.addCalDataToMap(ShimmerClock.channelEventMarker, mEventMarkers);
+			untriggerEventIfLastOneWasPulse();
+		}
 	}
 
 	//------------------- Event marker code End -------------------------------
@@ -4371,5 +4375,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mAutoStartStreaming = state;
 	}
 
+	public void setEnableProcessMarker(boolean enable){
+		mEnableProcessMarkers=enable;
+	}
 
 }
