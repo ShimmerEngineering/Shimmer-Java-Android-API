@@ -3321,7 +3321,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 			if(bufferInquiry.length>=8){
 				mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
-				double samplingRate = convertSamplingRateBytesToFreq(bufferInquiry[0], bufferInquiry[1]);
+				double samplingRate = convertSamplingRateBytesToFreq(bufferInquiry[0], bufferInquiry[1], getSamplingClockFreq());
 				setSamplingRateShimmer(samplingRate);
 //				setSamplingRateShimmer((getSamplingClockFreq()/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
 				mNChannels = bufferInquiry[6];
@@ -4153,7 +4153,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			// Sampling Rate
 			byte samplingRateMSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate+1] & configByteLayoutCast.maskShimmerSamplingRate);
 			byte samplingRateLSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate] & configByteLayoutCast.maskShimmerSamplingRate);
-			double samplingRate = convertSamplingRateBytesToFreq(samplingRateLSB, samplingRateMSB);
+			double samplingRate = convertSamplingRateBytesToFreq(samplingRateLSB, samplingRateMSB, getSamplingClockFreq());
 			setShimmerAndSensorsSamplingRate(samplingRate);
 	
 			mBufferSize = (int)(configBytes[configByteLayoutCast.idxBufferSize] & configByteLayoutCast.maskBufferSize);
@@ -4370,7 +4370,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			byte[] samplingRateBytes = convertSamplingRateFreqBytes(getSamplingRateShimmer());
+			byte[] samplingRateBytes = convertSamplingRateFreqBytes(getSamplingRateShimmer(), getSamplingClockFreq());
 			mConfigBytes[configByteLayoutCast.idxShimmerSamplingRate] = samplingRateBytes[0]; 
 			mConfigBytes[configByteLayoutCast.idxShimmerSamplingRate+1] = samplingRateBytes[1]; 
 	
@@ -8399,7 +8399,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 //			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
 		        Double readSamplingRate = getSamplingRateShimmer();
-				Double actualSamplingRate = roundSamplingRateToSupportedValue(readSamplingRate);
+				Double actualSamplingRate = roundSamplingRateToSupportedValue(readSamplingRate, getSamplingClockFreq());
 //    					    	consolePrintLn("GET SAMPLING RATE: " + componentName);
 		    	returnValue = actualSamplingRate.toString();
 	        	break;
@@ -9500,13 +9500,41 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return mapOfChannelsForStoringToDb;
 	}
 	
+	@Override
 	public double getSamplingClockFreq() {
 		if(isTCXO()){
-			//TODO set the correct value
-			return 32768.0;
+			if(isTcxoClock20MHz()){
+				//20MHz / 64 = 312500; 
+				return 312500.0;
+			} else {
+				//16.369MHz / 64 = 255765.625;
+				return 255765.625;
+			}
 		} else {
-			return 32768.0;
+			return getClockFreqDefaultShimmer2r3();
 		}
+	}
+
+
+	private boolean isTcxoClock20MHz() {
+		ShimmerVerObject svo = getShimmerVerObject();
+		ExpansionBoardDetails ebd = getExpansionBoardDetails();
+		
+		int expBrdId = ebd.getExpansionBoardId();
+		int expBrdRev = ebd.getExpansionBoardRev();
+		int expBrdRevSpecial = ebd.getExpansionBoardRevSpecial();
+
+		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
+				(expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev==1 && expBrdRevSpecial==1))){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+	public static double getClockFreqDefaultShimmer2r3() {
+		return 32768.0;
 	}
 
 
