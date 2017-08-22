@@ -57,6 +57,10 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 //	private UartRxCallback mUartRxCallback = null;
 	private boolean mSendCallbackRxOverride = false;
 
+	private UART_PACKET_CMD currentPacketCmd;
+
+	private UartComponentPropertyDetails currentMsgArg;
+
     //the timeout value for connecting with the port
     protected final static int SERIAL_PORT_TIMEOUT = 500; // was 2000
 
@@ -403,44 +407,54 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	
     
 	private byte[] waitForResponse(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg) throws DockException {
-		boolean flag = true;
+		this.currentPacketCmd = packetCmd;
+		this.currentMsgArg = msgArg;
 		
-		int loopCount = 0;
-		//100*100 = 10s
-		int waitIntervalMs = 100;
-		int loopCountTotal = SERIAL_PORT_TIMEOUT/waitIntervalMs;
+		try{
+			boolean flag = true;
+			
+			int loopCount = 0;
+			//100*100 = 10s
+			int waitIntervalMs = 100;
+			int loopCountTotal = SERIAL_PORT_TIMEOUT/waitIntervalMs;
 
-		while(flag) {
-			mUtilShimmer.millisecondDelay(waitIntervalMs);
-			loopCount += 1;
-			if(loopCount >= loopCountTotal) {
-				break;
+			while(flag) {
+				mUtilShimmer.millisecondDelay(waitIntervalMs);
+				loopCount += 1;
+				if(loopCount >= loopCountTotal) {
+					break;
+				}
+				
+				UartRxPacketObject uRPO = checkIfListContainsResponse(packetCmd, msgArg);
+				if(uRPO!=null) {
+					if(this.mIsDebugMode){
+						consolePrintLn("RxObjectsSize=" + mListOfUartRxPacketObjects.size());
+					}
+					return uRPO.getPayload();
+				}
+				else if(mThrownException!=null){
+					throw mThrownException;
+				}
+			}
+
+			UartComponentPropertyDetails uCPD = UartPacketDetails.getUartPropertyParsed(msgArg.mComponent.toCmdByte(), msgArg.mPropertyByte);
+			String propertyString = Integer.toString(msgArg.mProperty);
+			if(uCPD!=null){
+				propertyString = uCPD.mPropertyName;
+			}
+			consolePrintLn("TIMEOUT_FAIL" + "\tComponent:" + msgArg.mComponent.toString() + "\tProperty:" + propertyString);
+			if(this.mIsDebugMode){
+				consolePrintLn("RxObjectsSize=" + mListOfUartRxPacketObjects.size());
 			}
 			
-			UartRxPacketObject uRPO = checkIfListContainsResponse(packetCmd, msgArg);
-			if(uRPO!=null) {
-				if(this.mIsDebugMode){
-					consolePrintLn("RxObjectsSize=" + mListOfUartRxPacketObjects.size());
-				}
-				return uRPO.getPayload();
-			}
-			else if(mThrownException!=null){
-				throw mThrownException;
-			}
+			DockException de = new DockException(mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_TIMEOUT, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_TIMEOUT, mUniqueId);
+			throw(de);
+		} catch (DockException de){
+			throw(de);
+		} finally {
+			currentPacketCmd = null;
+			currentMsgArg = null;
 		}
-
-		UartComponentPropertyDetails uCPD = UartPacketDetails.getUartPropertyParsed(msgArg.mComponent.toCmdByte(), msgArg.mPropertyByte);
-		String propertyString = Integer.toString(msgArg.mProperty);
-		if(uCPD!=null){
-			propertyString = uCPD.mPropertyName;
-		}
-		consolePrintLn("TIMEOUT_FAIL" + "\tComponent:" + msgArg.mComponent.toString() + "\tProperty:" + propertyString);
-		if(this.mIsDebugMode){
-			consolePrintLn("RxObjectsSize=" + mListOfUartRxPacketObjects.size());
-		}
-		
-		DockException de = new DockException(mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_TIMEOUT, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_TIMEOUT, mUniqueId);
-		throw(de);
 	}
 	
 	private UartRxPacketObject checkIfListContainsResponse(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg){
@@ -612,10 +626,15 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
     				parseSinglePacket(packet, timestampMs);
 				} catch (DockException e) {
 					mThrownException = e;
-					mUtilShimmer.consolePrintLn("Problem parsing received packet");
+					
+					if(currentPacketCmd!=null && currentMsgArg!=null){
+						System.out.println(mUniqueId + "\tProblem parsing received packet while waiting for:");
+						System.out.println(mUniqueId + "\t" + assemblePrintTxPacketInfo(currentPacketCmd, currentMsgArg, null));
+					} else {
+						System.out.println(mUniqueId + "\tProblem parsing received packet");
+					}
 					e.printStackTrace();
 //					mUtilShimmer.consolePrintLn(e.getMsgDockErrString());
-					
 				}
     		}
     	}
@@ -779,29 +798,33 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	private void consolePrintTxPacketInfo(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg, byte[] valueBuffer) {
 		//Requires extra processing so a waste if verbose mode is already off
 		if(mVerboseMode){
-			String consoleString = "TX\tCommand:" + packetCmd.toString()
-					+ "\tComponent:" + msgArg.mComponent.toString()
-					+ "\tProperty:" + msgArg.mPropertyName
-	//				+ (valueBuffer==null? "":("\tPayload:" + UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer)))
-					;
-			
-			if(packetCmd!=UartPacketDetails.UART_PACKET_CMD.READ){
-				consoleString += "\tPayload" ;
-				if(valueBuffer!=null){
-					consoleString += "(" + valueBuffer.length + "):";
-					String txBytes = UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer);
-					if(txBytes != null){
-						consoleString += txBytes;
-					}
-				}
-				else{
-					consoleString += ":none";
-				}
-			}
-			consolePrintLn(consoleString);
+			consolePrintLn(assemblePrintTxPacketInfo(packetCmd, msgArg, valueBuffer));
 		}
 	}
 	
+	private String assemblePrintTxPacketInfo(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg, byte[] valueBuffer) {
+		String consoleString = "TX\tCommand:" + packetCmd.toString()
+							+ "\tComponent:" + msgArg.mComponent.toString()
+							+ "\tProperty:" + msgArg.mPropertyName
+					//				+ (valueBuffer==null? "":("\tPayload:" + UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer)))
+		;
+
+		if(packetCmd!=UartPacketDetails.UART_PACKET_CMD.READ){
+			consoleString += "\tPayload" ;
+			if(valueBuffer!=null){
+				consoleString += "(" + valueBuffer.length + "):";
+				String txBytes = UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer);
+				if(txBytes != null){
+					consoleString += txBytes;
+				}
+			}
+			else{
+				consoleString += ":none";
+			}
+		}
+		return consoleString;
+	}
+
 	/**
 	 * @param uRPO
 	 * @see UartRxPacketObject
