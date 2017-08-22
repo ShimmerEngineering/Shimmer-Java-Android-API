@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -523,6 +524,36 @@ public class UtilShimmer implements Serializable {
 			
 			return dateFormatted;
 		}
+	}
+	
+	public static long fromTimeStringToMilliseconds (String timeString){
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
+		
+		try {
+			Date date = dateFormat.parse(timeString);
+			return date.getTime();
+		} 
+		catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static long fromDateAndTimeMillisToTimeMilli (long dateAndTimeInMillis){
+		DateFormat dateFormat = new SimpleDateFormat("HH.mm.ss.SSS");
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(dateAndTimeInMillis);
+		String formattedDateAndTime = dateFormat.format(cal.getTime());
+		
+		Date date;
+		try {
+			date = dateFormat.parse(formattedDateAndTime);
+			return date.getTime();
+		} 
+		catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
 	/**
