@@ -166,6 +166,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER4_SDK_STOCK = 12;
 		public static final int BTSTREAM_UARTSTREAM = 13;
 		public static final int BTSTREAM_CE = 14;
+		public static final int HELBLING = 15;
 		
 		public static final Map<Integer, String> mMapOfFirmwareLabels;
 	    static {
@@ -179,6 +180,7 @@ public class ShimmerVerDetails implements Serializable {
 	        aMap.put(GQ_802154, "GQ_802154");
 	        aMap.put(SPAN, "SPAN");
 	        aMap.put(SHIMMER4_SDK_STOCK, "Shimmer4SDK");
+	        aMap.put(HELBLING, "Helbling");
 	        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
 	    }
 

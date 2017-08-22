@@ -83,7 +83,23 @@ public class AlgorithmDetails implements Serializable {
 		mDerivedSensorBitmapID = derivedSensorBitmapId;
 		mListOfChannelDetails.add(generateChannelDetails());
 	}
-	
+
+	public AlgorithmDetails(
+			String objectClusterName, 
+			String guiFriendlyName, 
+			String databaseChannelHandle,
+			List<String> listOfAssociatedSensors, 
+			long derivedSensorBitmapId, 
+			List<Integer> listOfRequiredSensors, 
+			String units){
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensors, derivedSensorBitmapId, listOfRequiredSensors, units);
+		mDatabaseChannelHandle = databaseChannelHandle;
+		
+		// need to regenerate as the DatabaseChannelHandle has now been set
+		mListOfChannelDetails.clear();
+		mListOfChannelDetails.add(generateChannelDetails());
+	}
+
 
 	/**
 	 * @param objectClusterName
