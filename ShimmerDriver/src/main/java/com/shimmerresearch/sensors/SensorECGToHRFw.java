@@ -42,11 +42,11 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
-	public static final SensorDetailsRef sensorEcgToHr = new SensorDetailsRef(
+	public static final SensorDetailsRef sensorEcgToHrFw = new SensorDetailsRef(
 			(0x40 << (8*1)),
 			(0x40 << (8*1)), 
 			Configuration.Shimmer3.GuiLabelSensors.ECG_TO_HR,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgEcgGq,
 			null,
 			null,
 			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW),
@@ -55,7 +55,7 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ECG_TO_HR_FW, sensorEcgToHr);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ECG_TO_HR_FW, sensorEcgToHrFw);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
 	}
 	//--------- Sensor info end --------------

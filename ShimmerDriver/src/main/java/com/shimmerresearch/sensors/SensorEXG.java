@@ -332,7 +332,7 @@ public class SensorEXG extends AbstractSensor{
 
 	
 	public static final SensorDetailsRef sDRefEcg = new SensorDetailsRef(0, 0, GuiLabelSensors.ECG,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgEcg,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
@@ -378,7 +378,7 @@ public class SensorEXG extends AbstractSensor{
 					true);
 	
 	public static final SensorDetailsRef sDRefEcgGq = new SensorDetailsRef(0, 0, GuiLabelSensors.ECG,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgEcg,
 			null,
 			Arrays.asList(
 					GuiLabelConfig.EXG_GAIN,
@@ -396,7 +396,7 @@ public class SensorEXG extends AbstractSensor{
 					true);
 	
 	public static final SensorDetailsRef sDRefExgRespiration = new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_RESPIRATION,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgRespiration,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
@@ -436,7 +436,7 @@ public class SensorEXG extends AbstractSensor{
 			true);
 
 	public static final SensorDetailsRef sDRefExgTest = new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_TEST,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgTest,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
@@ -468,7 +468,7 @@ public class SensorEXG extends AbstractSensor{
 			true);
 	
 	public static final SensorDetailsRef sDRefEmg =  new SensorDetailsRef(0, 0, GuiLabelSensors.EMG,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgEmg,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
@@ -500,7 +500,7 @@ public class SensorEXG extends AbstractSensor{
 			true);
 	
 	public static final SensorDetailsRef sDRefExgCustom =  new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_CUSTOM,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
@@ -538,7 +538,7 @@ public class SensorEXG extends AbstractSensor{
 			true);
 	
 	public static final SensorDetailsRef sDRefExgThreeUnipolarInput =  new SensorDetailsRef(0, 0, GuiLabelSensors.EXG_THREE_UNIPOLAR,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgThreeUnipolar,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
@@ -942,7 +942,7 @@ public class SensorEXG extends AbstractSensor{
 			ListOfExGGain, 
 			ListOfExGGainConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral);
 
 	public static final ConfigOptionDetailsSensor configOptionExgResolution = new ConfigOptionDetailsSensor(
 			SensorEXG.GuiLabelConfig.EXG_RESOLUTION,
@@ -950,7 +950,7 @@ public class SensorEXG extends AbstractSensor{
 			ListOfExGResolutions, 
 			ListOfExGResolutionsConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral);
 
 	//Advanced ExG		
 //	public static final ConfigOptionDetailsSensor configOptionExgRefElectrode = new ConfigOptionDetailsSensor(
@@ -975,7 +975,7 @@ public class SensorEXG extends AbstractSensor{
 			ListOfECGReferenceElectrode, 
 			ListOfECGReferenceElectrodeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral,
 			Arrays.asList(
 					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.EMG, ListOfEMGReferenceElectrode, ListOfEMGReferenceElectrodeConfigValues),
 					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.CUSTOM, ListOfExGReferenceElectrodeAll, ListOfExGReferenceElectrodeConfigValuesAll),
@@ -987,7 +987,7 @@ public class SensorEXG extends AbstractSensor{
 			SensorEXG.GuiLabelConfig.EXG_BYTES,
 			null,
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.JPANEL,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral);
 
 	public static final ConfigOptionDetailsSensor configOptionExgRate = new ConfigOptionDetailsSensor(
 			SensorEXG.GuiLabelConfig.EXG_RATE,
@@ -995,7 +995,7 @@ public class SensorEXG extends AbstractSensor{
 			ListOfExGRate, 
 			ListOfExGRateConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral);
 
 	public static final ConfigOptionDetailsSensor configOptionExgLeadOffDetection = new ConfigOptionDetailsSensor(
 			SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_DETECTION,
@@ -1003,7 +1003,7 @@ public class SensorEXG extends AbstractSensor{
 			ListOfExGLeadOffDetection, 
 			ListOfExGLeadOffDetectionConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral);
 
 	public static final ConfigOptionDetailsSensor configOptionExgLeadOffCurrent = new ConfigOptionDetailsSensor(
 			SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_CURRENT,
@@ -1011,7 +1011,7 @@ public class SensorEXG extends AbstractSensor{
 			ListOfExGLeadOffCurrent, 
 			ListOfExGLeadOffCurrentConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral);
 
 	public static final ConfigOptionDetailsSensor configOptionExgLeadOffComparator = new ConfigOptionDetailsSensor(
 			SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR,
@@ -1019,7 +1019,7 @@ public class SensorEXG extends AbstractSensor{
 			ListOfExGLeadOffComparator, 
 			ListOfExGLeadOffComparatorConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral);
 
 	public static final ConfigOptionDetailsSensor configOptionExgRespirationDetectFreq = new ConfigOptionDetailsSensor(
 			SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ,
@@ -1027,7 +1027,7 @@ public class SensorEXG extends AbstractSensor{
 			ListOfExGRespirationDetectFreq, 
 			ListOfExGRespirationDetectFreqConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgRespiration);
 
 	public static final ConfigOptionDetailsSensor configOptionExgRespirationDetectPhase = new ConfigOptionDetailsSensor(
 			SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE,
@@ -1035,7 +1035,7 @@ public class SensorEXG extends AbstractSensor{
 			ListOfExGRespirationDetectPhase32khz, 
 			ListOfExGRespirationDetectPhase32khzConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoRespiration,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgRespiration,
 			Arrays.asList(
 					new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_64KHZ, ListOfExGRespirationDetectPhase64khz, ListOfExGRespirationDetectPhase64khzConfigValues)));
 //	{
@@ -1084,7 +1084,7 @@ public class SensorEXG extends AbstractSensor{
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					LABEL_SENSOR_TILE.EXG,
 					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_ECG),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral));
 		}
 		else if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
@@ -1095,7 +1095,7 @@ public class SensorEXG extends AbstractSensor{
 								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
 								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
 								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
-								CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral));
 		}
 
 		super.updateSensorGroupingMap();
