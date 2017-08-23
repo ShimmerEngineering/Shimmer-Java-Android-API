@@ -93,7 +93,8 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
 			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 
 			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 
 			GuiLabelSensors.ACCEL_LN,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXRB52042,
 			null,
 			Arrays.asList(SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_X,
 					SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Y,
@@ -158,7 +159,8 @@ public class SensorKionixKXRB52042 extends SensorKionixAccel {
     public static final SensorGroupingDetails sensorGroupLnAccelKXRB52042 = new SensorGroupingDetails(
     		SensorKionixAccel.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL,
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL),
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXRB52042);
     
     //--------- Constructors for this class start --------------
 	public SensorKionixKXRB52042() {
