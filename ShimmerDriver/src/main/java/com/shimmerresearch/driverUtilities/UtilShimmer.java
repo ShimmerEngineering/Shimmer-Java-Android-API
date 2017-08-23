@@ -87,7 +87,7 @@ public class UtilShimmer implements Serializable {
 		}
 	}
 
-	public void consolePrintShimmerExeption(ShimmerException shimmerException) {
+	public void consolePrintShimmerException(ShimmerException shimmerException) {
 		if(mVerboseMode) {
 			consolePrintErrLn(shimmerException.getErrStringFormatted());
 		}
@@ -154,11 +154,15 @@ public class UtilShimmer implements Serializable {
 	}
 	
 	public static String convertMilliSecondsToHrMinSecLocal(long milliSeconds) {
-		DateFormat dfLocal = new SimpleDateFormat("HH:mm:ss");
+		return convertMilliSecondsToHrMinSecLocal(milliSeconds, "HH:mm:ss");
+	}
+
+	public static String convertMilliSecondsToHrMinSecLocal(long milliSeconds, String format) {
+		DateFormat dfLocal = new SimpleDateFormat(format);
 		String timeString = dfLocal.format(new Date(milliSeconds));
 		return timeString;
 	}
-	
+
 	private static String getDayOfMonthSuffix(final int n) {
 	    if (n >= 11 && n <= 13) {
 	        return "th";

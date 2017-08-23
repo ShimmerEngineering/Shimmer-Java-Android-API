@@ -229,28 +229,28 @@ public class OrientationModule9DOF extends OrientationModule {
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
-	private static final ChannelDetails channelQuatW_9DOF_WR = new ChannelDetails(
+	public static final ChannelDetails channelQuatW_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_W_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_W_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_W_WR, //database name
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
-	private static final ChannelDetails channelQuatX_9DOF_WR = new ChannelDetails(
+	public static final ChannelDetails channelQuatX_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_X_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_X_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_X_WR, //database name
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
-	private static final ChannelDetails channelQuatY_9DOF_WR = new ChannelDetails(
+	public static final ChannelDetails channelQuatY_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Y_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Y_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Y_WR, //database name
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
-	private static final ChannelDetails channelQuatZ_9DOF_WR = new ChannelDetails(
+	public static final ChannelDetails channelQuatZ_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Z_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Z_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Z_WR, //database name
