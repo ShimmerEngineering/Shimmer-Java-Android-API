@@ -1315,12 +1315,43 @@ public class Configuration {
 
 			//TODO remove any lists below to their relevant Sensor classes.
 			
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExg = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExgGeneral = Arrays.asList(
 					svoExgSdLog, svoExgBtStream, svoExgLogAndStream,  
 					svoExgUnifiedSdLog, svoExgUnifiedBtStream, svoExgUnifiedLogAndStream,
 					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq,
 					svoShimmer3ECGMd, svoShimmer4Stock, svoStrokare);
-			
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExgEmg = Arrays.asList(
+					svoExgSdLog, svoExgBtStream, svoExgLogAndStream,  
+					svoExgUnifiedSdLog, svoExgUnifiedBtStream, svoExgUnifiedLogAndStream,
+					svoShimmer4Stock, svoStrokare);
+
+			//TODO separate out GQ devices that are related to SensorEXG.sDRefEcgGq
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExgEcg = Arrays.asList(
+					svoExgSdLog, svoExgBtStream, svoExgLogAndStream,  
+					svoExgUnifiedSdLog, svoExgUnifiedBtStream, svoExgUnifiedLogAndStream,
+					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq,
+					svoShimmer3ECGMd, svoShimmer4Stock);
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExgEcgGq = Arrays.asList(
+					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq);
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExgTest = Arrays.asList(
+					svoExgSdLog, svoExgBtStream, svoExgLogAndStream,  
+					svoExgUnifiedSdLog, svoExgUnifiedBtStream, svoExgUnifiedLogAndStream,
+					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq,
+					svoShimmer3ECGMd, svoShimmer4Stock);
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExgThreeUnipolar = Arrays.asList(
+					svoExgSdLog, svoExgBtStream, svoExgLogAndStream,  
+					svoExgUnifiedSdLog, svoExgUnifiedBtStream, svoExgUnifiedLogAndStream,
+					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq,
+					svoShimmer3ECGMd, svoShimmer4Stock);
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExgRespiration = Arrays.asList(
+					svoExgUnifiedSdLog, svoExgUnifiedBtStream, svoExgUnifiedLogAndStream,
+					svoShimmer4Stock);
+
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoSdLog = Arrays.asList(svoSdLog);
 			
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardAndFw = Arrays.asList(svoAnyIntExpBoardAndFw);
@@ -1444,10 +1475,6 @@ public class Configuration {
 					svoSdLog, svoLogAndStream,
 					svoShimmer4Stock, svoStrokare);
 			
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoRespiration = Arrays.asList(
-					svoExgUnifiedSdLog, svoExgUnifiedBtStream, svoExgUnifiedLogAndStream,
-					svoShimmer4Stock);
-
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(
 					svoHighGAccelSdLog,svoHighGAccelBtStream,svoHighGAccelLogAndStream);
 			
@@ -1556,7 +1583,7 @@ public class Configuration {
 								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
 								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
 								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExg));
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral));
 			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_MINI.ordinal(), new SensorGroupingDetails(
 					SensorADC.LABEL_SENSOR_TILE.PROTO3_MINI,
 					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
