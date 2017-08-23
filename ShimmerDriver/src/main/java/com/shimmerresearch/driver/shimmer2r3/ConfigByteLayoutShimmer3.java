@@ -27,72 +27,8 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	 */
 	private static final long serialVersionUID = -5729543049033754281L;
 	
-//	public byte[] invalidMacId = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
-//	public byte[] invalidMacId2 = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
 	public int maxNumOfExperimentNodes = 21;
 
-//	int mFirmwareIdentifier = -1;
-//	int mFirmwareVersionMajor = -1;
-//	int mFirmwareVersionMinor = -1;
-//	int mFirmwareVersionInternal = -1;
-//	int mInfoMemSize = 512;
-//	
-//	public int MSP430_5XX_INFOMEM_D_ADDRESS = 0x001800; 
-//	public int MSP430_5XX_INFOMEM_C_ADDRESS = 0x001880; 
-//	public int MSP430_5XX_INFOMEM_B_ADDRESS = 0x001900;
-//	public int MSP430_5XX_INFOMEM_A_ADDRESS = 0x001980; 
-//	public int MSP430_5XX_INFOMEM_LAST_ADDRESS = 0x0019FF;
-////	public final static int MSP430_5XX_PROGRAM_START_ADDRESS = 0x00FFFE; 
-
-	
-//	//SENSORS0
-//	public int SENSOR_A_ACCEL =                     0x80;
-//	public int SENSOR_MPU9150_GYRO =                0x40;
-//	public int SENSOR_LSM303DLHC_MAG =              0x20;
-//	public int SENSOR_EXG1_24BIT =                  0x10;
-//	public int SENSOR_EXG2_24BIT =                  0x08;
-//	public int SENSOR_GSR =                         0x04;
-//	public int SENSOR_EXT_A7 =                      0x02;
-//	public int SENSOR_EXT_A6 =                      0x01;
-//	//SENSORS1
-//	public int SENSOR_STRAIN =                      0x80;   //higher priority than SENSOR_INT_A13 and SENSOR_INT_A14
-//	public int SENSOR_VBATT =                       0x20;
-//	public int SENSOR_LSM303DLHC_ACCEL =            0x10;
-//	public int SENSOR_EXT_A15 =                     0x08;
-//	public int SENSOR_INT_A1 =                      0x04;
-//	public int SENSOR_INT_A12 =                     0x02;
-//	public int SENSOR_INT_A13 =                     0x01;
-//	//SENORS2
-//	public int SENSOR_INT_A14 =                     0x80;
-//	public int SENSOR_MPU9150_ACCEL =               0x40;
-//	public int SENSOR_MPU9150_MAG =                 0x20;
-//	public int SENSOR_EXG1_16BIT =                  0x10;
-//	public int SENSOR_EXG2_16BIT =                  0x08;
-//	public int SENSOR_BMP180_PRESSURE =             0x04;
-//	public int SENSOR_MPU9150_TEMP =                0x02;
-//
-//	//SENSORS3
-//	public int SENSOR_MPU9150_MPL_QUAT_6DOF =       0x80;
-//	public int SENSOR_MPU9150_MPL_QUAT_9DOF =       0x40;
-//	public int SENSOR_MPU9150_MPL_EULER_6DOF =      0x20;
-//	public int SENSOR_MPU9150_MPL_EULER_9DOF =      0x10;
-//	public int SENSOR_MPU9150_MPL_HEADING =         0x08;
-//	public int SENSOR_MPU9150_MPL_PEDOMETER =       0x04;
-//	public int SENSOR_MPU9150_MPL_TAP =             0x02;
-//	public int SENSOR_MPU9150_MPL_MOTION_ORIENT =   0x01;
-//
-//	//SENSORS4
-//	public int SENSOR_MPU9150_GYRO_CAL =            0x80;
-//	public int SENSOR_MPU9150_ACCEL_CAL =           0x40;
-//	public int SENSOR_MPU9150_MAG_CAL =             0x20;
-//	public int SENSOR_MPU9150_MPL_QUAT_6DOF_RAW =   0x10;
-//
-//	//public int SENSOR_LSM303DLHC_TEMPERATURE =    0x08;
-//	//public int SENSOR_MSP430_TEMPERATURE =        0x01;
-//	//public int SENSOR_BMP180_TEMPERATURE =        0x02;
-//	//public int SENSOR_EXP_POWER =                 0x01;
-//	//public int SENSOR_MPU9150_MPL_ROT_MAT =       0x;	
-	
 	public int idxShimmerSamplingRate =				0;
 	public int idxBufferSize =                     	2;
 	public int idxSensors0 =                        3;
@@ -226,17 +162,6 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	public int byteShiftDerivedSensors6 =				8*6;
 	public int byteShiftDerivedSensors7 =				8*7;
 
-//	public int maskDerivedChannel = 					0x01;
-//	public int bitShiftDerivedChannelResAmp = 			0;
-//	public int bitShiftDerivedChannelSkinTemp =			1;
-//	public int bitShiftDerivedChannelPpg_ADC12ADC13 =	2;
-//	public int bitShiftDerivedChannelPpg1_ADC12ADC13 =	3;
-//	public int bitShiftDerivedChannelPpg2_ADC1ADC14 =	4;
-//	public int bitShiftDerivedChannelPpgToHr = 			5;
-//	public int bitShiftDerivedChannelEcgToHr = 			6;
-//	public int bitShiftDerivedChannel6DofMadgewick =	8;
-//	public int bitShiftDerivedChannel9DofMadgewick =	9;
-	
 	public int maskDerivedChannelResAmp = 			0x000001;
 	public int maskDerivedChannelSkinTemp =			0x000002;
 	public int maskDerivedChannelPpg_ADC12ADC13 =	0x000004;
@@ -354,127 +279,6 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	public int maskExg2_16bitFlag =			0x08<<(2*8); 
 
 	
-	
-	//	//ADC initialisation mask
-//	public int MASK_A_ACCEL =        0x0001;
-//	public int MASK_VBATT =          0x0002;
-//	public int MASK_EXT_A7 =         0x0004;
-//	public int MASK_EXT_A6 =         0x0008;
-//	public int MASK_EXT_A15 =        0x0010;
-//	public int MASK_INT_A1 =         0x0020;
-//	public int MASK_GSR =            0x0020;   //uses ADC1
-//	public int MASK_INT_A12 =        0x0040;
-//	public int MASK_INT_A13 =        0x0080;
-//	public int MASK_INT_A14 =        0x0100;
-//	public int MASK_STRAIN =         0x0180;   //uses ADC13 and ADC14
-//	//public int MASK_MSP_TEMP =     0x0200;
-//
-//	//LSM303DLHC Accel Range
-//	//Corresponds to the FS field of the LSM303DLHC's CTRL_REG4_A register
-//	//and the AFS_SEL field of the MPU9150's ACCEL_CONFIG register
-//	public int ACCEL_2G =                     0x00;
-//	public int ACCEL_4G =                     0x01;
-//	public int ACCEL_8G =                     0x02;
-//	public int ACCEL_16G =                    0x03;
-//
-//	//LSM303DLHC Accel Sampling Rate
-//	//Corresponds to the ODR field of the LSM303DLHC's CTRL_REG1_A register
-//	public int LSM303DLHC_ACCEL_POWER_DOWN =  0x00;
-//	public int LSM303DLHC_ACCEL_1HZ =         0x01;
-//	public int LSM303DLHC_ACCEL_10HZ =        0x02;
-//	public int LSM303DLHC_ACCEL_25HZ =        0x03;
-//	public int LSM303DLHC_ACCEL_50HZ =        0x04;
-//	public int LSM303DLHC_ACCEL_100HZ =       0x05;
-//	public int LSM303DLHC_ACCEL_200HZ =       0x06;
-//	public int LSM303DLHC_ACCEL_400HZ =       0x07;
-//	public int LSM303DLHC_ACCEL_1_620KHZ =    0x08; //1.620kHz in Low-power mode only
-//	public int LSM303DLHC_ACCEL_1_344KHZ =    0x09; //1.344kHz in normal mode, 5.376kHz in low-power mode
-//
-//	//LSM303DLHC Mag gain
-//	public int LSM303DLHC_MAG_1_3G =          0x01; //+/-1.3 Gauss
-//	public int LSM303DLHC_MAG_1_9G =          0x02; //+/-1.9 Gauss
-//	public int LSM303DLHC_MAG_2_5G =          0x03; //+/-2.5 Gauss
-//	public int LSM303DLHC_MAG_4_0G =          0x04; //+/-4.0 Gauss
-//	public int LSM303DLHC_MAG_4_7G =          0x05; //+/-4.7 Gauss
-//	public int LSM303DLHC_MAG_5_6G =          0x06; //+/-5.6 Gauss
-//	public int LSM303DLHC_MAG_8_1G =          0x07; //+/-8.1 Gauss
-//
-//	//LSM303DLHC Mag sampling rate
-//	public int LSM303DLHC_MAG_0_75HZ =        0x00; //0.75 Hz
-//	public int LSM303DLHC_MAG_1_5HZ =         0x01; //1.5 Hz
-//	public int LSM303DLHC_MAG_3HZ =           0x02; //3.0 Hz
-//	public int LSM303DLHC_MAG_7_5HZ =         0x03; //7.5 Hz
-//	public int LSM303DLHC_MAG_15HZ =          0x04; //15 Hz
-//	public int LSM303DLHC_MAG_30HZ =          0x05; //30 Hz
-//	public int LSM303DLHC_MAG_75HZ =          0x06; //75 Hz
-//	public int LSM303DLHC_MAG_220HZ =         0x07; //220 Hz
-//
-//
-//	//calibration info
-//	public int S_ACCEL =                      0;
-//	public int S_GYRO =                       1;
-//	public int S_MAG =                        2;
-//	public int S_ACCEL_A =                    3;
-//	public int S_MPL_ACCEL =                  4;
-//	public int S_MPL_MAG =                    5;
-//	public int S_MPL_GYRO =                   6;
-//	//public int S_ECG =                     3;
-//	//public int S_EMG =                     4;
-//
-//	//MPU9150 Gyro range
-//	public int MPU9150_GYRO_250DPS =          0x00; //+/-250 dps
-//	public int MPU9150_GYRO_500DPS =          0x01; //+/-500 dps
-//	public int MPU9150_GYRO_1000DPS =         0x02; //+/-1000 dps
-//	public int MPU9150_GYRO_2000DPS =         0x03; //+/-2000 dps
-//
-//	//#digital accel_range
-//	public int RANGE_2G =                     0;
-//	public int RANGE_4G =                     1;
-//	public int RANGE_8G =                     2;
-//	public int RANGE_16G =                    3;
-//
-//	//#mag_gain
-//	public int LSM303_MAG_13GA =              1;
-//	public int LSM303_MAG_19GA =              2;
-//	public int LSM303_MAG_25GA =              3;
-//	public int LSM303_MAG_40GA =              4;
-//	public int LSM303_MAG_47GA =              5;
-//	public int LSM303_MAG_56GA =              6;
-//	public int LSM303_MAG_81GA =              7;
-//
-//	// MPU Low Pass filter cut-off
-//	public int MPU9150_LPF_256HZ_NOLPF2 =     0x00;
-//	public int MPU9150_LPF_188HZ =            0x01;
-//	public int MPU9150_LPF_98HZ =             0x02;
-//	public int MPU9150_LPF_42HZ =             0x03;
-//	public int MPU9150_LPF_20HZ =             0x04;
-//	public int MPU9150_LPF_10HZ =             0x05;
-//	public int MPU9150_LPF_5HZ =              0x06;
-//	public int MPU9150_LPF_2500HZ_NOLPF =     0x07;
-//
-//	// On-the-fly gyro calibration settings
-//	public int MPL_MOT_CAL_OFF =              0x00;
-//	public int MPL_MOT_CAL_FAST_NO_MOT =      0x01;
-//	public int MPL_MOT_CAL_MOT_NO_MOT_1S =    0x02;
-//	public int MPL_MOT_CAL_MOT_NO_MOT_2S =    0x03;
-//	public int MPL_MOT_CAL_MOT_NO_MOT_5S =    0x04;
-//	public int MPL_MOT_CAL_MOT_NO_MOT_10S =   0x05;
-//	public int MPL_MOT_CAL_MOT_NO_MOT_30S =   0x06;
-//	public int MPL_MOT_CAL_MOT_NO_MOT_60S =   0x07;
-//
-//	public int MPL_RATE_10HZ =                0x00;
-//	public int MPL_RATE_20HZ =                0x01;
-//	public int MPL_RATE_40HZ =                0x02;
-//	public int MPL_RATE_50HZ =                0x03;
-//	public int MPL_RATE_100HZ =               0x04;
-//	//public int MPL_RATE_200HZ =             0x05;
-//
-//	//Pansenti 9DOF MagMix
-//	public int GYRO_ONLY =                    0x00;
-//	public int MAG_ONLY =                     0x01;
-//	public int GYRO_AND_MAG =                 0x02;
-//	public int GYRO_AND_SOME_MAG =            0x03;
-	
 	public ConfigByteLayoutShimmer3() {
 		// TODO Auto-generated constructor stub
 	}
@@ -499,9 +303,10 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 
 		//Include changes to mapping below in order of oldest to newest in separate "if statements"
 		
-		if((compareVersions(FW_ID.SDLOG,0,8,42))
-				||(compareVersions(FW_ID.LOGANDSTREAM,0,3,4))
-				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
+		if(compareVersions(FW_ID.SDLOG,0,8,42)
+				|| compareVersions(FW_ID.LOGANDSTREAM,0,3,4)
+				|| compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
+				|| compareVersions(FW_ID.STOKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
 			idxSensors3 =			128+0;
 			idxSensors4 =			128+1;
 			idxConfigSetupByte4 =	128+2;
@@ -512,10 +317,11 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 			idxDerivedSensors2 = 117;
 		}
 		
-		if((compareVersions(FW_ID.SDLOG,0,8,68))
-				||(compareVersions(FW_ID.LOGANDSTREAM,0,3,17))
-				||(compareVersions(FW_ID.BTSTREAM,0,6,0))
-				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
+		if(compareVersions(FW_ID.SDLOG,0,8,68)
+				|| compareVersions(FW_ID.LOGANDSTREAM,0,3,17)
+				|| compareVersions(FW_ID.BTSTREAM,0,6,0)
+				|| compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
+				|| compareVersions(FW_ID.STOKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
 			idxDerivedSensors0 =		    31;
 			idxDerivedSensors1 =		    32;
 			idxDerivedSensors2 =		    33;
@@ -525,16 +331,18 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 			idxLSM303DLHCAccelCalibration = 97;
 		}
 
-		if((compareVersions(FW_ID.SDLOG,0,11,3))
-				||(compareVersions(FW_ID.LOGANDSTREAM,0,5,12))
-				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
+		if(compareVersions(FW_ID.SDLOG,0,11,3)
+				|| compareVersions(FW_ID.LOGANDSTREAM,0,5,12)
+				|| compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
+				|| compareVersions(FW_ID.STOKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
 			maskShowErrorLedsRwc =	 		0x01;
 		}
 		
-		if((compareVersions(FW_ID.SDLOG,0,11,5))
-				||(compareVersions(FW_ID.LOGANDSTREAM,0,5,16))
-				||(compareVersions(FW_ID.BTSTREAM,0,7,4))
-				||(compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION))) {
+		if(compareVersions(FW_ID.SDLOG,0,11,5)
+				|| compareVersions(FW_ID.LOGANDSTREAM,0,5,16)
+				|| compareVersions(FW_ID.BTSTREAM,0,7,4)
+				|| compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
+				|| compareVersions(FW_ID.STOKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
 			MSP430_5XX_INFOMEM_D_ADDRESS = 0; 
 			MSP430_5XX_INFOMEM_C_ADDRESS = 128; 
 			MSP430_5XX_INFOMEM_B_ADDRESS = 256;
@@ -550,7 +358,8 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 			idxDerivedSensors7 =		    		122;
 		}
 
-		if(compareVersions(FW_ID.LOGANDSTREAM,0,7,12)) {
+		if(compareVersions(FW_ID.LOGANDSTREAM,0,7,12)
+				|| compareVersions(FW_ID.STOKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
 			maskShowErrorLedsSd = 0x01;
 		}
 		

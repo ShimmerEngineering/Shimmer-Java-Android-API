@@ -113,8 +113,8 @@ public class SensorBMP180 extends SensorBMPX80 {
 			ListofPressureResolution, 
 			ListofPressureResolutionConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180);
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
@@ -122,7 +122,8 @@ public class SensorBMP180 extends SensorBMPX80 {
 			0x04<<(2*8), 
 			0x04<<(2*8), 
 			GuiLabelSensors.PRESS_TEMP_BMPX80,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180,
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(GuiLabelConfig.PRESSURE_RESOLUTION),
 			Arrays.asList(ObjectClusterSensorName.TEMPERATURE_BMP180,
 					ObjectClusterSensorName.PRESSURE_BMP180));
@@ -137,8 +138,8 @@ public class SensorBMP180 extends SensorBMPX80 {
     public static final SensorGroupingDetails sensorGroupBmp180 = new SensorGroupingDetails(
 			LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE,
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE),
-//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP180);
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 
 	//--------- Sensor info end --------------
     
