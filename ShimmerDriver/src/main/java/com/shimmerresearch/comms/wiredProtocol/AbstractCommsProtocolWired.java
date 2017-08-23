@@ -624,16 +624,17 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
     		if(continueWithParsing && packet!=null){
     			try {
     				parseSinglePacket(packet, timestampMs);
-				} catch (DockException e) {
-					mThrownException = e;
+				} catch (DockException de) {
+					mThrownException = de;
 					
 					if(currentPacketCmd!=null && currentMsgArg!=null){
 						System.out.println(mUniqueId + "\tProblem parsing received packet while waiting for:");
 						System.out.println(mUniqueId + "\t" + assemblePrintTxPacketInfo(currentPacketCmd, currentMsgArg, null));
+						System.out.println(de.getErrStringFormatted());
 					} else {
 						System.out.println(mUniqueId + "\tProblem parsing received packet");
+						de.printStackTrace();
 					}
-					e.printStackTrace();
 //					mUtilShimmer.consolePrintLn(e.getMsgDockErrString());
 				}
     		}
