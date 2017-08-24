@@ -44,6 +44,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
@@ -4227,7 +4228,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mTrialNumberOfShimmers = configBytes[configByteLayoutCast.idxSDNumOfShimmers] & 0xFF;
 				}
 				
-				if((getFirmwareIdentifier()==FW_ID.SDLOG)||(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STOKARE) {
 					mButtonStart = (configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftButtonStart) & configByteLayoutCast.maskButtonStart;
 					setShowErrorLedsRtc((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftShowErrorLedsRwc) & configByteLayoutCast.maskShowErrorLedsRwc);
 					setShowErrorLedsSd((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftShowErrorLedsSd) & configByteLayoutCast.maskShowErrorLedsSd);
@@ -4245,7 +4246,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					setTrialDurationMaximum((int)(configBytes[configByteLayoutCast.idxMaxExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxMaxExpLengthMsb] & 0xFF)) << 8));
 				}
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STOKARE) {
 					mTCXO = (configBytes[configByteLayoutCast.idxSDExperimentConfig1] >> configByteLayoutCast.bitShiftTCX0) & configByteLayoutCast.maskTimeTCX0;
 				}
 
@@ -4461,7 +4462,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mConfigBytes[configByteLayoutCast.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
 				}
 				
-				if((getFirmwareIdentifier()==FW_ID.SDLOG)||(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STOKARE) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] = (byte) ((mButtonStart & configByteLayoutCast.maskButtonStart) << configByteLayoutCast.bitShiftButtonStart);
 					if(this.isOverrideShowErrorLedsRtc){
 						mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] |= (byte) ((configByteLayoutCast.maskShowErrorLedsRwc) << configByteLayoutCast.bitShiftShowErrorLedsRwc);
@@ -4494,11 +4495,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mConfigBytes[configByteLayoutCast.idxMaxExpLengthMsb] = (byte) ((getTrialDurationMaximum() >> 8) & 0xFF);
 				}
 
-				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STOKARE) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] |= (byte) ((mTCXO & configByteLayoutCast.maskTimeTCX0) << configByteLayoutCast.bitShiftTCX0);
 				}
 
-				if(((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SDLOG))) {
+				if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.STOKARE) {
 					if(generateForWritingToShimmer) {
 						// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
 						// (already set to 0xFF at start of method but just incase)
@@ -8272,7 +8273,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	@Override
 	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel) {
-//		Object returnValue = null;
 		Object returnValue = super.getConfigValueUsingConfigLabel(identifier, configLabel);
     	if(returnValue!=null){
     		return returnValue;
@@ -9435,7 +9435,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 	public boolean isSupportedErrorLedControl() {
-		return mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 7, 12);
+		return (mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 7, 12)
+				|| mShimmerVerObject.compareVersions(FW_ID.STOKARE, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION));
 	}
 
 	/** Returns true if the Shimmer is using new sensors. These sensors are:

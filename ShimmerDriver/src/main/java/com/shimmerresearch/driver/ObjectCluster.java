@@ -106,6 +106,8 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	private double mShimmerCalibratedTimeStamp;
 	public boolean mIsValidObjectCluster = true;
 	
+	public int mObjectClusterId = 0;
+	
 	public enum OBJECTCLUSTER_TYPE{
 		ARRAYS,
 		FORMAT_CLUSTER,
