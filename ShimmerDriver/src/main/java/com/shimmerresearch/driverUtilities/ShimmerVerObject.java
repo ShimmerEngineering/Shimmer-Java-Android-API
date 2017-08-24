@@ -248,7 +248,7 @@ public class ShimmerVerObject implements Serializable {
 				|| mHardwareVersion==HW_ID.SPAN
 				|| mHardwareVersion==HW_ID.SHIMMER_4_SDK
 				|| mHardwareVersion==HW_ID.SWEATCH
-				|| mFirmwareIdentifier==FW_ID.STOKARE) {
+				|| mFirmwareIdentifier==FW_ID.STROKARE) {
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
 				}
@@ -266,7 +266,7 @@ public class ShimmerVerObject implements Serializable {
 			if((UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,6,5))
 					|| mHardwareVersion==HW_ID.SHIMMER_4_SDK
 					|| mHardwareVersion==HW_ID.ARDUINO
-					|| mFirmwareIdentifier==FW_ID.STOKARE
+					|| mFirmwareIdentifier==FW_ID.STROKARE
 //					|| mHardwareVersion==HW_ID.SWEATCH
 					){
 				mFirmwareVersionCode = 7;
@@ -379,7 +379,7 @@ public class ShimmerVerObject implements Serializable {
 	public static boolean isSupportedRtcConfigViaUart(int hwVer, int fwId) {
 		if (((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.SDLOG))
 				|| ((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.LOGANDSTREAM))
-				|| ((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.STOKARE))
+				|| ((hwVer==HW_ID.SHIMMER_3)&&(fwId == FW_ID.STROKARE))
 				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE)&&(fwId == FW_ID.GQ_BLE))
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
@@ -412,7 +412,7 @@ public class ShimmerVerObject implements Serializable {
 	public static boolean isSupportedSdCardAccess(int hwVer, int fwId) {
 		if (((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.SDLOG))
 				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.LOGANDSTREAM))
-				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.STOKARE))
+				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.STROKARE))
 				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE) && (fwId == FW_ID.GQ_BLE))
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
@@ -444,7 +444,7 @@ public class ShimmerVerObject implements Serializable {
 				|| compareVersions(this, FW_ID.LOGANDSTREAM,0,7,1)
 				|| compareVersions(this, FW_ID.GQ_802154,0,3,2)
 				|| compareVersions(this, FW_ID.SHIMMER4_SDK_STOCK,0,0,23)
-				|| compareVersions(FW_ID.STOKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
+				|| compareVersions(FW_ID.STROKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
 			return true;
 		}
 		return false;
@@ -454,7 +454,7 @@ public class ShimmerVerObject implements Serializable {
 		if(compareVersions(FW_ID.SDLOG, 0, 12, 4)
 				|| compareVersions(FW_ID.LOGANDSTREAM, 0, 6, 13)
 				|| compareVersions(FW_ID.GQ_802154, 0, 3, 2)
-				|| compareVersions(FW_ID.STOKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)){
+				|| compareVersions(FW_ID.STROKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)){
 			return true;
 		}
 		return false;
@@ -467,7 +467,7 @@ public class ShimmerVerObject implements Serializable {
 		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.GQ_BLE,0,0,1));
 		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.GQ_802154,0,0,1));
 		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.SHIMMER4_SDK_STOCK,0,0,1));
-		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.STOKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION));
+		listOfCompatibleSdLoggingFW.add(new ShimmerVerObject(FW_ID.STROKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION));
 		return listOfCompatibleSdLoggingFW;
 	}
 	
@@ -501,7 +501,7 @@ public class ShimmerVerObject implements Serializable {
 	public static boolean isSupportedCalibDump(ShimmerVerObject shimmerVerObject) {
 		if(compareVersions(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 6, 7)
 				|| compareVersions(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 12, 6)
-				|| compareVersions(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.STOKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
+				|| compareVersions(shimmerVerObject, HW_ID.SHIMMER_3, FW_ID.STROKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
 				|| shimmerVerObject.isShimmerGen4()){
 			return true;
 		}
@@ -545,7 +545,7 @@ public class ShimmerVerObject implements Serializable {
 
 	//TODO GQ should be kept separate - probably used in some places to indicate MSP430 model is being used?
 	public static boolean isShimmer3Gen(int hwVer, int fwId) {
-		if(isShimmer3Gen(hwVer) && (fwId==FW_ID.BTSTREAM || fwId==FW_ID.SDLOG || fwId==FW_ID.LOGANDSTREAM  || fwId==FW_ID.STOKARE)){// || fwId==FW_ID.GQ_BLE)){
+		if(isShimmer3Gen(hwVer) && (fwId==FW_ID.BTSTREAM || fwId==FW_ID.SDLOG || fwId==FW_ID.LOGANDSTREAM  || fwId==FW_ID.STROKARE)){// || fwId==FW_ID.GQ_BLE)){
 			return true;
 		}
 		return false;
