@@ -15,6 +15,9 @@ public class ShimmerLogDetails implements Serializable{
 	public String mTrialName;
 	public String mConfigTime;
 	public String mFullTrialName;
+	private String mShimmerUserAssignedName;
+	public String mSdFileNumber;
+
 	public long mRTCDifference;
 	public String mSessionName;
 /*<<<<<<< HEAD
@@ -83,6 +86,7 @@ public class ShimmerLogDetails implements Serializable{
 		mEnabledSensors = shimmerDevice.getEnabledSensors();
 		mDerivedSensors = shimmerDevice.getDerivedSensors();
 		mHardwareVersion = shimmerDevice.getHardwareVersion();
+		mShimmerUserAssignedName = shimmerDevice.getShimmerUserAssignedName();
 	}
 
 	public void updateFromFile(File l) {
