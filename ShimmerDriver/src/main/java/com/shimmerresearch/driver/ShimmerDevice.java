@@ -608,7 +608,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		shimmerUserAssignedName = shimmerUserAssignedName.replaceAll(INVALID_TRIAL_NAME_CHAR, "");
 			
 		//Limit the name to 12 Char
-		String addition = "_" + getMacIdParsed();
+		String addition = "_" + getMacIdParsed().toUpperCase();
 		if((shimmerUserAssignedName.length()+addition.length())>12) {
 			setShimmerUserAssignedNameNoLengthCheck(shimmerUserAssignedName.substring(0, (12-addition.length())) + addition);
 		}
