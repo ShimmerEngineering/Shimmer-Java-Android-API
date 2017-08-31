@@ -529,6 +529,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mConfigFileCreationFlag = true;
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
 	protected boolean mIsCrcEnabled = false;
+	protected boolean mUseInfoMemConfigMethod = true;
 
 	protected byte[] mInquiryResponseBytes;	
 	
@@ -3349,6 +3350,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					byte[] signalIdArray = new byte[mNChannels];
 					System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
 					updateEnabledSensorsFromChannels(signalIdArray);
+					if(mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
+					} else {
+						setEnabledAndDerivedSensorsAndUpdateMaps(mEnabledSensors, mDerivedSensors);
+					}
 					interpretDataPacketFormat(mNChannels,signalIdArray);
 					checkExgResolutionFromEnabledSensorsVar();
 				}
@@ -4228,7 +4233,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mTrialNumberOfShimmers = configBytes[configByteLayoutCast.idxSDNumOfShimmers] & 0xFF;
 				}
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STOKARE) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mButtonStart = (configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftButtonStart) & configByteLayoutCast.maskButtonStart;
 					setShowErrorLedsRtc((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftShowErrorLedsRwc) & configByteLayoutCast.maskShowErrorLedsRwc);
 					setShowErrorLedsSd((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftShowErrorLedsSd) & configByteLayoutCast.maskShowErrorLedsSd);
@@ -4246,7 +4251,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					setTrialDurationMaximum((int)(configBytes[configByteLayoutCast.idxMaxExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxMaxExpLengthMsb] & 0xFF)) << 8));
 				}
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STOKARE) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mTCXO = (configBytes[configByteLayoutCast.idxSDExperimentConfig1] >> configByteLayoutCast.bitShiftTCX0) & configByteLayoutCast.maskTimeTCX0;
 				}
 
@@ -4462,7 +4467,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mConfigBytes[configByteLayoutCast.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
 				}
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STOKARE) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] = (byte) ((mButtonStart & configByteLayoutCast.maskButtonStart) << configByteLayoutCast.bitShiftButtonStart);
 					if(this.isOverrideShowErrorLedsRtc){
 						mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] |= (byte) ((configByteLayoutCast.maskShowErrorLedsRwc) << configByteLayoutCast.bitShiftShowErrorLedsRwc);
@@ -4495,11 +4500,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mConfigBytes[configByteLayoutCast.idxMaxExpLengthMsb] = (byte) ((getTrialDurationMaximum() >> 8) & 0xFF);
 				}
 
-				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STOKARE) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] |= (byte) ((mTCXO & configByteLayoutCast.maskTimeTCX0) << configByteLayoutCast.bitShiftTCX0);
 				}
 
-				if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.STOKARE) {
+				if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					if(generateForWritingToShimmer) {
 						// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
 						// (already set to 0xFF at start of method but just incase)
@@ -8724,7 +8729,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// --------------- Database related start --------------------------
 	
 	@Override
-	public LinkedHashMap<String, Object> generateConfigMap() {
+	public LinkedHashMap<String, Object> generateConfigMap(COMMUNICATION_TYPE commType) {
 //		LinkedHashMap<String, Object> configMapForDb = new LinkedHashMap<String, Object>();
 
 		// New approach to storing Shimmer3 configuration to the database. The
@@ -8732,7 +8737,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		// Values moved from where they were generated in
 		// ShimmerObject.getShimmerConfigToInsertInDB()
 
-		LinkedHashMap<String, Object> configMapForDb = super.generateConfigMap();
+		LinkedHashMap<String, Object> configMapForDb = super.generateConfigMap(commType);
 		
 		configMapForDb.put(SensorGSR.DatabaseConfigHandle.GSR_RANGE, (double) getGSRRange());
 		
@@ -8769,8 +8774,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	@Override
-	public void parseConfigMap(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-		super.parseConfigMap(svo, mapOfConfigPerShimmer);
+	public void parseConfigMap(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer, COMMUNICATION_TYPE commType) {
+		super.parseConfigMap(svo, mapOfConfigPerShimmer, commType);
 		
 		if(mapOfConfigPerShimmer.containsKey(SensorGSR.DatabaseConfigHandle.GSR_RANGE)){
 			setGSRRange(((Double) mapOfConfigPerShimmer.get(SensorGSR.DatabaseConfigHandle.GSR_RANGE)).intValue());
@@ -9436,7 +9441,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public boolean isSupportedErrorLedControl() {
 		return (mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 7, 12)
-				|| mShimmerVerObject.compareVersions(FW_ID.STOKARE, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION));
+				|| mShimmerVerObject.compareVersions(FW_ID.STROKARE, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION));
 	}
 
 	/** Returns true if the Shimmer is using new sensors. These sensors are:
