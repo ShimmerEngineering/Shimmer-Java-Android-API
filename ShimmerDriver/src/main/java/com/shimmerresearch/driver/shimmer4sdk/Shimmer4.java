@@ -1214,8 +1214,8 @@ public class Shimmer4 extends ShimmerDevice {
 	}
 	
 	@Override
-	public LinkedHashMap<String, Object> generateConfigMap() {
-		LinkedHashMap<String, Object> configMapForDb = super.generateConfigMap();
+	public LinkedHashMap<String, Object> generateConfigMap(COMMUNICATION_TYPE commType) {
+		LinkedHashMap<String, Object> configMapForDb = super.generateConfigMap(commType);
 		
 		//TODO need to complete this for the config review in Consensys -> Manage Data
 		

@@ -415,14 +415,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//Add if not there
 		for(COMMUNICATION_TYPE commType:mListOfAvailableCommunicationTypes){
 			if(!mMapOfSamplingRatesShimmer.containsKey(commType)){
-				mMapOfSamplingRatesShimmer.containsKey(getSamplingRateShimmer());
+				mMapOfSamplingRatesShimmer.put(commType, getSamplingRateShimmer());
 			}
 		}
 		
 		//Remove if not supported
-		for(COMMUNICATION_TYPE commType:mMapOfSamplingRatesShimmer.keySet()){
+		Iterator<COMMUNICATION_TYPE> iterator = mMapOfSamplingRatesShimmer.keySet().iterator();
+		while(iterator.hasNext()){
+			COMMUNICATION_TYPE commType = iterator.next();
 			if(!mListOfAvailableCommunicationTypes.contains(commType)){
-				mMapOfSamplingRatesShimmer.remove(getSamplingRateShimmer());
+				iterator.remove();
 			}
 		}
 
@@ -3159,7 +3161,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void setSamplingRateShimmer(COMMUNICATION_TYPE communicationType, double rateHz){
-		mMapOfSamplingRatesShimmer.put(communicationType, rateHz);
+//		UtilShimmer.consolePrintCurrentStackTrace();
+		if(mListOfAvailableCommunicationTypes.contains(communicationType)){
+			mMapOfSamplingRatesShimmer.put(communicationType, rateHz);
+		}
 	}
 	
 	/** Returns the max set sampling rate for the available communication types
@@ -3177,14 +3182,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public double getSamplingRateShimmer(COMMUNICATION_TYPE commsType){
-		if(mMapOfSamplingRatesShimmer!=null && mMapOfSamplingRatesShimmer.containsKey(commsType)){
+		if(commsType!=null && mMapOfSamplingRatesShimmer!=null && mMapOfSamplingRatesShimmer.containsKey(commsType)){
 			double samplingRate = mMapOfSamplingRatesShimmer.get(commsType);
 			if(!Double.isNaN(samplingRate)){
 				return samplingRate;
 			}
 		}
 		
-		return 0.0;
+		//else, return the max value available
+		return getSamplingRateShimmer();
 	}
 
 	/** This is valid for Shimmers that use a 32.768kHz crystal as the basis for their sampling rate
@@ -3533,11 +3539,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	
-	public LinkedHashMap<String, Object> generateConfigMap(){
+	public LinkedHashMap<String, Object> generateConfigMap(COMMUNICATION_TYPE commType){
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
 		//General Shimmer configuration
-		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, getSamplingRateShimmer());
+		double samplingRateToStore = commType==null? getSamplingRateShimmer():getSamplingRateShimmer(commType);
+		mapOfConfig.put(DatabaseConfigHandle.SAMPLE_RATE, samplingRateToStore);
 		mapOfConfig.put(DatabaseConfigHandle.ENABLE_SENSORS, getEnabledSensors());
 		mapOfConfig.put(DatabaseConfigHandle.DERIVED_SENSORS, getDerivedSensors());
 		
@@ -3585,7 +3592,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mapOfConfig;
 	}
 	
-	public void parseConfigMap(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer, COMMUNICATION_TYPE commType) {
 		
 		if(svo!=null){
 			setShimmerVersionObject(svo);
@@ -3616,7 +3623,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.SAMPLE_RATE)){
-			setSamplingRateShimmer((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE));
+			double samplingRate = (Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.SAMPLE_RATE);
+			if(commType==null){
+				setSamplingRateShimmer(samplingRate);
+			} else {
+				setSamplingRateShimmer(commType, samplingRate);
+			}
 		}
 		
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.EXP_PWR)){
@@ -3653,8 +3665,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void printMapOfConfig() {
-		HashMap<String, Object> mapOfConfigForDb = generateConfigMap();
-		printMapOfConfig(mapOfConfigForDb);
+		for(COMMUNICATION_TYPE commType:mListOfAvailableCommunicationTypes){
+			HashMap<String, Object> mapOfConfigForDb = generateConfigMap(commType);
+			printMapOfConfig(mapOfConfigForDb);
+		}
 	}
 
 	public static void printMapOfConfig(HashMap<String, Object> mapOfConfigForDb) {

@@ -181,7 +181,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected double mLowBattLimit=3.4;
 	protected int numBytesToReadFromExpBoard=0;
 	
-	private boolean mUseInfoMemConfigMethod = false;
 	private boolean mUseLegacyDelayToDelayForResponse = false;
 
 	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
