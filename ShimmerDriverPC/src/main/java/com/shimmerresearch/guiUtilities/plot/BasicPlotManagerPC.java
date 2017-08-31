@@ -993,8 +993,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		}
 	}
 
-	public void adjustTraceLengthUsingSetSize(double percentage) {
-		
+	public synchronized void adjustTraceLengthUsingSetSize(double percentage) {
 		Iterator <ITrace2D> entries = mListofTraces.iterator();
 		while (entries.hasNext()) {
 			ITrace2D trace = entries.next();
