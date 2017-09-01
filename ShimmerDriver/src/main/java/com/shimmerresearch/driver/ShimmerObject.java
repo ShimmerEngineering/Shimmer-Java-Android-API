@@ -1711,15 +1711,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				
 				int iGSR = getSignalIndex(mainGsrSignalName);
-				double p1=0,p2=0;//,p3=0,p4=0,p5=0;
+				double p1=0, p2=0;//,p3=0,p4=0,p5=0;
 				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 
 				tempData[0] = (double)newPacketInt[iGSR];
 				int gsrAdcValueUnCal = ((int)tempData[0] & 4095); 
 				
 				int currentGSRRange = getGSRRange();
-
-				if (fwType == COMMUNICATION_TYPE.SD && getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==9){
+				
+				if (getFirmwareIdentifier() == FW_ID.SDLOG  // this is to fix a bug with SDLog v0.9
+						&& getFirmwareVersionMajor() ==0 
+						&& getFirmwareVersionMinor()==9){
+					
 //					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 
 					/*
@@ -1738,96 +1741,32 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							mPastGSRRange = newGSRRange;
 							mPastGSRFirstTime = false;
 						}
-						if (newGSRRange != mPastGSRRange)
-						{
-							
+						if (newGSRRange != mPastGSRRange){
 							if (Math.abs(mPastGSRUncalibratedValue-gsrAdcValueUnCal)<300){
 								newGSRRange = mPastGSRRange;
-							} else {
+							} 
+							else {
 								mPastGSRRange = newGSRRange;
 							}
 							mPastGSRUncalibratedValue = gsrAdcValueUnCal;
 						}
-						
 					}
-					if (currentGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
-						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0373;
-							p2 = -24.9915;
-						} else {
-							p1 = 0.0363;
-							p2 = -24.8617;
-						}
-					} else if (currentGSRRange==1 || newGSRRange==1) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0054;
-							p2 = -3.5194;
-						} else {
-							p1 = 0.0051;
-							p2 = -3.8357;
-						}
-					} else if (currentGSRRange==2 || newGSRRange==2) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0015;
-							p2 = -1.0163;
-						} else {
-							p1 = 0.0015;
-							p2 = -1.0067;
-						}
-					} else if (currentGSRRange==3  || newGSRRange==3) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 4.5580e-04;
-							p2 = -0.3014;
-						} else {
-							p1 = 4.4513e-04;
-							p2 = -0.3193;
-						}
-					}
-				} else {
-
+					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(currentGSRRange, newGSRRange);
+					p1 = p1p2[0];
+					p2 = p1p2[1];
+				} 
+				else {
 					if (currentGSRRange==4){
 						//Mask upper 2 bits of the 16-bit packet and then bit shift down
 						newGSRRange=(49152 & (int)tempData[0])>>14; 
 					}
-					if (currentGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
-						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0373;
-							p2 = -24.9915;
-						} else { //Values have been reverted to 2r values
-							p1 = 0.0363;
-							p2 = -24.8617;
-						}
-					} else if (currentGSRRange==1 || newGSRRange==1) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0054;
-							p2 = -3.5194;
-						} else {
-							p1 = 0.0051;
-							p2 = -3.8357;
-						}
-					} else if (currentGSRRange==2 || newGSRRange==2) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0015;
-							p2 = -1.0163;
-						} else {
-							p1 = 0.0015;
-							p2 = -1.0067;
-						}
-					} else if (currentGSRRange==3 || newGSRRange==3) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 4.5580e-04;
-							p2 = -0.3014;
-						} else {
-							p1 = 4.4513e-04;
-							p2 = -0.3193;
-						}
-					}
+					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(currentGSRRange, newGSRRange);
+					p1 = p1p2[0];
+					p2 = p1p2[1];
 				}
 
 				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_RANGE)!=null){
-					double rangeToSave = newGSRRange>=0? newGSRRange:currentGSRRange;
+					double rangeToSave = newGSRRange >=0 ? newGSRRange : currentGSRRange;
 					objectCluster.addCalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
 					objectCluster.addUncalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
 				}
@@ -2472,6 +2411,55 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return objectCluster;
 	}
 	
+
+	private double[] getGSRCoefficientsFromUsingGSRRange(int currentGSRRange, int newGSRRange) {
+		double p1 = 0.0;
+		double p2 = 0.0;
+		
+		if (currentGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+			// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
+			if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 0.0373;
+				p2 = -24.9915;
+			} 
+			else { //Values have been reverted to 2r values
+				p1 = 0.0363;
+				p2 = -24.8617;
+			}
+		} 
+		else if (currentGSRRange==1 || newGSRRange==1) {
+			if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 0.0054;
+				p2 = -3.5194;
+			} 
+			else {
+				p1 = 0.0051;
+				p2 = -3.8357;
+			}
+		} 
+		else if (currentGSRRange==2 || newGSRRange==2) {
+			if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 0.0015;
+				p2 = -1.0163;
+			} 
+			else {
+				p1 = 0.0015;
+				p2 = -1.0067;
+			}
+		} 
+		else if (currentGSRRange==3  || newGSRRange==3) {
+			if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 4.5580e-04;
+				p2 = -0.3014;
+			} 
+			else {
+				p1 = 4.4513e-04;
+				p2 = -0.3193;
+			}
+		}
+		return new double[]{p1, p2};
+	}
+
 
 	private void printSensorNames(List<String> list) {
 		System.out.println("ObjectClusterSensorNames");
