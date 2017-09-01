@@ -175,6 +175,14 @@ public class UtilShimmer implements Serializable {
 		return convertMilliSecondsToHrMinSecLocal(milliSeconds, "HH:mm:ss");
 	}
 
+	/**
+	 * Converts from milliseconds in Unix time to a formatted local time string
+	 * (specific to the local timezone of the computer)
+	 * 
+	 * @param milliSeconds
+	 * @param format
+	 * @return
+	 */
 	public static String convertMilliSecondsToHrMinSecLocal(long milliSeconds, String format) {
 		DateFormat dfLocal = new SimpleDateFormat(format);
 		String timeString = dfLocal.format(new Date(milliSeconds));
