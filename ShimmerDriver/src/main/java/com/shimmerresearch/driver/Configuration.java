@@ -105,9 +105,18 @@ public class Configuration {
 	public static class CHANNEL_UNITS{
 		//Sensors units
 		public static final String NO_UNITS = "no_units";
+		
 		public static final String MILLISECONDS = "ms";
 		public static final String SECONDS = "s";
 		public static final String MINUTES = "min";
+		public static final String MICROSECONDS = "us";
+
+		public static final String CLOCK_UNIT = "Ticks";
+		public static final String FREQUENCY = "Hz";
+
+		//TODO: should be .SSS rather then .000? .000 might be required for viewing files in Microsoft Office
+		public static final String DATE_FORMAT = "yyyy/mm/dd hh:mm:ss.000";
+		
 		public static final String METER = "m";
 		public static final String METER_PER_SECOND = "m/s";
 		public static final String METER_PER_SECOND_SQUARE = "m/(s^2)";
@@ -117,6 +126,7 @@ public class Configuration {
 		public static final String MILLIMETER_PER_SECOND_SQUARE = "mm/(s^2)";
 		public static final String MILLIMETER_SQUARE = "mm^2";
 		public static final String MILLIMETER_SQUARE_PER_SECOND = "mm^2/s";
+		
 		public static final String DEGREES_PER_SECOND = "deg/s";
 		public static final String LOCAL_FLUX = "local_flux";
 		public static final String KOHMS = "kOhms";
@@ -131,12 +141,8 @@ public class Configuration {
 		public static final String DEGREES = "Degrees";
 		public static final String U_TESLA = "uT";
 		public static final String U_SIEMENS = "uS";
-		//TODO: should be .SSS rather then .000? .000 might be required for viewing files in Microsoft Office
-		public static final String DATE_FORMAT = "yyyy/mm/dd hh:mm:ss.000";
 		public static final String GRAVITY = "g";
-		public static final String CLOCK_UNIT = "Ticks";
 		public static final String RPM = "rpm";
-		public static final String FREQUENCY = "Hz";
 		public static final String POWER = "dB";
 
 		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;

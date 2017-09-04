@@ -452,7 +452,7 @@ public class ShimmerClock extends AbstractSensor {
 							timestampUnCalToSave = newTimestamp;
 							if (mEnableCalibration){
 								timestampCalToSave = calibratedTS; 
-								objectCluster.setShimmerCalibratedTimeStamp(calibratedTS);
+								objectCluster.setTimeStampMilliSecs(calibratedTS);
 							}
 							
 //							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,newTimestamp));
@@ -626,11 +626,11 @@ public class ShimmerClock extends AbstractSensor {
 						    	bb.put(bSystemTS);
 						    	bb.flip();
 						    	mSystemTimeStamp = bb.getLong();
-								mOffsetFirstTime = mSystemTimeStamp-objectCluster.getShimmerCalibratedTimeStamp();
+								mOffsetFirstTime = mSystemTimeStamp-objectCluster.getTimestampMilliSecs();
 							}
 							
 //							objectCluster.addData(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, objectCluster.mShimmerCalibratedTimeStamp+mOffsetFirstTime);
-							double calTimestamp = objectCluster.getShimmerCalibratedTimeStamp();
+							double calTimestamp = objectCluster.getTimestampMilliSecs();
 							double systemTimestampPlot = calTimestamp+mOffsetFirstTime;
 							objectCluster.addCalData(channelDetails, systemTimestampPlot);
 							objectCluster.incrementIndexKeeper();
