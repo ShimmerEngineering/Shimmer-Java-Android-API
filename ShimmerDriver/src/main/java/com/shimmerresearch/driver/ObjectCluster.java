@@ -559,6 +559,20 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		this.mTimeStampMilliSecs = timeStampMilliSecs;
 	}
 	
+	/**
+	 * @return the mListOfOCTypesEnabled
+	 */
+	public static List<OBJECTCLUSTER_TYPE> getListOfOCTypesEnabled() {
+		return mListOfOCTypesEnabled;
+	}
+
+	/**
+	 * @param listOfOCTypesEnabled the mListOfOCTypesEnabled to set
+	 */
+	public static void setListOfOCTypesEnabled(List<OBJECTCLUSTER_TYPE> listOfOCTypesEnabled) {
+		ObjectCluster.mListOfOCTypesEnabled = listOfOCTypesEnabled;
+	}
+
 	public ObjectCluster deepClone() {
 //		System.out.println("Cloning:" + mUniqueID);
 		try {
