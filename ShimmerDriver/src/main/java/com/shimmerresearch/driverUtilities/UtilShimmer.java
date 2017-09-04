@@ -95,11 +95,29 @@ public class UtilShimmer implements Serializable {
 
 	private String generateConsolePrintLn(String message) {
 		Calendar rightNow = Calendar.getInstance();
+		
+		//Negligable difference here between StringBuilder and manually creating the String
 		String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
 				+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
 				+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
 				+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
 		return(rightNowString + " " + mParentClassName + ": " + message);
+		
+//		StringBuilder builder = new StringBuilder();
+//		builder.append("[");
+//		builder.append(String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)));
+//		builder.append(":");
+//		builder.append(String.format("%02d",rightNow.get(Calendar.MINUTE)));
+//		builder.append(":");
+//		builder.append(String.format("%02d",rightNow.get(Calendar.SECOND)));
+//		builder.append(":");
+//		builder.append(String.format("%03d",rightNow.get(Calendar.MILLISECOND)));
+//		builder.append("]");
+//
+//		builder.append(mParentClassName);
+//		builder.append(message);
+//		
+//		return builder.toString();
 	}
 	
 	public void setParentClassName(String parentClassName){
@@ -157,6 +175,14 @@ public class UtilShimmer implements Serializable {
 		return convertMilliSecondsToHrMinSecLocal(milliSeconds, "HH:mm:ss");
 	}
 
+	/**
+	 * Converts from milliseconds in Unix time to a formatted local time string
+	 * (specific to the local timezone of the computer)
+	 * 
+	 * @param milliSeconds
+	 * @param format
+	 * @return
+	 */
 	public static String convertMilliSecondsToHrMinSecLocal(long milliSeconds, String format) {
 		DateFormat dfLocal = new SimpleDateFormat(format);
 		String timeString = dfLocal.format(new Date(milliSeconds));
