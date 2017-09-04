@@ -173,7 +173,6 @@ public abstract class BasicProcessWithCallBack {
 		}
 	}
 	
-	
     public void sendCallBackMsg(ShimmerMsg s){
     	if (mThread!=null){
     		mThread.callBackMethod(s);
