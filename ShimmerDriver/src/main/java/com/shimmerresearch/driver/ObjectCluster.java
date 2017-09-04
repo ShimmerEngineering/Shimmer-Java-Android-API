@@ -103,7 +103,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	private int indexKeeper = 0;
 	
 	public byte[] mSystemTimeStamp = new byte[8];
-	private double mShimmerCalibratedTimeStamp;
+	private double mTimeStampMilliSecs;
 	public boolean mIsValidObjectCluster = true;
 	
 	public int mPacketIdValue = 0;
@@ -542,7 +542,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			mObjectClusterBuilder.setBluetoothAddress(mBluetoothAddress);
 		if(mMyName!=null)
 			mObjectClusterBuilder.setName(mMyName);
-		mObjectClusterBuilder.setCalibratedTimeStamp(mShimmerCalibratedTimeStamp);
+		mObjectClusterBuilder.setCalibratedTimeStamp(mTimeStampMilliSecs);
 		ByteBuffer bb = ByteBuffer.allocate(8);
     	bb.put(mSystemTimeStamp);
     	bb.flip();
@@ -551,12 +551,12 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		return mObjectClusterBuilder.build();
 	}
 	
-	public double getShimmerCalibratedTimeStamp() {
-		return mShimmerCalibratedTimeStamp;
+	public double getTimestampMilliSecs() {
+		return mTimeStampMilliSecs;
 	}
 
-	public void setShimmerCalibratedTimeStamp(double mShimmerCalibratedTimeStamp) {
-		this.mShimmerCalibratedTimeStamp = mShimmerCalibratedTimeStamp;
+	public void setTimeStampMilliSecs(double timeStampMilliSecs) {
+		this.mTimeStampMilliSecs = timeStampMilliSecs;
 	}
 	
 	public ObjectCluster deepClone() {
