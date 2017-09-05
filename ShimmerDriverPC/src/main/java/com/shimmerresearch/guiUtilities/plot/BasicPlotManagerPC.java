@@ -65,7 +65,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	
 	protected String mEventMarkerCheck="";
 	int mXAxisLimit = 500;
-	int mXAxisTimeDuraton = 5;
+	double mXAxisTimeDuration = 5;
 	//public List<ITrace2D> mListofTraces = new ArrayList<ITrace2D>();
 	public List<ITrace2D> mListofTraces = Collections.synchronizedList(new ArrayList<ITrace2D>());
 	
@@ -91,6 +91,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
 	private boolean mIsTraceDataBuffered = false;
+	
+	public PlotCustomFeature pcf=null;
 	
 	private String mTitle = "";
 	
@@ -397,6 +399,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	 * @param chart the Chart to be cleared
 	 */
 	public void removeAllSignals(){
+		mCurrentXValue=0;
 		super.removeAllSignals();
 		if (mChart!=null){
 			mChart.removeAllTraces();
@@ -505,9 +508,20 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		x.setAxisTitle(axisTitle);
 	}
 	
-	public void setXAxisRange(double miny,double maxy){
+	public void setXAxisRange(double minX,double maxY){
 		IAxis<?> x = mChart.getAxisX();
-		x.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
+		x.setRangePolicy(new RangePolicyFixedViewport(new Range(minX, maxY)));
+	}
+	
+	public void setXAxisRangeBasedOnXDuration(){
+		setXAxisRange(mCurrentXValue-(mXAxisTimeDuration*1000), mCurrentXValue);
+	}
+	
+	public void setXAxisRangeBasedOnXDurationSubtractSingleSamplingRate(double samplingRate){
+		double minTime = mCurrentXValue-(mXAxisTimeDuration*1000);
+		double samplingDurationInMs = (1/samplingRate)*1000;
+		minTime=minTime+samplingDurationInMs;
+		setXAxisRange(minTime, mCurrentXValue);
 	}
 	
 	public void setYAxisRange(double miny,double maxy){
@@ -1414,6 +1428,8 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 				circularFifoBuffer.clear();
 			}
 		}
+		setXAxisDuration(mXAxisTimeDuration);
+		mCurrentXValue=0;
 	}
 
 	public void clearDataBufferAndMakeTraceVisible(String deviceName){
@@ -1952,6 +1968,12 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 				}
 			}
 		}
+		//	mChart.getAxisX().setRange(new Range(mCurrentXValue-(mXAxisTimeDuraton*1000),mCurrentXValue));
+		//setXAxisRange(mCurrentXValue-(mXAxisTimeDuraton*1000), mCurrentXValue);
+		//filterOldDataOutOfTrace();
+		if(pcf!=null){
+			pcf.custom(this);
+		}
 	}
 
 
@@ -2098,6 +2120,36 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		mChart = chart;
 	}
 	
+	/** Currently this method, has a problem when the end of the playback is reached, and the playback restarts itself
+	 * 
+	 */
+	protected void filterOldDataOutOfTrace(){
+		for (ITrace2D trace:mListofTraces){
+			Iterator itr = trace.iterator(); 
+			boolean reset=false;
+			while (itr.hasNext()){
+				ITracePoint2D itp = (ITracePoint2D) itr.next();
+				if (itp.getX()<(mCurrentXValue-(mXAxisTimeDuration*1000))){
+					reset=true;
+					break;
+				} else {
+					break;
+				}
+			}
+			if (reset){
+				trace.setVisible(false);
+			} else {
+				trace.setVisible(true);
+			}
+		}
+	}
+	
+	/**
+	 * @param duration this sets the range policy of the x axis, depending on the most recent xaxis data value
+	 */
+	public void setXAxisDuration(double duration){
+		mXAxisTimeDuration = duration;
+	}
 	//----------------------FFT timer test code start ---------------------
 
 	
