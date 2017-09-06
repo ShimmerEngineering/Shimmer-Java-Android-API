@@ -21,9 +21,9 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.0.0-pre1)",
+    value = "by gRPC proto compiler (version 1.6.1)",
     comments = "Source: src/ShimmerGrpcAndOJC.proto")
-public class ShimmerServerGrpc {
+public final class ShimmerServerGrpc {
 
   private ShimmerServerGrpc() {}
 
@@ -33,39 +33,75 @@ public class ShimmerServerGrpc {
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest,
       com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> METHOD_SAY_HELLO =
-      io.grpc.MethodDescriptor.create(
-          io.grpc.MethodDescriptor.MethodType.UNARY,
-          generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "SayHello"),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest.getDefaultInstance()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()));
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "SayHello"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()))
+          .build();
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
       com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> METHOD_GET_DATA_STREAM =
-      io.grpc.MethodDescriptor.create(
-          io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING,
-          generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetDataStream"),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest.getDefaultInstance()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.getDefaultInstance()));
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest, com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "GetDataStream"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.getDefaultInstance()))
+          .build();
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2,
       com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> METHOD_SEND_DATA_STREAM =
-      io.grpc.MethodDescriptor.create(
-          io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING,
-          generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "SendDataStream"),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.getDefaultInstance()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()));
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "SendDataStream"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()))
+          .build();
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.File,
       com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> METHOD_SEND_FILE_STREAM =
-      io.grpc.MethodDescriptor.create(
-          io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING,
-          generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "SendFileStream"),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.File.getDefaultInstance()),
-          io.grpc.protobuf.ProtoUtils.marshaller(com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()));
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.File, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "SendFileStream"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.File.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()))
+          .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> METHOD_CONNECT_SHIMMER =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "ConnectShimmer"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+          .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> METHOD_START_STREAMING =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "StartStreaming"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+          .build();
 
   /**
    * Creates a new async stub that supports all call types for the service
@@ -83,7 +119,7 @@ public class ShimmerServerGrpc {
   }
 
   /**
-   * Creates a new ListenableFuture-style stub that supports unary and streaming output calls on the service
+   * Creates a new ListenableFuture-style stub that supports unary calls on the service
    */
   public static ShimmerServerFutureStub newFutureStub(
       io.grpc.Channel channel) {
@@ -134,7 +170,21 @@ public class ShimmerServerGrpc {
       return asyncUnimplementedStreamingCall(METHOD_SEND_FILE_STREAM, responseObserver);
     }
 
-    @java.lang.Override public io.grpc.ServerServiceDefinition bindService() {
+    /**
+     */
+    public void connectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_CONNECT_SHIMMER, responseObserver);
+    }
+
+    /**
+     */
+    public void startStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_START_STREAMING, responseObserver);
+    }
+
+    @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
             METHOD_SAY_HELLO,
@@ -164,6 +214,20 @@ public class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.File,
                 com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>(
                   this, METHODID_SEND_FILE_STREAM)))
+          .addMethod(
+            METHOD_CONNECT_SHIMMER,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+                com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
+                  this, METHODID_CONNECT_SHIMMER)))
+          .addMethod(
+            METHOD_START_STREAMING,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+                com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
+                  this, METHODID_START_STREAMING)))
           .build();
     }
   }
@@ -229,6 +293,22 @@ public class ShimmerServerGrpc {
       return asyncClientStreamingCall(
           getChannel().newCall(METHOD_SEND_FILE_STREAM, getCallOptions()), responseObserver);
     }
+
+    /**
+     */
+    public void connectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_CONNECT_SHIMMER, getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void startStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_START_STREAMING, getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -272,6 +352,20 @@ public class ShimmerServerGrpc {
       return blockingServerStreamingCall(
           getChannel(), METHOD_GET_DATA_STREAM, getCallOptions(), request);
     }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus connectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_CONNECT_SHIMMER, getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus startStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_START_STREAMING, getCallOptions(), request);
+    }
   }
 
   /**
@@ -305,14 +399,32 @@ public class ShimmerServerGrpc {
       return futureUnaryCall(
           getChannel().newCall(METHOD_SAY_HELLO, getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> connectShimmer(
+        com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_CONNECT_SHIMMER, getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> startStreaming(
+        com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_START_STREAMING, getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SAY_HELLO = 0;
   private static final int METHODID_GET_DATA_STREAM = 1;
-  private static final int METHODID_SEND_DATA_STREAM = 2;
-  private static final int METHODID_SEND_FILE_STREAM = 3;
+  private static final int METHODID_CONNECT_SHIMMER = 2;
+  private static final int METHODID_START_STREAMING = 3;
+  private static final int METHODID_SEND_DATA_STREAM = 4;
+  private static final int METHODID_SEND_FILE_STREAM = 5;
 
-  private static class MethodHandlers<Req, Resp> implements
+  private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
@@ -320,7 +432,7 @@ public class ShimmerServerGrpc {
     private final ShimmerServerImplBase serviceImpl;
     private final int methodId;
 
-    public MethodHandlers(ShimmerServerImplBase serviceImpl, int methodId) {
+    MethodHandlers(ShimmerServerImplBase serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -336,6 +448,14 @@ public class ShimmerServerGrpc {
         case METHODID_GET_DATA_STREAM:
           serviceImpl.getDataStream((com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2>) responseObserver);
+          break;
+        case METHODID_CONNECT_SHIMMER:
+          serviceImpl.connectShimmer((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
+          break;
+        case METHODID_START_STREAMING:
+          serviceImpl.startStreaming((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -359,12 +479,33 @@ public class ShimmerServerGrpc {
     }
   }
 
-  public static io.grpc.ServiceDescriptor getServiceDescriptor() {
-    return new io.grpc.ServiceDescriptor(SERVICE_NAME,
-        METHOD_SAY_HELLO,
-        METHOD_GET_DATA_STREAM,
-        METHOD_SEND_DATA_STREAM,
-        METHOD_SEND_FILE_STREAM);
+  private static final class ShimmerServerDescriptorSupplier implements io.grpc.protobuf.ProtoFileDescriptorSupplier {
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.FileDescriptor getFileDescriptor() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.getDescriptor();
+    }
   }
 
+  private static volatile io.grpc.ServiceDescriptor serviceDescriptor;
+
+  public static io.grpc.ServiceDescriptor getServiceDescriptor() {
+    io.grpc.ServiceDescriptor result = serviceDescriptor;
+    if (result == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        result = serviceDescriptor;
+        if (result == null) {
+          serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
+              .setSchemaDescriptor(new ShimmerServerDescriptorSupplier())
+              .addMethod(METHOD_SAY_HELLO)
+              .addMethod(METHOD_GET_DATA_STREAM)
+              .addMethod(METHOD_SEND_DATA_STREAM)
+              .addMethod(METHOD_SEND_FILE_STREAM)
+              .addMethod(METHOD_CONNECT_SHIMMER)
+              .addMethod(METHOD_START_STREAMING)
+              .build();
+        }
+      }
+    }
+    return result;
+  }
 }

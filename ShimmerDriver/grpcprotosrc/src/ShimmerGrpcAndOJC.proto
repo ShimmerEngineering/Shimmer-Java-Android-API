@@ -24,12 +24,20 @@ service ShimmerServer {
   
   rpc SendFileStream(stream File) returns (HelloReply){}
   
+  rpc ConnectShimmer(ShimmerRequest) returns (CommandStatus){}
+  
+  rpc StartStreaming(ShimmerRequest) returns (CommandStatus){}
+  
 }
 
 message File {
 	string name=1;
 	bytes data=2;
 	bool endoffile=3;
+}
+
+message CommandStatus {
+	string status = 1;
 }
 
 // The request message containing the user's name.
@@ -40,6 +48,10 @@ message HelloRequest {
 // The response message containing the greetings
 message HelloReply {
   string message = 1;
+}
+
+message ShimmerRequest {
+  string address = 1;
 }
 
 message StreamRequest {
