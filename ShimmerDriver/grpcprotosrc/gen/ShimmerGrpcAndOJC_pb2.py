@@ -13,7 +13,6 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
-from src import LiteProtocolInstructionSet_pb2 as src_dot_LiteProtocolInstructionSet__pb2
 from google.protobuf import descriptor_pb2 as google_dot_protobuf_dot_descriptor__pb2
 
 
@@ -21,9 +20,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='src/ShimmerGrpcAndOJC.proto',
   package='shimmerGRPC',
   syntax='proto3',
-  serialized_pb=_b('\n\x1bsrc/ShimmerGrpcAndOJC.proto\x12\x0bshimmerGRPC\x1a$src/LiteProtocolInstructionSet.proto\x1a google/protobuf/descriptor.proto\"5\n\x04\x46ile\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\x12\x11\n\tendoffile\x18\x03 \x01(\x08\"\x1f\n\rCommandStatus\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"!\n\x0eShimmerRequest\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\" \n\rStreamRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x8e\x05\n\x0eObjectCluster2\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x18\n\x10\x62luetoothAddress\x18\x02 \x01(\t\x12H\n\x11\x63ommunicationType\x18\x03 \x01(\x0e\x32-.shimmerGRPC.ObjectCluster2.CommunicationType\x12\x39\n\x07\x64\x61taMap\x18\x04 \x03(\x0b\x32(.shimmerGRPC.ObjectCluster2.DataMapEntry\x12\x12\n\nsystemTime\x18\x05 \x01(\x03\x12\x1b\n\x13\x63\x61libratedTimeStamp\x18\x06 \x01(\x01\x1a\x88\x02\n\x0e\x46ormatCluster2\x12L\n\tformatMap\x18\x01 \x03(\x0b\x32\x39.shimmerGRPC.ObjectCluster2.FormatCluster2.FormatMapEntry\x1a=\n\x0c\x44\x61taCluster2\x12\x0c\n\x04unit\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x01\x12\x11\n\tdataArray\x18\x03 \x03(\x01\x1ai\n\x0e\x46ormatMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x46\n\x05value\x18\x02 \x01(\x0b\x32\x37.shimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2:\x02\x38\x01\x1aZ\n\x0c\x44\x61taMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x39\n\x05value\x18\x02 \x01(\x0b\x32*.shimmerGRPC.ObjectCluster2.FormatCluster2:\x02\x38\x01\"7\n\x11\x43ommunicationType\x12\x06\n\x02\x42T\x10\x00\x12\x06\n\x02SD\x10\x01\x12\x12\n\x0eRadio_802_15_4\x10\x02\x32\xc7\x03\n\rShimmerServer\x12@\n\x08SayHello\x12\x19.shimmerGRPC.HelloRequest\x1a\x17.shimmerGRPC.HelloReply\"\x00\x12L\n\rGetDataStream\x12\x1a.shimmerGRPC.StreamRequest\x1a\x1b.shimmerGRPC.ObjectCluster2\"\x00\x30\x01\x12J\n\x0eSendDataStream\x12\x1b.shimmerGRPC.ObjectCluster2\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12@\n\x0eSendFileStream\x12\x11.shimmerGRPC.File\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12K\n\x0e\x43onnectShimmer\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12K\n\x0eStartStreaming\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x42\x42\n\x18\x63om.shimmerresearch.grpcB\x0bShimmerGRPC\xaa\x02\x18\x63om.shimmerresearch.grpcb\x06proto3')
+  serialized_pb=_b('\n\x1bsrc/ShimmerGrpcAndOJC.proto\x12\x0bshimmerGRPC\x1a google/protobuf/descriptor.proto\"5\n\x04\x46ile\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\x12\x11\n\tendoffile\x18\x03 \x01(\x08\"\x1f\n\rCommandStatus\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"!\n\x0eShimmerRequest\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\" \n\rStreamRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x8e\x05\n\x0eObjectCluster2\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x18\n\x10\x62luetoothAddress\x18\x02 \x01(\t\x12H\n\x11\x63ommunicationType\x18\x03 \x01(\x0e\x32-.shimmerGRPC.ObjectCluster2.CommunicationType\x12\x39\n\x07\x64\x61taMap\x18\x04 \x03(\x0b\x32(.shimmerGRPC.ObjectCluster2.DataMapEntry\x12\x12\n\nsystemTime\x18\x05 \x01(\x03\x12\x1b\n\x13\x63\x61libratedTimeStamp\x18\x06 \x01(\x01\x1a\x88\x02\n\x0e\x46ormatCluster2\x12L\n\tformatMap\x18\x01 \x03(\x0b\x32\x39.shimmerGRPC.ObjectCluster2.FormatCluster2.FormatMapEntry\x1a=\n\x0c\x44\x61taCluster2\x12\x0c\n\x04unit\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x01\x12\x11\n\tdataArray\x18\x03 \x03(\x01\x1ai\n\x0e\x46ormatMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x46\n\x05value\x18\x02 \x01(\x0b\x32\x37.shimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2:\x02\x38\x01\x1aZ\n\x0c\x44\x61taMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x39\n\x05value\x18\x02 \x01(\x0b\x32*.shimmerGRPC.ObjectCluster2.FormatCluster2:\x02\x38\x01\"7\n\x11\x43ommunicationType\x12\x06\n\x02\x42T\x10\x00\x12\x06\n\x02SD\x10\x01\x12\x12\n\x0eRadio_802_15_4\x10\x02\x32\xc7\x03\n\rShimmerServer\x12@\n\x08SayHello\x12\x19.shimmerGRPC.HelloRequest\x1a\x17.shimmerGRPC.HelloReply\"\x00\x12L\n\rGetDataStream\x12\x1a.shimmerGRPC.StreamRequest\x1a\x1b.shimmerGRPC.ObjectCluster2\"\x00\x30\x01\x12J\n\x0eSendDataStream\x12\x1b.shimmerGRPC.ObjectCluster2\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12@\n\x0eSendFileStream\x12\x11.shimmerGRPC.File\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12K\n\x0e\x43onnectShimmer\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12K\n\x0eStartStreaming\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x42\x42\n\x18\x63om.shimmerresearch.grpcB\x0bShimmerGRPC\xaa\x02\x18\x63om.shimmerresearch.grpcb\x06proto3')
   ,
-  dependencies=[src_dot_LiteProtocolInstructionSet__pb2.DESCRIPTOR,google_dot_protobuf_dot_descriptor__pb2.DESCRIPTOR,])
+  dependencies=[google_dot_protobuf_dot_descriptor__pb2.DESCRIPTOR,])
 
 
 
@@ -48,8 +47,8 @@ _OBJECTCLUSTER2_COMMUNICATIONTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=934,
-  serialized_end=989,
+  serialized_start=896,
+  serialized_end=951,
 )
 _sym_db.RegisterEnumDescriptor(_OBJECTCLUSTER2_COMMUNICATIONTYPE)
 
@@ -94,8 +93,8 @@ _FILE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=116,
-  serialized_end=169,
+  serialized_start=78,
+  serialized_end=131,
 )
 
 
@@ -125,8 +124,8 @@ _COMMANDSTATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=171,
-  serialized_end=202,
+  serialized_start=133,
+  serialized_end=164,
 )
 
 
@@ -156,8 +155,8 @@ _HELLOREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=204,
-  serialized_end=232,
+  serialized_start=166,
+  serialized_end=194,
 )
 
 
@@ -187,8 +186,8 @@ _HELLOREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=234,
-  serialized_end=263,
+  serialized_start=196,
+  serialized_end=225,
 )
 
 
@@ -218,8 +217,8 @@ _SHIMMERREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=265,
-  serialized_end=298,
+  serialized_start=227,
+  serialized_end=260,
 )
 
 
@@ -249,8 +248,8 @@ _STREAMREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=300,
-  serialized_end=332,
+  serialized_start=262,
+  serialized_end=294,
 )
 
 
@@ -294,8 +293,8 @@ _OBJECTCLUSTER2_FORMATCLUSTER2_DATACLUSTER2 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=672,
-  serialized_end=733,
+  serialized_start=634,
+  serialized_end=695,
 )
 
 _OBJECTCLUSTER2_FORMATCLUSTER2_FORMATMAPENTRY = _descriptor.Descriptor(
@@ -331,8 +330,8 @@ _OBJECTCLUSTER2_FORMATCLUSTER2_FORMATMAPENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=735,
-  serialized_end=840,
+  serialized_start=697,
+  serialized_end=802,
 )
 
 _OBJECTCLUSTER2_FORMATCLUSTER2 = _descriptor.Descriptor(
@@ -361,8 +360,8 @@ _OBJECTCLUSTER2_FORMATCLUSTER2 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=576,
-  serialized_end=840,
+  serialized_start=538,
+  serialized_end=802,
 )
 
 _OBJECTCLUSTER2_DATAMAPENTRY = _descriptor.Descriptor(
@@ -398,8 +397,8 @@ _OBJECTCLUSTER2_DATAMAPENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=842,
-  serialized_end=932,
+  serialized_start=804,
+  serialized_end=894,
 )
 
 _OBJECTCLUSTER2 = _descriptor.Descriptor(
@@ -464,8 +463,8 @@ _OBJECTCLUSTER2 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=335,
-  serialized_end=989,
+  serialized_start=297,
+  serialized_end=951,
 )
 
 _OBJECTCLUSTER2_FORMATCLUSTER2_DATACLUSTER2.containing_type = _OBJECTCLUSTER2_FORMATCLUSTER2
@@ -582,8 +581,8 @@ _SHIMMERSERVER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=992,
-  serialized_end=1447,
+  serialized_start=954,
+  serialized_end=1409,
   methods=[
   _descriptor.MethodDescriptor(
     name='SayHello',
