@@ -1,7 +1,9 @@
 package com.shimmerresearch.guiUtilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -10,15 +12,17 @@ public abstract class AbstractPlotManager {
 	public abstract void setTraceLineStyleAll(PLOT_LINE_STYLE lineStyle);
 	
 	/** keeps a list of signals to plot */
-	public List<String[]> mListofPropertiestoPlot = new ArrayList<String[]>(); //this is used to identify he signals coming into the filter
+	//public List<String[]> mListofPropertiestoPlot = new ArrayList<String[]>(); //this is used to identify he signals coming into the filter
+	public List<String[]> mListofPropertiestoPlot = Collections.synchronizedList(new ArrayList<String[]>()); //this is used to identify he signals coming into the filter
 	
 	/** TODO do this based on x-axis data per Signal rather then Shimmer in the keySet */ 
 	protected HashMap<String,String[]> mMapofXAxis = new HashMap<String,String[]>();
 	/** TODO do this based on x-axis data per Signal rather then Shimmer in the keySet */ 
 	protected HashMap<String,Double> mMapofXAxisGeneratedValue = new HashMap<String,Double>();
 	
-	public List<int[]> mListOfTraceColorsCurrentlyUsed = new ArrayList<int[]>();
-	public static List<int[]> mListofTraceColorsDefault = new ArrayList<int[]>();
+	public List<int[]> mListOfTraceColorsCurrentlyUsed = Collections.synchronizedList(new ArrayList<int[]>());
+	
+	public static List<int[]> mListofTraceColorsDefault = Collections.synchronizedList(new ArrayList<int[]>());
 	{
 		String className = this.getClass().getName();
 		className ="";
@@ -152,15 +156,19 @@ public abstract class AbstractPlotManager {
 		boolean mFound = false;
 		int[] newColorToAdd = null;
 		if (mListOfTraceColorsCurrentlyUsed.size() > 0){
-			for (int[] rgbdefaultC : mListofTraceColorsDefault){
-				mFound = false;
-				for (int[] rgbp : mListOfTraceColorsCurrentlyUsed){
-					if (rgbdefaultC[0] == rgbp[0] && rgbdefaultC[1] == rgbp[1] && rgbdefaultC[2] == rgbp[2]){
-						mFound = true;
+			synchronized(mListofTraceColorsDefault){
+				Iterator <int[]> entries = mListofTraceColorsDefault.iterator();
+				while (entries.hasNext()) {
+					int[] rgbdefaultC = entries.next();
+					mFound = false;
+					for (int[] rgbp : mListOfTraceColorsCurrentlyUsed){
+						if (rgbdefaultC[0] == rgbp[0] && rgbdefaultC[1] == rgbp[1] && rgbdefaultC[2] == rgbp[2]){
+							mFound = true;
+						}
 					}
-				}
-				if (mFound != true){
-					newColorToAdd = rgbdefaultC;
+					if (mFound != true){
+						newColorToAdd = rgbdefaultC;
+					}
 				}
 			}
 		} 
@@ -194,23 +202,26 @@ public abstract class AbstractPlotManager {
 	 * @return false if the property does not exist in the plot manager
 	 */
 	public boolean checkIfPropertyExist(String[] channelStringArray){
-		for (int i=0;i<mListofPropertiestoPlot.size();i++){
-			boolean test = true;
-			int lengthToUse = channelStringArray.length>4? 4:channelStringArray.length;
-			for (int p=0;p<lengthToUse;p++){
-//			for (int p=0;p<property.length;p++){
-				if((mListofPropertiestoPlot.get(i)[p]==null) && (channelStringArray[p]==null)){
-					test = true;
+		synchronized(mListofPropertiestoPlot){
+			Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
+			while (entries.hasNext()) {
+				String[] propertiestoPlot = entries.next();
+				boolean test = true;
+				int lengthToUse = channelStringArray.length>4? 4:channelStringArray.length;
+				for (int p=0; p<lengthToUse; p++){
+					if((propertiestoPlot[p]==null) && (channelStringArray[p]==null)){
+						test = true;
+					}
+					else if((propertiestoPlot[p]==null) || (channelStringArray[p]==null)){
+						test = false;
+					}
+					else if (!propertiestoPlot[p].equals(channelStringArray[p])){
+						test = false;
+					}
 				}
-				else if((mListofPropertiestoPlot.get(i)[p]==null) || (channelStringArray[p]==null)){
-					test = false;
+				if (test==true){
+					return true;
 				}
-				else if (!mListofPropertiestoPlot.get(i)[p].equals(channelStringArray[p])){
-					test = false;
-				}
-			}
-			if (test==true){
-				return true;
 			}
 		}
 		return false;
