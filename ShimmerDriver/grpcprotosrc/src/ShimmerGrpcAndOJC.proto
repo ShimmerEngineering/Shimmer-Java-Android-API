@@ -1,7 +1,7 @@
 //import "C:/Users/Lim/git/Shimmer-Java-Android-API/ShimmerDriver/grpcprotosrc/src/LiteProtocolInstructionSet.proto";
 
 syntax = "proto3";
-import "src/LiteProtocolInstructionSet.proto";
+//import "src/LiteProtocolInstructionSet.proto";
 
 import "google/protobuf/descriptor.proto";
 
