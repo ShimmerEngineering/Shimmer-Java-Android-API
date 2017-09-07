@@ -102,6 +102,18 @@ public final class ShimmerServerGrpc {
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
           .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> METHOD_CLOSE_APPLICATION =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "CloseApplication"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+          .build();
 
   /**
    * Creates a new async stub that supports all call types for the service
@@ -184,6 +196,13 @@ public final class ShimmerServerGrpc {
       asyncUnimplementedUnaryCall(METHOD_START_STREAMING, responseObserver);
     }
 
+    /**
+     */
+    public void closeApplication(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_CLOSE_APPLICATION, responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -228,6 +247,13 @@ public final class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
                 com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
                   this, METHODID_START_STREAMING)))
+          .addMethod(
+            METHOD_CLOSE_APPLICATION,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+                com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
+                  this, METHODID_CLOSE_APPLICATION)))
           .build();
     }
   }
@@ -309,6 +335,14 @@ public final class ShimmerServerGrpc {
       asyncUnaryCall(
           getChannel().newCall(METHOD_START_STREAMING, getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void closeApplication(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_CLOSE_APPLICATION, getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -366,6 +400,13 @@ public final class ShimmerServerGrpc {
       return blockingUnaryCall(
           getChannel(), METHOD_START_STREAMING, getCallOptions(), request);
     }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus closeApplication(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_CLOSE_APPLICATION, getCallOptions(), request);
+    }
   }
 
   /**
@@ -415,14 +456,23 @@ public final class ShimmerServerGrpc {
       return futureUnaryCall(
           getChannel().newCall(METHOD_START_STREAMING, getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> closeApplication(
+        com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_CLOSE_APPLICATION, getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SAY_HELLO = 0;
   private static final int METHODID_GET_DATA_STREAM = 1;
   private static final int METHODID_CONNECT_SHIMMER = 2;
   private static final int METHODID_START_STREAMING = 3;
-  private static final int METHODID_SEND_DATA_STREAM = 4;
-  private static final int METHODID_SEND_FILE_STREAM = 5;
+  private static final int METHODID_CLOSE_APPLICATION = 4;
+  private static final int METHODID_SEND_DATA_STREAM = 5;
+  private static final int METHODID_SEND_FILE_STREAM = 6;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -455,6 +505,10 @@ public final class ShimmerServerGrpc {
           break;
         case METHODID_START_STREAMING:
           serviceImpl.startStreaming((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
+          break;
+        case METHODID_CLOSE_APPLICATION:
+          serviceImpl.closeApplication((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
           break;
         default:
@@ -502,6 +556,7 @@ public final class ShimmerServerGrpc {
               .addMethod(METHOD_SEND_FILE_STREAM)
               .addMethod(METHOD_CONNECT_SHIMMER)
               .addMethod(METHOD_START_STREAMING)
+              .addMethod(METHOD_CLOSE_APPLICATION)
               .build();
         }
       }
