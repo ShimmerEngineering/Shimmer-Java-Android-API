@@ -21,7 +21,48 @@ public class UtilCalibration {
 		n = Number of Samples
 	 */
 	public static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
-		if(data==null || AM==null || SM==null || OV==null){
+//		if(data==null || AM==null || SM==null || OV==null){
+//			System.out.println("UtilCalibration.calibrateInertialSensorData:" + "ERROR! NaN in input data");
+//			return null;
+//		}
+//
+//		double [][] data2d=new double [3][1];
+//		data2d[0][0]=data[0];
+//		data2d[1][0]=data[1];
+//		data2d[2][0]=data[2];
+//		data2d= matrixMultiplication(matrixMultiplication(matrixInverse3x3(AM),matrixInverse3x3(SM)),matrixMinus(data2d,OV));
+//		double[] ansdata=new double[3];
+//		ansdata[0]=data2d[0][0];
+//		ansdata[1]=data2d[1][0];
+//		ansdata[2]=data2d[2][0];
+//		
+//		if(Double.isNaN(ansdata[0]) || Double.isNaN(ansdata[1]) || Double.isNaN(ansdata[2])){
+//			System.out.println("UtilCalibration.calibrateInertialSensorData:" + "ERROR! NaN in calibrated data");
+//		}
+//		
+//		return ansdata;
+		
+		return calibrateInertialSensorData(data, matrixMultiplication(matrixInverse3x3(AM),matrixInverse3x3(SM)), OV);
+	}
+
+	
+	/**  Based on the theory outlined by Ferraris F, Grimaldi U, and Parvis M.  
+    in "Procedure for effortless in-field calibration of three-axis rate gyros and accelerometers" Sens. Mater. 1995; 7: 311-30.            
+    C = [R^(-1)] .[K^(-1)] .([U]-[B])
+		where.....
+		[C] -> [3 x n] Calibrated Data Matrix 
+		[U] -> [3 x n] Uncalibrated Data Matrix
+		[B] ->  [3 x n] Replicated Sensor Offset Vector Matrix 
+		[R^(-1)] -> [3 x 3] Inverse Alignment Matrix
+		[K^(-1)] -> [3 x 3] Inverse Sensitivity Matrix
+		n = Number of Samples
+		
+		More efficient method whereby one consistent matrixMultiplication calculation is preperformed once and it's 
+		result passed in rather then on a per packet basis.  
+		
+	 */
+	public static double[] calibrateInertialSensorData(double[] data, double[][] matrixMultipliedInverseAMSM, double[][] OV) {
+		if(data==null || matrixMultipliedInverseAMSM==null || OV==null){
 			System.out.println("UtilCalibration.calibrateInertialSensorData:" + "ERROR! NaN in input data");
 			return null;
 		}
@@ -30,7 +71,7 @@ public class UtilCalibration {
 		data2d[0][0]=data[0];
 		data2d[1][0]=data[1];
 		data2d[2][0]=data[2];
-		data2d= matrixMultiplication(matrixMultiplication(matrixInverse3x3(AM),matrixInverse3x3(SM)),matrixMinus(data2d,OV));
+		data2d= matrixMultiplication(matrixMultipliedInverseAMSM,matrixMinus(data2d,OV));
 		double[] ansdata=new double[3];
 		ansdata[0]=data2d[0][0];
 		ansdata[1]=data2d[1][0];
@@ -42,7 +83,7 @@ public class UtilCalibration {
 		
 		return ansdata;
 	}
-	
+
 	/**
 	 * @param data
 	 * @param calibDetails
@@ -58,7 +99,17 @@ public class UtilCalibration {
 				calibDetails.getValidSensitivityMatrix(), 
 				calibDetails.getValidOffsetVector());
 	}
-	
+
+	public static double[] calibrateInertialSensorDataNew(double[] data, CalibDetailsKinematic calibDetails) {
+		if(calibDetails==null){
+			return data;
+		}
+		
+		return calibrateInertialSensorData(data, 
+				calibDetails.getValidMatrixMultipliedInverseAMSM(), 
+				calibDetails.getValidOffsetVector());
+	}
+
 	public static double[][] matrixInverse3x3(double[][] data) {
 		if(data==null){
 			return null;

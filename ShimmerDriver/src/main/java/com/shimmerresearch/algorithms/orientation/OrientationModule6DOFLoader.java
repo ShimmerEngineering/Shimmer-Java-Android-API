@@ -7,6 +7,7 @@ import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
@@ -15,7 +16,7 @@ public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject svo, ExpansionBoardDetails eBD) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
 		
-		if(svo.isShimmerGen3() || svo.isShimmerGen4()){
+		if((svo.isShimmerGen3() || svo.isShimmerGen4()) && svo.getFirmwareIdentifier()!=FW_ID.STROKARE){
 			mapOfSupportedAlgorithms.putAll(OrientationModule6DOF.mAlgorithmMapRef);
 		}
 		
