@@ -161,11 +161,15 @@ public abstract class AbstractPlotManager {
 				while (entries.hasNext()) {
 					int[] rgbdefaultC = entries.next();
 					mFound = false;
-					for (int[] rgbp : mListOfTraceColorsCurrentlyUsed){
-						if (rgbdefaultC[0] == rgbp[0] && rgbdefaultC[1] == rgbp[1] && rgbdefaultC[2] == rgbp[2]){
-							mFound = true;
+					
+					synchronized(mListOfTraceColorsCurrentlyUsed){
+						for (int[] rgbp : mListOfTraceColorsCurrentlyUsed){
+							if (rgbdefaultC[0] == rgbp[0] && rgbdefaultC[1] == rgbp[1] && rgbdefaultC[2] == rgbp[2]){
+								mFound = true;
+							}
 						}
-					}
+					}					
+
 					if (mFound != true){
 						newColorToAdd = rgbdefaultC;
 					}
