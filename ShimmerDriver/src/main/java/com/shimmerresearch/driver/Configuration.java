@@ -498,7 +498,7 @@ public class Configuration {
 		SensorPPG.ObjectClusterSensorName.PPG2_A1 = "PPG2_A1";
 		SensorPPG.ObjectClusterSensorName.PPG2_A14 = "PPG2_A14";
 //		Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
-		Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC = "Timestamp_Sync";
+//		Shimmer3.ObjectClusterSensorName.TIMESTAMP_SYNC = "Timestamp_Sync";
 
 		Shimmer2.ObjectClusterSensorName.TIMESTAMP = "Timestamp";
 		Shimmer2.ObjectClusterSensorName.REAL_TIME_CLOCK = "RealTime";
@@ -1037,8 +1037,8 @@ public class Configuration {
 			
 			public static String TIMESTAMP = 			ShimmerClock.ObjectClusterSensorName.TIMESTAMP;//"Timestamp";
 			public static String REAL_TIME_CLOCK = 		ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK;//"RealTime";
-//			public static String REAL_TIME_CLOCK_SYNC = ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;//"RealTime_Sync";
-			public static String TIMESTAMP_SYNC = 		ShimmerClock.ObjectClusterSensorName.TIMESTAMP_SYNC;//"Timestamp_Sync";
+//			public static String REAL_TIME_CLOCK_SYNC = TimeSyncModule.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;//"RealTime_Sync";
+//			public static String TIMESTAMP_SYNC = 		TimeSyncModule.ObjectClusterSensorName.TIMESTAMP_SYNC;//"Timestamp_Sync";
 			public static String SYSTEM_TIMESTAMP = 	SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP;//"System_Timestamp";
 			public static String SYSTEM_TIMESTAMP_PLOT = SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT;//"System_Timestamp_plot";
 

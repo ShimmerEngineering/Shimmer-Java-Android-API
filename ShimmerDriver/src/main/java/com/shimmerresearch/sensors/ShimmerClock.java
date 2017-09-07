@@ -75,8 +75,6 @@ public class ShimmerClock extends AbstractSensor {
 		
 		public static final String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
 		public static final String REAL_TIME_CLOCK = "RealTime";
-//		public static final String REAL_TIME_CLOCK_SYNC = "RealTime_Sync";
-		public static final String TIMESTAMP_SYNC = "Timestamp_Sync";
 		
 //		public static final String SYSTEM_TIMESTAMP = "System_Timestamp";
 //		public static final String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
@@ -90,9 +88,6 @@ public class ShimmerClock extends AbstractSensor {
 		public static final String TIMESTAMP_EXPORT = "Timestamp";
 		public static final String OFFSET_TIMESTAMP = "OFFSET";//"Offset";
 		
-		public static final String TIMESTAMP_SYNC = "TimeStampSync";
-		public static final String TIMESTAMP_SYNC_EXPORT = "TimestampSync";
-//		public static final String REAL_TIME_CLOCK_SYNC = "RealTimeSync";
 		public static final String REAL_TIME_CLOCK = "Real_Time_Clock";
 	}
 	
@@ -118,8 +113,6 @@ public class ShimmerClock extends AbstractSensor {
 					ShimmerClock.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 					ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK,
 					ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET
-//					,
-//					ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC
 					));
 	{
 		sensorShimmerClock.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
@@ -131,9 +124,7 @@ public class ShimmerClock extends AbstractSensor {
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			Arrays.asList(
 //					ObjectClusterSensorName.TIMESTAMP,
-//					ObjectClusterSensorName.TIMESTAMP_SYNC,
 //					ObjectClusterSensorName.REAL_TIME_CLOCK,
-//					ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
 					SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 					
 					//TODO move to different class?
@@ -247,6 +238,8 @@ public class ShimmerClock extends AbstractSensor {
 			ObjectClusterSensorName.TIMESTAMP_OFFSET,
 			ObjectClusterSensorName.TIMESTAMP_OFFSET,
 			DatabaseChannelHandles.OFFSET_TIMESTAMP,
+			//TODO UtilParseData.parseData currently can not handle over 64 bits. LSB byte for offset is ?a sign byte? for the remaining 8 bytes so default parser won't work
+//			CHANNEL_DATA_TYPE.UINT72, 9, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 	{
@@ -264,17 +257,6 @@ public class ShimmerClock extends AbstractSensor {
 		//TODO put into above constructor
 		channelRealTimeClock.mChannelSource = CHANNEL_SOURCE.API;
 	}
-
-//	public static final ChannelDetails channelRealTimeClockSync = new ChannelDetails(
-//			ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-//			ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC,
-//			DatabaseChannelHandles.REAL_TIME_CLOCK_SYNC,
-//			CHANNEL_UNITS.MILLISECONDS,
-//			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
-//	{
-//		//TODO put into above constructor
-//		channelRealTimeClockSync.mChannelSource = CHANNEL_SOURCE.API;
-//	}
 
 	//TODO: Move to separate class
 	public static final ChannelDetails channelBattPercentage = new ChannelDetails(
@@ -357,8 +339,6 @@ public class ShimmerClock extends AbstractSensor {
 			channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE, ShimmerClock.channelShimmerTsDiffernce);
 			channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
 			channelMapRef.put(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
-			
-//			channelMapRef.put(ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC, ShimmerClock.channelRealTimeClockSync);
 			
 			channelMapRef.put(SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE, ShimmerClock.channelBattPercentage);
 			

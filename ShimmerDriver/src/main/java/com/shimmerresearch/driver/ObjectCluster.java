@@ -373,15 +373,19 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addData(ChannelDetails channelDetails, double uncalData, double calData) {
-		addData(channelDetails, uncalData, calData, indexKeeper);
+		addData(channelDetails, uncalData, calData, false);
 	}
 
-	public void addData(ChannelDetails channelDetails, double uncalData, double calData, int index) {
+	public void addData(ChannelDetails channelDetails, double uncalData, double calData, boolean usingDefaultParameters) {
+		addData(channelDetails, uncalData, calData, indexKeeper, usingDefaultParameters);
+	}
+
+	public void addData(ChannelDetails channelDetails, double uncalData, double calData, int index, boolean usingDefaultParameters) {
 		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.UNCAL)){
 			addUncalData(channelDetails, uncalData, index);
 		}
 		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
-			addCalData(channelDetails, calData, index);
+			addCalData(channelDetails, calData, index, usingDefaultParameters);
 		}
 		//TODO decide whether to include the below here
 //		incrementIndexKeeper();

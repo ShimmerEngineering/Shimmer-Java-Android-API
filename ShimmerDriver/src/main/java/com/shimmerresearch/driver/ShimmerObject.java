@@ -175,7 +175,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private static final long serialVersionUID = -1364568867018921219L;
 	
 	protected boolean mFirstTime = true;
-	double mFirstRawTS = 0;
+	protected double mFirstRawTS = 0;
 	public int OFFSET_LENGTH = 9;
 
 	public static final class DatabaseConfigHandleShimmerObject{
@@ -484,7 +484,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mMasterShimmer = 0;
 	protected int mSingleTouch = 0;
 	protected int mTCXO = 0;
-	protected long mRTCOffset = 0; //this is in ticks
+	protected long mRTCDifferenceInTicks = 0; //this is in ticks
 	public int mRTCSetByBT = 1; // RTC source, = 1 because it comes from the BT
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
@@ -498,8 +498,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected int mTrialId = 0;
 	protected int mTrialNumberOfShimmers = 0;
-	protected int mTrialDurationEstimated = 0;
-	protected int mTrialDurationMaximum = 0;
+	protected int mTrialDurationEstimatedInSecs = 0;
+	protected int mTrialDurationMaximumInSecs = 0;
 	
 	/** Used in BT communication */
 	protected String mMyBluetoothAddress="";
@@ -614,6 +614,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected byte[] mEXG1RegisterArray = new byte[10];
 	protected byte[] mEXG2RegisterArray = new byte[10];
+	
+	//Gain is set at 6 (default) in eq. below until updated later in the connection/configuration sequence
+	protected double exg1Ch1CalFactor24Bit = (((2.42*1000)/6)/(Math.pow(2,23)-1));
+	protected double exg1Ch2CalFactor24Bit = (((2.42*1000)/6)/(Math.pow(2,23)-1));
+	protected double exg2Ch1CalFactor24Bit = (((2.42*1000)/6)/(Math.pow(2,23)-1));
+	protected double exg2Ch2CalFactor24Bit = (((2.42*1000)/6)/(Math.pow(2,23)-1));
+
+	protected double exg1Ch1CalFactor16Bit = (((2.42*1000)/6)/(Math.pow(2,15)-1));
+	protected double exg1Ch2CalFactor16Bit = (((2.42*1000)/6)/(Math.pow(2,15)-1));
+	protected double exg2Ch1CalFactor16Bit = (((2.42*1000)/6)/(Math.pow(2,15)-1));
+	protected double exg2Ch2CalFactor16Bit = (((2.42*1000)/6)/(Math.pow(2,15)-1));
+
 	@Deprecated
 	private int mEXG1RateSetting; //setting not value
 	@Deprecated
@@ -674,6 +686,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mPastGSRRange=4; 				// this is to fix a bug with SDLog v0.9
 	protected int mPastGSRUncalibratedValue=4; 	// this is to fix a bug with SDLog v0.9
 	protected boolean mPastGSRFirstTime=true; 	// this is to fix a bug with SDLog v0.9
+
 	// ---------- GSR end ------------------
 
 
@@ -720,7 +733,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 		} 
 		else {
-			if (mRTCOffset == 0){
+			if (!isRtcDifferenceSet()){
 				//sd log time stamp already included in mnChannels
 			} 
 			else {
@@ -814,11 +827,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//RAW RTC
-			if ((fwType == COMMUNICATION_TYPE.SD) && mRTCOffset!=0) {
+			if ((fwType == COMMUNICATION_TYPE.SD) && isRtcDifferenceSet()) {
 //			if (fwIdentifier == COMMUNICATION_TYPE.SD) {
 				double unwrappedrawtimestamp = calibratedTS*getSamplingClockFreq()/1000;
 				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
-				long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCOffset;
+				long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCDifferenceInTicks;
 				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)rtctimestamp);
 				uncalibratedData[sensorNames.length-1] = (double)rtctimestamp;
 				uncalibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.CLOCK_UNIT;
@@ -828,8 +841,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if(mInitialTimeStamp!=0){
 						rtctimestampcal += ((double)mInitialTimeStamp/getSamplingClockFreq()*1000.0);
 					}
-					if(mRTCOffset!=0){
-						rtctimestampcal += ((double)mRTCOffset/getSamplingClockFreq()*1000.0);
+					if(isRtcDifferenceSet()){
+						rtctimestampcal += ((double)mRTCDifferenceInTicks/getSamplingClockFreq()*1000.0);
 					}
 					if(mFirstRawTS!=0){
 						rtctimestampcal -= (mFirstRawTS/getSamplingClockFreq()*1000.0);
@@ -868,6 +881,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			} 
 
 
+			//Used anywhere?
 			objectCluster = callAdditionalServices(objectCluster);
 
 
@@ -2490,7 +2504,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return iSignal;
 	}
 
-	//TODO unlink from ShimmerFile and move to ShimmerBluetooth
 	/** Only for Bluetooth
 	 * @param numChannels
 	 * @param signalId
@@ -3935,11 +3948,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public long getRTCOffset(){
-		return mRTCOffset;
+		return mRTCDifferenceInTicks;
 	}
 
 	public void setRTCOffset(long rtcOffset){
-		mRTCOffset = rtcOffset;
+		mRTCDifferenceInTicks = rtcOffset;
+	}
+	
+	public boolean isRtcDifferenceSet(){
+		return (mRTCDifferenceInTicks==0)? false:true;
 	}
 
 	/**
@@ -4235,8 +4252,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mSyncBroadcastInterval = (int)(configBytes[configByteLayoutCast.idxSDBTInterval] & 0xFF);
 					
 					// Maximum and Estimated Length in minutes
-					setTrialDurationEstimated((int)(configBytes[configByteLayoutCast.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
-					setTrialDurationMaximum((int)(configBytes[configByteLayoutCast.idxMaxExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxMaxExpLengthMsb] & 0xFF)) << 8));
+					setTrialDurationEstimatedInSecs((int)(configBytes[configByteLayoutCast.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
+					setTrialDurationMaximumInSecs((int)(configBytes[configByteLayoutCast.idxMaxExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxMaxExpLengthMsb] & 0xFF)) << 8));
 				}
 				
 				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
@@ -4482,10 +4499,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mConfigBytes[configByteLayoutCast.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
 				
 					// Maximum and Estimated Length in minutes
-					mConfigBytes[configByteLayoutCast.idxEstimatedExpLengthLsb] = (byte) ((getTrialDurationEstimated() >> 0) & 0xFF);
-					mConfigBytes[configByteLayoutCast.idxEstimatedExpLengthMsb] = (byte) ((getTrialDurationEstimated() >> 8) & 0xFF);
-					mConfigBytes[configByteLayoutCast.idxMaxExpLengthLsb] = (byte) ((getTrialDurationMaximum() >> 0) & 0xFF);
-					mConfigBytes[configByteLayoutCast.idxMaxExpLengthMsb] = (byte) ((getTrialDurationMaximum() >> 8) & 0xFF);
+					mConfigBytes[configByteLayoutCast.idxEstimatedExpLengthLsb] = (byte) ((getTrialDurationEstimatedInSecs() >> 0) & 0xFF);
+					mConfigBytes[configByteLayoutCast.idxEstimatedExpLengthMsb] = (byte) ((getTrialDurationEstimatedInSecs() >> 8) & 0xFF);
+					mConfigBytes[configByteLayoutCast.idxMaxExpLengthLsb] = (byte) ((getTrialDurationMaximumInSecs() >> 0) & 0xFF);
+					mConfigBytes[configByteLayoutCast.idxMaxExpLengthMsb] = (byte) ((getTrialDurationMaximumInSecs() >> 8) & 0xFF);
 				}
 
 				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
@@ -5206,51 +5223,51 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @return the mTrialDurationEstimated
 	 */
-	public int getTrialDurationEstimated() {
-		return mTrialDurationEstimated;
+	public int getTrialDurationEstimatedInSecs() {
+		return mTrialDurationEstimatedInSecs;
 	}
 
 	/**
-	 * @param mExperimentDurationEstimated the mExperimentDurationEstimated to set.  Min value is 1.
+	 * @param experimentDurationEstimatedInSecs the mExperimentDurationEstimated to set.  Min value is 1.
 	 */
-	public void setExperimentDurationEstimated(int mExperimentDurationEstimated) {
+	public void setExperimentDurationEstimatedInSecs(int experimentDurationEstimatedInSecs) {
     	int maxValue = (int) ((Math.pow(2, 16))-1); 
-    	if(mExperimentDurationEstimated>maxValue) {
-    		mExperimentDurationEstimated = maxValue;
+    	if(experimentDurationEstimatedInSecs>maxValue) {
+    		experimentDurationEstimatedInSecs = maxValue;
     	}
-    	else if(mExperimentDurationEstimated<=0) {
-    		mExperimentDurationEstimated = 1;
+    	else if(experimentDurationEstimatedInSecs<=0) {
+    		experimentDurationEstimatedInSecs = 1;
     	}
-    	setTrialDurationEstimated(mExperimentDurationEstimated);
+    	setTrialDurationEstimatedInSecs(experimentDurationEstimatedInSecs);
 	}
 
-	public void setTrialDurationEstimated(int trialDurationEstimated) {
-		mTrialDurationEstimated = trialDurationEstimated;
+	public void setTrialDurationEstimatedInSecs(int trialDurationEstimatedInSecs) {
+		mTrialDurationEstimatedInSecs = trialDurationEstimatedInSecs;
 	}
 
 	/**
 	 * @return the mTrialDurationMaximum
 	 */
-	public int getTrialDurationMaximum() {
-		return mTrialDurationMaximum;
+	public int getTrialDurationMaximumInSecs() {
+		return mTrialDurationMaximumInSecs;
 	}
 
 	/**
-	 * @param mExperimentDurationMaximum the mExperimentDurationMaximum to set. Min value is 0.
+	 * @param experimentDurationMaximumInSecs the mExperimentDurationMaximum to set. Min value is 0.
 	 */
-	public void setExperimentDurationMaximum(int mExperimentDurationMaximum) {
+	public void setExperimentDurationMaximumInSecs(int experimentDurationMaximumInSecs) {
     	int maxValue = (int) ((Math.pow(2, 16))-1); 
-    	if(mExperimentDurationMaximum>maxValue) {
-    		mExperimentDurationMaximum = maxValue;
+    	if(experimentDurationMaximumInSecs>maxValue) {
+    		experimentDurationMaximumInSecs = maxValue;
     	}
-    	else if(mExperimentDurationMaximum<0) {
-    		mExperimentDurationMaximum = 1;
+    	else if(experimentDurationMaximumInSecs<0) {
+    		experimentDurationMaximumInSecs = 1;
     	}
-    	setTrialDurationMaximum(mExperimentDurationMaximum);
+    	setTrialDurationMaximumInSecs(experimentDurationMaximumInSecs);
 	}
 
-	public void setTrialDurationMaximum(int trialDurationMaximum) {
-		mTrialDurationMaximum = trialDurationMaximum;
+	public void setTrialDurationMaximumInSecs(int trialDurationMaximumInSecs) {
+		mTrialDurationMaximumInSecs = trialDurationMaximumInSecs;
 	}
 
 	/**
@@ -5567,7 +5584,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the mSyncWhenLogging state to set
 	 */
 	public void setSyncWhenLogging(boolean state) {
-		this.mSyncWhenLogging = (state? 1:0);
+		setSyncWhenLogging(state? 1:0);
 	}
 
 	public void setSyncWhenLogging(int state) {
@@ -6028,8 +6045,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+//			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
+//			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4.configValueInt);
 
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			
@@ -6062,8 +6080,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 			
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_12);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_12);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_12);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_12);
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_12.configValueInt);
+
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.ROUTE_CH3_TO_CH1);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.NORMAL);
 			
@@ -6098,6 +6118,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_1.configValueInt);
+
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.TEST_SIGNAL_SELECTION.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.TEST_SIGNAL_FREQUENCY.SQUARE_WAVE_1KHZ);
 
@@ -6129,8 +6151,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+//			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
+//			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4.configValueInt);
 
 //			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.RLDIN_CONNECTED_TO_NEG_INPUT); //TODO:2015-06 check!!
 			
@@ -6185,6 +6208,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.TEST_SIGNAL_SELECTION.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.TEST_SIGNAL_FREQUENCY.SQUARE_WAVE_1KHZ);
 
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4.configValueInt);
+
 //			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			
@@ -6201,8 +6226,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 
-		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
-		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+//		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
+//		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+		setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4.configValueInt);
 
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
@@ -6524,27 +6550,39 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void setExGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int value){
 		if(chipID==EXG_CHIP_INDEX.CHIP1){
 			if(channel==1){
-				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,value);
+				exg1Ch1CalFactor24Bit = (((2.42*1000)/getExg1CH1GainValue())/(Math.pow(2,23)-1));
+				//TODO need to confirm, why *2 for 16-bit?
+				exg1Ch1CalFactor16Bit = (((2.42*1000)/getExg1CH1GainValue()*2)/(Math.pow(2,15)-1));
 			}
 			else if(channel==2){
-				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,value);
+				exg1Ch2CalFactor24Bit = (((2.42*1000)/getExg1CH2GainValue())/(Math.pow(2,23)-1));
+				//TODO need to confirm, why *2 for 16-bit?
+				exg1Ch2CalFactor16Bit = (((2.42*1000)/getExg1CH2GainValue()*2)/(Math.pow(2,15)-1));
 			}
 		}
 		else if(chipID==EXG_CHIP_INDEX.CHIP2){
 			if(channel==1){
-				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,value);
+				exg2Ch1CalFactor24Bit = (((2.42*1000)/getExg2CH1GainValue())/(Math.pow(2,23)-1));
+				//TODO need to confirm, why *2 for 16-bit?
+				exg2Ch1CalFactor16Bit = (((2.42*1000)/getExg2CH1GainValue()*2)/(Math.pow(2,15)-1));
 			}
 			else if(channel==2){
-				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,value);
+				exg2Ch2CalFactor24Bit = (((2.42*1000)/getExg2CH2GainValue())/(Math.pow(2,23)-1));
+				//TODO need to confirm, why *2 for 16-bit?
+				exg2Ch2CalFactor16Bit = (((2.42*1000)/getExg2CH2GainValue()*2)/(Math.pow(2,15)-1));
 			}
 		}
 	}
 
 	protected void setExGGainSetting(int value){
-		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
-		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
-		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
-		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+		setExGGainSetting(EXG_CHIP_INDEX.CHIP1, 1, value);
+		setExGGainSetting(EXG_CHIP_INDEX.CHIP1, 2, value);
+		setExGGainSetting(EXG_CHIP_INDEX.CHIP2, 1, value);
+		setExGGainSetting(EXG_CHIP_INDEX.CHIP2, 2, value);
 	}
 	
 	protected void setExGResolution(int i){
@@ -8412,10 +8450,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	        	returnValue = Integer.toString(getTrialNumberOfShimmers());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
-	        	returnValue = Integer.toString(getTrialDurationEstimated());
+	        	returnValue = Integer.toString(getTrialDurationEstimatedInSecs());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
-	        	returnValue = Integer.toString(getTrialDurationMaximum());
+	        	returnValue = Integer.toString(getTrialDurationMaximumInSecs());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
 	        	returnValue = Integer.toString(getSyncBroadcastInterval());
@@ -8609,9 +8647,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
             	else {
                 	buf = Integer.parseInt((String)valueToSet);
             	}
-        		setExperimentDurationEstimated(buf);
+        		setExperimentDurationEstimatedInSecs(buf);
         		
-        		returnValue = Integer.toString(getTrialDurationEstimated());
+        		returnValue = Integer.toString(getTrialDurationEstimatedInSecs());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
             	//leave max_exp_len = 0 to not automatically stop logging.
@@ -8621,9 +8659,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
             	else {
                 	buf = Integer.parseInt((String)valueToSet);
             	}
-        		setExperimentDurationMaximum(buf);
+        		setExperimentDurationMaximumInSecs(buf);
         		
-        		returnValue = Integer.toString(getTrialDurationMaximum());
+        		returnValue = Integer.toString(getTrialDurationMaximumInSecs());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
             	buf = 1; // Minimum = 1
@@ -8741,8 +8779,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		configMapForDb.put(ShimmerDevice.DatabaseConfigHandle.INITIAL_TIMESTAMP, (double) getInitialTimeStamp());
 
 		configMapForDb.put(DatabaseConfigHandleShimmerObject.SYNC_WHEN_LOGGING, (double) getSyncWhenLogging());
-		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED, (double) getTrialDurationEstimated());
-		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM, (double) getTrialDurationMaximum());
+		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED, (double) getTrialDurationEstimatedInSecs());
+		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM, (double) getTrialDurationMaximumInSecs());
 
 		//Now handled in the algorithm class in super
 		/**
@@ -8833,10 +8871,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED)){
-			setExperimentDurationEstimated(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED)).intValue());
+			setExperimentDurationEstimatedInSecs(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)){
-			setExperimentDurationMaximum(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)).intValue());
+			setExperimentDurationMaximumInSecs(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)).intValue());
 		}
 
 		//prepareAllMapsAfterConfigRead();
@@ -9175,8 +9213,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//Not in the SD header so can't add
 			configValues.add((double) shimmerObject.getSyncWhenLogging());
-			configValues.add((double) shimmerObject.getTrialDurationEstimated());
-			configValues.add((double) shimmerObject.getTrialDurationMaximum());
+			configValues.add((double) shimmerObject.getTrialDurationEstimatedInSecs());
+			configValues.add((double) shimmerObject.getTrialDurationMaximumInSecs());
 //			configValues.add((double) shimmerObject.getSyncBroadcastInterval());
 			
 			// This is for the GSR_Peak_Hold GSRMetricModule algorithm as
@@ -9489,6 +9527,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//TODO temp hack. Need to move these channels to their own sensors so that they can be disabled per comm type
 		if(commType!=COMMUNICATION_TYPE.SD || (commType==COMMUNICATION_TYPE.SD && mSyncWhenLogging==0)){
 			mapOfChannelsForStoringToDb.remove(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET);
+		}
+		
+		if(!isRtcDifferenceSet()){
+			mapOfChannelsForStoringToDb.remove(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK);
 		}
 		
 		return mapOfChannelsForStoringToDb;
