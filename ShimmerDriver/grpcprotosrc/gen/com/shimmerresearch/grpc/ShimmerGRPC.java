@@ -6111,44 +6111,45 @@ public final class ShimmerGRPC {
   static {
     java.lang.String[] descriptorData = {
       "\n\033src/ShimmerGrpcAndOJC.proto\022\013shimmerGR" +
-      "PC\032$src/LiteProtocolInstructionSet.proto" +
-      "\032 google/protobuf/descriptor.proto\"5\n\004Fi" +
-      "le\022\014\n\004name\030\001 \001(\t\022\014\n\004data\030\002 \001(\014\022\021\n\tendoff" +
-      "ile\030\003 \001(\010\"\037\n\rCommandStatus\022\016\n\006status\030\001 \001" +
-      "(\t\"\034\n\014HelloRequest\022\014\n\004name\030\001 \001(\t\"\035\n\nHell" +
-      "oReply\022\017\n\007message\030\001 \001(\t\"!\n\016ShimmerReques" +
-      "t\022\017\n\007address\030\001 \001(\t\" \n\rStreamRequest\022\017\n\007m" +
-      "essage\030\001 \001(\t\"\216\005\n\016ObjectCluster2\022\014\n\004name\030" +
-      "\001 \001(\t\022\030\n\020bluetoothAddress\030\002 \001(\t\022H\n\021commu",
-      "nicationType\030\003 \001(\0162-.shimmerGRPC.ObjectC" +
-      "luster2.CommunicationType\0229\n\007dataMap\030\004 \003" +
-      "(\0132(.shimmerGRPC.ObjectCluster2.DataMapE" +
-      "ntry\022\022\n\nsystemTime\030\005 \001(\003\022\033\n\023calibratedTi" +
-      "meStamp\030\006 \001(\001\032\210\002\n\016FormatCluster2\022L\n\tform" +
-      "atMap\030\001 \003(\01329.shimmerGRPC.ObjectCluster2" +
-      ".FormatCluster2.FormatMapEntry\032=\n\014DataCl" +
-      "uster2\022\014\n\004unit\030\001 \001(\t\022\014\n\004data\030\002 \001(\001\022\021\n\tda" +
-      "taArray\030\003 \003(\001\032i\n\016FormatMapEntry\022\013\n\003key\030\001" +
-      " \001(\t\022F\n\005value\030\002 \001(\01327.shimmerGRPC.Object",
-      "Cluster2.FormatCluster2.DataCluster2:\0028\001" +
-      "\032Z\n\014DataMapEntry\022\013\n\003key\030\001 \001(\t\0229\n\005value\030\002" +
-      " \001(\0132*.shimmerGRPC.ObjectCluster2.Format" +
-      "Cluster2:\0028\001\"7\n\021CommunicationType\022\006\n\002BT\020" +
-      "\000\022\006\n\002SD\020\001\022\022\n\016Radio_802_15_4\020\0022\307\003\n\rShimme" +
-      "rServer\022@\n\010SayHello\022\031.shimmerGRPC.HelloR" +
-      "equest\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rGet" +
-      "DataStream\022\032.shimmerGRPC.StreamRequest\032\033" +
-      ".shimmerGRPC.ObjectCluster2\"\0000\001\022J\n\016SendD" +
-      "ataStream\022\033.shimmerGRPC.ObjectCluster2\032\027",
-      ".shimmerGRPC.HelloReply\"\000(\001\022@\n\016SendFileS" +
-      "tream\022\021.shimmerGRPC.File\032\027.shimmerGRPC.H" +
-      "elloReply\"\000(\001\022K\n\016ConnectShimmer\022\033.shimme" +
-      "rGRPC.ShimmerRequest\032\032.shimmerGRPC.Comma" +
-      "ndStatus\"\000\022K\n\016StartStreaming\022\033.shimmerGR" +
-      "PC.ShimmerRequest\032\032.shimmerGRPC.CommandS" +
-      "tatus\"\000BB\n\030com.shimmerresearch.grpcB\013Shi" +
-      "mmerGRPC\252\002\030com.shimmerresearch.grpcb\006pro" +
-      "to3"
+      "PC\032 google/protobuf/descriptor.proto\"5\n\004" +
+      "File\022\014\n\004name\030\001 \001(\t\022\014\n\004data\030\002 \001(\014\022\021\n\tendo" +
+      "ffile\030\003 \001(\010\"\037\n\rCommandStatus\022\016\n\006status\030\001" +
+      " \001(\t\"\034\n\014HelloRequest\022\014\n\004name\030\001 \001(\t\"\035\n\nHe" +
+      "lloReply\022\017\n\007message\030\001 \001(\t\"!\n\016ShimmerRequ" +
+      "est\022\017\n\007address\030\001 \001(\t\" \n\rStreamRequest\022\017\n" +
+      "\007message\030\001 \001(\t\"\216\005\n\016ObjectCluster2\022\014\n\004nam" +
+      "e\030\001 \001(\t\022\030\n\020bluetoothAddress\030\002 \001(\t\022H\n\021com" +
+      "municationType\030\003 \001(\0162-.shimmerGRPC.Objec",
+      "tCluster2.CommunicationType\0229\n\007dataMap\030\004" +
+      " \003(\0132(.shimmerGRPC.ObjectCluster2.DataMa" +
+      "pEntry\022\022\n\nsystemTime\030\005 \001(\003\022\033\n\023calibrated" +
+      "TimeStamp\030\006 \001(\001\032\210\002\n\016FormatCluster2\022L\n\tfo" +
+      "rmatMap\030\001 \003(\01329.shimmerGRPC.ObjectCluste" +
+      "r2.FormatCluster2.FormatMapEntry\032=\n\014Data" +
+      "Cluster2\022\014\n\004unit\030\001 \001(\t\022\014\n\004data\030\002 \001(\001\022\021\n\t" +
+      "dataArray\030\003 \003(\001\032i\n\016FormatMapEntry\022\013\n\003key" +
+      "\030\001 \001(\t\022F\n\005value\030\002 \001(\01327.shimmerGRPC.Obje" +
+      "ctCluster2.FormatCluster2.DataCluster2:\002",
+      "8\001\032Z\n\014DataMapEntry\022\013\n\003key\030\001 \001(\t\0229\n\005value" +
+      "\030\002 \001(\0132*.shimmerGRPC.ObjectCluster2.Form" +
+      "atCluster2:\0028\001\"7\n\021CommunicationType\022\006\n\002B" +
+      "T\020\000\022\006\n\002SD\020\001\022\022\n\016Radio_802_15_4\020\0022\226\004\n\rShim" +
+      "merServer\022@\n\010SayHello\022\031.shimmerGRPC.Hell" +
+      "oRequest\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rG" +
+      "etDataStream\022\032.shimmerGRPC.StreamRequest" +
+      "\032\033.shimmerGRPC.ObjectCluster2\"\0000\001\022J\n\016Sen" +
+      "dDataStream\022\033.shimmerGRPC.ObjectCluster2" +
+      "\032\027.shimmerGRPC.HelloReply\"\000(\001\022@\n\016SendFil",
+      "eStream\022\021.shimmerGRPC.File\032\027.shimmerGRPC" +
+      ".HelloReply\"\000(\001\022K\n\016ConnectShimmer\022\033.shim" +
+      "merGRPC.ShimmerRequest\032\032.shimmerGRPC.Com" +
+      "mandStatus\"\000\022K\n\016StartStreaming\022\033.shimmer" +
+      "GRPC.ShimmerRequest\032\032.shimmerGRPC.Comman" +
+      "dStatus\"\000\022M\n\020CloseApplication\022\033.shimmerG" +
+      "RPC.ShimmerRequest\032\032.shimmerGRPC.Command" +
+      "Status\"\000BB\n\030com.shimmerresearch.grpcB\013Sh" +
+      "immerGRPC\252\002\030com.shimmerresearch.grpcb\006pr" +
+      "oto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6161,7 +6162,6 @@ public final class ShimmerGRPC {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.getDescriptor(),
           com.google.protobuf.DescriptorProtos.getDescriptor(),
         }, assigner);
     internal_static_shimmerGRPC_File_descriptor =
@@ -6230,7 +6230,6 @@ public final class ShimmerGRPC {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_ObjectCluster2_DataMapEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.getDescriptor();
     com.google.protobuf.DescriptorProtos.getDescriptor();
   }
 
