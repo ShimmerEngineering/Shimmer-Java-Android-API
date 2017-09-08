@@ -40,7 +40,7 @@ public class ShimmerLogDetails implements Serializable{
 	public ArrayList<ArrayList<Double>> offsetTimestampPairs = null;
 	
 	//TODO just use ShimmerDevice below instead of declaring new variables
-	public ShimmerDevice mShimmerDevice = null;
+	public transient ShimmerDevice mShimmerDevice = null;
 	private String mShimmerUserAssignedName;
 	public String mMacAddress;
 	public long mConfigTimeStamp;

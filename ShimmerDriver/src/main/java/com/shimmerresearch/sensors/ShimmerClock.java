@@ -241,7 +241,7 @@ public class ShimmerClock extends AbstractSensor {
 			//TODO UtilParseData.parseData currently can not handle over 64 bits. LSB byte for offset is ?a sign byte? for the remaining 8 bytes so default parser won't work
 //			CHANNEL_DATA_TYPE.UINT72, 9, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.NO_UNITS,
-			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
+			Arrays.asList(CHANNEL_TYPE.UNCAL), false, true);
 	{
 		//TODO put into above constructor
 		channelShimmerClockOffset.mChannelSource = CHANNEL_SOURCE.API;
@@ -252,7 +252,7 @@ public class ShimmerClock extends AbstractSensor {
 			ObjectClusterSensorName.REAL_TIME_CLOCK,
 			DatabaseChannelHandles.REAL_TIME_CLOCK,
 			CHANNEL_UNITS.MILLISECONDS,
-			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
+			Arrays.asList(CHANNEL_TYPE.UNCAL ,CHANNEL_TYPE.CAL), false, true);
 	{
 		//TODO put into above constructor
 		channelRealTimeClock.mChannelSource = CHANNEL_SOURCE.API;
