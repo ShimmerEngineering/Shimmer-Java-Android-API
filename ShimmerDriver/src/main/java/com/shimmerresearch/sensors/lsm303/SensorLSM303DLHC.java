@@ -428,7 +428,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 			ObjectClusterSensorName.ACCEL_WR_X,
 			ObjectClusterSensorName.ACCEL_WR_X,
 			DatabaseChannelHandles.WR_ACC_X,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB, //LSB??
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x04);
@@ -437,7 +437,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 			ObjectClusterSensorName.ACCEL_WR_Y,
 			ObjectClusterSensorName.ACCEL_WR_Y,
 			DatabaseChannelHandles.WR_ACC_Y,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB, //LSB??
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x05);
@@ -446,7 +446,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 			ObjectClusterSensorName.ACCEL_WR_Z,
 			ObjectClusterSensorName.ACCEL_WR_Z,
 			DatabaseChannelHandles.WR_ACC_Z,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB, //LSB??
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x06);

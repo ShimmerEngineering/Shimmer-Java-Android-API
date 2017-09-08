@@ -3453,14 +3453,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 			
 			List<ChannelDetails> listOfDetails = algorithm.getChannelDetails();
-			for(ChannelDetails channelDetails:listOfDetails){
-				if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
-					continue;
-				}
-				
-				if(channelDetails.mStoreToDatabase){
-					String key = (isKeyOJCName ? channelDetails.mObjectClusterName : channelDetails.getDatabaseChannelHandle());
-					mapOfEnabledChannelsForStoringToDb.put(key, channelDetails);
+			if(listOfDetails!=null){
+				for(ChannelDetails channelDetails:listOfDetails){
+					if(channelType!=null && !channelDetails.mListOfChannelTypes.contains(channelType)){
+						continue;
+					}
+					
+					if(channelDetails.mStoreToDatabase){
+						String key = (isKeyOJCName ? channelDetails.mObjectClusterName : channelDetails.getDatabaseChannelHandle());
+						mapOfEnabledChannelsForStoringToDb.put(key, channelDetails);
+					}
 				}
 			}
 		}
