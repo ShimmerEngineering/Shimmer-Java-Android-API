@@ -4233,7 +4233,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					mConfigTime = 0;
 //				}
 
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					mTrialId = configBytes[configByteLayoutCast.idxSDMyTrialID] & 0xFF;
 					mTrialNumberOfShimmers = configBytes[configByteLayoutCast.idxSDNumOfShimmers] & 0xFF;
 				}
@@ -4244,7 +4244,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					setShowErrorLedsSd((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftShowErrorLedsSd) & configByteLayoutCast.maskShowErrorLedsSd);
 				}
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					mSyncWhenLogging = (configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftTimeSyncWhenLogging) & configByteLayoutCast.maskTimeSyncWhenLogging;
 					mMasterShimmer = (configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftMasterShimmer) & configByteLayoutCast.maskTimeMasterShimmer;
 					mSingleTouch = (configBytes[configByteLayoutCast.idxSDExperimentConfig1] >> configByteLayoutCast.bitShiftSingleTouch) & configByteLayoutCast.maskTimeSingleTouch;
@@ -4283,7 +4283,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				// InfoMem C - End
 					
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					syncNodesList.clear();
 					for (int i = 0; i < configByteLayoutCast.maxNumOfExperimentNodes; i++) {
@@ -4466,7 +4466,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mConfigBytes[configByteLayoutCast.idxSDConfigTime2] = (byte) ((mConfigTime >> configByteLayoutCast.bitShiftSDConfigTime2) & 0xFF);
 				mConfigBytes[configByteLayoutCast.idxSDConfigTime3] = (byte) ((mConfigTime >> configByteLayoutCast.bitShiftSDConfigTime3) & 0xFF);
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					mConfigBytes[configByteLayoutCast.idxSDMyTrialID] = (byte) (mTrialId & 0xFF);
 		
 					mConfigBytes[configByteLayoutCast.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
@@ -4490,7 +4490,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] = 0;
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & configByteLayoutCast.maskTimeSyncWhenLogging) << configByteLayoutCast.bitShiftTimeSyncWhenLogging);
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & configByteLayoutCast.maskTimeMasterShimmer) << configByteLayoutCast.bitShiftMasterShimmer);
 					
@@ -4531,7 +4531,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				// InfoMem C - End
 					
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					for (int i = 0; i < configByteLayoutCast.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
 						byte[] macIdArray;

@@ -63,7 +63,7 @@ public class AssembleShimmerConfig {
     				if(shimmerBluetooth.isSyncWhenLogging()) {
     		    		// Compile a list of Shimmers in experiment
     		    		for(ShimmerDevice shimmerDevice : listOfShimmersToConfigureClone) {
-    	    				if(shimmerDevice.getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.SDLOG) {
+    	    				if(shimmerDevice.isSupportedSdLogSync()) {
     			    			if(shimmerDevice instanceof ShimmerBluetooth) {
 //    			    				shimmerDevice = (ShimmerBluetooth) shimmerDevice;
     			        			if(((ShimmerBluetooth)shimmerDevice).isMasterShimmer()) {
