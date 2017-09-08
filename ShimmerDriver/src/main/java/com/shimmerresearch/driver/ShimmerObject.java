@@ -4553,6 +4553,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				abstractSensor.configBytesGenerate(this, mConfigBytes);
 			}
 		}
+		
+    	if(getFirmwareIdentifier()==FW_ID.STROKARE){
+    		//override rates
+    		//getLSM303DigitalAccelRate()
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte0] &= ~((byte) (configByteLayoutCast.maskLSM303DLHCAccelSamplingRate << configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate));
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte0] |= (byte) ((5 & configByteLayoutCast.maskLSM303DLHCAccelSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate);
+    		//getMPU9X50GyroAccelRate()
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte1] &= ~((byte) (configByteLayoutCast.maskMPU9150AccelGyroSamplingRate << configByteLayoutCast.bitShiftMPU9150AccelGyroSamplingRate));
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte1] |= (byte) ((155 & configByteLayoutCast.maskMPU9150AccelGyroSamplingRate) << configByteLayoutCast.bitShiftMPU9150AccelGyroSamplingRate);
+    		//getLSM303MagRate()
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte2] &= ~((byte) (configByteLayoutCast.maskLSM303DLHCMagSamplingRate << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate));
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((6 & configByteLayoutCast.maskLSM303DLHCMagSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate);
+    	}
+		
 		return mConfigBytes;
 	}
 	
