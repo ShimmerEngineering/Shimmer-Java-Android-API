@@ -3432,7 +3432,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	//TODO get algorithm isEnabled per commType
-	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledAlgortihmChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType) {
+	public LinkedHashMap<String, ChannelDetails> getMapOfEnabledAlgortihmChannelsToStoreInDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName) {
 		LinkedHashMap<String, ChannelDetails> mapOfEnabledChannelsForStoringToDb = new LinkedHashMap<String, ChannelDetails>();
 
 		Iterator<AbstractAlgorithm> iteratorAlgorithms = getListOfEnabledAlgorithmModules().iterator();
@@ -3450,7 +3450,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				}
 				
 				if(channelDetails.mStoreToDatabase){
-					mapOfEnabledChannelsForStoringToDb.put(channelDetails.mObjectClusterName, channelDetails);
+					String key = (isKeyOJCName ? channelDetails.mObjectClusterName : channelDetails.getDatabaseChannelHandle());
+					mapOfEnabledChannelsForStoringToDb.put(key, channelDetails);
 				}
 			}
 		}
@@ -3462,7 +3463,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//TODO get showDisabledChannels working
 		
 		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = getMapOfEnabledSensorChannelsForStoringToDB(commType, channelType, isKeyOJCName);
-		LinkedHashMap<String, ChannelDetails> mapOfAlgoChannelsForStoringToDb = getMapOfEnabledAlgortihmChannelsToStoreInDB(commType, channelType);
+		LinkedHashMap<String, ChannelDetails> mapOfAlgoChannelsForStoringToDb = getMapOfEnabledAlgortihmChannelsToStoreInDB(commType, channelType, isKeyOJCName);
 		mapOfChannelsForStoringToDb.putAll(mapOfAlgoChannelsForStoringToDb);
 
 		//TODO temp hack. Need to move these channels to their own sensors so that they can be disabled per comm type
