@@ -1944,6 +1944,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 8, 1);
 	}
 	
+	public boolean isSupportedSdLogSync() {
+		if(getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.SDLOG
+				|| getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.STROKARE){
+			return true;
+		}
+		return false;
+	}
+	
+	
 	public boolean isLegacySdLog(){
 		if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==5){
 			return true;
