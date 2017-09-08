@@ -21,28 +21,28 @@ public class UtilCalibration {
 		n = Number of Samples
 	 */
 	public static double[] calibrateInertialSensorData(double[] data, double[][] AM, double[][] SM, double[][] OV) {
-//		if(data==null || AM==null || SM==null || OV==null){
-//			System.out.println("UtilCalibration.calibrateInertialSensorData:" + "ERROR! NaN in input data");
-//			return null;
-//		}
-//
-//		double [][] data2d=new double [3][1];
-//		data2d[0][0]=data[0];
-//		data2d[1][0]=data[1];
-//		data2d[2][0]=data[2];
-//		data2d= matrixMultiplication(matrixMultiplication(matrixInverse3x3(AM),matrixInverse3x3(SM)),matrixMinus(data2d,OV));
-//		double[] ansdata=new double[3];
-//		ansdata[0]=data2d[0][0];
-//		ansdata[1]=data2d[1][0];
-//		ansdata[2]=data2d[2][0];
-//		
-//		if(Double.isNaN(ansdata[0]) || Double.isNaN(ansdata[1]) || Double.isNaN(ansdata[2])){
-//			System.out.println("UtilCalibration.calibrateInertialSensorData:" + "ERROR! NaN in calibrated data");
-//		}
-//		
-//		return ansdata;
+		if(data==null || AM==null || SM==null || OV==null){
+			System.out.println("UtilCalibration.calibrateInertialSensorData:" + "ERROR! NaN in input data");
+			return null;
+		}
+
+		double [][] data2d=new double [3][1];
+		data2d[0][0]=data[0];
+		data2d[1][0]=data[1];
+		data2d[2][0]=data[2];
+		data2d= matrixMultiplication(matrixMultiplication(matrixInverse3x3(AM),matrixInverse3x3(SM)),matrixMinus(data2d,OV));
+		double[] ansdata=new double[3];
+		ansdata[0]=data2d[0][0];
+		ansdata[1]=data2d[1][0];
+		ansdata[2]=data2d[2][0];
 		
-		return calibrateInertialSensorData(data, matrixMultiplication(matrixInverse3x3(AM),matrixInverse3x3(SM)), OV);
+		if(Double.isNaN(ansdata[0]) || Double.isNaN(ansdata[1]) || Double.isNaN(ansdata[2])){
+			System.out.println("UtilCalibration.calibrateInertialSensorData:" + "ERROR! NaN in calibrated data");
+		}
+		
+		return ansdata;
+		
+//		return calibrateInertialSensorData(data, matrixMultiplication(matrixInverse3x3(AM),matrixInverse3x3(SM)), OV);
 	}
 
 	
