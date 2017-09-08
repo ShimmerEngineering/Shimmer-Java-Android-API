@@ -171,10 +171,6 @@ public class UtilShimmer implements Serializable {
 		return timeString;
 	}
 	
-	public static String convertMilliSecondsToHrMinSecLocal(long milliSeconds) {
-		return convertMilliSecondsToHrMinSecLocal(milliSeconds, "HH:mm:ss");
-	}
-
 	/**
 	 * Converts from milliseconds in Unix time to a formatted local time string
 	 * (specific to the local timezone of the computer)
@@ -183,8 +179,22 @@ public class UtilShimmer implements Serializable {
 	 * @param format
 	 * @return
 	 */
-	public static String convertMilliSecondsToHrMinSecLocal(long milliSeconds, String format) {
+	public static String convertMilliSecondsToHrMinSecLocal(long milliSeconds) {
+		return convertMilliSecondsToHrMinSec(milliSeconds, "HH:mm:ss", false);
+	}
+
+	/**
+	 * Converts from milliseconds in Unix time 
+	 * 
+	 * @param milliSeconds
+	 * @param format
+	 * @return
+	 */
+	public static String convertMilliSecondsToHrMinSec(long milliSeconds, String format, boolean setTimezoneUtc) {
 		DateFormat dfLocal = new SimpleDateFormat(format);
+		if(setTimezoneUtc){
+			dfLocal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		}
 		String timeString = dfLocal.format(new Date(milliSeconds));
 		return timeString;
 	}

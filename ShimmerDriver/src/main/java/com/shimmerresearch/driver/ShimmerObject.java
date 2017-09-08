@@ -798,19 +798,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				} else {
 					unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
 				}
-				long sdlograwtimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp;
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)sdlograwtimestamp);
+				long timestampTicksUnwrappedUncal = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp;
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)timestampTicksUnwrappedUncal);
 				
-				uncalibratedData[iTimeStamp] = (double)sdlograwtimestamp;
+				uncalibratedData[iTimeStamp] = (double)timestampTicksUnwrappedUncal;
 				if (getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==5){
 					uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
 				}
 				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
 
 				if (mEnableCalibration){
-					double sdlogcaltimestamp = (double)sdlograwtimestamp/getSamplingClockFreq()*1000;
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,sdlogcaltimestamp);
-					calibratedData[iTimeStamp] = sdlogcaltimestamp;
+					double timestampTicksUnwrappedCal = (double)timestampTicksUnwrappedUncal/getSamplingClockFreq()*1000;
+					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,timestampTicksUnwrappedCal);
+					calibratedData[iTimeStamp] = timestampTicksUnwrappedCal;
 					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
 				}
 			} 
