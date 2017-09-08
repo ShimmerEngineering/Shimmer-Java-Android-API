@@ -217,7 +217,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
     		ObjectClusterSensorName.GYRO_X,
     		ObjectClusterSensorName.GYRO_X,
     		DatabaseChannelHandles.GYRO_X,
-    		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB, //MSB
+    		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
     		CHANNEL_UNITS.DEGREES_PER_SECOND,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0A);
@@ -225,7 +225,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
     		ObjectClusterSensorName.GYRO_Y,
     		ObjectClusterSensorName.GYRO_Y,
     		DatabaseChannelHandles.GYRO_Y,
-    		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB, //MSB
+    		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
     		CHANNEL_UNITS.DEGREES_PER_SECOND,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0B);
@@ -233,7 +233,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
     		ObjectClusterSensorName.GYRO_Z,
     		ObjectClusterSensorName.GYRO_Z,
     		DatabaseChannelHandles.GYRO_Z,
-    		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB, //MSB
+    		CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
     		CHANNEL_UNITS.DEGREES_PER_SECOND,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0C);
