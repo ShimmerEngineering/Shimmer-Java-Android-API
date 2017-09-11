@@ -183,7 +183,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public static final String TRIAL_DURATION_ESTIMATED = "Trial_Dur_Est";
 		public static final String TRIAL_DURATION_MAXIMUM = "Trial_Dur_Max";
 	}
-	
 
 	//Sensor Bitmap for ID ; for the purpose of forward compatibility the sensor bitmap and the ID and the sensor bitmap for the Shimmer firmware has been kept separate, 
 	public static final int SENSOR_ACCEL				   = 0x80; 
@@ -557,17 +556,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected abstract void checkBattery();
 	
 	//-------- Timestamp start --------
-	protected double mLastReceivedTimeStamp=0;
+	protected double mLastReceivedTimeStampTicks=0;
 	protected double mCurrentTimeStampCycle=0;
-	protected long mInitialTimeStamp = 0;
+	protected long mInitialTimeStampTicks = 0;
 	@Deprecated //not needed any more
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	
 	protected boolean mStreamingStartTimeSaved = false;	
-	protected double mStreamingStartTimeMs;
+	protected double mStreamingStartTimeMilliSecs;
 	
 	protected int mTimeStampPacketByteSize = 2;
-	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
+	protected int mTimeStampPacketRawMaxValueTicks = 65536;// 16777216 or 65536 
 	//-------- Timestamp end --------
 
 	// Shimmer2/2r - Analog accel
@@ -768,7 +767,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//sensorNames = Arrays.copyOf(mSignalNameArray, mSignalNameArray.length);
 		
 		//PARSE DATA
-		long[] newPacketInt = UtilParseData.parseData(newPacket, mSignalDataTypeArray);
+		long[] newPacketInt = null;
+		
+		try{
+			newPacketInt = UtilParseData.parseData(newPacket, mSignalDataTypeArray);
+		} catch(IndexOutOfBoundsException e){
+			String debugString = "SignalDataTypeArray:";
+			for(String s:mSignalDataTypeArray){
+				debugString += "\t" + s;
+			}
+			System.out.println(debugString);
+			System.out.println("newPacket:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(newPacket));
+			throw(e);
+		}
 		
 		double[] tempData=new double[3];
 		Vector3d accelerometer = new Vector3d(); 
@@ -792,25 +803,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//TIMESTAMP
 			if (fwType == COMMUNICATION_TYPE.SD){
 				// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
-				double unwrappedrawtimestamp = calibratedTS*getSamplingClockFreq()/1000;
-				if (getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==5){
+				double unwrappedrawtimestampTicks = calibratedTS*getSamplingClockFreq()/1000;
+				
+				if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==5){
 					
 				} else {
-					unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
+					unwrappedrawtimestampTicks -= mFirstRawTS; //deduct this so it will start from 0
 				}
-				long timestampTicksUnwrappedUncal = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp;
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)timestampTicksUnwrappedUncal);
 				
-				uncalibratedData[iTimeStamp] = (double)timestampTicksUnwrappedUncal;
-				if (getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==5){
+				long timestampUnwrappedTicks = (long)mInitialTimeStampTicks + (long)unwrappedrawtimestampTicks;
+				
+				if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==5){
 					uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
+				} else {
+					uncalibratedData[iTimeStamp] = (double)timestampUnwrappedTicks;
 				}
 				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,uncalibratedData[iTimeStamp]);
 
 				if (mEnableCalibration){
-					double timestampTicksUnwrappedCal = (double)timestampTicksUnwrappedUncal/getSamplingClockFreq()*1000;
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,timestampTicksUnwrappedCal);
-					calibratedData[iTimeStamp] = timestampTicksUnwrappedCal;
+					double timestampUnwrappedMilliSecs = (double)timestampUnwrappedTicks/getSamplingClockFreq()*1000;
+					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,timestampUnwrappedMilliSecs);
+					calibratedData[iTimeStamp] = timestampUnwrappedMilliSecs;
 					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
 				}
 			} 
@@ -831,15 +845,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			if (fwIdentifier == COMMUNICATION_TYPE.SD) {
 				double unwrappedrawtimestamp = calibratedTS*getSamplingClockFreq()/1000;
 				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
-				long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCDifferenceInTicks;
+				long rtctimestamp = (long)mInitialTimeStampTicks + (long)unwrappedrawtimestamp + mRTCDifferenceInTicks;
 				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)rtctimestamp);
 				uncalibratedData[sensorNames.length-1] = (double)rtctimestamp;
 				uncalibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.CLOCK_UNIT;
 				sensorNames[sensorNames.length-1]= Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK;
 				if (mEnableCalibration){
 					double rtctimestampcal = calibratedTS;
-					if(mInitialTimeStamp!=0){
-						rtctimestampcal += ((double)mInitialTimeStamp/getSamplingClockFreq()*1000.0);
+					if(mInitialTimeStampTicks!=0){
+						rtctimestampcal += ((double)mInitialTimeStampTicks/getSamplingClockFreq()*1000.0);
 					}
 					if(isRtcDifferenceSet()){
 						rtctimestampcal += ((double)mRTCDifferenceInTicks/getSamplingClockFreq()*1000.0);
@@ -1733,9 +1747,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				int currentGSRRange = getGSRRange();
 				
-				if (getFirmwareIdentifier() == FW_ID.SDLOG  // this is to fix a bug with SDLog v0.9
-						&& getFirmwareVersionMajor() ==0 
-						&& getFirmwareVersionMinor()==9){
+				 // this is to fix a bug with SDLog v0.9
+				if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==9){
 					
 //					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 
@@ -3241,27 +3254,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	protected double calibrateTimeStamp(double timeStamp){
+	protected double calibrateTimeStamp(double timeStampTicks){
 		//first convert to continuous time stamp
-		double calibratedTimeStamp=0;
-		if (mLastReceivedTimeStamp>(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle))){ 
-			mCurrentTimeStampCycle=mCurrentTimeStampCycle+1;
+		double calibratedTimeStampMilliSecs=0;
+		if (mLastReceivedTimeStampTicks>(timeStampTicks+(mTimeStampPacketRawMaxValueTicks*mCurrentTimeStampCycle))){ 
+			mCurrentTimeStampCycle += 1;
 		}
 
-		mLastReceivedTimeStamp=(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
-		calibratedTimeStamp=mLastReceivedTimeStamp/getSamplingClockFreq()*1000;   // to convert into mS
+		mLastReceivedTimeStampTicks = (timeStampTicks+(mTimeStampPacketRawMaxValueTicks*mCurrentTimeStampCycle));
+		calibratedTimeStampMilliSecs = mLastReceivedTimeStampTicks/getSamplingClockFreq()*1000;   // to convert into mS
+		
 		if (!mStreamingStartTimeSaved){
 			mStreamingStartTimeSaved=true;
-			mStreamingStartTimeMs = calibratedTimeStamp;
+			mStreamingStartTimeMilliSecs = calibratedTimeStampMilliSecs;
 		}
 		
-		return calibratedTimeStamp;
+		return calibratedTimeStampMilliSecs;
 	}
 
 //	@Override
 	private void calculateTrialPacketLoss(double currentTimeStampMs) {
-		if(mStreamingStartTimeMs>0){
-			double timeDifference = currentTimeStampMs - mStreamingStartTimeMs;
+		if(mStreamingStartTimeMilliSecs>0){
+			double timeDifference = currentTimeStampMs - mStreamingStartTimeMilliSecs;
 			
 			//The expected time difference (in milliseconds) based on the device's sampling rate
 			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
@@ -4100,7 +4114,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mNChannels=0; 
 			mBufferSize=0;
 			mSyncBroadcastInterval = 0;
-			mInitialTimeStamp = 0;
+			mInitialTimeStampTicks = 0;
 			
 			setShimmerAndSensorsSamplingRate(51.2);
 			
@@ -4554,6 +4568,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 		}
 		
+		//TODO remove the need for this temp hack by adding back in the ability to change individual sensor sampling rates
     	if(getFirmwareIdentifier()==FW_ID.STROKARE){
     		//override rates
     		//getLSM303DigitalAccelRate()
@@ -5441,11 +5456,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public long getInitialTimeStamp(){
-		return mInitialTimeStamp;
+		return mInitialTimeStampTicks;
 	}
 
 	public void setInitialTimeStamp(long initialTimeStamp){
-		mInitialTimeStamp = initialTimeStamp;
+		mInitialTimeStampTicks = initialTimeStamp;
 	}
 
 	public void setGSRRange(int i){
@@ -8733,7 +8748,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mLastReceivedTimeStamp
 	 */
 	public double getLastReceivedTimeStamp(){
-		return mLastReceivedTimeStamp;
+		return mLastReceivedTimeStampTicks;
 	}
 	
 	public String getCenter(){
@@ -8758,11 +8773,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//Once the version is known update settings accordingly 
 		if (getFirmwareVersionCode()>=6){
 			mTimeStampPacketByteSize = 3;
-			mTimeStampPacketRawMaxValue = 16777216;
+			mTimeStampPacketRawMaxValueTicks = 16777216;
 		} 
 		else {//if (getFirmwareVersionCode()<6){
 			mTimeStampPacketByteSize = 2;
-			mTimeStampPacketRawMaxValue = 65536;
+			mTimeStampPacketRawMaxValueTicks = 65536;
 		}
 	}
 	
