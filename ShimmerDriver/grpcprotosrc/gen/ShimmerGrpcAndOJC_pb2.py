@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='src/ShimmerGrpcAndOJC.proto',
   package='shimmerGRPC',
   syntax='proto3',
-  serialized_pb=_b('\n\x1bsrc/ShimmerGrpcAndOJC.proto\x12\x0bshimmerGRPC\x1a google/protobuf/descriptor.proto\"5\n\x04\x46ile\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\x12\x11\n\tendoffile\x18\x03 \x01(\x08\"\x1f\n\rCommandStatus\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"!\n\x0eShimmerRequest\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\" \n\rStreamRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x8e\x05\n\x0eObjectCluster2\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x18\n\x10\x62luetoothAddress\x18\x02 \x01(\t\x12H\n\x11\x63ommunicationType\x18\x03 \x01(\x0e\x32-.shimmerGRPC.ObjectCluster2.CommunicationType\x12\x39\n\x07\x64\x61taMap\x18\x04 \x03(\x0b\x32(.shimmerGRPC.ObjectCluster2.DataMapEntry\x12\x12\n\nsystemTime\x18\x05 \x01(\x03\x12\x1b\n\x13\x63\x61libratedTimeStamp\x18\x06 \x01(\x01\x1a\x88\x02\n\x0e\x46ormatCluster2\x12L\n\tformatMap\x18\x01 \x03(\x0b\x32\x39.shimmerGRPC.ObjectCluster2.FormatCluster2.FormatMapEntry\x1a=\n\x0c\x44\x61taCluster2\x12\x0c\n\x04unit\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x01\x12\x11\n\tdataArray\x18\x03 \x03(\x01\x1ai\n\x0e\x46ormatMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x46\n\x05value\x18\x02 \x01(\x0b\x32\x37.shimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2:\x02\x38\x01\x1aZ\n\x0c\x44\x61taMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x39\n\x05value\x18\x02 \x01(\x0b\x32*.shimmerGRPC.ObjectCluster2.FormatCluster2:\x02\x38\x01\"7\n\x11\x43ommunicationType\x12\x06\n\x02\x42T\x10\x00\x12\x06\n\x02SD\x10\x01\x12\x12\n\x0eRadio_802_15_4\x10\x02\x32\xc7\x03\n\rShimmerServer\x12@\n\x08SayHello\x12\x19.shimmerGRPC.HelloRequest\x1a\x17.shimmerGRPC.HelloReply\"\x00\x12L\n\rGetDataStream\x12\x1a.shimmerGRPC.StreamRequest\x1a\x1b.shimmerGRPC.ObjectCluster2\"\x00\x30\x01\x12J\n\x0eSendDataStream\x12\x1b.shimmerGRPC.ObjectCluster2\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12@\n\x0eSendFileStream\x12\x11.shimmerGRPC.File\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12K\n\x0e\x43onnectShimmer\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12K\n\x0eStartStreaming\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x42\x42\n\x18\x63om.shimmerresearch.grpcB\x0bShimmerGRPC\xaa\x02\x18\x63om.shimmerresearch.grpcb\x06proto3')
+  serialized_pb=_b('\n\x1bsrc/ShimmerGrpcAndOJC.proto\x12\x0bshimmerGRPC\x1a google/protobuf/descriptor.proto\"5\n\x04\x46ile\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\x12\x11\n\tendoffile\x18\x03 \x01(\x08\"\x1f\n\rCommandStatus\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"!\n\x0eShimmerRequest\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\" \n\rStreamRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x8e\x05\n\x0eObjectCluster2\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x18\n\x10\x62luetoothAddress\x18\x02 \x01(\t\x12H\n\x11\x63ommunicationType\x18\x03 \x01(\x0e\x32-.shimmerGRPC.ObjectCluster2.CommunicationType\x12\x39\n\x07\x64\x61taMap\x18\x04 \x03(\x0b\x32(.shimmerGRPC.ObjectCluster2.DataMapEntry\x12\x12\n\nsystemTime\x18\x05 \x01(\x03\x12\x1b\n\x13\x63\x61libratedTimeStamp\x18\x06 \x01(\x01\x1a\x88\x02\n\x0e\x46ormatCluster2\x12L\n\tformatMap\x18\x01 \x03(\x0b\x32\x39.shimmerGRPC.ObjectCluster2.FormatCluster2.FormatMapEntry\x1a=\n\x0c\x44\x61taCluster2\x12\x0c\n\x04unit\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x01\x12\x11\n\tdataArray\x18\x03 \x03(\x01\x1ai\n\x0e\x46ormatMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x46\n\x05value\x18\x02 \x01(\x0b\x32\x37.shimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2:\x02\x38\x01\x1aZ\n\x0c\x44\x61taMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x39\n\x05value\x18\x02 \x01(\x0b\x32*.shimmerGRPC.ObjectCluster2.FormatCluster2:\x02\x38\x01\"7\n\x11\x43ommunicationType\x12\x06\n\x02\x42T\x10\x00\x12\x06\n\x02SD\x10\x01\x12\x12\n\x0eRadio_802_15_4\x10\x02\x32\x96\x04\n\rShimmerServer\x12@\n\x08SayHello\x12\x19.shimmerGRPC.HelloRequest\x1a\x17.shimmerGRPC.HelloReply\"\x00\x12L\n\rGetDataStream\x12\x1a.shimmerGRPC.StreamRequest\x1a\x1b.shimmerGRPC.ObjectCluster2\"\x00\x30\x01\x12J\n\x0eSendDataStream\x12\x1b.shimmerGRPC.ObjectCluster2\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12@\n\x0eSendFileStream\x12\x11.shimmerGRPC.File\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12K\n\x0e\x43onnectShimmer\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12K\n\x0eStartStreaming\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12M\n\x10\x43loseApplication\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x42\x42\n\x18\x63om.shimmerresearch.grpcB\x0bShimmerGRPC\xaa\x02\x18\x63om.shimmerresearch.grpcb\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_descriptor__pb2.DESCRIPTOR,])
 
@@ -582,7 +582,7 @@ _SHIMMERSERVER = _descriptor.ServiceDescriptor(
   index=0,
   options=None,
   serialized_start=954,
-  serialized_end=1409,
+  serialized_end=1488,
   methods=[
   _descriptor.MethodDescriptor(
     name='SayHello',
@@ -633,6 +633,15 @@ _SHIMMERSERVER = _descriptor.ServiceDescriptor(
     name='StartStreaming',
     full_name='shimmerGRPC.ShimmerServer.StartStreaming',
     index=5,
+    containing_service=None,
+    input_type=_SHIMMERREQUEST,
+    output_type=_COMMANDSTATUS,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='CloseApplication',
+    full_name='shimmerGRPC.ShimmerServer.CloseApplication',
+    index=6,
     containing_service=None,
     input_type=_SHIMMERREQUEST,
     output_type=_COMMANDSTATUS,
@@ -693,6 +702,11 @@ try:
           request_serializer=ShimmerRequest.SerializeToString,
           response_deserializer=CommandStatus.FromString,
           )
+      self.CloseApplication = channel.unary_unary(
+          '/shimmerGRPC.ShimmerServer/CloseApplication',
+          request_serializer=ShimmerRequest.SerializeToString,
+          response_deserializer=CommandStatus.FromString,
+          )
 
 
   class ShimmerServerServicer(object):
@@ -741,6 +755,13 @@ try:
       context.set_details('Method not implemented!')
       raise NotImplementedError('Method not implemented!')
 
+    def CloseApplication(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
+
 
   def add_ShimmerServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -771,6 +792,11 @@ try:
         ),
         'StartStreaming': grpc.unary_unary_rpc_method_handler(
             servicer.StartStreaming,
+            request_deserializer=ShimmerRequest.FromString,
+            response_serializer=CommandStatus.SerializeToString,
+        ),
+        'CloseApplication': grpc.unary_unary_rpc_method_handler(
+            servicer.CloseApplication,
             request_deserializer=ShimmerRequest.FromString,
             response_serializer=CommandStatus.SerializeToString,
         ),
@@ -809,6 +835,10 @@ try:
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
     def StartStreaming(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+    def CloseApplication(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
@@ -851,6 +881,11 @@ try:
       pass
       raise NotImplementedError()
     StartStreaming.future = None
+    def CloseApplication(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      # missing associated documentation comment in .proto file
+      pass
+      raise NotImplementedError()
+    CloseApplication.future = None
 
 
   def beta_create_ShimmerServer_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
@@ -860,6 +895,7 @@ try:
     file not marked beta) for all further purposes. This function was
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_deserializers = {
+      ('shimmerGRPC.ShimmerServer', 'CloseApplication'): ShimmerRequest.FromString,
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): ShimmerRequest.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): StreamRequest.FromString,
       ('shimmerGRPC.ShimmerServer', 'SayHello'): HelloRequest.FromString,
@@ -868,6 +904,7 @@ try:
       ('shimmerGRPC.ShimmerServer', 'StartStreaming'): ShimmerRequest.FromString,
     }
     response_serializers = {
+      ('shimmerGRPC.ShimmerServer', 'CloseApplication'): CommandStatus.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): CommandStatus.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): ObjectCluster2.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'SayHello'): HelloReply.SerializeToString,
@@ -876,6 +913,7 @@ try:
       ('shimmerGRPC.ShimmerServer', 'StartStreaming'): CommandStatus.SerializeToString,
     }
     method_implementations = {
+      ('shimmerGRPC.ShimmerServer', 'CloseApplication'): face_utilities.unary_unary_inline(servicer.CloseApplication),
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): face_utilities.unary_unary_inline(servicer.ConnectShimmer),
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): face_utilities.unary_stream_inline(servicer.GetDataStream),
       ('shimmerGRPC.ShimmerServer', 'SayHello'): face_utilities.unary_unary_inline(servicer.SayHello),
@@ -894,6 +932,7 @@ try:
     file not marked beta) for all further purposes. This function was
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_serializers = {
+      ('shimmerGRPC.ShimmerServer', 'CloseApplication'): ShimmerRequest.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): ShimmerRequest.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): StreamRequest.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'SayHello'): HelloRequest.SerializeToString,
@@ -902,6 +941,7 @@ try:
       ('shimmerGRPC.ShimmerServer', 'StartStreaming'): ShimmerRequest.SerializeToString,
     }
     response_deserializers = {
+      ('shimmerGRPC.ShimmerServer', 'CloseApplication'): CommandStatus.FromString,
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): CommandStatus.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): ObjectCluster2.FromString,
       ('shimmerGRPC.ShimmerServer', 'SayHello'): HelloReply.FromString,
@@ -910,6 +950,7 @@ try:
       ('shimmerGRPC.ShimmerServer', 'StartStreaming'): CommandStatus.FromString,
     }
     cardinalities = {
+      'CloseApplication': cardinality.Cardinality.UNARY_UNARY,
       'ConnectShimmer': cardinality.Cardinality.UNARY_UNARY,
       'GetDataStream': cardinality.Cardinality.UNARY_STREAM,
       'SayHello': cardinality.Cardinality.UNARY_UNARY,
