@@ -69,15 +69,15 @@ public class UtilShimmer implements Serializable {
 		this.mDebugMode = debugMode;
 	}
 
-	public void consolePrintLn(String message) {
+	public void consolePrintLn(Object message) {
 		if(mVerboseMode) {
-			System.out.println(generateConsolePrintLn(message));
+			System.out.println(generateConsolePrintHeader() + message);
 		}		
 	}
 	
-	public void consolePrintErrLn(String message) {
+	public void consolePrintErrLn(Object message) {
 		if(mVerboseMode) {
-			System.err.println(generateConsolePrintLn(message));
+			System.err.println(generateConsolePrintHeader() + message);
 		}		
 	}
 	
@@ -93,7 +93,7 @@ public class UtilShimmer implements Serializable {
 		}
 	}
 
-	private String generateConsolePrintLn(String message) {
+	private String generateConsolePrintHeader() {
 		Calendar rightNow = Calendar.getInstance();
 		
 		//Negligable difference here between StringBuilder and manually creating the String
@@ -101,7 +101,7 @@ public class UtilShimmer implements Serializable {
 				+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
 				+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
 				+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-		return(rightNowString + " " + mParentClassName + ": " + message);
+		return(rightNowString + " " + mParentClassName + ": ");
 		
 //		StringBuilder builder = new StringBuilder();
 //		builder.append("[");

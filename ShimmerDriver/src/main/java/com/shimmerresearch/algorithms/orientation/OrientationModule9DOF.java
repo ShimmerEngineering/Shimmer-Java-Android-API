@@ -35,8 +35,6 @@ public class OrientationModule9DOF extends OrientationModule {
 		public static final String EULER_OUTPUT_9DOF = "Euler_9DOF";
 	}
 
-	transient Object orientationAlgorithm;
-
 	public static final String WR = "_WR";
 	public static final String LN = "_LN";
 
@@ -439,8 +437,12 @@ public class OrientationModule9DOF extends OrientationModule {
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)
 				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
 			orientationType = ORIENTATION_TYPE.NINE_DOF;
-//			orientationAlgorithm = new GradDes3DOrientation(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
-			orientationAlgorithm = new GradDes3DOrientation9DoF(samplingPeriod);
+
+			if(orientationAlgorithm==null){
+				orientationAlgorithm = new GradDes3DOrientation9DoF(samplingPeriod);
+			} else {
+				orientationAlgorithm.setSamplingPeriod(samplingPeriod);
+			}
 		}
 
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){

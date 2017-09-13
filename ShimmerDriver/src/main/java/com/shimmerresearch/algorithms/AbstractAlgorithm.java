@@ -570,5 +570,11 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 			mUtilShimmer.consolePrintExeptionLn(message, stackTrace);			
 		}
 	}
-	
+
+	/** Needs to be overridden in extending algorithm modules */
+	public void loadAlgorithmVariables(AbstractAlgorithm abstractAlgorithmSource) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

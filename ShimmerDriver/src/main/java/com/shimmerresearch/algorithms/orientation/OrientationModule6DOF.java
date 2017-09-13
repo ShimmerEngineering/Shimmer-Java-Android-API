@@ -36,9 +36,6 @@ public class OrientationModule6DOF extends OrientationModule{
 		public static final String EULER_OUTPUT_6DOF = "Euler_6DOF";
 	}
 
-
-	transient Object orientationAlgorithm;
-
 	protected static final String WR = "_WR";
 	protected static final String LN = "_LN";
 
@@ -440,8 +437,12 @@ public class OrientationModule6DOF extends OrientationModule{
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)
 				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
 			orientationType = ORIENTATION_TYPE.SIX_DOF;
-//			orientationAlgorithm = new GradDes3DOrientation6DoF(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
-			orientationAlgorithm = new GradDes3DOrientation6DoF(samplingPeriod);
+
+			if(orientationAlgorithm==null){
+				orientationAlgorithm = new GradDes3DOrientation6DoF(samplingPeriod);
+			} else {
+				orientationAlgorithm.setSamplingPeriod(samplingPeriod);
+			}
 		}
 
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){

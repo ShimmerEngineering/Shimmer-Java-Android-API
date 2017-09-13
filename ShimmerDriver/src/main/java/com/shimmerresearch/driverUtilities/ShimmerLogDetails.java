@@ -37,7 +37,7 @@ public class ShimmerLogDetails implements Serializable{
 	public double mRTCUserInput;
 	
 	//For applying SD sync during individual file parsing
-	public ArrayList<ArrayList<Double>> offsetTimestampPairs = null;
+	public ArrayList<ArrayList<Double>> offsetTimestampPairsPerSession = null;
 	
 	//TODO just use ShimmerDevice below instead of declaring new variables
 	public transient ShimmerDevice mShimmerDevice = null;
