@@ -44,6 +44,11 @@ class ShimmerServerStub(object):
         request_serializer=src_dot_ShimmerGrpcAndOJC__pb2.ShimmerRequest.SerializeToString,
         response_deserializer=src_dot_ShimmerGrpcAndOJC__pb2.CommandStatus.FromString,
         )
+    self.CloseApplication = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/CloseApplication',
+        request_serializer=src_dot_ShimmerGrpcAndOJC__pb2.ShimmerRequest.SerializeToString,
+        response_deserializer=src_dot_ShimmerGrpcAndOJC__pb2.CommandStatus.FromString,
+        )
 
 
 class ShimmerServerServicer(object):
@@ -92,6 +97,13 @@ class ShimmerServerServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def CloseApplication(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_ShimmerServerServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -122,6 +134,11 @@ def add_ShimmerServerServicer_to_server(servicer, server):
       ),
       'StartStreaming': grpc.unary_unary_rpc_method_handler(
           servicer.StartStreaming,
+          request_deserializer=src_dot_ShimmerGrpcAndOJC__pb2.ShimmerRequest.FromString,
+          response_serializer=src_dot_ShimmerGrpcAndOJC__pb2.CommandStatus.SerializeToString,
+      ),
+      'CloseApplication': grpc.unary_unary_rpc_method_handler(
+          servicer.CloseApplication,
           request_deserializer=src_dot_ShimmerGrpcAndOJC__pb2.ShimmerRequest.FromString,
           response_serializer=src_dot_ShimmerGrpcAndOJC__pb2.CommandStatus.SerializeToString,
       ),

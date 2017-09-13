@@ -9,8 +9,8 @@ import ShimmerGrpcAndOJC_pb2
 import ShimmerGrpcAndOJC_pb2_grpc
 
 def testfunction(stub):
-  response = stub.SayHello(ShimmerGrpcAndOJC_pb2.HelloRequest(name='you'))
-  print(response.message)
+  response = stub.CloseApplication(ShimmerGrpcAndOJC_pb2.ShimmerRequest(address='you'))
+  print('hello')
 
 def run():
   channel = grpc.insecure_channel('localhost:50051')
