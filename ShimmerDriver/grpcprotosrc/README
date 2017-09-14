@@ -2,6 +2,8 @@ Protoc.exe https://github.com/google/protobuf/releases
 Grpc tools for java http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22protoc-gen-grpc-java%22
 Grpc tools for c# http://www.grpc.io/docs/tutorials/basic/csharp.html#generating-client-and-server-code
 
+
+
 Example protoc.exe + grpc arguments
 
 for generating Java code (ShimmerGrpcAndOJC), this holds the structure of ObjectCluster and a simple GRPC Client Server
@@ -15,3 +17,6 @@ for generating Java code (LiteProtocolInstructionSet), this holds the instructio
 
 for generating C# code (LiteProtocolInstructionSet), this holds the instruction set of lite protocol
 -I=C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc --csharp_out=C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\gen C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\src\LiteProtocolInstructionSet.proto
+
+for generating python code (ShimmerGrpcAndOJC)
+python -m grpc_tools.protoc -IC:\Users\User\ShimmerDevelWorkspace\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\ --python_out=. --grpc_python_out=. C:\Users\User\ShimmerDevelWorkspace\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\src\ShimmerGrpcAndOJC.proto
