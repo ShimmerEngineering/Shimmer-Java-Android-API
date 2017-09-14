@@ -29,7 +29,15 @@ service ShimmerServer {
   rpc StartStreaming(ShimmerRequest) returns (CommandStatus){}
   
   rpc CloseApplication(ShimmerRequest) returns (CommandStatus){}
+
+
+  //ConsensysApi related
+  rpc GetDockedShimmerDetails(StreamRequest) returns (CommandStatus){}
+
+  rpc SetWorkspaceDirectory(StringMsg) returns (BoolMsg){}
   
+  rpc GetWorkspaceDirectory(StringMsg) returns (StringMsg){}
+
 }
 
 message File {
@@ -87,3 +95,14 @@ message ObjectCluster2 {
   int64 systemTime = 5;
   double calibratedTimeStamp = 6;
 }
+
+
+//ConsensysApi related
+message StringMsg {
+  string message = 1;
+}
+
+message BoolMsg {
+  bool state = 1;
+}
+

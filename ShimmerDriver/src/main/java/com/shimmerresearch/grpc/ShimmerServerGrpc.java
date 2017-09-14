@@ -114,6 +114,42 @@ public final class ShimmerServerGrpc {
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
           .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> METHOD_GET_DOCKED_SHIMMER_DETAILS =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "GetDockedShimmerDetails"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+          .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg> METHOD_SET_WORKSPACE_DIRECTORY =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "SetWorkspaceDirectory"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg.getDefaultInstance()))
+          .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> METHOD_GET_WORKSPACE_DIRECTORY =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.StringMsg>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "GetWorkspaceDirectory"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+          .build();
 
   /**
    * Creates a new async stub that supports all call types for the service
@@ -203,6 +239,30 @@ public final class ShimmerServerGrpc {
       asyncUnimplementedUnaryCall(METHOD_CLOSE_APPLICATION, responseObserver);
     }
 
+    /**
+     * <pre>
+     *ConsensysApi related
+     * </pre>
+     */
+    public void getDockedShimmerDetails(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_GET_DOCKED_SHIMMER_DETAILS, responseObserver);
+    }
+
+    /**
+     */
+    public void setWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_SET_WORKSPACE_DIRECTORY, responseObserver);
+    }
+
+    /**
+     */
+    public void getWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_GET_WORKSPACE_DIRECTORY, responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -254,6 +314,27 @@ public final class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
                 com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
                   this, METHODID_CLOSE_APPLICATION)))
+          .addMethod(
+            METHOD_GET_DOCKED_SHIMMER_DETAILS,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
+                com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
+                  this, METHODID_GET_DOCKED_SHIMMER_DETAILS)))
+          .addMethod(
+            METHOD_SET_WORKSPACE_DIRECTORY,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+                com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg>(
+                  this, METHODID_SET_WORKSPACE_DIRECTORY)))
+          .addMethod(
+            METHOD_GET_WORKSPACE_DIRECTORY,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+                com.shimmerresearch.grpc.ShimmerGRPC.StringMsg>(
+                  this, METHODID_GET_WORKSPACE_DIRECTORY)))
           .build();
     }
   }
@@ -343,6 +424,33 @@ public final class ShimmerServerGrpc {
       asyncUnaryCall(
           getChannel().newCall(METHOD_CLOSE_APPLICATION, getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     *ConsensysApi related
+     * </pre>
+     */
+    public void getDockedShimmerDetails(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_GET_DOCKED_SHIMMER_DETAILS, getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void setWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_SET_WORKSPACE_DIRECTORY, getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void getWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_GET_WORKSPACE_DIRECTORY, getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -407,6 +515,30 @@ public final class ShimmerServerGrpc {
       return blockingUnaryCall(
           getChannel(), METHOD_CLOSE_APPLICATION, getCallOptions(), request);
     }
+
+    /**
+     * <pre>
+     *ConsensysApi related
+     * </pre>
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus getDockedShimmerDetails(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_GET_DOCKED_SHIMMER_DETAILS, getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg setWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_SET_WORKSPACE_DIRECTORY, getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.StringMsg getWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_GET_WORKSPACE_DIRECTORY, getCallOptions(), request);
+    }
   }
 
   /**
@@ -464,6 +596,33 @@ public final class ShimmerServerGrpc {
       return futureUnaryCall(
           getChannel().newCall(METHOD_CLOSE_APPLICATION, getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     *ConsensysApi related
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getDockedShimmerDetails(
+        com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_GET_DOCKED_SHIMMER_DETAILS, getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg> setWorkspaceDirectory(
+        com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_SET_WORKSPACE_DIRECTORY, getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> getWorkspaceDirectory(
+        com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_GET_WORKSPACE_DIRECTORY, getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SAY_HELLO = 0;
@@ -471,8 +630,11 @@ public final class ShimmerServerGrpc {
   private static final int METHODID_CONNECT_SHIMMER = 2;
   private static final int METHODID_START_STREAMING = 3;
   private static final int METHODID_CLOSE_APPLICATION = 4;
-  private static final int METHODID_SEND_DATA_STREAM = 5;
-  private static final int METHODID_SEND_FILE_STREAM = 6;
+  private static final int METHODID_GET_DOCKED_SHIMMER_DETAILS = 5;
+  private static final int METHODID_SET_WORKSPACE_DIRECTORY = 6;
+  private static final int METHODID_GET_WORKSPACE_DIRECTORY = 7;
+  private static final int METHODID_SEND_DATA_STREAM = 8;
+  private static final int METHODID_SEND_FILE_STREAM = 9;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -510,6 +672,18 @@ public final class ShimmerServerGrpc {
         case METHODID_CLOSE_APPLICATION:
           serviceImpl.closeApplication((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
+          break;
+        case METHODID_GET_DOCKED_SHIMMER_DETAILS:
+          serviceImpl.getDockedShimmerDetails((com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
+          break;
+        case METHODID_SET_WORKSPACE_DIRECTORY:
+          serviceImpl.setWorkspaceDirectory((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg>) responseObserver);
+          break;
+        case METHODID_GET_WORKSPACE_DIRECTORY:
+          serviceImpl.getWorkspaceDirectory((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -557,6 +731,9 @@ public final class ShimmerServerGrpc {
               .addMethod(METHOD_CONNECT_SHIMMER)
               .addMethod(METHOD_START_STREAMING)
               .addMethod(METHOD_CLOSE_APPLICATION)
+              .addMethod(METHOD_GET_DOCKED_SHIMMER_DETAILS)
+              .addMethod(METHOD_SET_WORKSPACE_DIRECTORY)
+              .addMethod(METHOD_GET_WORKSPACE_DIRECTORY)
               .build();
         }
       }

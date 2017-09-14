@@ -5107,7 +5107,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void resetCalibratedTimeStamp(){
-		mLastReceivedTimeStampTicks = 0;
+		mLastReceivedTimeStampTicksUnwrapped = 0;
 		mLastReceivedCalibratedTimeStamp = -1;
 		
 		mStreamingStartTimeSaved = false;
