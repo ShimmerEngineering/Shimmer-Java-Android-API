@@ -59,6 +59,8 @@ public class UtilShimmer implements Serializable {
 	public static final String CHECK_MARK_STRING = " " + UNICODE_CHECK_MARK;
 	public static final String CROSS_MARK_STRING = "  x"; //unicode for cross wasn't working on all PCs " " + UNICODE_CROSS_MARK;
 
+	public static final String STRING_CONSTANT_FOR_BUTTON_EVENT = "EVENT BUTTON PRESSED: ";
+	
 	public UtilShimmer(String parentClassName, Boolean verboseMode){
 		this.mParentClassName = parentClassName;
 		this.mVerboseMode = verboseMode;

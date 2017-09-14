@@ -65,7 +65,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	
 	protected String mEventMarkerCheck="";
 	int mXAxisLimit = 500;
-	int mXAxisTimeDuraton = 5;
+	double mXAxisTimeDuration = 5;
 	//public List<ITrace2D> mListofTraces = new ArrayList<ITrace2D>();
 	public List<ITrace2D> mListofTraces = Collections.synchronizedList(new ArrayList<ITrace2D>());
 	
@@ -91,6 +91,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
 	private boolean mIsTraceDataBuffered = false;
+	
+	public PlotCustomFeature pcf=null;
 	
 	private String mTitle = "";
 	
@@ -397,6 +399,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	 * @param chart the Chart to be cleared
 	 */
 	public void removeAllSignals(){
+		mCurrentXValue=0;
 		super.removeAllSignals();
 		if (mChart!=null){
 			mChart.removeAllTraces();
@@ -414,25 +417,31 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	 * @param signal Signal to be removed
 	 */
 	private void removeSignalInternal(String[] signal){
-		for (int i=0;i<mListofPropertiestoPlot.size();i++){
-			String[] prop = mListofPropertiestoPlot.get(i);
-			boolean found = true;
-			for (int p=0;p<numberOfRowPropertiestoCheck;p++){
-				if (!prop[p].equals(signal[p])){
-					found = false;
-//					System.out.println("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
-					break;
+		synchronized(mListofPropertiestoPlot){
+			Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
+			int i = 0;
+			while (entries.hasNext()) {
+				String[] prop = entries.next();
+		
+				boolean found = true;
+				for (int p=0;p<numberOfRowPropertiestoCheck;p++){
+					if (!prop[p].equals(signal[p])){
+						found = false;
+//						System.out.println("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
+						break;
+					}
 				}
-			}
-			if (found){
-				String traceName = joinChannelStringArray(signal);
-				
-				removeSignalCommon(traceName);
+				if (found){
+					String traceName = joinChannelStringArray(signal);
+					
+					removeSignalCommon(traceName);
 
-				//System.err.println("mChart.removeTrace: " +mListofTraces.get(i));
-				mChart.removeTrace(mListofTraces.get(i));
-				mListofTraces.remove(i);
-				super.removeSignal(i);
+					//System.err.println("mChart.removeTrace: " +mListofTraces.get(i));
+					mChart.removeTrace(mListofTraces.get(i));
+					mListofTraces.remove(i);
+					super.removeSignal(i);
+				}
+				i++;
 			}
 		}
 	}
@@ -447,26 +456,28 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	 * @param signal Signal to be removed
 	 */
 	public void removeSignal(String[] signal){
-		for (int i=0;i<mListofPropertiestoPlot.size();i++){
-			String[] prop = mListofPropertiestoPlot.get(i);
-			boolean found = true;
-			for (int p=0;p<numberOfRowPropertiestoCheck;p++){
-				if (!prop[p].equals(signal[p])){
-					found = false;
-//					System.out.println("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
-					break;
+		synchronized(mListofPropertiestoPlot){
+			for (int i=0;i<mListofPropertiestoPlot.size();i++){
+				String[] prop = mListofPropertiestoPlot.get(i);
+				boolean found = true;
+				for (int p=0;p<numberOfRowPropertiestoCheck;p++){
+					if (!prop[p].equals(signal[p])){
+						found = false;
+	//					System.out.println("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
+						break;
+					}
 				}
-			}
-			if (found){
-				String traceName = joinChannelStringArray(signal);
-				mMapofDefaultXAxisSizes.remove(traceName);
-				mListofTraces.get(i).removeAllPoints(); // added this line for ConsensysGQ as we keep hold the trace for the single HR and GSR plot
-				
-				removeSignalCommon(traceName);
-				
-				mChart.removeTrace(mListofTraces.get(i));
-				mListofTraces.remove(i);
-				super.removeSignal(i);
+				if (found){
+					String traceName = joinChannelStringArray(signal);
+					mMapofDefaultXAxisSizes.remove(traceName);
+					mListofTraces.get(i).removeAllPoints(); // added this line for ConsensysGQ as we keep hold the trace for the single HR and GSR plot
+					
+					removeSignalCommon(traceName);
+					
+					mChart.removeTrace(mListofTraces.get(i));
+					mListofTraces.remove(i);
+					super.removeSignal(i);
+				}
 			}
 		}
 	}
@@ -505,9 +516,20 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		x.setAxisTitle(axisTitle);
 	}
 	
-	public void setXAxisRange(double miny,double maxy){
+	public void setXAxisRange(double minX,double maxY){
 		IAxis<?> x = mChart.getAxisX();
-		x.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
+		x.setRangePolicy(new RangePolicyFixedViewport(new Range(minX, maxY)));
+	}
+	
+	public void setXAxisRangeBasedOnXDuration(){
+		setXAxisRange(mCurrentXValue-(mXAxisTimeDuration*1000), mCurrentXValue);
+	}
+	
+	public void setXAxisRangeBasedOnXDurationSubtractSingleSamplingRate(double samplingRate){
+		double minTime = mCurrentXValue-(mXAxisTimeDuration*1000);
+		double samplingDurationInMs = (1/samplingRate)*1000;
+		minTime=minTime+samplingDurationInMs;
+		setXAxisRange(minTime, mCurrentXValue);
 	}
 	
 	public void setYAxisRange(double miny,double maxy){
@@ -635,12 +657,15 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	
 	public int getIndex(String name){
 		int index=0;
-		for(String[] sarray:mListofPropertiestoPlot){
-			String n = joinChannelStringArray(sarray);
-			if (n.equals(name)){
-				return index;
+		synchronized(mListofPropertiestoPlot){
+			Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
+			while (entries.hasNext()) {
+				String n = joinChannelStringArray(entries.next());
+				if (n.equals(name)){
+					return index;
+				}
+				index++;
 			}
-			index++;
 		}
 		return -1;
 	}
@@ -684,8 +709,12 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	
 	public void changeAllTraceColor(int[] colorArray){
 		//change color
-		for (int[] i:mListOfTraceColorsCurrentlyUsed){
-			i = colorArray;
+		synchronized(mListOfTraceColorsCurrentlyUsed){
+			Iterator <int[]> entries = mListOfTraceColorsCurrentlyUsed.iterator();
+			while (entries.hasNext()) {
+				int[] i = entries.next();
+				i = colorArray;
+			}
 		}
 		
 		synchronized(mListofTraces){
@@ -1414,6 +1443,8 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 				circularFifoBuffer.clear();
 			}
 		}
+		setXAxisDuration(mXAxisTimeDuration);
+		mCurrentXValue=0;
 	}
 
 	public void clearDataBufferAndMakeTraceVisible(String deviceName){
@@ -1610,34 +1641,39 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 //			for(ITrace2D trace:mChart.getTraces()){
 //				String[] props = trace.getName().split(" ");
 				
-			for (int i=0;i<mListofPropertiestoPlot.size();i++){
-				String[] props = mListofPropertiestoPlot.get(i);
-				
-				if (shimmerName.equals(props[0])){
-					FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
-					if (f!=null && f.getDataObject()!=null){
-						mCurrentXValue = xData;
-						double yData = f.getDataObject().get(index);
-						ITrace2D trace = mListofTraces.get(i); 
-						addTracePoint(trace, xData, yData);
-												
-//						if(InternalFrameWithPlotManager.mShowInstantaneousValuesPanel){
-//							if(mCurrentXValue%12 == 0) {
-//								String compareNames = props[0]+"_"+props[1];
-//								for(String key : InternalFrameWithPlotManager.instantaneousValuesTextFields.keySet()) {
-//									if(compareNames.equals(key)) {
-//										DecimalFormat dc = new DecimalFormat("0.00");
-//										String formattedText = dc.format(f.mData);
-//										InternalFrameWithPlotManager.instantaneousValuesTextFields.get(key).setText(formattedText);
+			synchronized(mListofPropertiestoPlot){
+				Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
+				int i = 0;
+				while (entries.hasNext()) {
+					String[] props = entries.next();
+					
+					if (shimmerName.equals(props[0])){
+						FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
+						if (f!=null && f.getDataObject()!=null){
+							mCurrentXValue = xData;
+							double yData = f.getDataObject().get(index);
+							ITrace2D trace = mListofTraces.get(i); 
+							addTracePoint(trace, xData, yData);
+													
+//							if(InternalFrameWithPlotManager.mShowInstantaneousValuesPanel){
+//								if(mCurrentXValue%12 == 0) {
+//									String compareNames = props[0]+"_"+props[1];
+//									for(String key : InternalFrameWithPlotManager.instantaneousValuesTextFields.keySet()) {
+//										if(compareNames.equals(key)) {
+//											DecimalFormat dc = new DecimalFormat("0.00");
+//											String formattedText = dc.format(f.mData);
+//											InternalFrameWithPlotManager.instantaneousValuesTextFields.get(key).setText(formattedText);
+//										}
 //									}
 //								}
 //							}
-//						}
-						
-					} 
-					else {
-						throw new Exception("Signal not found: (" + joinChannelStringArray(props) + ")");
+							
+						} 
+						else {
+							throw new Exception("Signal not found: (" + joinChannelStringArray(props) + ")");
+						}
 					}
+					i++;
 				}
 			}
 		}
@@ -1868,17 +1904,40 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			//		for(ITrace2D trace:mChart.getTraces()){
 			//			String[] props = trace.getName().split(" ");
 
-			for (int i=0; i<mListofPropertiestoPlot.size(); i++){
-				String[] props = mListofPropertiestoPlot.get(i);
-				String traceName = joinChannelStringArray(props);
+			synchronized(mListofPropertiestoPlot){
+				Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
+				int i = 0;
+				while (entries.hasNext()) {
+					String[] props = entries.next();
+					
+					String traceName = joinChannelStringArray(props);
 
-				//prevent eventmarkers from plotting back in time
-				boolean eventMarker=false;
-				if (props[0].equals(mEventMarkerCheck)){
-					if (xData>mCurrentXValue){
-						eventMarker=true;
-					} else { // skip any data which is in the past, as there are multiple shimmer devices, this is possible
-						//JC: Just to be safe, do a check to ensure a marker is not missed, this is probably not needed..
+					//prevent eventmarkers from plotting back in time
+					boolean eventMarker=false;
+					if (props[0].equals(mEventMarkerCheck)){
+						if (xData>mCurrentXValue){
+							eventMarker=true;
+						} else { // skip any data which is in the past, as there are multiple shimmer devices, this is possible
+							//JC: Just to be safe, do a check to ensure a marker is not missed, this is probably not needed..
+							FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
+							if(f == null){
+								//System.out.println("mChart.getName(): " +mChart.getName());
+								throw new Exception("Signal not found: (" + traceName + ")");
+							}
+
+							double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
+							
+							if (yData!=-1){ //marker detected
+								xData=mCurrentXValue; //ensure the timestamp doesnt go back in time
+								eventMarker=true;
+							} else {
+								eventMarker=false;
+							}
+						}
+					}
+
+					if (shimmerName.equals(props[0]) || eventMarker){
+
 						FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 						if(f == null){
 							//System.out.println("mChart.getName(): " +mChart.getName());
@@ -1886,71 +1945,60 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 						}
 
 						double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
-						
-						if (yData!=-1){ //marker detected
-							xData=mCurrentXValue; //ensure the timestamp doesnt go back in time
-							eventMarker=true;
-						} else {
-							eventMarker=false;
+
+						if (i>mListofTraces.size()){
+							throw new Exception("Trace does not exist: (" + traceName + ")");
 						}
-					}
-				}
+						ITrace2D currentTrace = mListofTraces.get(i); 
+						//System.err.println(currentTrace.getMaxY());
 
-				if (shimmerName.equals(props[0]) || eventMarker){
+						mCurrentXValue = xData;
 
-					FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
-					if(f == null){
-						//System.out.println("mChart.getName(): " +mChart.getName());
-						throw new Exception("Signal not found: (" + traceName + ")");
-					}
+						printSignalProps(ojc, currentTrace, props, xData, yData);
 
-					double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
+						updateHrPanelIfVisible(props, ojc);
 
-					if (i>mListofTraces.size()){
-						throw new Exception("Trace does not exist: (" + traceName + ")");
-					}
-					ITrace2D currentTrace = mListofTraces.get(i); 
-					//System.err.println(currentTrace.getMaxY());
-
-					mCurrentXValue = xData;
-
-					printSignalProps(ojc, currentTrace, props, xData, yData);
-
-					updateHrPanelIfVisible(props, ojc);
-
-					Double halfWindowSize = mMapofHalfWindowSize.get(traceName);
-					if (halfWindowSize!=null){
-						currentTrace.getTracePainters();
-						addPointToTrace(currentTrace, xData-halfWindowSize, yData);
-					} 
-					else {
-						if(isXAxisTime()){
-							addTracePoint(currentTrace, xData, yData);
-						}
-						else if(isXAxisFrequency()){
-							//TODO buffer data for FFT calculation
-							FftCalculateDetails fftCalculateDetails = mMapOfFftsToPlot.get(traceName);
-							if(fftCalculateDetails!=null){
-								fftCalculateDetails.addData(xData, yData);
+						Double halfWindowSize = mMapofHalfWindowSize.get(traceName);
+						if (halfWindowSize!=null){
+							currentTrace.getTracePainters();
+							addPointToTrace(currentTrace, xData-halfWindowSize, yData);
+						} 
+						else {
+							if(isXAxisTime()){
+								addTracePoint(currentTrace, xData, yData);
+							}
+							else if(isXAxisFrequency()){
+								//TODO buffer data for FFT calculation
+								FftCalculateDetails fftCalculateDetails = mMapOfFftsToPlot.get(traceName);
+								if(fftCalculateDetails!=null){
+									fftCalculateDetails.addData(xData, yData);
+								}
 							}
 						}
-					}
 
-					// the below isn't used.. yet..
-					//					if(InternalFrameWithPlotManager.mShowInstantaneousValuesPanel){
-					//						if(mCurrentXValue%12 == 0) {
-					//							String compareNames = props[0]+"_"+props[1];
-					//							for(String key : InternalFrameWithPlotManager.instantaneousValuesTextFields.keySet()) {
-					//								if(compareNames.equals(key)) {
-					//									DecimalFormat dc = new DecimalFormat("0.00");
-					//									String formattedText = dc.format(f.mData);
-					//									InternalFrameWithPlotManager.instantaneousValuesTextFields.get(key).setText(formattedText);
-					//								}
-					//							}
-					//						}
-					//					}
+						// the below isn't used.. yet..
+						//					if(InternalFrameWithPlotManager.mShowInstantaneousValuesPanel){
+						//						if(mCurrentXValue%12 == 0) {
+						//							String compareNames = props[0]+"_"+props[1];
+						//							for(String key : InternalFrameWithPlotManager.instantaneousValuesTextFields.keySet()) {
+						//								if(compareNames.equals(key)) {
+						//									DecimalFormat dc = new DecimalFormat("0.00");
+						//									String formattedText = dc.format(f.mData);
+						//									InternalFrameWithPlotManager.instantaneousValuesTextFields.get(key).setText(formattedText);
+						//								}
+						//							}
+						//						}
+						//					}
+					}
+					i++;
 				}
 			}
+		}
+		//	mChart.getAxisX().setRange(new Range(mCurrentXValue-(mXAxisTimeDuraton*1000),mCurrentXValue));
+		//setXAxisRange(mCurrentXValue-(mXAxisTimeDuraton*1000), mCurrentXValue);
+		//filterOldDataOutOfTrace();
+		if(pcf!=null){
+			pcf.custom(this);
 		}
 	}
 
@@ -2098,6 +2146,36 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		mChart = chart;
 	}
 	
+	/** Currently this method, has a problem when the end of the playback is reached, and the playback restarts itself
+	 * 
+	 */
+	protected void filterOldDataOutOfTrace(){
+		for (ITrace2D trace:mListofTraces){
+			Iterator itr = trace.iterator(); 
+			boolean reset=false;
+			while (itr.hasNext()){
+				ITracePoint2D itp = (ITracePoint2D) itr.next();
+				if (itp.getX()<(mCurrentXValue-(mXAxisTimeDuration*1000))){
+					reset=true;
+					break;
+				} else {
+					break;
+				}
+			}
+			if (reset){
+				trace.setVisible(false);
+			} else {
+				trace.setVisible(true);
+			}
+		}
+	}
+	
+	/**
+	 * @param duration this sets the range policy of the x axis, depending on the most recent xaxis data value
+	 */
+	public void setXAxisDuration(double duration){
+		mXAxisTimeDuration = duration;
+	}
 	//----------------------FFT timer test code start ---------------------
 
 	
