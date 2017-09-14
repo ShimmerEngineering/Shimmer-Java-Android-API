@@ -6046,6 +6046,985 @@ public final class ShimmerGRPC {
 
   }
 
+  public interface StringMsgOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:shimmerGRPC.StringMsg)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string message = 1;</code>
+     */
+    java.lang.String getMessage();
+    /**
+     * <code>string message = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getMessageBytes();
+  }
+  /**
+   * <pre>
+   *ConsensysApi related
+   * </pre>
+   *
+   * Protobuf type {@code shimmerGRPC.StringMsg}
+   */
+  public  static final class StringMsg extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:shimmerGRPC.StringMsg)
+      StringMsgOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use StringMsg.newBuilder() to construct.
+    private StringMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private StringMsg() {
+      message_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private StringMsg(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              message_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringMsg_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringMsg_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class, com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.Builder.class);
+    }
+
+    public static final int MESSAGE_FIELD_NUMBER = 1;
+    private volatile java.lang.Object message_;
+    /**
+     * <code>string message = 1;</code>
+     */
+    public java.lang.String getMessage() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        message_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string message = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMessageBytes() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        message_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getMessageBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, message_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getMessageBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, message_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.StringMsg)) {
+        return super.equals(obj);
+      }
+      com.shimmerresearch.grpc.ShimmerGRPC.StringMsg other = (com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) obj;
+
+      boolean result = true;
+      result = result && getMessage()
+          .equals(other.getMessage());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *ConsensysApi related
+     * </pre>
+     *
+     * Protobuf type {@code shimmerGRPC.StringMsg}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:shimmerGRPC.StringMsg)
+        com.shimmerresearch.grpc.ShimmerGRPC.StringMsgOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringMsg_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringMsg_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class, com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.Builder.class);
+      }
+
+      // Construct using com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        message_ = "";
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringMsg_descriptor;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.StringMsg getDefaultInstanceForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance();
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.StringMsg build() {
+        com.shimmerresearch.grpc.ShimmerGRPC.StringMsg result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.StringMsg buildPartial() {
+        com.shimmerresearch.grpc.ShimmerGRPC.StringMsg result = new com.shimmerresearch.grpc.ShimmerGRPC.StringMsg(this);
+        result.message_ = message_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) {
+          return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg other) {
+        if (other == com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()) return this;
+        if (!other.getMessage().isEmpty()) {
+          message_ = other.message_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.shimmerresearch.grpc.ShimmerGRPC.StringMsg parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object message_ = "";
+      /**
+       * <code>string message = 1;</code>
+       */
+      public java.lang.String getMessage() {
+        java.lang.Object ref = message_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          message_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string message = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMessageBytes() {
+        java.lang.Object ref = message_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          message_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string message = 1;</code>
+       */
+      public Builder setMessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        message_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 1;</code>
+       */
+      public Builder clearMessage() {
+        
+        message_ = getDefaultInstance().getMessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 1;</code>
+       */
+      public Builder setMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        message_ = value;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:shimmerGRPC.StringMsg)
+    }
+
+    // @@protoc_insertion_point(class_scope:shimmerGRPC.StringMsg)
+    private static final com.shimmerresearch.grpc.ShimmerGRPC.StringMsg DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.StringMsg();
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringMsg getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<StringMsg>
+        PARSER = new com.google.protobuf.AbstractParser<StringMsg>() {
+      public StringMsg parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new StringMsg(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<StringMsg> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<StringMsg> getParserForType() {
+      return PARSER;
+    }
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.StringMsg getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BoolMsgOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:shimmerGRPC.BoolMsg)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool state = 1;</code>
+     */
+    boolean getState();
+  }
+  /**
+   * Protobuf type {@code shimmerGRPC.BoolMsg}
+   */
+  public  static final class BoolMsg extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:shimmerGRPC.BoolMsg)
+      BoolMsgOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BoolMsg.newBuilder() to construct.
+    private BoolMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BoolMsg() {
+      state_ = false;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BoolMsg(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              state_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BoolMsg_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BoolMsg_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg.class, com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg.Builder.class);
+    }
+
+    public static final int STATE_FIELD_NUMBER = 1;
+    private boolean state_;
+    /**
+     * <code>bool state = 1;</code>
+     */
+    public boolean getState() {
+      return state_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (state_ != false) {
+        output.writeBool(1, state_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (state_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, state_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg)) {
+        return super.equals(obj);
+      }
+      com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg other = (com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg) obj;
+
+      boolean result = true;
+      result = result && (getState()
+          == other.getState());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + STATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getState());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.BoolMsg}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:shimmerGRPC.BoolMsg)
+        com.shimmerresearch.grpc.ShimmerGRPC.BoolMsgOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BoolMsg_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BoolMsg_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg.class, com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg.Builder.class);
+      }
+
+      // Construct using com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        state_ = false;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BoolMsg_descriptor;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg getDefaultInstanceForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg.getDefaultInstance();
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg build() {
+        com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg buildPartial() {
+        com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg result = new com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg(this);
+        result.state_ = state_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg) {
+          return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg other) {
+        if (other == com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg.getDefaultInstance()) return this;
+        if (other.getState() != false) {
+          setState(other.getState());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private boolean state_ ;
+      /**
+       * <code>bool state = 1;</code>
+       */
+      public boolean getState() {
+        return state_;
+      }
+      /**
+       * <code>bool state = 1;</code>
+       */
+      public Builder setState(boolean value) {
+        
+        state_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool state = 1;</code>
+       */
+      public Builder clearState() {
+        
+        state_ = false;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:shimmerGRPC.BoolMsg)
+    }
+
+    // @@protoc_insertion_point(class_scope:shimmerGRPC.BoolMsg)
+    private static final com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg();
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BoolMsg>
+        PARSER = new com.google.protobuf.AbstractParser<BoolMsg>() {
+      public BoolMsg parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new BoolMsg(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BoolMsg> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BoolMsg> getParserForType() {
+      return PARSER;
+    }
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.BoolMsg getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_shimmerGRPC_File_descriptor;
   private static final 
@@ -6101,6 +7080,16 @@ public final class ShimmerGRPC {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shimmerGRPC_ObjectCluster2_DataMapEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_StringMsg_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_StringMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_BoolMsg_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_BoolMsg_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6133,23 +7122,30 @@ public final class ShimmerGRPC {
       "8\001\032Z\n\014DataMapEntry\022\013\n\003key\030\001 \001(\t\0229\n\005value" +
       "\030\002 \001(\0132*.shimmerGRPC.ObjectCluster2.Form" +
       "atCluster2:\0028\001\"7\n\021CommunicationType\022\006\n\002B" +
-      "T\020\000\022\006\n\002SD\020\001\022\022\n\016Radio_802_15_4\020\0022\226\004\n\rShim" +
-      "merServer\022@\n\010SayHello\022\031.shimmerGRPC.Hell" +
-      "oRequest\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rG" +
-      "etDataStream\022\032.shimmerGRPC.StreamRequest" +
-      "\032\033.shimmerGRPC.ObjectCluster2\"\0000\001\022J\n\016Sen" +
-      "dDataStream\022\033.shimmerGRPC.ObjectCluster2" +
-      "\032\027.shimmerGRPC.HelloReply\"\000(\001\022@\n\016SendFil",
-      "eStream\022\021.shimmerGRPC.File\032\027.shimmerGRPC" +
-      ".HelloReply\"\000(\001\022K\n\016ConnectShimmer\022\033.shim" +
-      "merGRPC.ShimmerRequest\032\032.shimmerGRPC.Com" +
-      "mandStatus\"\000\022K\n\016StartStreaming\022\033.shimmer" +
-      "GRPC.ShimmerRequest\032\032.shimmerGRPC.Comman" +
-      "dStatus\"\000\022M\n\020CloseApplication\022\033.shimmerG" +
-      "RPC.ShimmerRequest\032\032.shimmerGRPC.Command" +
-      "Status\"\000BB\n\030com.shimmerresearch.grpcB\013Sh" +
-      "immerGRPC\252\002\030com.shimmerresearch.grpcb\006pr" +
-      "oto3"
+      "T\020\000\022\006\n\002SD\020\001\022\022\n\016Radio_802_15_4\020\002\"\034\n\tStrin" +
+      "gMsg\022\017\n\007message\030\001 \001(\t\"\030\n\007BoolMsg\022\r\n\005stat" +
+      "e\030\001 \001(\0102\377\005\n\rShimmerServer\022@\n\010SayHello\022\031." +
+      "shimmerGRPC.HelloRequest\032\027.shimmerGRPC.H" +
+      "elloReply\"\000\022L\n\rGetDataStream\022\032.shimmerGR" +
+      "PC.StreamRequest\032\033.shimmerGRPC.ObjectClu" +
+      "ster2\"\0000\001\022J\n\016SendDataStream\022\033.shimmerGRP",
+      "C.ObjectCluster2\032\027.shimmerGRPC.HelloRepl" +
+      "y\"\000(\001\022@\n\016SendFileStream\022\021.shimmerGRPC.Fi" +
+      "le\032\027.shimmerGRPC.HelloReply\"\000(\001\022K\n\016Conne" +
+      "ctShimmer\022\033.shimmerGRPC.ShimmerRequest\032\032" +
+      ".shimmerGRPC.CommandStatus\"\000\022K\n\016StartStr" +
+      "eaming\022\033.shimmerGRPC.ShimmerRequest\032\032.sh" +
+      "immerGRPC.CommandStatus\"\000\022M\n\020CloseApplic" +
+      "ation\022\033.shimmerGRPC.ShimmerRequest\032\032.shi" +
+      "mmerGRPC.CommandStatus\"\000\022S\n\027GetDockedShi" +
+      "mmerDetails\022\032.shimmerGRPC.StreamRequest\032",
+      "\032.shimmerGRPC.CommandStatus\"\000\022G\n\025SetWork" +
+      "spaceDirectory\022\026.shimmerGRPC.StringMsg\032\024" +
+      ".shimmerGRPC.BoolMsg\"\000\022I\n\025GetWorkspaceDi" +
+      "rectory\022\026.shimmerGRPC.StringMsg\032\026.shimme" +
+      "rGRPC.StringMsg\"\000BB\n\030com.shimmerresearch" +
+      ".grpcB\013ShimmerGRPC\252\002\030com.shimmerresearch" +
+      ".grpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6230,6 +7226,18 @@ public final class ShimmerGRPC {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_ObjectCluster2_DataMapEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
+    internal_static_shimmerGRPC_StringMsg_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_shimmerGRPC_StringMsg_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_StringMsg_descriptor,
+        new java.lang.String[] { "Message", });
+    internal_static_shimmerGRPC_BoolMsg_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_shimmerGRPC_BoolMsg_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_BoolMsg_descriptor,
+        new java.lang.String[] { "State", });
     com.google.protobuf.DescriptorProtos.getDescriptor();
   }
 

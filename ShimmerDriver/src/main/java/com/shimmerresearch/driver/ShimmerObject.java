@@ -556,7 +556,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected abstract void checkBattery();
 	
 	//-------- Timestamp start --------
-	protected double mLastReceivedTimeStampTicks=0;
+	protected double mLastReceivedTimeStampTicksUnwrapped=0;
 	protected double mCurrentTimeStampCycle=0;
 	protected long mInitialTsTicks = 0;
 	@Deprecated //not needed any more
@@ -566,7 +566,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double mStreamingStartTimeMilliSecs;
 	
 	protected int mTimeStampPacketByteSize = 2;
-	protected int mTimeStampPacketRawMaxValueTicks = 65536;// 16777216 or 65536 
+	protected int mTimeStampPacketMaxValueTicks = 65536-1;// (16777216 or 65536)-1 
 	//-------- Timestamp end --------
 
 	// Shimmer2/2r - Analog accel
@@ -3263,18 +3263,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected double unwrapTimeStamp(double timeStampTicks){
 		//first convert to continuous time stamp
-		if (mLastReceivedTimeStampTicks>(timeStampTicks+(mTimeStampPacketRawMaxValueTicks*mCurrentTimeStampCycle))){ 
+		double currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampPacketMaxValueTicks*mCurrentTimeStampCycle);
+		
+		//Check if there was a roll-over
+		if (mLastReceivedTimeStampTicksUnwrapped>currentTimeStampTicksUnwrapped){ 
 			mCurrentTimeStampCycle += 1;
+			//Recalculate timestamp
+			currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampPacketMaxValueTicks*mCurrentTimeStampCycle);
 		}
 
-		mLastReceivedTimeStampTicks = (timeStampTicks+(mTimeStampPacketRawMaxValueTicks*mCurrentTimeStampCycle));
-		
+		//Store in order to trigger packet loss calculations while streaming in real-time
 		if (!mStreamingStartTimeSaved){
 			mStreamingStartTimeSaved=true;
-			mStreamingStartTimeMilliSecs = mLastReceivedTimeStampTicks/getSamplingClockFreq()*1000;   // to convert into mS
+			mStreamingStartTimeMilliSecs = currentTimeStampTicksUnwrapped/getSamplingClockFreq()*1000;   // to convert into mS
 		}
-		
-		return mLastReceivedTimeStampTicks;
+
+		mLastReceivedTimeStampTicksUnwrapped = currentTimeStampTicksUnwrapped;
+
+		return currentTimeStampTicksUnwrapped;
 	}
 
 //	@Override
@@ -8753,7 +8759,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mLastReceivedTimeStamp
 	 */
 	public double getLastReceivedTimeStamp(){
-		return mLastReceivedTimeStampTicks;
+		return mLastReceivedTimeStampTicksUnwrapped;
 	}
 	
 	public String getCenter(){
@@ -8778,12 +8784,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//Once the version is known update settings accordingly 
 		if (getFirmwareVersionCode()>=6){
 			mTimeStampPacketByteSize = 3;
-			mTimeStampPacketRawMaxValueTicks = 16777216;
+//			mTimeStampPacketMaxValueTicks = 16777216;
 		} 
 		else {//if (getFirmwareVersionCode()<6){
 			mTimeStampPacketByteSize = 2;
-			mTimeStampPacketRawMaxValueTicks = 65536;
+//			mTimeStampPacketMaxValueTicks = 65536;
 		}
+		mTimeStampPacketMaxValueTicks = (int) (Math.pow(2, 8*mTimeStampPacketByteSize) - 1);
 	}
 	
 	// --------------- Database related start --------------------------
