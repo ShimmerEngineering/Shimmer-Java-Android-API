@@ -15,7 +15,7 @@ package shimmerGRPC;
 service ShimmerServer {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
-  
+
   //Client asking for data
   rpc GetDataStream(StreamRequest) returns (stream ObjectCluster2) {}
   
