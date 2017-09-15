@@ -5,11 +5,11 @@ import time
 
 import grpc
 
-import ShimmerGrpcAndOJC_pb2
-import ShimmerGrpcAndOJC_pb2_grpc
+from ShimmerGrpcPythonLib import ShimmerGrpcAndOJC_pb2
+from ShimmerGrpcPythonLib import ShimmerGrpcAndOJC_pb2_grpc
 
 def helloServer(stub):
-  response = stub.SayHello(ShimmerGrpcAndOJC_pb2.HelloRequest(name='Shimmer'))
+  response = stub.SayHello(ShimmerGrpcAndOJC_pb2.HelloRequest(name='Mark'))
   print(response.message)
 
 def closeApplication(stub):
