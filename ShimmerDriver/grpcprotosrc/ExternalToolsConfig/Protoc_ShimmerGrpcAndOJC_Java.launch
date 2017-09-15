@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/ShimmerDriver/bin/protoc-3.4.0-win32/bin/protoc.exe}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-I=${project_loc}/grpcprotosrc/src --java_out=${project_loc}/grpcprotosrc/gen --plugin=protoc-gen-grpc-java=${project_loc}/src/main/resources/protoc-gen-grpc-java/protoc-gen-grpc-java-1.6.1-windows-x86_32.exe --grpc-java_out=${project_loc}/grpcprotosrc/gen ${project_loc}/grpcprotosrc/src/ShimmerGrpcAndOJC.proto"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:/ShimmerDriver}"/>
+</launchConfiguration>
