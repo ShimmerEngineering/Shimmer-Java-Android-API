@@ -291,7 +291,10 @@ public class SensorADC extends AbstractSensor {
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0E);
-
+    //TODO add this to all of the ADC channels?
+//    {
+//    	channel_EXT_EXP_ADC_A6.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
+//    }
 
     public static final ChannelDetails channel_EXT_EXP_ADC_A15 = new ChannelDetails(
     		ObjectClusterSensorName.EXT_EXP_ADC_A15,
