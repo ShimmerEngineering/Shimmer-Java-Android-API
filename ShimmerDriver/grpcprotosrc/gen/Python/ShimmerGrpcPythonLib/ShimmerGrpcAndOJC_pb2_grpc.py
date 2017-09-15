@@ -31,7 +31,7 @@ class ShimmerServerStub(object):
         )
     self.SendFileStream = channel.stream_unary(
         '/shimmerGRPC.ShimmerServer/SendFileStream',
-        request_serializer=ShimmerGrpcAndOJC__pb2.File.SerializeToString,
+        request_serializer=ShimmerGrpcAndOJC__pb2.FileByteTransfer.SerializeToString,
         response_deserializer=ShimmerGrpcAndOJC__pb2.HelloReply.FromString,
         )
     self.ConnectShimmer = channel.unary_unary(
@@ -49,15 +49,15 @@ class ShimmerServerStub(object):
         request_serializer=ShimmerGrpcAndOJC__pb2.ShimmerRequest.SerializeToString,
         response_deserializer=ShimmerGrpcAndOJC__pb2.CommandStatus.FromString,
         )
-    self.GetDockedShimmerDetails = channel.unary_unary(
-        '/shimmerGRPC.ShimmerServer/GetDockedShimmerDetails',
+    self.GetDockedShimmerInfo = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/GetDockedShimmerInfo',
         request_serializer=ShimmerGrpcAndOJC__pb2.StreamRequest.SerializeToString,
-        response_deserializer=ShimmerGrpcAndOJC__pb2.CommandStatus.FromString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.ShimmersInfo.FromString,
         )
     self.SetWorkspaceDirectory = channel.unary_unary(
         '/shimmerGRPC.ShimmerServer/SetWorkspaceDirectory',
         request_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
-        response_deserializer=ShimmerGrpcAndOJC__pb2.BoolMsg.FromString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
         )
     self.GetWorkspaceDirectory = channel.unary_unary(
         '/shimmerGRPC.ShimmerServer/GetWorkspaceDirectory',
@@ -119,7 +119,7 @@ class ShimmerServerServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def GetDockedShimmerDetails(self, request, context):
+  def GetDockedShimmerInfo(self, request, context):
     """ConsensysApi related
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -160,7 +160,7 @@ def add_ShimmerServerServicer_to_server(servicer, server):
       ),
       'SendFileStream': grpc.stream_unary_rpc_method_handler(
           servicer.SendFileStream,
-          request_deserializer=ShimmerGrpcAndOJC__pb2.File.FromString,
+          request_deserializer=ShimmerGrpcAndOJC__pb2.FileByteTransfer.FromString,
           response_serializer=ShimmerGrpcAndOJC__pb2.HelloReply.SerializeToString,
       ),
       'ConnectShimmer': grpc.unary_unary_rpc_method_handler(
@@ -178,15 +178,15 @@ def add_ShimmerServerServicer_to_server(servicer, server):
           request_deserializer=ShimmerGrpcAndOJC__pb2.ShimmerRequest.FromString,
           response_serializer=ShimmerGrpcAndOJC__pb2.CommandStatus.SerializeToString,
       ),
-      'GetDockedShimmerDetails': grpc.unary_unary_rpc_method_handler(
-          servicer.GetDockedShimmerDetails,
+      'GetDockedShimmerInfo': grpc.unary_unary_rpc_method_handler(
+          servicer.GetDockedShimmerInfo,
           request_deserializer=ShimmerGrpcAndOJC__pb2.StreamRequest.FromString,
-          response_serializer=ShimmerGrpcAndOJC__pb2.CommandStatus.SerializeToString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.ShimmersInfo.SerializeToString,
       ),
       'SetWorkspaceDirectory': grpc.unary_unary_rpc_method_handler(
           servicer.SetWorkspaceDirectory,
           request_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
-          response_serializer=ShimmerGrpcAndOJC__pb2.BoolMsg.SerializeToString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
       ),
       'GetWorkspaceDirectory': grpc.unary_unary_rpc_method_handler(
           servicer.GetWorkspaceDirectory,
