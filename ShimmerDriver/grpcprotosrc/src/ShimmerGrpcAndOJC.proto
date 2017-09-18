@@ -22,7 +22,7 @@ service ShimmerServer {
   //Client sending data
   rpc SendDataStream(stream ObjectCluster2) returns (HelloReply){}
   
-  rpc SendFileStream(stream File) returns (HelloReply){}
+  rpc SendFileStream(stream FileByteTransfer) returns (HelloReply){}
   
   rpc ConnectShimmer(ShimmerRequest) returns (CommandStatus){}
   
@@ -32,15 +32,15 @@ service ShimmerServer {
 
 
   //ConsensysApi related
-  rpc GetDockedShimmerDetails(StreamRequest) returns (CommandStatus){}
+  rpc GetDockedShimmerInfo(StreamRequest) returns (ShimmersInfo){}
 
-  rpc SetWorkspaceDirectory(StringMsg) returns (BoolMsg){}
+  rpc SetWorkspaceDirectory(StringMsg) returns (OperationRequest){}
   
   rpc GetWorkspaceDirectory(StringMsg) returns (StringMsg){}
 
 }
 
-message File {
+message FileByteTransfer {
 	string name=1;
 	bytes data=2;
 	bool endoffile=3;
@@ -104,5 +104,27 @@ message StringMsg {
 
 message BoolMsg {
   bool state = 1;
+}
+
+message OperationRequest {
+  bool success = 1;
+  string message = 2;
+}
+
+message ShimmersInfo {
+  bool state = 1;
+  string message = 2;
+
+  message ShimmerInfo {
+    string name = 1;
+    string uniqueId = 2;
+    string bluetoothAddress = 3;
+    string trialName = 4;
+    string batteryPercentage = 5;
+    string driveTotalSpaceParsed = 6;
+    string driveCapacityParsed = 7;
+    bool realTimeClockSet = 8;
+  }
+  map<string,ShimmerInfo> shimmerMap = 3;
 }
 

@@ -5,7 +5,7 @@ import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.grpc.ShimmerGRPC;
-import com.shimmerresearch.grpc.ShimmerGRPC.File;
+import com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer;
 import com.shimmerresearch.grpc.ShimmerServerGrpc;
 import com.shimmerresearch.grpc.ShimmerGRPC.HelloReply;
 import com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest;
@@ -22,7 +22,7 @@ public class ShimmerStreamClientGrpc extends BasicProcessWithCallBack{
 	private final ShimmerServerGrpc.ShimmerServerStub stub;
 	ObjectCluster mLastRXOJC;
 	StreamObserver<ObjectCluster2> requestObserver;
-	StreamObserver<File> requestObserverFile;
+	StreamObserver<FileByteTransfer> requestObserverFile;
 	public ShimmerStreamClientGrpc(String host, int port) {
 		  channel = ManagedChannelBuilder.forAddress(host, port)
 		      .usePlaintext(true)
@@ -130,7 +130,7 @@ public class ShimmerStreamClientGrpc extends BasicProcessWithCallBack{
 		
 		  
 	}
-	public void sendFile(File file){
+	public void sendFile(FileByteTransfer file){
 		requestObserverFile.onNext(file);
 	}
 	public void sendOJCToServer(ObjectCluster2 ojc){
