@@ -13,6 +13,8 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportAll;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerRadioInitializer;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
+import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -24,6 +26,7 @@ import com.shimmerresearch.driver.ShimmerShell;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
@@ -302,7 +305,7 @@ public abstract class ShimmerBluetoothManager{
 				
 				if(shimmerDevice instanceof ShimmerBluetooth){
 					ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth)shimmerDevice;
-					shimmerBluetooth.writeConfigBytes(shimmerDevice.getShimmerInfoMemBytes());
+					shimmerBluetooth.writeConfigBytes(shimmerDevice.getShimmerConfigBytes());
 					shimmerBluetooth.writeEnabledSensors(shimmerDevice.getEnabledSensors());
 				}
 				
@@ -336,7 +339,7 @@ public abstract class ShimmerBluetoothManager{
 						originalShimmer.setSendProgressReport(true);
 
 						if(originalShimmer.isUseInfoMemConfigMethod()){
-							originalShimmer.writeConfigBytes(cloneShimmerCast.getShimmerInfoMemBytes());
+							originalShimmer.writeConfigBytes(cloneShimmerCast.getShimmerConfigBytes());
 							// Hack because infomem is getting updated but
 							// enabledsensors aren't getting updated on the Shimmer
 							// and we need an inquiry() to determine packet format
@@ -398,10 +401,26 @@ public abstract class ShimmerBluetoothManager{
 					originalShimmer.operationPrepare();
 //					originalShimmer.setSendProgressReport(true);
 
-					originalShimmer.writeConfigBytes(cloneShimmerCast.getShimmerInfoMemBytes());
+					originalShimmer.writeConfigBytes(cloneShimmerCast.getShimmerConfigBytes());
 					originalShimmer.writeCalibrationDump(cloneShimmerCast.calibByteDumpGenerate());
 					
 					originalShimmer.operationStart(BT_STATE.CONFIGURING);
+				}
+			}
+			else {
+				ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmer.getMacId());
+				if(cloneShimmer.getHardwareVersion()==HW_ID.SWEATCH){
+					//TODO
+					boolean supportSweatchBtConfig = false;
+					if(supportSweatchBtConfig){
+						originalShimmerDevice.operationPrepare();
+						
+//						originalShimmerDevice.setSamplingRateShimmer(cloneShimmer.getSamplingRateShimmer());
+						
+						LiteProtocol liteProtocol = ((LiteProtocol)(originalShimmerDevice.getCommsProtocolRadio().mRadioProtocol));
+						liteProtocol.writeInfoMem(cloneShimmer.getConfigByteLayout().MSP430_5XX_INFOMEM_D_ADDRESS, cloneShimmer.getShimmerConfigBytes());
+						originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
+					}
 				}
 			}
 			

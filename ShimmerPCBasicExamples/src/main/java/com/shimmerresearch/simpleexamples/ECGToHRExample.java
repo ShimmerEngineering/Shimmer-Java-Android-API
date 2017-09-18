@@ -59,7 +59,7 @@ public class ECGToHRExample extends BasicProcessWithCallBack{
 				if (mConfigureOnFirstTime){
 					ShimmerPC cloneDevice = shimmerDevice.deepClone();
 					cloneDevice.setEnabledAndDerivedSensorsAndUpdateMaps(0, 0);
-					cloneDevice.setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_ECG, true);
+					cloneDevice.setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, true);
 					cloneDevice.setDefaultECGConfiguration(256);
 					AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
 			 		bluetoothManager.configureShimmer(cloneDevice);

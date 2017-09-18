@@ -63,7 +63,7 @@ public class PPGToHRExample extends BasicProcessWithCallBack {
 				//5 beats to average
 				if (mConfigureOnFirstTime){
 					ShimmerPC cloneDevice = shimmerDevice.deepClone();
-					cloneDevice.setSensorEnabledState(Configuration.Shimmer3.SensorMapKey.HOST_PPG_A13, true);
+					cloneDevice.setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A13, true);
 					AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
 			 		bluetoothManager.configureShimmer(cloneDevice);
 			 		shimmerDevice.writeShimmerAndSensorsSamplingRate(128);

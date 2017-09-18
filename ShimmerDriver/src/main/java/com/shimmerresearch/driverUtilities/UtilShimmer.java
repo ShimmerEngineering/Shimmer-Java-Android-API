@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,6 +59,8 @@ public class UtilShimmer implements Serializable {
 	public static final String CHECK_MARK_STRING = " " + UNICODE_CHECK_MARK;
 	public static final String CROSS_MARK_STRING = "  x"; //unicode for cross wasn't working on all PCs " " + UNICODE_CROSS_MARK;
 
+	public static final String STRING_CONSTANT_FOR_BUTTON_EVENT = "EVENT BUTTON PRESSED: ";
+	
 	public UtilShimmer(String parentClassName, Boolean verboseMode){
 		this.mParentClassName = parentClassName;
 		this.mVerboseMode = verboseMode;
@@ -68,15 +71,15 @@ public class UtilShimmer implements Serializable {
 		this.mDebugMode = debugMode;
 	}
 
-	public void consolePrintLn(String message) {
+	public void consolePrintLn(Object message) {
 		if(mVerboseMode) {
-			System.out.println(generateConsolePrintLn(message));
+			System.out.println(generateConsolePrintHeader() + message);
 		}		
 	}
 	
-	public void consolePrintErrLn(String message) {
+	public void consolePrintErrLn(Object message) {
 		if(mVerboseMode) {
-			System.err.println(generateConsolePrintLn(message));
+			System.err.println(generateConsolePrintHeader() + message);
 		}		
 	}
 	
@@ -86,19 +89,37 @@ public class UtilShimmer implements Serializable {
 		}
 	}
 
-	public void consolePrintShimmerExeption(ShimmerException shimmerException) {
+	public void consolePrintShimmerException(ShimmerException shimmerException) {
 		if(mVerboseMode) {
 			consolePrintErrLn(shimmerException.getErrStringFormatted());
 		}
 	}
 
-	private String generateConsolePrintLn(String message) {
+	private String generateConsolePrintHeader() {
 		Calendar rightNow = Calendar.getInstance();
+		
+		//Negligable difference here between StringBuilder and manually creating the String
 		String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
 				+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
 				+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
 				+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-		return(rightNowString + " " + mParentClassName + ": " + message);
+		return(rightNowString + " " + mParentClassName + ": ");
+		
+//		StringBuilder builder = new StringBuilder();
+//		builder.append("[");
+//		builder.append(String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)));
+//		builder.append(":");
+//		builder.append(String.format("%02d",rightNow.get(Calendar.MINUTE)));
+//		builder.append(":");
+//		builder.append(String.format("%02d",rightNow.get(Calendar.SECOND)));
+//		builder.append(":");
+//		builder.append(String.format("%03d",rightNow.get(Calendar.MILLISECOND)));
+//		builder.append("]");
+//
+//		builder.append(mParentClassName);
+//		builder.append(message);
+//		
+//		return builder.toString();
 	}
 	
 	public void setParentClassName(String parentClassName){
@@ -152,12 +173,34 @@ public class UtilShimmer implements Serializable {
 		return timeString;
 	}
 	
+	/**
+	 * Converts from milliseconds in Unix time to a formatted local time string
+	 * (specific to the local timezone of the computer)
+	 * 
+	 * @param milliSeconds
+	 * @param format
+	 * @return
+	 */
 	public static String convertMilliSecondsToHrMinSecLocal(long milliSeconds) {
-		DateFormat dfLocal = new SimpleDateFormat("HH:mm:ss");
+		return convertMilliSecondsToFormat(milliSeconds, "HH:mm:ss", false);
+	}
+
+	/**
+	 * Converts from milliseconds in Unix time 
+	 * 
+	 * @param milliSeconds
+	 * @param format
+	 * @return
+	 */
+	public static String convertMilliSecondsToFormat(long milliSeconds, String format, boolean setTimezoneUtc) {
+		DateFormat dfLocal = new SimpleDateFormat(format);
+		if(setTimezoneUtc){
+			dfLocal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		}
 		String timeString = dfLocal.format(new Date(milliSeconds));
 		return timeString;
 	}
-	
+
 	private static String getDayOfMonthSuffix(final int n) {
 	    if (n >= 11 && n <= 13) {
 	        return "th";
@@ -523,6 +566,36 @@ public class UtilShimmer implements Serializable {
 			
 			return dateFormatted;
 		}
+	}
+	
+	public static long fromTimeStringToMilliseconds (String timeString){
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
+		
+		try {
+			Date date = dateFormat.parse(timeString);
+			return date.getTime();
+		} 
+		catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static long fromDateAndTimeMillisToTimeMilli (long dateAndTimeInMillis){
+		DateFormat dateFormat = new SimpleDateFormat("HH.mm.ss.SSS");
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(dateAndTimeInMillis);
+		String formattedDateAndTime = dateFormat.format(cal.getTime());
+		
+		Date date;
+		try {
+			date = dateFormat.parse(formattedDateAndTime);
+			return date.getTime();
+		} 
+		catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
 	/**

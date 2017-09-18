@@ -166,6 +166,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param exg1 Sets the register of EXG chip 1
 	 * @param exg2 Setes the register of EXG chip 2
 	 */
+	@Deprecated //no longer allowed to enable low power 
 	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, boolean enableLowPowerAccel, boolean enableLowPowerGyro, boolean enableLowPowerMag, int gyroRange, int magRange,byte[] exg1,byte[] exg2, int orientation) {
 		super(userAssignedName, samplingRate, null, accelRange, gsrRange, gyroRange, magRange);
 		setContinuousSync(continousSync);
@@ -207,6 +208,20 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		//TODO New approach - end
 	}
 	
+	/**Shimmer 3 Constructor
+	 * @param myname  To allow the user to set a unique identifier for each Shimmer device
+	 * @param samplingRate Defines the sampling rate
+	 * @param accelRange Defines the Acceleration range. Valid range setting values for the Shimmer 2 are 0 (+/- 1.5g), 1 (+/- 2g), 2 (+/- 4g) and 3 (+/- 6g). Valid range setting values for the Shimmer 2r are 0 (+/- 1.5g) and 3 (+/- 6g).
+	 * @param gsrRange Numeric value defining the desired gsr range. Valid range settings are 0 (10kOhm to 56kOhm),  1 (56kOhm to 220kOhm), 2 (220kOhm to 680kOhm), 3 (680kOhm to 4.7MOhm) and 4 (Auto Range).
+	 * @param setEnabledSensors Defines the sensors to be enabled (e.g. 'Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO' enables the Accelerometer and Gyroscope)
+	 * @param gyroRange Sets the Gyro Range of the accelerometer
+	 * @param magRange Sets the Mag Range
+	 */
+	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, Integer[] sensorIdsToEnable, int gyroRange, int magRange, int orientation) {
+		super(userAssignedName, samplingRate, sensorIdsToEnable, accelRange, gsrRange, gyroRange, magRange);
+		setupOrientation(orientation, samplingRate);
+	}
+	
 	/**
 	*  Shimmer2, Constructor. Prepares a new Bluetooth session. Additional fields allows the device to be set up immediately.
 	 * @param myname  To allow the user to set a unique identifier for each Shimmer device
@@ -217,10 +232,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param countiousSync A boolean value defining whether received packets should be checked continuously for the correct start and end of packet.
 	 * @param magGain Set mag gain
 	 */
+	@Deprecated //because continousSync does nothing
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, boolean continousSync, int magGain, int orientation) {
-//		this(myName, continousSync);
-		super(myName, samplingRate, null, accelRange, gsrRange, magGain);
-		setContinuousSync(continousSync);
+		super(myName,samplingRate, setEnabledSensors, accelRange, gsrRange, magGain);
+		//		this(myName, continousSync);
+		//super(myName, samplingRate, null, accelRange, gsrRange, magGain);
+		//setContinuousSync(continousSync);
 
 		//TODO Old approach - start (migrate to new approach)
 //		setAccelRange(accelRange);
@@ -236,11 +253,26 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		//TODO New approach - start
 //		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
 //		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
-		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.ENABLED_SENSORS, setEnabledSensors);
+		//addFixedShimmerConfig(Shimmer3.GuiLabelConfig.ENABLED_SENSORS, setEnabledSensors);
 //		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
 //		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magGain);
 //		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		//TODO New approach - end
+	}
+	
+	/**
+	*  Shimmer2, Constructor. Prepares a new Bluetooth session. Additional fields allows the device to be set up immediately. Note enabled sensors are only for legacy Shimmer2, no sensor map is supported
+	 * @param myname  To allow the user to set a unique identifier for each Shimmer device
+	 * @param samplingRate Defines the sampling rate
+	 * @param accelRange Defines the Acceleration range. Valid range setting values for the Shimmer 2 are 0 (+/- 1.5g), 1 (+/- 2g), 2 (+/- 4g) and 3 (+/- 6g). Valid range setting values for the Shimmer 2r are 0 (+/- 1.5g) and 3 (+/- 6g).
+	 * @param gsrRange Numeric value defining the desired gsr range. Valid range settings are 0 (10kOhm to 56kOhm),  1 (56kOhm to 220kOhm), 2 (220kOhm to 680kOhm), 3 (680kOhm to 4.7MOhm) and 4 (Auto Range).
+	 * @param setEnabledSensors Defines the sensors to be enabled (e.g. 'Shimmer.SENSOR_ACCEL|Shimmer.SENSOR_GYRO' enables the Accelerometer and Gyroscope)
+	* @param magGain Set mag gain
+	 */
+	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, int magGain, int orientation) {
+		super(myName,samplingRate, setEnabledSensors, accelRange, gsrRange, magGain);
+		setupOrientation(orientation, samplingRate);
+		
 	}
 	
 	// Javadoc comment follows

@@ -2,6 +2,7 @@ package com.shimmerresearch.driverUtilities;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -15,36 +16,40 @@ public class ShimmerLogDetails implements Serializable{
 	public String mTrialName;
 	public String mConfigTime;
 	public String mFullTrialName;
+	public String mSdFileNumber;
+
 	public long mRTCDifference;
 	public String mSessionName;
-/*<<<<<<< HEAD
-	public int mSessionNumber;
-=======*/
 	public int mDbSessionNumber = -1;
-//>>>>>>> refs/remotes/origin/MN
+
 	public long mFileSize;
-	public long mConfigTimeStamp;
 	public long mInitialTimeStamp;
 	public long mDuration;
 	public int mSlotID;
-	public String mMacAddress;
 	public String mUniqueId;
 	public String mDockID;
 	public String mAbsolutePathWhereFileWasCopied;
-	public int mFirmwareIdentifier;
-	public int mFirmwareVersionMajor;
-	public int mFirmwareVersionMinor;
-	public int mFirmwareVersionInternal;
+	
 	public String mNewSessionName;
 	public int mNewSessionId;
 	public double mStartingRTC; // this is = (mInitialTimeStamp/32768*1000) + (mRTCDifference/32768*1000);
 	public int mNumOfShimmers;
 	public double mRTCUserInput;
+	
+	//For applying SD sync during individual file parsing
+	public ArrayList<ArrayList<Double>> offsetTimestampPairsPerSession = null;
+	
+	//TODO just use ShimmerDevice below instead of declaring new variables
+	public transient ShimmerDevice mShimmerDevice = null;
+	private String mShimmerUserAssignedName;
+	public String mMacAddress;
+	public long mConfigTimeStamp;
+	public ShimmerVerObject mShimmerVersionObject;
 	public int mMasterShimmer;
 	public double mSampleRate;
 	public double mEnabledSensors;
 	public double mDerivedSensors;
-	public int mHardwareVersion;
+	
 	
 	//GQ related
 	public LinkedHashMap<String, SensorParsingDetails> mMapOfSensorsToParse = new LinkedHashMap<String, SensorParsingDetails>();
@@ -75,14 +80,16 @@ public class ShimmerLogDetails implements Serializable{
 	public void updateFromShimmerDevice(ShimmerDevice shimmerDevice) {
 		mConfigTimeStamp = shimmerDevice.getConfigTime();
 		mMacAddress = shimmerDevice.getMacId();
-		mFirmwareIdentifier = shimmerDevice.getFirmwareIdentifier();
-		mFirmwareVersionMajor = shimmerDevice.getFirmwareVersionMajor();
-		mFirmwareVersionMinor = shimmerDevice.getFirmwareVersionMinor();
-		mFirmwareVersionInternal = shimmerDevice.getFirmwareVersionInternal();
+		
+		mShimmerVersionObject = shimmerDevice.getShimmerVerObject();
+		
 		mSampleRate = shimmerDevice.getSamplingRateShimmer();
 		mEnabledSensors = shimmerDevice.getEnabledSensors();
 		mDerivedSensors = shimmerDevice.getDerivedSensors();
-		mHardwareVersion = shimmerDevice.getHardwareVersion();
+		mShimmerUserAssignedName = shimmerDevice.getShimmerUserAssignedName();
+		
+		//TODO experimental
+		mShimmerDevice = shimmerDevice;
 	}
 
 	public void updateFromFile(File l) {
@@ -96,6 +103,41 @@ public class ShimmerLogDetails implements Serializable{
 		mSessionName = sessionName;
 		mConfigTime = configTime;
 		mFullTrialName = mTrialName+"_"+mConfigTime;
+	}
+
+	/**
+	 * @return the mHardwareVersion
+	 */
+	public int getmHardwareVersion() {
+		return mShimmerVersionObject.getHardwareVersion();
+	}
+
+	/**
+	 * @return the mFirmwareIdentifier
+	 */
+	public int getmFirmwareIdentifier() {
+		return mShimmerVersionObject.getFirmwareIdentifier();
+	}
+
+	/**
+	 * @return the mFirmwareVersionMajor
+	 */
+	public int getmFirmwareVersionMajor() {
+		return mShimmerVersionObject.getFirmwareVersionMajor();
+	}
+
+	/**
+	 * @return the mFirmwareVersionMinor
+	 */
+	public int getmFirmwareVersionMinor() {
+		return mShimmerVersionObject.getFirmwareVersionMinor();
+	}
+
+	/**
+	 * @return the mFirmwareVersionInternal
+	 */
+	public int getmFirmwareVersionInternal() {
+		return mShimmerVersionObject.getFirmwareVersionInternal();
 	}
 
 

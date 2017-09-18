@@ -656,7 +656,7 @@ public static class DatabaseConfigHandle{
 	}
 	
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
 		mapOfConfig.put(DatabaseConfigHandle.PPG_ADC_SELECTION_BOARD, getPpgAdcSelectionGsrBoard());
@@ -667,7 +667,7 @@ public static class DatabaseConfigHandle{
 	}
 	
 	@Override
-	public void parseConfigMapFromDb(
+	public void parseConfigMap(
 			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		// TODO Auto-generated method stub
 		

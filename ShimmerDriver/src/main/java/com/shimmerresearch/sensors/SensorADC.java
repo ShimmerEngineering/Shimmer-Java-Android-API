@@ -115,21 +115,21 @@ public class SensorADC extends AbstractSensor {
 	
 	//--------- Sensor info start --------------
 	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A7Ref = new SensorDetailsRef(0x02<<(0*8), 0x02<<(0*8), GuiLabelSensors.EXT_EXP_A7,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.istOfCompatibleVersionInfoExtAdcs,
 			null,
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A7), 
 			false);
 	
 	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A6Ref = new SensorDetailsRef(0x01<<(0*8), 0x01<<(0*8), GuiLabelSensors.EXT_EXP_A6,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.istOfCompatibleVersionInfoExtAdcs,
 			null,
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A6), 
 			false);
 
 	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A15Ref = new SensorDetailsRef(0x08<<(1*8), 0x08<<(1*8), GuiLabelSensors.EXT_EXP_A15,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.istOfCompatibleVersionInfoExtAdcs,
 			null,
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A15), 
@@ -261,7 +261,7 @@ public class SensorADC extends AbstractSensor {
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A6,
 						Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A7,
 						Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A15),
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+			CompatibilityInfoForMaps.istOfCompatibleVersionInfoExtAdcs);
 
     public static final SensorGroupingDetails sensorGroupInternalExpansionADCs = new SensorGroupingDetails(
 			LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC, 
@@ -486,13 +486,13 @@ public class SensorADC extends AbstractSensor {
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public void parseConfigMapFromDb(
+	public void parseConfigMap(
 			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		// TODO Auto-generated method stub
 		

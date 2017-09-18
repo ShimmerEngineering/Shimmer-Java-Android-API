@@ -396,6 +396,27 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}
 
 	
+	
+	private double[][] getCurrentMatrixMultipliedInverseAMSM() {
+		if(mCurrentCalibration!=null && mCurrentCalibration.mMatrixMultipliedInverseAMSM!=null)
+			return mCurrentCalibration.mMatrixMultipliedInverseAMSM;
+		else
+			return null;
+	}
+
+	private double[][] getDefaultMatrixMultipliedInverseAMSM() {
+		if(mDefaultCalibration==null){
+			return null;
+		}
+		return mDefaultCalibration.mMatrixMultipliedInverseAMSM;
+	}
+
+	public double[][] getValidMatrixMultipliedInverseAMSM() {
+		double[][] currentMatrixMultipliedInverseAMSM = getCurrentMatrixMultipliedInverseAMSM();
+		return (currentMatrixMultipliedInverseAMSM!=null? currentMatrixMultipliedInverseAMSM:getDefaultMatrixMultipliedInverseAMSM());
+	}
+
+	
 	/** For example used by Gyro on the fly calibration
 	 * @param mean
 	 * @param mean2

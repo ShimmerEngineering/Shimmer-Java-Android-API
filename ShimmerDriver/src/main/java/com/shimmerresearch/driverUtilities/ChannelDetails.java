@@ -32,6 +32,7 @@ public class ChannelDetails implements Serializable {
 		UINT48(48, 6, false),
 		UINT64(64, 8, false),
 		//TODO UtilParseData.parseData currently can not handle over 64 bits
+//		UINT72(72, 9, false),
 		
 		INT8(8, 1, true),
 		INT12(12, 2, true),
@@ -380,4 +381,8 @@ public class ChannelDetails implements Serializable {
 		return signalProperties;
 	}
 
+	public boolean isStoreToDatabase(){
+		return mStoreToDatabase;
+	}
+	
 }

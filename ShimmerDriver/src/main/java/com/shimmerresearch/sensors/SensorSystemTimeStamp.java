@@ -10,7 +10,6 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -33,8 +32,8 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 
 	//--------- Sensor specific variables start --------------
 	public static class ObjectClusterSensorName{
-		public static  String SYSTEM_TIMESTAMP = "System_Timestamp";
-		public static  String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
+		public static final  String SYSTEM_TIMESTAMP = "System_Timestamp";
+		public static final  String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
 		public static final String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
 	}
 	//--------- Sensor specific variables end --------------
@@ -54,8 +53,8 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
 			null,
 			null,
-			Arrays.asList(Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-					Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT),
+			Arrays.asList(ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+					ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT),
 			false);
 
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
@@ -68,8 +67,8 @@ public class SensorSystemTimeStamp extends AbstractSensor {
     
 	//--------- Channel info start --------------
 	public static final ChannelDetails channelSystemTimestamp = new ChannelDetails(
-		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+		ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+		ObjectClusterSensorName.SYSTEM_TIMESTAMP,
 		DatabaseChannelHandlesCommon.TIMESTAMP_SYSTEM,
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, true);
@@ -79,8 +78,8 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 	
 	public static final ChannelDetails channelSystemTimestampPlot = new ChannelDetails(
-		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
-		Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+		ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+		ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
 		DatabaseChannelHandlesCommon.NONE,
 		CHANNEL_UNITS.MILLISECONDS,
 		Arrays.asList(CHANNEL_TYPE.CAL), false, false);
@@ -128,12 +127,12 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-			if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
+			if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
 				objectCluster.mSystemTimeStamp = UtilShimmer.convertLongToByteArray(pcTimestamp);
 				objectCluster.addCalData(channelDetails, pcTimestamp);
 				objectCluster.incrementIndexKeeper();
 			}
-			else if(channelDetails.mObjectClusterName.equals(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
+			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
 				objectCluster.addCalData(channelDetails, pcTimestamp);
 				objectCluster.incrementIndexKeeper();
 			}
@@ -189,13 +188,13 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 	
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public void parseConfigMapFromDb(
+	public void parseConfigMap(
 			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		// TODO Auto-generated method stub
 		

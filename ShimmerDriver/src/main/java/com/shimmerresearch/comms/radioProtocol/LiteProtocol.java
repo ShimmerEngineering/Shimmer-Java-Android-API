@@ -787,7 +787,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //					} 
 //					else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 //						byte[] bufferSR = readBytes(2); //read the sampling rate
-//						setSamplingRateShimmer(32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
+			//TODO get clock freq from ShimmerDevice
+//						setSamplingRateShimmer(32768.0/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
 //					}
 //				}
 //
