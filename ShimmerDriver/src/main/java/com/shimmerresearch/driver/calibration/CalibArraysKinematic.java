@@ -83,7 +83,7 @@ public class CalibArraysKinematic implements Serializable{
 	public void setAlignmentMatrix(double[][] alignmentMatrix) {
 		mAlignmentMatrix = alignmentMatrix;
 		
-		mMatrixInverseAlignmentMatrix = UtilCalibration.matrixInverse3x3(mSensitivityMatrix);
+		mMatrixInverseAlignmentMatrix = UtilCalibration.matrixInverse3x3(mAlignmentMatrix);
 		mMatrixMultipliedInverseAMSM = UtilCalibration.matrixMultiplication(mMatrixInverseAlignmentMatrix, mMatrixInverseSensitivityMatrix);
 	}
 
