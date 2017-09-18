@@ -1,5 +1,48 @@
 # Shimmer-Java-Android-API
 
+Rev 3.00
+- Change to Handler MSGs
+
+| Deprecated  | Updated |
+| ------------- | ------------- |
+| ~~Shimmer.MESSAGE_STATE_CHANGE~~  | ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE  |
+| ~~Shimmer.MESSAGE_READ~~  | ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET  |
+
+- ~~Shimmer.MSG_STATE_FULLY_INITIALIZED~~, ~~Shimmer.STATE_CONNECTING~~, ~~Shimmer.STATE_NONE~~, ~~Shimmer.STATE_CONNECTED~~, is deprecated the following code is the recommended use for monitoring the states of a Shimmer device
+```
+case ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE:
+                    ShimmerBluetooth.BT_STATE state = null;
+                    String macAddress = "";
+                    if (msg.obj instanceof ObjectCluster) { //ONLY APPLICABLE FOR ANDROID
+                        state = ((ObjectCluster) msg.obj).mState;
+                        macAddress = ((ObjectCluster) msg.obj).getMacAddress();
+                    } else if (msg.obj instanceof CallbackObject) {
+                        state = ((CallbackObject) msg.obj).mState;
+                        macAddress = ((CallbackObject) msg.obj).mBluetoothAddress;
+                    }
+
+                   switch (state) {
+                        case CONNECTED:
+                            break;
+                        case CONNECTING:
+                            break;
+                        case STREAMING:
+                            break;
+                        case STREAMING_AND_SDLOGGING:
+                            break;
+                        case SDLOGGING:
+                            break;
+                        case DISCONNECTED:
+                            break;
+                    }
+                    break;
+
+```
+
+
+Rev 2.11
+- 3 byte timestamp support
+
 4 June 2015 (Beta 2.10)
  - fixes to MultiShimmerTemaplate and ShimmerGraphandLogService (A0 and A7)
  - update to filter (BSF) --> coefficients[(nTaps/2)] = coefficients[(nTaps/2)] +1;
@@ -77,4 +120,19 @@
 -Added an addtional constructor, which allows the android device to set Shimmer settings as soon as connection is made
 -Manual updated explaining communication transactions and the use of the constructors
 
+ # The following license applies to the source code within this repository/project.
+Copyright (c) 2017, Shimmer Research, Ltd. All rights reserved
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above
+   copyright notice, this list of conditions and the following
+   disclaimer in the documentation and/or other materials provided
+   with the distribution.
+ * Neither the name of Shimmer Research, Ltd. nor the names of its
+   contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  

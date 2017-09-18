@@ -17,6 +17,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 
 /**
  * Shimmer2r holder for Accel range and calibration settings.
@@ -175,6 +176,9 @@ public class SensorMMA736x extends AbstractSensor {
 	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
 		switch(configLabel){
+			case(GuiLabelConfig.ACCEL_RANGE):
+				setAccelRange((int)valueToSet);
+        	break;
 //			case(GuiLabelConfigCommon.RANGE):
 //	    		break;
 	        default:
@@ -237,13 +241,13 @@ public class SensorMMA736x extends AbstractSensor {
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -293,7 +297,7 @@ public class SensorMMA736x extends AbstractSensor {
 	}
 
 	public CalibDetailsKinematic getCurrentCalibDetailsAccelLn(){
-		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, getAccelRange());
+		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer2.SENSOR_ID.ACCEL, getAccelRange());
 		if(calibPerSensor!=null){
 			return (CalibDetailsKinematic) calibPerSensor;
 		}

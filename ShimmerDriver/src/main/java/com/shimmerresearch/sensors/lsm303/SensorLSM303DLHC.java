@@ -645,7 +645,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	}
 	
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
 		mapOfConfig.put(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_RATE, getLSM303DigitalAccelRate());
@@ -670,7 +670,7 @@ public class SensorLSM303DLHC extends SensorLSM303 {
 	}	
 	
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
 		//Better if LPM/HRM are processed first as they can override the sampling rate
 		if(mapOfConfigPerShimmer.containsKey(SensorLSM303DLHC.DatabaseConfigHandle.WR_ACC_LPM)){

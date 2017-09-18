@@ -35,8 +35,6 @@ public class OrientationModule9DOF extends OrientationModule {
 		public static final String EULER_OUTPUT_9DOF = "Euler_9DOF";
 	}
 
-	transient Object orientationAlgorithm;
-
 	public static final String WR = "_WR";
 	public static final String LN = "_LN";
 
@@ -229,28 +227,28 @@ public class OrientationModule9DOF extends OrientationModule {
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
-	private static final ChannelDetails channelQuatW_9DOF_WR = new ChannelDetails(
+	public static final ChannelDetails channelQuatW_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_W_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_W_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_W_WR, //database name
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
-	private static final ChannelDetails channelQuatX_9DOF_WR = new ChannelDetails(
+	public static final ChannelDetails channelQuatX_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_X_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_X_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_X_WR, //database name
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
-	private static final ChannelDetails channelQuatY_9DOF_WR = new ChannelDetails(
+	public static final ChannelDetails channelQuatY_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Y_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Y_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Y_WR, //database name
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
-	private static final ChannelDetails channelQuatZ_9DOF_WR = new ChannelDetails(
+	public static final ChannelDetails channelQuatZ_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Z_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Z_WR,
 			ObjectClusterSensorName.QUAT_MADGE_9DOF_Z_WR, //database name
@@ -439,8 +437,12 @@ public class OrientationModule9DOF extends OrientationModule {
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)
 				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
 			orientationType = ORIENTATION_TYPE.NINE_DOF;
-//			orientationAlgorithm = new GradDes3DOrientation(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
-			orientationAlgorithm = new GradDes3DOrientation9DoF(samplingPeriod);
+
+			if(orientationAlgorithm==null){
+				orientationAlgorithm = new GradDes3DOrientation9DoF(samplingPeriod);
+			} else {
+				orientationAlgorithm.setSamplingPeriod(samplingPeriod);
+			}
 		}
 
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
@@ -608,7 +610,7 @@ public class OrientationModule9DOF extends OrientationModule {
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}

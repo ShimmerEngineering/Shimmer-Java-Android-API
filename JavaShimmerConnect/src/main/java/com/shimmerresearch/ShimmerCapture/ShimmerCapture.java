@@ -91,6 +91,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.pcDriver.ShimmerPC;
@@ -1060,16 +1061,27 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 		String rate = df.format(samplingRate);
 		String SamplingRate = rate + "Hz";
 		comboBoxSamplingRate.setSelectedItem(SamplingRate);
-		comboBoxAccelRange.setSelectedIndex(mShimmer.getAccelRange());
-		comboBoxMagRange.setSelectedIndex(mShimmer.getMagRange()-1);
+		if (mShimmer.getHardwareVersion()==HW_ID.SHIMMER_2R){
+			if (mShimmer.getAccelRange()==3){
+				comboBoxAccelRange.setSelectedIndex(1);
+			} else {
+				comboBoxAccelRange.setSelectedIndex(mShimmer.getAccelRange());
+			}
+		} else{
+			comboBoxAccelRange.setSelectedIndex(mShimmer.getAccelRange());
+		}
+		
+		
 		comboBoxGsrRange.setSelectedIndex(mShimmer.getGSRRange());			
 		if (mShimmerVersion==SHIMMER_SR30 || mShimmerVersion==SHIMMER_3) {
 			System.out.print("Gyro Range  "+  comboBoxGyroRange.getItemCount()  + " "+ mShimmer.getGyroRange() + "\n");
 			
-			
+			comboBoxMagRange.setSelectedIndex(mShimmer.getMagRange()-1);
 			comboBoxGyroRange.setSelectedIndex(mShimmer.getGyroRange());
 			comboBoxPressureResolution.setSelectedIndex(mShimmer.getPressureResolution());
 			menuItemExgSettings.setEnabled(true);
+		} else if(mShimmerVersion==HW_ID.SHIMMER_2R){
+			comboBoxMagRange.setSelectedIndex(mShimmer.getMagRange());
 		}
 		chart.setVisible(true);	
 		
@@ -1155,6 +1167,13 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 				} else {
 					comboBoxAccelRange.setEnabled(false);
 				}
+				
+				if (listOfSensorsShimmer2[2].isSelected()) {
+					comboBoxMagRange.setEnabled(true);
+				} else {
+					comboBoxMagRange.setEnabled(false);
+				}
+				
 				if (listOfSensorsShimmer2[6].isSelected()) {
 					comboBoxGsrRange.setEnabled(true);
 				} else {
@@ -1409,8 +1428,10 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			listOfSensorsShimmer2[2].addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0) {
 					if (listOfSensorsShimmer2[2].isSelected()) {
+						comboBoxMagRange.setEnabled(true);
 						chckbxLowPowerMag.setEnabled(true);
 					} else {
+						comboBoxMagRange.setEnabled(false);
 						chckbxLowPowerMag.setEnabled(false);
 					}
 					
@@ -1513,6 +1534,13 @@ public class ShimmerCapture extends BasicProcessWithCallBack{
 			} else {
 				mShimmer.writeFiveVoltReg(0);
 			}
+			
+			if(indexAccel==1){
+				mShimmer.writeAccelRange(3);
+			} else {
+				mShimmer.writeAccelRange(indexAccel);
+			}
+			mShimmer.writeMagRange(indexMag);
 		}
 		configFrame.setVisible(false);
 		enableSensors();

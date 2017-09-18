@@ -103,8 +103,10 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	private int indexKeeper = 0;
 	
 	public byte[] mSystemTimeStamp = new byte[8];
-	private double mShimmerCalibratedTimeStamp;
+	private double mTimeStampMilliSecs;
 	public boolean mIsValidObjectCluster = true;
+	
+	public int mPacketIdValue = 0;
 	
 	public enum OBJECTCLUSTER_TYPE{
 		ARRAYS,
@@ -371,15 +373,19 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addData(ChannelDetails channelDetails, double uncalData, double calData) {
-		addData(channelDetails, uncalData, calData, indexKeeper);
+		addData(channelDetails, uncalData, calData, false);
 	}
 
-	public void addData(ChannelDetails channelDetails, double uncalData, double calData, int index) {
+	public void addData(ChannelDetails channelDetails, double uncalData, double calData, boolean usingDefaultParameters) {
+		addData(channelDetails, uncalData, calData, indexKeeper, usingDefaultParameters);
+	}
+
+	public void addData(ChannelDetails channelDetails, double uncalData, double calData, int index, boolean usingDefaultParameters) {
 		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.UNCAL)){
 			addUncalData(channelDetails, uncalData, index);
 		}
 		if(channelDetails.mListOfChannelTypes.contains(CHANNEL_TYPE.CAL)){
-			addCalData(channelDetails, calData, index);
+			addCalData(channelDetails, calData, index, usingDefaultParameters);
 		}
 		//TODO decide whether to include the below here
 //		incrementIndexKeeper();
@@ -540,7 +546,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			mObjectClusterBuilder.setBluetoothAddress(mBluetoothAddress);
 		if(mMyName!=null)
 			mObjectClusterBuilder.setName(mMyName);
-		mObjectClusterBuilder.setCalibratedTimeStamp(mShimmerCalibratedTimeStamp);
+		mObjectClusterBuilder.setCalibratedTimeStamp(mTimeStampMilliSecs);
 		ByteBuffer bb = ByteBuffer.allocate(8);
     	bb.put(mSystemTimeStamp);
     	bb.flip();
@@ -549,14 +555,28 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		return mObjectClusterBuilder.build();
 	}
 	
-	public double getShimmerCalibratedTimeStamp() {
-		return mShimmerCalibratedTimeStamp;
+	public double getTimestampMilliSecs() {
+		return mTimeStampMilliSecs;
 	}
 
-	public void setShimmerCalibratedTimeStamp(double mShimmerCalibratedTimeStamp) {
-		this.mShimmerCalibratedTimeStamp = mShimmerCalibratedTimeStamp;
+	public void setTimeStampMilliSecs(double timeStampMilliSecs) {
+		this.mTimeStampMilliSecs = timeStampMilliSecs;
 	}
 	
+	/**
+	 * @return the mListOfOCTypesEnabled
+	 */
+	public static List<OBJECTCLUSTER_TYPE> getListOfOCTypesEnabled() {
+		return mListOfOCTypesEnabled;
+	}
+
+	/**
+	 * @param listOfOCTypesEnabled the mListOfOCTypesEnabled to set
+	 */
+	public static void setListOfOCTypesEnabled(List<OBJECTCLUSTER_TYPE> listOfOCTypesEnabled) {
+		ObjectCluster.mListOfOCTypesEnabled = listOfOCTypesEnabled;
+	}
+
 	public ObjectCluster deepClone() {
 //		System.out.println("Cloning:" + mUniqueID);
 		try {

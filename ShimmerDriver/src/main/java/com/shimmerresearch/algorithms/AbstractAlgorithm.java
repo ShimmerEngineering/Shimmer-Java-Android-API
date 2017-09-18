@@ -196,7 +196,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	 */
 	public abstract void eventDataReceived(ShimmerMsg shimmerMSG);
 
-	public abstract LinkedHashMap<String, Object> getConfigMapForDb();
+	public abstract LinkedHashMap<String, Object> generateConfigMap();
 	public abstract void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer);
 
 	// ------  Constructors start (should be overridden in Algorithm classes in order to setupAlgorithm() locally)
@@ -570,5 +570,11 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 			mUtilShimmer.consolePrintExeptionLn(message, stackTrace);			
 		}
 	}
-	
+
+	/** Needs to be overridden in extending algorithm modules */
+	public void loadAlgorithmVariables(AbstractAlgorithm abstractAlgorithmSource) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

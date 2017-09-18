@@ -1,4 +1,4 @@
-package com.shimmerresearch.simpleexamples;
+package com.shimmerresearch.guiUtilities.configuration;
 
 import java.util.ArrayList;
 import java.util.Iterator;

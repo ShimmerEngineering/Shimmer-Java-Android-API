@@ -20,9 +20,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 
 	private static final long serialVersionUID = -8600361157087801458L;
 
-	
-	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
-	private int mGyroRange = 1;													 
+	private int mGyroRange = 0;													 
 
 	protected boolean mLowPowerGyro = false;
 	
@@ -164,13 +162,13 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -189,6 +187,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 		if(mShimmerDevice.getHardwareVersion()==HW_ID.SHIMMER_2){
 			calibMapGyro = mCalibMapGyroShimmer2r;
 		} else {
+			calibMapGyro = mCalibMapGyroShimmer2r;
 		}
 		if(calibMapGyro!=null){
 			setCalibrationMapPerSensor(Configuration.Shimmer2.SENSOR_ID.GYRO, calibMapGyro);
@@ -213,7 +212,11 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	}
 
 	public CalibDetailsKinematic getCurrentCalibDetailsGyro(){
-		return mCurrentCalibDetailsGyro;
+		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer2.SENSOR_ID.GYRO, getGyroRange());
+		if(calibPerSensor!=null){
+			return (CalibDetailsKinematic) calibPerSensor;
+		}
+		return null;
 	}
 
 	/**

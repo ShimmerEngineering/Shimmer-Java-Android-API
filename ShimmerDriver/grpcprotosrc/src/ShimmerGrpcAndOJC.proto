@@ -1,7 +1,7 @@
 //import "C:/Users/Lim/git/Shimmer-Java-Android-API/ShimmerDriver/grpcprotosrc/src/LiteProtocolInstructionSet.proto";
 
 syntax = "proto3";
-import "src/LiteProtocolInstructionSet.proto";
+//import "src/LiteProtocolInstructionSet.proto";
 
 import "google/protobuf/descriptor.proto";
 
@@ -15,7 +15,7 @@ package shimmerGRPC;
 service ShimmerServer {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
-  
+
   //Client asking for data
   rpc GetDataStream(StreamRequest) returns (stream ObjectCluster2) {}
   
@@ -24,12 +24,30 @@ service ShimmerServer {
   
   rpc SendFileStream(stream File) returns (HelloReply){}
   
+  rpc ConnectShimmer(ShimmerRequest) returns (CommandStatus){}
+  
+  rpc StartStreaming(ShimmerRequest) returns (CommandStatus){}
+  
+  rpc CloseApplication(ShimmerRequest) returns (CommandStatus){}
+
+
+  //ConsensysApi related
+  rpc GetDockedShimmerDetails(StreamRequest) returns (CommandStatus){}
+
+  rpc SetWorkspaceDirectory(StringMsg) returns (BoolMsg){}
+  
+  rpc GetWorkspaceDirectory(StringMsg) returns (StringMsg){}
+
 }
 
 message File {
 	string name=1;
 	bytes data=2;
 	bool endoffile=3;
+}
+
+message CommandStatus {
+	string status = 1;
 }
 
 // The request message containing the user's name.
@@ -40,6 +58,10 @@ message HelloRequest {
 // The response message containing the greetings
 message HelloReply {
   string message = 1;
+}
+
+message ShimmerRequest {
+  string address = 1;
 }
 
 message StreamRequest {
@@ -73,3 +95,14 @@ message ObjectCluster2 {
   int64 systemTime = 5;
   double calibratedTimeStamp = 6;
 }
+
+
+//ConsensysApi related
+message StringMsg {
+  string message = 1;
+}
+
+message BoolMsg {
+  bool state = 1;
+}
+

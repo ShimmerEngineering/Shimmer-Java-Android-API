@@ -44,6 +44,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerSDCardDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
@@ -59,6 +60,7 @@ import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.SensorBridgeAmp;
+import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorPPG;
@@ -173,7 +175,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private static final long serialVersionUID = -1364568867018921219L;
 	
 	protected boolean mFirstTime = true;
-	double mFirstRawTS = 0;
+	protected double mFirstTsOffsetFromInitialTsTicks = 0;
 	public int OFFSET_LENGTH = 9;
 
 	public static final class DatabaseConfigHandleShimmerObject{
@@ -181,7 +183,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		public static final String TRIAL_DURATION_ESTIMATED = "Trial_Dur_Est";
 		public static final String TRIAL_DURATION_MAXIMUM = "Trial_Dur_Max";
 	}
-	
 
 	//Sensor Bitmap for ID ; for the purpose of forward compatibility the sensor bitmap and the ID and the sensor bitmap for the Shimmer firmware has been kept separate, 
 	public static final int SENSOR_ACCEL				   = 0x80; 
@@ -482,7 +483,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mMasterShimmer = 0;
 	protected int mSingleTouch = 0;
 	protected int mTCXO = 0;
-	protected long mRTCOffset = 0; //this is in ticks
+	protected long mRTCDifferenceInTicks = 0; //this is in ticks
 	public int mRTCSetByBT = 1; // RTC source, = 1 because it comes from the BT
 	protected int mSyncWhenLogging = 0;
 	protected int mSyncBroadcastInterval = 0;
@@ -496,8 +497,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected int mTrialId = 0;
 	protected int mTrialNumberOfShimmers = 0;
-	protected int mTrialDurationEstimated = 0;
-	protected int mTrialDurationMaximum = 0;
+	protected int mTrialDurationEstimatedInSecs = 0;
+	protected int mTrialDurationMaximumInSecs = 0;
 	
 	/** Used in BT communication */
 	protected String mMyBluetoothAddress="";
@@ -527,6 +528,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mConfigFileCreationFlag = true;
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
 	protected boolean mIsCrcEnabled = false;
+	protected boolean mUseInfoMemConfigMethod = true;
 
 	protected byte[] mInquiryResponseBytes;	
 	
@@ -554,25 +556,25 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected abstract void checkBattery();
 	
 	//-------- Timestamp start --------
-	protected double mLastReceivedTimeStamp=0;
+	protected double mLastReceivedTimeStampTicksUnwrapped=0;
 	protected double mCurrentTimeStampCycle=0;
-	protected long mInitialTimeStamp = 0;
+	protected long mInitialTsTicks = 0;
 	@Deprecated //not needed any more
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	
 	protected boolean mStreamingStartTimeSaved = false;	
-	protected double mStreamingStartTimeMs;
+	protected double mStreamingStartTimeMilliSecs;
 	
 	protected int mTimeStampPacketByteSize = 2;
-	protected int mTimeStampPacketRawMaxValue = 65536;// 16777216 or 65536 
+	protected int mTimeStampPacketMaxValueTicks = 65536-1;// (16777216 or 65536)-1 
 	//-------- Timestamp end --------
 
 	// Shimmer2/2r - Analog accel
-	private SensorMMA736x mSensorMMA736x = null;//new SensorMMA736x(this);
+	protected SensorMMA736x mSensorMMA736x = new SensorMMA736x(this);
 	// Shimmer2 Mag
-	private SensorShimmer2Mag mSensorShimmer2Mag = null;//new SensorShimmer2Mag(this);
+	protected SensorShimmer2Mag mSensorShimmer2Mag = new SensorShimmer2Mag(this);
 	// Shimmer2 - Gyro
-	private SensorShimmer2Gyro mSensorShimmer2Gyro = new SensorShimmer2Gyro(this);
+	protected SensorShimmer2Gyro mSensorShimmer2Gyro = new SensorShimmer2Gyro(this);
 
 	
 	// Shimmer3 - Analog accel
@@ -611,6 +613,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected byte[] mEXG1RegisterArray = new byte[10];
 	protected byte[] mEXG2RegisterArray = new byte[10];
+	
+	//Gain is set at 6 (default) in eq. below until updated later in the connection/configuration sequence
+	protected double exg1Ch1CalFactor24Bit = (((2.42*1000)/6)/(Math.pow(2,23)-1));
+	protected double exg1Ch2CalFactor24Bit = (((2.42*1000)/6)/(Math.pow(2,23)-1));
+	protected double exg2Ch1CalFactor24Bit = (((2.42*1000)/6)/(Math.pow(2,23)-1));
+	protected double exg2Ch2CalFactor24Bit = (((2.42*1000)/6)/(Math.pow(2,23)-1));
+
+	protected double exg1Ch1CalFactor16Bit = (((2.42*1000)/6)/(Math.pow(2,15)-1));
+	protected double exg1Ch2CalFactor16Bit = (((2.42*1000)/6)/(Math.pow(2,15)-1));
+	protected double exg2Ch1CalFactor16Bit = (((2.42*1000)/6)/(Math.pow(2,15)-1));
+	protected double exg2Ch2CalFactor16Bit = (((2.42*1000)/6)/(Math.pow(2,15)-1));
+
 	@Deprecated
 	private int mEXG1RateSetting; //setting not value
 	@Deprecated
@@ -671,6 +685,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected int mPastGSRRange=4; 				// this is to fix a bug with SDLog v0.9
 	protected int mPastGSRUncalibratedValue=4; 	// this is to fix a bug with SDLog v0.9
 	protected boolean mPastGSRFirstTime=true; 	// this is to fix a bug with SDLog v0.9
+
 	// ---------- GSR end ------------------
 
 
@@ -714,10 +729,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//Event Markers
 			numAdditionalChannels += 1;
-			
 		} 
 		else {
-			if (mRTCOffset == 0){
+			if (!isRtcDifferenceSet()){
 				//sd log time stamp already included in mnChannels
 			} 
 			else {
@@ -752,7 +766,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//sensorNames = Arrays.copyOf(mSignalNameArray, mSignalNameArray.length);
 		
 		//PARSE DATA
-		long[] newPacketInt = UtilParseData.parseData(newPacket, mSignalDataTypeArray);
+		long[] newPacketInt = null;
+		
+		try{
+			newPacketInt = UtilParseData.parseData(newPacket, mSignalDataTypeArray);
+		} catch(IndexOutOfBoundsException e){
+			String debugString = "SignalDataTypeArray:";
+			for(String s:mSignalDataTypeArray){
+				debugString += "\t" + s;
+			}
+			System.out.println(debugString);
+			System.out.println("newPacket:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(newPacket));
+			throw(e);
+		}
 		
 		double[] tempData=new double[3];
 		Vector3d accelerometer = new Vector3d(); 
@@ -762,84 +788,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3  
 				|| getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_LR || getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_NR || getHardwareVersion()==HW_ID.SHIMMER_2R_GQ){
 			
-			int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
-			if(mFirstTime && fwType == COMMUNICATION_TYPE.SD){
-				//this is to make sure the Raw starts from zero
-				mFirstRawTS = (double)newPacketInt[iTimeStamp];
-				mFirstTime = false;
-			}
-			double calibratedTS = calibrateTimeStamp((double)newPacketInt[iTimeStamp]);
+			parseTimestampShimmer3(fwType, objectCluster, uncalibratedData, uncalibratedDataUnits, calibratedData, calibratedDataUnits, sensorNames, newPacketInt);
 			
-			incrementPacketsReceivedCounters();
-			calculateTrialPacketLoss(calibratedTS);
-
-			//TIMESTAMP
-			if (fwType == COMMUNICATION_TYPE.SD){
-				// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
-				double unwrappedrawtimestamp = calibratedTS*32768/1000;
-				if (getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==5){
-					
-				} else {
-					unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
-				}
-				long sdlograwtimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp;
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)sdlograwtimestamp);
-				
-				uncalibratedData[iTimeStamp] = (double)sdlograwtimestamp;
-				if (getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==5){
-					uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
-				}
-				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
-
-				if (mEnableCalibration){
-					double sdlogcaltimestamp = (double)sdlograwtimestamp/32768*1000;
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,sdlogcaltimestamp);
-					calibratedData[iTimeStamp] = sdlogcaltimestamp;
-					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
-				}
-			} 
-			else if (fwType == COMMUNICATION_TYPE.BLUETOOTH){
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]);
-				uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
-				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.NO_UNITS;
-				if (mEnableCalibration){
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedTS);
-					calibratedData[iTimeStamp] = calibratedTS;
-					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
-					objectCluster.setShimmerCalibratedTimeStamp(calibratedTS);
-				}
-			}
-
-			//RAW RTC
-			if ((fwType == COMMUNICATION_TYPE.SD) && mRTCOffset!=0) {
-//			if (fwIdentifier == COMMUNICATION_TYPE.SD) {
-				double unwrappedrawtimestamp = calibratedTS*32768/1000;
-				unwrappedrawtimestamp = unwrappedrawtimestamp - mFirstRawTS; //deduct this so it will start from 0
-				long rtctimestamp = (long)mInitialTimeStamp + (long)unwrappedrawtimestamp + mRTCOffset;
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)rtctimestamp);
-				uncalibratedData[sensorNames.length-1] = (double)rtctimestamp;
-				uncalibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.CLOCK_UNIT;
-				sensorNames[sensorNames.length-1]= Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK;
-				if (mEnableCalibration){
-					double rtctimestampcal = calibratedTS;
-					if(mInitialTimeStamp!=0){
-						rtctimestampcal += ((double)mInitialTimeStamp/32768.0*1000.0);
-					}
-					if(mRTCOffset!=0){
-						rtctimestampcal += ((double)mRTCOffset/32768.0*1000.0);
-					}
-					if(mFirstRawTS!=0){
-						rtctimestampcal -= (mFirstRawTS/32768.0*1000.0);
-					}
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,rtctimestampcal);
-					calibratedData[sensorNames.length-1] = rtctimestampcal;
-					calibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.MILLISECONDS;
-				}
-			}
-
 			//OFFSET
 			if(isTimeSyncEnabled && (fwType == COMMUNICATION_TYPE.SD)){
-				int iOffset=getSignalIndex(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
+				int iOffset=getSignalIndex(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
 				double offsetValue = Double.NaN;
 				if (OFFSET_LENGTH==9){
 					if(newPacketInt[iOffset] == 1152921504606846975L){
@@ -856,20 +809,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue);
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,Double.NaN);
+				objectCluster.addDataToMap(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue);
+				objectCluster.addDataToMap(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,Double.NaN);
 				uncalibratedData[iOffset] = offsetValue;
 				calibratedData[iOffset] = Double.NaN;
 				uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
 				calibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
 			} 
 
-
+			//Used anywhere?
 			objectCluster = callAdditionalServices(objectCluster);
 
-
 			//first get raw and calibrated data, this is data derived from the Shimmer device and involves no involvement from the API
-
 			
 			if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.ACCEL_LN) > 0) 
 					|| ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.ACCEL_LN) > 0)){
@@ -1364,7 +1315,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXG1_STATUS,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1sta);
 					
-					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
+					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()||isEXGUsingDefaultECGGqConfiguration()){
 //						sensorNames[iexg1ch1]=Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
 //						sensorNames[iexg1ch2]=Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
 //						objectCluster.addData(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1);
@@ -1379,9 +1330,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 //						//Even thought the below code is more accurate then the above, DatabaseHandler.parseFromGUIChannelsToDBColumn() relies on the sensorNames[] entries being the same as Shimmer3 for GQ, it doesn't matter what's in the objectcluster.
 						if(isShimmerGenGq()){
-							sensorNames[iexg1ch1]=Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
-							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1);
-							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1);
+//							sensorNames[iexg1ch1]=Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
+//							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1);
+//							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1);
+							sensorNames[iexg1ch1]=SensorEXG.ObjectClusterSensorName.ECG_GQ;
+							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_GQ,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1);
+							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_GQ,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1);
 							
 							sensorNames[iexg1ch2]=Shimmer3.ObjectClusterSensorName.ECG_LA_RL_24BIT;
 							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RL_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch2);
@@ -1699,16 +1653,23 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.GSR) > 0) 
 					|| ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.GSR) > 0)
 					) {
-				int iGSR = getSignalIndex(Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE);
-				double p1=0,p2=0;//,p3=0,p4=0,p5=0;
+				String mainGsrSignalName = SensorGSR.ObjectClusterSensorName.GSR_RESISTANCE;
+				if(isShimmerGenGq()){
+					mainGsrSignalName = SensorGSR.ObjectClusterSensorName.GSR_GQ;
+				}
+				
+				int iGSR = getSignalIndex(mainGsrSignalName);
+				double p1=0, p2=0;//,p3=0,p4=0,p5=0;
 				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 
 				tempData[0] = (double)newPacketInt[iGSR];
 				int gsrAdcValueUnCal = ((int)tempData[0] & 4095); 
 				
 				int currentGSRRange = getGSRRange();
-
-				if (fwType == COMMUNICATION_TYPE.SD && getFirmwareVersionMajor() ==0 && getFirmwareVersionMinor()==9){
+				
+				 // this is to fix a bug with SDLog v0.9
+				if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==9){
+					
 //					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 
 					/*
@@ -1727,96 +1688,32 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							mPastGSRRange = newGSRRange;
 							mPastGSRFirstTime = false;
 						}
-						if (newGSRRange != mPastGSRRange)
-						{
-							
+						if (newGSRRange != mPastGSRRange){
 							if (Math.abs(mPastGSRUncalibratedValue-gsrAdcValueUnCal)<300){
 								newGSRRange = mPastGSRRange;
-							} else {
+							} 
+							else {
 								mPastGSRRange = newGSRRange;
 							}
 							mPastGSRUncalibratedValue = gsrAdcValueUnCal;
 						}
-						
 					}
-					if (currentGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
-						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0373;
-							p2 = -24.9915;
-						} else {
-							p1 = 0.0363;
-							p2 = -24.8617;
-						}
-					} else if (currentGSRRange==1 || newGSRRange==1) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0054;
-							p2 = -3.5194;
-						} else {
-							p1 = 0.0051;
-							p2 = -3.8357;
-						}
-					} else if (currentGSRRange==2 || newGSRRange==2) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0015;
-							p2 = -1.0163;
-						} else {
-							p1 = 0.0015;
-							p2 = -1.0067;
-						}
-					} else if (currentGSRRange==3  || newGSRRange==3) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 4.5580e-04;
-							p2 = -0.3014;
-						} else {
-							p1 = 4.4513e-04;
-							p2 = -0.3193;
-						}
-					}
-				} else {
-
+					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(currentGSRRange, newGSRRange);
+					p1 = p1p2[0];
+					p2 = p1p2[1];
+				} 
+				else {
 					if (currentGSRRange==4){
 						//Mask upper 2 bits of the 16-bit packet and then bit shift down
 						newGSRRange=(49152 & (int)tempData[0])>>14; 
 					}
-					if (currentGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
-						// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0373;
-							p2 = -24.9915;
-						} else { //Values have been reverted to 2r values
-							p1 = 0.0363;
-							p2 = -24.8617;
-						}
-					} else if (currentGSRRange==1 || newGSRRange==1) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0054;
-							p2 = -3.5194;
-						} else {
-							p1 = 0.0051;
-							p2 = -3.8357;
-						}
-					} else if (currentGSRRange==2 || newGSRRange==2) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 0.0015;
-							p2 = -1.0163;
-						} else {
-							p1 = 0.0015;
-							p2 = -1.0067;
-						}
-					} else if (currentGSRRange==3 || newGSRRange==3) {
-						if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-							p1 = 4.5580e-04;
-							p2 = -0.3014;
-						} else {
-							p1 = 4.4513e-04;
-							p2 = -0.3193;
-						}
-					}
+					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(currentGSRRange, newGSRRange);
+					p1 = p1p2[0];
+					p2 = p1p2[1];
 				}
 
 				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_RANGE)!=null){
-					double rangeToSave = newGSRRange>=0? newGSRRange:currentGSRRange;
+					double rangeToSave = newGSRRange >=0 ? newGSRRange : currentGSRRange;
 					objectCluster.addCalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
 					objectCluster.addUncalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
 				}
@@ -1826,7 +1723,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.addCalDataToMap(SensorGSR.channelGsrAdc, SensorADC.calibrateMspAdcChannel(gsrAdcValueUnCal));
 				}
 				
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,gsrAdcValueUnCal);
+				objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,gsrAdcValueUnCal);
 //				uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
 				uncalibratedData[iGSR] = gsrAdcValueUnCal;
 				uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
@@ -1835,12 +1732,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if(isShimmerGenGq()){
 						calibratedData[iGSR] = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.U_SIEMENS;
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,calibratedData[iGSR]);
+						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,calibratedData[iGSR]);
 					}
 					else {
 						calibratedData[iGSR] = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]);
+						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]);
 						
 						if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE)!=null){
 							objectCluster.addUncalDataToMap(SensorGSR.channelGsrMicroSiemens,gsrAdcValueUnCal);
@@ -2152,10 +2049,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			 //start of Shimmer2
 
 			int iTimeStamp=getSignalIndex(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP); //find index
-			double calibratedTS = calibrateTimeStamp((double)newPacketInt[iTimeStamp]);
+			double timestampUnwrappedTicks = unwrapTimeStamp((double)newPacketInt[iTimeStamp]);
+			double timestampUnwrappedMilliSecs = timestampUnwrappedTicks/getSamplingClockFreq()*1000;   // to convert into mS
 			
 			incrementPacketsReceivedCounters();
-			calculateTrialPacketLoss(calibratedTS);
+			calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
 
 
 			//TIMESTAMP
@@ -2164,8 +2062,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedData[iTimeStamp] = (double)newPacketInt[iTimeStamp];
 				uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					objectCluster.addDataToMap(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedTS);
-					calibratedData[iTimeStamp] = calibratedTS;
+					objectCluster.addDataToMap(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,timestampUnwrappedMilliSecs);
+					calibratedData[iTimeStamp] = timestampUnwrappedMilliSecs;
 					calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
 				}
 			}
@@ -2462,6 +2360,141 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 
+	protected void parseTimestampShimmer3(COMMUNICATION_TYPE fwType, ObjectCluster objectCluster, double[] uncalibratedData, String[] uncalibratedDataUnits, double[] calibratedData, String[] calibratedDataUnits, String[] sensorNames, long[] newPacketInt) {
+		int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
+		double shimmerTimestampTicks = (double)newPacketInt[iTimeStamp];
+		
+		if(mFirstTime && fwType == COMMUNICATION_TYPE.SD){
+			//this is to make sure the Raw starts from zero
+			mFirstTsOffsetFromInitialTsTicks = shimmerTimestampTicks;
+			mFirstTime = false;
+		}
+
+		double timestampUnwrappedTicks = unwrapTimeStamp(shimmerTimestampTicks);
+		double timestampUnwrappedMilliSecs = timestampUnwrappedTicks/getSamplingClockFreq()*1000;   // to convert into mS
+
+		incrementPacketsReceivedCounters();
+		calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
+		
+		//TIMESTAMP
+		long timestampUnwrappedTicksWithOffset = 0;
+		if (fwType == COMMUNICATION_TYPE.SD){
+			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
+			
+			if (!isLegacySdLog()){
+				timestampUnwrappedTicks -= mFirstTsOffsetFromInitialTsTicks; //deduct this so it will start from 0
+			}
+			
+			timestampUnwrappedTicksWithOffset = (long)mInitialTsTicks + (long)timestampUnwrappedTicks;
+			
+			if (isLegacySdLog()){
+				uncalibratedData[iTimeStamp] = shimmerTimestampTicks;
+			} else {
+				uncalibratedData[iTimeStamp] = (double)timestampUnwrappedTicksWithOffset;
+			}
+			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
+			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,uncalibratedData[iTimeStamp]);
+		} 
+		else if (fwType == COMMUNICATION_TYPE.BLUETOOTH){
+			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,shimmerTimestampTicks);
+			uncalibratedData[iTimeStamp] = shimmerTimestampTicks;
+			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
+		}
+
+		if (mEnableCalibration){
+			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,timestampUnwrappedMilliSecs);
+			calibratedData[iTimeStamp] = timestampUnwrappedMilliSecs;
+			calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
+			objectCluster.setTimeStampMilliSecs(timestampUnwrappedMilliSecs);
+		}
+
+		//RAW RTC
+		if ((fwType == COMMUNICATION_TYPE.SD) && isRtcDifferenceSet()) {
+			long rtcTimestampTicks = timestampUnwrappedTicksWithOffset + mRTCDifferenceInTicks;
+			
+//			System.out.println("\tRtcDiff: " + UtilShimmer.convertMilliSecondsToDateString((mRTCDifferenceInTicks+mInitialTsTicks)/32768*1000, true));
+//			System.out.println("\tRtcDiffActual: " + UtilShimmer.convertMilliSecondsToDateString((rtcTimestampTicks)/32768*1000, true));
+
+			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)rtcTimestampTicks);
+			uncalibratedData[sensorNames.length-1] = (double)rtcTimestampTicks;
+			uncalibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.CLOCK_UNIT;
+			sensorNames[sensorNames.length-1]= Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK;
+			if (mEnableCalibration){
+				// TODO below is suitable for both SD and BT but, for SD data,
+				// it would be more efficient to just convert rtcTimestampTicks
+				// to milliseconds via the following line
+				double rtcTimestampMilliSecs = 0;
+				if (fwType == COMMUNICATION_TYPE.SD){
+					rtcTimestampMilliSecs = ((double)rtcTimestampTicks/getSamplingClockFreq()*1000.0);
+				} else {
+					rtcTimestampMilliSecs = timestampUnwrappedMilliSecs;
+					if(mInitialTsTicks!=0){
+						rtcTimestampMilliSecs += ((double)mInitialTsTicks/getSamplingClockFreq()*1000.0);
+					}
+					if(isRtcDifferenceSet()){
+						rtcTimestampMilliSecs += ((double)mRTCDifferenceInTicks/getSamplingClockFreq()*1000.0);
+					}
+					if(mFirstTsOffsetFromInitialTsTicks!=0){
+						rtcTimestampMilliSecs -= (mFirstTsOffsetFromInitialTsTicks/getSamplingClockFreq()*1000.0);
+					}
+				}
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,rtcTimestampMilliSecs);
+				calibratedData[sensorNames.length-1] = rtcTimestampMilliSecs;
+				calibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.MILLISECONDS;
+			}
+		}
+	}
+
+
+	private double[] getGSRCoefficientsFromUsingGSRRange(int currentGSRRange, int newGSRRange) {
+		double p1 = 0.0;
+		double p2 = 0.0;
+		
+		if (currentGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
+			// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
+			if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 0.0373;
+				p2 = -24.9915;
+			} 
+			else { //Values have been reverted to 2r values
+				p1 = 0.0363;
+				p2 = -24.8617;
+			}
+		} 
+		else if (currentGSRRange==1 || newGSRRange==1) {
+			if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 0.0054;
+				p2 = -3.5194;
+			} 
+			else {
+				p1 = 0.0051;
+				p2 = -3.8357;
+			}
+		} 
+		else if (currentGSRRange==2 || newGSRRange==2) {
+			if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 0.0015;
+				p2 = -1.0163;
+			} 
+			else {
+				p1 = 0.0015;
+				p2 = -1.0067;
+			}
+		} 
+		else if (currentGSRRange==3  || newGSRRange==3) {
+			if (isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 4.5580e-04;
+				p2 = -0.3014;
+			} 
+			else {
+				p1 = 4.4513e-04;
+				p2 = -0.3193;
+			}
+		}
+		return new double[]{p1, p2};
+	}
+
+
 	private void printSensorNames(List<String> list) {
 		System.out.println("ObjectClusterSensorNames");
 		for(String channelName:list){
@@ -2491,7 +2524,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return iSignal;
 	}
 
-	//TODO unlink from ShimmerFile and move to ShimmerBluetooth
 	/** Only for Bluetooth
 	 * @param numChannels
 	 * @param signalId
@@ -2895,7 +2927,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if ((byte)signalId[i]==(byte)0x1C){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE;
+					signalNameArray[i+1]=SensorGSR.ObjectClusterSensorName.GSR_RESISTANCE;
 					signalDataTypeArray[i+1] = "u16";
 					packetSize=packetSize+2;
 					enabledSensors |= SENSOR_GSR;
@@ -3229,27 +3261,32 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	protected double calibrateTimeStamp(double timeStamp){
+	protected double unwrapTimeStamp(double timeStampTicks){
 		//first convert to continuous time stamp
-		double calibratedTimeStamp=0;
-		if (mLastReceivedTimeStamp>(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle))){ 
-			mCurrentTimeStampCycle=mCurrentTimeStampCycle+1;
+		double currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampPacketMaxValueTicks*mCurrentTimeStampCycle);
+		
+		//Check if there was a roll-over
+		if (mLastReceivedTimeStampTicksUnwrapped>currentTimeStampTicksUnwrapped){ 
+			mCurrentTimeStampCycle += 1;
+			//Recalculate timestamp
+			currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampPacketMaxValueTicks*mCurrentTimeStampCycle);
 		}
 
-		mLastReceivedTimeStamp=(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
-		calibratedTimeStamp=mLastReceivedTimeStamp/32768*1000;   // to convert into mS
+		//Store in order to trigger packet loss calculations while streaming in real-time
 		if (!mStreamingStartTimeSaved){
 			mStreamingStartTimeSaved=true;
-			mStreamingStartTimeMs = calibratedTimeStamp;
+			mStreamingStartTimeMilliSecs = currentTimeStampTicksUnwrapped/getSamplingClockFreq()*1000;   // to convert into mS
 		}
-		
-		return calibratedTimeStamp;
+
+		mLastReceivedTimeStampTicksUnwrapped = currentTimeStampTicksUnwrapped;
+
+		return currentTimeStampTicksUnwrapped;
 	}
 
 //	@Override
 	private void calculateTrialPacketLoss(double currentTimeStampMs) {
-		if(mStreamingStartTimeMs>0){
-			double timeDifference = currentTimeStampMs - mStreamingStartTimeMs;
+		if(mStreamingStartTimeMilliSecs>0){
+			double timeDifference = currentTimeStampMs - mStreamingStartTimeMilliSecs;
 			
 			//The expected time difference (in milliseconds) based on the device's sampling rate
 			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
@@ -3312,9 +3349,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 			if(bufferInquiry.length>=8){
 				mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
-				double samplingRate = convertSamplingRateBytesToFreq(bufferInquiry[0], bufferInquiry[1]);
+				double samplingRate = convertSamplingRateBytesToFreq(bufferInquiry[0], bufferInquiry[1], getSamplingClockFreq());
 				setSamplingRateShimmer(samplingRate);
-//				setSamplingRateShimmer((32768/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
+//				setSamplingRateShimmer((getSamplingClockFreq()/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
 				mNChannels = bufferInquiry[6];
 				mBufferSize = bufferInquiry[7];
 				mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24));
@@ -3339,6 +3376,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					byte[] signalIdArray = new byte[mNChannels];
 					System.arraycopy(bufferInquiry, 8, signalIdArray, 0, mNChannels);
 					updateEnabledSensorsFromChannels(signalIdArray);
+					if(mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
+					} else {
+						setEnabledAndDerivedSensorsAndUpdateMaps(mEnabledSensors, mDerivedSensors);
+					}
 					interpretDataPacketFormat(mNChannels,signalIdArray);
 					checkExgResolutionFromEnabledSensorsVar();
 				}
@@ -3932,11 +3973,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	public long getRTCOffset(){
-		return mRTCOffset;
+		return mRTCDifferenceInTicks;
 	}
 
 	public void setRTCOffset(long rtcOffset){
-		mRTCOffset = rtcOffset;
+		mRTCDifferenceInTicks = rtcOffset;
+	}
+	
+	public boolean isRtcDifferenceSet(){
+		return (mRTCDifferenceInTicks==0)? false:true;
 	}
 
 	/**
@@ -4043,6 +4088,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			setDefaultShimmerName();
 			
+			clearExgConfig(); // this currently must be called before sensorAndConfigMapsCreate() as it controls ExG booleans which affect EnabledSensors
 			sensorAndConfigMapsCreate();
 			
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
@@ -4079,11 +4125,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mNChannels=0; 
 			mBufferSize=0;
 			mSyncBroadcastInterval = 0;
-			mInitialTimeStamp = 0;
+			mInitialTsTicks = 0;
 			
 			setShimmerAndSensorsSamplingRate(51.2);
-			//setDefaultECGConfiguration(getSamplingRateShimmer()); // RM commented out for reason below
-			clearExgConfig(); // RM included this as ECG channel was being set after flashing firmware with reload config checkbox unticked
 			
 			setLSM303MagRange(getMagRange());
 			setAccelRange(getAccelRange());
@@ -4145,7 +4189,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			// Sampling Rate
 			byte samplingRateMSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate+1] & configByteLayoutCast.maskShimmerSamplingRate);
 			byte samplingRateLSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate] & configByteLayoutCast.maskShimmerSamplingRate);
-			double samplingRate = convertSamplingRateBytesToFreq(samplingRateLSB, samplingRateMSB);
+			double samplingRate = convertSamplingRateBytesToFreq(samplingRateLSB, samplingRateMSB, getSamplingClockFreq());
 			setShimmerAndSensorsSamplingRate(samplingRate);
 	
 			mBufferSize = (int)(configBytes[configByteLayoutCast.idxBufferSize] & configByteLayoutCast.maskBufferSize);
@@ -4214,18 +4258,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					mConfigTime = 0;
 //				}
 
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					mTrialId = configBytes[configByteLayoutCast.idxSDMyTrialID] & 0xFF;
 					mTrialNumberOfShimmers = configBytes[configByteLayoutCast.idxSDNumOfShimmers] & 0xFF;
 				}
 				
-				if((getFirmwareIdentifier()==FW_ID.SDLOG)||(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mButtonStart = (configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftButtonStart) & configByteLayoutCast.maskButtonStart;
 					setShowErrorLedsRtc((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftShowErrorLedsRwc) & configByteLayoutCast.maskShowErrorLedsRwc);
 					setShowErrorLedsSd((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftShowErrorLedsSd) & configByteLayoutCast.maskShowErrorLedsSd);
 				}
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					mSyncWhenLogging = (configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftTimeSyncWhenLogging) & configByteLayoutCast.maskTimeSyncWhenLogging;
 					mMasterShimmer = (configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftMasterShimmer) & configByteLayoutCast.maskTimeMasterShimmer;
 					mSingleTouch = (configBytes[configByteLayoutCast.idxSDExperimentConfig1] >> configByteLayoutCast.bitShiftSingleTouch) & configByteLayoutCast.maskTimeSingleTouch;
@@ -4233,11 +4277,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mSyncBroadcastInterval = (int)(configBytes[configByteLayoutCast.idxSDBTInterval] & 0xFF);
 					
 					// Maximum and Estimated Length in minutes
-					setTrialDurationEstimated((int)(configBytes[configByteLayoutCast.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
-					setTrialDurationMaximum((int)(configBytes[configByteLayoutCast.idxMaxExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxMaxExpLengthMsb] & 0xFF)) << 8));
+					setTrialDurationEstimatedInSecs((int)(configBytes[configByteLayoutCast.idxEstimatedExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxEstimatedExpLengthMsb] & 0xFF)) << 8));
+					setTrialDurationMaximumInSecs((int)(configBytes[configByteLayoutCast.idxMaxExpLengthLsb] & 0xFF) + (((int)(configBytes[configByteLayoutCast.idxMaxExpLengthMsb] & 0xFF)) << 8));
 				}
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mTCXO = (configBytes[configByteLayoutCast.idxSDExperimentConfig1] >> configByteLayoutCast.bitShiftTCX0) & configByteLayoutCast.maskTimeTCX0;
 				}
 
@@ -4264,7 +4308,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				// InfoMem C - End
 					
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					syncNodesList.clear();
 					for (int i = 0; i < configByteLayoutCast.maxNumOfExperimentNodes; i++) {
@@ -4362,7 +4406,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			byte[] samplingRateBytes = convertSamplingRateFreqBytes(getSamplingRateShimmer());
+			byte[] samplingRateBytes = convertSamplingRateFreqBytes(getSamplingRateShimmer(), getSamplingClockFreq());
 			mConfigBytes[configByteLayoutCast.idxShimmerSamplingRate] = samplingRateBytes[0]; 
 			mConfigBytes[configByteLayoutCast.idxShimmerSamplingRate+1] = samplingRateBytes[1]; 
 	
@@ -4447,13 +4491,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mConfigBytes[configByteLayoutCast.idxSDConfigTime2] = (byte) ((mConfigTime >> configByteLayoutCast.bitShiftSDConfigTime2) & 0xFF);
 				mConfigBytes[configByteLayoutCast.idxSDConfigTime3] = (byte) ((mConfigTime >> configByteLayoutCast.bitShiftSDConfigTime3) & 0xFF);
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					mConfigBytes[configByteLayoutCast.idxSDMyTrialID] = (byte) (mTrialId & 0xFF);
 		
 					mConfigBytes[configByteLayoutCast.idxSDNumOfShimmers] = (byte) (mTrialNumberOfShimmers & 0xFF);
 				}
 				
-				if((getFirmwareIdentifier()==FW_ID.SDLOG)||(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] = (byte) ((mButtonStart & configByteLayoutCast.maskButtonStart) << configByteLayoutCast.bitShiftButtonStart);
 					if(this.isOverrideShowErrorLedsRtc){
 						mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] |= (byte) ((configByteLayoutCast.maskShowErrorLedsRwc) << configByteLayoutCast.bitShiftShowErrorLedsRwc);
@@ -4471,7 +4515,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] = 0;
 				
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] |= (byte) ((mSyncWhenLogging & configByteLayoutCast.maskTimeSyncWhenLogging) << configByteLayoutCast.bitShiftTimeSyncWhenLogging);
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] |= (byte) ((mMasterShimmer & configByteLayoutCast.maskTimeMasterShimmer) << configByteLayoutCast.bitShiftMasterShimmer);
 					
@@ -4480,17 +4524,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mConfigBytes[configByteLayoutCast.idxSDBTInterval] = (byte) (mSyncBroadcastInterval & 0xFF);
 				
 					// Maximum and Estimated Length in minutes
-					mConfigBytes[configByteLayoutCast.idxEstimatedExpLengthLsb] = (byte) ((getTrialDurationEstimated() >> 0) & 0xFF);
-					mConfigBytes[configByteLayoutCast.idxEstimatedExpLengthMsb] = (byte) ((getTrialDurationEstimated() >> 8) & 0xFF);
-					mConfigBytes[configByteLayoutCast.idxMaxExpLengthLsb] = (byte) ((getTrialDurationMaximum() >> 0) & 0xFF);
-					mConfigBytes[configByteLayoutCast.idxMaxExpLengthMsb] = (byte) ((getTrialDurationMaximum() >> 8) & 0xFF);
+					mConfigBytes[configByteLayoutCast.idxEstimatedExpLengthLsb] = (byte) ((getTrialDurationEstimatedInSecs() >> 0) & 0xFF);
+					mConfigBytes[configByteLayoutCast.idxEstimatedExpLengthMsb] = (byte) ((getTrialDurationEstimatedInSecs() >> 8) & 0xFF);
+					mConfigBytes[configByteLayoutCast.idxMaxExpLengthLsb] = (byte) ((getTrialDurationMaximumInSecs() >> 0) & 0xFF);
+					mConfigBytes[configByteLayoutCast.idxMaxExpLengthMsb] = (byte) ((getTrialDurationMaximumInSecs() >> 8) & 0xFF);
 				}
 
-				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM) {
+				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] |= (byte) ((mTCXO & configByteLayoutCast.maskTimeTCX0) << configByteLayoutCast.bitShiftTCX0);
 				}
 
-				if(((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)||(getFirmwareIdentifier()==FW_ID.SDLOG))) {
+				if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					if(generateForWritingToShimmer) {
 						// MAC address - set to all 0xFF (i.e. invalid MAC) so that Firmware will know to check for MAC from Bluetooth transceiver
 						// (already set to 0xFF at start of method but just incase)
@@ -4512,7 +4556,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				// InfoMem C - End
 					
-				if(getFirmwareIdentifier()==FW_ID.SDLOG) {
+				if(isSupportedSdLogSync()) {
 					// InfoMem B Start -> Slave MAC ID for Multi-Shimmer Syncronisation
 					for (int i = 0; i < configByteLayoutCast.maxNumOfExperimentNodes; i++) { // Limit of 21 nodes
 						byte[] macIdArray;
@@ -4534,6 +4578,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				abstractSensor.configBytesGenerate(this, mConfigBytes);
 			}
 		}
+		
+		//TODO remove the need for this temp hack by adding back in the ability to change individual sensor sampling rates
+    	if(getFirmwareIdentifier()==FW_ID.STROKARE){
+    		//override rates
+    		//getLSM303DigitalAccelRate()
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte0] &= ~((byte) (configByteLayoutCast.maskLSM303DLHCAccelSamplingRate << configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate));
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte0] |= (byte) ((5 & configByteLayoutCast.maskLSM303DLHCAccelSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate);
+    		//getMPU9X50GyroAccelRate()
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte1] &= ~((byte) (configByteLayoutCast.maskMPU9150AccelGyroSamplingRate << configByteLayoutCast.bitShiftMPU9150AccelGyroSamplingRate));
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte1] |= (byte) ((155 & configByteLayoutCast.maskMPU9150AccelGyroSamplingRate) << configByteLayoutCast.bitShiftMPU9150AccelGyroSamplingRate);
+    		//getLSM303MagRate()
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte2] &= ~((byte) (configByteLayoutCast.maskLSM303DLHCMagSamplingRate << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate));
+    		mConfigBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((6 & configByteLayoutCast.maskLSM303DLHCMagSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate);
+    	}
+		
 		return mConfigBytes;
 	}
 	
@@ -4593,7 +4652,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			mSensorShimmer2Gyro = new SensorShimmer2Gyro(this);
 			addSensorClass(mSensorShimmer2Gyro);
-		} else {
+		} else if(isShimmerGenGq()){
+//			addSensorClass(SENSORS.CLOCK, new ShimmerClock(this));
+			addSensorClass(SENSORS.GSR, new SensorGSR(mShimmerVerObject));
+			addSensorClass(SENSORS.ECG_TO_HR, new SensorECGToHRFw(mShimmerVerObject));
+//			addSensorClass(SENSORS.EXG, new SensorEXG(this));
+		} else if(isShimmerGen3()){
 			if(isSupportedNewImuSensors()){
 				mSensorBMPX80 = new SensorBMP280(this);
 				addSensorClass(mSensorBMPX80);
@@ -4646,8 +4710,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE);
 					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE);
 					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_RANGE);
+
+					mChannelMap.put(SensorGSR.channelGsrMicroSiemensGq.mObjectClusterName, SensorGSR.channelGsrMicroSiemensGq);
 					
-					mChannelMap.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE, SensorGSR.channelGsrMicroSiemensGq);
+					mChannelMap.remove(SensorEXG.ObjectClusterSensorName.ECG_LA_RA_24BIT);
+					mChannelMap.putAll(SensorEXG.mChannelMapRefGq);
 				}
 				
 				if(getFirmwareVersionCode()>=6){
@@ -4655,7 +4722,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mChannelMap.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
 				}
 
-				mSensorMap.putAll(createSensorMapShimmer3());
+				if(isShimmerGen3()){
+					mSensorMap.putAll(createSensorMapShimmer3());
+				}
+				else if(isShimmerGenGq()){
+					LinkedHashMap<Integer, SensorDetails> sensorMap = new LinkedHashMap<Integer, SensorDetails>();
+					sensorMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_TIMESTAMP, new SensorDetails(false, 0, ShimmerClock.sensorShimmerClock));
+					sensorMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, new SensorDetails(false, 0, SensorEXG.sDRefEcgGq));
+					updateSensorMapChannelsFromChannelMap(sensorMap);
+					mSensorMap.putAll(sensorMap);
+				}
 
 //				mSensorGroupingMap.putAll(Configuration.Shimmer3.mSensorGroupingMapRef);
 				createSensorGroupMapShimmer3();
@@ -4680,13 +4756,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				updateSensorMapChannelsFromChannelMap(mSensorMap);
 			}
 		}
-		
-		SensorEXG.updateSensorMapForExgResolution(mSensorMap, getExGResolution());
+
+		SensorEXG.updateSensorMapForExgResolution(this, getExGResolution());
 	}
 
 	@Override
 	public void generateParserMap() {
-		SensorEXG.updateSensorMapForExgResolution(mSensorMap, getExGResolution());
+		SensorEXG.updateSensorMapForExgResolution(this, getExGResolution());
 		super.generateParserMap();
 	}
 	
@@ -4818,7 +4894,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			innerloop:
 				if (mSensorMap.get(sensorId).mSensorDetailsRef.mListOfSensorIdsConflicting!=null){
 					for(Integer conflictKey:mSensorMap.get(sensorId).mSensorDetailsRef.mListOfSensorIdsConflicting) {
-						if(mSensorMap.get(conflictKey).isDerivedChannel()) {
+						if(mSensorMap.get(conflictKey)!=null && mSensorMap.get(conflictKey).isDerivedChannel()) {
 							if((mDerivedSensors&mSensorMap.get(conflictKey).mDerivedSensorBitmapID) == mSensorMap.get(conflictKey).mDerivedSensorBitmapID) {
 								mSensorMap.get(sensorId).setIsEnabled(false);
 								return true;
@@ -5187,51 +5263,51 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	/**
 	 * @return the mTrialDurationEstimated
 	 */
-	public int getTrialDurationEstimated() {
-		return mTrialDurationEstimated;
+	public int getTrialDurationEstimatedInSecs() {
+		return mTrialDurationEstimatedInSecs;
 	}
 
 	/**
-	 * @param mExperimentDurationEstimated the mExperimentDurationEstimated to set.  Min value is 1.
+	 * @param experimentDurationEstimatedInSecs the mExperimentDurationEstimated to set.  Min value is 1.
 	 */
-	public void setExperimentDurationEstimated(int mExperimentDurationEstimated) {
+	public void setExperimentDurationEstimatedInSecs(int experimentDurationEstimatedInSecs) {
     	int maxValue = (int) ((Math.pow(2, 16))-1); 
-    	if(mExperimentDurationEstimated>maxValue) {
-    		mExperimentDurationEstimated = maxValue;
+    	if(experimentDurationEstimatedInSecs>maxValue) {
+    		experimentDurationEstimatedInSecs = maxValue;
     	}
-    	else if(mExperimentDurationEstimated<=0) {
-    		mExperimentDurationEstimated = 1;
+    	else if(experimentDurationEstimatedInSecs<=0) {
+    		experimentDurationEstimatedInSecs = 1;
     	}
-    	setTrialDurationEstimated(mExperimentDurationEstimated);
+    	setTrialDurationEstimatedInSecs(experimentDurationEstimatedInSecs);
 	}
 
-	public void setTrialDurationEstimated(int trialDurationEstimated) {
-		mTrialDurationEstimated = trialDurationEstimated;
+	public void setTrialDurationEstimatedInSecs(int trialDurationEstimatedInSecs) {
+		mTrialDurationEstimatedInSecs = trialDurationEstimatedInSecs;
 	}
 
 	/**
 	 * @return the mTrialDurationMaximum
 	 */
-	public int getTrialDurationMaximum() {
-		return mTrialDurationMaximum;
+	public int getTrialDurationMaximumInSecs() {
+		return mTrialDurationMaximumInSecs;
 	}
 
 	/**
-	 * @param mExperimentDurationMaximum the mExperimentDurationMaximum to set. Min value is 0.
+	 * @param experimentDurationMaximumInSecs the mExperimentDurationMaximum to set. Min value is 0.
 	 */
-	public void setExperimentDurationMaximum(int mExperimentDurationMaximum) {
+	public void setExperimentDurationMaximumInSecs(int experimentDurationMaximumInSecs) {
     	int maxValue = (int) ((Math.pow(2, 16))-1); 
-    	if(mExperimentDurationMaximum>maxValue) {
-    		mExperimentDurationMaximum = maxValue;
+    	if(experimentDurationMaximumInSecs>maxValue) {
+    		experimentDurationMaximumInSecs = maxValue;
     	}
-    	else if(mExperimentDurationMaximum<0) {
-    		mExperimentDurationMaximum = 1;
+    	else if(experimentDurationMaximumInSecs<0) {
+    		experimentDurationMaximumInSecs = 1;
     	}
-    	setTrialDurationMaximum(mExperimentDurationMaximum);
+    	setTrialDurationMaximumInSecs(experimentDurationMaximumInSecs);
 	}
 
-	public void setTrialDurationMaximum(int trialDurationMaximum) {
-		mTrialDurationMaximum = trialDurationMaximum;
+	public void setTrialDurationMaximumInSecs(int trialDurationMaximumInSecs) {
+		mTrialDurationMaximumInSecs = trialDurationMaximumInSecs;
 	}
 
 	/**
@@ -5391,11 +5467,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public long getInitialTimeStamp(){
-		return mInitialTimeStamp;
+		return mInitialTsTicks;
 	}
 
 	public void setInitialTimeStamp(long initialTimeStamp){
-		mInitialTimeStamp = initialTimeStamp;
+		mInitialTsTicks = initialTimeStamp;
 	}
 
 	public void setGSRRange(int i){
@@ -5548,7 +5624,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param state the mSyncWhenLogging state to set
 	 */
 	public void setSyncWhenLogging(boolean state) {
-		this.mSyncWhenLogging = (state? 1:0);
+		setSyncWhenLogging(state? 1:0);
 	}
 
 	public void setSyncWhenLogging(int state) {
@@ -6009,8 +6085,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+//			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
+//			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4.configValueInt);
 
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			
@@ -6043,8 +6120,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 			
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_12);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_12);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_12);
+//			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_12);
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_12.configValueInt);
+
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.ROUTE_CH3_TO_CH1);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.NORMAL);
 			
@@ -6079,6 +6158,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_1.configValueInt);
+
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.TEST_SIGNAL_SELECTION.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.TEST_SIGNAL_FREQUENCY.SQUARE_WAVE_1KHZ);
 
@@ -6110,8 +6191,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+//			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
+//			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4.configValueInt);
 
 //			setExgPropertySingleChip(CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.INPUT_SELECTION_CH2.RLDIN_CONNECTED_TO_NEG_INPUT); //TODO:2015-06 check!!
 			
@@ -6166,6 +6248,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.TEST_SIGNAL_SELECTION.ON);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.TEST_SIGNAL_FREQUENCY.SQUARE_WAVE_1KHZ);
 
+			setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4.configValueInt);
+
 //			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			
@@ -6182,8 +6266,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.REFERENCE_BUFFER.ON);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.VOLTAGE_REFERENCE.VREF_2_42V);
 
-		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
-		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+//		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4);
+//		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_PGA_GAIN.GAIN_4);
+		setExGGainSetting(EXG_SETTING_OPTIONS.REG4.CH1_PGA_GAIN.GAIN_4.configValueInt);
 
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
@@ -6505,27 +6590,39 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void setExGGainSetting(EXG_CHIP_INDEX chipID,  int channel, int value){
 		if(chipID==EXG_CHIP_INDEX.CHIP1){
 			if(channel==1){
-				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,value);
+				exg1Ch1CalFactor24Bit = (((2.42*1000)/getExg1CH1GainValue())/(Math.pow(2,23)-1));
+				//TODO need to confirm, why *2 for 16-bit?
+				exg1Ch1CalFactor16Bit = (((2.42*1000)/getExg1CH1GainValue()*2)/(Math.pow(2,15)-1));
 			}
 			else if(channel==2){
-				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,value);
+				exg1Ch2CalFactor24Bit = (((2.42*1000)/getExg1CH2GainValue())/(Math.pow(2,23)-1));
+				//TODO need to confirm, why *2 for 16-bit?
+				exg1Ch2CalFactor16Bit = (((2.42*1000)/getExg1CH2GainValue()*2)/(Math.pow(2,15)-1));
 			}
 		}
 		else if(chipID==EXG_CHIP_INDEX.CHIP2){
 			if(channel==1){
-				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,value);
+				exg2Ch1CalFactor24Bit = (((2.42*1000)/getExg2CH1GainValue())/(Math.pow(2,23)-1));
+				//TODO need to confirm, why *2 for 16-bit?
+				exg2Ch1CalFactor16Bit = (((2.42*1000)/getExg2CH1GainValue()*2)/(Math.pow(2,15)-1));
 			}
 			else if(channel==2){
-				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+				setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,value);
+				exg2Ch2CalFactor24Bit = (((2.42*1000)/getExg2CH2GainValue())/(Math.pow(2,23)-1));
+				//TODO need to confirm, why *2 for 16-bit?
+				exg2Ch2CalFactor16Bit = (((2.42*1000)/getExg2CH2GainValue()*2)/(Math.pow(2,15)-1));
 			}
 		}
 	}
 
 	protected void setExGGainSetting(int value){
-		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
-		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
-		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG4_CHANNEL_1_PGA_GAIN,(int)value);
-		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP2,EXG_SETTINGS.REG5_CHANNEL_2_PGA_GAIN,(int)value);
+		setExGGainSetting(EXG_CHIP_INDEX.CHIP1, 1, value);
+		setExGGainSetting(EXG_CHIP_INDEX.CHIP1, 2, value);
+		setExGGainSetting(EXG_CHIP_INDEX.CHIP2, 1, value);
+		setExGGainSetting(EXG_CHIP_INDEX.CHIP2, 2, value);
 	}
 	
 	protected void setExGResolution(int i){
@@ -6915,6 +7012,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		return false;
 	}
+	
+	public boolean isEXGUsingDefaultECGGqConfiguration(){
+		if (mShimmerVerObject.getFirmwareIdentifier() == FW_ID.GQ_802154){
+			if((getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG4_CHANNEL_1_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.NORMAL.configValueInt)
+					&& (getExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTINGS.REG5_CHANNEL_2_INPUT_SELECTION)==EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.NORMAL.configValueInt)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	public boolean isEXGUsingCustomSignalConfiguration(){
 		if(mIsExg1_16bitEnabled||mIsExg2_16bitEnabled||mIsExg1_24bitEnabled||mIsExg2_24bitEnabled){
@@ -7028,8 +7136,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							setSensorEnabledStateBasic(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR, false);
 						}
 					}
-				}
-//			}
+//				}
+			}
+			else if(isShimmerGenGq()){
+//				setSensorEnabledStateBasic(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(isEXGUsingDefaultECGGqConfiguration());
+				setSensorEnabledStateBasic(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, isEXGUsingDefaultECGGqConfiguration());
+			}
 		}
 	}
 	
@@ -7072,7 +7184,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
 						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP;
 					}
-					else if(isEXGUsingDefaultECGConfiguration()) {
+					else if(isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultECGGqConfiguration()) {
 						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.ECG;
 					}
 					else if(isEXGUsingDefaultEMGConfiguration()) {
@@ -7626,7 +7738,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public int getMagRange(){
-		return mSensorLSM303.getMagRange();
+		if(isShimmerGen2()){
+			return mSensorShimmer2Mag.getMagRange();
+		} else {
+			return mSensorLSM303.getMagRange();
+		}
 	}
 
 	/**
@@ -8228,7 +8344,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	@Override
 	public Object getConfigValueUsingConfigLabel(String identifier, String configLabel) {
-//		Object returnValue = null;
 		Object returnValue = super.getConfigValueUsingConfigLabel(identifier, configLabel);
     	if(returnValue!=null){
     		return returnValue;
@@ -8355,7 +8470,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
 //			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
 		        Double readSamplingRate = getSamplingRateShimmer();
-				Double actualSamplingRate = roundSamplingRateToSupportedValue(readSamplingRate);
+				Double actualSamplingRate = roundSamplingRateToSupportedValue(readSamplingRate, getSamplingClockFreq());
 //    					    	consolePrintLn("GET SAMPLING RATE: " + componentName);
 		    	returnValue = actualSamplingRate.toString();
 	        	break;
@@ -8375,10 +8490,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	        	returnValue = Integer.toString(getTrialNumberOfShimmers());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED):
-	        	returnValue = Integer.toString(getTrialDurationEstimated());
+	        	returnValue = Integer.toString(getTrialDurationEstimatedInSecs());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
-	        	returnValue = Integer.toString(getTrialDurationMaximum());
+	        	returnValue = Integer.toString(getTrialDurationMaximumInSecs());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
 	        	returnValue = Integer.toString(getSyncBroadcastInterval());
@@ -8572,9 +8687,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
             	else {
                 	buf = Integer.parseInt((String)valueToSet);
             	}
-        		setExperimentDurationEstimated(buf);
+        		setExperimentDurationEstimatedInSecs(buf);
         		
-        		returnValue = Integer.toString(getTrialDurationEstimated());
+        		returnValue = Integer.toString(getTrialDurationEstimatedInSecs());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM):
             	//leave max_exp_len = 0 to not automatically stop logging.
@@ -8584,9 +8699,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
             	else {
                 	buf = Integer.parseInt((String)valueToSet);
             	}
-        		setExperimentDurationMaximum(buf);
+        		setExperimentDurationMaximumInSecs(buf);
         		
-        		returnValue = Integer.toString(getTrialDurationMaximum());
+        		returnValue = Integer.toString(getTrialDurationMaximumInSecs());
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL):
             	buf = 1; // Minimum = 1
@@ -8644,7 +8759,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mLastReceivedTimeStamp
 	 */
 	public double getLastReceivedTimeStamp(){
-		return mLastReceivedTimeStamp;
+		return mLastReceivedTimeStampTicksUnwrapped;
 	}
 	
 	public String getCenter(){
@@ -8669,18 +8784,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//Once the version is known update settings accordingly 
 		if (getFirmwareVersionCode()>=6){
 			mTimeStampPacketByteSize = 3;
-			mTimeStampPacketRawMaxValue = 16777216;
+//			mTimeStampPacketMaxValueTicks = 16777216;
 		} 
 		else {//if (getFirmwareVersionCode()<6){
 			mTimeStampPacketByteSize = 2;
-			mTimeStampPacketRawMaxValue = 65536;
+//			mTimeStampPacketMaxValueTicks = 65536;
 		}
+		mTimeStampPacketMaxValueTicks = (int) (Math.pow(2, 8*mTimeStampPacketByteSize) - 1);
 	}
 	
 	// --------------- Database related start --------------------------
 	
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap(COMMUNICATION_TYPE commType) {
 //		LinkedHashMap<String, Object> configMapForDb = new LinkedHashMap<String, Object>();
 
 		// New approach to storing Shimmer3 configuration to the database. The
@@ -8688,7 +8804,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		// Values moved from where they were generated in
 		// ShimmerObject.getShimmerConfigToInsertInDB()
 
-		LinkedHashMap<String, Object> configMapForDb = super.getConfigMapForDb();
+		LinkedHashMap<String, Object> configMapForDb = super.generateConfigMap(commType);
 		
 		configMapForDb.put(SensorGSR.DatabaseConfigHandle.GSR_RANGE, (double) getGSRRange());
 		
@@ -8704,8 +8820,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		configMapForDb.put(ShimmerDevice.DatabaseConfigHandle.INITIAL_TIMESTAMP, (double) getInitialTimeStamp());
 
 		configMapForDb.put(DatabaseConfigHandleShimmerObject.SYNC_WHEN_LOGGING, (double) getSyncWhenLogging());
-		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED, (double) getTrialDurationEstimated());
-		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM, (double) getTrialDurationMaximum());
+		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED, (double) getTrialDurationEstimatedInSecs());
+		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM, (double) getTrialDurationMaximumInSecs());
 
 		//Now handled in the algorithm class in super
 		/**
@@ -8725,8 +8841,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	@Override
-	public void parseConfigMapFromDb(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-		super.parseConfigMapFromDb(svo, mapOfConfigPerShimmer);
+	public void parseConfigMap(ShimmerVerObject svo, LinkedHashMap<String, Object> mapOfConfigPerShimmer, COMMUNICATION_TYPE commType) {
+		super.parseConfigMap(svo, mapOfConfigPerShimmer, commType);
 		
 		if(mapOfConfigPerShimmer.containsKey(SensorGSR.DatabaseConfigHandle.GSR_RANGE)){
 			setGSRRange(((Double) mapOfConfigPerShimmer.get(SensorGSR.DatabaseConfigHandle.GSR_RANGE)).intValue());
@@ -8796,10 +8912,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED)){
-			setExperimentDurationEstimated(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED)).intValue());
+			setExperimentDurationEstimatedInSecs(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)){
-			setExperimentDurationMaximum(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)).intValue());
+			setExperimentDurationMaximumInSecs(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM)).intValue());
 		}
 
 		//prepareAllMapsAfterConfigRead();
@@ -9138,8 +9254,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//Not in the SD header so can't add
 			configValues.add((double) shimmerObject.getSyncWhenLogging());
-			configValues.add((double) shimmerObject.getTrialDurationEstimated());
-			configValues.add((double) shimmerObject.getTrialDurationMaximum());
+			configValues.add((double) shimmerObject.getTrialDurationEstimatedInSecs());
+			configValues.add((double) shimmerObject.getTrialDurationMaximumInSecs());
 //			configValues.add((double) shimmerObject.getSyncBroadcastInterval());
 			
 			// This is for the GSR_Peak_Hold GSRMetricModule algorithm as
@@ -9391,7 +9507,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 
 	public boolean isSupportedErrorLedControl() {
-		return mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 7, 12);
+		return (mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 7, 12)
+				|| mShimmerVerObject.compareVersions(FW_ID.STROKARE, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION));
 	}
 
 	/** Returns true if the Shimmer is using new sensors. These sensors are:
@@ -9441,6 +9558,60 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else {
 			return false;
 		}
+	}
+
+	
+	@Override
+	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName, boolean showDisabledChannels) {
+		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = super.getMapOfAllChannelsForStoringToDB(commType, channelType, isKeyOJCName, showDisabledChannels);
+		
+		//TODO temp hack. Need to move these channels to their own sensors so that they can be disabled per comm type
+		if(commType!=COMMUNICATION_TYPE.SD || (commType==COMMUNICATION_TYPE.SD && mSyncWhenLogging==0)){
+			mapOfChannelsForStoringToDb.remove(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET);
+		}
+		
+		if(!isRtcDifferenceSet()){
+			mapOfChannelsForStoringToDb.remove(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK);
+		}
+		
+		return mapOfChannelsForStoringToDb;
+	}
+	
+	@Override
+	public double getSamplingClockFreq() {
+		if(isTCXO()){
+			if(isTcxoClock20MHz()){
+				//20MHz / 64 = 312500; 
+				return 312500.0;
+			} else {
+				//16.369MHz / 64 = 255765.625;
+				return 255765.625;
+			}
+		} else {
+			return getClockFreqDefaultShimmer2r3();
+		}
+	}
+
+
+	private boolean isTcxoClock20MHz() {
+		ShimmerVerObject svo = getShimmerVerObject();
+		ExpansionBoardDetails ebd = getExpansionBoardDetails();
+		
+		int expBrdId = ebd.getExpansionBoardId();
+		int expBrdRev = ebd.getExpansionBoardRev();
+		int expBrdRevSpecial = ebd.getExpansionBoardRevSpecial();
+
+		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
+				(expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev==1 && expBrdRevSpecial==1))){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+	public static double getClockFreqDefaultShimmer2r3() {
+		return 32768.0;
 	}
 
 

@@ -117,6 +117,8 @@ import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.sensors.shimmer2.SensorMMA736x;
+import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Mag;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 
@@ -179,7 +181,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected double mLowBattLimit=3.4;
 	protected int numBytesToReadFromExpBoard=0;
 	
-	private boolean mUseInfoMemConfigMethod = false;
 	private boolean mUseLegacyDelayToDelayForResponse = false;
 
 	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
@@ -479,7 +480,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		addFixedShimmerConfig(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, gyroRange);
 	}
 
-	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int magGain) {
+	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int magRange) {
 		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
 
 		setShimmerUserAssignedName(userAssignedName);
@@ -488,12 +489,32 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(sensorIdsToEnable!=null){
 			addFixedShimmerConfig(Shimmer3.GuiLabelConfig.ENABLED_SENSORS_IDS, sensorIdsToEnable);
 		}
-		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE, samplingRate);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, samplingRate);
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
 		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
-		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magGain);
+		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magRange);
 	}
 	
+	/** Only for Shimmer2r note that sensormaps aren't supported on Shimmer2r devices
+	 * @param userAssignedName
+	 * @param samplingRate
+	 * @param enabledSensors
+	 * @param accelRange
+	 * @param gsrRange
+	 * @param magRange
+	 */
+	public ShimmerBluetooth(String userAssignedName, double samplingRate, int enabledSensors, int accelRange, int gsrRange, int magRange) {
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+		setShimmerUserAssignedName(userAssignedName);
+		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, samplingRate);
+		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
+		addFixedShimmerConfig(SensorMMA736x.GuiLabelConfig.ACCEL_RANGE, accelRange);
+		addFixedShimmerConfig(SensorShimmer2Mag.GuiLabelConfig.MAG_RANGE, magRange);
+		mSetEnabledSensors=enabledSensors;
+		mSetupDeviceWhileConnecting = true;
+    	setSamplingRateShimmer(samplingRate);
+	}
 	
 	public class ProcessingThread extends Thread {
 		public boolean stop = false;
@@ -1052,10 +1073,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		    	bb.put(bSystemTS);
 		    	bb.flip();
 		    	long systemTimeStamp = bb.getLong();
-				mOffsetFirstTime = systemTimeStamp-objectCluster.getShimmerCalibratedTimeStamp();
+				mOffsetFirstTime = systemTimeStamp-objectCluster.getTimestampMilliSecs();
 			}
 			
-			double calTimestamp = objectCluster.getShimmerCalibratedTimeStamp();
+			double calTimestamp = objectCluster.getTimestampMilliSecs();
 			double systemTimestampPlot = calTimestamp+mOffsetFirstTime;
 			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, systemTimestampPlot);
 			
@@ -1222,7 +1243,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 					byte[] bufferSR = readBytes(2, responseCommand); //read the sampling rate
 					if(bufferSR!=null){
-						setSamplingRateShimmer(convertSamplingRateBytesToFreq(bufferSR[0], bufferSR[1]));
+						setSamplingRateShimmer(convertSamplingRateBytesToFreq(bufferSR[0], bufferSR[1], getSamplingClockFreq()));
 					}
 				}
 			}
@@ -1712,8 +1733,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					} 
 					else {
 //						System.err.println(((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8)));
-//						tempdouble = 32768/(double)((int)(instruction[1] & 0xFF) + ((int)(instruction[2] & 0xFF) << 8));
-						tempdouble = convertSamplingRateBytesToFreq(instruction[1], instruction[2]);
+						tempdouble = convertSamplingRateBytesToFreq(instruction[1], instruction[2], getSamplingClockFreq());
 					}
 					// TODO: MN Change to new method in ShimmerObject? It will
 					// automatically update the individual IMU + ExG sensor rate
@@ -2320,12 +2340,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
 		readSamplingRate();
+		readGSRRange();
 		readMagSamplingRate();
 		writeBufferSize(1);
 		readLEDCommand();
 		readConfigByte0();
 		readCalibrationParameters("All");
 		if(mSetupDeviceWhileConnecting){
+			FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfigMode, mFixedShimmerConfigMap);
 			writeMagRange(getMagRange()); //set to default Shimmer mag gain
 			writeAccelRange(getAccelRange());
 			writeGSRRange(getGSRRange());
@@ -3182,7 +3204,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void writeAccelRange(int range) {
 		writeInstruction(new byte[]{SET_ACCEL_SENSITIVITY_COMMAND, (byte)range});
 		setAccelRange((int)range);
-		
 	}
 	
 	/**Read the derived channel bytes. Currently only supported on logandstream
@@ -3480,18 +3501,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				writeGyroSamplingRate(getMPU9X50GyroAccelRate());
 				writeExgSamplingRate(rate);
 				
-				byte[] buf = convertSamplingRateFreqBytes(getSamplingRateShimmer());
+				byte[] buf = convertSamplingRateFreqBytes(getSamplingRateShimmer(), getSamplingClockFreq());
 //				writeInstruction(new byte[]{SET_SAMPLING_RATE_COMMAND, buf[0], buf[1]});
 
 				//TODO change the RM's below to the above once tested
 
 				// RM: get Shimmer compatible sampling rate (use ceil or floor depending on which is appropriate to the user entered sampling rate)
 				int samplingByteValue;
-		    	if((Math.ceil(32768/getSamplingRateShimmer()) - 32768/getSamplingRateShimmer()) < 0.05){
-		    		samplingByteValue = (int)Math.ceil(32768/getSamplingRateShimmer());
+		    	if((Math.ceil(getSamplingClockFreq()/getSamplingRateShimmer()) - getSamplingClockFreq()/getSamplingRateShimmer()) < 0.05){
+		    		samplingByteValue = (int)Math.ceil(getSamplingClockFreq()/getSamplingRateShimmer());
 		    	}
 		    	else{
-		    		samplingByteValue = (int)Math.floor(32768/getSamplingRateShimmer());
+		    		samplingByteValue = (int)Math.floor(getSamplingClockFreq()/getSamplingRateShimmer());
 		    	}	
 				
 				writeInstruction(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
@@ -5086,11 +5107,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public void resetCalibratedTimeStamp(){
-		mLastReceivedTimeStamp = 0;
+		mLastReceivedTimeStampTicksUnwrapped = 0;
 		mLastReceivedCalibratedTimeStamp = -1;
 		
 		mStreamingStartTimeSaved = false;
-		mStreamingStartTimeMs = -1;
+		mStreamingStartTimeMilliSecs = -1;
 		
 		mCurrentTimeStampCycle = 0;
 	}

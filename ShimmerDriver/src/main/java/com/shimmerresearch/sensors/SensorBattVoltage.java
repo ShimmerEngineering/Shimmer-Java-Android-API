@@ -115,7 +115,8 @@ public class SensorBattVoltage extends AbstractSensor{
     public static final SensorGroupingDetails sensorGroupBattVoltage = new SensorGroupingDetails(
 			LABEL_SENSOR_TILE.BATTERY_MONITORING,
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_VBATT),
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoBattVoltage);
   	
 	//--------- Sensor info end --------------
 	
@@ -290,13 +291,13 @@ public class SensorBattVoltage extends AbstractSensor{
 	}
 
 	@Override
-	public LinkedHashMap<String, Object> getConfigMapForDb() {
+	public LinkedHashMap<String, Object> generateConfigMap() {
 		//Not in this class
 		return null;
 	}
 	
 	@Override
-	public void parseConfigMapFromDb(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
+	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		// TODO Auto-generated method stub
 		
 	}
