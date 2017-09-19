@@ -944,6 +944,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	
 	
+	public ShimmerBattStatusDetails getBattStatusDetails() {
+		return mShimmerBattStatusDetails;
+	}
+
 	/**
 	 * @return the mChargingState
 	 */
@@ -975,7 +979,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public BATTERY_LEVEL getEstimatedBatteryLevel() {
 		return mShimmerBattStatusDetails.getEstimatedBatteryLevel();
 	}
-
 	
 	/**
 	 * @param docked the mDocked to set
@@ -4418,5 +4421,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public double getSamplingClockFreq() {
 		return 32768.0;
 	}
+
 
 }

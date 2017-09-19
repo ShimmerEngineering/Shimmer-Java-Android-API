@@ -196,8 +196,12 @@ public class ShimmerBattStatusDetails implements Serializable {
 	}
 
 	public String getBattVoltageParsed() {
-    	String mBattVoltageParsed = String.format("%,.1f",mBattVoltage) + " V";
+    	String mBattVoltageParsed = String.format("%,.3f",mBattVoltage) + " V";
 		return mBattVoltageParsed;
+	}
+
+	public double getBattAdcValue() {
+		return mBattAdcValue;
 	}
 
 	public double getEstimatedChargePercentage() {
