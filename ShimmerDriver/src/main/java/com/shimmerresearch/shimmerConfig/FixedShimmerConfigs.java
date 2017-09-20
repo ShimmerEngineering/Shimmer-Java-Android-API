@@ -101,11 +101,11 @@ public class FixedShimmerConfigs {
 						SensorEXG.GuiLabelConfig.EXG_RESOLUTION,
 						1);
 				
-				//setting ECG Reference Electrode to Fixed Potential
+				//setting ECG Reference Electrode to Inverse Wilson CT
 				shimmerDevice.setConfigValueUsingConfigLabel(
 						Shimmer3.SENSOR_ID.HOST_ECG, 
 						SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-						0);
+						3);
 			}
 	
 			//setting sampling rate 1024Hz hardcoded -> ExG data rate should update automatically in the driver
