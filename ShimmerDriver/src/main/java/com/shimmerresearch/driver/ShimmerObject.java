@@ -566,7 +566,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double mStreamingStartTimeMilliSecs;
 	
 	protected int mTimeStampPacketByteSize = 2;
-	protected int mTimeStampPacketMaxValueTicks = 65536-1;// (16777216 or 65536)-1 
+	protected int mTimeStampTicksMaxValue = 65536-1;// (16777216 or 65536)-1 
 	//-------- Timestamp end --------
 
 	// Shimmer2/2r - Analog accel
@@ -3263,13 +3263,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	protected double unwrapTimeStamp(double timeStampTicks){
 		//first convert to continuous time stamp
-		double currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampPacketMaxValueTicks*mCurrentTimeStampCycle);
+		double currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
 		
 		//Check if there was a roll-over
 		if (mLastReceivedTimeStampTicksUnwrapped>currentTimeStampTicksUnwrapped){ 
 			mCurrentTimeStampCycle += 1;
 			//Recalculate timestamp
-			currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampPacketMaxValueTicks*mCurrentTimeStampCycle);
+			currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
 		}
 
 		//Store in order to trigger packet loss calculations while streaming in real-time
@@ -8790,7 +8790,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mTimeStampPacketByteSize = 2;
 //			mTimeStampPacketMaxValueTicks = 65536;
 		}
-		mTimeStampPacketMaxValueTicks = (int) (Math.pow(2, 8*mTimeStampPacketByteSize) - 1);
+		mTimeStampTicksMaxValue = (int) (Math.pow(2, 8*mTimeStampPacketByteSize) - 1);
 	}
 	
 	// --------------- Database related start --------------------------
