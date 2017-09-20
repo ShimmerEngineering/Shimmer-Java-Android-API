@@ -3132,6 +3132,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	public void loadAlgorithmVariablesFromAnotherDevice(ShimmerDevice shimmerDevice) {
+		Map<String, AbstractAlgorithm> mapOfSourceAlgorithmModules = shimmerDevice.getMapOfAlgorithmModules();
+		Iterator<Entry<String, AbstractAlgorithm>> iterator = mapOfSourceAlgorithmModules.entrySet().iterator();
+		while(iterator.hasNext()){
+			Entry<String, AbstractAlgorithm> algorithmModuleEntry = iterator.next();
+			
+			AbstractAlgorithm abstractAlgorithm = getAlgorithmModule(algorithmModuleEntry.getKey());
+			if(abstractAlgorithm!=null){
+				abstractAlgorithm.loadAlgorithmVariables(algorithmModuleEntry.getValue());
+			}
+			
+		}
+	}
+	
 	// ------------- Algorithm Code end -----------------------
 
 	

@@ -16,14 +16,14 @@ public class OrientationModule9DOFLoader implements AlgorithmLoaderInterface {
 	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject svo, ExpansionBoardDetails eBD) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
 
-		if(svo.getFirmwareIdentifier()==FW_ID.STROKARE){
-			mapOfSupportedAlgorithms.put(OrientationModule9DOF.algo9DoFOrientation_WR_Acc.mAlgorithmName, OrientationModule9DOF.algo9DoFOrientation_WR_Acc);
-		}
-		else {
+//		if(svo.getFirmwareIdentifier()==FW_ID.STROKARE){
+//			mapOfSupportedAlgorithms.put(OrientationModule9DOF.algo9DoFOrientation_WR_Acc.mAlgorithmName, OrientationModule9DOF.algo9DoFOrientation_WR_Acc);
+//		}
+//		else {
 			if(svo.isShimmerGen3() || svo.isShimmerGen4()){
 				mapOfSupportedAlgorithms.putAll(OrientationModule9DOF.mAlgorithmMapRef);
 			}
-		}
+//		}
 		
 		return mapOfSupportedAlgorithms;
 	}
