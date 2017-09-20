@@ -2055,7 +2055,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			incrementPacketsReceivedCounters();
 			calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
 
-
 			//TIMESTAMP
 			if (fwType == COMMUNICATION_TYPE.BLUETOOTH){
 				objectCluster.addDataToMap(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iTimeStamp]);
@@ -2377,7 +2376,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
 		
 		//TIMESTAMP
-		long timestampUnwrappedTicksWithOffset = 0;
+		long timestampUnwrappedWithOffsetTicks = 0;
 		if (fwType == COMMUNICATION_TYPE.SD){
 			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
 			
@@ -2385,12 +2384,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				timestampUnwrappedTicks -= mFirstTsOffsetFromInitialTsTicks; //deduct this so it will start from 0
 			}
 			
-			timestampUnwrappedTicksWithOffset = (long)mInitialTsTicks + (long)timestampUnwrappedTicks;
+			timestampUnwrappedWithOffsetTicks = (long)mInitialTsTicks + (long)timestampUnwrappedTicks;
 			
 			if (isLegacySdLog()){
 				uncalibratedData[iTimeStamp] = shimmerTimestampTicks;
 			} else {
-				uncalibratedData[iTimeStamp] = (double)timestampUnwrappedTicksWithOffset;
+				uncalibratedData[iTimeStamp] = (double)timestampUnwrappedWithOffsetTicks;
 			}
 			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
 			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,uncalibratedData[iTimeStamp]);
@@ -2402,15 +2401,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 
 		if (mEnableCalibration){
-			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,timestampUnwrappedMilliSecs);
-			calibratedData[iTimeStamp] = timestampUnwrappedMilliSecs;
+			double timestampUnwrappedWithOffsetMilliSecs = timestampUnwrappedWithOffsetTicks/getSamplingClockFreq()*1000;   // to convert into mS
+			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,timestampUnwrappedWithOffsetMilliSecs);
+			calibratedData[iTimeStamp] = timestampUnwrappedWithOffsetMilliSecs;
 			calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
-			objectCluster.setTimeStampMilliSecs(timestampUnwrappedMilliSecs);
+			objectCluster.setTimeStampMilliSecs(timestampUnwrappedWithOffsetMilliSecs);
 		}
 
 		//RAW RTC
 		if ((fwType == COMMUNICATION_TYPE.SD) && isRtcDifferenceSet()) {
-			long rtcTimestampTicks = timestampUnwrappedTicksWithOffset + mRTCDifferenceInTicks;
+			long rtcTimestampTicks = timestampUnwrappedWithOffsetTicks + mRTCDifferenceInTicks;
 			
 //			System.out.println("\tRtcDiff: " + UtilShimmer.convertMilliSecondsToDateString((mRTCDifferenceInTicks+mInitialTsTicks)/32768*1000, true));
 //			System.out.println("\tRtcDiffActual: " + UtilShimmer.convertMilliSecondsToDateString((rtcTimestampTicks)/32768*1000, true));
@@ -3261,32 +3261,39 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+	/**
+	 * Unwraps the timestamp based on the current recording (i.e., per file for
+	 * SD recordings not taking into account the initial file start time)
+	 * 
+	 * @param timeStampTicks
+	 * @return
+	 */
 	protected double unwrapTimeStamp(double timeStampTicks){
 		//first convert to continuous time stamp
-		double currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
+		double timestampUnwrappedTicks = timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
 		
 		//Check if there was a roll-over
-		if (mLastReceivedTimeStampTicksUnwrapped>currentTimeStampTicksUnwrapped){ 
+		if (mLastReceivedTimeStampTicksUnwrapped>timestampUnwrappedTicks){ 
 			mCurrentTimeStampCycle += 1;
 			//Recalculate timestamp
-			currentTimeStampTicksUnwrapped = timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
+			timestampUnwrappedTicks = timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
 		}
 
-		//Store in order to trigger packet loss calculations while streaming in real-time
-		if (!mStreamingStartTimeSaved){
-			mStreamingStartTimeSaved=true;
-			mStreamingStartTimeMilliSecs = currentTimeStampTicksUnwrapped/getSamplingClockFreq()*1000;   // to convert into mS
-		}
+		mLastReceivedTimeStampTicksUnwrapped = timestampUnwrappedTicks;
 
-		mLastReceivedTimeStampTicksUnwrapped = currentTimeStampTicksUnwrapped;
-
-		return currentTimeStampTicksUnwrapped;
+		return timestampUnwrappedTicks;
 	}
 
 //	@Override
-	private void calculateTrialPacketLoss(double currentTimeStampMs) {
+	private void calculateTrialPacketLoss(double timestampUnwrappedMilliSecs) {
+		//Store in order to trigger packet loss calculations while streaming in real-time
+		if (!mStreamingStartTimeSaved){
+			mStreamingStartTimeSaved=true;
+			mStreamingStartTimeMilliSecs = timestampUnwrappedMilliSecs;   // to convert into mS
+		}
+
 		if(mStreamingStartTimeMilliSecs>0){
-			double timeDifference = currentTimeStampMs - mStreamingStartTimeMilliSecs;
+			double timeDifference = timestampUnwrappedMilliSecs - mStreamingStartTimeMilliSecs;
 			
 			//The expected time difference (in milliseconds) based on the device's sampling rate
 			double expectedTimeDifference = (1/getSamplingRateShimmer())*1000;
