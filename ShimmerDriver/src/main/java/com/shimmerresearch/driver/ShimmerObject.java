@@ -707,7 +707,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		objectCluster.setMacAddress(mMyBluetoothAddress);
 		objectCluster.mRawData = newPacket;
 		
-		if(fwType != COMMUNICATION_TYPE.BLUETOOTH && fwType != COMMUNICATION_TYPE.SD){
+		if(fwType!=COMMUNICATION_TYPE.BLUETOOTH && fwType!=COMMUNICATION_TYPE.SD){
 //			throw new Exception("The Firmware is not compatible");
 			consolePrintErrLn("The Firmware is not compatible");
 		}
@@ -2363,7 +2363,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
 		double shimmerTimestampTicks = (double)newPacketInt[iTimeStamp];
 		
-		if(mFirstTime && fwType == COMMUNICATION_TYPE.SD){
+		if(mFirstTime && fwType==COMMUNICATION_TYPE.SD){
 			//this is to make sure the Raw starts from zero
 			mFirstTsOffsetFromInitialTsTicks = shimmerTimestampTicks;
 			mFirstTime = false;
@@ -2377,7 +2377,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		//TIMESTAMP
 		long timestampUnwrappedWithOffsetTicks = 0;
-		if (fwType == COMMUNICATION_TYPE.SD){
+		if (fwType==COMMUNICATION_TYPE.SD){
 			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
 			
 			if (!isLegacySdLog()){
@@ -2394,7 +2394,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
 			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,uncalibratedData[iTimeStamp]);
 		} 
-		else if (fwType == COMMUNICATION_TYPE.BLUETOOTH){
+		else if (fwType==COMMUNICATION_TYPE.BLUETOOTH){
 			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,shimmerTimestampTicks);
 			uncalibratedData[iTimeStamp] = shimmerTimestampTicks;
 			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
@@ -2409,7 +2409,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 
 		//RAW RTC
-		if ((fwType == COMMUNICATION_TYPE.SD) && isRtcDifferenceSet()) {
+		if (fwType==COMMUNICATION_TYPE.SD && isRtcDifferenceSet()) {
 			long rtcTimestampTicks = timestampUnwrappedWithOffsetTicks + mRTCDifferenceInTicks;
 			
 //			System.out.println("\tRtcDiff: " + UtilShimmer.convertMilliSecondsToDateString((mRTCDifferenceInTicks+mInitialTsTicks)/32768*1000, true));
@@ -4711,7 +4711,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					|| isShimmerGenGq()) { // need isShimmerGenGq() here for parsing GQ data through ShimmerSDLog
 				
 				mChannelMap.putAll(Configuration.Shimmer3.mChannelMapRef);
-				//Hack for GSR parsing in GQ from SD files
+
+				//Hack for GSR parsing in GQ from SD files (ideally GQ SD parsing should be done in ShimmerGQ class)
 				if(isShimmerGenGq()){
 					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_RESISTANCE);
 					mChannelMap.remove(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE);
@@ -9573,7 +9574,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = super.getMapOfAllChannelsForStoringToDB(commType, channelType, isKeyOJCName, showDisabledChannels);
 		
 		//TODO temp hack. Need to move these channels to their own sensors so that they can be disabled per comm type
-		if(commType!=COMMUNICATION_TYPE.SD || (commType==COMMUNICATION_TYPE.SD && mSyncWhenLogging==0)){
+		if(commType!=COMMUNICATION_TYPE.SD || (commType==COMMUNICATION_TYPE.SD && !isSyncWhenLogging())){
 			mapOfChannelsForStoringToDb.remove(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET);
 		}
 		
