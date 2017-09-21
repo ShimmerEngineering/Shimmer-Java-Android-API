@@ -2379,35 +2379,36 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		long timestampUnwrappedWithOffsetTicks = 0;
 		if (fwType==COMMUNICATION_TYPE.SD){
 			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
-			
-			if (!isLegacySdLog()){
-				timestampUnwrappedTicks -= mFirstTsOffsetFromInitialTsTicks; //deduct this so it will start from 0
-			}
-			
-			timestampUnwrappedWithOffsetTicks = (long)mInitialTsTicks + (long)timestampUnwrappedTicks;
-			
+			timestampUnwrappedWithOffsetTicks = (long)timestampUnwrappedTicks + (long)mInitialTsTicks;
+
 			if (isLegacySdLog()){
 				uncalibratedData[iTimeStamp] = shimmerTimestampTicks;
 			} else {
+				timestampUnwrappedWithOffsetTicks -= mFirstTsOffsetFromInitialTsTicks; //deduct this so it will start from 0
 				uncalibratedData[iTimeStamp] = (double)timestampUnwrappedWithOffsetTicks;
 			}
-			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
-			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,uncalibratedData[iTimeStamp]);
+			
+			if (mEnableCalibration){
+				double timestampUnwrappedWithOffsetMilliSecs = timestampUnwrappedWithOffsetTicks/getSamplingClockFreq()*1000;   // to convert into mS
+				calibratedData[iTimeStamp] = timestampUnwrappedWithOffsetMilliSecs;
+			}
 		} 
 		else if (fwType==COMMUNICATION_TYPE.BLUETOOTH){
-			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,shimmerTimestampTicks);
 			uncalibratedData[iTimeStamp] = shimmerTimestampTicks;
-			uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
+			if (mEnableCalibration){
+				calibratedData[iTimeStamp] = timestampUnwrappedMilliSecs;
+			}
 		}
-
+		
+		uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
+		objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,uncalibratedData[iTimeStamp]);
 		if (mEnableCalibration){
-			double timestampUnwrappedWithOffsetMilliSecs = timestampUnwrappedWithOffsetTicks/getSamplingClockFreq()*1000;   // to convert into mS
-			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,timestampUnwrappedWithOffsetMilliSecs);
-			calibratedData[iTimeStamp] = timestampUnwrappedWithOffsetMilliSecs;
 			calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
-			objectCluster.setTimeStampMilliSecs(timestampUnwrappedWithOffsetMilliSecs);
+			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedData[iTimeStamp]);
+			objectCluster.setTimeStampMilliSecs(calibratedData[iTimeStamp]);
 		}
 
+		
 		//RAW RTC
 		if (fwType==COMMUNICATION_TYPE.SD && isRtcDifferenceSet()) {
 			long rtcTimestampTicks = timestampUnwrappedWithOffsetTicks + mRTCDifferenceInTicks;
@@ -2424,7 +2425,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				// it would be more efficient to just convert rtcTimestampTicks
 				// to milliseconds via the following line
 				double rtcTimestampMilliSecs = 0;
-				if (fwType == COMMUNICATION_TYPE.SD){
+				if (fwType==COMMUNICATION_TYPE.SD){
 					rtcTimestampMilliSecs = ((double)rtcTimestampTicks/getSamplingClockFreq()*1000.0);
 				} else {
 					rtcTimestampMilliSecs = timestampUnwrappedMilliSecs;
