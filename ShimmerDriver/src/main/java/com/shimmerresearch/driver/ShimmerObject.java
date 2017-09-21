@@ -2376,16 +2376,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
 		
 		//TIMESTAMP
-		long timestampUnwrappedWithOffsetTicks = 0;
+		double timestampUnwrappedWithOffsetTicks = 0;
 		if (fwType==COMMUNICATION_TYPE.SD){
 			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
-			timestampUnwrappedWithOffsetTicks = (long)timestampUnwrappedTicks + (long)mInitialTsTicks;
+			timestampUnwrappedWithOffsetTicks = timestampUnwrappedTicks + mInitialTsTicks;
 
 			if (isLegacySdLog()){
 				uncalibratedData[iTimeStamp] = shimmerTimestampTicks;
 			} else {
 				timestampUnwrappedWithOffsetTicks -= mFirstTsOffsetFromInitialTsTicks; //deduct this so it will start from 0
-				uncalibratedData[iTimeStamp] = (double)timestampUnwrappedWithOffsetTicks;
+				uncalibratedData[iTimeStamp] = timestampUnwrappedWithOffsetTicks;
 			}
 			
 			if (mEnableCalibration){
@@ -2411,13 +2411,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		//RAW RTC
 		if (fwType==COMMUNICATION_TYPE.SD && isRtcDifferenceSet()) {
-			long rtcTimestampTicks = timestampUnwrappedWithOffsetTicks + mRTCDifferenceInTicks;
+			double rtcTimestampTicks = timestampUnwrappedWithOffsetTicks + mRTCDifferenceInTicks;
 			
 //			System.out.println("\tRtcDiff: " + UtilShimmer.convertMilliSecondsToDateString((mRTCDifferenceInTicks+mInitialTsTicks)/32768*1000, true));
 //			System.out.println("\tRtcDiffActual: " + UtilShimmer.convertMilliSecondsToDateString((rtcTimestampTicks)/32768*1000, true));
 
-			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)rtcTimestampTicks);
-			uncalibratedData[sensorNames.length-1] = (double)rtcTimestampTicks;
+			objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,rtcTimestampTicks);
+			uncalibratedData[sensorNames.length-1] = rtcTimestampTicks;
 			uncalibratedDataUnits[sensorNames.length-1] = CHANNEL_UNITS.CLOCK_UNIT;
 			sensorNames[sensorNames.length-1]= Shimmer3.ObjectClusterSensorName.REAL_TIME_CLOCK;
 			if (mEnableCalibration){
@@ -2426,7 +2426,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				// to milliseconds via the following line
 				double rtcTimestampMilliSecs = 0;
 				if (fwType==COMMUNICATION_TYPE.SD){
-					rtcTimestampMilliSecs = ((double)rtcTimestampTicks/getSamplingClockFreq()*1000.0);
+					rtcTimestampMilliSecs = rtcTimestampTicks/getSamplingClockFreq()*1000.0;
 				} else {
 					rtcTimestampMilliSecs = timestampUnwrappedMilliSecs;
 					if(mInitialTsTicks!=0){
