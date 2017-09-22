@@ -4100,13 +4100,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			sensorAndConfigMapsCreate();
 			
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
-				setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, true);
-				setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO, true);
-				setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG, true);
-				setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_VBATT, true);
+				if(getExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_3_EXG_EXTENDED){
+					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, true);
+				} else {
+					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, true);
+					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO, true);
+					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG, true);
+					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_VBATT, true);
+				}
 			}
-
-//			setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, true);
 
 			mTrialName = DEFAULT_EXPERIMENT_NAME;
 			

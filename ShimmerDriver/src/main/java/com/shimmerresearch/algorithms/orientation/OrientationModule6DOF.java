@@ -10,6 +10,7 @@ import java.util.Map;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -366,11 +367,11 @@ public class OrientationModule6DOF extends OrientationModule{
 
 	
 
-	public OrientationModule6DOF(AlgorithmDetails algorithmDetails, double samplingRate) {
-		super(algorithmDetails);
+	public OrientationModule6DOF(ShimmerDevice shimmerDevice, AlgorithmDetails algorithmDetails, double samplingRate) {
+		super(shimmerDevice, algorithmDetails);
 		setupAlgorithm();
 
-		this.samplingRate = samplingRate;
+		setShimmerSamplingRate(samplingRate);
 	}
 
 	@Override
@@ -432,7 +433,7 @@ public class OrientationModule6DOF extends OrientationModule{
 	@Override
 	public void initialize() throws Exception {
 
-		double samplingPeriod = 1/samplingRate;
+		double samplingPeriod = 1/getShimmerSamplingRate();
 
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)
 				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){

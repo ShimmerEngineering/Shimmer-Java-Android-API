@@ -11,9 +11,11 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
@@ -102,8 +104,8 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	
 
 
-	public OrientationModule(AlgorithmDetails algorithmDetails) {
-		super(algorithmDetails);
+	public OrientationModule(ShimmerDevice shimmerDevice, AlgorithmDetails algorithmDetails) {
+		super(shimmerDevice, algorithmDetails);
 	}
 
 	@Override
@@ -254,7 +256,14 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
 	
 	public void setShimmerSamplingRate(double sampleRate){
+		//Hack because the principle Sampling rate of the StroKare device for EMG is 2048Hz whereas the IMU sample at 51.2Hz 
+		if(mShimmerDevice!=null && mShimmerDevice.getFirmwareIdentifier()==FW_ID.STROKARE){
+			sampleRate = 51.2;
+		}
+		
 		this.samplingRate = sampleRate;
+		
+		//TODO this is being initialized repeatedly in a number of different places.
 		try {
 			initialize();
 		} catch (Exception e) {
