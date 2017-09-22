@@ -17,7 +17,7 @@ public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
 		
 		if(svo.getFirmwareIdentifier()==FW_ID.STROKARE){
-			mapOfSupportedAlgorithms.put(OrientationModule6DOF.algo6DoFOrientation_WR_Acc.mAlgorithmName, OrientationModule6DOF.algo6DoFOrientation_WR_Acc);
+//			mapOfSupportedAlgorithms.put(OrientationModule6DOF.algo6DoFOrientation_WR_Acc.mAlgorithmName, OrientationModule6DOF.algo6DoFOrientation_WR_Acc);
 		}
 		else {
 			if((svo.isShimmerGen3() || svo.isShimmerGen4())){
@@ -32,7 +32,7 @@ public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = getMapOfSupportedAlgorithms(shimmerDevice.getShimmerVerObject(), shimmerDevice.getExpansionBoardDetails());
 		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
-			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(algorithmDetails, shimmerDevice.getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH));
+			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(shimmerDevice, algorithmDetails, shimmerDevice.getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH));
 			
 			//TODO load any default settings here
 			
