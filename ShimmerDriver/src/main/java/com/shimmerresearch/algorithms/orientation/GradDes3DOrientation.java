@@ -2,6 +2,11 @@ package com.shimmerresearch.algorithms.orientation;
 
 public class GradDes3DOrientation {
 	
+	//The Beta variable is described well at the following link
+	//https://github.com/sparkfun/MPU-9250_Breakout/blob/master/Libraries/Arduino/src/quaternionFilters.cpp
+	//	GyroMeasError = PI * (40.0f / 180.0f); // gyroscope measurement error in rads/s (start at 40 deg/s for the MPU9250)
+	//	beta = sqrt(3.0f / 4.0f) * GyroMeasError; // compute beta
+	//We have typically found 0.5 works better with the Shimmer
 	public final static double BETA = 0.5;
 	public final static double Q1_INITIAL = 1;
 	public final static double Q2_INITIAL = 0;
