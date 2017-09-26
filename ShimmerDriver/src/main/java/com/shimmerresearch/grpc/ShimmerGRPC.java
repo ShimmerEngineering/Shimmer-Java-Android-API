@@ -7601,6 +7601,457 @@ public final class ShimmerGRPC {
 
   }
 
+  public interface DoubleMsgOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:shimmerGRPC.DoubleMsg)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>double number = 1;</code>
+     */
+    double getNumber();
+  }
+  /**
+   * Protobuf type {@code shimmerGRPC.DoubleMsg}
+   */
+  public  static final class DoubleMsg extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:shimmerGRPC.DoubleMsg)
+      DoubleMsgOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use DoubleMsg.newBuilder() to construct.
+    private DoubleMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private DoubleMsg() {
+      number_ = 0D;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DoubleMsg(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 9: {
+
+              number_ = input.readDouble();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_DoubleMsg_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_DoubleMsg_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.class, com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.Builder.class);
+    }
+
+    public static final int NUMBER_FIELD_NUMBER = 1;
+    private double number_;
+    /**
+     * <code>double number = 1;</code>
+     */
+    public double getNumber() {
+      return number_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (number_ != 0D) {
+        output.writeDouble(1, number_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (number_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(1, number_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg)) {
+        return super.equals(obj);
+      }
+      com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg other = (com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg) obj;
+
+      boolean result = true;
+      result = result && (
+          java.lang.Double.doubleToLongBits(getNumber())
+          == java.lang.Double.doubleToLongBits(
+              other.getNumber()));
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getNumber()));
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.DoubleMsg}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:shimmerGRPC.DoubleMsg)
+        com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsgOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_DoubleMsg_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_DoubleMsg_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.class, com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.Builder.class);
+      }
+
+      // Construct using com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        number_ = 0D;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_DoubleMsg_descriptor;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg getDefaultInstanceForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.getDefaultInstance();
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg build() {
+        com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg buildPartial() {
+        com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg result = new com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg(this);
+        result.number_ = number_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg) {
+          return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg other) {
+        if (other == com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.getDefaultInstance()) return this;
+        if (other.getNumber() != 0D) {
+          setNumber(other.getNumber());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private double number_ ;
+      /**
+       * <code>double number = 1;</code>
+       */
+      public double getNumber() {
+        return number_;
+      }
+      /**
+       * <code>double number = 1;</code>
+       */
+      public Builder setNumber(double value) {
+        
+        number_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double number = 1;</code>
+       */
+      public Builder clearNumber() {
+        
+        number_ = 0D;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:shimmerGRPC.DoubleMsg)
+    }
+
+    // @@protoc_insertion_point(class_scope:shimmerGRPC.DoubleMsg)
+    private static final com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg();
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<DoubleMsg>
+        PARSER = new com.google.protobuf.AbstractParser<DoubleMsg>() {
+      public DoubleMsg parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new DoubleMsg(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<DoubleMsg> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DoubleMsg> getParserForType() {
+      return PARSER;
+    }
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface OperationRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:shimmerGRPC.OperationRequest)
       com.google.protobuf.MessageOrBuilder {
@@ -7621,16 +8072,19 @@ public final class ShimmerGRPC {
         getMessageBytes();
 
     /**
-     * <code>double progressPercentage = 3;</code>
-     */
-    double getProgressPercentage();
-
-    /**
-     * <code>string progressPercentageParsed = 4;</code>
+     * <pre>
+     *  double progressPercentage = 3;
+     * </pre>
+     *
+     * <code>string progressPercentageParsed = 3;</code>
      */
     java.lang.String getProgressPercentageParsed();
     /**
-     * <code>string progressPercentageParsed = 4;</code>
+     * <pre>
+     *  double progressPercentage = 3;
+     * </pre>
+     *
+     * <code>string progressPercentageParsed = 3;</code>
      */
     com.google.protobuf.ByteString
         getProgressPercentageParsedBytes();
@@ -7650,7 +8104,6 @@ public final class ShimmerGRPC {
     private OperationRequest() {
       success_ = false;
       message_ = "";
-      progressPercentage_ = 0D;
       progressPercentageParsed_ = "";
     }
 
@@ -7693,12 +8146,7 @@ public final class ShimmerGRPC {
               message_ = s;
               break;
             }
-            case 25: {
-
-              progressPercentage_ = input.readDouble();
-              break;
-            }
-            case 34: {
+            case 26: {
               java.lang.String s = input.readStringRequireUtf8();
 
               progressPercentageParsed_ = s;
@@ -7771,19 +8219,14 @@ public final class ShimmerGRPC {
       }
     }
 
-    public static final int PROGRESSPERCENTAGE_FIELD_NUMBER = 3;
-    private double progressPercentage_;
-    /**
-     * <code>double progressPercentage = 3;</code>
-     */
-    public double getProgressPercentage() {
-      return progressPercentage_;
-    }
-
-    public static final int PROGRESSPERCENTAGEPARSED_FIELD_NUMBER = 4;
+    public static final int PROGRESSPERCENTAGEPARSED_FIELD_NUMBER = 3;
     private volatile java.lang.Object progressPercentageParsed_;
     /**
-     * <code>string progressPercentageParsed = 4;</code>
+     * <pre>
+     *  double progressPercentage = 3;
+     * </pre>
+     *
+     * <code>string progressPercentageParsed = 3;</code>
      */
     public java.lang.String getProgressPercentageParsed() {
       java.lang.Object ref = progressPercentageParsed_;
@@ -7798,7 +8241,11 @@ public final class ShimmerGRPC {
       }
     }
     /**
-     * <code>string progressPercentageParsed = 4;</code>
+     * <pre>
+     *  double progressPercentage = 3;
+     * </pre>
+     *
+     * <code>string progressPercentageParsed = 3;</code>
      */
     public com.google.protobuf.ByteString
         getProgressPercentageParsedBytes() {
@@ -7832,11 +8279,8 @@ public final class ShimmerGRPC {
       if (!getMessageBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
       }
-      if (progressPercentage_ != 0D) {
-        output.writeDouble(3, progressPercentage_);
-      }
       if (!getProgressPercentageParsedBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, progressPercentageParsed_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, progressPercentageParsed_);
       }
       unknownFields.writeTo(output);
     }
@@ -7853,12 +8297,8 @@ public final class ShimmerGRPC {
       if (!getMessageBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
       }
-      if (progressPercentage_ != 0D) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(3, progressPercentage_);
-      }
       if (!getProgressPercentageParsedBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, progressPercentageParsed_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, progressPercentageParsed_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -7880,10 +8320,6 @@ public final class ShimmerGRPC {
           == other.getSuccess());
       result = result && getMessage()
           .equals(other.getMessage());
-      result = result && (
-          java.lang.Double.doubleToLongBits(getProgressPercentage())
-          == java.lang.Double.doubleToLongBits(
-              other.getProgressPercentage()));
       result = result && getProgressPercentageParsed()
           .equals(other.getProgressPercentageParsed());
       result = result && unknownFields.equals(other.unknownFields);
@@ -7902,9 +8338,6 @@ public final class ShimmerGRPC {
           getSuccess());
       hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getMessage().hashCode();
-      hash = (37 * hash) + PROGRESSPERCENTAGE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getProgressPercentage()));
       hash = (37 * hash) + PROGRESSPERCENTAGEPARSED_FIELD_NUMBER;
       hash = (53 * hash) + getProgressPercentageParsed().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -8040,8 +8473,6 @@ public final class ShimmerGRPC {
 
         message_ = "";
 
-        progressPercentage_ = 0D;
-
         progressPercentageParsed_ = "";
 
         return this;
@@ -8068,7 +8499,6 @@ public final class ShimmerGRPC {
         com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest result = new com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest(this);
         result.success_ = success_;
         result.message_ = message_;
-        result.progressPercentage_ = progressPercentage_;
         result.progressPercentageParsed_ = progressPercentageParsed_;
         onBuilt();
         return result;
@@ -8117,9 +8547,6 @@ public final class ShimmerGRPC {
         if (!other.getMessage().isEmpty()) {
           message_ = other.message_;
           onChanged();
-        }
-        if (other.getProgressPercentage() != 0D) {
-          setProgressPercentage(other.getProgressPercentage());
         }
         if (!other.getProgressPercentageParsed().isEmpty()) {
           progressPercentageParsed_ = other.progressPercentageParsed_;
@@ -8247,35 +8674,13 @@ public final class ShimmerGRPC {
         return this;
       }
 
-      private double progressPercentage_ ;
-      /**
-       * <code>double progressPercentage = 3;</code>
-       */
-      public double getProgressPercentage() {
-        return progressPercentage_;
-      }
-      /**
-       * <code>double progressPercentage = 3;</code>
-       */
-      public Builder setProgressPercentage(double value) {
-        
-        progressPercentage_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>double progressPercentage = 3;</code>
-       */
-      public Builder clearProgressPercentage() {
-        
-        progressPercentage_ = 0D;
-        onChanged();
-        return this;
-      }
-
       private java.lang.Object progressPercentageParsed_ = "";
       /**
-       * <code>string progressPercentageParsed = 4;</code>
+       * <pre>
+       *  double progressPercentage = 3;
+       * </pre>
+       *
+       * <code>string progressPercentageParsed = 3;</code>
        */
       public java.lang.String getProgressPercentageParsed() {
         java.lang.Object ref = progressPercentageParsed_;
@@ -8290,7 +8695,11 @@ public final class ShimmerGRPC {
         }
       }
       /**
-       * <code>string progressPercentageParsed = 4;</code>
+       * <pre>
+       *  double progressPercentage = 3;
+       * </pre>
+       *
+       * <code>string progressPercentageParsed = 3;</code>
        */
       public com.google.protobuf.ByteString
           getProgressPercentageParsedBytes() {
@@ -8306,7 +8715,11 @@ public final class ShimmerGRPC {
         }
       }
       /**
-       * <code>string progressPercentageParsed = 4;</code>
+       * <pre>
+       *  double progressPercentage = 3;
+       * </pre>
+       *
+       * <code>string progressPercentageParsed = 3;</code>
        */
       public Builder setProgressPercentageParsed(
           java.lang.String value) {
@@ -8319,7 +8732,11 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <code>string progressPercentageParsed = 4;</code>
+       * <pre>
+       *  double progressPercentage = 3;
+       * </pre>
+       *
+       * <code>string progressPercentageParsed = 3;</code>
        */
       public Builder clearProgressPercentageParsed() {
         
@@ -8328,7 +8745,11 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <code>string progressPercentageParsed = 4;</code>
+       * <pre>
+       *  double progressPercentage = 3;
+       * </pre>
+       *
+       * <code>string progressPercentageParsed = 3;</code>
        */
       public Builder setProgressPercentageParsedBytes(
           com.google.protobuf.ByteString value) {
@@ -12031,6 +12452,11 @@ public final class ShimmerGRPC {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shimmerGRPC_BoolMsg_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_DoubleMsg_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_DoubleMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_shimmerGRPC_OperationRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -12085,53 +12511,60 @@ public final class ShimmerGRPC {
       "ype\022\006\n\002BT\020\000\022\006\n\002SD\020\001\022\022\n\016Radio_802_15_4\020\002\"" +
       "\034\n\tStringMsg\022\017\n\007message\030\001 \001(\t\"&\n\016StringA" +
       "rrayMsg\022\024\n\014messageArray\030\001 \003(\t\"\030\n\007BoolMsg" +
-      "\022\r\n\005state\030\001 \001(\010\"r\n\020OperationRequest\022\017\n\007s" +
-      "uccess\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022\032\n\022progres" +
-      "sPercentage\030\003 \001(\001\022 \n\030progressPercentageP" +
-      "arsed\030\004 \001(\t\"\324\005\n\014ShimmersInfo\022\r\n\005state\030\001 ",
-      "\001(\010\022\017\n\007message\030\002 \001(\t\022=\n\nshimmerMap\030\003 \003(\013" +
-      "2).shimmerGRPC.ShimmersInfo.ShimmerMapEn" +
-      "try\032\212\004\n\013ShimmerInfo\022\014\n\004name\030\001 \001(\t\022\020\n\010uni" +
-      "queId\030\002 \001(\t\022\030\n\020bluetoothAddress\030\003 \001(\t\022\021\n" +
-      "\ttrialName\030\004 \001(\t\022\037\n\027batteryPercentagePar" +
-      "sed\030\005 \001(\t\022\031\n\021batteryPercentage\030\006 \001(\001\022\034\n\024" +
-      "chargingStatusParsed\030\007 \001(\t\022\025\n\rdriveCapac" +
-      "ity\030\010 \001(\003\022\026\n\016driveSpaceUsed\030\t \001(\003\022\026\n\016dri" +
-      "veSpaceFree\030\n \001(\003\022\033\n\023driveCapacityParsed" +
-      "\030\013 \001(\t\022\032\n\022isRealTimeClockSet\030\014 \001(\010\022!\n\031la",
-      "stReadRtcValueMilliSecs\030\r \001(\003\022\036\n\026lastRea" +
-      "dRtcValueParsed\030\016 \001(\t\022\027\n\017hwVersionParsed" +
-      "\030\017 \001(\t\022\033\n\023expBrdVersionParsed\030\020 \001(\t\022\027\n\017f" +
-      "wVersionParsed\030\021 \001(\t\022\024\n\014pairedDevice\030\022 \003" +
-      "(\t\022\022\n\nconfigTime\030\023 \001(\003\022\030\n\020configTimePars" +
-      "ed\030\024 \001(\t\032X\n\017ShimmerMapEntry\022\013\n\003key\030\001 \001(\t" +
-      "\0224\n\005value\030\002 \001(\0132%.shimmerGRPC.ShimmersIn" +
-      "fo.ShimmerInfo:\0028\0012\244\007\n\rShimmerServer\022@\n\010" +
-      "SayHello\022\031.shimmerGRPC.HelloRequest\032\027.sh" +
-      "immerGRPC.HelloReply\"\000\022L\n\rGetDataStream\022",
-      "\032.shimmerGRPC.StreamRequest\032\033.shimmerGRP" +
-      "C.ObjectCluster2\"\0000\001\022J\n\016SendDataStream\022\033" +
-      ".shimmerGRPC.ObjectCluster2\032\027.shimmerGRP" +
-      "C.HelloReply\"\000(\001\022L\n\016SendFileStream\022\035.shi" +
-      "mmerGRPC.FileByteTransfer\032\027.shimmerGRPC." +
-      "HelloReply\"\000(\001\022K\n\016ConnectShimmer\022\033.shimm" +
-      "erGRPC.ShimmerRequest\032\032.shimmerGRPC.Comm" +
-      "andStatus\"\000\022K\n\016StartStreaming\022\033.shimmerG" +
+      "\022\r\n\005state\030\001 \001(\010\"\033\n\tDoubleMsg\022\016\n\006number\030\001" +
+      " \001(\001\"V\n\020OperationRequest\022\017\n\007success\030\001 \001(" +
+      "\010\022\017\n\007message\030\002 \001(\t\022 \n\030progressPercentage" +
+      "Parsed\030\003 \001(\t\"\324\005\n\014ShimmersInfo\022\r\n\005state\030\001",
+      " \001(\010\022\017\n\007message\030\002 \001(\t\022=\n\nshimmerMap\030\003 \003(" +
+      "\0132).shimmerGRPC.ShimmersInfo.ShimmerMapE" +
+      "ntry\032\212\004\n\013ShimmerInfo\022\014\n\004name\030\001 \001(\t\022\020\n\010un" +
+      "iqueId\030\002 \001(\t\022\030\n\020bluetoothAddress\030\003 \001(\t\022\021" +
+      "\n\ttrialName\030\004 \001(\t\022\037\n\027batteryPercentagePa" +
+      "rsed\030\005 \001(\t\022\031\n\021batteryPercentage\030\006 \001(\001\022\034\n" +
+      "\024chargingStatusParsed\030\007 \001(\t\022\025\n\rdriveCapa" +
+      "city\030\010 \001(\003\022\026\n\016driveSpaceUsed\030\t \001(\003\022\026\n\016dr" +
+      "iveSpaceFree\030\n \001(\003\022\033\n\023driveCapacityParse" +
+      "d\030\013 \001(\t\022\032\n\022isRealTimeClockSet\030\014 \001(\010\022!\n\031l",
+      "astReadRtcValueMilliSecs\030\r \001(\003\022\036\n\026lastRe" +
+      "adRtcValueParsed\030\016 \001(\t\022\027\n\017hwVersionParse" +
+      "d\030\017 \001(\t\022\033\n\023expBrdVersionParsed\030\020 \001(\t\022\027\n\017" +
+      "fwVersionParsed\030\021 \001(\t\022\024\n\014pairedDevice\030\022 " +
+      "\003(\t\022\022\n\nconfigTime\030\023 \001(\003\022\030\n\020configTimePar" +
+      "sed\030\024 \001(\t\032X\n\017ShimmerMapEntry\022\013\n\003key\030\001 \001(" +
+      "\t\0224\n\005value\030\002 \001(\0132%.shimmerGRPC.ShimmersI" +
+      "nfo.ShimmerInfo:\0028\0012\240\t\n\rShimmerServer\022@\n" +
+      "\010SayHello\022\031.shimmerGRPC.HelloRequest\032\027.s" +
+      "himmerGRPC.HelloReply\"\000\022L\n\rGetDataStream",
+      "\022\032.shimmerGRPC.StreamRequest\032\033.shimmerGR" +
+      "PC.ObjectCluster2\"\0000\001\022J\n\016SendDataStream\022" +
+      "\033.shimmerGRPC.ObjectCluster2\032\027.shimmerGR" +
+      "PC.HelloReply\"\000(\001\022L\n\016SendFileStream\022\035.sh" +
+      "immerGRPC.FileByteTransfer\032\027.shimmerGRPC" +
+      ".HelloReply\"\000(\001\022K\n\016ConnectShimmer\022\033.shim" +
+      "merGRPC.ShimmerRequest\032\032.shimmerGRPC.Com" +
+      "mandStatus\"\000\022K\n\016StartStreaming\022\033.shimmer" +
+      "GRPC.ShimmerRequest\032\032.shimmerGRPC.Comman" +
+      "dStatus\"\000\022M\n\020CloseApplication\022\033.shimmerG",
       "RPC.ShimmerRequest\032\032.shimmerGRPC.Command" +
-      "Status\"\000\022M\n\020CloseApplication\022\033.shimmerGR",
-      "PC.ShimmerRequest\032\032.shimmerGRPC.CommandS" +
-      "tatus\"\000\022K\n\024GetDockedShimmerInfo\022\026.shimme" +
-      "rGRPC.StringMsg\032\031.shimmerGRPC.ShimmersIn" +
-      "fo\"\000\022P\n\025SetWorkspaceDirectory\022\026.shimmerG" +
+      "Status\"\000\022P\n\025SetWorkspaceDirectory\022\026.shim" +
+      "merGRPC.StringMsg\032\035.shimmerGRPC.Operatio" +
+      "nRequest\"\000\022I\n\025GetWorkspaceDirectory\022\026.sh" +
+      "immerGRPC.StringMsg\032\026.shimmerGRPC.String" +
+      "Msg\"\000\022K\n\024GetDockedShimmerInfo\022\026.shimmerG" +
+      "RPC.StringMsg\032\031.shimmerGRPC.ShimmersInfo" +
+      "\"\000\022I\n\025GetMadgewickBetaValue\022\026.shimmerGRP" +
+      "C.StringMsg\032\026.shimmerGRPC.DoubleMsg\"\000\022L\n" +
+      "\014PairShimmers\022\033.shimmerGRPC.StringArrayM",
+      "sg\032\035.shimmerGRPC.OperationRequest\"\000\022O\n\024G" +
+      "etOperationProgress\022\026.shimmerGRPC.String" +
+      "Msg\032\035.shimmerGRPC.OperationRequest\"\000\022X\n\030" +
+      "ImportSdDataFromShimmers\022\033.shimmerGRPC.S" +
+      "tringArrayMsg\032\035.shimmerGRPC.OperationReq" +
+      "uest\"\000\022N\n\023ParseSdDataFromPath\022\026.shimmerG" +
       "RPC.StringMsg\032\035.shimmerGRPC.OperationReq" +
-      "uest\"\000\022I\n\025GetWorkspaceDirectory\022\026.shimme" +
-      "rGRPC.StringMsg\032\026.shimmerGRPC.StringMsg\"" +
-      "\000\022E\n\014PairShimmers\022\033.shimmerGRPC.StringAr" +
-      "rayMsg\032\026.shimmerGRPC.StringMsg\"\000\022O\n\024GetO" +
-      "perationProgress\022\026.shimmerGRPC.StringMsg",
-      "\032\035.shimmerGRPC.OperationRequest\"\000BB\n\030com" +
-      ".shimmerresearch.grpcB\013ShimmerGRPC\252\002\030com" +
-      ".shimmerresearch.grpcb\006proto3"
+      "uest\"\000BB\n\030com.shimmerresearch.grpcB\013Shim" +
+      "merGRPC\252\002\030com.shimmerresearch.grpcb\006prot" +
+      "o3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -12230,14 +12663,20 @@ public final class ShimmerGRPC {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_BoolMsg_descriptor,
         new java.lang.String[] { "State", });
-    internal_static_shimmerGRPC_OperationRequest_descriptor =
+    internal_static_shimmerGRPC_DoubleMsg_descriptor =
       getDescriptor().getMessageTypes().get(10);
+    internal_static_shimmerGRPC_DoubleMsg_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_DoubleMsg_descriptor,
+        new java.lang.String[] { "Number", });
+    internal_static_shimmerGRPC_OperationRequest_descriptor =
+      getDescriptor().getMessageTypes().get(11);
     internal_static_shimmerGRPC_OperationRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_OperationRequest_descriptor,
-        new java.lang.String[] { "Success", "Message", "ProgressPercentage", "ProgressPercentageParsed", });
+        new java.lang.String[] { "Success", "Message", "ProgressPercentageParsed", });
     internal_static_shimmerGRPC_ShimmersInfo_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_shimmerGRPC_ShimmersInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_ShimmersInfo_descriptor,

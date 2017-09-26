@@ -32,15 +32,22 @@ service ShimmerServer {
 
 
   //ConsensysApi related
-  rpc GetDockedShimmerInfo(StringMsg) returns (ShimmersInfo){}
-
   rpc SetWorkspaceDirectory(StringMsg) returns (OperationRequest){}
   
   rpc GetWorkspaceDirectory(StringMsg) returns (StringMsg){}
 
-  rpc PairShimmers(StringArrayMsg) returns (StringMsg){}
+  rpc GetDockedShimmerInfo(StringMsg) returns (ShimmersInfo){}
+
+  rpc GetMadgewickBetaValue(StringMsg) returns (DoubleMsg){}
+
+  rpc PairShimmers(StringArrayMsg) returns (OperationRequest){}
 
   rpc GetOperationProgress(StringMsg) returns (OperationRequest){}
+
+  rpc ImportSdDataFromShimmers(StringArrayMsg) returns (OperationRequest){}
+
+  rpc ParseSdDataFromPath(StringMsg) returns (OperationRequest){}
+
 }
 
 message FileByteTransfer {
@@ -111,6 +118,10 @@ message StringArrayMsg {
 
 message BoolMsg {
   bool state = 1;
+}
+
+message DoubleMsg {
+  double number = 1;
 }
 
 message OperationRequest {

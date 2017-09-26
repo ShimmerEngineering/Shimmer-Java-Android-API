@@ -49,11 +49,6 @@ class ShimmerServerStub(object):
         request_serializer=ShimmerGrpcAndOJC__pb2.ShimmerRequest.SerializeToString,
         response_deserializer=ShimmerGrpcAndOJC__pb2.CommandStatus.FromString,
         )
-    self.GetDockedShimmerInfo = channel.unary_unary(
-        '/shimmerGRPC.ShimmerServer/GetDockedShimmerInfo',
-        request_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
-        response_deserializer=ShimmerGrpcAndOJC__pb2.ShimmersInfo.FromString,
-        )
     self.SetWorkspaceDirectory = channel.unary_unary(
         '/shimmerGRPC.ShimmerServer/SetWorkspaceDirectory',
         request_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
@@ -64,13 +59,33 @@ class ShimmerServerStub(object):
         request_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
         response_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
         )
+    self.GetDockedShimmerInfo = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/GetDockedShimmerInfo',
+        request_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.ShimmersInfo.FromString,
+        )
+    self.GetMadgewickBetaValue = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/GetMadgewickBetaValue',
+        request_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.DoubleMsg.FromString,
+        )
     self.PairShimmers = channel.unary_unary(
         '/shimmerGRPC.ShimmerServer/PairShimmers',
         request_serializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.SerializeToString,
-        response_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
         )
     self.GetOperationProgress = channel.unary_unary(
         '/shimmerGRPC.ShimmerServer/GetOperationProgress',
+        request_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
+        )
+    self.ImportSdDataFromShimmers = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/ImportSdDataFromShimmers',
+        request_serializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.SerializeToString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
+        )
+    self.ParseSdDataFromPath = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/ParseSdDataFromPath',
         request_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
         response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
         )
@@ -129,21 +144,28 @@ class ShimmerServerServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def GetDockedShimmerInfo(self, request, context):
+  def SetWorkspaceDirectory(self, request, context):
     """ConsensysApi related
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def SetWorkspaceDirectory(self, request, context):
+  def GetWorkspaceDirectory(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def GetWorkspaceDirectory(self, request, context):
+  def GetDockedShimmerInfo(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetMadgewickBetaValue(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -158,6 +180,20 @@ class ShimmerServerServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def GetOperationProgress(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def ImportSdDataFromShimmers(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def ParseSdDataFromPath(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -202,11 +238,6 @@ def add_ShimmerServerServicer_to_server(servicer, server):
           request_deserializer=ShimmerGrpcAndOJC__pb2.ShimmerRequest.FromString,
           response_serializer=ShimmerGrpcAndOJC__pb2.CommandStatus.SerializeToString,
       ),
-      'GetDockedShimmerInfo': grpc.unary_unary_rpc_method_handler(
-          servicer.GetDockedShimmerInfo,
-          request_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
-          response_serializer=ShimmerGrpcAndOJC__pb2.ShimmersInfo.SerializeToString,
-      ),
       'SetWorkspaceDirectory': grpc.unary_unary_rpc_method_handler(
           servicer.SetWorkspaceDirectory,
           request_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
@@ -217,13 +248,33 @@ def add_ShimmerServerServicer_to_server(servicer, server):
           request_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
           response_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
       ),
+      'GetDockedShimmerInfo': grpc.unary_unary_rpc_method_handler(
+          servicer.GetDockedShimmerInfo,
+          request_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.ShimmersInfo.SerializeToString,
+      ),
+      'GetMadgewickBetaValue': grpc.unary_unary_rpc_method_handler(
+          servicer.GetMadgewickBetaValue,
+          request_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.DoubleMsg.SerializeToString,
+      ),
       'PairShimmers': grpc.unary_unary_rpc_method_handler(
           servicer.PairShimmers,
           request_deserializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.FromString,
-          response_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
       ),
       'GetOperationProgress': grpc.unary_unary_rpc_method_handler(
           servicer.GetOperationProgress,
+          request_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
+      ),
+      'ImportSdDataFromShimmers': grpc.unary_unary_rpc_method_handler(
+          servicer.ImportSdDataFromShimmers,
+          request_deserializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.FromString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
+      ),
+      'ParseSdDataFromPath': grpc.unary_unary_rpc_method_handler(
+          servicer.ParseSdDataFromPath,
           request_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
           response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
       ),

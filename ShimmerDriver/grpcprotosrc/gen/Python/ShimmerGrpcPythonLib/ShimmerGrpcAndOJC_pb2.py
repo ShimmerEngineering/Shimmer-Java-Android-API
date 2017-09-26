@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='ShimmerGrpcAndOJC.proto',
   package='shimmerGRPC',
   syntax='proto3',
-  serialized_pb=_b('\n\x17ShimmerGrpcAndOJC.proto\x12\x0bshimmerGRPC\x1a google/protobuf/descriptor.proto\"A\n\x10\x46ileByteTransfer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\x12\x11\n\tendoffile\x18\x03 \x01(\x08\"\x1f\n\rCommandStatus\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"!\n\x0eShimmerRequest\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\" \n\rStreamRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x8e\x05\n\x0eObjectCluster2\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x18\n\x10\x62luetoothAddress\x18\x02 \x01(\t\x12H\n\x11\x63ommunicationType\x18\x03 \x01(\x0e\x32-.shimmerGRPC.ObjectCluster2.CommunicationType\x12\x39\n\x07\x64\x61taMap\x18\x04 \x03(\x0b\x32(.shimmerGRPC.ObjectCluster2.DataMapEntry\x12\x12\n\nsystemTime\x18\x05 \x01(\x03\x12\x1b\n\x13\x63\x61libratedTimeStamp\x18\x06 \x01(\x01\x1a\x88\x02\n\x0e\x46ormatCluster2\x12L\n\tformatMap\x18\x01 \x03(\x0b\x32\x39.shimmerGRPC.ObjectCluster2.FormatCluster2.FormatMapEntry\x1a=\n\x0c\x44\x61taCluster2\x12\x0c\n\x04unit\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x01\x12\x11\n\tdataArray\x18\x03 \x03(\x01\x1ai\n\x0e\x46ormatMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x46\n\x05value\x18\x02 \x01(\x0b\x32\x37.shimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2:\x02\x38\x01\x1aZ\n\x0c\x44\x61taMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x39\n\x05value\x18\x02 \x01(\x0b\x32*.shimmerGRPC.ObjectCluster2.FormatCluster2:\x02\x38\x01\"7\n\x11\x43ommunicationType\x12\x06\n\x02\x42T\x10\x00\x12\x06\n\x02SD\x10\x01\x12\x12\n\x0eRadio_802_15_4\x10\x02\"\x1c\n\tStringMsg\x12\x0f\n\x07message\x18\x01 \x01(\t\"&\n\x0eStringArrayMsg\x12\x14\n\x0cmessageArray\x18\x01 \x03(\t\"\x18\n\x07\x42oolMsg\x12\r\n\x05state\x18\x01 \x01(\x08\"r\n\x10OperationRequest\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x1a\n\x12progressPercentage\x18\x03 \x01(\x01\x12 \n\x18progressPercentageParsed\x18\x04 \x01(\t\"\xd4\x05\n\x0cShimmersInfo\x12\r\n\x05state\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12=\n\nshimmerMap\x18\x03 \x03(\x0b\x32).shimmerGRPC.ShimmersInfo.ShimmerMapEntry\x1a\x8a\x04\n\x0bShimmerInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08uniqueId\x18\x02 \x01(\t\x12\x18\n\x10\x62luetoothAddress\x18\x03 \x01(\t\x12\x11\n\ttrialName\x18\x04 \x01(\t\x12\x1f\n\x17\x62\x61tteryPercentageParsed\x18\x05 \x01(\t\x12\x19\n\x11\x62\x61tteryPercentage\x18\x06 \x01(\x01\x12\x1c\n\x14\x63hargingStatusParsed\x18\x07 \x01(\t\x12\x15\n\rdriveCapacity\x18\x08 \x01(\x03\x12\x16\n\x0e\x64riveSpaceUsed\x18\t \x01(\x03\x12\x16\n\x0e\x64riveSpaceFree\x18\n \x01(\x03\x12\x1b\n\x13\x64riveCapacityParsed\x18\x0b \x01(\t\x12\x1a\n\x12isRealTimeClockSet\x18\x0c \x01(\x08\x12!\n\x19lastReadRtcValueMilliSecs\x18\r \x01(\x03\x12\x1e\n\x16lastReadRtcValueParsed\x18\x0e \x01(\t\x12\x17\n\x0fhwVersionParsed\x18\x0f \x01(\t\x12\x1b\n\x13\x65xpBrdVersionParsed\x18\x10 \x01(\t\x12\x17\n\x0f\x66wVersionParsed\x18\x11 \x01(\t\x12\x14\n\x0cpairedDevice\x18\x12 \x03(\t\x12\x12\n\nconfigTime\x18\x13 \x01(\x03\x12\x18\n\x10\x63onfigTimeParsed\x18\x14 \x01(\t\x1aX\n\x0fShimmerMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.shimmerGRPC.ShimmersInfo.ShimmerInfo:\x02\x38\x01\x32\xa4\x07\n\rShimmerServer\x12@\n\x08SayHello\x12\x19.shimmerGRPC.HelloRequest\x1a\x17.shimmerGRPC.HelloReply\"\x00\x12L\n\rGetDataStream\x12\x1a.shimmerGRPC.StreamRequest\x1a\x1b.shimmerGRPC.ObjectCluster2\"\x00\x30\x01\x12J\n\x0eSendDataStream\x12\x1b.shimmerGRPC.ObjectCluster2\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12L\n\x0eSendFileStream\x12\x1d.shimmerGRPC.FileByteTransfer\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12K\n\x0e\x43onnectShimmer\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12K\n\x0eStartStreaming\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12M\n\x10\x43loseApplication\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12K\n\x14GetDockedShimmerInfo\x12\x16.shimmerGRPC.StringMsg\x1a\x19.shimmerGRPC.ShimmersInfo\"\x00\x12P\n\x15SetWorkspaceDirectory\x12\x16.shimmerGRPC.StringMsg\x1a\x1d.shimmerGRPC.OperationRequest\"\x00\x12I\n\x15GetWorkspaceDirectory\x12\x16.shimmerGRPC.StringMsg\x1a\x16.shimmerGRPC.StringMsg\"\x00\x12\x45\n\x0cPairShimmers\x12\x1b.shimmerGRPC.StringArrayMsg\x1a\x16.shimmerGRPC.StringMsg\"\x00\x12O\n\x14GetOperationProgress\x12\x16.shimmerGRPC.StringMsg\x1a\x1d.shimmerGRPC.OperationRequest\"\x00\x42\x42\n\x18\x63om.shimmerresearch.grpcB\x0bShimmerGRPC\xaa\x02\x18\x63om.shimmerresearch.grpcb\x06proto3')
+  serialized_pb=_b('\n\x17ShimmerGrpcAndOJC.proto\x12\x0bshimmerGRPC\x1a google/protobuf/descriptor.proto\"A\n\x10\x46ileByteTransfer\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\x12\x11\n\tendoffile\x18\x03 \x01(\x08\"\x1f\n\rCommandStatus\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"!\n\x0eShimmerRequest\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\" \n\rStreamRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x8e\x05\n\x0eObjectCluster2\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x18\n\x10\x62luetoothAddress\x18\x02 \x01(\t\x12H\n\x11\x63ommunicationType\x18\x03 \x01(\x0e\x32-.shimmerGRPC.ObjectCluster2.CommunicationType\x12\x39\n\x07\x64\x61taMap\x18\x04 \x03(\x0b\x32(.shimmerGRPC.ObjectCluster2.DataMapEntry\x12\x12\n\nsystemTime\x18\x05 \x01(\x03\x12\x1b\n\x13\x63\x61libratedTimeStamp\x18\x06 \x01(\x01\x1a\x88\x02\n\x0e\x46ormatCluster2\x12L\n\tformatMap\x18\x01 \x03(\x0b\x32\x39.shimmerGRPC.ObjectCluster2.FormatCluster2.FormatMapEntry\x1a=\n\x0c\x44\x61taCluster2\x12\x0c\n\x04unit\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x01\x12\x11\n\tdataArray\x18\x03 \x03(\x01\x1ai\n\x0e\x46ormatMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x46\n\x05value\x18\x02 \x01(\x0b\x32\x37.shimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2:\x02\x38\x01\x1aZ\n\x0c\x44\x61taMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x39\n\x05value\x18\x02 \x01(\x0b\x32*.shimmerGRPC.ObjectCluster2.FormatCluster2:\x02\x38\x01\"7\n\x11\x43ommunicationType\x12\x06\n\x02\x42T\x10\x00\x12\x06\n\x02SD\x10\x01\x12\x12\n\x0eRadio_802_15_4\x10\x02\"\x1c\n\tStringMsg\x12\x0f\n\x07message\x18\x01 \x01(\t\"&\n\x0eStringArrayMsg\x12\x14\n\x0cmessageArray\x18\x01 \x03(\t\"\x18\n\x07\x42oolMsg\x12\r\n\x05state\x18\x01 \x01(\x08\"\x1b\n\tDoubleMsg\x12\x0e\n\x06number\x18\x01 \x01(\x01\"V\n\x10OperationRequest\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12 \n\x18progressPercentageParsed\x18\x03 \x01(\t\"\xd4\x05\n\x0cShimmersInfo\x12\r\n\x05state\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12=\n\nshimmerMap\x18\x03 \x03(\x0b\x32).shimmerGRPC.ShimmersInfo.ShimmerMapEntry\x1a\x8a\x04\n\x0bShimmerInfo\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08uniqueId\x18\x02 \x01(\t\x12\x18\n\x10\x62luetoothAddress\x18\x03 \x01(\t\x12\x11\n\ttrialName\x18\x04 \x01(\t\x12\x1f\n\x17\x62\x61tteryPercentageParsed\x18\x05 \x01(\t\x12\x19\n\x11\x62\x61tteryPercentage\x18\x06 \x01(\x01\x12\x1c\n\x14\x63hargingStatusParsed\x18\x07 \x01(\t\x12\x15\n\rdriveCapacity\x18\x08 \x01(\x03\x12\x16\n\x0e\x64riveSpaceUsed\x18\t \x01(\x03\x12\x16\n\x0e\x64riveSpaceFree\x18\n \x01(\x03\x12\x1b\n\x13\x64riveCapacityParsed\x18\x0b \x01(\t\x12\x1a\n\x12isRealTimeClockSet\x18\x0c \x01(\x08\x12!\n\x19lastReadRtcValueMilliSecs\x18\r \x01(\x03\x12\x1e\n\x16lastReadRtcValueParsed\x18\x0e \x01(\t\x12\x17\n\x0fhwVersionParsed\x18\x0f \x01(\t\x12\x1b\n\x13\x65xpBrdVersionParsed\x18\x10 \x01(\t\x12\x17\n\x0f\x66wVersionParsed\x18\x11 \x01(\t\x12\x14\n\x0cpairedDevice\x18\x12 \x03(\t\x12\x12\n\nconfigTime\x18\x13 \x01(\x03\x12\x18\n\x10\x63onfigTimeParsed\x18\x14 \x01(\t\x1aX\n\x0fShimmerMapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x34\n\x05value\x18\x02 \x01(\x0b\x32%.shimmerGRPC.ShimmersInfo.ShimmerInfo:\x02\x38\x01\x32\xa0\t\n\rShimmerServer\x12@\n\x08SayHello\x12\x19.shimmerGRPC.HelloRequest\x1a\x17.shimmerGRPC.HelloReply\"\x00\x12L\n\rGetDataStream\x12\x1a.shimmerGRPC.StreamRequest\x1a\x1b.shimmerGRPC.ObjectCluster2\"\x00\x30\x01\x12J\n\x0eSendDataStream\x12\x1b.shimmerGRPC.ObjectCluster2\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12L\n\x0eSendFileStream\x12\x1d.shimmerGRPC.FileByteTransfer\x1a\x17.shimmerGRPC.HelloReply\"\x00(\x01\x12K\n\x0e\x43onnectShimmer\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12K\n\x0eStartStreaming\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12M\n\x10\x43loseApplication\x12\x1b.shimmerGRPC.ShimmerRequest\x1a\x1a.shimmerGRPC.CommandStatus\"\x00\x12P\n\x15SetWorkspaceDirectory\x12\x16.shimmerGRPC.StringMsg\x1a\x1d.shimmerGRPC.OperationRequest\"\x00\x12I\n\x15GetWorkspaceDirectory\x12\x16.shimmerGRPC.StringMsg\x1a\x16.shimmerGRPC.StringMsg\"\x00\x12K\n\x14GetDockedShimmerInfo\x12\x16.shimmerGRPC.StringMsg\x1a\x19.shimmerGRPC.ShimmersInfo\"\x00\x12I\n\x15GetMadgewickBetaValue\x12\x16.shimmerGRPC.StringMsg\x1a\x16.shimmerGRPC.DoubleMsg\"\x00\x12L\n\x0cPairShimmers\x12\x1b.shimmerGRPC.StringArrayMsg\x1a\x1d.shimmerGRPC.OperationRequest\"\x00\x12O\n\x14GetOperationProgress\x12\x16.shimmerGRPC.StringMsg\x1a\x1d.shimmerGRPC.OperationRequest\"\x00\x12X\n\x18ImportSdDataFromShimmers\x12\x1b.shimmerGRPC.StringArrayMsg\x1a\x1d.shimmerGRPC.OperationRequest\"\x00\x12N\n\x13ParseSdDataFromPath\x12\x16.shimmerGRPC.StringMsg\x1a\x1d.shimmerGRPC.OperationRequest\"\x00\x42\x42\n\x18\x63om.shimmerresearch.grpcB\x0bShimmerGRPC\xaa\x02\x18\x63om.shimmerresearch.grpcb\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_descriptor__pb2.DESCRIPTOR,])
 
@@ -561,6 +561,37 @@ _BOOLMSG = _descriptor.Descriptor(
 )
 
 
+_DOUBLEMSG = _descriptor.Descriptor(
+  name='DoubleMsg',
+  full_name='shimmerGRPC.DoubleMsg',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='number', full_name='shimmerGRPC.DoubleMsg.number', index=0,
+      number=1, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1057,
+  serialized_end=1084,
+)
+
+
 _OPERATIONREQUEST = _descriptor.Descriptor(
   name='OperationRequest',
   full_name='shimmerGRPC.OperationRequest',
@@ -583,15 +614,8 @@ _OPERATIONREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='progressPercentage', full_name='shimmerGRPC.OperationRequest.progressPercentage', index=2,
-      number=3, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='progressPercentageParsed', full_name='shimmerGRPC.OperationRequest.progressPercentageParsed', index=3,
-      number=4, type=9, cpp_type=9, label=1,
+      name='progressPercentageParsed', full_name='shimmerGRPC.OperationRequest.progressPercentageParsed', index=2,
+      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -608,8 +632,8 @@ _OPERATIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1057,
-  serialized_end=1171,
+  serialized_start=1086,
+  serialized_end=1172,
 )
 
 
@@ -772,8 +796,8 @@ _SHIMMERSINFO_SHIMMERINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1286,
-  serialized_end=1808,
+  serialized_start=1287,
+  serialized_end=1809,
 )
 
 _SHIMMERSINFO_SHIMMERMAPENTRY = _descriptor.Descriptor(
@@ -809,8 +833,8 @@ _SHIMMERSINFO_SHIMMERMAPENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1810,
-  serialized_end=1898,
+  serialized_start=1811,
+  serialized_end=1899,
 )
 
 _SHIMMERSINFO = _descriptor.Descriptor(
@@ -853,8 +877,8 @@ _SHIMMERSINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1174,
-  serialized_end=1898,
+  serialized_start=1175,
+  serialized_end=1899,
 )
 
 _OBJECTCLUSTER2_FORMATCLUSTER2_DATACLUSTER2.containing_type = _OBJECTCLUSTER2_FORMATCLUSTER2
@@ -881,6 +905,7 @@ DESCRIPTOR.message_types_by_name['ObjectCluster2'] = _OBJECTCLUSTER2
 DESCRIPTOR.message_types_by_name['StringMsg'] = _STRINGMSG
 DESCRIPTOR.message_types_by_name['StringArrayMsg'] = _STRINGARRAYMSG
 DESCRIPTOR.message_types_by_name['BoolMsg'] = _BOOLMSG
+DESCRIPTOR.message_types_by_name['DoubleMsg'] = _DOUBLEMSG
 DESCRIPTOR.message_types_by_name['OperationRequest'] = _OPERATIONREQUEST
 DESCRIPTOR.message_types_by_name['ShimmersInfo'] = _SHIMMERSINFO
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -987,6 +1012,13 @@ BoolMsg = _reflection.GeneratedProtocolMessageType('BoolMsg', (_message.Message,
   ))
 _sym_db.RegisterMessage(BoolMsg)
 
+DoubleMsg = _reflection.GeneratedProtocolMessageType('DoubleMsg', (_message.Message,), dict(
+  DESCRIPTOR = _DOUBLEMSG,
+  __module__ = 'ShimmerGrpcAndOJC_pb2'
+  # @@protoc_insertion_point(class_scope:shimmerGRPC.DoubleMsg)
+  ))
+_sym_db.RegisterMessage(DoubleMsg)
+
 OperationRequest = _reflection.GeneratedProtocolMessageType('OperationRequest', (_message.Message,), dict(
   DESCRIPTOR = _OPERATIONREQUEST,
   __module__ = 'ShimmerGrpcAndOJC_pb2'
@@ -1033,8 +1065,8 @@ _SHIMMERSERVER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=1901,
-  serialized_end=2833,
+  serialized_start=1902,
+  serialized_end=3086,
   methods=[
   _descriptor.MethodDescriptor(
     name='SayHello',
@@ -1100,18 +1132,9 @@ _SHIMMERSERVER = _descriptor.ServiceDescriptor(
     options=None,
   ),
   _descriptor.MethodDescriptor(
-    name='GetDockedShimmerInfo',
-    full_name='shimmerGRPC.ShimmerServer.GetDockedShimmerInfo',
-    index=7,
-    containing_service=None,
-    input_type=_STRINGMSG,
-    output_type=_SHIMMERSINFO,
-    options=None,
-  ),
-  _descriptor.MethodDescriptor(
     name='SetWorkspaceDirectory',
     full_name='shimmerGRPC.ShimmerServer.SetWorkspaceDirectory',
-    index=8,
+    index=7,
     containing_service=None,
     input_type=_STRINGMSG,
     output_type=_OPERATIONREQUEST,
@@ -1120,25 +1143,61 @@ _SHIMMERSERVER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetWorkspaceDirectory',
     full_name='shimmerGRPC.ShimmerServer.GetWorkspaceDirectory',
-    index=9,
+    index=8,
     containing_service=None,
     input_type=_STRINGMSG,
     output_type=_STRINGMSG,
     options=None,
   ),
   _descriptor.MethodDescriptor(
-    name='PairShimmers',
-    full_name='shimmerGRPC.ShimmerServer.PairShimmers',
+    name='GetDockedShimmerInfo',
+    full_name='shimmerGRPC.ShimmerServer.GetDockedShimmerInfo',
+    index=9,
+    containing_service=None,
+    input_type=_STRINGMSG,
+    output_type=_SHIMMERSINFO,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetMadgewickBetaValue',
+    full_name='shimmerGRPC.ShimmerServer.GetMadgewickBetaValue',
     index=10,
     containing_service=None,
+    input_type=_STRINGMSG,
+    output_type=_DOUBLEMSG,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='PairShimmers',
+    full_name='shimmerGRPC.ShimmerServer.PairShimmers',
+    index=11,
+    containing_service=None,
     input_type=_STRINGARRAYMSG,
-    output_type=_STRINGMSG,
+    output_type=_OPERATIONREQUEST,
     options=None,
   ),
   _descriptor.MethodDescriptor(
     name='GetOperationProgress',
     full_name='shimmerGRPC.ShimmerServer.GetOperationProgress',
-    index=11,
+    index=12,
+    containing_service=None,
+    input_type=_STRINGMSG,
+    output_type=_OPERATIONREQUEST,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='ImportSdDataFromShimmers',
+    full_name='shimmerGRPC.ShimmerServer.ImportSdDataFromShimmers',
+    index=13,
+    containing_service=None,
+    input_type=_STRINGARRAYMSG,
+    output_type=_OPERATIONREQUEST,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='ParseSdDataFromPath',
+    full_name='shimmerGRPC.ShimmerServer.ParseSdDataFromPath',
+    index=14,
     containing_service=None,
     input_type=_STRINGMSG,
     output_type=_OPERATIONREQUEST,
@@ -1204,11 +1263,6 @@ try:
           request_serializer=ShimmerRequest.SerializeToString,
           response_deserializer=CommandStatus.FromString,
           )
-      self.GetDockedShimmerInfo = channel.unary_unary(
-          '/shimmerGRPC.ShimmerServer/GetDockedShimmerInfo',
-          request_serializer=StringMsg.SerializeToString,
-          response_deserializer=ShimmersInfo.FromString,
-          )
       self.SetWorkspaceDirectory = channel.unary_unary(
           '/shimmerGRPC.ShimmerServer/SetWorkspaceDirectory',
           request_serializer=StringMsg.SerializeToString,
@@ -1219,13 +1273,33 @@ try:
           request_serializer=StringMsg.SerializeToString,
           response_deserializer=StringMsg.FromString,
           )
+      self.GetDockedShimmerInfo = channel.unary_unary(
+          '/shimmerGRPC.ShimmerServer/GetDockedShimmerInfo',
+          request_serializer=StringMsg.SerializeToString,
+          response_deserializer=ShimmersInfo.FromString,
+          )
+      self.GetMadgewickBetaValue = channel.unary_unary(
+          '/shimmerGRPC.ShimmerServer/GetMadgewickBetaValue',
+          request_serializer=StringMsg.SerializeToString,
+          response_deserializer=DoubleMsg.FromString,
+          )
       self.PairShimmers = channel.unary_unary(
           '/shimmerGRPC.ShimmerServer/PairShimmers',
           request_serializer=StringArrayMsg.SerializeToString,
-          response_deserializer=StringMsg.FromString,
+          response_deserializer=OperationRequest.FromString,
           )
       self.GetOperationProgress = channel.unary_unary(
           '/shimmerGRPC.ShimmerServer/GetOperationProgress',
+          request_serializer=StringMsg.SerializeToString,
+          response_deserializer=OperationRequest.FromString,
+          )
+      self.ImportSdDataFromShimmers = channel.unary_unary(
+          '/shimmerGRPC.ShimmerServer/ImportSdDataFromShimmers',
+          request_serializer=StringArrayMsg.SerializeToString,
+          response_deserializer=OperationRequest.FromString,
+          )
+      self.ParseSdDataFromPath = channel.unary_unary(
+          '/shimmerGRPC.ShimmerServer/ParseSdDataFromPath',
           request_serializer=StringMsg.SerializeToString,
           response_deserializer=OperationRequest.FromString,
           )
@@ -1284,21 +1358,28 @@ try:
       context.set_details('Method not implemented!')
       raise NotImplementedError('Method not implemented!')
 
-    def GetDockedShimmerInfo(self, request, context):
+    def SetWorkspaceDirectory(self, request, context):
       """ConsensysApi related
       """
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
       context.set_details('Method not implemented!')
       raise NotImplementedError('Method not implemented!')
 
-    def SetWorkspaceDirectory(self, request, context):
+    def GetWorkspaceDirectory(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
       context.set_details('Method not implemented!')
       raise NotImplementedError('Method not implemented!')
 
-    def GetWorkspaceDirectory(self, request, context):
+    def GetDockedShimmerInfo(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
+
+    def GetMadgewickBetaValue(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -1313,6 +1394,20 @@ try:
       raise NotImplementedError('Method not implemented!')
 
     def GetOperationProgress(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
+
+    def ImportSdDataFromShimmers(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
+
+    def ParseSdDataFromPath(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -1357,11 +1452,6 @@ try:
             request_deserializer=ShimmerRequest.FromString,
             response_serializer=CommandStatus.SerializeToString,
         ),
-        'GetDockedShimmerInfo': grpc.unary_unary_rpc_method_handler(
-            servicer.GetDockedShimmerInfo,
-            request_deserializer=StringMsg.FromString,
-            response_serializer=ShimmersInfo.SerializeToString,
-        ),
         'SetWorkspaceDirectory': grpc.unary_unary_rpc_method_handler(
             servicer.SetWorkspaceDirectory,
             request_deserializer=StringMsg.FromString,
@@ -1372,13 +1462,33 @@ try:
             request_deserializer=StringMsg.FromString,
             response_serializer=StringMsg.SerializeToString,
         ),
+        'GetDockedShimmerInfo': grpc.unary_unary_rpc_method_handler(
+            servicer.GetDockedShimmerInfo,
+            request_deserializer=StringMsg.FromString,
+            response_serializer=ShimmersInfo.SerializeToString,
+        ),
+        'GetMadgewickBetaValue': grpc.unary_unary_rpc_method_handler(
+            servicer.GetMadgewickBetaValue,
+            request_deserializer=StringMsg.FromString,
+            response_serializer=DoubleMsg.SerializeToString,
+        ),
         'PairShimmers': grpc.unary_unary_rpc_method_handler(
             servicer.PairShimmers,
             request_deserializer=StringArrayMsg.FromString,
-            response_serializer=StringMsg.SerializeToString,
+            response_serializer=OperationRequest.SerializeToString,
         ),
         'GetOperationProgress': grpc.unary_unary_rpc_method_handler(
             servicer.GetOperationProgress,
+            request_deserializer=StringMsg.FromString,
+            response_serializer=OperationRequest.SerializeToString,
+        ),
+        'ImportSdDataFromShimmers': grpc.unary_unary_rpc_method_handler(
+            servicer.ImportSdDataFromShimmers,
+            request_deserializer=StringArrayMsg.FromString,
+            response_serializer=OperationRequest.SerializeToString,
+        ),
+        'ParseSdDataFromPath': grpc.unary_unary_rpc_method_handler(
+            servicer.ParseSdDataFromPath,
             request_deserializer=StringMsg.FromString,
             response_serializer=OperationRequest.SerializeToString,
         ),
@@ -1424,15 +1534,19 @@ try:
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetDockedShimmerInfo(self, request, context):
+    def SetWorkspaceDirectory(self, request, context):
       """ConsensysApi related
       """
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def SetWorkspaceDirectory(self, request, context):
+    def GetWorkspaceDirectory(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetWorkspaceDirectory(self, request, context):
+    def GetDockedShimmerInfo(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+    def GetMadgewickBetaValue(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
@@ -1441,6 +1555,14 @@ try:
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
     def GetOperationProgress(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+    def ImportSdDataFromShimmers(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+    def ParseSdDataFromPath(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
@@ -1488,14 +1610,9 @@ try:
       pass
       raise NotImplementedError()
     CloseApplication.future = None
-    def GetDockedShimmerInfo(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+    def SetWorkspaceDirectory(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
       """ConsensysApi related
       """
-      raise NotImplementedError()
-    GetDockedShimmerInfo.future = None
-    def SetWorkspaceDirectory(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
       raise NotImplementedError()
     SetWorkspaceDirectory.future = None
     def GetWorkspaceDirectory(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
@@ -1503,6 +1620,16 @@ try:
       pass
       raise NotImplementedError()
     GetWorkspaceDirectory.future = None
+    def GetDockedShimmerInfo(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      # missing associated documentation comment in .proto file
+      pass
+      raise NotImplementedError()
+    GetDockedShimmerInfo.future = None
+    def GetMadgewickBetaValue(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      # missing associated documentation comment in .proto file
+      pass
+      raise NotImplementedError()
+    GetMadgewickBetaValue.future = None
     def PairShimmers(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
       # missing associated documentation comment in .proto file
       pass
@@ -1513,6 +1640,16 @@ try:
       pass
       raise NotImplementedError()
     GetOperationProgress.future = None
+    def ImportSdDataFromShimmers(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      # missing associated documentation comment in .proto file
+      pass
+      raise NotImplementedError()
+    ImportSdDataFromShimmers.future = None
+    def ParseSdDataFromPath(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      # missing associated documentation comment in .proto file
+      pass
+      raise NotImplementedError()
+    ParseSdDataFromPath.future = None
 
 
   def beta_create_ShimmerServer_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
@@ -1526,9 +1663,12 @@ try:
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): ShimmerRequest.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): StreamRequest.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetDockedShimmerInfo'): StringMsg.FromString,
+      ('shimmerGRPC.ShimmerServer', 'GetMadgewickBetaValue'): StringMsg.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetOperationProgress'): StringMsg.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetWorkspaceDirectory'): StringMsg.FromString,
+      ('shimmerGRPC.ShimmerServer', 'ImportSdDataFromShimmers'): StringArrayMsg.FromString,
       ('shimmerGRPC.ShimmerServer', 'PairShimmers'): StringArrayMsg.FromString,
+      ('shimmerGRPC.ShimmerServer', 'ParseSdDataFromPath'): StringMsg.FromString,
       ('shimmerGRPC.ShimmerServer', 'SayHello'): HelloRequest.FromString,
       ('shimmerGRPC.ShimmerServer', 'SendDataStream'): ObjectCluster2.FromString,
       ('shimmerGRPC.ShimmerServer', 'SendFileStream'): FileByteTransfer.FromString,
@@ -1540,9 +1680,12 @@ try:
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): CommandStatus.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): ObjectCluster2.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetDockedShimmerInfo'): ShimmersInfo.SerializeToString,
+      ('shimmerGRPC.ShimmerServer', 'GetMadgewickBetaValue'): DoubleMsg.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetOperationProgress'): OperationRequest.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetWorkspaceDirectory'): StringMsg.SerializeToString,
-      ('shimmerGRPC.ShimmerServer', 'PairShimmers'): StringMsg.SerializeToString,
+      ('shimmerGRPC.ShimmerServer', 'ImportSdDataFromShimmers'): OperationRequest.SerializeToString,
+      ('shimmerGRPC.ShimmerServer', 'PairShimmers'): OperationRequest.SerializeToString,
+      ('shimmerGRPC.ShimmerServer', 'ParseSdDataFromPath'): OperationRequest.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'SayHello'): HelloReply.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'SendDataStream'): HelloReply.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'SendFileStream'): HelloReply.SerializeToString,
@@ -1554,9 +1697,12 @@ try:
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): face_utilities.unary_unary_inline(servicer.ConnectShimmer),
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): face_utilities.unary_stream_inline(servicer.GetDataStream),
       ('shimmerGRPC.ShimmerServer', 'GetDockedShimmerInfo'): face_utilities.unary_unary_inline(servicer.GetDockedShimmerInfo),
+      ('shimmerGRPC.ShimmerServer', 'GetMadgewickBetaValue'): face_utilities.unary_unary_inline(servicer.GetMadgewickBetaValue),
       ('shimmerGRPC.ShimmerServer', 'GetOperationProgress'): face_utilities.unary_unary_inline(servicer.GetOperationProgress),
       ('shimmerGRPC.ShimmerServer', 'GetWorkspaceDirectory'): face_utilities.unary_unary_inline(servicer.GetWorkspaceDirectory),
+      ('shimmerGRPC.ShimmerServer', 'ImportSdDataFromShimmers'): face_utilities.unary_unary_inline(servicer.ImportSdDataFromShimmers),
       ('shimmerGRPC.ShimmerServer', 'PairShimmers'): face_utilities.unary_unary_inline(servicer.PairShimmers),
+      ('shimmerGRPC.ShimmerServer', 'ParseSdDataFromPath'): face_utilities.unary_unary_inline(servicer.ParseSdDataFromPath),
       ('shimmerGRPC.ShimmerServer', 'SayHello'): face_utilities.unary_unary_inline(servicer.SayHello),
       ('shimmerGRPC.ShimmerServer', 'SendDataStream'): face_utilities.stream_unary_inline(servicer.SendDataStream),
       ('shimmerGRPC.ShimmerServer', 'SendFileStream'): face_utilities.stream_unary_inline(servicer.SendFileStream),
@@ -1578,9 +1724,12 @@ try:
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): ShimmerRequest.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): StreamRequest.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetDockedShimmerInfo'): StringMsg.SerializeToString,
+      ('shimmerGRPC.ShimmerServer', 'GetMadgewickBetaValue'): StringMsg.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetOperationProgress'): StringMsg.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'GetWorkspaceDirectory'): StringMsg.SerializeToString,
+      ('shimmerGRPC.ShimmerServer', 'ImportSdDataFromShimmers'): StringArrayMsg.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'PairShimmers'): StringArrayMsg.SerializeToString,
+      ('shimmerGRPC.ShimmerServer', 'ParseSdDataFromPath'): StringMsg.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'SayHello'): HelloRequest.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'SendDataStream'): ObjectCluster2.SerializeToString,
       ('shimmerGRPC.ShimmerServer', 'SendFileStream'): FileByteTransfer.SerializeToString,
@@ -1592,9 +1741,12 @@ try:
       ('shimmerGRPC.ShimmerServer', 'ConnectShimmer'): CommandStatus.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetDataStream'): ObjectCluster2.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetDockedShimmerInfo'): ShimmersInfo.FromString,
+      ('shimmerGRPC.ShimmerServer', 'GetMadgewickBetaValue'): DoubleMsg.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetOperationProgress'): OperationRequest.FromString,
       ('shimmerGRPC.ShimmerServer', 'GetWorkspaceDirectory'): StringMsg.FromString,
-      ('shimmerGRPC.ShimmerServer', 'PairShimmers'): StringMsg.FromString,
+      ('shimmerGRPC.ShimmerServer', 'ImportSdDataFromShimmers'): OperationRequest.FromString,
+      ('shimmerGRPC.ShimmerServer', 'PairShimmers'): OperationRequest.FromString,
+      ('shimmerGRPC.ShimmerServer', 'ParseSdDataFromPath'): OperationRequest.FromString,
       ('shimmerGRPC.ShimmerServer', 'SayHello'): HelloReply.FromString,
       ('shimmerGRPC.ShimmerServer', 'SendDataStream'): HelloReply.FromString,
       ('shimmerGRPC.ShimmerServer', 'SendFileStream'): HelloReply.FromString,
@@ -1606,9 +1758,12 @@ try:
       'ConnectShimmer': cardinality.Cardinality.UNARY_UNARY,
       'GetDataStream': cardinality.Cardinality.UNARY_STREAM,
       'GetDockedShimmerInfo': cardinality.Cardinality.UNARY_UNARY,
+      'GetMadgewickBetaValue': cardinality.Cardinality.UNARY_UNARY,
       'GetOperationProgress': cardinality.Cardinality.UNARY_UNARY,
       'GetWorkspaceDirectory': cardinality.Cardinality.UNARY_UNARY,
+      'ImportSdDataFromShimmers': cardinality.Cardinality.UNARY_UNARY,
       'PairShimmers': cardinality.Cardinality.UNARY_UNARY,
+      'ParseSdDataFromPath': cardinality.Cardinality.UNARY_UNARY,
       'SayHello': cardinality.Cardinality.UNARY_UNARY,
       'SendDataStream': cardinality.Cardinality.STREAM_UNARY,
       'SendFileStream': cardinality.Cardinality.STREAM_UNARY,
