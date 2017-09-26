@@ -32,12 +32,15 @@ service ShimmerServer {
 
 
   //ConsensysApi related
-  rpc GetDockedShimmerInfo(StreamRequest) returns (ShimmersInfo){}
+  rpc GetDockedShimmerInfo(StringMsg) returns (ShimmersInfo){}
 
   rpc SetWorkspaceDirectory(StringMsg) returns (OperationRequest){}
   
   rpc GetWorkspaceDirectory(StringMsg) returns (StringMsg){}
 
+  rpc PairShimmers(StringArrayMsg) returns (StringMsg){}
+
+  rpc GetOperationProgress(StringMsg) returns (OperationRequest){}
 }
 
 message FileByteTransfer {
@@ -102,6 +105,10 @@ message StringMsg {
   string message = 1;
 }
 
+message StringArrayMsg {
+  repeated string messageArray = 1;
+}
+
 message BoolMsg {
   bool state = 1;
 }
@@ -109,6 +116,9 @@ message BoolMsg {
 message OperationRequest {
   bool success = 1;
   string message = 2;
+
+  string progressPercentageParsed = 3;
+//  double progressPercentage = 3;
 }
 
 message ShimmersInfo {
@@ -120,10 +130,27 @@ message ShimmersInfo {
     string uniqueId = 2;
     string bluetoothAddress = 3;
     string trialName = 4;
-    string batteryPercentage = 5;
-    string driveTotalSpaceParsed = 6;
-    string driveCapacityParsed = 7;
-    bool realTimeClockSet = 8;
+    string batteryPercentageParsed = 5;
+    double batteryPercentage = 6;
+    string chargingStatusParsed = 7;
+    int64 driveCapacity = 8;
+    int64 driveSpaceUsed = 9;
+    int64 driveSpaceFree = 10;
+    string driveCapacityParsed = 11;
+
+    bool isRealTimeClockSet = 12;
+    int64 lastReadRtcValueMilliSecs = 13;
+    string lastReadRtcValueParsed = 14;
+
+    string hwVersionParsed = 15;
+    string expBrdVersionParsed = 16;
+    string fwVersionParsed = 17;
+	repeated string pairedDevice = 18;
+
+	int64 configTime = 19;
+	string configTimeParsed = 20;
+
+	//bool isDataOnSdCard = 13;
   }
   map<string,ShimmerInfo> shimmerMap = 3;
 }

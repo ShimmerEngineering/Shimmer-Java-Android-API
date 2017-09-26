@@ -128,4 +128,9 @@ public class ShimmerSDCardDetails implements Serializable {
 	    return String.format("%.2f", spaceTotal) + spaceTotalTxt; 
 	}
 
+	public void setFirstDockRead() {
+		setFirstSdAccess(true);
+		setIsSDError(false);
+	}
+
 }

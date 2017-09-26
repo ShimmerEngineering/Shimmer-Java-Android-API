@@ -410,14 +410,15 @@ public class ShimmerVerObject implements Serializable {
 	}
 	
 	public static boolean isSupportedSdCardAccess(int hwVer, int fwId) {
-		if (((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.SDLOG))
-				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.LOGANDSTREAM))
-				|| ((hwVer==HW_ID.SHIMMER_3) && (fwId == FW_ID.STROKARE))
-				|| ((hwVer==HW_ID.SHIMMER_GQ_BLE) && (fwId == FW_ID.GQ_BLE))
-				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
-				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
-				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4_SDK)
+		if ((hwVer==HW_ID.SHIMMER_3 && fwId == FW_ID.SDLOG)
+				|| (hwVer==HW_ID.SHIMMER_3 && fwId == FW_ID.LOGANDSTREAM)
+				|| (hwVer==HW_ID.SHIMMER_3 && fwId == FW_ID.STROKARE)
+				|| (hwVer==HW_ID.SHIMMER_GQ_BLE && fwId == FW_ID.GQ_BLE)
+//				|| hwVer==HW_ID.SHIMMER_GQ_802154_NR
+//				|| hwVer==HW_ID.SHIMMER_GQ_802154_LR
+				|| fwId==ShimmerVerDetails.FW_ID.GQ_802154
+				|| hwVer==HW_ID.SHIMMER_2R_GQ
+				|| (hwVer==HW_ID.SHIMMER_4_SDK && fwId == FW_ID.SHIMMER4_SDK_STOCK)
 				){
 			return true;
 		}

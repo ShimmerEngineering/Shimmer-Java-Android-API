@@ -158,7 +158,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	//TODO: are these variables too specific to different versions of Shimmer HW?
 	public long mShimmerRealTimeClockConFigTime = 0;
-	public long mShimmerLastReadRealTimeClockValue = 0;
+	public long mShimmerLastReadRtcValueMilliSecs = 0;
 	public String mShimmerLastReadRtcValueParsed = "";
 	protected ConfigByteLayout mConfigByteLayout;// = new InfoMemLayoutShimmer3(); //default
 	protected byte[] mConfigBytes = ConfigByteLayout.createConfigByteArrayEmpty(512);
@@ -620,8 +620,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public void setLastReadRealTimeClockValue(long time) {
-		mShimmerLastReadRealTimeClockValue = time;
+		mShimmerLastReadRtcValueMilliSecs = time;
 		mShimmerLastReadRtcValueParsed = UtilShimmer.fromMilToDateExcelCompatible(Long.toString(time), false);
+	}
+	
+	//TODO test to see is this is working
+	public boolean isReadRealTimeClockSet(){
+		//Picking the year 01/01/2015 as an arbitrary number 
+		return mShimmerLastReadRtcValueMilliSecs>1420070400000L? true:false;
 	}
 
 	/**
@@ -773,6 +779,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void setShimmerDriveInfo(ShimmerSDCardDetails shimmerSDCardDetails) {
 		mShimmerSDCardDetails = shimmerSDCardDetails;
+	}
+	
+	public ShimmerSDCardDetails getShimmerSDCardDetails(){
+		return mShimmerSDCardDetails;
 	}
 	
 	public long getDriveTotalSpace() {
@@ -1562,12 +1572,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void setFirstDockRead() {
-		setFirstSdAccess(true);
+		mShimmerSDCardDetails.setFirstDockRead();
 		setConfigurationReadSuccess(false);
 		mReadHwFwSuccess = false;
 		mReadDaughterIDSuccess = false;
 		writeRealWorldClockFromPcTimeSuccess = false;
-		setIsSDError(false);
 	}
 	
 	// ----------------- Overrides from ShimmerDevice end -------------
