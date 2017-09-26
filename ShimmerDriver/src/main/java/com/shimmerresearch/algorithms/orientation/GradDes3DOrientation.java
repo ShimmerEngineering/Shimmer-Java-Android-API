@@ -7,7 +7,7 @@ public class GradDes3DOrientation {
 	//	GyroMeasError = PI * (40.0f / 180.0f); // gyroscope measurement error in rads/s (start at 40 deg/s for the MPU9250)
 	//	beta = sqrt(3.0f / 4.0f) * GyroMeasError; // compute beta
 	//We have typically found 0.5 works better with the Shimmer
-	public final static double BETA = 0.5;
+	public final static double BETA = 1.0;
 	public final static double Q1_INITIAL = 1;
 	public final static double Q2_INITIAL = 0;
 	public final static double Q3_INITIAL = 0;

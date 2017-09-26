@@ -6576,6 +6576,582 @@ public final class ShimmerGRPC {
 
   }
 
+  public interface StringArrayMsgOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:shimmerGRPC.StringArrayMsg)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated string messageArray = 1;</code>
+     */
+    java.util.List<java.lang.String>
+        getMessageArrayList();
+    /**
+     * <code>repeated string messageArray = 1;</code>
+     */
+    int getMessageArrayCount();
+    /**
+     * <code>repeated string messageArray = 1;</code>
+     */
+    java.lang.String getMessageArray(int index);
+    /**
+     * <code>repeated string messageArray = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getMessageArrayBytes(int index);
+  }
+  /**
+   * Protobuf type {@code shimmerGRPC.StringArrayMsg}
+   */
+  public  static final class StringArrayMsg extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:shimmerGRPC.StringArrayMsg)
+      StringArrayMsgOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use StringArrayMsg.newBuilder() to construct.
+    private StringArrayMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private StringArrayMsg() {
+      messageArray_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private StringArrayMsg(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                messageArray_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              messageArray_.add(s);
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          messageArray_ = messageArray_.getUnmodifiableView();
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringArrayMsg_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringArrayMsg_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.class, com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.Builder.class);
+    }
+
+    public static final int MESSAGEARRAY_FIELD_NUMBER = 1;
+    private com.google.protobuf.LazyStringList messageArray_;
+    /**
+     * <code>repeated string messageArray = 1;</code>
+     */
+    public com.google.protobuf.ProtocolStringList
+        getMessageArrayList() {
+      return messageArray_;
+    }
+    /**
+     * <code>repeated string messageArray = 1;</code>
+     */
+    public int getMessageArrayCount() {
+      return messageArray_.size();
+    }
+    /**
+     * <code>repeated string messageArray = 1;</code>
+     */
+    public java.lang.String getMessageArray(int index) {
+      return messageArray_.get(index);
+    }
+    /**
+     * <code>repeated string messageArray = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMessageArrayBytes(int index) {
+      return messageArray_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < messageArray_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, messageArray_.getRaw(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < messageArray_.size(); i++) {
+          dataSize += computeStringSizeNoTag(messageArray_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getMessageArrayList().size();
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg)) {
+        return super.equals(obj);
+      }
+      com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg other = (com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg) obj;
+
+      boolean result = true;
+      result = result && getMessageArrayList()
+          .equals(other.getMessageArrayList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getMessageArrayCount() > 0) {
+        hash = (37 * hash) + MESSAGEARRAY_FIELD_NUMBER;
+        hash = (53 * hash) + getMessageArrayList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.StringArrayMsg}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:shimmerGRPC.StringArrayMsg)
+        com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsgOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringArrayMsg_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringArrayMsg_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.class, com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.Builder.class);
+      }
+
+      // Construct using com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        messageArray_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_StringArrayMsg_descriptor;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg getDefaultInstanceForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance();
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg build() {
+        com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg buildPartial() {
+        com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg result = new com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          messageArray_ = messageArray_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.messageArray_ = messageArray_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg) {
+          return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg other) {
+        if (other == com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()) return this;
+        if (!other.messageArray_.isEmpty()) {
+          if (messageArray_.isEmpty()) {
+            messageArray_ = other.messageArray_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureMessageArrayIsMutable();
+            messageArray_.addAll(other.messageArray_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.LazyStringList messageArray_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureMessageArrayIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          messageArray_ = new com.google.protobuf.LazyStringArrayList(messageArray_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <code>repeated string messageArray = 1;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getMessageArrayList() {
+        return messageArray_.getUnmodifiableView();
+      }
+      /**
+       * <code>repeated string messageArray = 1;</code>
+       */
+      public int getMessageArrayCount() {
+        return messageArray_.size();
+      }
+      /**
+       * <code>repeated string messageArray = 1;</code>
+       */
+      public java.lang.String getMessageArray(int index) {
+        return messageArray_.get(index);
+      }
+      /**
+       * <code>repeated string messageArray = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMessageArrayBytes(int index) {
+        return messageArray_.getByteString(index);
+      }
+      /**
+       * <code>repeated string messageArray = 1;</code>
+       */
+      public Builder setMessageArray(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureMessageArrayIsMutable();
+        messageArray_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string messageArray = 1;</code>
+       */
+      public Builder addMessageArray(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureMessageArrayIsMutable();
+        messageArray_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string messageArray = 1;</code>
+       */
+      public Builder addAllMessageArray(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureMessageArrayIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, messageArray_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string messageArray = 1;</code>
+       */
+      public Builder clearMessageArray() {
+        messageArray_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string messageArray = 1;</code>
+       */
+      public Builder addMessageArrayBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureMessageArrayIsMutable();
+        messageArray_.add(value);
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:shimmerGRPC.StringArrayMsg)
+    }
+
+    // @@protoc_insertion_point(class_scope:shimmerGRPC.StringArrayMsg)
+    private static final com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg();
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<StringArrayMsg>
+        PARSER = new com.google.protobuf.AbstractParser<StringArrayMsg>() {
+      public StringArrayMsg parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new StringArrayMsg(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<StringArrayMsg> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<StringArrayMsg> getParserForType() {
+      return PARSER;
+    }
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface BoolMsgOrBuilder extends
       // @@protoc_insertion_point(interface_extends:shimmerGRPC.BoolMsg)
       com.google.protobuf.MessageOrBuilder {
@@ -7043,6 +7619,21 @@ public final class ShimmerGRPC {
      */
     com.google.protobuf.ByteString
         getMessageBytes();
+
+    /**
+     * <code>double progressPercentage = 3;</code>
+     */
+    double getProgressPercentage();
+
+    /**
+     * <code>string progressPercentageParsed = 4;</code>
+     */
+    java.lang.String getProgressPercentageParsed();
+    /**
+     * <code>string progressPercentageParsed = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getProgressPercentageParsedBytes();
   }
   /**
    * Protobuf type {@code shimmerGRPC.OperationRequest}
@@ -7059,6 +7650,8 @@ public final class ShimmerGRPC {
     private OperationRequest() {
       success_ = false;
       message_ = "";
+      progressPercentage_ = 0D;
+      progressPercentageParsed_ = "";
     }
 
     @java.lang.Override
@@ -7098,6 +7691,17 @@ public final class ShimmerGRPC {
               java.lang.String s = input.readStringRequireUtf8();
 
               message_ = s;
+              break;
+            }
+            case 25: {
+
+              progressPercentage_ = input.readDouble();
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              progressPercentageParsed_ = s;
               break;
             }
           }
@@ -7167,6 +7771,49 @@ public final class ShimmerGRPC {
       }
     }
 
+    public static final int PROGRESSPERCENTAGE_FIELD_NUMBER = 3;
+    private double progressPercentage_;
+    /**
+     * <code>double progressPercentage = 3;</code>
+     */
+    public double getProgressPercentage() {
+      return progressPercentage_;
+    }
+
+    public static final int PROGRESSPERCENTAGEPARSED_FIELD_NUMBER = 4;
+    private volatile java.lang.Object progressPercentageParsed_;
+    /**
+     * <code>string progressPercentageParsed = 4;</code>
+     */
+    public java.lang.String getProgressPercentageParsed() {
+      java.lang.Object ref = progressPercentageParsed_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        progressPercentageParsed_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string progressPercentageParsed = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getProgressPercentageParsedBytes() {
+      java.lang.Object ref = progressPercentageParsed_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        progressPercentageParsed_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -7185,6 +7832,12 @@ public final class ShimmerGRPC {
       if (!getMessageBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
       }
+      if (progressPercentage_ != 0D) {
+        output.writeDouble(3, progressPercentage_);
+      }
+      if (!getProgressPercentageParsedBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, progressPercentageParsed_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -7199,6 +7852,13 @@ public final class ShimmerGRPC {
       }
       if (!getMessageBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
+      }
+      if (progressPercentage_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(3, progressPercentage_);
+      }
+      if (!getProgressPercentageParsedBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, progressPercentageParsed_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -7220,6 +7880,12 @@ public final class ShimmerGRPC {
           == other.getSuccess());
       result = result && getMessage()
           .equals(other.getMessage());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getProgressPercentage())
+          == java.lang.Double.doubleToLongBits(
+              other.getProgressPercentage()));
+      result = result && getProgressPercentageParsed()
+          .equals(other.getProgressPercentageParsed());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -7236,6 +7902,11 @@ public final class ShimmerGRPC {
           getSuccess());
       hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getMessage().hashCode();
+      hash = (37 * hash) + PROGRESSPERCENTAGE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getProgressPercentage()));
+      hash = (37 * hash) + PROGRESSPERCENTAGEPARSED_FIELD_NUMBER;
+      hash = (53 * hash) + getProgressPercentageParsed().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -7369,6 +8040,10 @@ public final class ShimmerGRPC {
 
         message_ = "";
 
+        progressPercentage_ = 0D;
+
+        progressPercentageParsed_ = "";
+
         return this;
       }
 
@@ -7393,6 +8068,8 @@ public final class ShimmerGRPC {
         com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest result = new com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest(this);
         result.success_ = success_;
         result.message_ = message_;
+        result.progressPercentage_ = progressPercentage_;
+        result.progressPercentageParsed_ = progressPercentageParsed_;
         onBuilt();
         return result;
       }
@@ -7439,6 +8116,13 @@ public final class ShimmerGRPC {
         }
         if (!other.getMessage().isEmpty()) {
           message_ = other.message_;
+          onChanged();
+        }
+        if (other.getProgressPercentage() != 0D) {
+          setProgressPercentage(other.getProgressPercentage());
+        }
+        if (!other.getProgressPercentageParsed().isEmpty()) {
+          progressPercentageParsed_ = other.progressPercentageParsed_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -7559,6 +8243,101 @@ public final class ShimmerGRPC {
   checkByteStringIsUtf8(value);
         
         message_ = value;
+        onChanged();
+        return this;
+      }
+
+      private double progressPercentage_ ;
+      /**
+       * <code>double progressPercentage = 3;</code>
+       */
+      public double getProgressPercentage() {
+        return progressPercentage_;
+      }
+      /**
+       * <code>double progressPercentage = 3;</code>
+       */
+      public Builder setProgressPercentage(double value) {
+        
+        progressPercentage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double progressPercentage = 3;</code>
+       */
+      public Builder clearProgressPercentage() {
+        
+        progressPercentage_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object progressPercentageParsed_ = "";
+      /**
+       * <code>string progressPercentageParsed = 4;</code>
+       */
+      public java.lang.String getProgressPercentageParsed() {
+        java.lang.Object ref = progressPercentageParsed_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          progressPercentageParsed_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string progressPercentageParsed = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getProgressPercentageParsedBytes() {
+        java.lang.Object ref = progressPercentageParsed_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          progressPercentageParsed_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string progressPercentageParsed = 4;</code>
+       */
+      public Builder setProgressPercentageParsed(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        progressPercentageParsed_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string progressPercentageParsed = 4;</code>
+       */
+      public Builder clearProgressPercentageParsed() {
+        
+        progressPercentageParsed_ = getDefaultInstance().getProgressPercentageParsed();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string progressPercentageParsed = 4;</code>
+       */
+      public Builder setProgressPercentageParsedBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        progressPercentageParsed_ = value;
         onChanged();
         return this;
       }
@@ -7813,39 +8592,138 @@ public final class ShimmerGRPC {
           getTrialNameBytes();
 
       /**
-       * <code>string batteryPercentage = 5;</code>
+       * <code>string batteryPercentageParsed = 5;</code>
        */
-      java.lang.String getBatteryPercentage();
+      java.lang.String getBatteryPercentageParsed();
       /**
-       * <code>string batteryPercentage = 5;</code>
-       */
-      com.google.protobuf.ByteString
-          getBatteryPercentageBytes();
-
-      /**
-       * <code>string driveTotalSpaceParsed = 6;</code>
-       */
-      java.lang.String getDriveTotalSpaceParsed();
-      /**
-       * <code>string driveTotalSpaceParsed = 6;</code>
+       * <code>string batteryPercentageParsed = 5;</code>
        */
       com.google.protobuf.ByteString
-          getDriveTotalSpaceParsedBytes();
+          getBatteryPercentageParsedBytes();
 
       /**
-       * <code>string driveCapacityParsed = 7;</code>
+       * <code>double batteryPercentage = 6;</code>
+       */
+      double getBatteryPercentage();
+
+      /**
+       * <code>string chargingStatusParsed = 7;</code>
+       */
+      java.lang.String getChargingStatusParsed();
+      /**
+       * <code>string chargingStatusParsed = 7;</code>
+       */
+      com.google.protobuf.ByteString
+          getChargingStatusParsedBytes();
+
+      /**
+       * <code>int64 driveCapacity = 8;</code>
+       */
+      long getDriveCapacity();
+
+      /**
+       * <code>int64 driveSpaceUsed = 9;</code>
+       */
+      long getDriveSpaceUsed();
+
+      /**
+       * <code>int64 driveSpaceFree = 10;</code>
+       */
+      long getDriveSpaceFree();
+
+      /**
+       * <code>string driveCapacityParsed = 11;</code>
        */
       java.lang.String getDriveCapacityParsed();
       /**
-       * <code>string driveCapacityParsed = 7;</code>
+       * <code>string driveCapacityParsed = 11;</code>
        */
       com.google.protobuf.ByteString
           getDriveCapacityParsedBytes();
 
       /**
-       * <code>bool realTimeClockSet = 8;</code>
+       * <code>bool isRealTimeClockSet = 12;</code>
        */
-      boolean getRealTimeClockSet();
+      boolean getIsRealTimeClockSet();
+
+      /**
+       * <code>int64 lastReadRtcValueMilliSecs = 13;</code>
+       */
+      long getLastReadRtcValueMilliSecs();
+
+      /**
+       * <code>string lastReadRtcValueParsed = 14;</code>
+       */
+      java.lang.String getLastReadRtcValueParsed();
+      /**
+       * <code>string lastReadRtcValueParsed = 14;</code>
+       */
+      com.google.protobuf.ByteString
+          getLastReadRtcValueParsedBytes();
+
+      /**
+       * <code>string hwVersionParsed = 15;</code>
+       */
+      java.lang.String getHwVersionParsed();
+      /**
+       * <code>string hwVersionParsed = 15;</code>
+       */
+      com.google.protobuf.ByteString
+          getHwVersionParsedBytes();
+
+      /**
+       * <code>string expBrdVersionParsed = 16;</code>
+       */
+      java.lang.String getExpBrdVersionParsed();
+      /**
+       * <code>string expBrdVersionParsed = 16;</code>
+       */
+      com.google.protobuf.ByteString
+          getExpBrdVersionParsedBytes();
+
+      /**
+       * <code>string fwVersionParsed = 17;</code>
+       */
+      java.lang.String getFwVersionParsed();
+      /**
+       * <code>string fwVersionParsed = 17;</code>
+       */
+      com.google.protobuf.ByteString
+          getFwVersionParsedBytes();
+
+      /**
+       * <code>repeated string pairedDevice = 18;</code>
+       */
+      java.util.List<java.lang.String>
+          getPairedDeviceList();
+      /**
+       * <code>repeated string pairedDevice = 18;</code>
+       */
+      int getPairedDeviceCount();
+      /**
+       * <code>repeated string pairedDevice = 18;</code>
+       */
+      java.lang.String getPairedDevice(int index);
+      /**
+       * <code>repeated string pairedDevice = 18;</code>
+       */
+      com.google.protobuf.ByteString
+          getPairedDeviceBytes(int index);
+
+      /**
+       * <code>int64 configTime = 19;</code>
+       */
+      long getConfigTime();
+
+      /**
+       * <code>string configTimeParsed = 20;</code>
+       */
+      java.lang.String getConfigTimeParsed();
+      /**
+       * <code>string configTimeParsed = 20;</code>
+       */
+      com.google.protobuf.ByteString
+          getConfigTimeParsedBytes();
     }
     /**
      * Protobuf type {@code shimmerGRPC.ShimmersInfo.ShimmerInfo}
@@ -7864,10 +8742,22 @@ public final class ShimmerGRPC {
         uniqueId_ = "";
         bluetoothAddress_ = "";
         trialName_ = "";
-        batteryPercentage_ = "";
-        driveTotalSpaceParsed_ = "";
+        batteryPercentageParsed_ = "";
+        batteryPercentage_ = 0D;
+        chargingStatusParsed_ = "";
+        driveCapacity_ = 0L;
+        driveSpaceUsed_ = 0L;
+        driveSpaceFree_ = 0L;
         driveCapacityParsed_ = "";
-        realTimeClockSet_ = false;
+        isRealTimeClockSet_ = false;
+        lastReadRtcValueMilliSecs_ = 0L;
+        lastReadRtcValueParsed_ = "";
+        hwVersionParsed_ = "";
+        expBrdVersionParsed_ = "";
+        fwVersionParsed_ = "";
+        pairedDevice_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        configTime_ = 0L;
+        configTimeParsed_ = "";
       }
 
       @java.lang.Override
@@ -7925,24 +8815,93 @@ public final class ShimmerGRPC {
               case 42: {
                 java.lang.String s = input.readStringRequireUtf8();
 
-                batteryPercentage_ = s;
+                batteryPercentageParsed_ = s;
                 break;
               }
-              case 50: {
-                java.lang.String s = input.readStringRequireUtf8();
+              case 49: {
 
-                driveTotalSpaceParsed_ = s;
+                batteryPercentage_ = input.readDouble();
                 break;
               }
               case 58: {
                 java.lang.String s = input.readStringRequireUtf8();
 
-                driveCapacityParsed_ = s;
+                chargingStatusParsed_ = s;
                 break;
               }
               case 64: {
 
-                realTimeClockSet_ = input.readBool();
+                driveCapacity_ = input.readInt64();
+                break;
+              }
+              case 72: {
+
+                driveSpaceUsed_ = input.readInt64();
+                break;
+              }
+              case 80: {
+
+                driveSpaceFree_ = input.readInt64();
+                break;
+              }
+              case 90: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                driveCapacityParsed_ = s;
+                break;
+              }
+              case 96: {
+
+                isRealTimeClockSet_ = input.readBool();
+                break;
+              }
+              case 104: {
+
+                lastReadRtcValueMilliSecs_ = input.readInt64();
+                break;
+              }
+              case 114: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                lastReadRtcValueParsed_ = s;
+                break;
+              }
+              case 122: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                hwVersionParsed_ = s;
+                break;
+              }
+              case 130: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                expBrdVersionParsed_ = s;
+                break;
+              }
+              case 138: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                fwVersionParsed_ = s;
+                break;
+              }
+              case 146: {
+                java.lang.String s = input.readStringRequireUtf8();
+                if (!((mutable_bitField0_ & 0x00020000) == 0x00020000)) {
+                  pairedDevice_ = new com.google.protobuf.LazyStringArrayList();
+                  mutable_bitField0_ |= 0x00020000;
+                }
+                pairedDevice_.add(s);
+                break;
+              }
+              case 152: {
+
+                configTime_ = input.readInt64();
+                break;
+              }
+              case 162: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                configTimeParsed_ = s;
                 break;
               }
             }
@@ -7953,6 +8912,9 @@ public final class ShimmerGRPC {
           throw new com.google.protobuf.InvalidProtocolBufferException(
               e).setUnfinishedMessage(this);
         } finally {
+          if (((mutable_bitField0_ & 0x00020000) == 0x00020000)) {
+            pairedDevice_ = pairedDevice_.getUnmodifiableView();
+          }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
         }
@@ -7969,6 +8931,7 @@ public final class ShimmerGRPC {
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.ShimmerInfo.class, com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.ShimmerInfo.Builder.class);
       }
 
+      private int bitField0_;
       public static final int NAME_FIELD_NUMBER = 1;
       private volatile java.lang.Object name_;
       /**
@@ -8105,78 +9068,114 @@ public final class ShimmerGRPC {
         }
       }
 
-      public static final int BATTERYPERCENTAGE_FIELD_NUMBER = 5;
-      private volatile java.lang.Object batteryPercentage_;
+      public static final int BATTERYPERCENTAGEPARSED_FIELD_NUMBER = 5;
+      private volatile java.lang.Object batteryPercentageParsed_;
       /**
-       * <code>string batteryPercentage = 5;</code>
+       * <code>string batteryPercentageParsed = 5;</code>
        */
-      public java.lang.String getBatteryPercentage() {
-        java.lang.Object ref = batteryPercentage_;
+      public java.lang.String getBatteryPercentageParsed() {
+        java.lang.Object ref = batteryPercentageParsed_;
         if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
         } else {
           com.google.protobuf.ByteString bs = 
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          batteryPercentage_ = s;
+          batteryPercentageParsed_ = s;
           return s;
         }
       }
       /**
-       * <code>string batteryPercentage = 5;</code>
+       * <code>string batteryPercentageParsed = 5;</code>
        */
       public com.google.protobuf.ByteString
-          getBatteryPercentageBytes() {
-        java.lang.Object ref = batteryPercentage_;
+          getBatteryPercentageParsedBytes() {
+        java.lang.Object ref = batteryPercentageParsed_;
         if (ref instanceof java.lang.String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          batteryPercentage_ = b;
+          batteryPercentageParsed_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
 
-      public static final int DRIVETOTALSPACEPARSED_FIELD_NUMBER = 6;
-      private volatile java.lang.Object driveTotalSpaceParsed_;
+      public static final int BATTERYPERCENTAGE_FIELD_NUMBER = 6;
+      private double batteryPercentage_;
       /**
-       * <code>string driveTotalSpaceParsed = 6;</code>
+       * <code>double batteryPercentage = 6;</code>
        */
-      public java.lang.String getDriveTotalSpaceParsed() {
-        java.lang.Object ref = driveTotalSpaceParsed_;
+      public double getBatteryPercentage() {
+        return batteryPercentage_;
+      }
+
+      public static final int CHARGINGSTATUSPARSED_FIELD_NUMBER = 7;
+      private volatile java.lang.Object chargingStatusParsed_;
+      /**
+       * <code>string chargingStatusParsed = 7;</code>
+       */
+      public java.lang.String getChargingStatusParsed() {
+        java.lang.Object ref = chargingStatusParsed_;
         if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
         } else {
           com.google.protobuf.ByteString bs = 
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          driveTotalSpaceParsed_ = s;
+          chargingStatusParsed_ = s;
           return s;
         }
       }
       /**
-       * <code>string driveTotalSpaceParsed = 6;</code>
+       * <code>string chargingStatusParsed = 7;</code>
        */
       public com.google.protobuf.ByteString
-          getDriveTotalSpaceParsedBytes() {
-        java.lang.Object ref = driveTotalSpaceParsed_;
+          getChargingStatusParsedBytes() {
+        java.lang.Object ref = chargingStatusParsed_;
         if (ref instanceof java.lang.String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          driveTotalSpaceParsed_ = b;
+          chargingStatusParsed_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
 
-      public static final int DRIVECAPACITYPARSED_FIELD_NUMBER = 7;
+      public static final int DRIVECAPACITY_FIELD_NUMBER = 8;
+      private long driveCapacity_;
+      /**
+       * <code>int64 driveCapacity = 8;</code>
+       */
+      public long getDriveCapacity() {
+        return driveCapacity_;
+      }
+
+      public static final int DRIVESPACEUSED_FIELD_NUMBER = 9;
+      private long driveSpaceUsed_;
+      /**
+       * <code>int64 driveSpaceUsed = 9;</code>
+       */
+      public long getDriveSpaceUsed() {
+        return driveSpaceUsed_;
+      }
+
+      public static final int DRIVESPACEFREE_FIELD_NUMBER = 10;
+      private long driveSpaceFree_;
+      /**
+       * <code>int64 driveSpaceFree = 10;</code>
+       */
+      public long getDriveSpaceFree() {
+        return driveSpaceFree_;
+      }
+
+      public static final int DRIVECAPACITYPARSED_FIELD_NUMBER = 11;
       private volatile java.lang.Object driveCapacityParsed_;
       /**
-       * <code>string driveCapacityParsed = 7;</code>
+       * <code>string driveCapacityParsed = 11;</code>
        */
       public java.lang.String getDriveCapacityParsed() {
         java.lang.Object ref = driveCapacityParsed_;
@@ -8191,7 +9190,7 @@ public final class ShimmerGRPC {
         }
       }
       /**
-       * <code>string driveCapacityParsed = 7;</code>
+       * <code>string driveCapacityParsed = 11;</code>
        */
       public com.google.protobuf.ByteString
           getDriveCapacityParsedBytes() {
@@ -8207,13 +9206,230 @@ public final class ShimmerGRPC {
         }
       }
 
-      public static final int REALTIMECLOCKSET_FIELD_NUMBER = 8;
-      private boolean realTimeClockSet_;
+      public static final int ISREALTIMECLOCKSET_FIELD_NUMBER = 12;
+      private boolean isRealTimeClockSet_;
       /**
-       * <code>bool realTimeClockSet = 8;</code>
+       * <code>bool isRealTimeClockSet = 12;</code>
        */
-      public boolean getRealTimeClockSet() {
-        return realTimeClockSet_;
+      public boolean getIsRealTimeClockSet() {
+        return isRealTimeClockSet_;
+      }
+
+      public static final int LASTREADRTCVALUEMILLISECS_FIELD_NUMBER = 13;
+      private long lastReadRtcValueMilliSecs_;
+      /**
+       * <code>int64 lastReadRtcValueMilliSecs = 13;</code>
+       */
+      public long getLastReadRtcValueMilliSecs() {
+        return lastReadRtcValueMilliSecs_;
+      }
+
+      public static final int LASTREADRTCVALUEPARSED_FIELD_NUMBER = 14;
+      private volatile java.lang.Object lastReadRtcValueParsed_;
+      /**
+       * <code>string lastReadRtcValueParsed = 14;</code>
+       */
+      public java.lang.String getLastReadRtcValueParsed() {
+        java.lang.Object ref = lastReadRtcValueParsed_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          lastReadRtcValueParsed_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string lastReadRtcValueParsed = 14;</code>
+       */
+      public com.google.protobuf.ByteString
+          getLastReadRtcValueParsedBytes() {
+        java.lang.Object ref = lastReadRtcValueParsed_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          lastReadRtcValueParsed_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int HWVERSIONPARSED_FIELD_NUMBER = 15;
+      private volatile java.lang.Object hwVersionParsed_;
+      /**
+       * <code>string hwVersionParsed = 15;</code>
+       */
+      public java.lang.String getHwVersionParsed() {
+        java.lang.Object ref = hwVersionParsed_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          hwVersionParsed_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string hwVersionParsed = 15;</code>
+       */
+      public com.google.protobuf.ByteString
+          getHwVersionParsedBytes() {
+        java.lang.Object ref = hwVersionParsed_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          hwVersionParsed_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int EXPBRDVERSIONPARSED_FIELD_NUMBER = 16;
+      private volatile java.lang.Object expBrdVersionParsed_;
+      /**
+       * <code>string expBrdVersionParsed = 16;</code>
+       */
+      public java.lang.String getExpBrdVersionParsed() {
+        java.lang.Object ref = expBrdVersionParsed_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          expBrdVersionParsed_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string expBrdVersionParsed = 16;</code>
+       */
+      public com.google.protobuf.ByteString
+          getExpBrdVersionParsedBytes() {
+        java.lang.Object ref = expBrdVersionParsed_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          expBrdVersionParsed_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int FWVERSIONPARSED_FIELD_NUMBER = 17;
+      private volatile java.lang.Object fwVersionParsed_;
+      /**
+       * <code>string fwVersionParsed = 17;</code>
+       */
+      public java.lang.String getFwVersionParsed() {
+        java.lang.Object ref = fwVersionParsed_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          fwVersionParsed_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string fwVersionParsed = 17;</code>
+       */
+      public com.google.protobuf.ByteString
+          getFwVersionParsedBytes() {
+        java.lang.Object ref = fwVersionParsed_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          fwVersionParsed_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int PAIREDDEVICE_FIELD_NUMBER = 18;
+      private com.google.protobuf.LazyStringList pairedDevice_;
+      /**
+       * <code>repeated string pairedDevice = 18;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getPairedDeviceList() {
+        return pairedDevice_;
+      }
+      /**
+       * <code>repeated string pairedDevice = 18;</code>
+       */
+      public int getPairedDeviceCount() {
+        return pairedDevice_.size();
+      }
+      /**
+       * <code>repeated string pairedDevice = 18;</code>
+       */
+      public java.lang.String getPairedDevice(int index) {
+        return pairedDevice_.get(index);
+      }
+      /**
+       * <code>repeated string pairedDevice = 18;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPairedDeviceBytes(int index) {
+        return pairedDevice_.getByteString(index);
+      }
+
+      public static final int CONFIGTIME_FIELD_NUMBER = 19;
+      private long configTime_;
+      /**
+       * <code>int64 configTime = 19;</code>
+       */
+      public long getConfigTime() {
+        return configTime_;
+      }
+
+      public static final int CONFIGTIMEPARSED_FIELD_NUMBER = 20;
+      private volatile java.lang.Object configTimeParsed_;
+      /**
+       * <code>string configTimeParsed = 20;</code>
+       */
+      public java.lang.String getConfigTimeParsed() {
+        java.lang.Object ref = configTimeParsed_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          configTimeParsed_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string configTimeParsed = 20;</code>
+       */
+      public com.google.protobuf.ByteString
+          getConfigTimeParsedBytes() {
+        java.lang.Object ref = configTimeParsed_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          configTimeParsed_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
       }
 
       private byte memoizedIsInitialized = -1;
@@ -8240,17 +9456,53 @@ public final class ShimmerGRPC {
         if (!getTrialNameBytes().isEmpty()) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 4, trialName_);
         }
-        if (!getBatteryPercentageBytes().isEmpty()) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 5, batteryPercentage_);
+        if (!getBatteryPercentageParsedBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 5, batteryPercentageParsed_);
         }
-        if (!getDriveTotalSpaceParsedBytes().isEmpty()) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 6, driveTotalSpaceParsed_);
+        if (batteryPercentage_ != 0D) {
+          output.writeDouble(6, batteryPercentage_);
+        }
+        if (!getChargingStatusParsedBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 7, chargingStatusParsed_);
+        }
+        if (driveCapacity_ != 0L) {
+          output.writeInt64(8, driveCapacity_);
+        }
+        if (driveSpaceUsed_ != 0L) {
+          output.writeInt64(9, driveSpaceUsed_);
+        }
+        if (driveSpaceFree_ != 0L) {
+          output.writeInt64(10, driveSpaceFree_);
         }
         if (!getDriveCapacityParsedBytes().isEmpty()) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 7, driveCapacityParsed_);
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 11, driveCapacityParsed_);
         }
-        if (realTimeClockSet_ != false) {
-          output.writeBool(8, realTimeClockSet_);
+        if (isRealTimeClockSet_ != false) {
+          output.writeBool(12, isRealTimeClockSet_);
+        }
+        if (lastReadRtcValueMilliSecs_ != 0L) {
+          output.writeInt64(13, lastReadRtcValueMilliSecs_);
+        }
+        if (!getLastReadRtcValueParsedBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 14, lastReadRtcValueParsed_);
+        }
+        if (!getHwVersionParsedBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 15, hwVersionParsed_);
+        }
+        if (!getExpBrdVersionParsedBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 16, expBrdVersionParsed_);
+        }
+        if (!getFwVersionParsedBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 17, fwVersionParsed_);
+        }
+        for (int i = 0; i < pairedDevice_.size(); i++) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 18, pairedDevice_.getRaw(i));
+        }
+        if (configTime_ != 0L) {
+          output.writeInt64(19, configTime_);
+        }
+        if (!getConfigTimeParsedBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 20, configTimeParsed_);
         }
         unknownFields.writeTo(output);
       }
@@ -8272,18 +9524,65 @@ public final class ShimmerGRPC {
         if (!getTrialNameBytes().isEmpty()) {
           size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, trialName_);
         }
-        if (!getBatteryPercentageBytes().isEmpty()) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, batteryPercentage_);
+        if (!getBatteryPercentageParsedBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, batteryPercentageParsed_);
         }
-        if (!getDriveTotalSpaceParsedBytes().isEmpty()) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, driveTotalSpaceParsed_);
+        if (batteryPercentage_ != 0D) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeDoubleSize(6, batteryPercentage_);
+        }
+        if (!getChargingStatusParsedBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, chargingStatusParsed_);
+        }
+        if (driveCapacity_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(8, driveCapacity_);
+        }
+        if (driveSpaceUsed_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(9, driveSpaceUsed_);
+        }
+        if (driveSpaceFree_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(10, driveSpaceFree_);
         }
         if (!getDriveCapacityParsedBytes().isEmpty()) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, driveCapacityParsed_);
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, driveCapacityParsed_);
         }
-        if (realTimeClockSet_ != false) {
+        if (isRealTimeClockSet_ != false) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(8, realTimeClockSet_);
+            .computeBoolSize(12, isRealTimeClockSet_);
+        }
+        if (lastReadRtcValueMilliSecs_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(13, lastReadRtcValueMilliSecs_);
+        }
+        if (!getLastReadRtcValueParsedBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, lastReadRtcValueParsed_);
+        }
+        if (!getHwVersionParsedBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(15, hwVersionParsed_);
+        }
+        if (!getExpBrdVersionParsedBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(16, expBrdVersionParsed_);
+        }
+        if (!getFwVersionParsedBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(17, fwVersionParsed_);
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < pairedDevice_.size(); i++) {
+            dataSize += computeStringSizeNoTag(pairedDevice_.getRaw(i));
+          }
+          size += dataSize;
+          size += 2 * getPairedDeviceList().size();
+        }
+        if (configTime_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(19, configTime_);
+        }
+        if (!getConfigTimeParsedBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(20, configTimeParsed_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -8309,14 +9608,40 @@ public final class ShimmerGRPC {
             .equals(other.getBluetoothAddress());
         result = result && getTrialName()
             .equals(other.getTrialName());
-        result = result && getBatteryPercentage()
-            .equals(other.getBatteryPercentage());
-        result = result && getDriveTotalSpaceParsed()
-            .equals(other.getDriveTotalSpaceParsed());
+        result = result && getBatteryPercentageParsed()
+            .equals(other.getBatteryPercentageParsed());
+        result = result && (
+            java.lang.Double.doubleToLongBits(getBatteryPercentage())
+            == java.lang.Double.doubleToLongBits(
+                other.getBatteryPercentage()));
+        result = result && getChargingStatusParsed()
+            .equals(other.getChargingStatusParsed());
+        result = result && (getDriveCapacity()
+            == other.getDriveCapacity());
+        result = result && (getDriveSpaceUsed()
+            == other.getDriveSpaceUsed());
+        result = result && (getDriveSpaceFree()
+            == other.getDriveSpaceFree());
         result = result && getDriveCapacityParsed()
             .equals(other.getDriveCapacityParsed());
-        result = result && (getRealTimeClockSet()
-            == other.getRealTimeClockSet());
+        result = result && (getIsRealTimeClockSet()
+            == other.getIsRealTimeClockSet());
+        result = result && (getLastReadRtcValueMilliSecs()
+            == other.getLastReadRtcValueMilliSecs());
+        result = result && getLastReadRtcValueParsed()
+            .equals(other.getLastReadRtcValueParsed());
+        result = result && getHwVersionParsed()
+            .equals(other.getHwVersionParsed());
+        result = result && getExpBrdVersionParsed()
+            .equals(other.getExpBrdVersionParsed());
+        result = result && getFwVersionParsed()
+            .equals(other.getFwVersionParsed());
+        result = result && getPairedDeviceList()
+            .equals(other.getPairedDeviceList());
+        result = result && (getConfigTime()
+            == other.getConfigTime());
+        result = result && getConfigTimeParsed()
+            .equals(other.getConfigTimeParsed());
         result = result && unknownFields.equals(other.unknownFields);
         return result;
       }
@@ -8336,15 +9661,47 @@ public final class ShimmerGRPC {
         hash = (53 * hash) + getBluetoothAddress().hashCode();
         hash = (37 * hash) + TRIALNAME_FIELD_NUMBER;
         hash = (53 * hash) + getTrialName().hashCode();
+        hash = (37 * hash) + BATTERYPERCENTAGEPARSED_FIELD_NUMBER;
+        hash = (53 * hash) + getBatteryPercentageParsed().hashCode();
         hash = (37 * hash) + BATTERYPERCENTAGE_FIELD_NUMBER;
-        hash = (53 * hash) + getBatteryPercentage().hashCode();
-        hash = (37 * hash) + DRIVETOTALSPACEPARSED_FIELD_NUMBER;
-        hash = (53 * hash) + getDriveTotalSpaceParsed().hashCode();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getBatteryPercentage()));
+        hash = (37 * hash) + CHARGINGSTATUSPARSED_FIELD_NUMBER;
+        hash = (53 * hash) + getChargingStatusParsed().hashCode();
+        hash = (37 * hash) + DRIVECAPACITY_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getDriveCapacity());
+        hash = (37 * hash) + DRIVESPACEUSED_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getDriveSpaceUsed());
+        hash = (37 * hash) + DRIVESPACEFREE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getDriveSpaceFree());
         hash = (37 * hash) + DRIVECAPACITYPARSED_FIELD_NUMBER;
         hash = (53 * hash) + getDriveCapacityParsed().hashCode();
-        hash = (37 * hash) + REALTIMECLOCKSET_FIELD_NUMBER;
+        hash = (37 * hash) + ISREALTIMECLOCKSET_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getRealTimeClockSet());
+            getIsRealTimeClockSet());
+        hash = (37 * hash) + LASTREADRTCVALUEMILLISECS_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getLastReadRtcValueMilliSecs());
+        hash = (37 * hash) + LASTREADRTCVALUEPARSED_FIELD_NUMBER;
+        hash = (53 * hash) + getLastReadRtcValueParsed().hashCode();
+        hash = (37 * hash) + HWVERSIONPARSED_FIELD_NUMBER;
+        hash = (53 * hash) + getHwVersionParsed().hashCode();
+        hash = (37 * hash) + EXPBRDVERSIONPARSED_FIELD_NUMBER;
+        hash = (53 * hash) + getExpBrdVersionParsed().hashCode();
+        hash = (37 * hash) + FWVERSIONPARSED_FIELD_NUMBER;
+        hash = (53 * hash) + getFwVersionParsed().hashCode();
+        if (getPairedDeviceCount() > 0) {
+          hash = (37 * hash) + PAIREDDEVICE_FIELD_NUMBER;
+          hash = (53 * hash) + getPairedDeviceList().hashCode();
+        }
+        hash = (37 * hash) + CONFIGTIME_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getConfigTime());
+        hash = (37 * hash) + CONFIGTIMEPARSED_FIELD_NUMBER;
+        hash = (53 * hash) + getConfigTimeParsed().hashCode();
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -8482,13 +9839,37 @@ public final class ShimmerGRPC {
 
           trialName_ = "";
 
-          batteryPercentage_ = "";
+          batteryPercentageParsed_ = "";
 
-          driveTotalSpaceParsed_ = "";
+          batteryPercentage_ = 0D;
+
+          chargingStatusParsed_ = "";
+
+          driveCapacity_ = 0L;
+
+          driveSpaceUsed_ = 0L;
+
+          driveSpaceFree_ = 0L;
 
           driveCapacityParsed_ = "";
 
-          realTimeClockSet_ = false;
+          isRealTimeClockSet_ = false;
+
+          lastReadRtcValueMilliSecs_ = 0L;
+
+          lastReadRtcValueParsed_ = "";
+
+          hwVersionParsed_ = "";
+
+          expBrdVersionParsed_ = "";
+
+          fwVersionParsed_ = "";
+
+          pairedDevice_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00020000);
+          configTime_ = 0L;
+
+          configTimeParsed_ = "";
 
           return this;
         }
@@ -8512,14 +9893,33 @@ public final class ShimmerGRPC {
 
         public com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.ShimmerInfo buildPartial() {
           com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.ShimmerInfo result = new com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.ShimmerInfo(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
           result.name_ = name_;
           result.uniqueId_ = uniqueId_;
           result.bluetoothAddress_ = bluetoothAddress_;
           result.trialName_ = trialName_;
+          result.batteryPercentageParsed_ = batteryPercentageParsed_;
           result.batteryPercentage_ = batteryPercentage_;
-          result.driveTotalSpaceParsed_ = driveTotalSpaceParsed_;
+          result.chargingStatusParsed_ = chargingStatusParsed_;
+          result.driveCapacity_ = driveCapacity_;
+          result.driveSpaceUsed_ = driveSpaceUsed_;
+          result.driveSpaceFree_ = driveSpaceFree_;
           result.driveCapacityParsed_ = driveCapacityParsed_;
-          result.realTimeClockSet_ = realTimeClockSet_;
+          result.isRealTimeClockSet_ = isRealTimeClockSet_;
+          result.lastReadRtcValueMilliSecs_ = lastReadRtcValueMilliSecs_;
+          result.lastReadRtcValueParsed_ = lastReadRtcValueParsed_;
+          result.hwVersionParsed_ = hwVersionParsed_;
+          result.expBrdVersionParsed_ = expBrdVersionParsed_;
+          result.fwVersionParsed_ = fwVersionParsed_;
+          if (((bitField0_ & 0x00020000) == 0x00020000)) {
+            pairedDevice_ = pairedDevice_.getUnmodifiableView();
+            bitField0_ = (bitField0_ & ~0x00020000);
+          }
+          result.pairedDevice_ = pairedDevice_;
+          result.configTime_ = configTime_;
+          result.configTimeParsed_ = configTimeParsed_;
+          result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
         }
@@ -8577,20 +9977,68 @@ public final class ShimmerGRPC {
             trialName_ = other.trialName_;
             onChanged();
           }
-          if (!other.getBatteryPercentage().isEmpty()) {
-            batteryPercentage_ = other.batteryPercentage_;
+          if (!other.getBatteryPercentageParsed().isEmpty()) {
+            batteryPercentageParsed_ = other.batteryPercentageParsed_;
             onChanged();
           }
-          if (!other.getDriveTotalSpaceParsed().isEmpty()) {
-            driveTotalSpaceParsed_ = other.driveTotalSpaceParsed_;
+          if (other.getBatteryPercentage() != 0D) {
+            setBatteryPercentage(other.getBatteryPercentage());
+          }
+          if (!other.getChargingStatusParsed().isEmpty()) {
+            chargingStatusParsed_ = other.chargingStatusParsed_;
             onChanged();
+          }
+          if (other.getDriveCapacity() != 0L) {
+            setDriveCapacity(other.getDriveCapacity());
+          }
+          if (other.getDriveSpaceUsed() != 0L) {
+            setDriveSpaceUsed(other.getDriveSpaceUsed());
+          }
+          if (other.getDriveSpaceFree() != 0L) {
+            setDriveSpaceFree(other.getDriveSpaceFree());
           }
           if (!other.getDriveCapacityParsed().isEmpty()) {
             driveCapacityParsed_ = other.driveCapacityParsed_;
             onChanged();
           }
-          if (other.getRealTimeClockSet() != false) {
-            setRealTimeClockSet(other.getRealTimeClockSet());
+          if (other.getIsRealTimeClockSet() != false) {
+            setIsRealTimeClockSet(other.getIsRealTimeClockSet());
+          }
+          if (other.getLastReadRtcValueMilliSecs() != 0L) {
+            setLastReadRtcValueMilliSecs(other.getLastReadRtcValueMilliSecs());
+          }
+          if (!other.getLastReadRtcValueParsed().isEmpty()) {
+            lastReadRtcValueParsed_ = other.lastReadRtcValueParsed_;
+            onChanged();
+          }
+          if (!other.getHwVersionParsed().isEmpty()) {
+            hwVersionParsed_ = other.hwVersionParsed_;
+            onChanged();
+          }
+          if (!other.getExpBrdVersionParsed().isEmpty()) {
+            expBrdVersionParsed_ = other.expBrdVersionParsed_;
+            onChanged();
+          }
+          if (!other.getFwVersionParsed().isEmpty()) {
+            fwVersionParsed_ = other.fwVersionParsed_;
+            onChanged();
+          }
+          if (!other.pairedDevice_.isEmpty()) {
+            if (pairedDevice_.isEmpty()) {
+              pairedDevice_ = other.pairedDevice_;
+              bitField0_ = (bitField0_ & ~0x00020000);
+            } else {
+              ensurePairedDeviceIsMutable();
+              pairedDevice_.addAll(other.pairedDevice_);
+            }
+            onChanged();
+          }
+          if (other.getConfigTime() != 0L) {
+            setConfigTime(other.getConfigTime());
+          }
+          if (!other.getConfigTimeParsed().isEmpty()) {
+            configTimeParsed_ = other.configTimeParsed_;
+            onChanged();
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -8618,6 +10066,7 @@ public final class ShimmerGRPC {
           }
           return this;
         }
+        private int bitField0_;
 
         private java.lang.Object name_ = "";
         /**
@@ -8895,147 +10344,251 @@ public final class ShimmerGRPC {
           return this;
         }
 
-        private java.lang.Object batteryPercentage_ = "";
+        private java.lang.Object batteryPercentageParsed_ = "";
         /**
-         * <code>string batteryPercentage = 5;</code>
+         * <code>string batteryPercentageParsed = 5;</code>
          */
-        public java.lang.String getBatteryPercentage() {
-          java.lang.Object ref = batteryPercentage_;
+        public java.lang.String getBatteryPercentageParsed() {
+          java.lang.Object ref = batteryPercentageParsed_;
           if (!(ref instanceof java.lang.String)) {
             com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
             java.lang.String s = bs.toStringUtf8();
-            batteryPercentage_ = s;
+            batteryPercentageParsed_ = s;
             return s;
           } else {
             return (java.lang.String) ref;
           }
         }
         /**
-         * <code>string batteryPercentage = 5;</code>
+         * <code>string batteryPercentageParsed = 5;</code>
          */
         public com.google.protobuf.ByteString
-            getBatteryPercentageBytes() {
-          java.lang.Object ref = batteryPercentage_;
+            getBatteryPercentageParsedBytes() {
+          java.lang.Object ref = batteryPercentageParsed_;
           if (ref instanceof String) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
-            batteryPercentage_ = b;
+            batteryPercentageParsed_ = b;
             return b;
           } else {
             return (com.google.protobuf.ByteString) ref;
           }
         }
         /**
-         * <code>string batteryPercentage = 5;</code>
+         * <code>string batteryPercentageParsed = 5;</code>
          */
-        public Builder setBatteryPercentage(
+        public Builder setBatteryPercentageParsed(
             java.lang.String value) {
           if (value == null) {
     throw new NullPointerException();
   }
   
-          batteryPercentage_ = value;
+          batteryPercentageParsed_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>string batteryPercentage = 5;</code>
+         * <code>string batteryPercentageParsed = 5;</code>
          */
-        public Builder clearBatteryPercentage() {
+        public Builder clearBatteryPercentageParsed() {
           
-          batteryPercentage_ = getDefaultInstance().getBatteryPercentage();
+          batteryPercentageParsed_ = getDefaultInstance().getBatteryPercentageParsed();
           onChanged();
           return this;
         }
         /**
-         * <code>string batteryPercentage = 5;</code>
+         * <code>string batteryPercentageParsed = 5;</code>
          */
-        public Builder setBatteryPercentageBytes(
+        public Builder setBatteryPercentageParsedBytes(
             com.google.protobuf.ByteString value) {
           if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
           
-          batteryPercentage_ = value;
+          batteryPercentageParsed_ = value;
           onChanged();
           return this;
         }
 
-        private java.lang.Object driveTotalSpaceParsed_ = "";
+        private double batteryPercentage_ ;
         /**
-         * <code>string driveTotalSpaceParsed = 6;</code>
+         * <code>double batteryPercentage = 6;</code>
          */
-        public java.lang.String getDriveTotalSpaceParsed() {
-          java.lang.Object ref = driveTotalSpaceParsed_;
+        public double getBatteryPercentage() {
+          return batteryPercentage_;
+        }
+        /**
+         * <code>double batteryPercentage = 6;</code>
+         */
+        public Builder setBatteryPercentage(double value) {
+          
+          batteryPercentage_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>double batteryPercentage = 6;</code>
+         */
+        public Builder clearBatteryPercentage() {
+          
+          batteryPercentage_ = 0D;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object chargingStatusParsed_ = "";
+        /**
+         * <code>string chargingStatusParsed = 7;</code>
+         */
+        public java.lang.String getChargingStatusParsed() {
+          java.lang.Object ref = chargingStatusParsed_;
           if (!(ref instanceof java.lang.String)) {
             com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
             java.lang.String s = bs.toStringUtf8();
-            driveTotalSpaceParsed_ = s;
+            chargingStatusParsed_ = s;
             return s;
           } else {
             return (java.lang.String) ref;
           }
         }
         /**
-         * <code>string driveTotalSpaceParsed = 6;</code>
+         * <code>string chargingStatusParsed = 7;</code>
          */
         public com.google.protobuf.ByteString
-            getDriveTotalSpaceParsedBytes() {
-          java.lang.Object ref = driveTotalSpaceParsed_;
+            getChargingStatusParsedBytes() {
+          java.lang.Object ref = chargingStatusParsed_;
           if (ref instanceof String) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
-            driveTotalSpaceParsed_ = b;
+            chargingStatusParsed_ = b;
             return b;
           } else {
             return (com.google.protobuf.ByteString) ref;
           }
         }
         /**
-         * <code>string driveTotalSpaceParsed = 6;</code>
+         * <code>string chargingStatusParsed = 7;</code>
          */
-        public Builder setDriveTotalSpaceParsed(
+        public Builder setChargingStatusParsed(
             java.lang.String value) {
           if (value == null) {
     throw new NullPointerException();
   }
   
-          driveTotalSpaceParsed_ = value;
+          chargingStatusParsed_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>string driveTotalSpaceParsed = 6;</code>
+         * <code>string chargingStatusParsed = 7;</code>
          */
-        public Builder clearDriveTotalSpaceParsed() {
+        public Builder clearChargingStatusParsed() {
           
-          driveTotalSpaceParsed_ = getDefaultInstance().getDriveTotalSpaceParsed();
+          chargingStatusParsed_ = getDefaultInstance().getChargingStatusParsed();
           onChanged();
           return this;
         }
         /**
-         * <code>string driveTotalSpaceParsed = 6;</code>
+         * <code>string chargingStatusParsed = 7;</code>
          */
-        public Builder setDriveTotalSpaceParsedBytes(
+        public Builder setChargingStatusParsedBytes(
             com.google.protobuf.ByteString value) {
           if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
           
-          driveTotalSpaceParsed_ = value;
+          chargingStatusParsed_ = value;
+          onChanged();
+          return this;
+        }
+
+        private long driveCapacity_ ;
+        /**
+         * <code>int64 driveCapacity = 8;</code>
+         */
+        public long getDriveCapacity() {
+          return driveCapacity_;
+        }
+        /**
+         * <code>int64 driveCapacity = 8;</code>
+         */
+        public Builder setDriveCapacity(long value) {
+          
+          driveCapacity_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int64 driveCapacity = 8;</code>
+         */
+        public Builder clearDriveCapacity() {
+          
+          driveCapacity_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private long driveSpaceUsed_ ;
+        /**
+         * <code>int64 driveSpaceUsed = 9;</code>
+         */
+        public long getDriveSpaceUsed() {
+          return driveSpaceUsed_;
+        }
+        /**
+         * <code>int64 driveSpaceUsed = 9;</code>
+         */
+        public Builder setDriveSpaceUsed(long value) {
+          
+          driveSpaceUsed_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int64 driveSpaceUsed = 9;</code>
+         */
+        public Builder clearDriveSpaceUsed() {
+          
+          driveSpaceUsed_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private long driveSpaceFree_ ;
+        /**
+         * <code>int64 driveSpaceFree = 10;</code>
+         */
+        public long getDriveSpaceFree() {
+          return driveSpaceFree_;
+        }
+        /**
+         * <code>int64 driveSpaceFree = 10;</code>
+         */
+        public Builder setDriveSpaceFree(long value) {
+          
+          driveSpaceFree_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int64 driveSpaceFree = 10;</code>
+         */
+        public Builder clearDriveSpaceFree() {
+          
+          driveSpaceFree_ = 0L;
           onChanged();
           return this;
         }
 
         private java.lang.Object driveCapacityParsed_ = "";
         /**
-         * <code>string driveCapacityParsed = 7;</code>
+         * <code>string driveCapacityParsed = 11;</code>
          */
         public java.lang.String getDriveCapacityParsed() {
           java.lang.Object ref = driveCapacityParsed_;
@@ -9050,7 +10603,7 @@ public final class ShimmerGRPC {
           }
         }
         /**
-         * <code>string driveCapacityParsed = 7;</code>
+         * <code>string driveCapacityParsed = 11;</code>
          */
         public com.google.protobuf.ByteString
             getDriveCapacityParsedBytes() {
@@ -9066,7 +10619,7 @@ public final class ShimmerGRPC {
           }
         }
         /**
-         * <code>string driveCapacityParsed = 7;</code>
+         * <code>string driveCapacityParsed = 11;</code>
          */
         public Builder setDriveCapacityParsed(
             java.lang.String value) {
@@ -9079,7 +10632,7 @@ public final class ShimmerGRPC {
           return this;
         }
         /**
-         * <code>string driveCapacityParsed = 7;</code>
+         * <code>string driveCapacityParsed = 11;</code>
          */
         public Builder clearDriveCapacityParsed() {
           
@@ -9088,7 +10641,7 @@ public final class ShimmerGRPC {
           return this;
         }
         /**
-         * <code>string driveCapacityParsed = 7;</code>
+         * <code>string driveCapacityParsed = 11;</code>
          */
         public Builder setDriveCapacityParsedBytes(
             com.google.protobuf.ByteString value) {
@@ -9102,28 +10655,519 @@ public final class ShimmerGRPC {
           return this;
         }
 
-        private boolean realTimeClockSet_ ;
+        private boolean isRealTimeClockSet_ ;
         /**
-         * <code>bool realTimeClockSet = 8;</code>
+         * <code>bool isRealTimeClockSet = 12;</code>
          */
-        public boolean getRealTimeClockSet() {
-          return realTimeClockSet_;
+        public boolean getIsRealTimeClockSet() {
+          return isRealTimeClockSet_;
         }
         /**
-         * <code>bool realTimeClockSet = 8;</code>
+         * <code>bool isRealTimeClockSet = 12;</code>
          */
-        public Builder setRealTimeClockSet(boolean value) {
+        public Builder setIsRealTimeClockSet(boolean value) {
           
-          realTimeClockSet_ = value;
+          isRealTimeClockSet_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>bool realTimeClockSet = 8;</code>
+         * <code>bool isRealTimeClockSet = 12;</code>
          */
-        public Builder clearRealTimeClockSet() {
+        public Builder clearIsRealTimeClockSet() {
           
-          realTimeClockSet_ = false;
+          isRealTimeClockSet_ = false;
+          onChanged();
+          return this;
+        }
+
+        private long lastReadRtcValueMilliSecs_ ;
+        /**
+         * <code>int64 lastReadRtcValueMilliSecs = 13;</code>
+         */
+        public long getLastReadRtcValueMilliSecs() {
+          return lastReadRtcValueMilliSecs_;
+        }
+        /**
+         * <code>int64 lastReadRtcValueMilliSecs = 13;</code>
+         */
+        public Builder setLastReadRtcValueMilliSecs(long value) {
+          
+          lastReadRtcValueMilliSecs_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int64 lastReadRtcValueMilliSecs = 13;</code>
+         */
+        public Builder clearLastReadRtcValueMilliSecs() {
+          
+          lastReadRtcValueMilliSecs_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object lastReadRtcValueParsed_ = "";
+        /**
+         * <code>string lastReadRtcValueParsed = 14;</code>
+         */
+        public java.lang.String getLastReadRtcValueParsed() {
+          java.lang.Object ref = lastReadRtcValueParsed_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            lastReadRtcValueParsed_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string lastReadRtcValueParsed = 14;</code>
+         */
+        public com.google.protobuf.ByteString
+            getLastReadRtcValueParsedBytes() {
+          java.lang.Object ref = lastReadRtcValueParsed_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            lastReadRtcValueParsed_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string lastReadRtcValueParsed = 14;</code>
+         */
+        public Builder setLastReadRtcValueParsed(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          lastReadRtcValueParsed_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string lastReadRtcValueParsed = 14;</code>
+         */
+        public Builder clearLastReadRtcValueParsed() {
+          
+          lastReadRtcValueParsed_ = getDefaultInstance().getLastReadRtcValueParsed();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string lastReadRtcValueParsed = 14;</code>
+         */
+        public Builder setLastReadRtcValueParsedBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          lastReadRtcValueParsed_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object hwVersionParsed_ = "";
+        /**
+         * <code>string hwVersionParsed = 15;</code>
+         */
+        public java.lang.String getHwVersionParsed() {
+          java.lang.Object ref = hwVersionParsed_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            hwVersionParsed_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string hwVersionParsed = 15;</code>
+         */
+        public com.google.protobuf.ByteString
+            getHwVersionParsedBytes() {
+          java.lang.Object ref = hwVersionParsed_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            hwVersionParsed_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string hwVersionParsed = 15;</code>
+         */
+        public Builder setHwVersionParsed(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          hwVersionParsed_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string hwVersionParsed = 15;</code>
+         */
+        public Builder clearHwVersionParsed() {
+          
+          hwVersionParsed_ = getDefaultInstance().getHwVersionParsed();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string hwVersionParsed = 15;</code>
+         */
+        public Builder setHwVersionParsedBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          hwVersionParsed_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object expBrdVersionParsed_ = "";
+        /**
+         * <code>string expBrdVersionParsed = 16;</code>
+         */
+        public java.lang.String getExpBrdVersionParsed() {
+          java.lang.Object ref = expBrdVersionParsed_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            expBrdVersionParsed_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string expBrdVersionParsed = 16;</code>
+         */
+        public com.google.protobuf.ByteString
+            getExpBrdVersionParsedBytes() {
+          java.lang.Object ref = expBrdVersionParsed_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            expBrdVersionParsed_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string expBrdVersionParsed = 16;</code>
+         */
+        public Builder setExpBrdVersionParsed(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          expBrdVersionParsed_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string expBrdVersionParsed = 16;</code>
+         */
+        public Builder clearExpBrdVersionParsed() {
+          
+          expBrdVersionParsed_ = getDefaultInstance().getExpBrdVersionParsed();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string expBrdVersionParsed = 16;</code>
+         */
+        public Builder setExpBrdVersionParsedBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          expBrdVersionParsed_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object fwVersionParsed_ = "";
+        /**
+         * <code>string fwVersionParsed = 17;</code>
+         */
+        public java.lang.String getFwVersionParsed() {
+          java.lang.Object ref = fwVersionParsed_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            fwVersionParsed_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string fwVersionParsed = 17;</code>
+         */
+        public com.google.protobuf.ByteString
+            getFwVersionParsedBytes() {
+          java.lang.Object ref = fwVersionParsed_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            fwVersionParsed_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string fwVersionParsed = 17;</code>
+         */
+        public Builder setFwVersionParsed(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          fwVersionParsed_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string fwVersionParsed = 17;</code>
+         */
+        public Builder clearFwVersionParsed() {
+          
+          fwVersionParsed_ = getDefaultInstance().getFwVersionParsed();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string fwVersionParsed = 17;</code>
+         */
+        public Builder setFwVersionParsedBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          fwVersionParsed_ = value;
+          onChanged();
+          return this;
+        }
+
+        private com.google.protobuf.LazyStringList pairedDevice_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensurePairedDeviceIsMutable() {
+          if (!((bitField0_ & 0x00020000) == 0x00020000)) {
+            pairedDevice_ = new com.google.protobuf.LazyStringArrayList(pairedDevice_);
+            bitField0_ |= 0x00020000;
+           }
+        }
+        /**
+         * <code>repeated string pairedDevice = 18;</code>
+         */
+        public com.google.protobuf.ProtocolStringList
+            getPairedDeviceList() {
+          return pairedDevice_.getUnmodifiableView();
+        }
+        /**
+         * <code>repeated string pairedDevice = 18;</code>
+         */
+        public int getPairedDeviceCount() {
+          return pairedDevice_.size();
+        }
+        /**
+         * <code>repeated string pairedDevice = 18;</code>
+         */
+        public java.lang.String getPairedDevice(int index) {
+          return pairedDevice_.get(index);
+        }
+        /**
+         * <code>repeated string pairedDevice = 18;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPairedDeviceBytes(int index) {
+          return pairedDevice_.getByteString(index);
+        }
+        /**
+         * <code>repeated string pairedDevice = 18;</code>
+         */
+        public Builder setPairedDevice(
+            int index, java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensurePairedDeviceIsMutable();
+          pairedDevice_.set(index, value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pairedDevice = 18;</code>
+         */
+        public Builder addPairedDevice(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensurePairedDeviceIsMutable();
+          pairedDevice_.add(value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pairedDevice = 18;</code>
+         */
+        public Builder addAllPairedDevice(
+            java.lang.Iterable<java.lang.String> values) {
+          ensurePairedDeviceIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, pairedDevice_);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pairedDevice = 18;</code>
+         */
+        public Builder clearPairedDevice() {
+          pairedDevice_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00020000);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string pairedDevice = 18;</code>
+         */
+        public Builder addPairedDeviceBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          ensurePairedDeviceIsMutable();
+          pairedDevice_.add(value);
+          onChanged();
+          return this;
+        }
+
+        private long configTime_ ;
+        /**
+         * <code>int64 configTime = 19;</code>
+         */
+        public long getConfigTime() {
+          return configTime_;
+        }
+        /**
+         * <code>int64 configTime = 19;</code>
+         */
+        public Builder setConfigTime(long value) {
+          
+          configTime_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int64 configTime = 19;</code>
+         */
+        public Builder clearConfigTime() {
+          
+          configTime_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object configTimeParsed_ = "";
+        /**
+         * <code>string configTimeParsed = 20;</code>
+         */
+        public java.lang.String getConfigTimeParsed() {
+          java.lang.Object ref = configTimeParsed_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            configTimeParsed_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string configTimeParsed = 20;</code>
+         */
+        public com.google.protobuf.ByteString
+            getConfigTimeParsedBytes() {
+          java.lang.Object ref = configTimeParsed_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            configTimeParsed_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string configTimeParsed = 20;</code>
+         */
+        public Builder setConfigTimeParsed(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          configTimeParsed_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string configTimeParsed = 20;</code>
+         */
+        public Builder clearConfigTimeParsed() {
+          
+          configTimeParsed_ = getDefaultInstance().getConfigTimeParsed();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string configTimeParsed = 20;</code>
+         */
+        public Builder setConfigTimeParsedBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          configTimeParsed_ = value;
           onChanged();
           return this;
         }
@@ -9977,6 +12021,11 @@ public final class ShimmerGRPC {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shimmerGRPC_StringMsg_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_StringArrayMsg_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_StringArrayMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_shimmerGRPC_BoolMsg_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -10034,41 +12083,55 @@ public final class ShimmerGRPC {
       "9\n\005value\030\002 \001(\0132*.shimmerGRPC.ObjectClust" +
       "er2.FormatCluster2:\0028\001\"7\n\021CommunicationT" +
       "ype\022\006\n\002BT\020\000\022\006\n\002SD\020\001\022\022\n\016Radio_802_15_4\020\002\"" +
-      "\034\n\tStringMsg\022\017\n\007message\030\001 \001(\t\"\030\n\007BoolMsg" +
-      "\022\r\n\005state\030\001 \001(\010\"4\n\020OperationRequest\022\017\n\007s" +
-      "uccess\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"\225\003\n\014Shimme" +
-      "rsInfo\022\r\n\005state\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022=" +
-      "\n\nshimmerMap\030\003 \003(\0132).shimmerGRPC.Shimmer" +
-      "sInfo.ShimmerMapEntry\032\313\001\n\013ShimmerInfo\022\014\n",
-      "\004name\030\001 \001(\t\022\020\n\010uniqueId\030\002 \001(\t\022\030\n\020bluetoo" +
-      "thAddress\030\003 \001(\t\022\021\n\ttrialName\030\004 \001(\t\022\031\n\021ba" +
-      "tteryPercentage\030\005 \001(\t\022\035\n\025driveTotalSpace" +
-      "Parsed\030\006 \001(\t\022\033\n\023driveCapacityParsed\030\007 \001(" +
-      "\t\022\030\n\020realTimeClockSet\030\010 \001(\010\032X\n\017ShimmerMa" +
-      "pEntry\022\013\n\003key\030\001 \001(\t\0224\n\005value\030\002 \001(\0132%.shi" +
-      "mmerGRPC.ShimmersInfo.ShimmerInfo:\0028\0012\220\006" +
-      "\n\rShimmerServer\022@\n\010SayHello\022\031.shimmerGRP" +
-      "C.HelloRequest\032\027.shimmerGRPC.HelloReply\"" +
-      "\000\022L\n\rGetDataStream\022\032.shimmerGRPC.StreamR",
-      "equest\032\033.shimmerGRPC.ObjectCluster2\"\0000\001\022" +
-      "J\n\016SendDataStream\022\033.shimmerGRPC.ObjectCl" +
-      "uster2\032\027.shimmerGRPC.HelloReply\"\000(\001\022L\n\016S" +
-      "endFileStream\022\035.shimmerGRPC.FileByteTran" +
-      "sfer\032\027.shimmerGRPC.HelloReply\"\000(\001\022K\n\016Con" +
-      "nectShimmer\022\033.shimmerGRPC.ShimmerRequest" +
-      "\032\032.shimmerGRPC.CommandStatus\"\000\022K\n\016StartS" +
-      "treaming\022\033.shimmerGRPC.ShimmerRequest\032\032." +
-      "shimmerGRPC.CommandStatus\"\000\022M\n\020CloseAppl" +
-      "ication\022\033.shimmerGRPC.ShimmerRequest\032\032.s",
-      "himmerGRPC.CommandStatus\"\000\022O\n\024GetDockedS" +
-      "himmerInfo\022\032.shimmerGRPC.StreamRequest\032\031" +
-      ".shimmerGRPC.ShimmersInfo\"\000\022P\n\025SetWorksp" +
-      "aceDirectory\022\026.shimmerGRPC.StringMsg\032\035.s" +
-      "himmerGRPC.OperationRequest\"\000\022I\n\025GetWork" +
-      "spaceDirectory\022\026.shimmerGRPC.StringMsg\032\026" +
-      ".shimmerGRPC.StringMsg\"\000BB\n\030com.shimmerr" +
-      "esearch.grpcB\013ShimmerGRPC\252\002\030com.shimmerr" +
-      "esearch.grpcb\006proto3"
+      "\034\n\tStringMsg\022\017\n\007message\030\001 \001(\t\"&\n\016StringA" +
+      "rrayMsg\022\024\n\014messageArray\030\001 \003(\t\"\030\n\007BoolMsg" +
+      "\022\r\n\005state\030\001 \001(\010\"r\n\020OperationRequest\022\017\n\007s" +
+      "uccess\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022\032\n\022progres" +
+      "sPercentage\030\003 \001(\001\022 \n\030progressPercentageP" +
+      "arsed\030\004 \001(\t\"\324\005\n\014ShimmersInfo\022\r\n\005state\030\001 ",
+      "\001(\010\022\017\n\007message\030\002 \001(\t\022=\n\nshimmerMap\030\003 \003(\013" +
+      "2).shimmerGRPC.ShimmersInfo.ShimmerMapEn" +
+      "try\032\212\004\n\013ShimmerInfo\022\014\n\004name\030\001 \001(\t\022\020\n\010uni" +
+      "queId\030\002 \001(\t\022\030\n\020bluetoothAddress\030\003 \001(\t\022\021\n" +
+      "\ttrialName\030\004 \001(\t\022\037\n\027batteryPercentagePar" +
+      "sed\030\005 \001(\t\022\031\n\021batteryPercentage\030\006 \001(\001\022\034\n\024" +
+      "chargingStatusParsed\030\007 \001(\t\022\025\n\rdriveCapac" +
+      "ity\030\010 \001(\003\022\026\n\016driveSpaceUsed\030\t \001(\003\022\026\n\016dri" +
+      "veSpaceFree\030\n \001(\003\022\033\n\023driveCapacityParsed" +
+      "\030\013 \001(\t\022\032\n\022isRealTimeClockSet\030\014 \001(\010\022!\n\031la",
+      "stReadRtcValueMilliSecs\030\r \001(\003\022\036\n\026lastRea" +
+      "dRtcValueParsed\030\016 \001(\t\022\027\n\017hwVersionParsed" +
+      "\030\017 \001(\t\022\033\n\023expBrdVersionParsed\030\020 \001(\t\022\027\n\017f" +
+      "wVersionParsed\030\021 \001(\t\022\024\n\014pairedDevice\030\022 \003" +
+      "(\t\022\022\n\nconfigTime\030\023 \001(\003\022\030\n\020configTimePars" +
+      "ed\030\024 \001(\t\032X\n\017ShimmerMapEntry\022\013\n\003key\030\001 \001(\t" +
+      "\0224\n\005value\030\002 \001(\0132%.shimmerGRPC.ShimmersIn" +
+      "fo.ShimmerInfo:\0028\0012\244\007\n\rShimmerServer\022@\n\010" +
+      "SayHello\022\031.shimmerGRPC.HelloRequest\032\027.sh" +
+      "immerGRPC.HelloReply\"\000\022L\n\rGetDataStream\022",
+      "\032.shimmerGRPC.StreamRequest\032\033.shimmerGRP" +
+      "C.ObjectCluster2\"\0000\001\022J\n\016SendDataStream\022\033" +
+      ".shimmerGRPC.ObjectCluster2\032\027.shimmerGRP" +
+      "C.HelloReply\"\000(\001\022L\n\016SendFileStream\022\035.shi" +
+      "mmerGRPC.FileByteTransfer\032\027.shimmerGRPC." +
+      "HelloReply\"\000(\001\022K\n\016ConnectShimmer\022\033.shimm" +
+      "erGRPC.ShimmerRequest\032\032.shimmerGRPC.Comm" +
+      "andStatus\"\000\022K\n\016StartStreaming\022\033.shimmerG" +
+      "RPC.ShimmerRequest\032\032.shimmerGRPC.Command" +
+      "Status\"\000\022M\n\020CloseApplication\022\033.shimmerGR",
+      "PC.ShimmerRequest\032\032.shimmerGRPC.CommandS" +
+      "tatus\"\000\022K\n\024GetDockedShimmerInfo\022\026.shimme" +
+      "rGRPC.StringMsg\032\031.shimmerGRPC.ShimmersIn" +
+      "fo\"\000\022P\n\025SetWorkspaceDirectory\022\026.shimmerG" +
+      "RPC.StringMsg\032\035.shimmerGRPC.OperationReq" +
+      "uest\"\000\022I\n\025GetWorkspaceDirectory\022\026.shimme" +
+      "rGRPC.StringMsg\032\026.shimmerGRPC.StringMsg\"" +
+      "\000\022E\n\014PairShimmers\022\033.shimmerGRPC.StringAr" +
+      "rayMsg\032\026.shimmerGRPC.StringMsg\"\000\022O\n\024GetO" +
+      "perationProgress\022\026.shimmerGRPC.StringMsg",
+      "\032\035.shimmerGRPC.OperationRequest\"\000BB\n\030com" +
+      ".shimmerresearch.grpcB\013ShimmerGRPC\252\002\030com" +
+      ".shimmerresearch.grpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -10155,20 +12218,26 @@ public final class ShimmerGRPC {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_StringMsg_descriptor,
         new java.lang.String[] { "Message", });
-    internal_static_shimmerGRPC_BoolMsg_descriptor =
+    internal_static_shimmerGRPC_StringArrayMsg_descriptor =
       getDescriptor().getMessageTypes().get(8);
+    internal_static_shimmerGRPC_StringArrayMsg_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_StringArrayMsg_descriptor,
+        new java.lang.String[] { "MessageArray", });
+    internal_static_shimmerGRPC_BoolMsg_descriptor =
+      getDescriptor().getMessageTypes().get(9);
     internal_static_shimmerGRPC_BoolMsg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_BoolMsg_descriptor,
         new java.lang.String[] { "State", });
     internal_static_shimmerGRPC_OperationRequest_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_shimmerGRPC_OperationRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_OperationRequest_descriptor,
-        new java.lang.String[] { "Success", "Message", });
+        new java.lang.String[] { "Success", "Message", "ProgressPercentage", "ProgressPercentageParsed", });
     internal_static_shimmerGRPC_ShimmersInfo_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_shimmerGRPC_ShimmersInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_ShimmersInfo_descriptor,
@@ -10178,7 +12247,7 @@ public final class ShimmerGRPC {
     internal_static_shimmerGRPC_ShimmersInfo_ShimmerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_ShimmersInfo_ShimmerInfo_descriptor,
-        new java.lang.String[] { "Name", "UniqueId", "BluetoothAddress", "TrialName", "BatteryPercentage", "DriveTotalSpaceParsed", "DriveCapacityParsed", "RealTimeClockSet", });
+        new java.lang.String[] { "Name", "UniqueId", "BluetoothAddress", "TrialName", "BatteryPercentageParsed", "BatteryPercentage", "ChargingStatusParsed", "DriveCapacity", "DriveSpaceUsed", "DriveSpaceFree", "DriveCapacityParsed", "IsRealTimeClockSet", "LastReadRtcValueMilliSecs", "LastReadRtcValueParsed", "HwVersionParsed", "ExpBrdVersionParsed", "FwVersionParsed", "PairedDevice", "ConfigTime", "ConfigTimeParsed", });
     internal_static_shimmerGRPC_ShimmersInfo_ShimmerMapEntry_descriptor =
       internal_static_shimmerGRPC_ShimmersInfo_descriptor.getNestedTypes().get(1);
     internal_static_shimmerGRPC_ShimmersInfo_ShimmerMapEntry_fieldAccessorTable = new

@@ -13,23 +13,19 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ConfigOptionDetails.GUI_COMPONENT_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 
 public abstract class OrientationModule extends AbstractAlgorithm{
 
-	/** * */
-	private static final long serialVersionUID = -4174847826978293223L;
+	private static final long serialVersionUID = 2501565989909361523L;
 	
-//	protected final double BETA = 0.5;
-//	protected final double Q1 = 1;
-//	protected final double Q2 = 0;
-//	protected final double Q3 = 0;
-//	protected final double Q4 = 0;
-	
+	//--------- Algorithm specific variables start --------------	
 	protected Vector3d accValues;
 	protected Vector3d gyroValues;
 	protected Vector3d magValues;
@@ -44,7 +40,6 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 			ShimmerVerDetails.ANY_VERSION,
 			HW_ID_SR_CODES.EXP_BRD_EXG);
 	
-	//TODO update object cluster name with previously agreed name
 	public static class AlgorithmName{
 		public static final String ORIENTATION_9DOF_LN = "LN_Acc_9DoF";
 		public static final String ORIENTATION_6DOF_LN = "LN_Acc_6DoF";
@@ -59,8 +54,6 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		public static final String EULER_OUTPUT = "Euler";
 	}
 	
-//	public static List<ShimmerVerObject> mListSVO = new ArrayList<ShimmerVerObject>(); 
-	
 	transient GradDes3DOrientation orientationAlgorithm;
 	public boolean quaternionOutput= true;
 	public boolean eulerOutput = false;
@@ -73,40 +66,33 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		NINE_DOF,
 		SIX_DOF;
 	}
+	//--------- Algorithm specific variables end --------------	
 	
-	// ------------------- Algorithms grouping map end -----------------------
+	// --------- Configuration options start --------------
+	public static final ConfigOptionDetails configOptionQuatOutput = new ConfigOptionDetails(
+			OrientationModule.GuiLabelConfig.QUATERNION_OUTPUT,
+			null,
+			QUATERNION_OPTIONS, 
+			GUI_COMPONENT_TYPE.COMBOBOX,
+			null);
 
-	{
-//		mListSVO.add(svoSh3Module);
-		
-//		mConfigOptionsMap.put(SAMPLING_RATE,new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD,mListSVO));
-//		String[] accSensors = new String[2];
-//		accSensors[0]=Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL;
-//		accSensors[1]=Shimmer3.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL;
-//		mConfigOptionsMap.put(ACCELEROMETER, new AlgorithmConfigOptionDetails(AlgorithmConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX, mListSVO, accSensors));
-		
-	}
-	
-//	public OrientationModule(AlgorithmDetails algorithmDetails, double samplingRate) {
-//		mAlgorithmDetails = algorithmDetails;
-//		mAlgorithmType = ALGORITHM_TYPE.ALGORITHM_TYPE_CONTINUOUS;
-//		mAlgorithmResultType = ALGORITHM_RESULT_TYPE.ALGORITHM_RESULT_TYPE_SINGLE_OBJECT_CLUSTER;
-//		mAlgorithmName = algorithmDetails.mAlgorithmName;
-//		mAlgorithmGroupingName = algorithmDetails.mAlgorithmName;
-//		
-//		this.samplingRate = samplingRate;
-//		try {
-//			initialize();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
+	public static final ConfigOptionDetails configOptionEulerOutput = new ConfigOptionDetails(
+			OrientationModule.GuiLabelConfig.EULER_OUTPUT,
+			null,
+			EULER_OPTIONS, 
+			GUI_COMPONENT_TYPE.COMBOBOX,
+			null);
+	// --------- Configuration options end --------------
 
 
+	
+    //--------- Constructors for this class start --------------
+	
 	public OrientationModule(ShimmerDevice shimmerDevice, AlgorithmDetails algorithmDetails) {
 		super(shimmerDevice, algorithmDetails);
 	}
+	
+    //--------- Constructors for this class end --------------
 
 	@Override
 	public AlgorithmResultObject processDataRealTime(ObjectCluster object) throws Exception {
