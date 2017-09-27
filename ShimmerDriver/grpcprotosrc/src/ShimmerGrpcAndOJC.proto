@@ -48,6 +48,10 @@ service ShimmerServer {
 
   rpc ParseSdDataFromPath(StringMsg) returns (OperationRequest){}
 
+  rpc ScanSdDataAndCopy(StringArrayMsg) returns (OperationRequest){}
+
+  rpc ClearSdCardData(StringArrayMsg) returns (OperationRequest){}
+
 }
 
 message FileByteTransfer {
@@ -125,11 +129,12 @@ message DoubleMsg {
 }
 
 message OperationRequest {
-  bool success = 1;
-  string message = 2;
+  bool isFinished = 1;
+  bool isSuccess = 2;
+  string message = 3;
 
-  string progressPercentageParsed = 3;
-//  double progressPercentage = 3;
+  double progressPercentage = 4;
+  string progressPercentageParsed = 5;
 }
 
 message ShimmersInfo {

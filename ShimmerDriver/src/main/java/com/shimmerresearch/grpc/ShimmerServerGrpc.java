@@ -210,6 +210,30 @@ public final class ShimmerServerGrpc {
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
           .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_SCAN_SD_DATA_AND_COPY =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "ScanSdDataAndCopy"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+          .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_CLEAR_SD_CARD_DATA =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "ClearSdCardData"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+          .build();
 
   /**
    * Creates a new async stub that supports all call types for the service
@@ -358,6 +382,20 @@ public final class ShimmerServerGrpc {
       asyncUnimplementedUnaryCall(METHOD_PARSE_SD_DATA_FROM_PATH, responseObserver);
     }
 
+    /**
+     */
+    public void scanSdDataAndCopy(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_SCAN_SD_DATA_AND_COPY, responseObserver);
+    }
+
+    /**
+     */
+    public void clearSdCardData(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_CLEAR_SD_CARD_DATA, responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -465,6 +503,20 @@ public final class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_PARSE_SD_DATA_FROM_PATH)))
+          .addMethod(
+            METHOD_SCAN_SD_DATA_AND_COPY,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+                com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
+                  this, METHODID_SCAN_SD_DATA_AND_COPY)))
+          .addMethod(
+            METHOD_CLEAR_SD_CARD_DATA,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+                com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
+                  this, METHODID_CLEAR_SD_CARD_DATA)))
           .build();
     }
   }
@@ -621,6 +673,22 @@ public final class ShimmerServerGrpc {
       asyncUnaryCall(
           getChannel().newCall(METHOD_PARSE_SD_DATA_FROM_PATH, getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void scanSdDataAndCopy(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_SCAN_SD_DATA_AND_COPY, getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void clearSdCardData(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_CLEAR_SD_CARD_DATA, getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -743,6 +811,20 @@ public final class ShimmerServerGrpc {
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest parseSdDataFromPath(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
           getChannel(), METHOD_PARSE_SD_DATA_FROM_PATH, getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest scanSdDataAndCopy(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_SCAN_SD_DATA_AND_COPY, getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest clearSdCardData(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_CLEAR_SD_CARD_DATA, getCallOptions(), request);
     }
   }
 
@@ -868,6 +950,22 @@ public final class ShimmerServerGrpc {
       return futureUnaryCall(
           getChannel().newCall(METHOD_PARSE_SD_DATA_FROM_PATH, getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> scanSdDataAndCopy(
+        com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_SCAN_SD_DATA_AND_COPY, getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> clearSdCardData(
+        com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_CLEAR_SD_CARD_DATA, getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SAY_HELLO = 0;
@@ -883,8 +981,10 @@ public final class ShimmerServerGrpc {
   private static final int METHODID_GET_OPERATION_PROGRESS = 10;
   private static final int METHODID_IMPORT_SD_DATA_FROM_SHIMMERS = 11;
   private static final int METHODID_PARSE_SD_DATA_FROM_PATH = 12;
-  private static final int METHODID_SEND_DATA_STREAM = 13;
-  private static final int METHODID_SEND_FILE_STREAM = 14;
+  private static final int METHODID_SCAN_SD_DATA_AND_COPY = 13;
+  private static final int METHODID_CLEAR_SD_CARD_DATA = 14;
+  private static final int METHODID_SEND_DATA_STREAM = 15;
+  private static final int METHODID_SEND_FILE_STREAM = 16;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -955,6 +1055,14 @@ public final class ShimmerServerGrpc {
           serviceImpl.parseSdDataFromPath((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>) responseObserver);
           break;
+        case METHODID_SCAN_SD_DATA_AND_COPY:
+          serviceImpl.scanSdDataAndCopy((com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>) responseObserver);
+          break;
+        case METHODID_CLEAR_SD_CARD_DATA:
+          serviceImpl.clearSdCardData((com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -1009,6 +1117,8 @@ public final class ShimmerServerGrpc {
               .addMethod(METHOD_GET_OPERATION_PROGRESS)
               .addMethod(METHOD_IMPORT_SD_DATA_FROM_SHIMMERS)
               .addMethod(METHOD_PARSE_SD_DATA_FROM_PATH)
+              .addMethod(METHOD_SCAN_SD_DATA_AND_COPY)
+              .addMethod(METHOD_CLEAR_SD_CARD_DATA)
               .build();
         }
       }

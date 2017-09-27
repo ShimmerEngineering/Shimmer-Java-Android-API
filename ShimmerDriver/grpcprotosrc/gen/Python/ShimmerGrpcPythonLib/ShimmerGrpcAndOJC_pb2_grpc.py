@@ -89,6 +89,16 @@ class ShimmerServerStub(object):
         request_serializer=ShimmerGrpcAndOJC__pb2.StringMsg.SerializeToString,
         response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
         )
+    self.ScanSdDataAndCopy = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/ScanSdDataAndCopy',
+        request_serializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.SerializeToString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
+        )
+    self.ClearSdCardData = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/ClearSdCardData',
+        request_serializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.SerializeToString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
+        )
 
 
 class ShimmerServerServicer(object):
@@ -200,6 +210,20 @@ class ShimmerServerServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def ScanSdDataAndCopy(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def ClearSdCardData(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_ShimmerServerServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -276,6 +300,16 @@ def add_ShimmerServerServicer_to_server(servicer, server):
       'ParseSdDataFromPath': grpc.unary_unary_rpc_method_handler(
           servicer.ParseSdDataFromPath,
           request_deserializer=ShimmerGrpcAndOJC__pb2.StringMsg.FromString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
+      ),
+      'ScanSdDataAndCopy': grpc.unary_unary_rpc_method_handler(
+          servicer.ScanSdDataAndCopy,
+          request_deserializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.FromString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
+      ),
+      'ClearSdCardData': grpc.unary_unary_rpc_method_handler(
+          servicer.ClearSdCardData,
+          request_deserializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.FromString,
           response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
       ),
   }
