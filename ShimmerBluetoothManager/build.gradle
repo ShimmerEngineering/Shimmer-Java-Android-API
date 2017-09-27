@@ -7,7 +7,7 @@ archivesBaseName = 'ShimmerBluetoothManager'
 group = 'com.shimmerresearch.managers.bluetoothmanager'
 //group = "myorg"
 
-version = '0.9.17beta'
+version = '0.9.19beta'
 
 
 sourceCompatibility = 1.7
