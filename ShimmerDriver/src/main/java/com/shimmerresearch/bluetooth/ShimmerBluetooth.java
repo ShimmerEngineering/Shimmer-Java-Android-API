@@ -115,6 +115,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
+import com.shimmerresearch.sensors.bmpX80.SensorBMPX80;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.sensors.shimmer2.SensorMMA736x;
@@ -474,13 +475,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		// TODO Auto-generated constructor stub
 	}
 
-	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int gyroRange, int magRange) {
-		this(userAssignedName, samplingRate, sensorIdsToEnable, accelRange, gsrRange, magRange);
+	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int gyroRange, int magRange, int pressureResolution) {
+		this(userAssignedName, samplingRate, sensorIdsToEnable, accelRange, gsrRange, magRange, pressureResolution);
 		
 		addFixedShimmerConfig(SensorMPU9X50.GuiLabelConfig.MPU9X50_GYRO_RANGE, gyroRange);
 	}
 
-	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int magRange) {
+	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int magRange, int pressureResolution) {
 		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
 
 		setShimmerUserAssignedName(userAssignedName);
@@ -493,6 +494,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE, accelRange);
 		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magRange);
+		addFixedShimmerConfig(SensorBMPX80.GuiLabelConfig.PRESSURE_RESOLUTION,pressureResolution);
+		
 	}
 	
 	/** Only for Shimmer2r note that sensormaps aren't supported on Shimmer2r devices
