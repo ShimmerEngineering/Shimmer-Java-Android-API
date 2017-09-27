@@ -54,7 +54,7 @@ def pairShimmers(stub):
     print(response)
     sleep(2.0)
     if response.isSuccess:
-		waitForOperationToFinish(stub)
+        waitForOperationToFinish(stub)
 
 def importSdDataFromShimmers(stub):
     print('Importing from Shimmers')
@@ -65,7 +65,7 @@ def importSdDataFromShimmers(stub):
     print(response)
     sleep(2.0)
     if response.isSuccess:
-		waitForOperationToFinish(stub)
+        waitForOperationToFinish(stub)
 
 def parseSdDataFromPath(stub, path):
     print('Parsing data from path')
@@ -73,7 +73,29 @@ def parseSdDataFromPath(stub, path):
     print(response)
     sleep(2.0)
     if response.isSuccess:
-		waitForOperationToFinish(stub)
+        waitForOperationToFinish(stub)
+
+def copySdDataFromShimmers(stub):
+    print('Copying data from Shimmers')
+    stringArrayMsg = ShimmerGrpcAndOJC_pb2.StringArrayMsg();
+    #Specify particular slots or comment out to import from all docked Shimmers
+#    stringArrayMsg.messageArray.extend(['Base6U.01.01', 'Base6U.01.02'])
+    response = stub.ScanSdDataAndCopy(stringArrayMsg)
+    print(response)
+    sleep(2.0)
+    if response.isSuccess:
+        waitForOperationToFinish(stub)
+
+def clearSdDataFromShimmers(stub):
+    print('Clearing data from Shimmers')
+    stringArrayMsg = ShimmerGrpcAndOJC_pb2.StringArrayMsg();
+    #Specify particular slots or comment out to import from all docked Shimmers
+#    stringArrayMsg.messageArray.extend(['Base6U.01.01', 'Base6U.01.02'])
+    response = stub.ClearSdCardData(stringArrayMsg)
+    print(response)
+    sleep(2.0)
+    if response.isSuccess:
+        waitForOperationToFinish(stub)
 
 def getOperationProgress(stub):
     response = stub.GetOperationProgress(ShimmerGrpcAndOJC_pb2.StringMsg(message=''))
@@ -113,14 +135,18 @@ def run():
     if isOperationInProgress(stub):
         print("API is busy")
         waitForOperationToFinish(stub)
-		
+        
 #    pairShimmers(stub)
-#    importSdDataFromShimmers(stub)
+    importSdDataFromShimmers(stub)
 
 #    parseSdDataFromPath(stub, 'C:/Users/Shimmer/Documents/StroKare_Workspace/Backup/2017-09-27_12.03.19/0006668ca4cc')
 #    parseSdDataFromPath(stub, 'C:/Users/Shimmer/Documents/StroKare_Workspace/Backup/2017-09-27_12.03.19')
 
 #    closeApplication(stub)
+
+# Not working yet
+#    copySdDataFromShimmers(stub)
+#    clearSdDataFromShimmers(stub)
     
 
 if __name__ == '__main__':

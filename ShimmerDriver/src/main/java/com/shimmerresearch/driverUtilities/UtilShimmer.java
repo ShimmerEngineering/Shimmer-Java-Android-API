@@ -1106,6 +1106,16 @@ public class UtilShimmer implements Serializable {
 		return listOfClonedShimmerDevices;
 	}
 
+	public static List<String> getListOfUniqueIdsFromShimmerDevices(List<ShimmerDevice> listOfShimmerDevices) {
+		List<String> listOfUniqueIds = new ArrayList<String>();
+		Iterator<ShimmerDevice> iterator = listOfShimmerDevices.iterator();
+		while(iterator.hasNext()){
+			ShimmerDevice shimmerDevice = iterator.next();
+			listOfUniqueIds.add(shimmerDevice.getUniqueId());
+		}
+		return listOfUniqueIds;
+	}
+
 
 
 	
