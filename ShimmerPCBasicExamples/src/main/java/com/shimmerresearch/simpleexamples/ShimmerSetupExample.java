@@ -3,6 +3,7 @@ package com.shimmerresearch.simpleexamples;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
@@ -10,9 +11,9 @@ import com.shimmerresearch.pcDriver.ShimmerPC;
 public class ShimmerSetupExample extends BasicProcessWithCallBack{
 
 	public void initialize(){
-
+		Integer[] arraySensorID ={Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE};
 		// TODO Auto-generated method stub
-		ShimmerPC pc = new ShimmerPC("test", 512, 1, 1, ShimmerPC.SENSOR_ACCEL|ShimmerPC.SENSOR_DACCEL|ShimmerPC.SENSOR_GYRO, true, 1, 1);
+		ShimmerPC pc = new ShimmerPC("test",51.2,1, 4, arraySensorID, 0, 0, 0, 0); 
 		pc.connect("COM46", "");
 		try {
 			pc.connect();
