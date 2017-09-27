@@ -28,7 +28,7 @@ def setWorkspaceDirectory(stub):
     newWorkspace='C:/Users/Shimmer/Documents/StroKare_Workspace/'
     print('Setting Workspace Directory to: ' + newWorkspace)
     response = stub.SetWorkspaceDirectory(ShimmerGrpcAndOJC_pb2.StringMsg(message=newWorkspace))
-#    print('\tPass? ' + str(response.success))
+#    print('\tPass? ' + str(response.isSuccess))
 #    print('\tMessage=' + response.message)
     print(response)
 
@@ -53,13 +53,8 @@ def pairShimmers(stub):
     response = stub.PairShimmers(stringArrayMsg)
     print(response)
     sleep(2.0)
-    if response.success:
-        for i in range(0, 99):
-            sleep(1.0)
-            response = getOperationProgress(stub)
-            print(response)
-            if not isOperationInProgressCheck(response.message):
-                break
+    if response.isSuccess:
+		waitForOperationToFinish(stub)
 
 def importSdDataFromShimmers(stub):
     print('Importing from Shimmers')
@@ -69,13 +64,16 @@ def importSdDataFromShimmers(stub):
     response = stub.ImportSdDataFromShimmers(stringArrayMsg)
     print(response)
     sleep(2.0)
-    if response.success:
-        for i in range(0, 99):
-            sleep(1.0)
-            response = getOperationProgress(stub)
-            print(response)
-            if not isOperationInProgressCheck(response.message):
-                break
+    if response.isSuccess:
+		waitForOperationToFinish(stub)
+
+def parseSdDataFromPath(stub, path):
+    print('Parsing data from path')
+    response = stub.ParseSdDataFromPath(ShimmerGrpcAndOJC_pb2.StringMsg(message=path))
+    print(response)
+    sleep(2.0)
+    if response.isSuccess:
+		waitForOperationToFinish(stub)
 
 def getOperationProgress(stub):
     response = stub.GetOperationProgress(ShimmerGrpcAndOJC_pb2.StringMsg(message=''))
@@ -86,10 +84,17 @@ def isOperationInProgress(stub):
     return isOperationInProgressCheck(response.message)
 
 def isOperationInProgressCheck(message):
-    if message == 'None':
+    if message == 'None':# or message == 'Finished':
         return False
     else :
         return True
+
+def waitForOperationToFinish(stub):
+    response = getOperationProgress(stub)
+    while not response.isFinished or isOperationInProgressCheck(response.message):
+        sleep(2.0)
+        response = getOperationProgress(stub)
+        print(response)
 
 def run():
     channel = grpc.insecure_channel('localhost:50051')
@@ -105,13 +110,17 @@ def run():
   
     getDockedShimmerInfo(stub)
   
-    if not isOperationInProgress(stub):
-#      pairShimmers(stub)
-      importSdDataFromShimmers(stub)
-    else:
-      print("API is busy")
+    if isOperationInProgress(stub):
+        print("API is busy")
+        waitForOperationToFinish(stub)
+		
+#    pairShimmers(stub)
+#    importSdDataFromShimmers(stub)
 
-    closeApplication(stub)
+#    parseSdDataFromPath(stub, 'C:/Users/Shimmer/Documents/StroKare_Workspace/Backup/2017-09-27_12.03.19/0006668ca4cc')
+#    parseSdDataFromPath(stub, 'C:/Users/Shimmer/Documents/StroKare_Workspace/Backup/2017-09-27_12.03.19')
+
+#    closeApplication(stub)
     
 
 if __name__ == '__main__':
