@@ -472,7 +472,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 
 	public ShimmerBluetooth() {
-		// TODO Auto-generated constructor stub
+		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
 	}
 
 	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int gyroRange, int magRange, int pressureResolution) {
