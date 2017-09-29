@@ -1953,7 +1953,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public boolean isSupportedSrProgViaDock() {
-		return mShimmerVerObject.compareVersions(FW_ID.LOGANDSTREAM, 0, 8, 1);
+		if(mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 13)
+				|| mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 8, 1)){
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean isSupportedSdLogSync() {
