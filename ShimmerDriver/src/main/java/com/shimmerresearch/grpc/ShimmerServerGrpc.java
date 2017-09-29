@@ -234,6 +234,30 @@ public final class ShimmerServerGrpc {
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
           .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "DockAccessSlotWithSdCard"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+          .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_DOCK_RESTORE_AUTO_TASKS =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "DockRestoreAutoTasks"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+          .build();
 
   /**
    * Creates a new async stub that supports all call types for the service
@@ -396,6 +420,20 @@ public final class ShimmerServerGrpc {
       asyncUnimplementedUnaryCall(METHOD_CLEAR_SD_CARD_DATA, responseObserver);
     }
 
+    /**
+     */
+    public void dockAccessSlotWithSdCard(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD, responseObserver);
+    }
+
+    /**
+     */
+    public void dockRestoreAutoTasks(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_DOCK_RESTORE_AUTO_TASKS, responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -517,6 +555,20 @@ public final class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_CLEAR_SD_CARD_DATA)))
+          .addMethod(
+            METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+                com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
+                  this, METHODID_DOCK_ACCESS_SLOT_WITH_SD_CARD)))
+          .addMethod(
+            METHOD_DOCK_RESTORE_AUTO_TASKS,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+                com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
+                  this, METHODID_DOCK_RESTORE_AUTO_TASKS)))
           .build();
     }
   }
@@ -689,6 +741,22 @@ public final class ShimmerServerGrpc {
       asyncUnaryCall(
           getChannel().newCall(METHOD_CLEAR_SD_CARD_DATA, getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void dockAccessSlotWithSdCard(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD, getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void dockRestoreAutoTasks(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_DOCK_RESTORE_AUTO_TASKS, getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -825,6 +893,20 @@ public final class ShimmerServerGrpc {
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest clearSdCardData(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return blockingUnaryCall(
           getChannel(), METHOD_CLEAR_SD_CARD_DATA, getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest dockAccessSlotWithSdCard(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD, getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest dockRestoreAutoTasks(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_DOCK_RESTORE_AUTO_TASKS, getCallOptions(), request);
     }
   }
 
@@ -966,6 +1048,22 @@ public final class ShimmerServerGrpc {
       return futureUnaryCall(
           getChannel().newCall(METHOD_CLEAR_SD_CARD_DATA, getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> dockAccessSlotWithSdCard(
+        com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD, getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> dockRestoreAutoTasks(
+        com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_DOCK_RESTORE_AUTO_TASKS, getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SAY_HELLO = 0;
@@ -983,8 +1081,10 @@ public final class ShimmerServerGrpc {
   private static final int METHODID_PARSE_SD_DATA_FROM_PATH = 12;
   private static final int METHODID_SCAN_SD_DATA_AND_COPY = 13;
   private static final int METHODID_CLEAR_SD_CARD_DATA = 14;
-  private static final int METHODID_SEND_DATA_STREAM = 15;
-  private static final int METHODID_SEND_FILE_STREAM = 16;
+  private static final int METHODID_DOCK_ACCESS_SLOT_WITH_SD_CARD = 15;
+  private static final int METHODID_DOCK_RESTORE_AUTO_TASKS = 16;
+  private static final int METHODID_SEND_DATA_STREAM = 17;
+  private static final int METHODID_SEND_FILE_STREAM = 18;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1063,6 +1163,14 @@ public final class ShimmerServerGrpc {
           serviceImpl.clearSdCardData((com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>) responseObserver);
           break;
+        case METHODID_DOCK_ACCESS_SLOT_WITH_SD_CARD:
+          serviceImpl.dockAccessSlotWithSdCard((com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>) responseObserver);
+          break;
+        case METHODID_DOCK_RESTORE_AUTO_TASKS:
+          serviceImpl.dockRestoreAutoTasks((com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -1119,6 +1227,8 @@ public final class ShimmerServerGrpc {
               .addMethod(METHOD_PARSE_SD_DATA_FROM_PATH)
               .addMethod(METHOD_SCAN_SD_DATA_AND_COPY)
               .addMethod(METHOD_CLEAR_SD_CARD_DATA)
+              .addMethod(METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD)
+              .addMethod(METHOD_DOCK_RESTORE_AUTO_TASKS)
               .build();
         }
       }

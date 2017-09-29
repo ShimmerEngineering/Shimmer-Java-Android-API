@@ -99,6 +99,16 @@ class ShimmerServerStub(object):
         request_serializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.SerializeToString,
         response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
         )
+    self.DockAccessSlotWithSdCard = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/DockAccessSlotWithSdCard',
+        request_serializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.SerializeToString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
+        )
+    self.DockRestoreAutoTasks = channel.unary_unary(
+        '/shimmerGRPC.ShimmerServer/DockRestoreAutoTasks',
+        request_serializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.SerializeToString,
+        response_deserializer=ShimmerGrpcAndOJC__pb2.OperationRequest.FromString,
+        )
 
 
 class ShimmerServerServicer(object):
@@ -224,6 +234,20 @@ class ShimmerServerServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def DockAccessSlotWithSdCard(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def DockRestoreAutoTasks(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_ShimmerServerServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -309,6 +333,16 @@ def add_ShimmerServerServicer_to_server(servicer, server):
       ),
       'ClearSdCardData': grpc.unary_unary_rpc_method_handler(
           servicer.ClearSdCardData,
+          request_deserializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.FromString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
+      ),
+      'DockAccessSlotWithSdCard': grpc.unary_unary_rpc_method_handler(
+          servicer.DockAccessSlotWithSdCard,
+          request_deserializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.FromString,
+          response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
+      ),
+      'DockRestoreAutoTasks': grpc.unary_unary_rpc_method_handler(
+          servicer.DockRestoreAutoTasks,
           request_deserializer=ShimmerGrpcAndOJC__pb2.StringArrayMsg.FromString,
           response_serializer=ShimmerGrpcAndOJC__pb2.OperationRequest.SerializeToString,
       ),
