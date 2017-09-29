@@ -152,7 +152,6 @@ def showMenu(stub):
     print("    6 = pairShimmers")
     print("    7 = Parse Data from path to CSV")
     print("    8 = Full Import Data from Shimmers")
-    print("In progress...")
     print("    9 = Copy Data from Shimmers")
     print("    10 = Clear Data from Shimmers")
     print("")
