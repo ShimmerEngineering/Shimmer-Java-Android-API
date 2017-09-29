@@ -12627,7 +12627,7 @@ public final class ShimmerGRPC {
       "edDevice\030\022 \003(\t\022\022\n\nconfigTime\030\023 \001(\003\022\030\n\020co" +
       "nfigTimeParsed\030\024 \001(\t\032X\n\017ShimmerMapEntry\022" +
       "\013\n\003key\030\001 \001(\t\0224\n\005value\030\002 \001(\0132%.shimmerGRP" +
-      "C.ShimmersInfo.ShimmerInfo:\0028\0012\304\n\n\rShimm" +
+      "C.ShimmersInfo.ShimmerInfo:\0028\0012\364\013\n\rShimm" +
       "erServer\022@\n\010SayHello\022\031.shimmerGRPC.Hello",
       "Request\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rGe" +
       "tDataStream\022\032.shimmerGRPC.StreamRequest\032" +
@@ -12661,9 +12661,13 @@ public final class ShimmerGRPC {
       ".shimmerGRPC.StringArrayMsg\032\035.shimmerGRP",
       "C.OperationRequest\"\000\022O\n\017ClearSdCardData\022" +
       "\033.shimmerGRPC.StringArrayMsg\032\035.shimmerGR" +
-      "PC.OperationRequest\"\000BB\n\030com.shimmerrese" +
-      "arch.grpcB\013ShimmerGRPC\252\002\030com.shimmerrese" +
-      "arch.grpcb\006proto3"
+      "PC.OperationRequest\"\000\022X\n\030DockAccessSlotW" +
+      "ithSdCard\022\033.shimmerGRPC.StringArrayMsg\032\035" +
+      ".shimmerGRPC.OperationRequest\"\000\022T\n\024DockR" +
+      "estoreAutoTasks\022\033.shimmerGRPC.StringArra" +
+      "yMsg\032\035.shimmerGRPC.OperationRequest\"\000BB\n" +
+      "\030com.shimmerresearch.grpcB\013ShimmerGRPC\252\002" +
+      "\030com.shimmerresearch.grpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

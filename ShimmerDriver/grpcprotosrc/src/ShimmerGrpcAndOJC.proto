@@ -52,6 +52,10 @@ service ShimmerServer {
 
   rpc ClearSdCardData(StringArrayMsg) returns (OperationRequest){}
 
+  rpc DockAccessSlotWithSdCard(StringArrayMsg) returns (OperationRequest){}
+
+  rpc DockRestoreAutoTasks(StringArrayMsg) returns (OperationRequest){}
+
 }
 
 message FileByteTransfer {
