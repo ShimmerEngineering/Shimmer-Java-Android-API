@@ -105,7 +105,7 @@ public class FixedShimmerConfigs {
 				shimmerDevice.setConfigValueUsingConfigLabel(
 						Shimmer3.SENSOR_ID.HOST_ECG, 
 						SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE,
-						3);
+						13);
 			}
 	
 			//setting sampling rate 1024Hz hardcoded -> ExG data rate should update automatically in the driver
