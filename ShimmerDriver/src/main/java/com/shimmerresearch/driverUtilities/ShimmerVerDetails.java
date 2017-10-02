@@ -40,7 +40,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_GQ_802154_LR = HW_ID_SR_CODES.SHIMMER_GQ_802154_LR; // Long Range
 		public static final int SHIMMER_GQ_802154_NR = HW_ID_SR_CODES.SHIMMER_GQ_802154_NR; // Normal Range
 		public static final int SHIMMER_4_SDK = HW_ID_SR_CODES.SHIMMER_4_SDK;
-		public static final int SHIMMER_3_EXG_EXTENDED = HW_ID_SR_CODES.SHIMMER_3_EXG_EXTENDED;
+		public static final int SHIMMER_ECG_MD = HW_ID_SR_CODES.SHIMMER_ECG_MD;
 
 		//Third party devices
 		public static final int NONIN_ONYX_II 			= 1000;
@@ -74,7 +74,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_4_SDK, "Shimmer4 SDK");
-        aMap.put(HW_ID.SHIMMER_3_EXG_EXTENDED, "Shimmer3 ExG Extended");
+        aMap.put(HW_ID.SHIMMER_ECG_MD, "ShimmerECGmd");
                 
         aMap.put(HW_ID.NONIN_ONYX_II, "Nonin Onyx II");
         aMap.put(HW_ID.QTI_DIRECT_TEMP, "QTI Direct Temp");
@@ -111,7 +111,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_GQ_802154_LR 	= 56;
 		public static final int SHIMMER_GQ_802154_NR 	= 57;
 		public static final int SHIMMER_4_SDK 			= 58;
-		public static final int SHIMMER_3_EXG_EXTENDED 	= 59;
+		public static final int SHIMMER_ECG_MD 	= 59;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerHardware;
@@ -138,7 +138,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_LR, "ShimmerGQ 802.15.4");
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_NR, "ShimmerGQ 802.15.4");
         aMap.put(HW_ID_SR_CODES.SHIMMER_4_SDK, "Shimmer4 SDK");
-        aMap.put(HW_ID_SR_CODES.SHIMMER_3_EXG_EXTENDED, "ExG Extended");
+        aMap.put(HW_ID_SR_CODES.SHIMMER_ECG_MD, "ShimmerECGmd");
         
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
     }

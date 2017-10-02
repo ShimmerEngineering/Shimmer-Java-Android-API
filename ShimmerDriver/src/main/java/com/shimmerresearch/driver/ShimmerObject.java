@@ -4100,7 +4100,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			sensorAndConfigMapsCreate();
 			
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
-				if(getExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_3_EXG_EXTENDED){
+				if(getExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_ECG_MD){
 					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, true);
 				} else {
 					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, true);
