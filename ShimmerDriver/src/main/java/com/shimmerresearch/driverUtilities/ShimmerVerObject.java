@@ -537,7 +537,7 @@ public class ShimmerVerObject implements Serializable {
 
 	//TODO GQ should be kept separate - probably used in some places to indicate MSP430 model is being used?
 	public static boolean isShimmer3Gen(int hwVer) {
-		if(hwVer==HW_ID.SHIMMER_3 || hwVer==HW_ID.SHIMMER_3_EXG_EXTENDED){ 
+		if(hwVer==HW_ID.SHIMMER_3 || hwVer==HW_ID.SHIMMER_ECG_MD){ 
 //				|| hwVer==HW_ID.SHIMMER_GQ_BLE || hwVer==HW_ID.SHIMMER_GQ_802154_LR || hwVer==HW_ID.SHIMMER_GQ_802154_NR){
 			return true;
 		}
