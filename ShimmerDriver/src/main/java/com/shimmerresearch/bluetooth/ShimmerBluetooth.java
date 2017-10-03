@@ -545,7 +545,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		public boolean stop = false;
 		
 		public synchronized void run() {
-			while (!stop) {
+			while(!stop) {
+				
 				// Process Instruction on stack. is an instruction running? if not proceed
 				if(!isInstructionStackLock()){
 					processNextInstruction();
@@ -570,16 +571,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		private synchronized void processNextInstruction() {
 			// check instruction stack, are there any other instructions left to be executed?
-			if(!getListofInstructions().isEmpty()) {
-				if(getListofInstructions().get(0)==null) {
-					removeInstruction(0);
-					printLogDataForDebugging("Null Removed");
-				}
-			}
+			checkAndRemoveFirstInstructionIfNull();
 			
-			if(!getListofInstructions().isEmpty()){
-				if(getListofInstructions().get(0)!=null) {
-					byte[] insBytes = (byte[]) getListofInstructions().get(0);
+			byte[] insBytes = getInstruction();
+			if (insBytes!=null){
 					mCurrentCommand=insBytes[0];
 					setInstructionStackLock(true);
 					mWaitForAck=true;
@@ -631,7 +626,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						if (mCurrentCommand==STOP_SDBT_COMMAND){
 							setIsSDLogging(false);
 						}
-						getListofInstructions().removeAll(Collections.singleton(null));
+						removeAllNulls();
 					} 
 					else {
 						/*
@@ -654,7 +649,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					
 					
 					mTransactionCompleted=false;
-				}
 			} else {
 				if (!mIsStreaming && !bytesAvailableToBeRead()){
 					threadSleep(50);
@@ -806,7 +800,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						
 						hasStopStreaming();					
 						removeInstruction(0);
-						getListofInstructions().removeAll(Collections.singleton(null));
+						removeAllNulls();
 						if (mCurrentCommand==STOP_SDBT_COMMAND){
 							eventLogAndStreamStatusChanged(mCurrentCommand);	
 						}
@@ -1717,7 +1711,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					clearSerialBuffer();
 					
 					hasStopStreaming();					
-					getListofInstructions().removeAll(Collections.singleton(null));
+					removeAllNulls();
 				}
 				else if(currentCommand==START_LOGGING_ONLY_COMMAND) {
 					setIsSDLogging(true);
@@ -2514,7 +2508,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		//make sure no more instructions
 		//shouldnt matter since the configuration are being rewritten by consensys
 		//used in initializeshimmer3 (this class) and BluetoothManager class
-		getListofInstructions().clear();
+		clearAllInstructions();
 		// wait for instruction stack to clear			
 		while(getListofInstructions().size()>0); //TODO add timeout
 		// lock the instruction stack
@@ -2749,7 +2743,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				} 
 				else if(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW){ //in case the new command doesn't work, try the old command
 					mFirstTime=false;
-					getListofInstructions().clear();
+					clearAllInstructions();
 					readShimmerVersionDeprecated();
 				}
 
@@ -2760,7 +2754,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mWaitForAck=false;
 					mTransactionCompleted=true; //should be false, so the driver will know that the command has to be executed again, this is not supported at the moment 
 					setInstructionStackLock(false);
-					getListofInstructions().clear();
+					clearAllInstructions();
 				}
 				else if(storedFirstTime==0){
 					// If the command fails to get a response, the API should
@@ -5126,15 +5120,53 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @return the mListofInstructions
 	 */
 	protected synchronized List<byte []> getListofInstructions() {
+		synchronized(mListofInstructions){
 		return mListofInstructions;
+		}
 	}
 	
+	private synchronized void clearAllInstructions(){
+		synchronized(mListofInstructions){
+			getListofInstructions().clear();
+		}
+	}
+	
+	private synchronized void removeAllNulls(){
+		synchronized(mListofInstructions){
+			getListofInstructions().removeAll(Collections.singleton(null));
+		}
+	}
+	
+	private synchronized void checkAndRemoveFirstInstructionIfNull(){
+		synchronized(mListofInstructions){
+		if(!getListofInstructions().isEmpty()) {
+			if(getListofInstructions().get(0)==null) {
+				removeInstruction(0);
+				printLogDataForDebugging("Null Removed");
+			}
+		}
+		}
+	}
+	
+	private synchronized byte[] getInstruction(){
+		synchronized(mListofInstructions){
+			if(!getListofInstructions().isEmpty()){
+				if(getListofInstructions().get(0)!=null) {
+					byte[] insBytes = (byte[]) getListofInstructions().get(0);
+					return insBytes;
+				}
+			}
+		}
+		return null;
+	}
 	private synchronized void removeInstruction(int index){
+		synchronized(mListofInstructions){
 		try {
 			getListofInstructions().remove(index);
 		} catch (IndexOutOfBoundsException e){
 			consolePrintLn("Tried to remove BT instruction but it was already gone.");
 			consolePrintException(e.getMessage(), e.getStackTrace());
+		}
 		}
 	}
 	
@@ -5142,12 +5174,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		writeInstruction(new byte[]{(byte) (commandValue&0xFF)});
 	}
 
-	public synchronized void writeInstruction(byte[] instruction){
-		mListofInstructions.add(instruction);
+	private synchronized void writeInstruction(byte[] instruction){
+		synchronized(mListofInstructions){
+			mListofInstructions.add(instruction);
+		}
 	};
 
-	public synchronized void writeInstructionFirst(byte[] instruction){
-		mListofInstructions.add(0, instruction);
+	private synchronized void writeInstructionFirst(byte[] instruction){
+		synchronized(mListofInstructions){
+			mListofInstructions.add(0, instruction);
+		}
 	};
 	
 	/**
