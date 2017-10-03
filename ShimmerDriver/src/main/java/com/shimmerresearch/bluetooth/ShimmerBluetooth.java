@@ -217,7 +217,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	private boolean mFirstPacketParsed=true;
 	private double mOffsetFirstTime=-1;
-	protected List<byte []> mListofInstructions = new  ArrayList<byte[]>();
+	private List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
 	protected boolean mDummy=false;
 	protected boolean mFirstTime=true;
@@ -5125,7 +5125,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @return the mListofInstructions
 	 */
-	public List<byte []> getListofInstructions() {
+	protected List<byte []> getListofInstructions() {
 		return mListofInstructions;
 	}
 	
@@ -5159,7 +5159,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @param state the mInstructionStackLock to set
 	 */
-	public void setInstructionStackLock(boolean state) {
+	protected void setInstructionStackLock(boolean state) {
 		this.mInstructionStackLock = state;
 	}
 	
