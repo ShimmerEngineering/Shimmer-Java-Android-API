@@ -568,7 +568,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		
-		private void processNextInstruction() {
+		private synchronized void processNextInstruction() {
 			// check instruction stack, are there any other instructions left to be executed?
 			if(!getListofInstructions().isEmpty()) {
 				if(getListofInstructions().get(0)==null) {
@@ -663,7 +663,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 
 		
-		private void processWhileStreaming() {
+		private synchronized void processWhileStreaming() {
 			byteBuffer = readBytes(1);
 			if(byteBuffer!=null){
 				mByteArrayOutputStream.write(byteBuffer[0]);
@@ -762,7 +762,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		
 		/** Process ACK from a GET or SET command while not streaming */ 
-		private void processNotStreamingWaitForAck() {
+		private synchronized void processNotStreamingWaitForAck() {
 			//JC TEST:: IMPORTANT TO REMOVE // This is to simulate packet loss 
 			/*
 			if (Math.random()>0.9 && mIsInitialised==true){
@@ -871,7 +871,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		
 		/** Process RESPONSE while not streaming */ 
-		private void processNotStreamingWaitForResp() {
+		private synchronized void processNotStreamingWaitForResp() {
 			//Discard first read
 			if(mFirstTime){
 //				printLogDataForDebugging("First Time read");
@@ -934,7 +934,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 
 		/** Process LogAndStream INSTREAM_CMD_RESPONSE while not streaming */ 
-		private void processBytesAvailableAndInstreamSupported() {
+		private synchronized void processBytesAvailableAndInstreamSupported() {
 			if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
 					&& !mWaitForAck 
 					&& !mWaitForResponse 
@@ -972,7 +972,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return mBtSetCommandMap.containsKey(setCmd);
 	}
 	
-	private void processSpecialGetCmdsAfterAck(byte currentCommand) {
+	private synchronized void processSpecialGetCmdsAfterAck(byte currentCommand) {
 		byte[] insBytes = getListofInstructions().get(0);
 
 		if(currentCommand==GET_EXG_REGS_COMMAND){
@@ -1690,7 +1690,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @param currentCommand
 	 */
-	private void processAckFromSetCommand(byte currentCommand) {
+	private synchronized void processAckFromSetCommand(byte currentCommand) {
 		// check for null and size were put in because if Shimmer was abruptly
 		// disconnected there is sometimes indexoutofboundsexceptions
 		if(getListofInstructions().size() > 0){
@@ -2833,7 +2833,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public class readStatusTask extends TimerTask {
 
 		@Override
-		public void run() {
+		public synchronized void run() {
 			if(getListofInstructions().size()==0 
 					&& !getListofInstructions().contains(GET_STATUS_COMMAND)){
 				readStatusLogAndStream();
