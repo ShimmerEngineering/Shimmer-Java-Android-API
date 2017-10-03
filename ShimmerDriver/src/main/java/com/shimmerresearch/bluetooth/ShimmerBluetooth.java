@@ -3983,7 +3983,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 
-	public void rePioritiseReadCalibDumpInstructions(){
+	public synchronized void rePioritiseReadCalibDumpInstructions(){
 		List<byte[]> listOfInstructions = new ArrayList<byte[]>();
 
 		//This for loop will prioritse the GET_CALIB_DUMP_COMMAND
@@ -5125,11 +5125,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @return the mListofInstructions
 	 */
-	protected List<byte []> getListofInstructions() {
+	protected synchronized List<byte []> getListofInstructions() {
 		return mListofInstructions;
 	}
 	
-	private void removeInstruction(int index){
+	private synchronized void removeInstruction(int index){
 		try {
 			getListofInstructions().remove(index);
 		} catch (IndexOutOfBoundsException e){
@@ -5138,15 +5138,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	private void writeInstruction(int commandValue) {
+	private synchronized void writeInstruction(int commandValue) {
 		writeInstruction(new byte[]{(byte) (commandValue&0xFF)});
 	}
 
-	public void writeInstruction(byte[] instruction){
+	public synchronized void writeInstruction(byte[] instruction){
 		mListofInstructions.add(instruction);
 	};
 
-	public void writeInstructionFirst(byte[] instruction){
+	public synchronized void writeInstructionFirst(byte[] instruction){
 		mListofInstructions.add(0, instruction);
 	};
 	
