@@ -1330,7 +1330,7 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExgEmg = Arrays.asList(
 					svoExgSdLog, svoExgBtStream, svoExgLogAndStream,  
 					svoExgUnifiedSdLog, svoExgUnifiedBtStream, svoExgUnifiedLogAndStream,
-					svoShimmer4Stock, svoStrokare);
+					svoShimmer3ECGMd, svoShimmer4Stock, svoStrokare);
 
 			//TODO separate out GQ devices that are related to SensorEXG.sDRefEcgGq
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExgEcg = Arrays.asList(
@@ -1470,7 +1470,7 @@ public class Configuration {
 					svoShimmer4Stock);
 
 			public static final List<ShimmerVerObject> istOfCompatibleVersionInfoExtAdcs = Arrays.asList(
-					svoAnyIntExpBoardAndSdlog,svoAnyIntExpBoardAndBtStream,svoAnyIntExpBoardAndLogAndStream,
+					svoAnyIntExpBoardAndSdlog, svoAnyIntExpBoardAndBtStream, svoAnyIntExpBoardAndLogAndStream,
 					svoShimmer4Stock);
 
 			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoStreaming = Arrays.asList(

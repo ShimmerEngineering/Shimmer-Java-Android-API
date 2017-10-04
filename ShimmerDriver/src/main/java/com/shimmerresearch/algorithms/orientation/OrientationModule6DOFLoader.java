@@ -13,7 +13,10 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 
 	@Override
-	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject svo, ExpansionBoardDetails eBD) {
+	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerDevice shimmerDevice) {
+		ShimmerVerObject svo = shimmerDevice.getShimmerVerObject();
+		ExpansionBoardDetails eBD = shimmerDevice.getExpansionBoardDetails();
+		
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
 		
 		if(svo.getFirmwareIdentifier()==FW_ID.STROKARE){
@@ -21,7 +24,8 @@ public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 		}
 		else {
 			if((svo.isShimmerGen3() || svo.isShimmerGen4())){
-				mapOfSupportedAlgorithms.putAll(OrientationModule6DOF.mAlgorithmMapRef);
+//				mapOfSupportedAlgorithms.putAll(OrientationModule6DOF.mAlgorithmMapRef);
+				mapOfSupportedAlgorithms = AlgorithmDetails.loadAlgorithmsWhereSensorsAreAvailable(shimmerDevice, OrientationModule6DOF.mAlgorithmMapRef);
 			}
 		}
 		
@@ -30,7 +34,9 @@ public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 
 	@Override
 	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice) {
-		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = getMapOfSupportedAlgorithms(shimmerDevice.getShimmerVerObject(), shimmerDevice.getExpansionBoardDetails());
+//		shimmerDevice.getSensorMap().containsKey(key)
+		
+		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = getMapOfSupportedAlgorithms(shimmerDevice);
 		for (AlgorithmDetails algorithmDetails:mapOfSupported6DOFCh.values()) {
 			OrientationModule6DOF orientationModule6DOF = new OrientationModule6DOF(shimmerDevice, algorithmDetails, shimmerDevice.getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH));
 			

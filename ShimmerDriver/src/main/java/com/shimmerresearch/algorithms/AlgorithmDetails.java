@@ -2,9 +2,13 @@ package com.shimmerresearch.algorithms;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ArrayList;
 
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
@@ -171,6 +175,23 @@ public class AlgorithmDetails implements Serializable {
 		return mListOfChannelDetails;
 	}
 
+	
+	//TODO use the following check first in future?
+	public static LinkedHashMap<String, AlgorithmDetails> loadAlgorithmsWhereSensorsAreAvailable(ShimmerDevice shimmerDevice, Map<String, AlgorithmDetails> algorithMap) {
+		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
+		
+		algorithmLoop:
+		for(Entry<String, AlgorithmDetails> algorithmDetailsEntry:algorithMap.entrySet()){
+			for(Integer sensorMapKey:algorithmDetailsEntry.getValue().mListOfRequiredSensors){
+				if(!shimmerDevice.getSensorMap().containsKey(sensorMapKey)){
+					continue algorithmLoop;
+				}
+			}
+			mapOfSupportedAlgorithms.put(algorithmDetailsEntry.getKey(), algorithmDetailsEntry.getValue());
+		}
+		
+		return mapOfSupportedAlgorithms;
+	}
 
 }
 

@@ -4668,7 +4668,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			addSensorClass(SENSORS.ECG_TO_HR, new SensorECGToHRFw(mShimmerVerObject));
 //			addSensorClass(SENSORS.EXG, new SensorEXG(this));
 		} else if(isShimmerGen3()){
-			if(isSupportedNewImuSensors()){
+			if(isSupportedNoImuSensors()){
+				
+			}
+			else if(isSupportedNewImuSensors()){
 				mSensorBMPX80 = new SensorBMP280(this);
 				addSensorClass(mSensorBMPX80);
 				
@@ -4702,7 +4705,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		super.handleSpecialCasesAfterSensorMapCreate();
 		
 		//Old approach pre-Shimmer4 code framework with sensor classes
-		if (getHardwareVersion() != -1){
+		if (getHardwareVersion()!=-1){
 			if (isShimmerGen2()){
 				Map<Integer,SensorDetailsRef> sensorMapRef = Configuration.Shimmer2.mSensorMapRef;
 				for(Integer key:sensorMapRef.keySet()){
@@ -4732,7 +4735,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mChannelMap.remove(ShimmerClock.ObjectClusterSensorName.TIMESTAMP);
 					mChannelMap.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
 				}
-
+				
 				if(isShimmerGen3()){
 					mSensorMap.putAll(createSensorMapShimmer3());
 				}
@@ -4744,15 +4747,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mSensorMap.putAll(sensorMap);
 				}
 
-//				mSensorGroupingMap.putAll(Configuration.Shimmer3.mSensorGroupingMapRef);
 				createSensorGroupMapShimmer3();
-				
-//				mConfigOptionsMap.putAll(Configuration.Shimmer3.mConfigOptionsMapRef);
+
+				//TODO Hack - will eventually be handled in the Sensor classes as done in createMapOfSensorClasses()
+				//External expansion ADC are supported in the Shimmer ECGmd but are not made available
+				if(getExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_ECG_MD){
+					mSensorGroupingMap.remove(Configuration.Shimmer3.LABEL_SENSOR_TILE.EXTERNAL_EXPANSION_ADC.ordinal());
+				}
+
 				createConfigOptionMapShimmer3();
 				
-//				generateMapOfAlgorithmModules();
-//				generateMapOfAlgorithmConfigOptions();
-//				generateMapOfAlgorithmGroupingMap();
 			}
 			else if (getHardwareVersion() == HW_ID.SHIMMER_GQ_BLE) {
 				
@@ -9571,7 +9575,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-	
 	@Override
 	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName, boolean showDisabledChannels) {
 		LinkedHashMap<String, ChannelDetails> mapOfChannelsForStoringToDb = super.getMapOfAllChannelsForStoringToDB(commType, channelType, isKeyOJCName, showDisabledChannels);

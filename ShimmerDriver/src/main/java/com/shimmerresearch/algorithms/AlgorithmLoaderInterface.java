@@ -14,6 +14,6 @@ public interface AlgorithmLoaderInterface {
 	
 	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice);
 	
-	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject svo, ExpansionBoardDetails eBD);
+	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerDevice shimmerDevice);
 
 }
