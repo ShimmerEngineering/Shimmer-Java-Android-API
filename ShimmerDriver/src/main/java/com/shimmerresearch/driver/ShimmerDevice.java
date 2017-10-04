@@ -1991,6 +1991,29 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return false;
 	}
+	
+	public boolean isSupportedNoImuSensors() {
+		return isSupportedNoImuSensors(getShimmerVerObject(), getExpansionBoardDetails());
+	}
+	
+	public static boolean isSupportedNoImuSensors(ShimmerVerObject svo, ExpansionBoardDetails ebd) {
+		if(svo==null || ebd==null){
+			return false;
+		}
+		
+		int expBrdId = ebd.getExpansionBoardId();
+		int expBrdRev = ebd.getExpansionBoardRev();
+		int expBrdRevSpecial = ebd.getExpansionBoardRevSpecial();
+		
+		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
+				(expBrdId==HW_ID_SR_CODES.SHIMMER_ECG_MD && expBrdRev==3 && expBrdRevSpecial==1)			// == SR59-3-1
+				)){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
 	/**
 	 * Check each entry in the passed in list to see if the current Shimmer
