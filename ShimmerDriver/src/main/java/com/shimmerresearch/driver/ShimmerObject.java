@@ -523,6 +523,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	Quat4d mQ = new Quat4d();	
 	transient GradDes3DOrientation9DoF mOrientationAlgo;	
 	private boolean mIsOrientationEnabled = false;	
+	protected double mDefaultOnTheFlyGyroCalibThreshold = 1.2;	
 
 	protected boolean mEnableCalibration = true;	
 	protected boolean mConfigFileCreationFlag = true;
@@ -7818,7 +7819,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensorMpu9x50.updateCurrentGyroCalibInUse();
 		}
 	}
-	
+
 	/**
 	 * @param enable this enables the calibration of the gyroscope while streaming
 	 * @param bufferSize sets the buffersize of the window used to determine the new calibration parameters, see implementation for more details
