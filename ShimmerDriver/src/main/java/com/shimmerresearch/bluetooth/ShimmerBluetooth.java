@@ -495,7 +495,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magRange);
 		addFixedShimmerConfig(SensorBMPX80.GuiLabelConfig.PRESSURE_RESOLUTION,pressureResolution);
-		
+		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, userAssignedName);
 	}
 	
 	/** Only for Shimmer2r note that sensormaps aren't supported on Shimmer2r devices
