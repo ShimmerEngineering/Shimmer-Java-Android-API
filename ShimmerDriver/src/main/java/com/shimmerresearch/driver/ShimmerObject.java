@@ -596,10 +596,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	/** 0 = 16 bit, 1 = 24 bit */
 	protected int mExGResolution = 1;
-	private boolean mIsExg1_24bitEnabled = false;
-	private boolean mIsExg2_24bitEnabled = false;
-	private boolean mIsExg1_16bitEnabled = false;
-	private boolean mIsExg2_16bitEnabled = false;
+	protected boolean mIsExg1_24bitEnabled = false;
+	protected boolean mIsExg2_24bitEnabled = false;
+	protected boolean mIsExg1_16bitEnabled = false;
+	protected boolean mIsExg2_16bitEnabled = false;
 
 	//Shimmer2r and not Shimmer3?
 	protected byte[] mEMGCalRawParams  = new byte[13];
