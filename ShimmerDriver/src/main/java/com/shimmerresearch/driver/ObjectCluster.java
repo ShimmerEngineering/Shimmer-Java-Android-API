@@ -577,6 +577,27 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		ObjectCluster.mListOfOCTypesEnabled = listOfOCTypesEnabled;
 	}
 
+	public void consolePrintChannelsAndDataSingleLine() {
+		System.out.println("Channels in ObjectCluster:");
+		String channelsCal = "Cal:\t";
+		String channelsUncal = "Uncal:\t";
+		for(String channel:getChannelNamesByInsertionOrder()){
+			channelsCal += channel + "=" + getFormatClusterValue(channel, CHANNEL_TYPE.CAL.toString()) + "\t";
+			channelsUncal += channel + "=" + getFormatClusterValue(channel, CHANNEL_TYPE.UNCAL.toString()) + "\t";
+		}
+		System.out.println(channelsCal);
+		System.out.println(channelsUncal);
+		System.out.println("");
+	}
+
+	public void consolePrintChannelsAndDataGrouped() {
+		System.out.println("Channels in ObjectCluster:");
+		for(String channel:getChannelNamesByInsertionOrder()){
+			System.out.println("\t" + channel + ":\t(" + getFormatClusterValue(channel, CHANNEL_TYPE.UNCAL.toString()) + "," + getFormatClusterValue(channel, CHANNEL_TYPE.CAL.toString()) + ")");
+		}
+		System.out.println("");
+	}
+
 	public ObjectCluster deepClone() {
 //		System.out.println("Cloning:" + mUniqueID);
 		try {
