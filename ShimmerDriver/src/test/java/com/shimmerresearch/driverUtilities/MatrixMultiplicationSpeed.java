@@ -2,7 +2,7 @@ package com.shimmerresearch.driverUtilities;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.jblas.DoubleMatrix;
+//import org.jblas.DoubleMatrix;
 
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 
@@ -26,7 +26,7 @@ public class MatrixMultiplicationSpeed {
 		System.out.println("Apache Commons:" + (nanotime4-nanotime3)+"ms");
 		System.out.println(o.getData()[0][0]+ " " + o.getData()[0][1]+ " " + o.getData()[0][2]);
 		
-		DoubleMatrix r = new DoubleMatrix(a);
+		/*DoubleMatrix r = new DoubleMatrix(a);
 		DoubleMatrix s = new DoubleMatrix(b);
 		
 		long nanotime5 = System.nanoTime()/1000000;
@@ -34,7 +34,7 @@ public class MatrixMultiplicationSpeed {
 		long nanotime6 = System.nanoTime()/1000000;
 		System.out.println("JBLAS:" + (nanotime6-nanotime5)+"ms");
 		System.out.println(t.get(0, 0) + " " + t.get(0, 1) + " " + t.get(0, 2));
-		
+		*/
 		
 		
 
