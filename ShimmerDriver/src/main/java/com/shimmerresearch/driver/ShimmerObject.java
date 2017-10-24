@@ -2373,9 +2373,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		double shimmerTimestampTicks = (double)newPacketInt[iTimeStamp];
 		
 		if(mFirstTime && fwType==COMMUNICATION_TYPE.SD){
-			//this is to make sure the Raw starts from zero for SD data
+			//this is to make sure the Raw starts from zero for SD data. See comment for mFirstTsOffsetFromInitialTsTicks. 
 			mFirstTsOffsetFromInitialTsTicks = shimmerTimestampTicks;
 			
+			//This is to circumvent a bug with old StroKare firmware. Resolved in firmware v1.0.1 
 			if(getFirmwareIdentifier()==FW_ID.STROKARE
 					&& !isThisVerCompatibleWith(FW_ID.STROKARE, 1, 0, 1)){
 				long initialTsTicksOriginal = getInitialTsTicks();
