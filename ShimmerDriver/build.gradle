@@ -8,7 +8,7 @@ archivesBaseName = 'ShimmerDriver'
 /*Rev0.2
 * - fixes for shimmer2r and writeSensors not working after streaming
 */
-version = '0.9.20beta' 
+version = '0.9.22beta' 
 
     group = 'com.shimmerresearch.driver'
 
@@ -259,6 +259,6 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mockito/mockito-all
 	testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
     // https://mvnrepository.com/artifact/org.jblas/jblas
-	compile group: 'org.jblas', name: 'jblas', version: '1.2.4'
+	//compile group: 'org.jblas', name: 'jblas', version: '1.2.4'
 } 
 
