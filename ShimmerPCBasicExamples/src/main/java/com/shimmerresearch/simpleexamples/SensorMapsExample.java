@@ -25,6 +25,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextPane;
@@ -33,9 +34,14 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenu;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Canvas;
+import java.awt.Graphics2D;
+import java.awt.Image;
 
 public class SensorMapsExample extends BasicProcessWithCallBack {
 	
@@ -47,14 +53,14 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
 	BasicPlotManagerPC plotManager = new BasicPlotManagerPC();
 	String btComport;
-	
+	final Chart2D mChart = new Chart2D();
 	/**
 	 * Initialize the contents of the frame
 	 * @wbp.parser.entryPoint
 	 */
 	public void initialize() {
 		frame = new JFrame("Shimmer SensorMaps Example");
-		frame.setBounds(100, 100, 662, 591);
+		frame.setBounds(100, 100, 842, 591);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -155,7 +161,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(plotPanel);
 		plotPanel.setLayout(null);
 		
-		final Chart2D mChart = new Chart2D();
+
 		mChart.setLocation(12, 13);
 		mChart.setSize(587, 246);
 		plotPanel.add(mChart);
@@ -191,6 +197,22 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		});
 		btnStopStreaming.setBounds(415, 181, 187, 31);
 		frame.getContentPane().add(btnStopStreaming);
+		
+		JButton btnTakeSnapshot = new JButton("Take Snapshot");
+		btnTakeSnapshot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+							
+			    try {
+
+			        File outputfile = new File("saved.png");
+			        ImageIO.write(mChart.snapShot(), "png", outputfile);
+			    } catch (IOException e) {
+			   
+			    }
+			}
+		});
+		btnTakeSnapshot.setBounds(625, 181, 187, 31);
+		frame.getContentPane().add(btnTakeSnapshot);
 		
 		plotManager.setTitle("Plot");		
 	}
