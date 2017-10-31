@@ -45,7 +45,7 @@ public class FixedShimmerConfigs {
 			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.CIMIT){
 				if(expId==HW_ID_SR_CODES.EXP_BRD_EXG 
 						|| expId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED 
-						|| expId==HW_ID_SR_CODES.SHIMMER_3_EXG_EXTENDED){
+						|| expId==HW_ID_SR_CODES.SHIMMER_ECG_MD){
 					triggerConfiguration = true;
 					setFixedConfig1(shimmerDevice);
 				}
@@ -88,7 +88,7 @@ public class FixedShimmerConfigs {
 		int expId = shimmerDevice.getExpansionBoardId();
 		if(expId==HW_ID_SR_CODES.EXP_BRD_EXG 
 				|| expId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED 
-				|| expId==HW_ID_SR_CODES.SHIMMER_3_EXG_EXTENDED){
+				|| expId==HW_ID_SR_CODES.SHIMMER_ECG_MD){
 			if(shimmerDevice.getSensorIdsSet().contains(Shimmer3.SENSOR_ID.HOST_ECG)){
 				//- setting ECG as only sensor
 				shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.HOST_ECG, true); 
