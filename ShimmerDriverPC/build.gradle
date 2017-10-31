@@ -16,7 +16,7 @@ apply plugin: 'com.jfrog.bintray'
 archivesBaseName = 'ShimmerDriverPC'
 group = 'com.shimmerresearch.pcdriver'
 //group = "myorg"
-version = '0.9.2beta'
+version = '0.9.3beta'
 buildscript {
     repositories {
         jcenter()

@@ -217,8 +217,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	 * @param gyroRange Sets the Gyro Range of the accelerometer
 	 * @param magRange Sets the Mag Range
 	 */
-	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, Integer[] sensorIdsToEnable, int gyroRange, int magRange, int orientation) {
-		super(userAssignedName, samplingRate, sensorIdsToEnable, accelRange, gsrRange, gyroRange, magRange);
+	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, Integer[] sensorIdsToEnable, int gyroRange, int magRange, int orientation, int pressureResolution) {
+		super(userAssignedName, samplingRate, sensorIdsToEnable, accelRange, gsrRange, gyroRange, magRange, pressureResolution);
 		setupOrientation(orientation, samplingRate);
 	}
 	

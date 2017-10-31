@@ -8,7 +8,7 @@ archivesBaseName = 'ShimmerDriver'
 /*Rev0.2
 * - fixes for shimmer2r and writeSensors not working after streaming
 */
-version = '0.9.9beta' 
+version = '0.9.18beta' 
 
     group = 'com.shimmerresearch.driver'
 
@@ -245,7 +245,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.github.wendykierp/JTransforms
 	compile group: 'com.github.wendykierp', name: 'JTransforms', version: '3.1'
 	// https://mvnrepository.com/artifact/com.google.protobuf/protobuf-lite
-	compile group: 'com.google.protobuf', name: 'protobuf-lite', version: '3.4.0'
+	//compile group: 'com.google.protobuf', name: 'protobuf-lite', version: '3.4.0'
 	
 	
     // The production code uses the SLF4J logging API at compile time
