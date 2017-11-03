@@ -20,6 +20,8 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driver.Configuration;
@@ -310,45 +312,16 @@ public class SensorGSR extends AbstractSensor {
 				double p1=0,p2=0;
 				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 
-				if (mGSRRange==4){
+				int currentGSRRange = getGSRRange();
+
+				if (currentGSRRange==4){
 					//Mask upper 2 bits of the 16-bit packet and then bit shift down
 					newGSRRange=(49152 & (int)rawData)>>14; 
 				}
-				if (mGSRRange==0 || newGSRRange==0) { //Note that from FW 1.0 onwards the MSB of the GSR data contains the range
-					// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
-					if (mShimmerVerObject.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-						p1 = 0.0373;
-						p2 = -24.9915;
-					} else {
-						p1 = 0.0363;
-						p2 = -24.8617;
-					}
-				} else if (mGSRRange==1 || newGSRRange==1) {
-					if (mShimmerVerObject.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-						p1 = 0.0054;
-						p2 = -3.5194;
-					} else {
-						p1 = 0.0051;
-						p2 = -3.8357;
-					}
-				} else if (mGSRRange==2 || newGSRRange==2) {
-					if (mShimmerVerObject.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-						p1 = 0.0015;
-						p2 = -1.0163;
-					} else {
-						p1 = 0.0015;
-						p2 = -1.0067;
-					}
-				} else if (mGSRRange==3 || newGSRRange==3) {
-					if (mShimmerVerObject.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
-						p1 = 4.5580e-04;
-						p2 = -0.3014;
-					} else {
-						p1 = 4.4513e-04;
-						p2 = -0.3193;
-					}
-				}
-
+				double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange, newGSRRange);
+				p1 = p1p2[0];
+				p2 = p1p2[1];
+				
 				// ---------- Method 1 - ShimmerObject Style -----------
 //				//kOhms
 //				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
@@ -370,7 +343,6 @@ public class SensorGSR extends AbstractSensor {
 ////				//uS
 ////				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.MICROSIEMENS, calibrateGsrDataToSiemens(rawData,p1,p2));
 //				objectCluster.indexKeeper++;
-
 
 
 				// ----- Method 3 - Approaching dynamic object based approach  -----------
@@ -611,6 +583,90 @@ public class SensorGSR extends AbstractSensor {
 		return mGSRRange;
 	}
 	
+	/**
+	 * @param svo
+	 * @param currentGSRRange
+	 * @param newGSRRange
+	 * @return
+	 */
+	// TODO for improved efficiency, implement this such that the comparison
+	// against the ShimmerVerObject does not have to be done per data sample and
+	// instead it should be done once on initialisation. This would need to be
+	// done in SensorGSR and for legacy support in ShimmerObject
+	public static double[] getGSRCoefficientsFromUsingGSRRange(ShimmerVerObject svo, int currentGSRRange, int newGSRRange) {
+		double p1 = 0.0;
+		double p2 = 0.0;
+		
+		if (currentGSRRange==0 || newGSRRange==0) { 
+			// the polynomial function used for calibration has been deprecated, it is replaced with a linear function
+			if(isSupportedImprovedGsrCalibration(svo)){
+				p1 = 0.0363;
+				p2 = -24.8160;
+			}
+			else if (svo.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 0.0373;
+				p2 = -24.9915;
+			} 
+			else { //Values have been reverted to 2r values
+				p1 = 0.0363;
+				p2 = -24.8617;
+			}
+		} 
+		else if (currentGSRRange==1 || newGSRRange==1) {
+			if(isSupportedImprovedGsrCalibration(svo)){
+				p1 = 0.0052;
+				p2 = -3.5134;
+			}
+			else if (svo.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 0.0054;
+				p2 = -3.5194;
+			} 
+			else {
+				p1 = 0.0051;
+				p2 = -3.8357;
+			}
+		} 
+		else if (currentGSRRange==2 || newGSRRange==2) {
+			if(isSupportedImprovedGsrCalibration(svo)){
+				p1 = 0.0015;
+				p2 = -1.0172;
+			}
+			else if (svo.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 0.0015;
+				p2 = -1.0163;
+			} 
+			else {
+				p1 = 0.0015;
+				p2 = -1.0067;
+			}
+		} 
+		else if (currentGSRRange==3  || newGSRRange==3) {
+			if(isSupportedImprovedGsrCalibration(svo)){
+				p1 = 4.5580e-04;
+				p2 = -0.3090;
+			}
+			else if (svo.isShimmerGen2() || SensorGSR.isShimmer3and4UsingShimmer2rVal){
+				p1 = 4.5580e-04;
+				p2 = -0.3014;
+			} 
+			else {
+				p1 = 4.4513e-04;
+				p2 = -0.3193;
+			}
+		}
+		return new double[]{p1, p2};
+	}
+
+
+	private static boolean isSupportedImprovedGsrCalibration(ShimmerVerObject svo) {
+		if(svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 17, 2)
+				|| svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 9, 3)
+				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_LR, FW_ID.GQ_802154, 0, 4, 1)
+				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_NR, FW_ID.GQ_802154, 0, 4, 1)){
+			return true;
+		}
+		return false;
+	}
 
 	//--------- Sensor specific methods end --------------
 
