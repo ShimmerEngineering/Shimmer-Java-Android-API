@@ -198,7 +198,14 @@ public class UtilShimmer implements Serializable {
 			dfLocal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		}
 		String timeString = dfLocal.format(new Date(milliSeconds));
-		return timeString;
+		
+		if(milliSeconds == 0){
+			return "00:00:00";
+		}
+		else{
+			return timeString;
+		}
+		
 	}
 
 	private static String getDayOfMonthSuffix(final int n) {
