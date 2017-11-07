@@ -43,7 +43,9 @@ public class FixedShimmerConfigs {
 				setFixedConfig0(shimmerDevice);
 			}
 			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.CIMIT){
-				if(expId==HW_ID_SR_CODES.SHIMMER_ECG_MD){
+				if(expId==HW_ID_SR_CODES.EXP_BRD_EXG 
+						|| expId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED 
+						|| expId==HW_ID_SR_CODES.SHIMMER_ECG_MD){
 					triggerConfiguration = true;
 					setFixedConfig1(shimmerDevice);
 				}
