@@ -5497,23 +5497,24 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	@Override
 	public String getMacId() {
 		if(mMacIdFromUart!=null){
-		if(!mMacIdFromUart.isEmpty()){
-			return mMacIdFromUart; 
-		}
-		else {
-			if(!mMacIdFromInfoMem.isEmpty()){
-				return mMacIdFromInfoMem; 
+			if(!mMacIdFromUart.isEmpty()){
+				return mMacIdFromUart; 
 			}
 			else {
 				if(!mMacIdFromInfoMem.isEmpty()){
 					return mMacIdFromInfoMem; 
 				}
 				else {
-					return mMyBluetoothAddress; 
+					if(!mMacIdFromInfoMem.isEmpty()){
+						return mMacIdFromInfoMem; 
+					}
+					else {
+						return mMyBluetoothAddress; 
+					}
 				}
 			}
-		}
-		} else{
+		} 
+		else{
 			return mMyBluetoothAddress; 
 		}
 		
