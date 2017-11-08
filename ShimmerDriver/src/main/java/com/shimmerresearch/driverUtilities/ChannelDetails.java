@@ -101,16 +101,19 @@ public class ChannelDetails implements Serializable {
 	
 	public enum CHANNEL_TYPE{
 //		RAW("RAW"),
-		CAL("CAL"),
-		UNCAL("UNCAL"),
-		DERIVED("DERIVED");
-		private final String text;
+		CAL("CAL", "Calibrated"),
+		UNCAL("UNCAL", "Uncalibrated"),
+		DERIVED("DERIVED", "Derived");
+		
+		private final String shortText;
+		private final String longText;
 
 	    /**
 	     * @param text
 	     */
-	    private CHANNEL_TYPE(final String text) {
-	        this.text = text;
+	    private CHANNEL_TYPE(final String text, final String longText) {
+	        this.shortText = text;
+	        this.longText = longText;
 	    }
 
 	    /* (non-Javadoc)
@@ -118,7 +121,11 @@ public class ChannelDetails implements Serializable {
 	     */
 	    @Override
 	    public String toString() {
-	        return text;
+	        return shortText;
+	    }
+	    
+	    public String getLongText(){
+	    	return longText;
 	    }
 	}
 	
