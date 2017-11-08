@@ -2799,7 +2799,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	public void startTimerReadStatus(){
 		// if shimmer is using LogAndStream FW, stop reading its status periodically
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ 
+		if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
+				|| isThisVerCompatibleWith(FW_ID.BTSTREAM, 0, 8, 1)){
 			if(mTimerReadStatus==null){ 
 				mTimerReadStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerReadStatus");
 			}
@@ -2842,9 +2843,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mTimerCheckAlive = new Timer("Shimmer_" + getMacIdParsed() + "_TimerCheckAlive");
 			}
 			//dont really need this for log and stream since we already have the get status timer
-			if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // check if Shimmer is using LogAndStream firmware
-				mTimerCheckAlive.schedule(new checkIfAliveTask(), LiteProtocol.TIMER_CHECK_ALIVE_PERIOD, LiteProtocol.TIMER_CHECK_ALIVE_PERIOD);
-			} else if (getFirmwareIdentifier()==FW_ID.BTSTREAM) {
+			if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM // check if Shimmer is using LogAndStream firmware
+					|| getFirmwareIdentifier()==FW_ID.BTSTREAM){
 				mTimerCheckAlive.schedule(new checkIfAliveTask(), LiteProtocol.TIMER_CHECK_ALIVE_PERIOD, LiteProtocol.TIMER_CHECK_ALIVE_PERIOD);
 			}
 		}
@@ -2903,7 +2903,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public void startTimerReadBattStatus(){
 		//Instream response only supported in LogAndStream
-		if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)&&(getFirmwareVersionCode()>=6)){
+		if(((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)&&(getFirmwareVersionCode()>=6))
+				|| isThisVerCompatibleWith(FW_ID.BTSTREAM, 0, 8, 1)){
 			if(mTimerReadBattStatus==null){ 
 				mTimerReadBattStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerBattStatus");
 			}
