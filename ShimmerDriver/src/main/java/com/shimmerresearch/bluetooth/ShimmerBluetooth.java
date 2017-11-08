@@ -710,8 +710,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					
 					//this is for LogAndStream support, command is transmitted and ack received
-					else if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM 
-							&& bufferTemp[mPacketSize+2]==INSTREAM_CMD_RESPONSE){ 
+					else if(isSupportedInStreamCmds() && bufferTemp[mPacketSize+2]==INSTREAM_CMD_RESPONSE){ 
 						printLogDataForDebugging("COMMAND TXed and ACK RECEIVED IN STREAM");
 						printLogDataForDebugging("INS CMD RESP");
 
@@ -2255,6 +2254,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public boolean isSupportedSdInfoInStatus() {
 		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 12);
 	}
+	
+	private boolean isSupportedInStreamCmds() {
+		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM 
+				|| isThisVerCompatibleWith(FW_ID.BTSTREAM, 0, 8, 1)){
+			return true;
+		}
+		return false;
+	}
 
 	private byte[] convertStackToByteArray(Stack<Byte> b,int packetSize) {
 		byte[] returnByte=new byte[packetSize];
@@ -2798,9 +2805,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	public void startTimerReadStatus(){
-		// if shimmer is using LogAndStream FW, stop reading its status periodically
-		if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
-				|| isThisVerCompatibleWith(FW_ID.BTSTREAM, 0, 8, 1)){
+		if(isSupportedInStreamCmds()){
 			if(mTimerReadStatus==null){ 
 				mTimerReadStatus = new Timer("Shimmer_" + getMacIdParsed() + "_TimerReadStatus");
 			}
@@ -2871,7 +2876,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mIamAlive=false;
 			}
 			else{
-				if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM & mIsStreaming){
+				if(isSupportedInStreamCmds() & mIsStreaming){
 					mCountDeadConnection++;
 				} else if(getFirmwareIdentifier()==FW_ID.BTSTREAM) {
 					mCountDeadConnection++;
@@ -2880,7 +2885,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					if(getListofInstructions().size()==0 
 							&&!getListofInstructions().contains(TEST_CONNECTION_COMMAND)){
 						consolePrintLn("Check Alive Task");
-						if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
+						if(isSupportedInStreamCmds()){
 							//writeTestConnectionCommand(); //dont need this because of the get status command
 						} else if (getFirmwareIdentifier()==FW_ID.BTSTREAM){
 							writeTestConnectionCommand();
