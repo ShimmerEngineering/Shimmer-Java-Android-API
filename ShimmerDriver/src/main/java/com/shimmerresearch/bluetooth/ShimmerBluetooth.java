@@ -928,7 +928,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 		/** Process LogAndStream INSTREAM_CMD_RESPONSE while not streaming */ 
 		private synchronized void processBytesAvailableAndInstreamSupported() {
-			if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM
+			if(isSupportedInStreamCmds()
 					&& !mWaitForAck 
 					&& !mWaitForResponse 
 					&& bytesAvailableToBeRead()) {
@@ -2448,11 +2448,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		readLEDCommand();
 
-		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
+		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2) ||
+				isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1)){
 			readStatusLogAndStream();
 		}
 		
-		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9)){
+		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9) ||
+				isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1)){
 			readBattery();
 		}
 		
