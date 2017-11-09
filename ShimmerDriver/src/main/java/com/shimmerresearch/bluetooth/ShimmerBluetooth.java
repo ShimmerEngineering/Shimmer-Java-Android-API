@@ -2878,11 +2878,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				mIamAlive=false;
 			}
 			else{
-				if(isSupportedInStreamCmds() & mIsStreaming){
+				if(isSupportedInStreamCmds() && mIsStreaming){
 					mCountDeadConnection++;
 				} else if(getFirmwareIdentifier()==FW_ID.BTSTREAM) {
 					mCountDeadConnection++;
 				}
+				
 				if(getFirmwareVersionCode()>=6 && !mIsStreaming){
 					if(getListofInstructions().size()==0 
 							&&!getListofInstructions().contains(TEST_CONNECTION_COMMAND)){
@@ -3024,8 +3025,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+	/**
+	 * check if Shimmer is firmware supports instream commands
+	 */
 	public void readStatusLogAndStream(){
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // check if Shimmer is using LogAndStream firmware
+		//if(isSupportedInStreamCmds()){ 
+		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
 			writeInstruction(GET_STATUS_COMMAND);
 			consolePrintLn("Instruction added to the list");
 		}
