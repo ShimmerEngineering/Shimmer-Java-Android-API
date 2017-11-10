@@ -3029,8 +3029,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * check if Shimmer is firmware supports instream commands
 	 */
 	public void readStatusLogAndStream(){
-		//if(isSupportedInStreamCmds()){ 
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
+		if(isSupportedInStreamCmds()){ 
+		//if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
 			writeInstruction(GET_STATUS_COMMAND);
 			consolePrintLn("Instruction added to the list");
 		}
