@@ -675,7 +675,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 
 		private void processPacket() {
-			mIamAlive = true;
+			setIamAlive(true);
 			byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
 			
 			//Data packet followed by another data packet
@@ -778,7 +778,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				byteBuffer=readBytes(1);
 				if(byteBuffer!=null){
 					mNumberofTXRetriesCount = 0;
-					mIamAlive = true;
+					setIamAlive(true);
 					
 					//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
 					if(mCurrentCommand==STOP_STREAMING_COMMAND 
@@ -892,7 +892,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			else if(bytesAvailableToBeRead()){
 				byteBuffer=readBytes(1);
 				if(byteBuffer!=null){
-					mIamAlive = true;
+					setIamAlive(true);
 					
 					//Check to see whether it is a response byte
 					if(isKnownResponse(byteBuffer[0])){
@@ -2873,9 +2873,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		@Override
 		public void run() {
-			if(mIamAlive){
+			if(isIamAlive()){
 				mCountDeadConnection = 0;
-				mIamAlive=false;
+				setIamAlive(false);
 			}
 			else{
 				if(isSupportedInStreamCmds() & mIsStreaming){
@@ -5250,6 +5250,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void setSetupDeviceWhileConnecting(boolean state) {
 		this.mSetupDeviceWhileConnecting = state;
+	}
+
+	protected boolean isIamAlive() {
+		return mIamAlive;
+	}
+
+	protected void setIamAlive(boolean state) {
+		mIamAlive = state;
 	}
 
 	/**
