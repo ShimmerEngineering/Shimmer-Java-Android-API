@@ -65,7 +65,7 @@ public class NoninOnyxIIDevice extends ShimmerDevice implements SerialPortListen
 		setMacIdFromUart(mUniqueID);
 		setShimmerUserAssignedNameWithMac("Nonin");
 		
-		setShimmerVersionInfoAndCreateSensorMap(SVO);
+		setShimmerVersionObjectAndCreateSensorMap(SVO);
 	}
 	
 	@Override
