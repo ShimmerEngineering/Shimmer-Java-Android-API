@@ -1,11 +1,15 @@
 package com.shimmerresearch.driver;
 
+import java.io.Serializable;
+
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.exceptions.ShimmerException;
 
-public class ShimmerDeviceCallbackAdapter {
+public class ShimmerDeviceCallbackAdapter implements Serializable {
 
+	private static final long serialVersionUID = -3826489309767259792L;
+	
 	private ShimmerDevice shimmerDevice = null;
 	
 	public ShimmerDeviceCallbackAdapter(ShimmerDevice shimmerDevice){
