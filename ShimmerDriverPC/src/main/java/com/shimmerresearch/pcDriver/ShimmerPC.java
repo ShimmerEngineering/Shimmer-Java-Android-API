@@ -337,7 +337,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setBluetoothRadioState(BT_STATE.CONNECTING);
 				
 //				mMyBluetoothAddress = address;
-				mIamAlive = false;
+				setIamAlive(false);
 				getListofInstructions().clear();
 				mFirstTime=true;
 				

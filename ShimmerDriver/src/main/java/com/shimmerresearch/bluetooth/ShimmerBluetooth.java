@@ -675,7 +675,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 
 		private void processPacket() {
-			mIamAlive = true;
+			setIamAlive(true);
 			byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
 			
 			//Data packet followed by another data packet
@@ -778,7 +778,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				byteBuffer=readBytes(1);
 				if(byteBuffer!=null){
 					mNumberofTXRetriesCount = 0;
-					mIamAlive = true;
+					setIamAlive(true);
 					
 					//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
 					if(mCurrentCommand==STOP_STREAMING_COMMAND 
@@ -892,7 +892,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			else if(bytesAvailableToBeRead()){
 				byteBuffer=readBytes(1);
 				if(byteBuffer!=null){
-					mIamAlive = true;
+					setIamAlive(true);
 					
 					//Check to see whether it is a response byte
 					if(isKnownResponse(byteBuffer[0])){
@@ -1268,7 +1268,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				int firmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
 				int firmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
 				ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
-				setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
+				setShimmerVersionObjectAndCreateSensorMap(shimmerVerObject);
 	
 				printLogDataForDebugging("FW Version Response Received. FW Code: " + getFirmwareVersionCode());
 				printLogDataForDebugging("FW Version Response Received: " + getFirmwareVersionParsed());
@@ -2733,7 +2733,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				
 
 				if(mCurrentCommand==GET_FW_VERSION_COMMAND){
-					setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0));
+					setShimmerVersionObjectAndCreateSensorMap(new ShimmerVerObject(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0));
 					
 //					/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
 //	      	        Bundle bundle = new Bundle();
@@ -2873,9 +2873,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		@Override
 		public void run() {
-			if(mIamAlive){
+			if(isIamAlive()){
 				mCountDeadConnection = 0;
-				mIamAlive=false;
+				setIamAlive(false);
 			}
 			else{
 				if(isSupportedInStreamCmds() && mIsStreaming){
@@ -5255,6 +5255,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 */
 	public void setSetupDeviceWhileConnecting(boolean state) {
 		this.mSetupDeviceWhileConnecting = state;
+	}
+
+	protected boolean isIamAlive() {
+		return mIamAlive;
+	}
+
+	protected void setIamAlive(boolean state) {
+		mIamAlive = state;
 	}
 
 	/**

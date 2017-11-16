@@ -9584,13 +9584,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		int expBrdId = ebd.getExpansionBoardId();
 		int expBrdRev = ebd.getExpansionBoardRev();
+		int expBrdRevSpecial = ebd.getExpansionBoardRevSpecial();
 		
 		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
 				(expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.EXG_UNIFIED)			// >= SR47-3-0
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.GSR_UNIFIED) 		// >= SR48-3-0
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.BRIDGE_AMP)	// >= SR49-2-0
 				|| (expBrdId==HW_ID_SR_CODES.SHIMMER3 && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.IMU)							// >= SR31-6-0
-				|| (expBrdRev==Configuration.Shimmer3.NEW_IMU_EXP_REV.ANY_EXP_BRD_WITH_SPECIAL_REV)													// == SRx-x-171
+				|| (expBrdRevSpecial==Configuration.Shimmer3.NEW_IMU_EXP_REV.ANY_EXP_BRD_WITH_SPECIAL_REV)													// == SRx-x-171
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.PROTO3_DELUXE)	// Future unified board
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.PROTO3_MINI)		// Future unified board
 				)){
