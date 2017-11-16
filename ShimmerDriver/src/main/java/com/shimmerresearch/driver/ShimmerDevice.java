@@ -370,7 +370,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mShimmerVerObject = sVO;
 	}
 	
-	public void setShimmerVersionInfoAndCreateSensorMap(ShimmerVerObject sVO) {
+	public void setShimmerVersionObjectAndCreateSensorMap(ShimmerVerObject sVO) {
 		setShimmerVersionObject(sVO);
 		sensorAndConfigMapsCreate();
 	}
@@ -385,7 +385,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public void setHardwareVersionAndCreateSensorMaps(int hardwareVersion) {
 		ShimmerVerObject sVO = new ShimmerVerObject(hardwareVersion, getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
-		setShimmerVersionInfoAndCreateSensorMap(sVO);
+		setShimmerVersionObjectAndCreateSensorMap(sVO);
 	}
 
 	public void clearShimmerVersionObject() {
@@ -397,7 +397,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		sensorAndConfigMapsCreate();
 		
 		//Below is the same as above
-		setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject());
+		setShimmerVersionObjectAndCreateSensorMap(new ShimmerVerObject());
 	}
 	
 	
@@ -527,6 +527,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				Entry<String, ConfigOptionDetailsSensor> entry = iteratorConfigOptionMap.next();
 				if(isVerCompatibleWithAnyOf(entry.getValue().mListOfCompatibleVersionInfo)){
 					mConfigOptionsMapSensors.put(entry.getKey(), entry.getValue());
+				} else {
+//					System.out.println("Not compatible:" + entry.getKey());
 				}
 			}
 		}

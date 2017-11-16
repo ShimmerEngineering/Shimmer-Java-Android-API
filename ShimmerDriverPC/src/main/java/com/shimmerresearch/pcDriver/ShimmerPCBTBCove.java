@@ -182,7 +182,7 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 	 * @param empty  This is for forward compatibility, in the event a choice of library is offered, any string value can be entered now ~ does nothing
 	 */
 	public synchronized void connect(final String address, String empty) {
-		mIamAlive = false;
+		setIamAlive(false);
 		if (conn==null){
 		mMyBluetoothAddress = address;
 		getListofInstructions().clear();

@@ -526,7 +526,7 @@ public class Shimmer4 extends ShimmerDevice {
 							ShimmerVerObject shimmerVerObject = (ShimmerVerObject)parsedResponse;
 							shimmerVerObject.setHardwareVersion(getHardwareVersion());
 							//TODO check with ShimmerBluetooth
-							setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
+							setShimmerVersionObjectAndCreateSensorMap(shimmerVerObject);
 						}
 						else {
 							initialiseDevice();
