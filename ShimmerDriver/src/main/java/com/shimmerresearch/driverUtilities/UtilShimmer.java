@@ -24,11 +24,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.TimeZone;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.exceptions.ShimmerException;
 
 /** Utility class with commonly useful methods
@@ -1123,7 +1126,4 @@ public class UtilShimmer implements Serializable {
 		return listOfUniqueIds;
 	}
 
-
-
-	
 }
