@@ -53,6 +53,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
@@ -596,6 +597,25 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			System.out.println("\t" + channel + ":\t(" + getFormatClusterValue(channel, CHANNEL_TYPE.UNCAL.toString()) + "," + getFormatClusterValue(channel, CHANNEL_TYPE.CAL.toString()) + ")");
 		}
 		System.out.println("");
+	}
+
+	public static ObjectCluster[] generateRandomObjectClusterArray(String deviceName, String signalName, int numSamples, int minValue, int maxValue) {
+		Random rand = new Random();
+		
+		double[] dataArray = new double[numSamples];
+		for(int i=0;i<numSamples;i++){
+			dataArray[i] = rand.nextInt(maxValue);
+		}
+
+//		double[] dataArray = rand.doubles(numSamples, minValue, maxValue);
+		
+		ObjectCluster[] ojcArray = new ObjectCluster[numSamples];
+		for(int i=0;i<numSamples;i++){
+			ObjectCluster ojc = new ObjectCluster(deviceName);
+			ojc.addData(signalName, CHANNEL_TYPE.CAL, "", dataArray[i]);
+		}
+		
+		return ojcArray;
 	}
 
 	public ObjectCluster deepClone() {
