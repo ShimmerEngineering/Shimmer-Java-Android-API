@@ -612,7 +612,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		ObjectCluster[] ojcArray = new ObjectCluster[numSamples];
 		for(int i=0;i<numSamples;i++){
 			ObjectCluster ojc = new ObjectCluster(deviceName);
+			ojc.createArrayData(1);
 			ojc.addData(signalName, CHANNEL_TYPE.CAL, "", dataArray[i]);
+			ojcArray[i] = ojc;
 		}
 		
 		return ojcArray;
