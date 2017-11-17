@@ -160,4 +160,8 @@ public class ExpansionBoardDetails implements Serializable {
 		return mExpansionBoardRev;
 	}
 
+	public int getExpansionBoardRevSpecial() {
+		return mExpansionBoardRevSpecial;
+	}
+
 }
