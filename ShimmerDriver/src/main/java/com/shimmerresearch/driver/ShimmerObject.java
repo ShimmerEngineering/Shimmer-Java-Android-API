@@ -4041,7 +4041,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mTimeStampPacketByteSize = 2;
 //			mTimeStampPacketMaxValueTicks = 65536;
 		}
-		mTimeStampTicksMaxValue = (int) (Math.pow(2, 8*mTimeStampPacketByteSize) - 1);
+		mTimeStampTicksMaxValue = (int) Math.pow(2, 8*mTimeStampPacketByteSize);
 	}
 	
 
