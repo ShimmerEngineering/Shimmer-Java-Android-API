@@ -63,6 +63,7 @@ import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.Builder;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2;
+import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
@@ -609,11 +610,14 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 //		double[] dataArray = rand.doubles(numSamples, minValue, maxValue);
 		
+		double timestamp = 0.00001;
 		ObjectCluster[] ojcArray = new ObjectCluster[numSamples];
 		for(int i=0;i<numSamples;i++){
 			ObjectCluster ojc = new ObjectCluster(deviceName);
 			ojc.createArrayData(1);
 			ojc.addData(signalName, CHANNEL_TYPE.CAL, "", dataArray[i]);
+			ojc.addCalData(ShimmerClock.channelSystemTimestampPlot, timestamp);
+			timestamp+=1;
 			ojcArray[i] = ojc;
 		}
 		
