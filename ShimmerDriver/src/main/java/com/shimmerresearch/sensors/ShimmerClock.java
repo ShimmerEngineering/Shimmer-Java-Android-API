@@ -399,7 +399,7 @@ public class ShimmerClock extends AbstractSensor {
 						calculateTrialPacketLoss(calibratedTS);
 
 						if(commType==COMMUNICATION_TYPE.SD){
-							double samplingClockFreq = mShimmerDevice.getSamplingClockFreq();
+							double samplingClockFreq = mShimmerDevice.getRtcClockFreq();
 
 							//TIMESTAMP
 							// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
@@ -753,7 +753,7 @@ public class ShimmerClock extends AbstractSensor {
 		}
 
 		mLastReceivedTimeStamp = (timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
-		calibratedTimeStamp = mLastReceivedTimeStamp/mShimmerDevice.getSamplingClockFreq()*1000;   // to convert into mS
+		calibratedTimeStamp = mLastReceivedTimeStamp/mShimmerDevice.getRtcClockFreq()*1000;   // to convert into mS
 		if (!mStreamingStartTimeSaved){
 			mStreamingStartTimeSaved=true;
 			mStreamingStartTimeMs = calibratedTimeStamp;
