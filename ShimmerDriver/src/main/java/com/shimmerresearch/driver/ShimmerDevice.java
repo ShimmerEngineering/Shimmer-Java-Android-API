@@ -4470,9 +4470,21 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mEnableProcessMarkers=enable;
 	}
 
+	/**
+	 * This is clock frequency that controls when the device records a new
+	 * sample (this could be a 32.768kHz crystal, or, in the case of a Shimmer3,
+	 * it could be the TCXO)
+	 */
 	public double getSamplingClockFreq() {
 		return 32768.0;
 	}
-
+	
+	/**
+	 * This is clock frequency that is used as the basis for the timestamp per
+	 * packet of data (normally a 32.768kHz crystal for Shimmer2r3)
+	 */
+	public static double getRtcClockFreq() {
+		return 32768.0;
+	}
 
 }

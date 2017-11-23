@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class BasicProcessWithCallBack {
 
@@ -63,12 +59,18 @@ public abstract class BasicProcessWithCallBack {
 	}
 
 	public void startConsumerThreadIfNull(){
-		if (mGUIConsumerThread==null){
+		if (mGUIConsumerThread==null || mGUIConsumerThread.stop){
 			mGUIConsumerThread = new ConsumerThread();
 			if(!threadName.isEmpty()){
 				mGUIConsumerThread.setName(threadName);
 			}
 			mGUIConsumerThread.start();
+		}
+	}
+	
+	public void stopConsumerThread(){
+		if (mGUIConsumerThread!=null){
+			mGUIConsumerThread.stop = true;
 		}
 	}
 
@@ -110,7 +112,7 @@ public abstract class BasicProcessWithCallBack {
 		
 		if(mWaitForData!=null){
 			BasicProcessWithCallBack bpwc = mWaitForData.returnBasicProcessWithCallBack();
-			if(bpwc.equals(b)){
+			if(bpwc==b || bpwc.equals(b)){
 				consolePrintLn("Removing thread\tHashCode: " + mWaitForData.hashCode());
 				mWaitForData = null;
 			}
@@ -121,15 +123,31 @@ public abstract class BasicProcessWithCallBack {
     		while (entries.hasNext()) {
     			WaitForData wFD = entries.next();
     			BasicProcessWithCallBack bpwc = wFD.returnBasicProcessWithCallBack();
-    			if(bpwc.equals(b)){
+    			if(bpwc==b || bpwc.equals(b)){
     				consolePrintLn("Removing thread\tHashCode: " + wFD.hashCode());
     				entries.remove();
     				return;
     			}
     		}
+    		
+    		if(mListWaitForData.isEmpty()){
+    			stopConsumerThread();
+    		}
     	}
+    	
+		if(mIsDebug){
+			printListOfThreads();
+		}
 	}
-	
+
+	public void removeSetWaitForDataAll(){
+		mWaitForData = null;
+    	Iterator<WaitForData> entries = mListWaitForData.iterator();
+		while (entries.hasNext()) {
+			entries.remove();
+		}
+	}
+
 	public void setWaitForDataWithSingleInstanceCheck(BasicProcessWithCallBack b){
 		startConsumerThreadIfNull();
 
@@ -257,8 +275,9 @@ public abstract class BasicProcessWithCallBack {
 		processMsgFromCallback(shimmerMSG);
 	}
 	
-	private void printListOfThreads() {
-		consolePrintLn("BasicProcessWithCallBack:\t" + threadName);
+	public void printListOfThreads() {
+		consolePrintLn(this.getClass().getSimpleName());
+//		consolePrintLn("BasicProcessWithCallBack:\t" + threadName);
 		
 		if (mWaitForData!=null){
 			consolePrintLn("\tSimple Name: " + mWaitForData.getClass().getSimpleName() + "\t" + mWaitForData.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + mWaitForData.hashCode());
@@ -283,9 +302,7 @@ public abstract class BasicProcessWithCallBack {
 	}
 	
 	private void consolePrintLn(String toPrint){
-		if(mIsDebug){
-			System.out.println(toPrint);
-		}
+		System.out.println(toPrint);
 	}
 	
 }

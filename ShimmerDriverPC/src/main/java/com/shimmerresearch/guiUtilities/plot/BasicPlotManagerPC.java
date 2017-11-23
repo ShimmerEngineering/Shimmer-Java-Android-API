@@ -246,7 +246,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			else{
 				trace = addNormalTraceLeft(chart, plotMaxSize);
 			}
-			((Trace2DLtd)trace).setMaxSize(plotMaxSize);
+			setTraceSize(trace, plotMaxSize);
 			addSignalCommon(chart, trace, signal, plotMaxSize);
 		}	
 		else {
@@ -271,7 +271,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			yAxisRight = createRightYAxis(chart);
 			chart.setAxisYRight(yAxisRight, 0);
 			trace = addNormalTraceRight(chart, plotMaxSize);
-			((Trace2DLtd)trace).setMaxSize(plotMaxSize);
+			setTraceSize(trace, plotMaxSize);
 			addSignalCommon(chart, trace, signal, plotMaxSize);
 		}	
 		else {
@@ -380,7 +380,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public void addTrace2D(ITrace2D trace, String[] signal, int plotMaxSize){
 		mChart.addTrace(trace);
 		mListofTraces.add(trace);
-		((Trace2DLtd)trace).setMaxSize(plotMaxSize);
+		setTraceSize(trace, plotMaxSize);
 		String name = joinChannelStringArray(signal);
 		mMapofDefaultXAxisSizes.put(name, plotMaxSize);
 		super.addSignal(signal);
@@ -1093,8 +1093,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 					if(mMapofDefaultXAxisSizes.get(name) != null && trace.getName().contains(signal)){
 						int newSize = (int)Math.round((mMapofDefaultXAxisSizes.get(name)*percentage));
 						//System.out.println("%: " + percentage +"   Size: " +mMapofDefaultXAxisSizes.get(name));
-						System.err.println("TRACE: " +name + " SIZE: " +newSize);
-						((Trace2DLtd)trace).setMaxSize(newSize);
+						setTraceSize(trace, newSize);
 				        //System.err.println("(Trace2DLtd)trace).setMaxSize: " +newSize);
 					}
 					else{
@@ -1106,6 +1105,11 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 
 	}
 
+	private void setTraceSize(ITrace2D trace, int newSize) {
+		System.err.println("TRACE: " + trace.getName() + " SIZE: " +newSize);
+		((Trace2DLtd)trace).setMaxSize(newSize);
+	}
+
 	public synchronized void adjustTraceLengthUsingSetSize(double percentage) {
 		synchronized(mListofTraces){
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
@@ -1115,7 +1119,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 					String name = trace.getName();
 					if(mMapofDefaultXAxisSizes.get(name) != null){
 						int newSize = (int)Math.round((mMapofDefaultXAxisSizes.get(name)*percentage));
-						((Trace2DLtd)trace).setMaxSize(newSize);
+						setTraceSize(trace, newSize);
 					}
 				}
 			}

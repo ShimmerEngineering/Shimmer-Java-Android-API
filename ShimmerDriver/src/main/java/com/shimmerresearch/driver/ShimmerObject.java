@@ -2058,7 +2058,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			int iTimeStamp = getSignalIndex(Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP); //find index
 			double timestampUnwrappedTicks = unwrapTimeStamp((double)newPacketInt[iTimeStamp]);
-			double timestampUnwrappedMilliSecs = timestampUnwrappedTicks/getSamplingClockFreq()*1000;   // to convert into mS
+			double timestampUnwrappedMilliSecs = timestampUnwrappedTicks/getRtcClockFreq()*1000;   // to convert into mS
 			
 			incrementPacketsReceivedCounters();
 			calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
@@ -2387,7 +2387,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 
 		double timestampUnwrappedTicks = unwrapTimeStamp(shimmerTimestampTicks);
-		double timestampUnwrappedMilliSecs = timestampUnwrappedTicks/getSamplingClockFreq()*1000;   // to convert into mS
+		double timestampUnwrappedMilliSecs = timestampUnwrappedTicks/getRtcClockFreq()*1000;   // to convert into mS
 
 		incrementPacketsReceivedCounters();
 		calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
@@ -2407,7 +2407,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			
 			if (mEnableCalibration){
-				double timestampUnwrappedWithOffsetMilliSecs = timestampUnwrappedWithOffsetTicks/getSamplingClockFreq()*1000;   // to convert into mS
+				double timestampUnwrappedWithOffsetMilliSecs = timestampUnwrappedWithOffsetTicks/getRtcClockFreq()*1000;   // to convert into mS
 				calibratedData[iTimeStamp] = timestampUnwrappedWithOffsetMilliSecs;
 			}
 		} 
@@ -9629,10 +9629,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				return 255765.625;
 			}
 		} else {
-			return getClockFreqDefaultShimmer2r3();
+			return super.getSamplingClockFreq();
 		}
 	}
-
 
 	private boolean isTcxoClock20MHz() {
 		ShimmerVerObject svo = getShimmerVerObject();
@@ -9648,11 +9647,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else {
 			return false;
 		}
-	}
-
-
-	public static double getClockFreqDefaultShimmer2r3() {
-		return 32768.0;
 	}
 
 
