@@ -8,6 +8,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public abstract class BasicProcessWithCallBack {
 
+	private class EndThread{};
+	
 	protected Callable mThread = null;
 	//protected BlockingQueue<ShimmerMSG> mQueue = new ArrayBlockingQueue<ShimmerMSG>(1024);
 	protected LinkedBlockingDeque<ShimmerMsg> mQueue = new LinkedBlockingDeque<ShimmerMsg>(1024);
@@ -71,6 +73,13 @@ public abstract class BasicProcessWithCallBack {
 	public void stopConsumerThread(){
 		if (mGUIConsumerThread!=null){
 			mGUIConsumerThread.stop = true;
+			ShimmerMsg smsg = new ShimmerMsg(0,new EndThread());
+			try {
+				mQueue.put(smsg);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -81,7 +90,11 @@ public abstract class BasicProcessWithCallBack {
 			while (!stop) {
 				try {
 					ShimmerMsg shimmerMSG = mQueue.take();
-					processMsgFromCallback(shimmerMSG);
+					if (shimmerMSG.mB instanceof EndThread){
+						stop=true;
+					} else {
+						processMsgFromCallback(shimmerMSG);
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					System.out.print("QUE BLOCKED");
