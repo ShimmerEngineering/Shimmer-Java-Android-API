@@ -17,7 +17,8 @@ public abstract class BasicProcessWithCallBack {
 	private WaitForData mWaitForData = null;
 	
 	//private List<Callable> mListOfThreads = new ArrayList<Callable>();
-	private List<Callable> mListOfThreads = Collections.synchronizedList(new ArrayList<Callable>());
+	private List<Callable> mListOfConsumers = Collections.synchronizedList(new ArrayList<Callable>());
+	private List<BasicProcessWithCallBack> mListOfMsgProducers = new ArrayList<BasicProcessWithCallBack>();
 	
 //	private List<WaitForData> mListWaitForData = new ArrayList<WaitForData>();
 	private List<WaitForData> mListWaitForData = Collections.synchronizedList(new ArrayList<WaitForData>());
@@ -70,6 +71,33 @@ public abstract class BasicProcessWithCallBack {
 		}
 	}
 	
+	/** This is used by the msg producer to remove the child consumer from its list of threads
+	 * @param b is the msg consumer
+	 */
+	public void removeConsumer(BasicProcessWithCallBack b){
+		synchronized (mListOfConsumers) {
+        	Iterator <Callable> entries = mListOfConsumers.iterator();
+    		while (entries.hasNext()) {
+    			Callable c = entries.next();
+    			if (c instanceof WaitForData){
+    				System.out.println("");
+    				for (WaitForData w: b.mListWaitForData){
+    					if (c.equals(w)){
+    						entries.remove();
+    					}
+    				}
+    				if (c.equals(b.mWaitForData)){
+    					entries.remove();
+    				}
+    			}
+    		}
+    	}
+	}
+
+	
+	/** This stops the consumer thread, and removes all callbacks from producers
+	 * 
+	 */
 	public void stopConsumerThread(){
 		if (mGUIConsumerThread!=null){
 			mGUIConsumerThread.stop = true;
@@ -101,12 +129,19 @@ public abstract class BasicProcessWithCallBack {
 					e.printStackTrace();
 				}
 			}
+			
+			//as a safety precaution, remove all its callbacks
+			removeSetWaitForDataAll();
+			
 		};
 	}
 	
+	/** This allows the class to receive msgs from the class passed in as an argument
+	 * @param b the msg producer
+	 */
 	public void setWaitForData(BasicProcessWithCallBack b){
 		startConsumerThreadIfNull();
-		
+		mListOfMsgProducers.add(b);
 		if (mWaitForData!=null){
 			synchronized (mListWaitForData){
 				mListWaitForData.add(new WaitForData(b));
@@ -121,6 +156,9 @@ public abstract class BasicProcessWithCallBack {
 	};
 
 	/** TODO needs work to include all cases in "setWaitForData" */
+	/** This removes a producer 
+	 * @param b b is the producer
+	 */
 	public void removeSetWaitForData(BasicProcessWithCallBack b){
 		
 		if(mWaitForData!=null){
@@ -137,6 +175,7 @@ public abstract class BasicProcessWithCallBack {
     			WaitForData wFD = entries.next();
     			BasicProcessWithCallBack bpwc = wFD.returnBasicProcessWithCallBack();
     			if(bpwc==b || bpwc.equals(b)){
+    				b.removeConsumer(this);
     				consolePrintLn("Removing thread\tHashCode: " + wFD.hashCode());
     				entries.remove();
     				return;
@@ -153,7 +192,15 @@ public abstract class BasicProcessWithCallBack {
 		}
 	}
 
+	/** Removes all producers registered with this class
+	 * 
+	 */
 	public void removeSetWaitForDataAll(){
+		
+		for (BasicProcessWithCallBack bpwc:mListOfMsgProducers){
+			bpwc.removeConsumer(this);
+		}
+		
 		mWaitForData = null;
     	Iterator<WaitForData> entries = mListWaitForData.iterator();
 		while (entries.hasNext()) {
@@ -184,6 +231,7 @@ public abstract class BasicProcessWithCallBack {
 			}
 			if(!found){
 				synchronized (mListWaitForData){
+					mListOfMsgProducers.add(b);
 					mListWaitForData.add(new WaitForData(b));
 				}
 			}
@@ -195,8 +243,8 @@ public abstract class BasicProcessWithCallBack {
 	
 	public void passCallback(Callable c) {
 		if (mThread!=null){
-	    	synchronized (mListOfThreads) {
-	    		mListOfThreads.add(c);
+	    	synchronized (mListOfConsumers) {
+	    		mListOfConsumers.add(c);
 	    	}
 		} 
 		else {
@@ -210,8 +258,8 @@ public abstract class BasicProcessWithCallBack {
     	} 
     	
     	// April 2017: RM changed for loop to iterator and added synchronisation block  as concurrentmodification with for loop from time to time (this solution may not resolve concurrentmodification, monitor over time)
-    	synchronized (mListOfThreads) {
-        	Iterator <Callable> entries = mListOfThreads.iterator();
+    	synchronized (mListOfConsumers) {
+        	Iterator <Callable> entries = mListOfConsumers.iterator();
     		while (entries.hasNext()) {
     			Callable c = entries.next();
     			c.callBackMethod(s);
@@ -230,8 +278,8 @@ public abstract class BasicProcessWithCallBack {
     	}
     	
     	// May 2017: RM changed for loop to iterator and added synchronisation block as concurrentmodification with for loop from time to time (this solution may not resolve concurrentmodification, monitor over time)
-    	synchronized (mListOfThreads) {
-        	Iterator <Callable> entries = mListOfThreads.iterator();
+    	synchronized (mListOfConsumers) {
+        	Iterator <Callable> entries = mListOfConsumers.iterator();
     		while (entries.hasNext()) {
     			Callable c = entries.next();
     			c.callBackMethod(i,ojc);
@@ -296,8 +344,8 @@ public abstract class BasicProcessWithCallBack {
 			consolePrintLn("\tSimple Name: " + mWaitForData.getClass().getSimpleName() + "\t" + mWaitForData.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + mWaitForData.hashCode());
 		}
 
-    	synchronized (mListOfThreads) {
-        	Iterator <Callable> entries = mListOfThreads.iterator();
+    	synchronized (mListOfConsumers) {
+        	Iterator <Callable> entries = mListOfConsumers.iterator();
     		while (entries.hasNext()) {
     			Callable c = entries.next();
     			consolePrintLn("\tSimple Name: " + c.getClass().getSimpleName() + "\tHashCode: " + c.hashCode());
