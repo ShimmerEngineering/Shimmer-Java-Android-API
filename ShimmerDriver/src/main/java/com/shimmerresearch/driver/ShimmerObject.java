@@ -487,6 +487,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private int mShowErrorLedsRtc = 0;
 	private boolean isOverrideShowErrorLedsSd = false;
 	private int mShowErrorLedsSd = 0;
+	private boolean mLowBattAutoStop = false;
 
 	protected int mTrialId = 0;
 	protected int mTrialNumberOfShimmers = 0;
@@ -4182,6 +4183,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setMasterShimmer(false);
 			setSingleTouch(false);
 			setTCXO(false);
+			setLowBattAutoStop(false);
 			
 			setPacketSize(0);
 			mConfigByte0=0;
@@ -4348,6 +4350,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					mTCXO = (configBytes[configByteLayoutCast.idxSDExperimentConfig1] >> configByteLayoutCast.bitShiftTCX0) & configByteLayoutCast.maskTimeTCX0;
 				}
 
+				if(isVerCompatibleWithAnyOf(Configuration.Shimmer3.configOptionLowPowerAutoStop.mListOfCompatibleVersionInfo)) {
+					setLowBattAutoStop((configBytes[configByteLayoutCast.idxSDExperimentConfig1] >> configByteLayoutCast.bitShiftLowBattStop) & configByteLayoutCast.maskLowBattStop);
+				}
 					
 				byte[] macIdBytes = new byte[configByteLayoutCast.lengthMacIdBytes];
 				System.arraycopy(configBytes, configByteLayoutCast.idxMacAddress, macIdBytes, 0 , configByteLayoutCast.lengthMacIdBytes);
@@ -4595,6 +4600,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] |= (byte) ((mTCXO & configByteLayoutCast.maskTimeTCX0) << configByteLayoutCast.bitShiftTCX0);
+				}
+				
+				if(isVerCompatibleWithAnyOf(Configuration.Shimmer3.configOptionLowPowerAutoStop.mListOfCompatibleVersionInfo)) {
+					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] |= (byte) ((isLowBattAutoStop()?1:0 & configByteLayoutCast.maskLowBattStop) << configByteLayoutCast.bitShiftLowBattStop);
 				}
 
 				if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.STROKARE) {
@@ -5319,6 +5328,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public int getTCXO() {
 		return mTCXO;
+	}
+	
+	private void setLowBattAutoStop(int state) {
+		setLowBattAutoStop(state>0? true:false);
+	}
+
+	private void setLowBattAutoStop(boolean state) {
+		mLowBattAutoStop = state;
+	}
+
+	private boolean isLowBattAutoStop() {
+		return mLowBattAutoStop;
 	}
 
 	/**
@@ -8457,6 +8478,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //				returnValue = isInternalExpPower();
 //	        	break;
 
+			case(Configuration.Shimmer3.GuiLabelConfig.LOW_POWER_AUTOSTOP):
+				returnValue = isLowBattAutoStop();
+	        	break;
+
 			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
 				returnValue = getBluetoothBaudRate();
 	        	break;
@@ -8614,10 +8639,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.TCXO):
             	setTCXO((boolean)valueToSet);
 	        	break;
+	        //TODO remove? already in ShimmerDevice
 			case(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN):
             	setInternalExpPower((boolean)valueToSet);
 	        	break;
-        	
+
+			case(Configuration.Shimmer3.GuiLabelConfig.LOW_POWER_AUTOSTOP):
+            	setLowBattAutoStop((boolean)valueToSet);
+	        	break;
+
 			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
 				setBluetoothBaudRate((int)valueToSet);
 	        	break;
@@ -8864,6 +8894,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED, (double) getTrialDurationEstimatedInSecs());
 		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM, (double) getTrialDurationMaximumInSecs());
 
+		configMapForDb.put(ShimmerDevice.DatabaseConfigHandle.LOW_POWER_AUTOSTOP, (double) (isLowBattAutoStop()? 1:0));
+
 		//Now handled in the algorithm class in super
 		/**
 		if(svo!=null && svo.isShimmerGenGq()){
@@ -8908,6 +8940,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.USER_BUTTON)){
 			setButtonStart(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.USER_BUTTON))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.LOW_POWER_AUTOSTOP)){
+			setLowBattAutoStop(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.LOW_POWER_AUTOSTOP))>0? true:false);
 		}
 		
 		//EXG Configuration
