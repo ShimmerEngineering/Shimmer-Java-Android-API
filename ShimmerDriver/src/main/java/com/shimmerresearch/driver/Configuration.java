@@ -865,6 +865,7 @@ public class Configuration {
 			public static final String INT_EXP_BRD_POWER_INTEGER = "Int Exp Power";
 			public static final String ENABLE_ERROR_LEDS_RTC = "RTC Error LEDs";
 			public static final String ENABLE_ERROR_LEDS_SD = "SD Error LEDs";
+			public static final String LOW_POWER_AUTOSTOP = "Low-power Autostop";
 
 			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
 			public static final String CALIBRATION_ALL = AbstractSensor.GuiLabelConfigCommon.CALIBRATION_ALL;
@@ -1668,6 +1669,14 @@ public class Configuration {
 	        mSensorGroupingMapRef = Collections.unmodifiableMap(aMap);
 	    }
 
+	    
+	    public static final ConfigOptionDetailsSensor configOptionLowPowerAutoStop = new ConfigOptionDetailsSensor(
+				Configuration.Shimmer3.GuiLabelConfig.LOW_POWER_AUTOSTOP,
+				ShimmerDevice.DatabaseConfigHandle.LOW_POWER_AUTOSTOP,
+				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+				Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 9, 6),
+						new ShimmerVerObject(FW_ID.SDLOG, 0, 17, 3)));
+	    
 	    public static final Map<String, ConfigOptionDetailsSensor> mConfigOptionsMapRef;
 	    static {
 	        Map<String, ConfigOptionDetailsSensor> aMap = new LinkedHashMap<String, ConfigOptionDetailsSensor>();
@@ -1800,6 +1809,8 @@ public class Configuration {
 					ShimmerDevice.DatabaseConfigHandle.TXCO,
 					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw));
+
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LOW_POWER_AUTOSTOP, configOptionLowPowerAutoStop);
 
 	        mConfigOptionsMapRef = Collections.unmodifiableMap(aMap);
 	    }
@@ -2075,8 +2086,7 @@ public class Configuration {
 					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN,
 					null,
 					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
-			
-			
+
 			mConfigOptionsMapRef = Collections.unmodifiableMap(aMap);
 	    }
 	}

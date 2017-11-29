@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import com.shimmerresearch.driver.ConfigByteLayout;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -257,6 +258,9 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	public int bitShiftSingleTouch = 			7;
 	public int maskTimeSingleTouch = 			0x01;
 	
+	public int bitShiftLowBattStop = 			0;
+	public int maskLowBattStop =				0x01;
+
 	public int bitShiftTCX0 = 					4;
 	public int maskTimeTCX0 = 					0x01;
 
@@ -366,6 +370,11 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 		if(compareVersions(FW_ID.LOGANDSTREAM,0,8,1)) {
 			idxBtFactoryReset =            		128+103;
 		}
+		
+//		if(mShimmerVerObject.isVerCompatibleWithAnyOf(Configuration.Shimmer3.configOptionLowPowerAutoStop.mListOfCompatibleVersionInfo)) {
+//			maskLowBattStop = 0;
+//			bitShiftLowBattStop = 0;
+//		}
 
 //		if(Util.compareVersions(mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,FW_ID.SDLOG,0,10,1)){
 //			idxMplCalibration = 128+128+128+0;
