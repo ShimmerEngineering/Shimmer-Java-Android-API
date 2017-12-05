@@ -681,6 +681,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 						return i;
 					}
 				}
+				i++;
 			}
 			return -1;
 		}
