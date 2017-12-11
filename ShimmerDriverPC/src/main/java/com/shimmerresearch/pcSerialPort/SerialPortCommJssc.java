@@ -55,7 +55,7 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 	@Override
 	public void connect() throws ShimmerException {
         try {
-    		consolePrintLn("Connecting to COM port");
+    		consolePrintLn("Connecting to COM port:" + mComPort);
     		
 //        	serialPort.setRTS(true);
 //        	serialPort.setDTR(false);
