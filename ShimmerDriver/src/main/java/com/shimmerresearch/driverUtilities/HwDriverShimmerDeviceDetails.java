@@ -52,7 +52,11 @@ public class HwDriverShimmerDeviceDetails {
 	public enum SPAN_VERSION{
 		UNKNOWN,
 		SPAN_SR1_3_1, // 115200 baud
-		SPAN_SR1_3_0 // 230400 baud
+		SPAN_SR1_3_0; // 230400 baud
+		
+		public boolean isSupported(){
+			return this==SPAN_VERSION.SPAN_SR1_3_1;
+		}
 	}
 
 	public enum DEVICE_STATE{
