@@ -28,8 +28,8 @@ public class SpanJobDetails extends AbstractErrorCodes {
 		SPECTRUM_ANALYSER_START,
 		SPECTRUM_ANALYSER_PROGRESS,
 		SPECTRUM_ANALYSER_STOP, 
-		SPAN_RESET_VIA_BSL, 
-		SPAN_FW_WRITE, 
+		BSL_SPAN_RESET, 
+		BSL_SPAN_FW_WRITE, 
 		CLOSE_EVERYTHING_SAFELY;
 	}
 	
@@ -47,8 +47,8 @@ public class SpanJobDetails extends AbstractErrorCodes {
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SPECTRUM_ANALYSER_START), "SPECTRUM_ANALYSER_START");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SPECTRUM_ANALYSER_PROGRESS), "SPECTRUM_ANALYSER_PROGRESS");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SPECTRUM_ANALYSER_STOP), "SPECTRUM_ANALYSER_STOP");
-        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SPAN_RESET_VIA_BSL), "SPAN_RESET_VIA_BSL");
-        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.SPAN_FW_WRITE), "SPAN_FW_WRITE");
+        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.BSL_SPAN_RESET), "SPAN_RESET_VIA_BSL");
+        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.BSL_SPAN_FW_WRITE), "SPAN_FW_WRITE");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.CLOSE_EVERYTHING_SAFELY), "CLOSE_EVERYTHING_SAFELY");
         
     	mMapOfErrorCodes = Collections.unmodifiableMap(aMap);
