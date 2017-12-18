@@ -22,68 +22,31 @@ public abstract class AbstractPlotManager {
 	
 	public List<int[]> mListOfTraceColorsCurrentlyUsed = Collections.synchronizedList(new ArrayList<int[]>());
 	
+	// Numeric value so that they`ll work with android
+	public static class SHIMMER_DEFAULT_COLOURS{
+		// Shimmer Orange
+		public static final int[] colourOrange = new int[]{241, 93, 34};
+		public static final int[] colourBrown = new int[]{153, 76, 0};
+		public static final int[] colourCyanAqua = new int[]{0, 153, 153};
+		public static final int[] colourPurple = new int[]{102, 0, 204};
+		public static final int[] colourMaroon = new int[]{102, 0, 0};
+		public static final int[] colourGreen = new int[]{0, 153, 76};
+		// Shimmer Grey
+		public static final int[] colourGrey = new int[]{119, 120, 124};
+		// Shimmer Blue
+		public static final int[] colourBlue = new int[]{0, 129, 198};
+	}
+
 	public static List<int[]> mListofTraceColorsDefault = Collections.synchronizedList(new ArrayList<int[]>());
 	{
-		String className = this.getClass().getName();
-		className ="";
-		int[] rgb=new int[3];
-		//changed to numeric value so that it`ll work with android
-		
-		rgb=new int[3];
-		// Shimmer Orange
-		rgb[0] = 241;
-		rgb[1] = 93;
-		rgb[2] = 34;
-		mListofTraceColorsDefault.add(rgb);
-
-		rgb=new int[3];
-		//BROWN
-		rgb[0] = 153;
-		rgb[1] = 76;
-		rgb[2] = 0;
-		mListofTraceColorsDefault.add(rgb);
-		
-		rgb=new int[3];
-		//CYAN/AQUA
-		rgb[0] = 0;
-		rgb[1] = 153;
-		rgb[2] = 153;
-		mListofTraceColorsDefault.add(rgb);
-		
-		rgb=new int[3];
-		//PURPLE
-		rgb[0] = 102;
-		rgb[1] = 0;
-		rgb[2] = 204;
-		mListofTraceColorsDefault.add(rgb);
-		
-		rgb=new int[3];
-		//MAROON
-		rgb[0] = 102;
-		rgb[1] = 0;
-		rgb[2] = 0;
-		mListofTraceColorsDefault.add(rgb);
-		
-		rgb=new int[3];
-		//GREEN
-		rgb[0] = 0;
-		rgb[1] = 153;
-		rgb[2] = 76;
-		mListofTraceColorsDefault.add(rgb);
-		
-		rgb=new int[3];
-		// Shimmer Grey
-		rgb[0] = 119;
-		rgb[1] = 120;
-		rgb[2] = 124;
-		mListofTraceColorsDefault.add(rgb);
-		
-		rgb=new int[3];
-		// Shimmer Blue
-		rgb[0] = 0;
-		rgb[1] = 129;
-		rgb[2] = 198;
-		mListofTraceColorsDefault.add(rgb);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourOrange);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourBrown);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourCyanAqua);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourPurple);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourMaroon);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourGreen);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourGrey);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourBlue);
 	}
 	
 	public enum PLOT_LINE_STYLE{
