@@ -64,6 +64,23 @@ public class UtilShimmer implements Serializable {
 
 	public static final String STRING_CONSTANT_FOR_BUTTON_EVENT = "EVENT BUTTON PRESSED: ";
 	
+	// Numeric value so that they`ll work with android
+	public static class SHIMMER_DEFAULT_COLOURS{
+		// Shimmer Orange
+		public static final int[] colourShimmerOrange = new int[]{241, 93, 34};
+		public static final int[] colourBrown = new int[]{153, 76, 0};
+		public static final int[] colourCyanAqua = new int[]{0, 153, 153};
+		public static final int[] colourPurple = new int[]{102, 0, 204};
+		public static final int[] colourMaroon = new int[]{102, 0, 0};
+		public static final int[] colourGreen = new int[]{0, 153, 76};
+		// Shimmer Grey
+		public static final int[] colourShimmerGrey = new int[]{119, 120, 124};
+		// Shimmer Blue
+		public static final int[] colourShimmerBlue = new int[]{0, 129, 198};
+		
+		public static final int[] colourLightRed = new int[]{255, 0, 0};
+	}
+	
 	public UtilShimmer(String parentClassName, Boolean verboseMode){
 		this.mParentClassName = parentClassName;
 		this.mVerboseMode = verboseMode;
