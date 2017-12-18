@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.driverUtilities.UtilShimmer.SHIMMER_DEFAULT_COLOURS;
+
 public abstract class AbstractPlotManager {
 
 	public abstract void setTraceLineStyleAll(PLOT_LINE_STYLE lineStyle);
@@ -22,31 +25,16 @@ public abstract class AbstractPlotManager {
 	
 	public List<int[]> mListOfTraceColorsCurrentlyUsed = Collections.synchronizedList(new ArrayList<int[]>());
 	
-	// Numeric value so that they`ll work with android
-	public static class SHIMMER_DEFAULT_COLOURS{
-		// Shimmer Orange
-		public static final int[] colourOrange = new int[]{241, 93, 34};
-		public static final int[] colourBrown = new int[]{153, 76, 0};
-		public static final int[] colourCyanAqua = new int[]{0, 153, 153};
-		public static final int[] colourPurple = new int[]{102, 0, 204};
-		public static final int[] colourMaroon = new int[]{102, 0, 0};
-		public static final int[] colourGreen = new int[]{0, 153, 76};
-		// Shimmer Grey
-		public static final int[] colourGrey = new int[]{119, 120, 124};
-		// Shimmer Blue
-		public static final int[] colourBlue = new int[]{0, 129, 198};
-	}
-
 	public static List<int[]> mListofTraceColorsDefault = Collections.synchronizedList(new ArrayList<int[]>());
 	{
-		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourOrange);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourShimmerOrange);
 		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourBrown);
 		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourCyanAqua);
 		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourPurple);
 		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourMaroon);
 		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourGreen);
-		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourGrey);
-		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourBlue);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourShimmerGrey);
+		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourShimmerBlue);
 	}
 	
 	public enum PLOT_LINE_STYLE{
@@ -101,8 +89,7 @@ public abstract class AbstractPlotManager {
 	}
 	
 	protected void addSignalGenerateRandomColor(String [] channelStringArray){
-		addSignal(channelStringArray);
-		mListOfTraceColorsCurrentlyUsed.add(generateRandomColor());
+		addSignalAndUseFixedColor(channelStringArray, generateRandomColor());
 	}
 	
 	protected void addSignalAndUseFixedColor(String [] channelStringArray, int[] rgb){
@@ -155,8 +142,7 @@ public abstract class AbstractPlotManager {
 	}
 	
 	protected void addSignalandColor(String[] channelStringArray, int[] color){
-		addSignal(channelStringArray);
-		mListOfTraceColorsCurrentlyUsed.add(color);
+		addSignalAndUseFixedColor(channelStringArray, color);
 	}
 	
 	public void addXAxis(String[] channelStringArray){
