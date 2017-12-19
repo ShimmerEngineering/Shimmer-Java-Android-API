@@ -32,7 +32,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -49,14 +48,10 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.JLabel;
-
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 
-import com.shimmerresearch.driver.Callable;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.FftCalculateDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_AXES;
 import com.shimmerresearch.guiUtilities.AbstractPlotManager;
@@ -525,6 +520,9 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		setXAxisRange(mCurrentXValue-(mXAxisTimeDuration*1000), mCurrentXValue);
 	}
 	
+	/** Makes the graph initially fill from right rather then the left. 
+	 * @param samplingRate
+	 */
 	public void setXAxisRangeBasedOnXDurationSubtractSingleSamplingRate(double samplingRate){
 		double minTime = mCurrentXValue-(mXAxisTimeDuration*1000);
 		double samplingDurationInMs = (1/samplingRate)*1000;
