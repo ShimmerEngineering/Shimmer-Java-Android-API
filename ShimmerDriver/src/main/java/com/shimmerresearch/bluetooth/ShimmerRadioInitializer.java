@@ -24,6 +24,11 @@ public class ShimmerRadioInitializer {
 		this.serialCommPort = serialCommPort;
 	}
 
+	public ShimmerRadioInitializer(AbstractSerialPortHal serialCommPort, boolean useLegacyDelayBeforeBtRead){
+		mUseLegacyDelayToDelayForResponse = useLegacyDelayBeforeBtRead;
+		this.serialCommPort = serialCommPort;
+	}
+	
 	public ShimmerVerObject readShimmerVerObject(){
 		try {
 			int hardwareVersion = readHardwareVersion();
@@ -51,6 +56,10 @@ public class ShimmerRadioInitializer {
 		if(mUseLegacyDelayToDelayForResponse)
 			Thread.sleep(200);
 		byte[] response = serialCommPort.rxBytes(3);
+		if (response==null){
+			serialCommPort.disconnect();
+			throw new ShimmerException();
+		}
 		int hardwareVersion = response[2];
 		
 		return hardwareVersion;
@@ -112,6 +121,10 @@ public class ShimmerRadioInitializer {
 	}
 
 
+	public void useLegacyDelayBeforeBtRead(boolean useLegacyDelayBeforeBtRead){
+		mUseLegacyDelayToDelayForResponse = useLegacyDelayBeforeBtRead;
+	}
+	
 	public void setSerialCommPort(AbstractSerialPortHal serialPortComm) {
 		this.serialCommPort = serialPortComm;
 	}
