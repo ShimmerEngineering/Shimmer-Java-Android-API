@@ -899,7 +899,7 @@ public abstract class ShimmerBluetoothManager{
 		 * @param shimmerRadioInitializer
 		 * @return
 		 */
-		private ShimmerDevice resolveUnknownShimmer(ShimmerRadioInitializer shimmerRadioInitializer){
+		protected ShimmerDevice resolveUnknownShimmer(ShimmerRadioInitializer shimmerRadioInitializer){
 			ShimmerVerObject sVO = shimmerRadioInitializer.readShimmerVerObject();
 			ShimmerDevice shimmerDeviceNew = null;
 			if (sVO.isShimmerGen2() || sVO.isShimmerGen3()){

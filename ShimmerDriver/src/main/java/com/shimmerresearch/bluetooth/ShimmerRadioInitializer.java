@@ -12,7 +12,7 @@ public class ShimmerRadioInitializer {
 
 	protected AbstractSerialPortHal serialCommPort;
 	
-	private boolean mUseLegacyDelayToDelayForResponse = false;
+	private static boolean mUseLegacyDelayToDelayForResponse = false;
 	
 	private ShimmerVerObject shimmerVerObject = null;
 	private ExpansionBoardDetails expansionBoardDetails = null;
@@ -121,7 +121,7 @@ public class ShimmerRadioInitializer {
 	}
 
 
-	public void useLegacyDelayBeforeBtRead(boolean useLegacyDelayBeforeBtRead){
+	public static void useLegacyDelayBeforeBtRead(boolean useLegacyDelayBeforeBtRead){
 		mUseLegacyDelayToDelayForResponse = useLegacyDelayBeforeBtRead;
 	}
 	
