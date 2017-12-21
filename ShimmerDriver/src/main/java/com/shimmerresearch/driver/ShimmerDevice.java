@@ -1116,11 +1116,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @return the mMacIdFromUartParsed
 	 */
 	public String getMacIdFromUartParsed() {
-		int length = mMacIdFromUart.length();
-		if(length>=12) {
-//			return this.mMacIdFromUart.substring(8, 12);
-			return this.mMacIdFromUart.substring(length-4, length);
-		}		
+		if (mMacIdFromUart!=null){
+			int length = mMacIdFromUart.length();
+			if(length>=12) {
+				//			return this.mMacIdFromUart.substring(8, 12);
+				return this.mMacIdFromUart.substring(length-4, length);
+			}		
+		}
 		return "0000";
 	}
 
