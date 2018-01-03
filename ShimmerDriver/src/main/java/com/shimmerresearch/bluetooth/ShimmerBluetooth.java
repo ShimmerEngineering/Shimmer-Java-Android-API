@@ -1117,6 +1117,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		System.arraycopy(bufferTemp, 1, newPacket, 0, mPacketSize);
 		
 		if(mUseProcessingThread){
+			if (mABQPacketByeArray.remainingCapacity()==0){
+				mABQPacketByeArray.remove();
+			}
 			mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket,mListofPCTimeStamps.get(0)));
 		} 
 		else {
