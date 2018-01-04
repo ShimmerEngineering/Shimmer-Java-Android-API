@@ -9,6 +9,7 @@ import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.IAxis.AxisTitle;
 import info.monitorenter.gui.chart.IAxisLabelFormatter;
 import info.monitorenter.gui.chart.IAxisScalePolicy;
+import info.monitorenter.gui.chart.IRangePolicy;
 import info.monitorenter.gui.chart.ITrace2D;
 import info.monitorenter.gui.chart.ITracePainter;
 import info.monitorenter.gui.chart.ITracePoint2D;
@@ -26,6 +27,7 @@ import info.monitorenter.gui.chart.traces.painters.TracePainterFill;
 import info.monitorenter.gui.chart.traces.painters.TracePainterLine;
 import info.monitorenter.gui.chart.traces.painters.TracePainterVerticalBar;
 import info.monitorenter.util.Range;
+import info.monitorenter.util.math.MathUtil;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -944,16 +946,19 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				double minY = (double) yAxisMin;
 				double maxY = (double) yAxisMax;
 				if(yAxisMin!=null && yAxisMax != null) {
-					if(Double.isFinite(minY) && Double.isFinite(maxY)){
-						if(isLeftYAxis && yAxis != null){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
-							}
-						}
-				}	}
+					setYAxisMinMax(isLeftYAxis, minY, maxY);
+
+//					if(Double.isFinite(minY) && Double.isFinite(maxY)){
+//						if(isLeftYAxis && yAxis != null){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
+//							}
+//						}
+//					}
+				}
 			}
 			else if(scaleSetting == SCALE_SETTING.CUSTOM) {
 				
@@ -961,26 +966,29 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					//System.out.println("\nY-AXIS MIN ONLY\n");
 					yMin = (double) yAxisMin;
 					if(yMin<0) {
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
-							}
-						}
+						setYAxisMinMax(isLeftYAxis, yMin, -yMin);
+
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
+//							}
+//						}
 						
 					}
 					else {
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
-							}
-						}
-						
+						setYAxisMinMax(isLeftYAxis, yMin, yMin*2);
+
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
+//							}
+//						}
 					}
 					
 				}
@@ -988,25 +996,29 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					//System.out.println("\nY-AXIS MAX ONLY\n");
 					yMax = (double) yAxisMax;
 					if(yMax>0) {
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
-							}
-						}
+						setYAxisMinMax(isLeftYAxis, -yMax, yMax);
+						
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
+//							}
+//						}
 						
 					}
 					else {
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
-							}
-						}
+						setYAxisMinMax(isLeftYAxis, (-yMax*yMax), yMax);
+
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
+//							}
+//						}
 						
 					}
 					
@@ -1015,21 +1027,68 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					//System.out.println("\nY-AXIS BOTH\n");
 					yMin = (double) yAxisMin;
 					yMax = (double) yAxisMax;
-					if(Double.isFinite(yMin) && Double.isFinite(yMax)){
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
-							}
-						}
-					}
+					
+					setYAxisMinMax(isLeftYAxis, yMin, yMax);
+
+//					if(Double.isFinite(yMin) && Double.isFinite(yMax)){
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
+//							}
+//						}
+//					}
 				}
 			}
 		}
 	}
 	
+	private void setYAxisMinMax(boolean isLeftYAxis, double minY, double maxY) {
+		if(Double.isFinite(minY) && Double.isFinite(maxY)){
+			Range range = new Range(minY, maxY);
+			RangePolicyFixedViewport rangePolicy = new RangePolicyFixedViewport(range);
+
+//			System.err.println(this.getClass().getSimpleName() + ":\tminY=" + minY + "\tminY=" + maxY);
+
+			AAxis<IAxisScalePolicy> axisToUse = null;
+			if(isLeftYAxis && yAxis != null){
+				axisToUse = yAxis;
+			} else if (yAxisRight != null){
+				axisToUse = yAxisRight;
+			}
+
+			if(axisToUse!=null){
+
+				IRangePolicy currentRangePolicy = axisToUse.getRangePolicy();
+				if(currentRangePolicy instanceof RangePolicyUnbounded){
+					// TODO sometimes an IllegalArgurmentException error is thrown
+					// when setRangePolicy() is called because there is already an
+					// RangePolicyUnbounded set and this has +=Infinity as the
+					// max/min values. Current solution is to try it twice in
+					// order to try and replace the old RangePolicy
+					
+					//First fix attempt - doesn't work
+//					currentRangePolicy.setRange(range);
+					
+					//Second fix attempt - works?
+					try {
+						axisToUse.setRangePolicy(rangePolicy);
+						return;
+					} catch (IllegalArgumentException e) {
+						//Ignore
+					}
+				}
+				
+				axisToUse.setRangePolicy(rangePolicy);
+			}
+			
+		} else {
+			System.err.println(this.getClass().getSimpleName() + ":\tPlot Y Axis error:\t minY=" + minY + "\tminY=" + maxY);
+		}
+	}
+
 	public void adjustTraceLength(double percentage) {
 		List<Color> listColor = new ArrayList<Color>();
 		List<String[]> listNameArray = new ArrayList<String[]>();
@@ -1082,7 +1141,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 	
-public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signal) {
+	public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signal) {
 		synchronized(mListofTraces){
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
 			while (entries.hasNext()) {
@@ -1105,7 +1164,10 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 	}
 
 	private void setTraceSize(ITrace2D trace, int newSize) {
-		System.err.println("TRACE: " + trace.getName() + " SIZE: " +newSize);
+		System.err.println(this.getClass().getSimpleName() 
+				+ "\tsetTraceSize()\tTRACE: " + trace.getName()
+				+ " CurrentSize: " + trace.getSize()
+				+ " NewSize: " + newSize);
 		((Trace2DLtd)trace).setMaxSize(newSize);
 	}
 
@@ -1480,8 +1542,8 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			}
 		}
 	}
-	
-	public void setSingleTraceVisible(String channelName){
+
+	public void setSingleTraceIsVisible(String channelName, boolean isVisible){
 		synchronized(mListofTraces){
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
 			while (entries.hasNext()) {
@@ -1490,29 +1552,13 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 					if (trace.getName().equals(channelName)){
 						//trace.removeAllPoints();
 						//trace.removeAllPointHighlighters();
-						trace.setVisible(true);
+						trace.setVisible(isVisible);
 					}
 				}
 			}
 		}
 	}
-	
-	public void setSingleTraceInvisible(String channelName){
-		synchronized(mListofTraces){
-			Iterator <ITrace2D> entries = mListofTraces.iterator();
-			while (entries.hasNext()) {
-				ITrace2D trace = entries.next();
-				if(trace != null){
-					if (trace.getName().equals(channelName)){
-						//trace.removeAllPoints();
-						//trace.removeAllPointHighlighters();
-						trace.setVisible(false);
-					}
-				}
-			}
-		}
-	}
-	
+
 	public boolean isAnyTraceVisible(){
 		synchronized(mListofTraces){
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
@@ -1944,6 +1990,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 						FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 						if(f == null){
 							//System.out.println("mChart.getName(): " +mChart.getName());
+							ojc.consolePrintChannelsAndDataSingleLine();
 							throw new Exception("Signal not found: (" + traceName + ")");
 						}
 
