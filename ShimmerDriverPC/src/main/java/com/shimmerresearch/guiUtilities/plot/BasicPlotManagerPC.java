@@ -1869,12 +1869,17 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 				ITrace2D trace = entries.next();
 				if(trace != null){
 					String[] props = trace.getName().split(" ");
-					if (props[1].equals(channelName)
-							|| channelName.equals("all")
-							|| trace.getName().contains(mEventMarkerCheck)){
-						//trace.removeAllPoints();
-						//trace.removeAllPointHighlighters();
-						trace.setVisible(true);
+					if(props.length > 1){
+						if (props[1].equals(channelName)
+								|| channelName.equals("all")
+								|| trace.getName().contains(mEventMarkerCheck)){
+							//trace.removeAllPoints();
+							//trace.removeAllPointHighlighters();
+							trace.setVisible(true);
+						}
+						else{
+							trace.setVisible(false);
+						}
 					}
 					else{
 						trace.setVisible(false);
