@@ -387,6 +387,10 @@ public class ChannelDetails implements Serializable {
 //		signalProperties[3] = mIsChannelUsingDefaultCal? "*":""; 
 		return signalProperties;
 	}
+	
+	public String getChannelNameJoined(CHANNEL_TYPE channelType){
+		return UtilShimmer.joinStrings(getChannelSignalsAndFormats(channelType));
+	}
 
 	public boolean isStoreToDatabase(){
 		return mStoreToDatabase;
