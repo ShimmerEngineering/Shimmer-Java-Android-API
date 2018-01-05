@@ -55,6 +55,7 @@ import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.FftCalculateDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_AXES;
 import com.shimmerresearch.guiUtilities.AbstractPlotManager;
 
@@ -108,6 +109,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	private int mFftOverlapPercent = 0;
 	public HashMap<String, Double> mMapOfLastDataPoints = new HashMap<String, Double>();
 
+	private UtilShimmer utilShimmer = new UtilShimmer(this.getClass().getSimpleName(), true);
+	
 	public enum TRACE_STYLE{
 		CONTINUOUS,
 		DOTTED,
@@ -151,7 +154,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		
 //		for(int j = 0; j< propertiestoPlot.size(); j++){
 //			for(int l = 0 ; l < propertiestoPlot.get(j).length;l++){
-//				System.out.println(""+propertiestoPlot.get(j)[l]);
+//				utilShimmer.consolePrintLn(""+propertiestoPlot.get(j)[l]);
 //			}
 //		}
 	}
@@ -243,8 +246,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			else{
 				trace = addNormalTraceLeft(chart, plotMaxSize);
 			}
-			setTraceSize(trace, plotMaxSize);
 			addSignalCommon(chart, trace, signal, plotMaxSize);
+			setTraceSize(trace, plotMaxSize);
 		}	
 		else {
 			throw new Exception("Error: " + joinChannelStringArray(signal) +" Signal/Property already exist.");
@@ -268,8 +271,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			yAxisRight = createRightYAxis(chart);
 			chart.setAxisYRight(yAxisRight, 0);
 			trace = addNormalTraceRight(chart, plotMaxSize);
-			setTraceSize(trace, plotMaxSize);
 			addSignalCommon(chart, trace, signal, plotMaxSize);
+			setTraceSize(trace, plotMaxSize);
 		}	
 		else {
 			throw new Exception("Error: " + joinChannelStringArray(signal) +" Signal/Property already exist.");
@@ -301,7 +304,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		Color color = new Color(colorrgbaray[0], colorrgbaray[1], colorrgbaray[2]);
 		mListofTraces.get(i).setColor(color);
 		String traceName = joinChannelStringArray(signal);
-		//System.err.println("TRACE NAME: " +name);
+		//utilShimmer.consolePrintErrLn("TRACE NAME: " +name);
 		mListofTraces.get(i).setName(traceName);
 		mChart=chart;
 		mMapofDefaultXAxisSizes.put(traceName, plotMaxSize);
@@ -424,7 +427,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				for (int p=0;p<numberOfRowPropertiestoCheck;p++){
 					if (!prop[p].equals(signal[p])){
 						found = false;
-//						System.out.println("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
+//						utilShimmer.consolePrintLn("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
 						break;
 					}
 				}
@@ -433,7 +436,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					
 					removeSignalCommon(traceName);
 
-					//System.err.println("mChart.removeTrace: " +mListofTraces.get(i));
+					//utilShimmer.consolePrintErrLn("mChart.removeTrace: " +mListofTraces.get(i));
 					mChart.removeTrace(mListofTraces.get(i));
 					mListofTraces.remove(i);
 					super.removeSignal(i);
@@ -460,7 +463,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				for (int p=0;p<numberOfRowPropertiestoCheck;p++){
 					if (!prop[p].equals(signal[p])){
 						found = false;
-	//					System.out.println("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
+	//					utilShimmer.consolePrintLn("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
 						break;
 					}
 				}
@@ -963,7 +966,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			else if(scaleSetting == SCALE_SETTING.CUSTOM) {
 				
 				if( yAxisMin != null && yAxisMax == null ) {  // y-axis min only
-					//System.out.println("\nY-AXIS MIN ONLY\n");
+					//utilShimmer.consolePrintLn("\nY-AXIS MIN ONLY\n");
 					yMin = (double) yAxisMin;
 					if(yMin<0) {
 						setYAxisMinMax(isLeftYAxis, yMin, -yMin);
@@ -993,7 +996,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					
 				}
 				else if( yAxisMin==null && yAxisMax!=null ) {  // y-axis max only
-					//System.out.println("\nY-AXIS MAX ONLY\n");
+					//utilShimmer.consolePrintLn("\nY-AXIS MAX ONLY\n");
 					yMax = (double) yAxisMax;
 					if(yMax>0) {
 						setYAxisMinMax(isLeftYAxis, -yMax, yMax);
@@ -1024,7 +1027,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					
 				}
 				else if( yAxisMin!=null && yAxisMax!=null ) {  // y-axis both
-					//System.out.println("\nY-AXIS BOTH\n");
+					//utilShimmer.consolePrintLn("\nY-AXIS BOTH\n");
 					yMin = (double) yAxisMin;
 					yMax = (double) yAxisMax;
 					
@@ -1050,7 +1053,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			Range range = new Range(minY, maxY);
 			RangePolicyFixedViewport rangePolicy = new RangePolicyFixedViewport(range);
 
-//			System.err.println(this.getClass().getSimpleName() + ":\tminY=" + minY + "\tminY=" + maxY);
+//			utilShimmer.consolePrintErrLn("\tminY=" + minY + "\tminY=" + maxY);
 
 			AAxis<IAxisScalePolicy> axisToUse = null;
 			if(isLeftYAxis && yAxis != null){
@@ -1085,7 +1088,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			}
 			
 		} else {
-			System.err.println(this.getClass().getSimpleName() + ":\tPlot Y Axis error:\t minY=" + minY + "\tminY=" + maxY);
+			utilShimmer.consolePrintErrLn("\tPlot Y Axis error:\t minY=" + minY + "\tminY=" + maxY);
 		}
 	}
 
@@ -1150,12 +1153,12 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					String name = trace.getName();
 					if(mMapofDefaultXAxisSizes.get(name) != null && trace.getName().contains(signal)){
 						int newSize = (int)Math.round((mMapofDefaultXAxisSizes.get(name)*percentage));
-						//System.out.println("%: " + percentage +"   Size: " +mMapofDefaultXAxisSizes.get(name));
+						//utilShimmer.consolePrintLn("%: " + percentage +"   Size: " +mMapofDefaultXAxisSizes.get(name));
 						setTraceSize(trace, newSize);
-				        //System.err.println("(Trace2DLtd)trace).setMaxSize: " +newSize);
+				        //utilShimmer.consolePrintErrLn("(Trace2DLtd)trace).setMaxSize: " +newSize);
 					}
 					else{
-						//System.err.println("mMapofDefaultXAxisSizes.get(name) is NULL");
+						//utilShimmer.consolePrintErrLn("mMapofDefaultXAxisSizes.get(name) is NULL");
 					}
 				}
 			}
@@ -1164,10 +1167,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	}
 
 	private void setTraceSize(ITrace2D trace, int newSize) {
-		System.err.println(this.getClass().getSimpleName() 
-				+ "\tsetTraceSize()\tTRACE: " + trace.getName()
+		utilShimmer.consolePrintErrLn( 
+				"setTraceSize()\tTrace: " + trace.getName()
 				+ " CurrentSize: " + trace.getSize()
 				+ " NewSize: " + newSize);
+//		UtilShimmer.consolePrintCurrentStackTrace();
 		((Trace2DLtd)trace).setMaxSize(newSize);
 	}
 
@@ -1611,6 +1615,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	}
 	
 	public void addPointToTrace(ITrace2D trace, double xData, double yData){
+		//TODO this is handled twice - also in checkAndCorrectData()
 		if(xData==0.0 || Double.isNaN(xData) || Double.isInfinite(xData)){
 			xData = 0.000001;
 		}
@@ -1651,9 +1656,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		if (Double.isNaN(yData)){
 			throw new Exception("Signal data is NaN: (" + traceName + ")");
 		}
-		
+		else if (Double.isInfinite(yData)){
+			throw new Exception("Signal data is Infinite: (" + traceName + ")");
+		}		
 		// Make sure data isn't 0.0 for plotting, otherwise it causes GUI to hang
-		if(yData == 0.0 || Double.isNaN(yData) || Double.isInfinite(yData)){
+		else if(yData == 0.0){
 			yData = 0.000001;
 		}
 		
@@ -1759,14 +1766,14 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			}
 		}
 		else {
-			System.err.println("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
+			utilShimmer.consolePrintErrLn("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
 		}
 		return xData;
 	}
 
 	protected void printSignalProps(ObjectCluster ojc, ITrace2D currentTrace, String[] props, double xData, double yData){
 		if(mIsDebugMode){
-			System.err.println(
+			utilShimmer.consolePrintErrLn(
 					"ChartName:" + mChart.getName()
 					+ "\tShimmerName:" + ojc.getShimmerName() 
 					+ "\ttrace size:" + currentTrace.getSize() + "."
@@ -1938,11 +1945,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	 */
 	public void filterDataAndPlot(ObjectCluster ojc) throws Exception {
 		if(!mIsPlotPaused){
-			//		System.err.println("PLOTMANGERPC -> STAGE1");
+			//		utilShimmer.consolePrintErrLn("PLOTMANGERPC -> STAGE1");
 			String shimmerName = ojc.getShimmerName();
 
 			double xData = getXDataForPlotting(shimmerName, ojc);
-			//		System.err.println("PLOTMANGERPC -> STAGE2");
+			//		utilShimmer.consolePrintErrLn("PLOTMANGERPC -> STAGE2");
 
 			//Sometimes the first x data point of a new graphs comes back with a zero so return if it does  
 			if(xData==0){
@@ -1953,6 +1960,9 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			//		for(ITrace2D trace:mChart.getTraces()){
 			//			String[] props = trace.getName().split(" ");
 
+			boolean isXAxisTime = isXAxisTime();
+			boolean isXAxisFrequency = isXAxisFrequency();
+			
 			synchronized(mListofPropertiestoPlot){
 				Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
 				int i = 0;
@@ -1970,7 +1980,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 							//JC: Just to be safe, do a check to ensure a marker is not missed, this is probably not needed..
 							FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 							if(f == null){
-								//System.out.println("mChart.getName(): " +mChart.getName());
+								//utilShimmer.consolePrintLn("mChart.getName(): " +mChart.getName());
 								throw new Exception("Signal not found: (" + traceName + ")");
 							}
 
@@ -1989,7 +1999,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 
 						FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 						if(f == null){
-							//System.out.println("mChart.getName(): " +mChart.getName());
+							//utilShimmer.consolePrintLn("mChart.getName(): " +mChart.getName());
 							ojc.consolePrintChannelsAndDataSingleLine();
 							throw new Exception("Signal not found: (" + traceName + ")");
 						}
@@ -2000,7 +2010,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 							throw new Exception("Trace does not exist: (" + traceName + ")");
 						}
 						ITrace2D currentTrace = mListofTraces.get(i); 
-						//System.err.println(currentTrace.getMaxY());
+						//utilShimmer.consolePrintErrLn(currentTrace.getMaxY());
 
 						mCurrentXValue = xData;
 
@@ -2014,10 +2024,10 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 							addPointToTrace(currentTrace, xData-halfWindowSize, yData);
 						} 
 						else {
-							if(isXAxisTime()){
+							if(isXAxisTime){
 								addTracePoint(currentTrace, xData, yData);
 							}
-							else if(isXAxisFrequency()){
+							else if(isXAxisFrequency){
 								//TODO buffer data for FFT calculation
 								FftCalculateDetails fftCalculateDetails = mMapOfFftsToPlot.get(traceName);
 								if(fftCalculateDetails!=null){
@@ -2052,6 +2062,32 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 
+	//TODO Method under development
+	public void filterDataAndPlotBasic(List<String[]> listOfSignals, List<double[]> dataArray) throws Exception {
+		
+		for(int x=0;x<listOfSignals.size();x++){
+			String[] signal = listOfSignals.get(x);
+			synchronized(mListofPropertiestoPlot){
+				Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
+				int i = 0;
+				while (entries.hasNext()) {
+					String[] props = entries.next();
+					
+					if(props[0].equals(signal[0]) 
+							&& props[1].equals(signal[1])
+							&& props[2].equals(signal[2])
+							&& props[3].equals(signal[3])){
+						ITrace2D trace = mListofTraces.get(i);
+						
+						for(double[] data:dataArray){
+							trace.addPoint(data[0], data[x+2]);
+						}
+					}
+					i++;
+				}
+			}
+		}
+	}
 
 	//used by advance plot manager
 	protected void updateHrPanelIfVisible(String[] props, ObjectCluster ojc) {
@@ -2070,13 +2106,13 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				} else {
 					//if exist take the value
 					xData = mMapofXAxisGeneratedValue.get(shimmerName);
-					//				System.err.println("X1 VALUE: " +xData);
+					//				utilShimmer.consolePrintErrLn("X1 VALUE: " +xData);
 				}
 
 				//check if x is the max value 
 				if (xData==mCurrentXValue){
 					xData=xData+1;
-					//				System.err.println("X2 VALUE: " +xData);
+					//				utilShimmer.consolePrintErrLn("X2 VALUE: " +xData);
 					mMapofXAxisGeneratedValue.remove(shimmerName);
 					mMapofXAxisGeneratedValue.put(shimmerName, xData);
 				} else {
@@ -2096,13 +2132,13 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					xData = f.mData;
 				}
 				else{
-					System.err.println("ERROR PLOTMANGERPC -> NO X DATA");
+					utilShimmer.consolePrintErrLn("ERROR PLOTMANGERPC -> NO X DATA");
 					throw new Exception("No X data: (" + joinChannelStringArray(props) + ")");
 				}
 			}
 		}
 		else{
-			System.err.println("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
+			utilShimmer.consolePrintErrLn("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
 		}
 		return xData;
 	}
@@ -2180,15 +2216,15 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	
 	public void printListOfTraces(){
 		synchronized(mListofTraces){
-			System.out.println("List Of Traces");
+			utilShimmer.consolePrintLn("List Of Traces");
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
 			while (entries.hasNext()) {
 				ITrace2D trace = entries.next();
 				if(trace != null){
-					System.out.println("\tLabel: " + trace.getLabel());
+					utilShimmer.consolePrintLn("\tLabel: " + trace.getLabel());
 				}
 			}
-			System.out.println("");
+			utilShimmer.consolePrintLn("");
 		}
 	}
 	
