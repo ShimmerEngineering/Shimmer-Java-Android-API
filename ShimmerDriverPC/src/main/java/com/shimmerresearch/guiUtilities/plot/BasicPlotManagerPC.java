@@ -2080,6 +2080,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 						ITrace2D trace = mListofTraces.get(i);
 						
 						for(double[] data:dataArray){
+							//TODO hack. We assume index 0 is time and for cross-session aggregation the 2nd column is skipped
 							trace.addPoint(data[0], data[x+2]);
 						}
 					}
