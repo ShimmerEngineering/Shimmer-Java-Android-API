@@ -9,6 +9,7 @@ import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.IAxis.AxisTitle;
 import info.monitorenter.gui.chart.IAxisLabelFormatter;
 import info.monitorenter.gui.chart.IAxisScalePolicy;
+import info.monitorenter.gui.chart.IRangePolicy;
 import info.monitorenter.gui.chart.ITrace2D;
 import info.monitorenter.gui.chart.ITracePainter;
 import info.monitorenter.gui.chart.ITracePoint2D;
@@ -26,6 +27,7 @@ import info.monitorenter.gui.chart.traces.painters.TracePainterFill;
 import info.monitorenter.gui.chart.traces.painters.TracePainterLine;
 import info.monitorenter.gui.chart.traces.painters.TracePainterVerticalBar;
 import info.monitorenter.util.Range;
+import info.monitorenter.util.math.MathUtil;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -53,6 +55,7 @@ import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.FftCalculateDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_AXES;
 import com.shimmerresearch.guiUtilities.AbstractPlotManager;
 
@@ -106,6 +109,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	private int mFftOverlapPercent = 0;
 	public HashMap<String, Double> mMapOfLastDataPoints = new HashMap<String, Double>();
 
+	private UtilShimmer utilShimmer = new UtilShimmer(this.getClass().getSimpleName(), true);
+	
 	public enum TRACE_STYLE{
 		CONTINUOUS,
 		DOTTED,
@@ -149,7 +154,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		
 //		for(int j = 0; j< propertiestoPlot.size(); j++){
 //			for(int l = 0 ; l < propertiestoPlot.get(j).length;l++){
-//				System.out.println(""+propertiestoPlot.get(j)[l]);
+//				utilShimmer.consolePrintLn(""+propertiestoPlot.get(j)[l]);
 //			}
 //		}
 	}
@@ -241,8 +246,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			else{
 				trace = addNormalTraceLeft(chart, plotMaxSize);
 			}
-			setTraceSize(trace, plotMaxSize);
 			addSignalCommon(chart, trace, signal, plotMaxSize);
+			setTraceSize(trace, plotMaxSize);
 		}	
 		else {
 			throw new Exception("Error: " + joinChannelStringArray(signal) +" Signal/Property already exist.");
@@ -266,8 +271,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			yAxisRight = createRightYAxis(chart);
 			chart.setAxisYRight(yAxisRight, 0);
 			trace = addNormalTraceRight(chart, plotMaxSize);
-			setTraceSize(trace, plotMaxSize);
 			addSignalCommon(chart, trace, signal, plotMaxSize);
+			setTraceSize(trace, plotMaxSize);
 		}	
 		else {
 			throw new Exception("Error: " + joinChannelStringArray(signal) +" Signal/Property already exist.");
@@ -299,7 +304,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		Color color = new Color(colorrgbaray[0], colorrgbaray[1], colorrgbaray[2]);
 		mListofTraces.get(i).setColor(color);
 		String traceName = joinChannelStringArray(signal);
-		//System.err.println("TRACE NAME: " +name);
+		//utilShimmer.consolePrintErrLn("TRACE NAME: " +name);
 		mListofTraces.get(i).setName(traceName);
 		mChart=chart;
 		mMapofDefaultXAxisSizes.put(traceName, plotMaxSize);
@@ -422,7 +427,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				for (int p=0;p<numberOfRowPropertiestoCheck;p++){
 					if (!prop[p].equals(signal[p])){
 						found = false;
-//						System.out.println("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
+//						utilShimmer.consolePrintLn("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
 						break;
 					}
 				}
@@ -431,7 +436,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					
 					removeSignalCommon(traceName);
 
-					//System.err.println("mChart.removeTrace: " +mListofTraces.get(i));
+					//utilShimmer.consolePrintErrLn("mChart.removeTrace: " +mListofTraces.get(i));
 					mChart.removeTrace(mListofTraces.get(i));
 					mListofTraces.remove(i);
 					super.removeSignal(i);
@@ -458,7 +463,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				for (int p=0;p<numberOfRowPropertiestoCheck;p++){
 					if (!prop[p].equals(signal[p])){
 						found = false;
-	//					System.out.println("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
+	//					utilShimmer.consolePrintLn("SIGNAL NOT FOUND: " + joinChannelStringArray(signal));
 						break;
 					}
 				}
@@ -944,92 +949,149 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				double minY = (double) yAxisMin;
 				double maxY = (double) yAxisMax;
 				if(yAxisMin!=null && yAxisMax != null) {
-					if(Double.isFinite(minY) && Double.isFinite(maxY)){
-						if(isLeftYAxis && yAxis != null){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
-							}
-						}
-				}	}
+					setYAxisMinMax(isLeftYAxis, minY, maxY);
+
+//					if(Double.isFinite(minY) && Double.isFinite(maxY)){
+//						if(isLeftYAxis && yAxis != null){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
+//							}
+//						}
+//					}
+				}
 			}
 			else if(scaleSetting == SCALE_SETTING.CUSTOM) {
 				
 				if( yAxisMin != null && yAxisMax == null ) {  // y-axis min only
-					//System.out.println("\nY-AXIS MIN ONLY\n");
+					//utilShimmer.consolePrintLn("\nY-AXIS MIN ONLY\n");
 					yMin = (double) yAxisMin;
 					if(yMin<0) {
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
-							}
-						}
+						setYAxisMinMax(isLeftYAxis, yMin, -yMin);
+
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
+//							}
+//						}
 						
 					}
 					else {
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
-							}
-						}
-						
+						setYAxisMinMax(isLeftYAxis, yMin, yMin*2);
+
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
+//							}
+//						}
 					}
 					
 				}
 				else if( yAxisMin==null && yAxisMax!=null ) {  // y-axis max only
-					//System.out.println("\nY-AXIS MAX ONLY\n");
+					//utilShimmer.consolePrintLn("\nY-AXIS MAX ONLY\n");
 					yMax = (double) yAxisMax;
 					if(yMax>0) {
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
-							}
-						}
+						setYAxisMinMax(isLeftYAxis, -yMax, yMax);
+						
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
+//							}
+//						}
 						
 					}
 					else {
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
-							}
-						}
+						setYAxisMinMax(isLeftYAxis, (-yMax*yMax), yMax);
+
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
+//							}
+//						}
 						
 					}
 					
 				}
 				else if( yAxisMin!=null && yAxisMax!=null ) {  // y-axis both
-					//System.out.println("\nY-AXIS BOTH\n");
+					//utilShimmer.consolePrintLn("\nY-AXIS BOTH\n");
 					yMin = (double) yAxisMin;
 					yMax = (double) yAxisMax;
-					if(Double.isFinite(yMin) && Double.isFinite(yMax)){
-						if(isLeftYAxis){
-							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
-						}
-						else{
-							if(yAxisRight != null){
-								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
-							}
-						}
-					}
+					
+					setYAxisMinMax(isLeftYAxis, yMin, yMax);
+
+//					if(Double.isFinite(yMin) && Double.isFinite(yMax)){
+//						if(isLeftYAxis){
+//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
+//						}
+//						else{
+//							if(yAxisRight != null){
+//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
+//							}
+//						}
+//					}
 				}
 			}
 		}
 	}
 	
+	private void setYAxisMinMax(boolean isLeftYAxis, double minY, double maxY) {
+		if(Double.isFinite(minY) && Double.isFinite(maxY)){
+			Range range = new Range(minY, maxY);
+			RangePolicyFixedViewport rangePolicy = new RangePolicyFixedViewport(range);
+
+//			utilShimmer.consolePrintErrLn("\tminY=" + minY + "\tminY=" + maxY);
+
+			AAxis<IAxisScalePolicy> axisToUse = null;
+			if(isLeftYAxis && yAxis != null){
+				axisToUse = yAxis;
+			} else if (yAxisRight != null){
+				axisToUse = yAxisRight;
+			}
+
+			if(axisToUse!=null){
+
+				IRangePolicy currentRangePolicy = axisToUse.getRangePolicy();
+				if(currentRangePolicy instanceof RangePolicyUnbounded){
+					// TODO sometimes an IllegalArgurmentException error is thrown
+					// when setRangePolicy() is called because there is already an
+					// RangePolicyUnbounded set and this has +=Infinity as the
+					// max/min values. Current solution is to try it twice in
+					// order to try and replace the old RangePolicy
+					
+					//First fix attempt - doesn't work
+//					currentRangePolicy.setRange(range);
+					
+					//Second fix attempt - works?
+					try {
+						axisToUse.setRangePolicy(rangePolicy);
+						return;
+					} catch (IllegalArgumentException e) {
+						//Ignore
+					}
+				}
+				
+				axisToUse.setRangePolicy(rangePolicy);
+			}
+			
+		} else {
+			utilShimmer.consolePrintErrLn("\tPlot Y Axis error:\t minY=" + minY + "\tminY=" + maxY);
+		}
+	}
+
 	public void adjustTraceLength(double percentage) {
 		List<Color> listColor = new ArrayList<Color>();
 		List<String[]> listNameArray = new ArrayList<String[]>();
@@ -1082,7 +1144,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 	
-public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signal) {
+	public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signal) {
 		synchronized(mListofTraces){
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
 			while (entries.hasNext()) {
@@ -1091,12 +1153,12 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 					String name = trace.getName();
 					if(mMapofDefaultXAxisSizes.get(name) != null && trace.getName().contains(signal)){
 						int newSize = (int)Math.round((mMapofDefaultXAxisSizes.get(name)*percentage));
-						//System.out.println("%: " + percentage +"   Size: " +mMapofDefaultXAxisSizes.get(name));
+						//utilShimmer.consolePrintLn("%: " + percentage +"   Size: " +mMapofDefaultXAxisSizes.get(name));
 						setTraceSize(trace, newSize);
-				        //System.err.println("(Trace2DLtd)trace).setMaxSize: " +newSize);
+				        //utilShimmer.consolePrintErrLn("(Trace2DLtd)trace).setMaxSize: " +newSize);
 					}
 					else{
-						//System.err.println("mMapofDefaultXAxisSizes.get(name) is NULL");
+						//utilShimmer.consolePrintErrLn("mMapofDefaultXAxisSizes.get(name) is NULL");
 					}
 				}
 			}
@@ -1105,7 +1167,11 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 	}
 
 	private void setTraceSize(ITrace2D trace, int newSize) {
-		System.err.println("TRACE: " + trace.getName() + " SIZE: " +newSize);
+		utilShimmer.consolePrintErrLn( 
+				"setTraceSize()\tTrace: " + trace.getName()
+				+ " CurrentSize: " + trace.getSize()
+				+ " NewSize: " + newSize);
+//		UtilShimmer.consolePrintCurrentStackTrace();
 		((Trace2DLtd)trace).setMaxSize(newSize);
 	}
 
@@ -1480,8 +1546,8 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			}
 		}
 	}
-	
-	public void setSingleTraceVisible(String channelName){
+
+	public void setSingleTraceIsVisible(String channelName, boolean isVisible){
 		synchronized(mListofTraces){
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
 			while (entries.hasNext()) {
@@ -1490,29 +1556,13 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 					if (trace.getName().equals(channelName)){
 						//trace.removeAllPoints();
 						//trace.removeAllPointHighlighters();
-						trace.setVisible(true);
+						trace.setVisible(isVisible);
 					}
 				}
 			}
 		}
 	}
-	
-	public void setSingleTraceInvisible(String channelName){
-		synchronized(mListofTraces){
-			Iterator <ITrace2D> entries = mListofTraces.iterator();
-			while (entries.hasNext()) {
-				ITrace2D trace = entries.next();
-				if(trace != null){
-					if (trace.getName().equals(channelName)){
-						//trace.removeAllPoints();
-						//trace.removeAllPointHighlighters();
-						trace.setVisible(false);
-					}
-				}
-			}
-		}
-	}
-	
+
 	public boolean isAnyTraceVisible(){
 		synchronized(mListofTraces){
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
@@ -1565,6 +1615,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 	}
 	
 	public void addPointToTrace(ITrace2D trace, double xData, double yData){
+		//TODO this is handled twice - also in checkAndCorrectData()
 		if(xData==0.0 || Double.isNaN(xData) || Double.isInfinite(xData)){
 			xData = 0.000001;
 		}
@@ -1605,9 +1656,11 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		if (Double.isNaN(yData)){
 			throw new Exception("Signal data is NaN: (" + traceName + ")");
 		}
-		
+		else if (Double.isInfinite(yData)){
+			throw new Exception("Signal data is Infinite: (" + traceName + ")");
+		}		
 		// Make sure data isn't 0.0 for plotting, otherwise it causes GUI to hang
-		if(yData == 0.0 || Double.isNaN(yData) || Double.isInfinite(yData)){
+		else if(yData == 0.0){
 			yData = 0.000001;
 		}
 		
@@ -1713,14 +1766,14 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			}
 		}
 		else {
-			System.err.println("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
+			utilShimmer.consolePrintErrLn("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
 		}
 		return xData;
 	}
 
 	protected void printSignalProps(ObjectCluster ojc, ITrace2D currentTrace, String[] props, double xData, double yData){
 		if(mIsDebugMode){
-			System.err.println(
+			utilShimmer.consolePrintErrLn(
 					"ChartName:" + mChart.getName()
 					+ "\tShimmerName:" + ojc.getShimmerName() 
 					+ "\ttrace size:" + currentTrace.getSize() + "."
@@ -1897,11 +1950,11 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 	 */
 	public void filterDataAndPlot(ObjectCluster ojc) throws Exception {
 		if(!mIsPlotPaused){
-			//		System.err.println("PLOTMANGERPC -> STAGE1");
+			//		utilShimmer.consolePrintErrLn("PLOTMANGERPC -> STAGE1");
 			String shimmerName = ojc.getShimmerName();
 
 			double xData = getXDataForPlotting(shimmerName, ojc);
-			//		System.err.println("PLOTMANGERPC -> STAGE2");
+			//		utilShimmer.consolePrintErrLn("PLOTMANGERPC -> STAGE2");
 
 			//Sometimes the first x data point of a new graphs comes back with a zero so return if it does  
 			if(xData==0){
@@ -1912,6 +1965,9 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			//		for(ITrace2D trace:mChart.getTraces()){
 			//			String[] props = trace.getName().split(" ");
 
+			boolean isXAxisTime = isXAxisTime();
+			boolean isXAxisFrequency = isXAxisFrequency();
+			
 			synchronized(mListofPropertiestoPlot){
 				Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
 				int i = 0;
@@ -1929,7 +1985,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 							//JC: Just to be safe, do a check to ensure a marker is not missed, this is probably not needed..
 							FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 							if(f == null){
-								//System.out.println("mChart.getName(): " +mChart.getName());
+								//utilShimmer.consolePrintLn("mChart.getName(): " +mChart.getName());
 								throw new Exception("Signal not found: (" + traceName + ")");
 							}
 
@@ -1948,7 +2004,8 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 
 						FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 						if(f == null){
-							//System.out.println("mChart.getName(): " +mChart.getName());
+							//utilShimmer.consolePrintLn("mChart.getName(): " +mChart.getName());
+							ojc.consolePrintChannelsAndDataSingleLine();
 							throw new Exception("Signal not found: (" + traceName + ")");
 						}
 
@@ -1958,7 +2015,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 							throw new Exception("Trace does not exist: (" + traceName + ")");
 						}
 						ITrace2D currentTrace = mListofTraces.get(i); 
-						//System.err.println(currentTrace.getMaxY());
+						//utilShimmer.consolePrintErrLn(currentTrace.getMaxY());
 
 						mCurrentXValue = xData;
 
@@ -1972,10 +2029,10 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 							addPointToTrace(currentTrace, xData-halfWindowSize, yData);
 						} 
 						else {
-							if(isXAxisTime()){
+							if(isXAxisTime){
 								addTracePoint(currentTrace, xData, yData);
 							}
-							else if(isXAxisFrequency()){
+							else if(isXAxisFrequency){
 								//TODO buffer data for FFT calculation
 								FftCalculateDetails fftCalculateDetails = mMapOfFftsToPlot.get(traceName);
 								if(fftCalculateDetails!=null){
@@ -2010,6 +2067,33 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		}
 	}
 
+	//TODO Method under development
+	public void filterDataAndPlotBasic(List<String[]> listOfSignals, List<double[]> dataArray) throws Exception {
+		
+		for(int x=0;x<listOfSignals.size();x++){
+			String[] signal = listOfSignals.get(x);
+			synchronized(mListofPropertiestoPlot){
+				Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
+				int i = 0;
+				while (entries.hasNext()) {
+					String[] props = entries.next();
+					
+					if(props[0].equals(signal[0]) 
+							&& props[1].equals(signal[1])
+							&& props[2].equals(signal[2])
+							&& props[3].equals(signal[3])){
+						ITrace2D trace = mListofTraces.get(i);
+						
+						for(double[] data:dataArray){
+							//TODO hack. We assume index 0 is time and for cross-session aggregation the 2nd column is skipped
+							trace.addPoint(data[0], data[x+2]);
+						}
+					}
+					i++;
+				}
+			}
+		}
+	}
 
 	//used by advance plot manager
 	protected void updateHrPanelIfVisible(String[] props, ObjectCluster ojc) {
@@ -2028,13 +2112,13 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 				} else {
 					//if exist take the value
 					xData = mMapofXAxisGeneratedValue.get(shimmerName);
-					//				System.err.println("X1 VALUE: " +xData);
+					//				utilShimmer.consolePrintErrLn("X1 VALUE: " +xData);
 				}
 
 				//check if x is the max value 
 				if (xData==mCurrentXValue){
 					xData=xData+1;
-					//				System.err.println("X2 VALUE: " +xData);
+					//				utilShimmer.consolePrintErrLn("X2 VALUE: " +xData);
 					mMapofXAxisGeneratedValue.remove(shimmerName);
 					mMapofXAxisGeneratedValue.put(shimmerName, xData);
 				} else {
@@ -2054,13 +2138,13 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 					xData = f.mData;
 				}
 				else{
-					System.err.println("ERROR PLOTMANGERPC -> NO X DATA");
+					utilShimmer.consolePrintErrLn("ERROR PLOTMANGERPC -> NO X DATA");
 					throw new Exception("No X data: (" + joinChannelStringArray(props) + ")");
 				}
 			}
 		}
 		else{
-			System.err.println("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
+			utilShimmer.consolePrintErrLn("ERROR PLOTMANGERPC -> NO X DATA LOADED AT ALL");
 		}
 		return xData;
 	}
@@ -2138,15 +2222,15 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 	
 	public void printListOfTraces(){
 		synchronized(mListofTraces){
-			System.out.println("List Of Traces");
+			utilShimmer.consolePrintLn("List Of Traces");
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
 			while (entries.hasNext()) {
 				ITrace2D trace = entries.next();
 				if(trace != null){
-					System.out.println("\tLabel: " + trace.getLabel());
+					utilShimmer.consolePrintLn("\tLabel: " + trace.getLabel());
 				}
 			}
-			System.out.println("");
+			utilShimmer.consolePrintLn("");
 		}
 	}
 	
