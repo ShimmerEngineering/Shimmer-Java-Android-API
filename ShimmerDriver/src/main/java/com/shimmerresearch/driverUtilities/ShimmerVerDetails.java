@@ -51,6 +51,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int WEBCAM_LOGITECH_HD_C920	= 1005;
 		public static final int WEBCAM_LOGITECH_HD_C930E	= 1006;
 		public static final int HOST_CPU_USAGE				= 1007;
+		public static final int WEBCAM_DIGIOPTIX_SMART_GLASSES	= 1008;
 		
 		// Any other 'devices' that don't have a ShimmerDevice instance should
 		// go in at >=2000 (currently used in the database for the results
@@ -83,6 +84,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.WEBCAM_GENERIC, "Webcam");
         aMap.put(HW_ID.WEBCAM_LOGITECH_HD_C920, "Webcam");
         aMap.put(HW_ID.WEBCAM_LOGITECH_HD_C930E, "Webcam");
+        aMap.put(HW_ID.WEBCAM_DIGIOPTIX_SMART_GLASSES, "Webcam");
         
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
