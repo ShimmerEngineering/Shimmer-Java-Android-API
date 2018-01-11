@@ -9684,7 +9684,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-
+	public void setEnableCalibration(boolean enable) {
+		mEnableCalibration = enable;
+	}
 }
 
 
