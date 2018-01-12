@@ -252,7 +252,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public boolean mIsRedLedOn = false;
 	public boolean mIsRtcSet = false;
 
-	protected boolean mUseProcessingThread = false;
+	protected boolean mUseProcessingThread = true;
+	protected boolean mEnablePCTimeStamps = true;
 	
     public static final Map<Byte, BtCommandDetails> mBtCommandMapOther;
     static {
@@ -662,7 +663,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if(byteBuffer!=null){
 				mByteArrayOutputStream.write(byteBuffer[0]);
 				//Everytime a byte is received the timestamp is taken
-				mListofPCTimeStamps.add(System.currentTimeMillis());
+				if(mEnablePCTimeStamps) {
+					mListofPCTimeStamps.add(System.currentTimeMillis());
+				}
 			} 
 			else {
 				printLogDataForDebugging("readbyte null");
@@ -1120,11 +1123,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if (mABQPacketByeArray.remainingCapacity()==0){
 				mABQPacketByeArray.remove();
 			}
-			mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket,mListofPCTimeStamps.get(0)));
+			if(mEnablePCTimeStamps) {
+				mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket,mListofPCTimeStamps.get(0)));
+			} else {
+				mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(newPacket, System.currentTimeMillis()));
+			}
 		} 
 		else {
 //			buildAndSendMsg(newPacket, FW_TYPE_BT, false, mListofPCTimeStamps.get(0));
-			buildAndSendMsg(newPacket, COMMUNICATION_TYPE.BLUETOOTH, false, mListofPCTimeStamps.get(0));
+			if(mEnablePCTimeStamps) {
+				buildAndSendMsg(newPacket, COMMUNICATION_TYPE.BLUETOOTH, false, mListofPCTimeStamps.get(0));
+			} else {
+				buildAndSendMsg(newPacket, COMMUNICATION_TYPE.BLUETOOTH, false, System.currentTimeMillis());
+			}
 		}
 	}
 	
@@ -1140,8 +1151,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mByteArrayOutputStream.reset();
 		mByteArrayOutputStream.write(bufferTemp[packetSize]);
 //		consolePrintLn(Integer.toString(bufferTemp[mPacketSize+2]));
-		for (int i=0;i<packetSize;i++){
-			mListofPCTimeStamps.remove(0);
+		if(mEnablePCTimeStamps) {
+			for (int i=0;i<packetSize;i++){
+				mListofPCTimeStamps.remove(0);
+			}
 		}
 	}
 
@@ -1160,7 +1173,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		byte[] bTemp = mByteArrayOutputStream.toByteArray();
 		mByteArrayOutputStream.reset();
 		mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
-		mListofPCTimeStamps.remove(0);
+		if(mEnablePCTimeStamps) {
+			mListofPCTimeStamps.remove(0);
+		}
 		consolePrintLn("Throw Byte" + UtilShimmer.bytesToHexStringWithSpacesFormatted(bTemp));
 	}
 	
@@ -5281,6 +5296,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 	
-	
+	public void enablePCTimeStamps(boolean enable) {
+		mEnablePCTimeStamps = enable;
+	}
 
 }
