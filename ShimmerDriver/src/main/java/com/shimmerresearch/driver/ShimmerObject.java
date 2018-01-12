@@ -6357,7 +6357,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	private void setDefaultExgCommon(double shimmerSamplingRate) {
-		if(mShimmerVerObject.isSupportedExgChipClocksJoined()){
+		if(ShimmerVerObject.isSupportedExgChipClocksJoined(getShimmerVerObject(), getExpansionBoardDetails())){
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
 		}
 		setExGRateFromFreq(shimmerSamplingRate);
