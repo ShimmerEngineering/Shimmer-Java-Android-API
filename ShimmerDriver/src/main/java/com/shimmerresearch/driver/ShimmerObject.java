@@ -6179,9 +6179,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG6.RLD_POS_INPUTS_CH1.RLD_CONNECTED_TO_IN1P);
 			
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG10.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
-
-			setExGRateFromFreq(shimmerSamplingRate);
-			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+			
+			setDefaultExgCommon(shimmerSamplingRate);
 		 }
 	}
 
@@ -6217,10 +6216,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG6.RLD_BUFFER_POWER.ENABLED);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG10.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
 			
-			setExGRateFromFreq(shimmerSamplingRate);
-			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+			setDefaultExgCommon(shimmerSamplingRate);
 		}
-		
 	}
 
 	/**
@@ -6248,11 +6245,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.TEST_SIGNAL);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.TEST_SIGNAL);
 			
-			setExGRateFromFreq(shimmerSamplingRate);
-			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+			setDefaultExgCommon(shimmerSamplingRate);
 		}
 	}
-	 
 		
 	/**
 	 * This can only be used for Shimmer3 devices (EXG) When a enable
@@ -6286,8 +6281,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.REG9.RESPIRATION_MOD_CIRCUITRY.ON);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.REG9.RESPIRATION_PHASE_AT_32KHZ.PHASE_112_5);
 			
-			setExGRateFromFreq(shimmerSamplingRate);
-			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+			setDefaultExgCommon(shimmerSamplingRate);
 		 }
 	}	 
 
@@ -6335,8 +6329,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 			
-			setExGRateFromFreq(shimmerSamplingRate);
-			exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+			setDefaultExgCommon(shimmerSamplingRate);
 		}
 	}
 
@@ -6360,6 +6353,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG6.RLD_BUFFER_POWER.ENABLED);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG10.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
 
+		setDefaultExgCommon(shimmerSamplingRate);
+	}
+	
+	private void setDefaultExgCommon(double shimmerSamplingRate) {
+		if(mShimmerVerObject.isSupportedExgChipClocksJoined()){
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
+		}
 		setExGRateFromFreq(shimmerSamplingRate);
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}

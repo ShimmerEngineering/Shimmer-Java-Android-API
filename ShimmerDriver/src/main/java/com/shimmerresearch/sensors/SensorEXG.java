@@ -1804,12 +1804,7 @@ public class SensorEXG extends AbstractSensor{
 		
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG10.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
 	
-		if(isTwoChipClocksConnected()){
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
-		}
-		
-		setExGRateFromFreq(shimmerSamplingRate);
-		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+		setDefaultExgCommon(shimmerSamplingRate);
 	}
 
 	/**
@@ -1841,12 +1836,7 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG6.RLD_BUFFER_POWER.ENABLED);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG10.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
 		
-		if(isTwoChipClocksConnected()){
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
-		}
-
-		setExGRateFromFreq(shimmerSamplingRate);
-		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+		setDefaultExgCommon(shimmerSamplingRate);
 	}
 
 	/**
@@ -1871,12 +1861,7 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.TEST_SIGNAL);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.TEST_SIGNAL);
 		
-		if(isTwoChipClocksConnected()){
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
-		}
-
-		setExGRateFromFreq(shimmerSamplingRate);
-		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+		setDefaultExgCommon(shimmerSamplingRate);
 	}
 	 
 		
@@ -1909,12 +1894,7 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.REG9.RESPIRATION_MOD_CIRCUITRY.ON);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2,EXG_SETTING_OPTIONS.REG9.RESPIRATION_PHASE_AT_32KHZ.PHASE_112_5);
 		
-		if(isTwoChipClocksConnected()){
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
-		}
-
-		setExGRateFromFreq(shimmerSamplingRate);
-		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+		setDefaultExgCommon(shimmerSamplingRate);
 	}	 
 
 	/**
@@ -1957,12 +1937,7 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG4.CH1_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 		setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.RLDIN_CONNECTED_TO_NEG_INPUT);
 		
-		if(isTwoChipClocksConnected()){
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
-		}
-
-		setExGRateFromFreq(shimmerSamplingRate);
-		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+		setDefaultExgCommon(shimmerSamplingRate);
 	}
 	 
 	public void setExgGq(double shimmerSamplingRate){
@@ -1996,16 +1971,10 @@ public class SensorEXG extends AbstractSensor{
 		//LA-RL
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG5.CH2_INPUT_SELECTION.NORMAL);
 		
-		setExGRateFromFreq(shimmerSamplingRate);
-		
-		if(isTwoChipClocksConnected()){
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
-		}
-		
 //		System.out.println(UtilShimmer.bytesToHexStringWithSpacesFormatted(mEXG1RegisterArray));
 //		System.out.println(UtilShimmer.bytesToHexStringWithSpacesFormatted(mEXG2RegisterArray));
 		
-		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
+		setDefaultExgCommon(shimmerSamplingRate);
 	}
 	
 	public void setExgThreeUnipolarInput(double shimmerSamplingRate){
@@ -2027,10 +1996,13 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG6.RLD_BUFFER_POWER.ENABLED);
 		setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG10.RLD_REFERENCE_SIGNAL.HALF_OF_SUPPLY);
 	
-		if(isTwoChipClocksConnected()){
+		setDefaultExgCommon(shimmerSamplingRate);
+	}
+	
+	private void setDefaultExgCommon(double shimmerSamplingRate) {
+		if(mShimmerVerObject.isSupportedExgChipClocksJoined()){
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
 		}
-		
 		setExGRateFromFreq(shimmerSamplingRate);
 		exgBytesGetConfigFrom(mEXG1RegisterArray, mEXG2RegisterArray);
 	}
@@ -3337,14 +3309,14 @@ public class SensorEXG extends AbstractSensor{
 		return !mShimmerVerObject.isShimmerGenGq();
 	}
 	
-	private boolean isTwoChipClocksConnected() {
-		if(mShimmerVerObject!=null){
-			if(mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
-				return true;
-			}
-		}
-		return false;
-	}
+//	private boolean isTwoChipClocksConnected() {
+//		if(mShimmerVerObject!=null){
+//			if(mShimmerVerObject.getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
 	public static byte[] parseExgConfigFromDb(
 			LinkedHashMap<String, Object> mapOfConfigPerShimmer, EXG_CHIP_INDEX chipIndex, 
