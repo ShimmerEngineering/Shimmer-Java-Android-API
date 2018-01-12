@@ -93,7 +93,8 @@ public class HwDriverShimmerDeviceDetails {
         };
 
         public static final String[] SPAN_SR1_3_1 = new String[] {
-    		"SHIMMER SPAN SR1-3.1 25/9/2015",
+//        	"SHIMMER SPAN SR1-3.1 25/9/2015",
+    		"SHIMMER SPAN SR1-3.1",
         };
 
         public static final String[] DISK_DRIVE = new String[] {
