@@ -58,6 +58,7 @@ import com.shimmerresearch.driverUtilities.FftCalculateDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_AXES;
 import com.shimmerresearch.guiUtilities.AbstractPlotManager;
+import com.shimmerresearch.guiUtilities.AbstractPlotManager.PLOT_LINE_STYLE;
 
 public class BasicPlotManagerPC extends AbstractPlotManager {
 	
@@ -874,6 +875,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 
+	
 	public void changeTraceStyle(ITrace2D trace, TRACE_STYLE style) {
 		synchronized(mListofTraces){
 			Iterator <ITrace2D> entries = mListofTraces.iterator();
@@ -1802,6 +1804,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		return formattedText;
 	}
 
+	
 	@Override
 	public void setTraceLineStyleAll(PLOT_LINE_STYLE lineStyle) {
 		mSelectedLineStyle = lineStyle;
@@ -1814,6 +1817,13 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
     			}
     		}
         }
+	}
+	
+	public void setTraceLineStyle(String traceName, PLOT_LINE_STYLE plotLineStyle) {
+		ITrace2D trace = getTraceFromName(traceName);
+		if(trace!=null){
+			setTraceLineStyle(trace, plotLineStyle);
+		}
 	}
 
 	public void setTraceLineStyle(ITrace2D trace, PLOT_LINE_STYLE selectedLineStyle) {
