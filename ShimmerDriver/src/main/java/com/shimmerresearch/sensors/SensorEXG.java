@@ -35,6 +35,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails.EXG_SETTINGS;
@@ -2000,7 +2001,7 @@ public class SensorEXG extends AbstractSensor{
 	}
 	
 	private void setDefaultExgCommon(double shimmerSamplingRate) {
-		if(mShimmerVerObject.isSupportedExgChipClocksJoined()){
+		if(ShimmerVerObject.isSupportedExgChipClocksJoined(mShimmerVerObject, mShimmerDevice.getExpansionBoardDetails())){
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1,EXG_SETTING_OPTIONS.REG2.OSCILLATOR_CLOCK_CONNECTION.ON);
 		}
 		setExGRateFromFreq(shimmerSamplingRate);
