@@ -643,5 +643,17 @@ public class ShimmerVerObject implements Serializable {
 		return mExpansionBoardDetails.mExpansionBoardRev;
 	}
 
+	public boolean isSupportedExgChipClocksJoined() {
+		if(getHardwareVersion()==HW_ID.SHIMMER_4_SDK || 
+				(getHardwareVersion()==HW_ID.SHIMMER_3 && (
+				(getShimmerExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_ECG_MD 
+				|| (getShimmerExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && getShimmerExpansionBoardRev()>=4))))
+			){
+			return true;
+		}
+		return false;
+	}
+	
+
 
 }
