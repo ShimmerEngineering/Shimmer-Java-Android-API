@@ -11,7 +11,7 @@ import com.shimmerresearch.driverUtilities.UtilShimmer.SHIMMER_DEFAULT_COLOURS;
 
 public abstract class AbstractPlotManager {
 
-	public abstract void setTraceLineStyleDefault(PLOT_LINE_STYLE lineStyle);
+	public abstract void setTraceLineStyleAll(PLOT_LINE_STYLE lineStyle);
 	
 	/** keeps a list of signals to plot */
 	//public List<String[]> mListofPropertiestoPlot = new ArrayList<String[]>(); //this is used to identify he signals coming into the filter
@@ -37,15 +37,17 @@ public abstract class AbstractPlotManager {
 	}
 	
 	//TODO why handled differently TRACE_STYLE and PLOT_LINE_STYLE
-	public enum TRACE_STYLE{
-		CONTINUOUS,
-		DOTTED,
-		DASHED
-	}
+//	public enum TRACE_STYLE{
+//		CONTINUOUS,
+//		DOTTED,
+//		DASHED
+//	}
 
 	public enum PLOT_LINE_STYLE{
 		CONTINUOUS("Joint Line"),
 		INDIVIDUAL_POINTS("Points"),
+		DOTTED("Dotted"),
+		DASHED("Dashed"),
 		BAR("Bar"), 
 		FILL("Fill");
 		
@@ -239,7 +241,7 @@ public abstract class AbstractPlotManager {
 	public void setTraceLineStyleAll(String selectedLineStyle) {
 		for(PLOT_LINE_STYLE plotLineStyle:PLOT_LINE_STYLE.values()){
 			if(plotLineStyle.getGuiOptionString().equals(selectedLineStyle)){
-				setTraceLineStyleDefault(plotLineStyle);
+				setTraceLineStyleAll(plotLineStyle);
 				return;
 			}
 		}
