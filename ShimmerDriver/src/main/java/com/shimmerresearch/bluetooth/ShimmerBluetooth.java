@@ -5296,6 +5296,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
 	
+	/**
+	 * Setting this to true will improve the accuracy of the packet timestamps which will be at the start of the first byte received. 
+	 * Disabling this will only timestamp the packet when the full packet is received. 
+	 * Note that enabling this may impact performance on Android, potentially resulting in lower packet reception rate. This is highly dependent on the Android device's processing capabilities. 
+	 * @param enable
+	 */
 	public void enablePCTimeStamps(boolean enable) {
 		mEnablePCTimeStamps = enable;
 	}
