@@ -2073,7 +2073,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	 * @param xData
 	 */
 	private void addDummyPointToTraceIfRequired(ITrace2D currentTrace, double xData) {
-		if(isFirstPointOnTrace && mSelectedLineStyle==PLOT_LINE_STYLE.FILL && currentTrace.getSize()==0) {
+		if(isFirstPointOnTrace && mDefaultLineStyle==PLOT_LINE_STYLE.FILL && currentTrace.getSize()==0) {
 			addTracePoint(currentTrace, xData, 0);
 			isFirstPointOnTrace = false;
 		}
