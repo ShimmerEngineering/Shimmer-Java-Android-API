@@ -816,53 +816,53 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 
-	public void changeAllTraceStyle(TRACE_STYLE style) {
-		synchronized(mListofTraces){
-			Iterator <ITrace2D> entries = mListofTraces.iterator();
-			while (entries.hasNext()) {
-				ITrace2D trace = entries.next();
-				changeTraceStyle(trace, style);
-			}
-		}
-	}
-
-	public void changeTraceStyle(int index, TRACE_STYLE style) {
-		ITrace2D trace = mListofTraces.get(index);
-		changeTraceStyle(trace, style);
-	}
-
-	private void changeTraceStyle(ITrace2D trace, TRACE_STYLE style) {
-		if(trace != null){
-			BasicStroke strokeOld = ((BasicStroke)trace.getStroke());
-			BasicStroke strokeNew = null;
-			if (TRACE_STYLE.DASHED == style){
-				float dash1[] = {10.0f};
-				strokeNew = new BasicStroke(strokeOld.getLineWidth(),
-								BasicStroke.CAP_BUTT,
-								BasicStroke.JOIN_MITER,
-								10.0f, dash1, 0.0f);
-			}
-			else if (TRACE_STYLE.DOTTED == style){
-				float dash1[] = {3.0f};
-				strokeNew = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1,2}, 0);
-						/*new BasicStroke(stroke.getLineWidth(),
-								BasicStroke.CAP_ROUND,
-								BasicStroke.JOIN_ROUND,
-								3.0f, dash1, 0.0f);
-								*/
-			}
-			else if (TRACE_STYLE.CONTINUOUS == style){
-				strokeNew = new BasicStroke(strokeOld.getLineWidth());
-			}
-			
-			if(strokeNew!=null) {
-				trace.setStroke(strokeNew);
-			}
-		}
-	}
+//	public void changeAllTraceStyle(TRACE_STYLE style) {
+//		synchronized(mListofTraces){
+//			Iterator <ITrace2D> entries = mListofTraces.iterator();
+//			while (entries.hasNext()) {
+//				ITrace2D trace = entries.next();
+//				changeTraceStyle(trace, style);
+//			}
+//		}
+//	}
+//
+//	public void changeTraceStyle(int index, TRACE_STYLE style) {
+//		ITrace2D trace = mListofTraces.get(index);
+//		changeTraceStyle(trace, style);
+//	}
+//
+//	private void changeTraceStyle(ITrace2D trace, TRACE_STYLE style) {
+//		if(trace != null){
+//			BasicStroke strokeOld = ((BasicStroke)trace.getStroke());
+//			BasicStroke strokeNew = null;
+//			if (TRACE_STYLE.DASHED == style){
+//				float dash1[] = {10.0f};
+//				strokeNew = new BasicStroke(strokeOld.getLineWidth(),
+//								BasicStroke.CAP_BUTT,
+//								BasicStroke.JOIN_MITER,
+//								10.0f, dash1, 0.0f);
+//			}
+//			else if (TRACE_STYLE.DOTTED == style){
+//				float dash1[] = {3.0f};
+//				strokeNew = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1,2}, 0);
+//						/*new BasicStroke(stroke.getLineWidth(),
+//								BasicStroke.CAP_ROUND,
+//								BasicStroke.JOIN_ROUND,
+//								3.0f, dash1, 0.0f);
+//								*/
+//			}
+//			else if (TRACE_STYLE.CONTINUOUS == style){
+//				strokeNew = new BasicStroke(strokeOld.getLineWidth());
+//			}
+//			
+//			if(strokeNew!=null) {
+//				trace.setStroke(strokeNew);
+//			}
+//		}
+//	}
 
 	@Override
-	public void setTraceLineStyleDefault(PLOT_LINE_STYLE lineStyle) {
+	public void setTraceLineStyleAll(PLOT_LINE_STYLE lineStyle) {
 		mDefaultLineStyle = lineStyle;
         synchronized(mListofTraces){
     		Iterator <ITrace2D> entries = mListofTraces.iterator();
@@ -888,20 +888,50 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		trace.setStroke(new BasicStroke());
 		
 		if(selectedLineStyle==PLOT_LINE_STYLE.CONTINUOUS 
+				|| selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS
+				|| selectedLineStyle==PLOT_LINE_STYLE.DASHED
+				|| selectedLineStyle==PLOT_LINE_STYLE.DOTTED
 				|| selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
 			BasicStroke strokeOld = ((BasicStroke)trace.getStroke());
-			BasicStroke strokeNew = new BasicStroke(
-					strokeOld.getLineWidth(),
-//					DEFAULT_LINE_THICKNESS,
-					strokeOld.getEndCap(),
-					strokeOld.getLineJoin(),
-					strokeOld.getMiterLimit(),
-					strokeOld.getDashArray(),
-					strokeOld.getDashPhase());
-			trace.setStroke(strokeNew);
-			
-			if(selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
-				trace.setTracePainter(new TracePainterDisc(4)); 
+			BasicStroke strokeNew = null;
+
+			if(selectedLineStyle==PLOT_LINE_STYLE.CONTINUOUS 
+					|| selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
+				strokeNew = new BasicStroke(
+//						strokeOld.getLineWidth(),
+						DEFAULT_LINE_THICKNESS,
+						strokeOld.getEndCap(),
+						strokeOld.getLineJoin(),
+						strokeOld.getMiterLimit(),
+						strokeOld.getDashArray(),
+						strokeOld.getDashPhase());
+				trace.setStroke(strokeNew);
+				
+				if(selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
+					trace.setTracePainter(new TracePainterDisc(4)); 
+				}
+			}
+			else if (selectedLineStyle==PLOT_LINE_STYLE.DASHED){
+				float dash1[] = {10.0f};
+				strokeNew = new BasicStroke(strokeOld.getLineWidth(),
+								BasicStroke.CAP_BUTT,
+								BasicStroke.JOIN_MITER,
+								10.0f, dash1, 0.0f);
+				trace.setStroke(strokeNew);
+			}
+			else if (selectedLineStyle==PLOT_LINE_STYLE.DOTTED){
+//				float dash1[] = {3.0f};
+				strokeNew = new BasicStroke(
+						1,
+//						strokeOld.getLineWidth(),
+//						DEFAULT_LINE_THICKNESS,
+						BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1,2}, 0);
+						/*new BasicStroke(stroke.getLineWidth(),
+								BasicStroke.CAP_ROUND,
+								BasicStroke.JOIN_ROUND,
+								3.0f, dash1, 0.0f);
+								*/
+				trace.setStroke(strokeNew);
 			}
 		}
 		else if(selectedLineStyle==PLOT_LINE_STYLE.BAR){
