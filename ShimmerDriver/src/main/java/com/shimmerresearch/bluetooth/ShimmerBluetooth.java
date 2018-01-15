@@ -252,7 +252,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public boolean mIsRedLedOn = false;
 	public boolean mIsRtcSet = false;
 
-	protected boolean mUseProcessingThread = true;
+	protected boolean mUseProcessingThread = false;
 	protected boolean mEnablePCTimeStamps = true;
 	
     public static final Map<Byte, BtCommandDetails> mBtCommandMapOther;

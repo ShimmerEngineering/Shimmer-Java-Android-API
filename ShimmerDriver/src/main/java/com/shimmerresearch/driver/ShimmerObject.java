@@ -9684,6 +9684,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
+	/**
+	 * Setting this to false will disable calibration, e.g. raw accelerator data will not be calibrated. 
+	 * @param enable
+	 */
 	public void setEnableCalibration(boolean enable) {
 		mEnableCalibration = enable;
 	}
