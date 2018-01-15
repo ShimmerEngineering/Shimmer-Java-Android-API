@@ -27,7 +27,6 @@ import info.monitorenter.gui.chart.traces.painters.TracePainterFill;
 import info.monitorenter.gui.chart.traces.painters.TracePainterLine;
 import info.monitorenter.gui.chart.traces.painters.TracePainterVerticalBar;
 import info.monitorenter.util.Range;
-import info.monitorenter.util.math.MathUtil;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -58,7 +57,6 @@ import com.shimmerresearch.driverUtilities.FftCalculateDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_AXES;
 import com.shimmerresearch.guiUtilities.AbstractPlotManager;
-import com.shimmerresearch.guiUtilities.AbstractPlotManager.PLOT_LINE_STYLE;
 
 public class BasicPlotManagerPC extends AbstractPlotManager {
 	
@@ -112,12 +110,6 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public HashMap<String, Double> mMapOfLastDataPoints = new HashMap<String, Double>();
 	
 	private UtilShimmer utilShimmer = new UtilShimmer(this.getClass().getSimpleName(), true);
-	
-	public enum TRACE_STYLE{
-		CONTINUOUS,
-		DOTTED,
-		DASHED
-	}
 	
 	/** Scale type options */
 	public enum SCALE_SETTING{ 
@@ -234,15 +226,15 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		ITrace2D trace;
 		if (!checkIfPropertyExist(signal)){
 			
-			if(mSelectedLineStyle==PLOT_LINE_STYLE.JOINT_LINE 
-					|| mSelectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
+			if(mDefaultLineStyle==PLOT_LINE_STYLE.CONTINUOUS 
+					|| mDefaultLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
 				trace = addNormalTraceLeft(chart, plotMaxSize);
 				
-				if(mSelectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
+				if(mDefaultLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
 					trace.setTracePainter(new TracePainterDisc(4)); 
 				}
 			}
-			else if(mSelectedLineStyle==PLOT_LINE_STYLE.BAR){
+			else if(mDefaultLineStyle==PLOT_LINE_STYLE.BAR){
 				trace = addBarTrace(chart, plotMaxSize);
 			}
 			else{
@@ -823,102 +815,131 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 
-	public void changeAllTraceStyle(TRACE_STYLE style) {
-		if (TRACE_STYLE.DASHED == style){
-			synchronized(mListofTraces){
-				Iterator <ITrace2D> entries = mListofTraces.iterator();
-				while (entries.hasNext()) {
-					ITrace2D trace = entries.next();
-					if(trace != null){
-						float dash1[] = {10.0f};
-						BasicStroke dashed =
-								new BasicStroke(((BasicStroke)(trace.getStroke())).getLineWidth(),
-										BasicStroke.CAP_BUTT,
-										BasicStroke.JOIN_MITER,
-										10.0f, dash1, 0.0f);
-						
-						trace.setStroke(dashed);
-					}
-				}
-			}
-		}
-		else if (TRACE_STYLE.DOTTED == style){
-			synchronized(mListofTraces){
-				Iterator <ITrace2D> entries = mListofTraces.iterator();
-				while (entries.hasNext()) {
-					ITrace2D trace = entries.next();
-					if(trace != null){
-						float dash1[] = {3.0f};
-						BasicStroke dotted = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1,2}, 0);
-								/*new BasicStroke(stroke.getLineWidth(),
-										BasicStroke.CAP_ROUND,
-										BasicStroke.JOIN_ROUND,
-										3.0f, dash1, 0.0f);
-										*/
-						trace.setStroke(dotted);
-					}
-				}
-			}
-		}
-		else if (TRACE_STYLE.CONTINUOUS == style){
-			synchronized(mListofTraces){
-				Iterator <ITrace2D> entries = mListofTraces.iterator();
-				while (entries.hasNext()) {
-					ITrace2D trace = entries.next();
-					if(trace != null){
-						BasicStroke newstroke = new BasicStroke(((BasicStroke)(trace.getStroke())).getLineWidth());
-						trace.setStroke(newstroke);
-					}
-				}
-			}
+//	public void changeAllTraceStyle(TRACE_STYLE style) {
+//		synchronized(mListofTraces){
+//			Iterator <ITrace2D> entries = mListofTraces.iterator();
+//			while (entries.hasNext()) {
+//				ITrace2D trace = entries.next();
+//				changeTraceStyle(trace, style);
+//			}
+//		}
+//	}
+//
+//	public void changeTraceStyle(int index, TRACE_STYLE style) {
+//		ITrace2D trace = mListofTraces.get(index);
+//		changeTraceStyle(trace, style);
+//	}
+//
+//	private void changeTraceStyle(ITrace2D trace, TRACE_STYLE style) {
+//		if(trace != null){
+//			BasicStroke strokeOld = ((BasicStroke)trace.getStroke());
+//			BasicStroke strokeNew = null;
+//			if (TRACE_STYLE.DASHED == style){
+//				float dash1[] = {10.0f};
+//				strokeNew = new BasicStroke(strokeOld.getLineWidth(),
+//								BasicStroke.CAP_BUTT,
+//								BasicStroke.JOIN_MITER,
+//								10.0f, dash1, 0.0f);
+//			}
+//			else if (TRACE_STYLE.DOTTED == style){
+//				float dash1[] = {3.0f};
+//				strokeNew = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1,2}, 0);
+//						/*new BasicStroke(stroke.getLineWidth(),
+//								BasicStroke.CAP_ROUND,
+//								BasicStroke.JOIN_ROUND,
+//								3.0f, dash1, 0.0f);
+//								*/
+//			}
+//			else if (TRACE_STYLE.CONTINUOUS == style){
+//				strokeNew = new BasicStroke(strokeOld.getLineWidth());
+//			}
+//			
+//			if(strokeNew!=null) {
+//				trace.setStroke(strokeNew);
+//			}
+//		}
+//	}
+
+	@Override
+	public void setTraceLineStyleAll(PLOT_LINE_STYLE lineStyle) {
+		mDefaultLineStyle = lineStyle;
+        synchronized(mListofTraces){
+    		Iterator <ITrace2D> entries = mListofTraces.iterator();
+    		while (entries.hasNext()) {
+    			ITrace2D trace = entries.next();
+    			if(trace != null){
+    				setTraceLineStyle(trace, mDefaultLineStyle);
+    			}
+    		}
+        }
+	}
+	
+	public void setTraceLineStyle(String traceName, PLOT_LINE_STYLE plotLineStyle) {
+		ITrace2D trace = getTraceFromName(traceName);
+		if(trace!=null){
+			setTraceLineStyle(trace, plotLineStyle);
 		}
 	}
 
-	
-	public void changeTraceStyle(ITrace2D trace, TRACE_STYLE style) {
-		synchronized(mListofTraces){
-			Iterator <ITrace2D> entries = mListofTraces.iterator();
-			int i = 0;
-			while (entries.hasNext()) {
-				ITrace2D traces = entries.next();
-				if(traces != null){
-					if(mListofTraces.get(i)==trace){
-						changeTraceStyle(i, style);
-					}
+	public void setTraceLineStyle(ITrace2D trace, PLOT_LINE_STYLE selectedLineStyle) {
+		//Defaults
+		trace.setTracePainter(new TracePainterLine());
+		trace.setStroke(new BasicStroke());
+		
+		if(selectedLineStyle==PLOT_LINE_STYLE.CONTINUOUS 
+				|| selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS
+				|| selectedLineStyle==PLOT_LINE_STYLE.DASHED
+				|| selectedLineStyle==PLOT_LINE_STYLE.DOTTED
+				|| selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
+			BasicStroke strokeOld = ((BasicStroke)trace.getStroke());
+			BasicStroke strokeNew = null;
+
+			if(selectedLineStyle==PLOT_LINE_STYLE.CONTINUOUS 
+					|| selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
+				strokeNew = new BasicStroke(
+//						strokeOld.getLineWidth(),
+						DEFAULT_LINE_THICKNESS,
+						strokeOld.getEndCap(),
+						strokeOld.getLineJoin(),
+						strokeOld.getMiterLimit(),
+						strokeOld.getDashArray(),
+						strokeOld.getDashPhase());
+				trace.setStroke(strokeNew);
+				
+				if(selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
+					trace.setTracePainter(new TracePainterDisc(4)); 
 				}
-				i++;
+			}
+			else if (selectedLineStyle==PLOT_LINE_STYLE.DASHED){
+				float dash1[] = {10.0f};
+				strokeNew = new BasicStroke(strokeOld.getLineWidth(),
+								BasicStroke.CAP_BUTT,
+								BasicStroke.JOIN_MITER,
+								10.0f, dash1, 0.0f);
+				trace.setStroke(strokeNew);
+			}
+			else if (selectedLineStyle==PLOT_LINE_STYLE.DOTTED){
+//				float dash1[] = {3.0f};
+				strokeNew = new BasicStroke(
+						1,
+//						strokeOld.getLineWidth(),
+//						DEFAULT_LINE_THICKNESS,
+						BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1,2}, 0);
+						/*new BasicStroke(stroke.getLineWidth(),
+								BasicStroke.CAP_ROUND,
+								BasicStroke.JOIN_ROUND,
+								3.0f, dash1, 0.0f);
+								*/
+				trace.setStroke(strokeNew);
 			}
 		}
-	}
-	
-	public void changeTraceStyle(int index, TRACE_STYLE style) {
-		
-		BasicStroke stroke = ((BasicStroke)mListofTraces.get(index).getStroke());
-		
-		if (TRACE_STYLE.DASHED == style){
-			float dash1[] = {10.0f};
-			BasicStroke dashed =
-					new BasicStroke(stroke.getLineWidth(),
-							BasicStroke.CAP_BUTT,
-							BasicStroke.JOIN_MITER,
-							10.0f, dash1, 0.0f);
-			mListofTraces.get(index).setStroke(dashed);
+		else if(selectedLineStyle==PLOT_LINE_STYLE.BAR){
+			trace.setTracePainter(new TracePainterVerticalBar(mChart));
 		}
-		if (TRACE_STYLE.DOTTED == style){
-			float dash1[] = {3.0f};
-			BasicStroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1,2}, 0);
-					/*new BasicStroke(stroke.getLineWidth(),
-							BasicStroke.CAP_ROUND,
-							BasicStroke.JOIN_ROUND,
-							3.0f, dash1, 0.0f);
-							*/
-			mListofTraces.get(index).setStroke(dashed);
+		else if(selectedLineStyle==PLOT_LINE_STYLE.FILL){
+			trace.setTracePainter(new TracePainterFill(mChart));
 		}
-		if (TRACE_STYLE.CONTINUOUS == style){
-			BasicStroke newstroke = new BasicStroke(stroke.getLineWidth());
-			mListofTraces.get(index).setStroke(newstroke);
-		}
-	}
+	}	
 	
 	/** Set the scale type on the y-axis.
 	 * @param scaleSetting
@@ -1728,7 +1749,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 							
 						} 
 						else {
-							throw new Exception("Signal not found: (" + joinChannelStringArray(props) + ")");
+							throwExceptionSignalNotFound(props, ojc);
 						}
 					}
 					i++;
@@ -1737,6 +1758,18 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 	
+	private void throwExceptionSignalNotFound(String[] props, ObjectCluster ojc) throws Exception {
+		throwExceptionSignalNotFound(joinChannelStringArray(props), ojc);
+	}
+
+	private void throwExceptionSignalNotFound(String traceName, ObjectCluster ojc) throws Exception {
+		utilShimmer.consolePrintLn("mChart.getName(): " +mChart.getName());
+		if(ojc!=null) {
+			ojc.consolePrintChannelsAndDataSingleLine();
+		}
+		throw new Exception("Signal not found: (" + traceName + ")");
+	}
+
 	private double getXDataForPlotting(String shimmerName, ObjectCluster ojc, int index) {
 		double xData = 0;
 		//first check is x axis signal exist
@@ -1802,51 +1835,6 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		DecimalFormat dc = new DecimalFormat("0");
 		String formattedText = " " + dc.format(f.mData) + " ";  // Padding String so that single ECGtoValue wont overflow on gui 
 		return formattedText;
-	}
-
-	
-	@Override
-	public void setTraceLineStyleAll(PLOT_LINE_STYLE lineStyle) {
-		mSelectedLineStyle = lineStyle;
-        synchronized(mListofTraces){
-    		Iterator <ITrace2D> entries = mListofTraces.iterator();
-    		while (entries.hasNext()) {
-    			ITrace2D trace = entries.next();
-    			if(trace != null){
-    				setTraceLineStyle(trace, mSelectedLineStyle);
-    			}
-    		}
-        }
-	}
-	
-	public void setTraceLineStyle(String traceName, PLOT_LINE_STYLE plotLineStyle) {
-		ITrace2D trace = getTraceFromName(traceName);
-		if(trace!=null){
-			setTraceLineStyle(trace, plotLineStyle);
-		}
-	}
-
-	public void setTraceLineStyle(ITrace2D trace, PLOT_LINE_STYLE selectedLineStyle) {
-		//Defaults
-		trace.setTracePainter(new TracePainterLine());
-		trace.setStroke(new BasicStroke());
-		
-		if(mSelectedLineStyle==PLOT_LINE_STYLE.JOINT_LINE 
-				|| mSelectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
-			BasicStroke stroke = ((BasicStroke)trace.getStroke());
-			BasicStroke newStroke = new BasicStroke(DEFAULT_LINE_THICKNESS,stroke.getEndCap(),stroke.getLineJoin(),stroke.getMiterLimit(),stroke.getDashArray(),stroke.getDashPhase());
-			trace.setStroke(newStroke);
-			
-			if(mSelectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
-				trace.setTracePainter(new TracePainterDisc(4)); 
-			}
-		}
-		else if(mSelectedLineStyle==PLOT_LINE_STYLE.BAR){
-			trace.setTracePainter(new TracePainterVerticalBar(mChart));
-		}
-		else if(mSelectedLineStyle==PLOT_LINE_STYLE.FILL){
-			trace.setTracePainter(new TracePainterFill(mChart));
-		}
 	}
 
 	//----------------------FFT timer test code start ---------------------
@@ -1988,15 +1976,15 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 
 					//prevent eventmarkers from plotting back in time
 					boolean eventMarker=false;
-					if (props[0].equals(mEventMarkerCheck)){
+					if (props[0].equals(mEventMarkerCheck) && shimmerName.equals(props[0])){
 						if (xData>mCurrentXValue){
 							eventMarker=true;
 						} else { // skip any data which is in the past, as there are multiple shimmer devices, this is possible
 							//JC: Just to be safe, do a check to ensure a marker is not missed, this is probably not needed..
 							FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 							if(f == null){
-								//utilShimmer.consolePrintLn("mChart.getName(): " +mChart.getName());
-								throw new Exception("Signal not found: (" + traceName + ")");
+								throwExceptionSignalNotFound(traceName, ojc);
+								continue;
 							}
 
 							double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
@@ -2014,9 +2002,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 
 						FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 						if(f == null){
-							//utilShimmer.consolePrintLn("mChart.getName(): " +mChart.getName());
-							ojc.consolePrintChannelsAndDataSingleLine();
-							throw new Exception("Signal not found: (" + traceName + ")");
+							throwExceptionSignalNotFound(traceName, ojc);
+							continue;
 						}
 
 						double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);

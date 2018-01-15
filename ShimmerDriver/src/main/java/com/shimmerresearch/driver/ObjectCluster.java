@@ -580,6 +580,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void consolePrintChannelsAndDataSingleLine() {
+		System.out.println("ShimmerName:" + mMyName);
 		System.out.println("Channels in ObjectCluster:");
 		String channelsCal = "Cal:\t";
 		String channelsUncal = "Uncal:\t";
