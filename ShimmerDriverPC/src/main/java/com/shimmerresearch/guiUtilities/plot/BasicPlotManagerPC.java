@@ -90,6 +90,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
 	private boolean mIsTraceDataBuffered = false;
+	private boolean isFirstPointOnTrace = true;
 	
 	public PlotCustomFeature pcf=null;
 	
@@ -109,7 +110,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	private boolean mIsFftShowingDc = true;
 	private int mFftOverlapPercent = 0;
 	public HashMap<String, Double> mMapOfLastDataPoints = new HashMap<String, Double>();
-
+	
 	private UtilShimmer utilShimmer = new UtilShimmer(this.getClass().getSimpleName(), true);
 	
 	public enum TRACE_STYLE{
@@ -637,7 +638,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				  try{
 					  mChart.setAxisYLeft(yAxis, 0);   
 				  }
-				  catch(IllegalArgumentException e){
+				  catch(Exception e){
 					  // RM Double.Nan was causing a non critical exception here
 					  //e.printStackTrace();
 				  }
@@ -656,8 +657,6 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			mListofTraces.get(index).setColor(new Color(colorArray[0],colorArray[1],colorArray[2]));
 		}
 	}
-	
-	
 	
 	public int getIndex(String name){
 		int index=0;
@@ -1516,6 +1515,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 		setXAxisDuration(mXAxisTimeDuration);
 		mCurrentXValue=0;
+		isFirstPointOnTrace=true;
 	}
 
 	public void clearDataBufferAndMakeTraceVisible(String deviceName){
@@ -2036,10 +2036,12 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 						Double halfWindowSize = mMapofHalfWindowSize.get(traceName);
 						if (halfWindowSize!=null){
 							currentTrace.getTracePainters();
+							//addDummyPointToTraceIfRequired(currentTrace, xData-halfWindowSize);
 							addPointToTrace(currentTrace, xData-halfWindowSize, yData);
 						} 
 						else {
 							if(isXAxisTime){
+								//addDummyPointToTraceIfRequired(currentTrace, xData);
 								addTracePoint(currentTrace, xData, yData);
 							}
 							else if(isXAxisFrequency){
@@ -2077,6 +2079,19 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 
+	/**
+	 * Method to add a dummy point as the first point in the trace if the line style is fill
+	 * so that the chart doesn't plot from (0, 0)
+	 * @param currentTrace
+	 * @param xData
+	 */
+	private void addDummyPointToTraceIfRequired(ITrace2D currentTrace, double xData) {
+		if(isFirstPointOnTrace && mSelectedLineStyle==PLOT_LINE_STYLE.FILL && currentTrace.getSize()==0) {
+			addTracePoint(currentTrace, xData, 0);
+			isFirstPointOnTrace = false;
+		}
+	}
+	
 	//TODO Method under development
 	public void filterDataAndPlotBasic(List<String[]> listOfSignals, List<double[]> dataArray) throws Exception {
 		
