@@ -88,7 +88,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
 	private boolean mIsTraceDataBuffered = false;
-	private boolean isFirstPointOnTrace = true;
+	private boolean isFirstPointOnFillTrace = true;
 	
 	public PlotCustomFeature pcf=null;
 	
@@ -1536,7 +1536,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 		setXAxisDuration(mXAxisTimeDuration);
 		mCurrentXValue=0;
-		isFirstPointOnTrace=true;
+		isFirstPointOnFillTrace=true;
 	}
 
 	public void clearDataBufferAndMakeTraceVisible(String deviceName){
@@ -1969,6 +1969,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			synchronized(mListofPropertiestoPlot){
 				Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
 				int i = 0;
+				boolean isDummyPointAddedToFillTrace = false; 
+				
 				while (entries.hasNext()) {
 					String[] props = entries.next();
 					
@@ -1979,7 +1981,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					if (props[0].equals(mEventMarkerCheck) && shimmerName.equals(props[0])){
 						if (xData>mCurrentXValue){
 							eventMarker=true;
-						} else { // skip any data which is in the past, as there are multiple shimmer devices, this is possible
+						} 
+						else { // skip any data which is in the past, as there are multiple shimmer devices, this is possible
 							//JC: Just to be safe, do a check to ensure a marker is not missed, this is probably not needed..
 							FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 							if(f == null){
@@ -1992,7 +1995,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 							if (yData!=-1){ //marker detected
 								xData=mCurrentXValue; //ensure the timestamp doesnt go back in time
 								eventMarker=true;
-							} else {
+							} 
+							else {
 								eventMarker=false;
 							}
 						}
@@ -2019,16 +2023,20 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 						printSignalProps(ojc, currentTrace, props, xData, yData);
 
 						updateHrPanelIfVisible(props, ojc);
-
+						
 						Double halfWindowSize = mMapofHalfWindowSize.get(traceName);
 						if (halfWindowSize!=null){
 							currentTrace.getTracePainters();
-							//addDummyPointToTraceIfRequired(currentTrace, xData-halfWindowSize);
+							if(addDummyPointToFillTraceIfRequired(currentTrace, xData-halfWindowSize)) {
+								isDummyPointAddedToFillTrace = true;
+							}
 							addPointToTrace(currentTrace, xData-halfWindowSize, yData);
 						} 
 						else {
 							if(isXAxisTime){
-								//addDummyPointToTraceIfRequired(currentTrace, xData);
+								if(addDummyPointToFillTraceIfRequired(currentTrace, xData)) {
+									isDummyPointAddedToFillTrace = true;
+								}
 								addTracePoint(currentTrace, xData, yData);
 							}
 							else if(isXAxisFrequency){
@@ -2056,6 +2064,9 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					}
 					i++;
 				}
+				if(isDummyPointAddedToFillTrace) {
+					isFirstPointOnFillTrace = false;
+				}
 			}
 		}
 		//	mChart.getAxisX().setRange(new Range(mCurrentXValue-(mXAxisTimeDuraton*1000),mCurrentXValue));
@@ -2072,11 +2083,21 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	 * @param currentTrace
 	 * @param xData
 	 */
-	private void addDummyPointToTraceIfRequired(ITrace2D currentTrace, double xData) {
-		if(isFirstPointOnTrace && mDefaultLineStyle==PLOT_LINE_STYLE.FILL && currentTrace.getSize()==0) {
+	private boolean addDummyPointToFillTraceIfRequired(ITrace2D currentTrace, double xData) {
+		if(isFirstPointOnFillTrace && isTracePainterFill(currentTrace) && currentTrace.getSize()==0) {
 			addTracePoint(currentTrace, xData, 0);
-			isFirstPointOnTrace = false;
+			return true;
 		}
+		return false;
+	}
+	
+	private boolean isTracePainterFill(ITrace2D trace) {
+		for(ITracePainter<?> tp : trace.getTracePainters()) {
+			if(tp instanceof TracePainterFill) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	//TODO Method under development
