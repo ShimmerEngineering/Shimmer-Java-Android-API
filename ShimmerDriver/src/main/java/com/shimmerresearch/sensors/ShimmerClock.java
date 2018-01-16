@@ -297,7 +297,7 @@ public class ShimmerClock extends AbstractSensor {
 	//TODO: Move to separate class
 	public static final ChannelDetails channelEventMarker = new ChannelDetails(
 			ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER,
-			ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER,
+			ShimmerStreamingProperties.GuiLabelSensors.EVENT_MARKER,
 			ShimmerStreamingProperties.DatabaseChannelHandles.EVENT_CHANNEL,
 			CHANNEL_UNITS.NO_UNITS,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, false);

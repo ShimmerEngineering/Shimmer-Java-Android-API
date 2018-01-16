@@ -22,6 +22,10 @@ public class ShimmerStreamingProperties extends AbstractSensor {
 	
 	private static final long serialVersionUID = 3069449933266283483L;
 
+	public static class GuiLabelSensors{
+		public static final String EVENT_MARKER = "Event Marker";
+	}
+
 	public static class ObjectClusterSensorName{
 		public static final String BATT_PERCENTAGE = SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE;
 		public static final String PACKET_RECEPTION_RATE_CURRENT = "Packet_Reception_Rate_Current";
