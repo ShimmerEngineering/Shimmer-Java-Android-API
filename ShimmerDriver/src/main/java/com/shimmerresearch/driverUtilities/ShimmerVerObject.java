@@ -653,7 +653,5 @@ public class ShimmerVerObject implements Serializable {
 		}
 		return false;
 	}
-	
-
 
 }
