@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.UtilShimmer.SHIMMER_DEFAULT_COLOURS;
 
 public abstract class AbstractPlotManager {
@@ -37,9 +36,18 @@ public abstract class AbstractPlotManager {
 		mListofTraceColorsDefault.add(SHIMMER_DEFAULT_COLOURS.colourShimmerBlue);
 	}
 	
+	//TODO why handled differently TRACE_STYLE and PLOT_LINE_STYLE
+//	public enum TRACE_STYLE{
+//		CONTINUOUS,
+//		DOTTED,
+//		DASHED
+//	}
+
 	public enum PLOT_LINE_STYLE{
-		JOINT_LINE("Joint Line"),
+		CONTINUOUS("Joint Line"),
 		INDIVIDUAL_POINTS("Points"),
+		DOTTED("Dotted"),
+		DASHED("Dashed"),
 		BAR("Bar"), 
 		FILL("Fill");
 		
@@ -53,7 +61,7 @@ public abstract class AbstractPlotManager {
 			return mGuiOptionString;
 		}
 	}
-	public PLOT_LINE_STYLE mSelectedLineStyle = PLOT_LINE_STYLE.JOINT_LINE;
+	public PLOT_LINE_STYLE mDefaultLineStyle = PLOT_LINE_STYLE.CONTINUOUS;
 
 	//generates 
 	public AbstractPlotManager(){
@@ -223,11 +231,11 @@ public abstract class AbstractPlotManager {
 	}
 	
 	public void setPlotLineStyle(PLOT_LINE_STYLE plotLineStyle) {
-		mSelectedLineStyle = plotLineStyle;
+		mDefaultLineStyle = plotLineStyle;
 	}
 	
 	public PLOT_LINE_STYLE getPlotLineStyle() {
-		return mSelectedLineStyle;
+		return mDefaultLineStyle;
 	}
 	
 	public void setTraceLineStyleAll(String selectedLineStyle) {
