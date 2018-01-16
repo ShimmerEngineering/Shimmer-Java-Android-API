@@ -9684,7 +9684,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 
-
+	/**
+	 * Setting this to false will disable calibration, e.g. raw accelerometer data will not be calibrated. 
+	 * Main purpose of disabling calibration is for logging applications, to reduce number of computations needed to compute the data, thus reducing risk of a performance bottleneck and maximizing logging performance
+	 * Disabling this can also improve performance on older Android devices
+	 * @param enable enables or disables calibration. Note that this needs to be enabled when using the ID as to calculate 3D orientation, see enable3DOrientation
+	 */
+	public void setEnableCalibration(boolean enable) {
+		mEnableCalibration = enable;
+	}
 }
 
 
