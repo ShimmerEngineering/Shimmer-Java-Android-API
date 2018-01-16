@@ -20,6 +20,7 @@ public class HwDriverShimmerDeviceDetails {
 		RN42("RN42"),
 		RNBT("RNBT"),
 		SHIMMER3("Shimmer3"),
+		SHIMMER_ECG_MD("ShimmerECGmd"),
 		SHIMMER4("Shimmer4"),
 		
 		LUMAFIT("Lumafit"),
@@ -180,12 +181,14 @@ public class HwDriverShimmerDeviceDetails {
             }
             
 	        public static final String SHIMMER3 = "Shimmer3";
+	        public static final String SHIMMER_ECG_MD = "ShimmerECGmd";
 	        public static final String SHIMMER4 = "Shimmer4";
 	        public static final String RN42 = "RN42";
 	        public static final String RNBT = "RNBT";
 
             public static final String[] SHIMMER_DEVICE = new String[] {
             	SHIMMER3,
+            	SHIMMER_ECG_MD,
             	SHIMMER4,
             	RN42,
             	RNBT

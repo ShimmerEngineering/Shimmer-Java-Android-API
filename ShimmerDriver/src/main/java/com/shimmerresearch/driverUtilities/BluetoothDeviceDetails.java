@@ -59,6 +59,9 @@ public class BluetoothDeviceDetails {
 			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER4)){
 				mDeviceTypeDetected = DEVICE_TYPE.SHIMMER4;
 			}
+			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER_ECG_MD)){
+				mDeviceTypeDetected = DEVICE_TYPE.SHIMMER_ECG_MD;
+			}
 			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.RN42)){
 				mDeviceTypeDetected = DEVICE_TYPE.RN42;
 			}
