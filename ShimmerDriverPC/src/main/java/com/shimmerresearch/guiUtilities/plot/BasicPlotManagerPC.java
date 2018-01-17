@@ -2027,16 +2027,16 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 						Double halfWindowSize = mMapofHalfWindowSize.get(traceName);
 						if (halfWindowSize!=null){
 							currentTrace.getTracePainters();
-//							if(addDummyPointToFillTraceIfRequired(currentTrace, xData-halfWindowSize)) {
-//								isDummyPointAddedToFillTrace = true;
-//							}
+							if(addDummyPointToFillTraceIfRequired(currentTrace, xData-halfWindowSize)) {
+								isDummyPointAddedToFillTrace = true;
+							}
 							addPointToTrace(currentTrace, xData-halfWindowSize, yData);
 						} 
 						else {
 							if(isXAxisTime){
-//								if(addDummyPointToFillTraceIfRequired(currentTrace, xData)) {
-//									isDummyPointAddedToFillTrace = true;
-//								}
+								if(addDummyPointToFillTraceIfRequired(currentTrace, xData)) {
+									isDummyPointAddedToFillTrace = true;
+								}
 								addTracePoint(currentTrace, xData, yData);
 							}
 							else if(isXAxisFrequency){
@@ -2064,9 +2064,9 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					}
 					i++;
 				}
-//				if(isDummyPointAddedToFillTrace) {
-//					isFirstPointOnFillTrace = false;
-//				}
+				if(isDummyPointAddedToFillTrace) {
+					isFirstPointOnFillTrace = false;
+				}
 			}
 		}
 		//	mChart.getAxisX().setRange(new Range(mCurrentXValue-(mXAxisTimeDuraton*1000),mCurrentXValue));
