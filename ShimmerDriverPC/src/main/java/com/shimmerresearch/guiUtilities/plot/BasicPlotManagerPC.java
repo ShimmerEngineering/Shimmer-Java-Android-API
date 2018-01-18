@@ -953,15 +953,19 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		double yMax = 0;
 		if(!mListofTraces.isEmpty()) {
 			if(scaleSetting == SCALE_SETTING.AUTO) {
+				double minY = (double) yAxisMin;
+				double maxY = (double) yAxisMax;
+
+				AAxis<IAxisScalePolicy> axisToUse = null;
+				if(isLeftYAxis && yAxis != null){
+					axisToUse = yAxis;
+				} else if (yAxisRight != null){
+					axisToUse = yAxisRight;
+				}
+
 				// y-axis scale
-				if(isLeftYAxis){
-					yAxis.setRangePolicy(new RangePolicyUnbounded());
-				}
-				else{
-					if(yAxisRight != null){
-						yAxisRight.setRangePolicy(new RangePolicyUnbounded());
-					}
-				}
+//				axisToUse.setRangePolicy(new RangePolicyUnbounded(new Range(minY, maxY)));
+				axisToUse.setRangePolicy(new RangePolicyUnbounded());
 				
 //				// x-axis scale.
 //		        double percentage = (double)5/InternalFrameWithPlotManager.mSliderMidValue;
