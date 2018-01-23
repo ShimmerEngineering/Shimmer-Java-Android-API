@@ -953,8 +953,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		double yMax = 0;
 		if(!mListofTraces.isEmpty()) {
 			if(scaleSetting == SCALE_SETTING.AUTO) {
-				double minY = (double) yAxisMin;
-				double maxY = (double) yAxisMax;
+//				yMin = (double) yAxisMin;
+//				yMax = (double) yAxisMax;
 
 				AAxis<IAxisScalePolicy> axisToUse = null;
 				if(isLeftYAxis && yAxis != null){
@@ -964,7 +964,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				}
 
 				// y-axis scale
-//				axisToUse.setRangePolicy(new RangePolicyUnbounded(new Range(minY, maxY)));
+//				axisToUse.setRangePolicy(new RangePolicyUnbounded(new Range(yMin, yMax)));
 				axisToUse.setRangePolicy(new RangePolicyUnbounded());
 				
 //				// x-axis scale.
@@ -972,103 +972,41 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 //		        adjustTraceLength(percentage);
 			}
 			else if(scaleSetting == SCALE_SETTING.FIXED) {
-				double minY = (double) yAxisMin;
-				double maxY = (double) yAxisMax;
-				if(yAxisMin!=null && yAxisMax != null) {
-					setYAxisMinMax(isLeftYAxis, minY, maxY);
-
-//					if(Double.isFinite(minY) && Double.isFinite(maxY)){
-//						if(isLeftYAxis && yAxis != null){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
-//							}
-//						}
-//					}
+				yMin = (double) yAxisMin;
+				yMax = (double) yAxisMax;
+				if(yAxisMin!=null && yAxisMax!=null) {
+					setYAxisMinMax(isLeftYAxis, yMin, yMax);
 				}
 			}
 			else if(scaleSetting == SCALE_SETTING.CUSTOM) {
 				
-				if( yAxisMin != null && yAxisMax == null ) {  // y-axis min only
+				if(yAxisMin!=null && yAxisMax==null) {  // y-axis min only
 					//utilShimmer.consolePrintLn("\nY-AXIS MIN ONLY\n");
 					yMin = (double) yAxisMin;
 					if(yMin<0) {
 						setYAxisMinMax(isLeftYAxis, yMin, -yMin);
-
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
-//							}
-//						}
-						
 					}
 					else {
 						setYAxisMinMax(isLeftYAxis, yMin, yMin*2);
-
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
-//							}
-//						}
 					}
-					
 				}
-				else if( yAxisMin==null && yAxisMax!=null ) {  // y-axis max only
+				else if(yAxisMin==null && yAxisMax!=null) {  // y-axis max only
 					//utilShimmer.consolePrintLn("\nY-AXIS MAX ONLY\n");
 					yMax = (double) yAxisMax;
 					if(yMax>0) {
 						setYAxisMinMax(isLeftYAxis, -yMax, yMax);
-						
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
-//							}
-//						}
-						
 					}
 					else {
 						setYAxisMinMax(isLeftYAxis, (-yMax*yMax), yMax);
-
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
-//							}
-//						}
-						
 					}
 					
 				}
-				else if( yAxisMin!=null && yAxisMax!=null ) {  // y-axis both
+				else if(yAxisMin!=null && yAxisMax!=null) {  // y-axis both
 					//utilShimmer.consolePrintLn("\nY-AXIS BOTH\n");
 					yMin = (double) yAxisMin;
 					yMax = (double) yAxisMax;
 					
 					setYAxisMinMax(isLeftYAxis, yMin, yMax);
-
-//					if(Double.isFinite(yMin) && Double.isFinite(yMax)){
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
-//							}
-//						}
-//					}
 				}
 			}
 		}
