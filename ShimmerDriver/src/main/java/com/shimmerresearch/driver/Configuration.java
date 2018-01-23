@@ -1310,15 +1310,12 @@ public class Configuration {
 			private static final ShimmerVerObject svoHighGAccelBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 			private static final ShimmerVerObject svoHighGAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
 
+			//TODO move non-Shimmer3 devices out of here
 			public static final ShimmerVerObject svoShimmer4Stock = 			new ShimmerVerObject(HW_ID.SHIMMER_4_SDK,FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoArduino = 				new ShimmerVerObject(HW_ID.ARDUINO,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			public static final ShimmerVerObject svoSweatch = 				new ShimmerVerObject(HW_ID.SWEATCH,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			public static final ShimmerVerObject svoShimmerECGmd = 				new ShimmerVerObject(HW_ID.SHIMMER_3,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID_SR_CODES.SHIMMER_ECG_MD);
 			public static final ShimmerVerObject svoStrokare = 				new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.STROKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-
-			private static final ShimmerVerObject svoWebcamGeneric = 		new ShimmerVerObject(HW_ID.WEBCAM_GENERIC,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-			private static final ShimmerVerObject svoWebcamLogitechC920 = 	new ShimmerVerObject(HW_ID.WEBCAM_LOGITECH_HD_C920,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-			private static final ShimmerVerObject svoWebcamLogitechC930e = 	new ShimmerVerObject(HW_ID.WEBCAM_LOGITECH_HD_C930E,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
 			//TODO remove any lists below to their relevant Sensor classes.
 			
@@ -1501,9 +1498,6 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(svoSdLogMpl);//,baseShimmer4); //TODO Shimmer4 temp here
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoShimmer4 = Arrays.asList(svoShimmer4Stock);
-			
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoWebcam = Arrays.asList(
-					svoWebcamGeneric, svoWebcamLogitechC920, svoWebcamLogitechC930e);
 			
 		}
 
@@ -2148,6 +2142,22 @@ public class Configuration {
 		public static final Integer[] ListOfOnOffConfigValues = {0x01,0x00};
 	}
 	
+	public static class Webcam{
+		public static class CompatibilityInfoForMaps{
+			public static final ShimmerVerObject svoWebcamGeneric = 		new ShimmerVerObject(HW_ID.WEBCAM_GENERIC,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+//			private static final ShimmerVerObject svoWebcamLogitechC920 = 	new ShimmerVerObject(HW_ID.WEBCAM_LOGITECH_HD_C920,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+//			private static final ShimmerVerObject svoWebcamLogitechC930e = 	new ShimmerVerObject(HW_ID.WEBCAM_LOGITECH_HD_C930E,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+//			protected static final ShimmerVerObject svoWebcamGeneric = new ShimmerVerObject(HW_ID.WEBCAM_GENERIC, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoWebcamLogitechHdC920 = 	new ShimmerVerObject(HW_ID.WEBCAM_LOGITECH_HD_C920, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoWebcamLogitechHdC930E = new ShimmerVerObject(HW_ID.WEBCAM_LOGITECH_HD_C930E, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoWebcamDigiOptixSmartGlasses = new ShimmerVerObject(HW_ID.WEBCAM_DIGIOPTIX_SMART_GLASSES, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION);
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoWebcam = Arrays.asList(
+					svoWebcamGeneric, svoWebcamLogitechHdC920, svoWebcamLogitechHdC930E);
+
+		}
+
+	}
 	
 }
 
