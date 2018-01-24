@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -108,6 +109,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	private boolean mIsFftShowingDc = true;
 	private int mFftOverlapPercent = 0;
 	public HashMap<String, Double> mMapOfLastDataPoints = new HashMap<String, Double>();
+	private TimeZone timeZone = Calendar.getInstance().getTimeZone();
 	
 	private UtilShimmer utilShimmer = new UtilShimmer(this.getClass().getSimpleName(), true);
 	
@@ -586,27 +588,27 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	}
 	
 	public void initializeAxesForTimeBig(){
-		SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-		format.setTimeZone(Calendar.getInstance().getTimeZone());
-		initializeAxesCommon(new LabelFormatterDate(format));
+		initializeAxesForTime("HH:mm:ss");
 	}
 	
 	public void initializeAxesForTimeMedium(){
-		SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-		format.setTimeZone(Calendar.getInstance().getTimeZone());
-		initializeAxesCommon(new LabelFormatterDate(format));
+		initializeAxesForTime("mm:ss");
 	}
 	
 	public void initializeAxesForTimeSmall(){
-		SimpleDateFormat format = new SimpleDateFormat("ss");
-		format.setTimeZone(Calendar.getInstance().getTimeZone());
-		initializeAxesCommon(new LabelFormatterDate(format));
+		initializeAxesForTime("ss");
 	}
 
 	public void initializeAxesAutoUnits(){
 		initializeAxesCommon(new LabelFormatterAutoUnits());
 	}
 
+	private void initializeAxesForTime(String format){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+		simpleDateFormat.setTimeZone(timeZone);
+		initializeAxesCommon(new LabelFormatterDate(simpleDateFormat));
+	}
+	
 	private void initializeAxesCommon(IAxisLabelFormatter xAxisLblFormatter){
 		if (mEnablePCTS && mChart!=null){
 		  xAxis = mChart.getAxisX();
@@ -640,6 +642,13 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 	
+	public void setTimeZone(TimeZone timeZone) {
+		this.timeZone = timeZone;
+	}
+	
+	public void clearTimeZone() {
+		this.timeZone = TimeZone.getTimeZone("GMT");
+	}
 	
 	//change color
 	public void changeTraceColor(String traceName,int[] colorArray){
