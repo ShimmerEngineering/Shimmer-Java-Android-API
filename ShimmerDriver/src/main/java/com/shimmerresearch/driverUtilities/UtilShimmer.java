@@ -1148,4 +1148,10 @@ public class UtilShimmer implements Serializable {
 		return listOfUniqueIds;
 	}
 
+	public static String removeCheckMarkIfPresent(String origString) {
+		String modifiedString = origString.replace((CHECK_MARK_STRING), "");
+		modifiedString = modifiedString.replace((CROSS_MARK_STRING), "");
+		return modifiedString;
+	}
+
 }
