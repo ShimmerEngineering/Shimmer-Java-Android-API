@@ -3380,8 +3380,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 
-	/**Write the config time to the Shimmer device. Only applicable for Log and Stream.
-	 * 
+	/**Write the config time to the Shimmer device. Only applicable for Log and Stream. 
+	 * @param time Unix Time in Seconds
 	 */
 	public void writeConfigTime(long time){
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
