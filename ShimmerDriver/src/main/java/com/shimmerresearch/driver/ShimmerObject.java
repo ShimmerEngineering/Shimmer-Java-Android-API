@@ -7550,10 +7550,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return getCurrentCalibDetailsAccelLn().getCalibTimeMs();
 	}
 
-	public boolean isUsingDefaultAccelParam(){
-		return isUsingDefaultLNAccelParam();
-	}
-
 	public boolean isUsingDefaultLNAccelParam(){
 		return getCurrentCalibDetailsAccelLn().isUsingDefaultParameters();
 	}
