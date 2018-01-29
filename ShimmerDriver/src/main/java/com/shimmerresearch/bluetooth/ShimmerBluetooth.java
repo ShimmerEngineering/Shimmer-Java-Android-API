@@ -2609,7 +2609,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				readRealTimeClock();
 			}
 		}
-
+		determineCalibrationParamsForIMU();
 		initaliseDataProcessing();
 		
 		mFirstPacketParsed=true;

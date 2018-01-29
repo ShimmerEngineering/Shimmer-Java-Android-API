@@ -9689,6 +9689,30 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void setEnableCalibration(boolean enable) {
 		mEnableCalibration = enable;
 	}
+	
+	protected void determineCalibrationParamsForIMU(){
+		
+		/*
+		// Shimmer2/2r - Analog accel
+		protected SensorMMA736x mSensorMMA736x = new SensorMMA736x(this);
+		// Shimmer2 Mag
+		protected SensorShimmer2Mag mSensorShimmer2Mag = new SensorShimmer2Mag(this);
+		// Shimmer2 - Gyro
+		protected SensorShimmer2Gyro mSensorShimmer2Gyro = new SensorShimmer2Gyro(this);
+
+		
+		// Shimmer3 - Analog accel
+		private SensorKionixAccel mSensorKionixAccel = new SensorKionixKXRB52042(this);
+		// Shimmer3 Wide-range accel and mag
+		private SensorLSM303 mSensorLSM303 = new SensorLSM303DLHC(this);
+		// Shimmer3 - Gyro
+		protected SensorMPU9X50 mSensorMpu9x50 = new SensorMPU9150(this);
+		// Shimmer3 - Pressure/Temperature 
+		private SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
+		*/
+		
+	}
+	
 }
 
 
