@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -108,6 +109,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	private boolean mIsFftShowingDc = true;
 	private int mFftOverlapPercent = 0;
 	public HashMap<String, Double> mMapOfLastDataPoints = new HashMap<String, Double>();
+	private TimeZone timeZone = Calendar.getInstance().getTimeZone();
 	
 	private UtilShimmer utilShimmer = new UtilShimmer(this.getClass().getSimpleName(), true);
 	
@@ -586,27 +588,27 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	}
 	
 	public void initializeAxesForTimeBig(){
-		SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-		format.setTimeZone(Calendar.getInstance().getTimeZone());
-		initializeAxesCommon(new LabelFormatterDate(format));
+		initializeAxesForTime("HH:mm:ss");
 	}
 	
 	public void initializeAxesForTimeMedium(){
-		SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-		format.setTimeZone(Calendar.getInstance().getTimeZone());
-		initializeAxesCommon(new LabelFormatterDate(format));
+		initializeAxesForTime("mm:ss");
 	}
 	
 	public void initializeAxesForTimeSmall(){
-		SimpleDateFormat format = new SimpleDateFormat("ss");
-		format.setTimeZone(Calendar.getInstance().getTimeZone());
-		initializeAxesCommon(new LabelFormatterDate(format));
+		initializeAxesForTime("ss");
 	}
 
 	public void initializeAxesAutoUnits(){
 		initializeAxesCommon(new LabelFormatterAutoUnits());
 	}
 
+	private void initializeAxesForTime(String format){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+		simpleDateFormat.setTimeZone(timeZone);
+		initializeAxesCommon(new LabelFormatterDate(simpleDateFormat));
+	}
+	
 	private void initializeAxesCommon(IAxisLabelFormatter xAxisLblFormatter){
 		if (mEnablePCTS && mChart!=null){
 		  xAxis = mChart.getAxisX();
@@ -640,6 +642,13 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 	
+	public void setTimeZone(TimeZone timeZone) {
+		this.timeZone = timeZone;
+	}
+	
+	public void clearTimeZone() {
+		this.timeZone = TimeZone.getTimeZone("GMT");
+	}
 	
 	//change color
 	public void changeTraceColor(String traceName,int[] colorArray){
@@ -953,118 +962,60 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		double yMax = 0;
 		if(!mListofTraces.isEmpty()) {
 			if(scaleSetting == SCALE_SETTING.AUTO) {
+//				yMin = (double) yAxisMin;
+//				yMax = (double) yAxisMax;
+
+				AAxis<IAxisScalePolicy> axisToUse = null;
+				if(isLeftYAxis && yAxis != null){
+					axisToUse = yAxis;
+				} else if (yAxisRight != null){
+					axisToUse = yAxisRight;
+				}
+
 				// y-axis scale
-				if(isLeftYAxis){
-					yAxis.setRangePolicy(new RangePolicyUnbounded());
-				}
-				else{
-					if(yAxisRight != null){
-						yAxisRight.setRangePolicy(new RangePolicyUnbounded());
-					}
-				}
+//				axisToUse.setRangePolicy(new RangePolicyUnbounded(new Range(yMin, yMax)));
+				axisToUse.setRangePolicy(new RangePolicyUnbounded());
 				
 //				// x-axis scale.
 //		        double percentage = (double)5/InternalFrameWithPlotManager.mSliderMidValue;
 //		        adjustTraceLength(percentage);
 			}
 			else if(scaleSetting == SCALE_SETTING.FIXED) {
-				double minY = (double) yAxisMin;
-				double maxY = (double) yAxisMax;
-				if(yAxisMin!=null && yAxisMax != null) {
-					setYAxisMinMax(isLeftYAxis, minY, maxY);
-
-//					if(Double.isFinite(minY) && Double.isFinite(maxY)){
-//						if(isLeftYAxis && yAxis != null){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(minY, maxY)));
-//							}
-//						}
-//					}
+				yMin = (double) yAxisMin;
+				yMax = (double) yAxisMax;
+				if(yAxisMin!=null && yAxisMax!=null) {
+					setYAxisMinMax(isLeftYAxis, yMin, yMax);
 				}
 			}
 			else if(scaleSetting == SCALE_SETTING.CUSTOM) {
 				
-				if( yAxisMin != null && yAxisMax == null ) {  // y-axis min only
+				if(yAxisMin!=null && yAxisMax==null) {  // y-axis min only
 					//utilShimmer.consolePrintLn("\nY-AXIS MIN ONLY\n");
 					yMin = (double) yAxisMin;
 					if(yMin<0) {
 						setYAxisMinMax(isLeftYAxis, yMin, -yMin);
-
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, -yMin)));
-//							}
-//						}
-						
 					}
 					else {
 						setYAxisMinMax(isLeftYAxis, yMin, yMin*2);
-
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMin*2)));
-//							}
-//						}
 					}
-					
 				}
-				else if( yAxisMin==null && yAxisMax!=null ) {  // y-axis max only
+				else if(yAxisMin==null && yAxisMax!=null) {  // y-axis max only
 					//utilShimmer.consolePrintLn("\nY-AXIS MAX ONLY\n");
 					yMax = (double) yAxisMax;
 					if(yMax>0) {
 						setYAxisMinMax(isLeftYAxis, -yMax, yMax);
-						
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(-yMax, yMax)));
-//							}
-//						}
-						
 					}
 					else {
 						setYAxisMinMax(isLeftYAxis, (-yMax*yMax), yMax);
-
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range((-yMax*yMax), yMax)));
-//							}
-//						}
-						
 					}
 					
 				}
-				else if( yAxisMin!=null && yAxisMax!=null ) {  // y-axis both
+				else if(yAxisMin!=null && yAxisMax!=null) {  // y-axis both
 					//utilShimmer.consolePrintLn("\nY-AXIS BOTH\n");
 					yMin = (double) yAxisMin;
 					yMax = (double) yAxisMax;
 					
 					setYAxisMinMax(isLeftYAxis, yMin, yMax);
-
-//					if(Double.isFinite(yMin) && Double.isFinite(yMax)){
-//						if(isLeftYAxis){
-//							yAxis.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
-//						}
-//						else{
-//							if(yAxisRight != null){
-//								yAxisRight.setRangePolicy(new RangePolicyFixedViewport(new Range(yMin, yMax)));
-//							}
-//						}
-//					}
 				}
 			}
 		}
