@@ -54,6 +54,8 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	public static final String OldCalRangeLN2g = "accel_ln_2g";
 	
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn = null;
+	
+	public boolean mIsUsingDefaultLNAccelParam = true;
 
 	public class GuiLabelConfig{
 		public static final String KIONIX_ACCEL_DEFAULT_CALIB = "Low Noise Accel Default Calibration";
@@ -396,5 +398,9 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	}
 
 	//--------- Optional methods to override in Sensor Class end --------
+	
+	public void updateDefaultLNAccelParam() {
+		mIsUsingDefaultLNAccelParam = isUsingDefaultLNAccelParam();
+	}
 
 }

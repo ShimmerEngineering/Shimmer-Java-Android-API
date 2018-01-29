@@ -65,6 +65,8 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	/** This stores the current Gyro Range, it is a value between 0 and 3; 0 = +/- 250dps,1 = 500dps, 2 = 1000dps, 3 = 2000dps */
 	private int mGyroRange = 1;													 
 	protected boolean mLowPowerGyro = false;
+	
+	public boolean mIsUsingDefaultGyroParam = true;
 
 //	protected int mMPU9150GyroRate = 0;
 
@@ -2061,7 +2063,9 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		return mCurrentCalibDetailsGyro;
 	}
 
-
+	public void updateDefaultGyroParam() {
+		mIsUsingDefaultGyroParam = isUsingDefaultGyroParam();
+	}
 
 }
 	
