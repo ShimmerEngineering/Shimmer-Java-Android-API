@@ -9692,6 +9692,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	protected void determineCalibrationParamsForIMU(){
 		
+		mSensorKionixAccel.isUsingDefaultLNAccelParam();
+		mSensorLSM303.isUsingDefaultWRAccelParam();
+		mSensorLSM303.isUsingDefaultMagParam();
+		mSensorMpu9x50.isUsingDefaultGyroParam();
+		
+		
+		
 		/*
 		// Shimmer2/2r - Analog accel
 		protected SensorMMA736x mSensorMMA736x = new SensorMMA736x(this);

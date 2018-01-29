@@ -42,6 +42,8 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	protected boolean mLowPowerAccelWR = false;
 	protected boolean mHighResAccelWR = true;
 	
+	public boolean mIsUsingDefaultWRAccelParam = true;
+	
 	protected int mLSM303DigitalAccelRate = 0;
 
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelWr = null;//calibDetailsAccelWr2g;
@@ -57,6 +59,8 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	 * variable that doesn't need to be used.
 	 */
 	protected boolean mLowPowerMag = false;
+	
+	public boolean mIsUsingDefaultMagParam = true;
 
 	protected int mMagRange = 0;
 
@@ -807,7 +811,13 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		mLSM303DigitalAccelRate = valueToSet;
 	}
 	
-
+	public void updateDefaultWRAccelParam() {
+		mIsUsingDefaultWRAccelParam = isUsingDefaultWRAccelParam();
+	}
+	
+	public void updateDefaultMagParam() {
+		mIsUsingDefaultMagParam = isUsingDefaultMagParam();
+	}
 	//--------- Sensor specific methods end --------------
 
 
