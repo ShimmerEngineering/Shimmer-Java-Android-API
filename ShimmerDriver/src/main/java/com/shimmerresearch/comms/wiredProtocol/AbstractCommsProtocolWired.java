@@ -269,7 +269,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
     	byte[] memLengthToRead = new byte[]{(byte) size};
 
     	byte[] memAddressToRead = ByteBuffer.allocate(2).putShort((short)(address&0xFFFF)).array();
-    	if(msgArg==UartPacketDetails.UART_COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_ID) {
+    	if(msgArg==UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DAUGHTER_CARD.CARD_ID) {
     		memAddressToRead = new byte[]{(byte) (address&0xFF)};
     	}
     	
@@ -317,7 +317,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 		byte[] memLengthToWrite = new byte[]{(byte) valueBuffer.length};
 		
 		byte[] memAddressToWrite = ByteBuffer.allocate(2).putShort((short)(address&0xFFFF)).array();
-    	if(msgArg==UartPacketDetails.UART_COMPONENT_PROPERTY.DAUGHTER_CARD.CARD_ID) {
+    	if(msgArg==UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DAUGHTER_CARD.CARD_ID) {
     		memAddressToWrite = new byte[]{(byte) (address&0xFF)};
     	}
 		ArrayUtils.reverse(memAddressToWrite);
@@ -632,8 +632,11 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 						System.out.println(mUniqueId + "\t" + assemblePrintTxPacketInfo(currentPacketCmd, currentMsgArg, null));
 						System.out.println(de.getErrStringFormatted());
 					} else {
-						System.out.println(mUniqueId + "\tProblem parsing received packet");
-						de.printStackTrace();
+						System.out.println(mUniqueId + mComPort + "\tProblem parsing packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
+						System.out.println(de.getErrStringFormatted());
+//						de.printStackTrace();
+						
+						
 					}
 //					mUtilShimmer.consolePrintLn(e.getMsgDockErrString());
 				}
