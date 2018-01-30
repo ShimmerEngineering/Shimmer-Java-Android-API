@@ -71,6 +71,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	
 	private static final long serialVersionUID = -7601464501144773539L;
 	
+	//JC: Only temporary for testing this class can be deleted if we decide not to use it in the future
+	public ArrayList<SensorData> mSensorDataList = new ArrayList<SensorData>();
+	
 	public Multimap<String, FormatCluster> mPropertyCluster = HashMultimap.create();
 	//TODO implement below to remove the need for the Guava library?
 //	private HashMap<String, HashMap<CHANNEL_TYPE, FormatCluster>> mPropertyClusterProposed = new HashMap<String, HashMap<CHANNEL_TYPE, FormatCluster>>();
