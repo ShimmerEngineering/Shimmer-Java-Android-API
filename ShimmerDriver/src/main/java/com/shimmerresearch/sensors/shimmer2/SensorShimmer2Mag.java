@@ -24,6 +24,8 @@ public class SensorShimmer2Mag extends AbstractSensor {
 	protected int mShimmer2MagRate=0;
 	protected int mMagRange = 1;
 	protected boolean mLowPowerMag = false;	
+	
+	public boolean mIsUsingDefaultMagParam = true;
 
 	//Shimmer2/2r Calibration - Default values
 	protected static final double[][] AlignmentMatrixMagShimmer2 = {{1,0,0},{0,1,0},{0,0,-1}};
@@ -351,4 +353,9 @@ public class SensorShimmer2Mag extends AbstractSensor {
 
 	
 	//--------- Sensor specific methods end --------------
+	
+	public void updateIsUsingDefaultMagParam() {
+		mIsUsingDefaultMagParam = getCurrentCalibDetailsMag().isUsingDefaultParameters();
+	}
+	
 }
