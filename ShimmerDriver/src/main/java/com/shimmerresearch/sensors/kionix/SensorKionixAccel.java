@@ -400,7 +400,7 @@ public abstract class SensorKionixAccel extends AbstractSensor{
 	//--------- Optional methods to override in Sensor Class end --------
 	
 	public void updateIsUsingDefaultLNAccelParam() {
-		mIsUsingDefaultLNAccelParam = isUsingDefaultLNAccelParam();
+		mIsUsingDefaultLNAccelParam = getCurrentCalibDetailsAccelLn().isUsingDefaultParameters();
 	}
 
 }
