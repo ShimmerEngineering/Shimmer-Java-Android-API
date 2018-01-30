@@ -1961,7 +1961,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 							continue;
 						}
 
-						double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
+						double yData = checkAndCorrectData(shimmerName, props[1], traceName, f.mData);
 
 						if (i>mListofTraces.size()){
 							throw new Exception("Trace does not exist: (" + traceName + ")");
