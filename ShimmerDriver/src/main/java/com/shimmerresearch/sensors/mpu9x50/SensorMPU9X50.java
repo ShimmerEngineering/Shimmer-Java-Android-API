@@ -2064,7 +2064,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	}
 
 	public void updateIsUsingDefaultGyroParam() {
-		mIsUsingDefaultGyroParam = isUsingDefaultGyroParam();
+		mIsUsingDefaultGyroParam = getCurrentCalibDetailsGyro().isUsingDefaultParameters();
 	}
 
 }

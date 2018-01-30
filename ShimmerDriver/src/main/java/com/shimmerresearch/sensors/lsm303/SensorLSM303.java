@@ -812,11 +812,11 @@ public abstract class SensorLSM303 extends AbstractSensor {
 	}
 	
 	public void updateIsUsingDefaultWRAccelParam() {
-		mIsUsingDefaultWRAccelParam = isUsingDefaultWRAccelParam();
+		mIsUsingDefaultWRAccelParam = getCurrentCalibDetailsAccelWr().isUsingDefaultParameters();
 	}
 	
 	public void updateIsUsingDefaultMagParam() {
-		mIsUsingDefaultMagParam = isUsingDefaultMagParam();
+		mIsUsingDefaultMagParam = getCurrentCalibDetailsMag().isUsingDefaultParameters();
 	}
 	//--------- Sensor specific methods end --------------
 
