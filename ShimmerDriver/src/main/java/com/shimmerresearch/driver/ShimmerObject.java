@@ -2092,7 +2092,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedData[iAccelX]=accelCalibratedData[0];
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
-					if (isUsingDefaultLNAccelParam()) {
+					if (mSensorMMA736x.mIsUsingDefaultLNAccelParam) {
 //					if (mDefaultCalibrationParametersAccel == true) {
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.ACCEL_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.METER_PER_SECOND_SQUARE+"*",accelCalibratedData[0]);
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.ACCEL_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.METER_PER_SECOND_SQUARE+"*",accelCalibratedData[1]);
@@ -2129,7 +2129,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedData[iGyroY]=gyroCalibratedData[1];
 					calibratedData[iGyroZ]=gyroCalibratedData[2];
 //					if (mDefaultCalibrationParametersGyro == true) {
-					if(isUsingDefaultGyroParam()) {
+					if(mSensorShimmer2Gyro.mIsUsingDefaultGyroParam) {
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_PER_SECOND+"*",gyroCalibratedData[0]);
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.GYRO_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_PER_SECOND+"*",gyroCalibratedData[1]);
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.GYRO_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_PER_SECOND+"*",gyroCalibratedData[2]);
@@ -2167,7 +2167,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedData[iMagY]=magCalibratedData[1];
 					calibratedData[iMagZ]=magCalibratedData[2];
 //					if (mDefaultCalibrationParametersMag == true) {
-					if (isUsingDefaultMagParam()) {
+					if (mSensorShimmer2Mag.mIsUsingDefaultMagParam) {
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL_FLUX+"*",magCalibratedData[0]);
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL_FLUX+"*",magCalibratedData[1]);
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL_FLUX+"*",magCalibratedData[2]);
@@ -3700,7 +3700,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			listofSignals.add(channel);
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				String unit = CHANNEL_UNITS.METER_PER_SECOND_SQUARE;
-				if (isUsingDefaultLNAccelParam()) {
+				if (mSensorMMA736x.mIsUsingDefaultLNAccelParam) {
 //				if (mDefaultCalibrationParametersAccel == true) {
 					unit += "*";
 				}
@@ -3724,7 +3724,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0) {
 				String unit = CHANNEL_UNITS.DEGREES_PER_SECOND;
 //				if (mDefaultCalibrationParametersGyro == true) {
-				if(isUsingDefaultGyroParam()) {
+				if(mSensorShimmer2Gyro.mIsUsingDefaultGyroParam) {
 					unit += "*";
 				} 
 				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.GYRO_X,CHANNEL_TYPE.CAL.toString(),unit};
@@ -3745,7 +3745,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0) {
 				String unit = CHANNEL_UNITS.LOCAL_FLUX;
 //				if (mDefaultCalibrationParametersMag == true) {
-				if(isUsingDefaultMagParam()) {
+				if(mSensorShimmer2Mag.mIsUsingDefaultMagParam) {
 					unit += "*";
 				} 
 				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.CAL.toString(),unit};
@@ -9695,10 +9695,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * Main purpose is to only query if it's using the default params once, e.g. when start streaming, as this can be resource-intensive on old Android devices
 	 */
 	protected void determineCalibrationParamsForIMU(){		
-		mSensorKionixAccel.updateDefaultLNAccelParam();
-		mSensorLSM303.updateDefaultWRAccelParam();
-		mSensorLSM303.updateDefaultMagParam();
-		mSensorMpu9x50.updateDefaultGyroParam();
+		if(isShimmerGen2()) {
+			mSensorMMA736x.updateIsUsingDefaultLNAccelParam();
+			mSensorShimmer2Mag.updateIsUsingDefaultMagParam();
+			mSensorShimmer2Gyro.updateIsUsingDefaultGyroParam();
+		} else if(isShimmerGen3()){
+			mSensorKionixAccel.updateIsUsingDefaultLNAccelParam();
+			mSensorLSM303.updateIsUsingDefaultWRAccelParam();
+			mSensorLSM303.updateIsUsingDefaultMagParam();
+			mSensorMpu9x50.updateIsUsingDefaultGyroParam();
+		}
 	}
 	
 }

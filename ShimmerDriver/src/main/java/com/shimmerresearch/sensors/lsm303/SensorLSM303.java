@@ -811,11 +811,11 @@ public abstract class SensorLSM303 extends AbstractSensor {
 		mLSM303DigitalAccelRate = valueToSet;
 	}
 	
-	public void updateDefaultWRAccelParam() {
+	public void updateIsUsingDefaultWRAccelParam() {
 		mIsUsingDefaultWRAccelParam = isUsingDefaultWRAccelParam();
 	}
 	
-	public void updateDefaultMagParam() {
+	public void updateIsUsingDefaultMagParam() {
 		mIsUsingDefaultMagParam = isUsingDefaultMagParam();
 	}
 	//--------- Sensor specific methods end --------------
