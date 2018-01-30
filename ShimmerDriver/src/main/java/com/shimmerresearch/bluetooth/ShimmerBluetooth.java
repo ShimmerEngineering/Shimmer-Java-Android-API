@@ -572,7 +572,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		private void processNextInstruction() {
 			// check instruction stack, are there any other instructions left to be executed?
-			checkAndRemoveFirstInstructionIfNull();
+			//checkAndRemoveFirstInstructionIfNull();
 			
 			byte[] insBytes = getInstruction();
 			if (insBytes!=null){
@@ -5179,17 +5179,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	private synchronized byte[] getInstruction(){
+	private byte[] getInstruction(){
 		synchronized(mListofInstructions){
-			if(!getListofInstructions().isEmpty()){
-				if(getListofInstructions().get(0)!=null) {
+			if(!mListofInstructions.isEmpty()){
+				if(mListofInstructions.get(0)!=null) {
 					byte[] insBytes = (byte[]) getListofInstructions().get(0);
 					return insBytes;
+				} else{
+					return mListofInstructions.remove(0);
 				}
 			}
 		}
 		return null;
 	}
+	
 	private synchronized void removeInstruction(int index){
 		synchronized(mListofInstructions){
 		try {
