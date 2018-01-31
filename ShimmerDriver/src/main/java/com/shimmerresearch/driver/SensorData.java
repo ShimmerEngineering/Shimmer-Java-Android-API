@@ -5,12 +5,14 @@ public class SensorData{
 		public String mFormatName;
 		public String mSensorUnit;
 		public double mSensorData;
+		public boolean mDefaultCalibration;
 		
-		public SensorData(String sensorName,String formatName, String unit, double data){
+		public SensorData(String sensorName,String formatName, String unit, double data, boolean defaultCalibration){
 			mSensorName = sensorName;
 			mFormatName = formatName;
 			mSensorUnit = unit;
 			mSensorData = data;
+			mDefaultCalibration = defaultCalibration;
 		}
 		
 	}
