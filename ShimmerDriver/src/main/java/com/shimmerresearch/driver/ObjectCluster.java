@@ -111,6 +111,8 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	private double mTimeStampMilliSecs;
 	public boolean mIsValidObjectCluster = true;
 	
+	public boolean useList = false;
+	
 	public int mPacketIdValue = 0;
 	
 	public enum OBJECTCLUSTER_TYPE{
@@ -481,12 +483,20 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addDataToMap(String channelName, String channelType, String units, double data){
-		addDataToMap(channelName, channelType, units, data, false);
+		if(useList) {
+			mSensorDataList.add(new SensorData(channelName, channelType, units, data, false));
+		} else {
+			addDataToMap(channelName, channelType, units, data, false);
+		}
 	}
 
 	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
-		mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
-		addChannelNameToList(channelName);
+		if(useList) {
+			mSensorDataList.add(new SensorData(channelName, channelType, units, data, isUsingDefaultCalib));
+		} else {
+			mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
+			addChannelNameToList(channelName);
+		}
 	}
 
 	@Deprecated

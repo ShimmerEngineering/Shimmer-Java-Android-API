@@ -15,4 +15,12 @@ public class SensorData{
 			mDefaultCalibration = defaultCalibration;
 		}
 		
+		public SensorData(String sensorName,String formatName, String unit, double data){
+			mSensorName = sensorName;
+			mFormatName = formatName;
+			mSensorUnit = unit;
+			mSensorData = data;
+		}
+
+		
 	}
