@@ -699,9 +699,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	// ---------- GSR end ------------------
 
-	protected boolean useSetters = false;
-	protected boolean useCalibrateInertial = false;
-	protected boolean useList = true;
+	protected boolean useSetters = true;
+	protected boolean useCalibrateInertial = true;
+	protected boolean useList = false;
 
 	/** This method will be deprecated for future Shimmer hardware revisions. The last hardware this will be used for is Shimmer3. 
 	 *  It should work with all FW associated with Shimmer3 and Shimmer2 devices.
