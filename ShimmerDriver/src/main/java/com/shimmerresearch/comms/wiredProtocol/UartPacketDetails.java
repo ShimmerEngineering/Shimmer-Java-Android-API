@@ -22,7 +22,7 @@ import java.lang.reflect.*;
  */
 public class UartPacketDetails {
 	
-	public static String PACKET_HEADER = "$";
+	public static String PACKET_HEADER = "$"; // 0x24
 	
 	public static final int PACKET_OVERHEAD_RESPONSE_DATA 	= 5;			// Header + CMD + LENGTH + COMP + PROP 	------------- (+ CRC MSB + CRC LSB) -> CRC already included in length 
 	public static final int PACKET_OVERHEAD_RESPONSE_OTHER 	= 4; 			// Header + CMD	+ CRC MSB + CRC LSB
@@ -86,7 +86,7 @@ public class UartPacketDetails {
 
 	
 	/** Class listing all of the components and property combinations that can be used with the Shimmer UART commands */
-	public static class UART_COMPONENT_PROPERTY {
+	public static class UART_COMPONENT_AND_PROPERTY {
 		/** AKA the Shimmer itself or a SPAN dongle */
 		public static class MAIN_PROCESSOR { 
 			public static final UartComponentPropertyDetails ENABLE           = new UartComponentPropertyDetails(UART_COMPONENT.MAIN_PROCESSOR, 0x00, PERMISSION.READ_WRITE, listOfCompatibleVersionInfoGqBle, "ENABLE");
@@ -144,25 +144,25 @@ public class UartPacketDetails {
 	static {
     	List<UartComponentPropertyDetails> aMap = new ArrayList<UartComponentPropertyDetails>();
         
-        aMap.add(UART_COMPONENT_PROPERTY.BAT.ENABLE);
-        aMap.add(UART_COMPONENT_PROPERTY.BAT.FREQ_DIVIDER);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.BAT.ENABLE);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.BAT.FREQ_DIVIDER);
 
-    	aMap.add(UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.ENABLE);
-        aMap.add(UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE);
-        aMap.add(UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.RANGE);
-        aMap.add(UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.LP_MODE);
-        aMap.add(UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.HR_MODE);
-        aMap.add(UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER);
-        aMap.add(UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION);
+    	aMap.add(UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.ENABLE);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.RANGE);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.LP_MODE);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.HR_MODE);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION);
         
-        aMap.add(UART_COMPONENT_PROPERTY.GSR.ENABLE);
-        aMap.add(UART_COMPONENT_PROPERTY.GSR.RANGE);
-        aMap.add(UART_COMPONENT_PROPERTY.GSR.FREQ_DIVIDER);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.GSR.ENABLE);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.GSR.RANGE);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.GSR.FREQ_DIVIDER);
 
-        aMap.add(UART_COMPONENT_PROPERTY.BEACON.ENABLE);
-        aMap.add(UART_COMPONENT_PROPERTY.BEACON.FREQ_DIVIDER);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.BEACON.ENABLE);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.BEACON.FREQ_DIVIDER);
 
-        aMap.add(UART_COMPONENT_PROPERTY.RADIO_802154.SETTINGS);
+        aMap.add(UART_COMPONENT_AND_PROPERTY.RADIO_802154.SETTINGS);
 
         mListOfUartCommandsConfig = Collections.unmodifiableList(aMap);
     }
@@ -187,7 +187,7 @@ public class UartPacketDetails {
 	}
 
 	public static UartComponentPropertyDetails getUartPropertyParsed(byte uartComponentByte, byte uartPropertyByte) {
-	    Class<?>[] myClasses = UART_COMPONENT_PROPERTY.class.getDeclaredClasses();
+	    Class<?>[] myClasses = UART_COMPONENT_AND_PROPERTY.class.getDeclaredClasses();
 	    for (Class myClass: myClasses) {
 		    Field[] f = myClass.getDeclaredFields();
 		    for (Field field : f) {
