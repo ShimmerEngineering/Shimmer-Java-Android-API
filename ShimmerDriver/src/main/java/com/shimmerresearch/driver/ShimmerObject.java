@@ -4474,7 +4474,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			byte[] samplingRateBytes = convertSamplingRateFreqBytes(getSamplingRateShimmer(), getSamplingClockFreq());
+			byte[] samplingRateBytes = convertSamplingRateFreqToBytes(getSamplingRateShimmer(), getSamplingClockFreq());
 			mConfigBytes[configByteLayoutCast.idxShimmerSamplingRate] = samplingRateBytes[0]; 
 			mConfigBytes[configByteLayoutCast.idxShimmerSamplingRate+1] = samplingRateBytes[1]; 
 	
@@ -8553,13 +8553,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    		case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
 //    			returnValue = getTrialName();
 //    	       	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
-//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
-		        Double readSamplingRate = getSamplingRateShimmer();
-				Double actualSamplingRate = roundSamplingRateToSupportedValue(readSamplingRate, getSamplingClockFreq());
-//    					    	consolePrintLn("GET SAMPLING RATE: " + componentName);
-		    	returnValue = actualSamplingRate.toString();
-	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
 				returnValue = Integer.toString(getBufferSize());
 	        	break;
