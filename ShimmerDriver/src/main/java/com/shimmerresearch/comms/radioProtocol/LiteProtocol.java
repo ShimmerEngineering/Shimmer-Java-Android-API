@@ -716,6 +716,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //		eventNewResponse(response);
 //	}
 	
+	//TODO implement the remaining (i.e., commented out code sections) from ShimmerBluetooth
 	/**
 	 * @param responseCommand
 	 */
@@ -776,8 +777,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				inquiryDone();
 				eventResponseReceived(responseCommand, rxBuf);
 			}
-//			else if(responseCommand==InstructionsResponse.SAMPLING_RATE_RESPONSE_VALUE){
-//				if(!mIsStreaming) {
+			else if(responseCommand==InstructionsResponse.SAMPLING_RATE_RESPONSE_VALUE){
+				if(!mIsStreaming) {
 //					if(getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){    
 //						byte[] bufferSR = readBytes(1);
 //						if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
@@ -787,13 +788,21 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //					} 
 //					else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 //						byte[] bufferSR = readBytes(2); //read the sampling rate
-			//TODO get clock freq from ShimmerDevice
+//			//TODO get clock freq from ShimmerDevice
 //						setSamplingRateShimmer(32768.0/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
 //					}
-//				}
-//
-//				printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(getSamplingRateShimmer()));
-//			}
+//					printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(getSamplingRateShimmer()));
+					
+					byte[] bufferSR = null;
+					if(mShimmerVerObject.isShimmerGen2()) {
+						bufferSR = readBytes(1);
+					} else {
+						bufferSR = readBytes(2);
+					}
+					eventResponseReceived(responseCommand, bufferSR);
+				}
+
+			}
 			else if(responseCommand==InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
 				delayForBtResponse(200); // Wait to ensure the packet has been fully received
 				rxBuf = readBytes(6);
@@ -847,16 +856,18 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				processLsm303dlhcAccelCalReadBytes();
 //			}
 			else if(responseCommand==InstructionsResponse.CONFIG_BYTE0_RESPONSE_VALUE){
-				long configByte0 = 0;
+				byte[] bufferConfigByte0 = null;
+//				long configByte0 = 0;
 				if(mShimmerVerObject.isShimmerGen2()){    
-					byte[] bufferConfigByte0 = readBytes(1);
-					configByte0 = bufferConfigByte0[0] & 0xFF;
+					bufferConfigByte0 = readBytes(1);
+//					configByte0 = bufferConfigByte0[0] & 0xFF;
 				} 
 				else {
-					byte[] bufferConfigByte0 = readBytes(4);
-					configByte0 = ((long)(bufferConfigByte0[0] & 0xFF) +((long)(bufferConfigByte0[1] & 0xFF) << 8)+((long)(bufferConfigByte0[2] & 0xFF) << 16) +((long)(bufferConfigByte0[3] & 0xFF) << 24));
+					bufferConfigByte0 = readBytes(4);
+//					configByte0 = ((long)(bufferConfigByte0[0] & 0xFF) +((long)(bufferConfigByte0[1] & 0xFF) << 8)+((long)(bufferConfigByte0[2] & 0xFF) << 16) +((long)(bufferConfigByte0[3] & 0xFF) << 24));
 				}
-				eventResponseReceived(responseCommand, configByte0);
+//				eventResponseReceived(responseCommand, configByte0);
+				eventResponseReceived(responseCommand, bufferConfigByte0);
 			}
 //			else if(responseCommand==InstructionsResponse.DERIVED_CHANNEL_BYTES_RESPONSE_VALUE){
 //				byte[] byteArray = readBytes(3);
@@ -969,7 +980,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			else if(responseCommand==InstructionsResponse.BLINK_LED_RESPONSE_VALUE){
 				byte[] byteled = readBytes(1);
 //				mCurrentLEDStatus = byteled[0]&0xFF;
-				eventResponseReceived(responseCommand, byteled[0]&0xFF);
+				eventResponseReceived(responseCommand, (int)((byte)(byteled[0]&0xFF)));
 			}
 			else if(responseCommand==InstructionsResponse.BUFFER_SIZE_RESPONSE_VALUE){
 				byte[] byteled = readBytes(1);
@@ -1630,14 +1641,20 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	/**
 	 * @param rate Defines the sampling rate to be set (e.g.51.2 sets the sampling rate to 51.2Hz). User should refer to the document Sampling Rate Table to see all possible values.
 	 */
-	public void writeShimmerAndSensorsSamplingRate(int samplingByteValue) {
+//	public void writeShimmerAndSensorsSamplingRate(int samplingByteValue) {
+	public void writeShimmerAndSensorsSamplingRate(byte[] samplingRateBytes) {
 		if(mIsInitialised) {
-			if(mShimmerVerObject.isShimmerGen2()){
-				writeInstruction(new byte[]{InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, (byte)Math.rint(samplingByteValue), 0x00});
-			} 
-			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
-				writeInstruction(new byte[]{InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
-			}
+//			if(mShimmerVerObject.isShimmerGen2()){
+//				writeInstruction(new byte[]{InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, (byte)Math.rint(samplingByteValue), 0x00});
+//			} 
+//			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
+//				writeInstruction(new byte[]{InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
+//			}
+			
+			byte[] buffer = new byte[samplingRateBytes.length+1];
+			buffer[0] = InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE;
+			System.arraycopy(samplingRateBytes, 0, buffer, 1, samplingRateBytes.length);
+			writeInstruction(buffer);
 		}
 	}
 	
@@ -1702,6 +1719,15 @@ public class LiteProtocol extends AbstractCommsProtocol{
 
 	//TODO butchered from ShimmerBluetooth
 	private void reconnect() {
+//        if(isConnected() && !mIsStreaming){
+//        	String msgReconnect = "Reconnecting the Shimmer...";
+//			sendStatusMSGtoUI(msgReconnect);
+//            stop();
+//            threadSleep(300);
+//            connect(mMyBluetoothAddress,"default");
+//            setUniqueID(this.mMacIdFromUart); 
+//        }
+
 		try {
 			mCommsInterface.disconnect();
 	        threadSleep(300);

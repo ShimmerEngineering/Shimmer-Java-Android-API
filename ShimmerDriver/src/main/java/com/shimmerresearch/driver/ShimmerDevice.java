@@ -1757,6 +1757,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				returnValue = getInternalExpPower();
             	break;
 //Strings
+			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
+//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
+		        Double readSamplingRate = getSamplingRateShimmer();
+				Double actualSamplingRate = roundSamplingRateToSupportedValue(readSamplingRate, getSamplingClockFreq());
+//	   					    	consolePrintLn("GET SAMPLING RATE: " + componentName);
+		    	returnValue = actualSamplingRate.toString();
+	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME):
 				returnValue = getShimmerUserAssignedName();
 	        	break;
@@ -3261,6 +3268,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//else, return the max value available
 		return getSamplingRateShimmer();
 	}
+	
+	public byte[] getSamplingRateBytesShimmer() {
+		return convertSamplingRateFreqToBytes(getSamplingRateShimmer(), getSamplingClockFreq());
+	}
 
 	/** This is valid for Shimmers that use a 32.768kHz crystal as the basis for their sampling rate
 	 * @param rateHz
@@ -3318,7 +3329,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return samplingRate;
 	}
 	
-	protected static byte[] convertSamplingRateFreqBytes(double samplingRateFreq, double samplingClockFreq){
+	protected static byte[] convertSamplingRateFreqToBytes(double samplingRateFreq, double samplingClockFreq){
 		byte[] buf = new byte[2];
 		
 //		//ShimmerObject -> configBytesGenerate
