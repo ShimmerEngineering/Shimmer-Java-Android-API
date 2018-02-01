@@ -2,10 +2,14 @@ package com.shimmerresearch.driver;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.sensors.ShimmerClock;
 
 public abstract class TestObjectCluster {
@@ -101,6 +105,7 @@ public abstract class TestObjectCluster {
 		System.err.println("Averages over 20x, ArrayList Time: " + (cumulativeListRetrievalTime/20) + " Multimap Time: " + (cumulativeMultimapRetrievalTime/20));
 		
 		storeIndexTest(objectCluster);
+		hashMapStoreTest();
 	}
 	
 	private static void storeIndexTest(ObjectCluster objectCluster) {
@@ -152,7 +157,52 @@ public abstract class TestObjectCluster {
 		System.err.println("Averages over 20x, ArrayList Time: " + (cumulativeListRetrievalTime/20) + " Multimap Time: " + (cumulativeMultimapRetrievalTime/20));
 
 	}
+	
+	public static void hashMapStoreTest() {
+		//TEST 1 - Storage of items in nested HashMap
+		
+		int numberOfIterations = 100000;
+		long cumulativeHashMapStorageTime = 0;
+		long cumulativeMultimapStorageTime = 0;
+		
+		for(int a=0; a<20; a++) {
+			HashMap <String, HashMap<CHANNEL_TYPE, FormatCluster>> hashMap = new HashMap<String, HashMap<CHANNEL_TYPE, FormatCluster>>();
+			Multimap<String, FormatCluster> multiMap = HashMultimap.create();
 
+			
+			long startHashMapStorage = System.nanoTime();
+			for(int i=0; i<numberOfIterations; i++) {
+				String sensorName = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(i);
+				HashMap<CHANNEL_TYPE, FormatCluster> formatMap = new HashMap<CHANNEL_TYPE, FormatCluster>();
+				formatMap.put(CHANNEL_TYPE.UNCAL, new FormatCluster(CHANNEL_TYPE.UNCAL.toString(), CHANNEL_UNITS.NO_UNITS, 1.0));
+				hashMap.put(sensorName, formatMap);
+			}
+			long endHashMapStorage = System.nanoTime();
+				
+			long startMultiMapStorage = System.nanoTime();
+			for(int i=0; i<numberOfIterations; i++) {
+				String sensorName = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(i);
+				multiMap.put(sensorName, new FormatCluster(CHANNEL_TYPE.UNCAL.toString(), CHANNEL_UNITS.NO_UNITS, 1.0));
+			}
+			long endMultiMapStorage = System.nanoTime();
+			
+			cumulativeHashMapStorageTime = cumulativeHashMapStorageTime + (endHashMapStorage - startHashMapStorage);
+			cumulativeMultimapStorageTime = cumulativeMultimapStorageTime + (endMultiMapStorage - startMultiMapStorage);
+			
+			System.err.println("Time to put HashMap: " + (endHashMapStorage - startHashMapStorage) + " Time to put Multimap: " + (endMultiMapStorage - startMultiMapStorage));
+			
+		}
+		
+				
+		System.err.println("Averages over 20x, HashMap put Time: " + (cumulativeHashMapStorageTime/20) + " Multimap Time: " + (cumulativeMultimapStorageTime/20));
+
+		
+	}
+
+	
+	public static void hashMapRetrieveTest(HashMap hashMap, Multimap multiMap) {
+		
+	}
 	
 	
 }
