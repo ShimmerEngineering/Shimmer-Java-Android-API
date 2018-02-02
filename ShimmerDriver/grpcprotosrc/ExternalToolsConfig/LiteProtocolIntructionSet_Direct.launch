@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${project_loc}/bin/protoc-3.4.0-win32/bin/protoc.exe"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-I=${project_loc}/grpcprotosrc/src -I=${project_loc}/grpcprotosrc/ExternalTools/protoc-3.4.0-win32/include --java_out=${project_loc}/src/main/java --plugin=protoc-gen-grpc-java=${project_loc}/grpcprotosrc/ExternalTools/protoc-gen-grpc-java/protoc-gen-grpc-java-1.6.1-windows-x86_32.exe --grpc-java_out=${project_loc}/src/main/java ${project_loc}/grpcprotosrc/src/LiteProtocolInstructionSet.proto"/>
+</launchConfiguration>

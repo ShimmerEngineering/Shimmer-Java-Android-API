@@ -28,8 +28,16 @@ OR (relative path generation when the ShimmerDriver project it selected)
 LiteProtocolInstructionSet
 
 Generating Java code, this holds the instruction set of lite protocol
--I=C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc --java_out=C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\gen C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\src\LiteProtocolInstructionSet.proto
+	-I=C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc --java_out=C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\gen C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\src\LiteProtocolInstructionSet.proto
 
 Generating C# code, this holds the instruction set of lite protocol
 	-I=C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc --csharp_out=C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\gen C:\Users\Lim\git\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\src\LiteProtocolInstructionSet.proto
 	
+	
+	
+Help:
+
+Error:
+	"google/protobuf/descriptor.proto: File not found.
+	ShimmerGrpcAndOJC.proto: Import "google/protobuf/descriptor.proto" was not found or had errors."
+Solution:

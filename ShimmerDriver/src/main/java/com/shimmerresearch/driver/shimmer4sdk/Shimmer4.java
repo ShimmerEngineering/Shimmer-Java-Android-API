@@ -555,7 +555,7 @@ public class Shimmer4 extends ShimmerDevice {
 					else if(responseCommand==InstructionsResponse.RWC_RESPONSE_VALUE){ 
 						setLastReadRealTimeClockValue((long)parsedResponse);
 					}
-					else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE){
+					else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE){
 						SensorSTC3100Details sensorSTC3100Details = (SensorSTC3100Details)parsedResponse;
 						
 						consolePrintLn(sensorSTC3100Details.getDebugString());

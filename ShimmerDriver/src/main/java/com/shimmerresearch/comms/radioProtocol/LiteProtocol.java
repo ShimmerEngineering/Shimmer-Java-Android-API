@@ -36,11 +36,13 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 		public class InstructionsResponse{
 //			 public static final int RSP_I2C_BATT_STATUS_COMMAND_VALUE = 0x9D;
-			public static final int BMP280_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE = 0x9F;
+//			public static final int BMP280_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE = 0x9F;
+//			public static final int UNIQUE_SERIAL_RESPONSE_VALUE = 0x3D;
 		}
 		public class InstructionsGet{
-//			 public static final int GET_I2C_BATT_STATUS_COMMAND_VALUE = 0x9E;
-			 public static final int GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 0xA0;
+//			public static final int GET_I2C_BATT_STATUS_COMMAND_VALUE = 0x9E;
+//			public static final int GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 0xA0;
+//			public static final int GET_UNIQUE_SERIAL_COMMAND_VALUE = 0x3E;
 		}
 	}
 
@@ -1124,6 +1126,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				byte[] responseData = readBytes(1);
 //				setInternalExpPower((int)(responseData[0]&0xFF));
 //			}
+			else if(responseCommand==InstructionsResponse.UNIQUE_SERIAL_RESPONSE_VALUE){
+				rxBuf = readBytes(8);
+				eventResponseReceived(responseCommand, rxBuf);
+			}
 			else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE){
 				// Get data length to read
 				rxBuf = readBytes(1);
@@ -1188,7 +1194,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					}
 				}
 			}
-			else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE) {
+			else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
 				byte[] responseData = readBytes(10); 
 				System.err.println("STC3100 response = " + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseData));
 			}
@@ -1591,7 +1597,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					eventNewResponse(responseData);
 				}
 			}
-			else if(inStreamResponseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE) {
+			else if(inStreamResponseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
 				byte[] responseData = readBytes(10); 
 				SensorSTC3100Details sensorSTC3100Details = new SensorSTC3100Details(responseData); 
 				eventResponseReceived(inStreamResponseCommand, sensorSTC3100Details);
@@ -2023,7 +2029,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			byte[] buf = new byte[2];
 			buf[0] = (byte) (periodInSec&0xFF);
 			buf[1] = (byte) ((periodInSec>>8)&0xFF);
-			writeInstruction(new byte[]{(byte) (InstructionsSet.SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE_VALUE&0xFF), buf[0], buf[1]});
+			writeInstruction(new byte[]{(byte) (InstructionsSet.SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE&0xFF), buf[0], buf[1]});
 		}
 	}
 
@@ -2032,7 +2038,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	@Override
 	public void readBattStatusPeriod() {
 		if(getShimmerVersion()==HW_ID.SHIMMER_4_SDK){
-			writeInstruction(InstructionsGet.GET_I2C_BATT_STATUS_COMMAND_VALUE_VALUE);
+			writeInstruction(InstructionsGet.GET_I2C_BATT_STATUS_COMMAND_VALUE);
 		}
 	}
 
@@ -2585,6 +2591,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		inquiry();
 	}
 	
+	public void readUniqueSerial() {
+		writeInstruction(new byte[]{InstructionsGet.GET_UNIQUE_SERIAL_COMMAND_VALUE});
+	}
+
 	
 	//TODO TEMP HERE
 	private int getFirmwareVersionCode() {
@@ -2707,7 +2717,6 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			mProtocolListener.eventSetHaveAttemptedToRead(mHaveAttemptedToReadConfig);
 		}
 	}
-
 
 	//***********************************
 	// Copied from ShimmerDevice end
