@@ -1168,16 +1168,6 @@ public class Shimmer4 extends ShimmerDevice {
 
 	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
-
-		//Old code -> not functioning well because it only takes into account the mLastSavedCalibratedTimeStamp and not all packets lost in the interval
-//		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
-//		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
-//			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
-//			setPacketReceptionRateCurrent(shimmerClock.calculatePacketReceptionRateCurrent(intervalMs));
-//			CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
-//			sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
-//		}
-
 		super.calculatePacketReceptionRateCurrent(intervalMs);
 
 		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
@@ -1261,7 +1251,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 	}
 
-	//TODO TEMP here to sync booleans in ShimmerDevice with mCommsProtocolRadio
+	//TODO TEMP here to sync booleans in ShimmerDevice with mCommsProtocolRadio until we figure out a better system 
 	@Override
 	public boolean setIsDocked(boolean state) {
 		boolean changed = super.setIsDocked(state);

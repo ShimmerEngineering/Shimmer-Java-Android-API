@@ -1657,12 +1657,21 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				writeInstruction(new byte[]{InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
 //			}
 			
-			byte[] buffer = new byte[samplingRateBytes.length+1];
-			buffer[0] = InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE;
-			System.arraycopy(samplingRateBytes, 0, buffer, 1, samplingRateBytes.length);
-			writeInstruction(buffer);
+			writePacket(InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, samplingRateBytes);
 		}
 	}
+	
+	private byte[] buildCmdArray(int cmd, byte[] payload) {
+		byte[] packet = new byte[payload.length+1];
+		packet[0] = (byte) cmd;
+		System.arraycopy(payload, 0, packet, 1, payload.length);
+		return packet;
+	}
+	
+	private void writePacket(int cmd, byte[] payload) {
+		writeInstruction(buildCmdArray(cmd, payload));
+	}
+	
 	
 	@Override
 	public void toggleLed() {
@@ -1752,8 +1761,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	 * writeConfigByte0(configByte0) sets the config byte0 value on the Shimmer to the value of the input configByte0. 
 	 * @param configByte0 is an unsigned 8 bit value defining the desired config byte 0 value.
 	 */
-	public void writeConfigByte0(byte configByte0) {
-		writeInstruction(new byte[]{InstructionsSet.SET_CONFIG_BYTE0_COMMAND_VALUE,(byte) configByte0});
+	public void writeConfigByte0(byte[] configByte0) {
+		writePacket(InstructionsSet.SET_CONFIG_BYTE0_COMMAND_VALUE, configByte0);
+		readConfigByte0();
 	}
 	
 	public void readBufferSize() {

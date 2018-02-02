@@ -410,25 +410,21 @@ public abstract class ShimmerBluetoothManager{
 			else {
 				ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmer.getMacId());
 				if(cloneShimmer.getHardwareVersion()==HW_ID.SWEATCH){
-					//TODO
-					boolean supportSweatchBtConfig = false;
-					if(supportSweatchBtConfig){
-						originalShimmerDevice.operationPrepare();
-						
-//						originalShimmerDevice.setSamplingRateShimmer(cloneShimmer.getSamplingRateShimmer());
-						
-						LiteProtocol liteProtocol = ((LiteProtocol)(originalShimmerDevice.getCommsProtocolRadio().mRadioProtocol));
-						
-						//InfoMem commands are not supported by the Sweatch
+					originalShimmerDevice.operationPrepare();
+					
+//					originalShimmerDevice.setSamplingRateShimmer(cloneShimmer.getSamplingRateShimmer());
+					
+					LiteProtocol liteProtocol = ((LiteProtocol)(originalShimmerDevice.getCommsProtocolRadio().mRadioProtocol));
+					
+					//InfoMem commands are not supported by the Sweatch
 //						liteProtocol.writeInfoMem(cloneShimmer.getConfigByteLayout().MSP430_5XX_INFOMEM_D_ADDRESS, cloneShimmer.getShimmerConfigBytes());
 
-						//TODO
+					//TODO
 //						SweatchDevice cloneSweatch = (SweatchDevice)cloneShimmer;
-						liteProtocol.writeShimmerAndSensorsSamplingRate(cloneShimmer.getSamplingRateBytesShimmer());
-//						liteProtocol.writeConfigByte0(cloneShimmer.configBytesGenerate(true)[0]);
+					liteProtocol.writeShimmerAndSensorsSamplingRate(cloneShimmer.getSamplingRateBytesShimmer());
+					liteProtocol.writeConfigByte0(cloneShimmer.configBytesGenerate(true));
 
-						originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
-					}
+					originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
 				}
 			}
 			

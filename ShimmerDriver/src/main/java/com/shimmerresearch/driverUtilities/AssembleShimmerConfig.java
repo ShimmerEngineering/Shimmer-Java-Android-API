@@ -140,15 +140,16 @@ public class AssembleShimmerConfig {
 			if(listOfShimmersToConfigureClone.size()>0) {
 		        for(ShimmerDevice shimmerDevice:listOfShimmersToConfigureClone) {
 					// Configure for docks.
-					if(shimmerDevice.isDocked() && 
-							!shimmerDevice.isStreaming() 
-							&& commType==COMMUNICATION_TYPE.DOCK){
+					if(commType==COMMUNICATION_TYPE.DOCK 
+							&& shimmerDevice.isDocked()  
+							&& !shimmerDevice.isStreaming()){
 						listForConfiguringDocked.add(shimmerDevice.deepClone());
 					}
 					// Configure for bluetooth. 
-					else if(((shimmerDevice instanceof ShimmerBluetooth) || (shimmerDevice instanceof Shimmer4)) 
-							&& (shimmerDevice.isInitialised() && !shimmerDevice.isStreaming())
-							&& commType==COMMUNICATION_TYPE.BLUETOOTH){
+					else if(commType==COMMUNICATION_TYPE.BLUETOOTH
+//							&& ((shimmerDevice instanceof ShimmerBluetooth) || (shimmerDevice instanceof Shimmer4))
+							&& shimmerDevice.isConnected()
+							&& (shimmerDevice.isInitialised() && !shimmerDevice.isStreaming())){
 						listForConfiguringBT.add(shimmerDevice.deepClone());
 					}
 		        }				
