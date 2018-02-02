@@ -1670,7 +1670,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				int iGSR = getSignalIndex(mainGsrSignalName);
 				double p1=0, p2=0;//,p3=0,p4=0,p5=0;
-				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+//				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 
 				tempData[0] = (double)newPacketInt[iGSR];
 				int gsrAdcValueUnCal = ((int)tempData[0] & 4095); 
@@ -1694,17 +1694,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					 */
 					
 					if (currentGSRRange==4){
-						newGSRRange=(49152 & (int)tempData[0])>>14;
+						currentGSRRange=(49152 & (int)tempData[0])>>14;
 						if (mPastGSRFirstTime){
-							mPastGSRRange = newGSRRange;
+							mPastGSRRange = currentGSRRange;
 							mPastGSRFirstTime = false;
 						}
-						if (newGSRRange != mPastGSRRange){
+						if (currentGSRRange != mPastGSRRange){
 							if (Math.abs(mPastGSRUncalibratedValue-gsrAdcValueUnCal)<300){
-								newGSRRange = mPastGSRRange;
+								currentGSRRange = mPastGSRRange;
 							} 
 							else {
-								mPastGSRRange = newGSRRange;
+								mPastGSRRange = currentGSRRange;
 							}
 							mPastGSRUncalibratedValue = gsrAdcValueUnCal;
 						}
@@ -1713,18 +1713,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				else {
 					if (currentGSRRange==4){
 						//Mask upper 2 bits of the 16-bit packet and then bit shift down
-						newGSRRange=(49152 & (int)tempData[0])>>14; 
+//						newGSRRange=(49152 & (int)tempData[0])>>14; 
+						currentGSRRange=(49152 & (int)tempData[0])>>14; 
 					}
 				}
 
-				double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange, newGSRRange);
+				double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
 				p1 = p1p2[0];
 				p2 = p1p2[1];
 
 				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_RANGE)!=null){
-					double rangeToSave = newGSRRange >=0 ? newGSRRange : currentGSRRange;
-					objectCluster.addCalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
-					objectCluster.addUncalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
+//					double rangeToSave = newGSRRange >=0 ? newGSRRange : currentGSRRange;
+					objectCluster.addCalDataToMap(SensorGSR.channelGsrRange,currentGSRRange);
+					objectCluster.addUncalDataToMap(SensorGSR.channelGsrRange,currentGSRRange);
 				}
 				if(SensorGSR.sensorGsrRef.mListOfChannelsRef.contains(SensorGSR.channelGsrAdc.mObjectClusterName)){
 //				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE)!=null){
@@ -1744,17 +1745,29 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,calibratedData[iGSR]);
 					}
 					else {
-						calibratedData[iGSR] = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+						double gsrResistance = 0.0;
+						double gsrConductance = 0.0;
+						//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
+						if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
+							gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+							gsrConductance = 1/gsrResistance;
+						} else {
+							gsrResistance = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+							gsrConductance = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+						}
+						
+						calibratedData[iGSR] = gsrResistance;
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]);
+						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,gsrResistance);
 						
 						if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE)!=null){
 							objectCluster.addUncalDataToMap(SensorGSR.channelGsrMicroSiemens,gsrAdcValueUnCal);
-							objectCluster.addCalDataToMap(SensorGSR.channelGsrMicroSiemens,SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2));
+							objectCluster.addCalDataToMap(SensorGSR.channelGsrMicroSiemens,gsrConductance);
 
 //							System.out.println("mGSRRange:" + mGSRRange + "\tnewGSRRange" + newGSRRange + "\tp1:" + p1 + "\tp2" + p2);
 //							System.out.println("p1:" + p1 + "\tp2" + p2 + "\tADC:" + gsrAdcValueUnCal + "\tRes:" + calibratedData[iGSR] + "\tSie:" + SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2));
 						}
+
 					}
 				}
 
