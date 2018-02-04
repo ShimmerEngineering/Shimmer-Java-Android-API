@@ -1659,6 +1659,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			
 			writePacket(InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, samplingRateBytes);
 		}
+		readSamplingRate();
 	}
 	
 	private byte[] buildCmdArray(int cmd, byte[] payload) {

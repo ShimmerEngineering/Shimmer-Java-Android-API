@@ -240,14 +240,12 @@ public abstract class ShimmerBluetoothManager{
 	}
 
 	public void toggleLed(ShimmerDevice selectedShimmer) {
-		if (selectedShimmer != null) {
-			if (selectedShimmer.isConnected()) {
-				if (selectedShimmer instanceof ShimmerBluetooth) {
-					((ShimmerBluetooth) selectedShimmer).toggleLed();
-				} 
-				else if (selectedShimmer instanceof Shimmer4) {
-					((Shimmer4) selectedShimmer).toggleLed();
-				}
+		if (selectedShimmer!=null && selectedShimmer.isConnected()) {
+			if (selectedShimmer instanceof ShimmerBluetooth) {
+				((ShimmerBluetooth) selectedShimmer).toggleLed();
+			} 
+			else if (selectedShimmer instanceof Shimmer4) {
+				((Shimmer4) selectedShimmer).toggleLed();
 			}
 		}
 	}
