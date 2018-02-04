@@ -64,8 +64,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
@@ -75,7 +73,6 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.SensorDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.sensors.SensorEXG;
@@ -85,6 +82,7 @@ import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDeviceCallbackAdapter;
 import com.shimmerresearch.driver.ShimmerMsg;
 
 import jssc.SerialPort;
@@ -104,13 +102,17 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	double mLastSavedCalibratedTimeStamp = -1;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
 	
-	public static final boolean ONLY_UPDATE_RATE_IF_CHANGED = false;
-	public double mLastSentPacketReceptionRateOverall = DEFAULT_RECEPTION_RATE;
-	public double mLastSentPacketReceptionRateCurrent = DEFAULT_RECEPTION_RATE;
+	//TODO remove
+//	public static final boolean ONLY_UPDATE_RATE_IF_CHANGED = false;
+//	public double mLastSentPacketReceptionRateOverall = DEFAULT_RECEPTION_RATE;
+//	public double mLastSentPacketReceptionRateCurrent = DEFAULT_RECEPTION_RATE;
 
 	//TODO switch to using rather then using JSSC directly in this class 
 //	private SerialPortCommJssc SerialPortCommJssc = new SerialPortCommJssc(comPort, uniqueId, baudToUse);
 	
+	//TODO migrate to using below
+	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
+
 	//--------------- Constructors start ----------------------------
 
 	/**
@@ -521,55 +523,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
 		super.calculatePacketReceptionRateCurrent(intervalMs);
-		
-		if(ONLY_UPDATE_RATE_IF_CHANGED){
-			sendUpdatePacketRateCurrentIfChanged();
-		} else {
-			sendUpdatePacketRateCurrent();
-		}
+		mDeviceCallbackAdapter.sendCallbackPacketReceptionRateCurrent();
 	}
 	
 	@Override
 	protected void dataHandler(ObjectCluster ojc) {
-		
-		if(ONLY_UPDATE_RATE_IF_CHANGED){
-			sendUpdatePacketRateOverallIfChanged();
-		} else {
-			sendUpdatePacketRateOverall();
-		}
-		
-//		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE, getMacId());
-		sendCallBackMsg(MSG_IDENTIFIER_DATA_PACKET, ojc);
-	}
-
-	private void sendUpdatePacketRateOverallIfChanged() {
-		//Only send update if there is a change
-		double packetReceptionRateOverall = getPacketReceptionRateOverall();
-		if(mLastSentPacketReceptionRateOverall!=packetReceptionRateOverall){
-			CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, getMacId(), getComPort(), packetReceptionRateOverall);
-			sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, callBackObject);
-		}
-		mLastSentPacketReceptionRateOverall = packetReceptionRateOverall;
-	}
-
-	private void sendUpdatePacketRateOverall() {
-		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, getMacId(), getComPort(), getPacketReceptionRateOverall());
-		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, callBackObject);
-	}
-
-	private void sendUpdatePacketRateCurrentIfChanged() {
-		//Only send update if there is a change
-		double packetReceptionRateCurrent = getPacketReceptionRateCurrent();
-		if(mLastSentPacketReceptionRateCurrent!=packetReceptionRateCurrent){
-			CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), packetReceptionRateCurrent);
-			sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
-		}
-		mLastSentPacketReceptionRateCurrent = packetReceptionRateCurrent;
-	}
-
-	private void sendUpdatePacketRateCurrent() {
-		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
-		sendCallBackMsg(MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
+		mDeviceCallbackAdapter.dataHandler(ojc);
 	}
 
 	public byte[] returnRawData(){

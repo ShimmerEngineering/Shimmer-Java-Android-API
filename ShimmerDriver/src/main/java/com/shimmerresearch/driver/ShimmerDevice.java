@@ -1168,9 +1168,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mEventMarkers = EVENT_MARKER_DEFAULT;
 	}
 	
-	public void incrementPacketsReceivedCounters(){
-		incrementPacketReceivedCountCurrent();
-		incrementPacketReceivedCountOverall();
+	protected void resetShimmerClock() {
+		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
+		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
+			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
+			shimmerClock.resetShimmerClock();
+		}
 	}
 
 	protected void resetPacketLossVariables() {
@@ -1179,6 +1182,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		resetPacketReceptionCurrentVariables();
 	}
 	
+	public void incrementPacketsReceivedCounters(){
+		incrementPacketReceivedCountCurrent();
+		incrementPacketReceivedCountOverall();
+	}
 
 	public void setPacketExpectedCountOverall(long packetReceivedCountOverall) {
 		mPacketExpectedCountOverall = packetReceivedCountOverall;
