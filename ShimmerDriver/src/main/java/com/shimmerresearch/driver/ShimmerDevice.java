@@ -3077,7 +3077,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 		mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
 		
-		loadAlgorithms(OPEN_SOURCE_ALGORITHMS);
+		loadAlgorithms(OPEN_SOURCE_ALGORITHMS, null);
 		
 		//TODO temporarily locating updateMapOfAlgorithmModules() in DataProcessing
 		if(mDataProcessing!=null){
@@ -3088,14 +3088,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		// jars depending on licence?
 	}
 
-	public void loadAlgorithms(List<AlgorithmLoaderInterface> listOfAlgorithms) {
+	public void loadAlgorithms(List<AlgorithmLoaderInterface> listOfAlgorithms, COMMUNICATION_TYPE commType) {
 		for(AlgorithmLoaderInterface algorithmLoader:listOfAlgorithms){
-			loadAlgorithm(algorithmLoader);
+			loadAlgorithm(algorithmLoader, commType);
 		}
 	}
 
-	public void loadAlgorithm(AlgorithmLoaderInterface algorithmLoader) {
-		algorithmLoader.initialiseSupportedAlgorithms(this);
+	public void loadAlgorithm(AlgorithmLoaderInterface algorithmLoader, COMMUNICATION_TYPE commType) {
+		algorithmLoader.initialiseSupportedAlgorithms(this, commType);
 	}
 
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
