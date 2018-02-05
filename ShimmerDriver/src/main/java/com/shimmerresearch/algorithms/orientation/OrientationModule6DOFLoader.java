@@ -33,7 +33,7 @@ public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 	}
 
 	@Override
-	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice) {
+	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE comType) {
 //		shimmerDevice.getSensorMap().containsKey(key)
 		
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupported6DOFCh = getMapOfSupportedAlgorithms(shimmerDevice);
