@@ -38,8 +38,8 @@ public class SensorGSR extends AbstractSensor {
 	
 	public int mGSRRange = 4; 					// 4 = Auto
 	
-	public static final double[] SHIMMER3_GSR_REF_RESISTORS = new double[] {
-			40.200, 	//Range 0
+	public static final double[] SHIMMER3_GSR_REF_RESISTORS_KOHMS = new double[] {
+			40.000, 	//Range 0
 			287.000, 	//Range 1
 			1000.000, 	//Range 2
 			3300.000}; 	//Range 3
@@ -103,8 +103,8 @@ public class SensorGSR extends AbstractSensor {
 
 	//--------- Configuration options start --------------
 	public static final String[] ListofGSRRangeResistance = {
-		"10k" + UtilShimmer.UNICODE_OHMS + " to 56k" + UtilShimmer.UNICODE_OHMS,
-		"56k" + UtilShimmer.UNICODE_OHMS + " to 220k" + UtilShimmer.UNICODE_OHMS,
+		"10k" + UtilShimmer.UNICODE_OHMS + " to 62k" + UtilShimmer.UNICODE_OHMS,
+		"62k" + UtilShimmer.UNICODE_OHMS + " to 220k" + UtilShimmer.UNICODE_OHMS,
 		"220k" + UtilShimmer.UNICODE_OHMS + " to 680k" + UtilShimmer.UNICODE_OHMS,
 		"680k" + UtilShimmer.UNICODE_OHMS + " to 4.7M" + UtilShimmer.UNICODE_OHMS,
 		"Auto Range"};
@@ -586,7 +586,7 @@ public class SensorGSR extends AbstractSensor {
 	 * @return
 	 */
 	public static double calibrateGsrDataToResistanceFromAmplifierEq(double gsrUncalibratedData, int range){
-		double rFeedback = SHIMMER3_GSR_REF_RESISTORS[range];
+		double rFeedback = SHIMMER3_GSR_REF_RESISTORS_KOHMS[range];
 		double volts = (SensorADC.calibrateMspAdcChannel(gsrUncalibratedData))/1000.0;
 		double rSource = rFeedback/((volts/0.5)-1.0);
 		return rSource;
