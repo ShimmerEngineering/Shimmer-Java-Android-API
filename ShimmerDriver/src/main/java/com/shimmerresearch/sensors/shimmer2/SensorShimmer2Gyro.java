@@ -24,6 +24,8 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 
 	protected boolean mLowPowerGyro = false;
 	
+	public boolean mIsUsingDefaultGyroParam = true;
+	
 	/** all raw params should start with a 1 byte identifier in position [0] */
 	protected byte[] mGyroCalRawParams  = new byte[22];
 
@@ -250,6 +252,10 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 
 	public boolean checkLowPowerGyro() {
 		return mLowPowerGyro;
+	}
+	
+	public void updateIsUsingDefaultGyroParam() {
+		mIsUsingDefaultGyroParam = getCurrentCalibDetailsGyro().isUsingDefaultParameters();
 	}
 
 
