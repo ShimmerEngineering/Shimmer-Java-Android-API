@@ -169,20 +169,22 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int BTSTREAM_UARTSTREAM = 13;
 		public static final int BTSTREAM_CE = 14;
 		public static final int STROKARE = 15;
+		public static final int SHIMMER_ECG_MD = 16;
 		
 		public static final Map<Integer, String> mMapOfFirmwareLabels;
 	    static {
 	        Map<Integer, String> aMap = new TreeMap<Integer,String>();
-	        aMap.put(BTSTREAM, "BtStream");
-	        aMap.put(SDLOG, "SDLog");
-	        aMap.put(LOGANDSTREAM, "LogAndStream");
-	        aMap.put(SWEATCH, "Sweatch");
-	        aMap.put(GQ_BLE, "GQ_BLE");
-	        aMap.put(BIOSENSICS_GPIO_TEST, "GPIO_TEST");
-	        aMap.put(GQ_802154, "GQ_802154");
-	        aMap.put(SPAN, "SPAN");
-	        aMap.put(SHIMMER4_SDK_STOCK, "Shimmer4SDK");
-	        aMap.put(STROKARE, "StroKare");
+	        aMap.put(FW_ID.BTSTREAM, "BtStream");
+	        aMap.put(FW_ID.SDLOG, "SDLog");
+	        aMap.put(FW_ID.LOGANDSTREAM, "LogAndStream");
+	        aMap.put(FW_ID.SWEATCH, "Sweatch");
+	        aMap.put(FW_ID.GQ_BLE, "GQ_BLE");
+	        aMap.put(FW_ID.BIOSENSICS_GPIO_TEST, "GPIO_TEST");
+	        aMap.put(FW_ID.GQ_802154, "GQ_802154");
+	        aMap.put(FW_ID.SPAN, "SPAN");
+	        aMap.put(FW_ID.SHIMMER4_SDK_STOCK, "Shimmer4SDK");
+	        aMap.put(FW_ID.STROKARE, "StroKare");
+	        aMap.put(FW_ID.SHIMMER_ECG_MD, "ShimmerECGmd");
 	        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
 	    }
 
