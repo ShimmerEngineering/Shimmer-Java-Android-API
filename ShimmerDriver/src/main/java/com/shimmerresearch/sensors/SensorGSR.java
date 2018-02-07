@@ -671,15 +671,13 @@ public class SensorGSR extends AbstractSensor {
 
 
 	public static boolean isSupportedImprovedGsrCalibration(ShimmerVerObject svo) {
-//		if(svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 19, 0)
-//				|| svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 11, 0)
-//				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_LR, FW_ID.GQ_802154, 0, 4, 1)
-//				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_NR, FW_ID.GQ_802154, 0, 4, 1)){
-//			return true;
-//		}
-//		return false;
-		
-		return true;
+		if(svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 19, 0)
+				|| svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 11, 0)
+				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_LR, FW_ID.GQ_802154, 0, 4, 1)
+				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_NR, FW_ID.GQ_802154, 0, 4, 1)){
+			return true;
+		}
+		return false;
 	}
 
 	//--------- Sensor specific methods end --------------
