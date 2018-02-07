@@ -36,6 +36,7 @@ public class SensorMMA736x extends AbstractSensor {
 
 	private int mAccelRange = 0;
 	
+	public boolean mIsUsingDefaultLNAccelParam = true;
 	
 	//Shimmer2/2r Calibration - Default Values
 	protected static final double[][] AlignmentMatrixAccelShimmer2 =  {{-1,0,0},{0,-1,0},{0,0,1}}; 			
@@ -318,5 +319,8 @@ public class SensorMMA736x extends AbstractSensor {
 		updateCurrentAccelCalibInUse();
 	}
 
+	public void updateIsUsingDefaultLNAccelParam() {
+		mIsUsingDefaultLNAccelParam = getCurrentCalibDetailsAccelLn().isUsingDefaultParameters();
+	}
 
 }

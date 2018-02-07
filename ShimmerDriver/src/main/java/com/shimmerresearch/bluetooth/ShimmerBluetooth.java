@@ -523,7 +523,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public class ProcessingThread extends Thread {
 		public boolean stop = false;
 		int count=0;
-		public synchronized void run() {
+		public void run() {
 			while (!stop) {
 				if(!mABQPacketByeArray.isEmpty()){
 					count++;
@@ -545,7 +545,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		byte[] byteBuffer = {0};
 		public boolean stop = false;
 		
-		public synchronized void run() {
+		public void run() {
 			while(!stop) {
 				
 				// Process Instruction on stack. is an instruction running? if not proceed
@@ -570,9 +570,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		
-		private synchronized void processNextInstruction() {
+		private void processNextInstruction() {
 			// check instruction stack, are there any other instructions left to be executed?
-			checkAndRemoveFirstInstructionIfNull();
+			//checkAndRemoveFirstInstructionIfNull();
 			
 			byte[] insBytes = getInstruction();
 			if (insBytes!=null){
@@ -658,7 +658,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 
 		
-		private synchronized void processWhileStreaming() {
+		private void processWhileStreaming() {
 			byteBuffer = readBytes(1);
 			if(byteBuffer!=null){
 				mByteArrayOutputStream.write(byteBuffer[0]);
@@ -758,7 +758,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		
 		/** Process ACK from a GET or SET command while not streaming */ 
-		private synchronized void processNotStreamingWaitForAck() {
+		private void processNotStreamingWaitForAck() {
 			//JC TEST:: IMPORTANT TO REMOVE // This is to simulate packet loss 
 			/*
 			if (Math.random()>0.9 && mIsInitialised==true){
@@ -867,7 +867,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 		
 		/** Process RESPONSE while not streaming */ 
-		private synchronized void processNotStreamingWaitForResp() {
+		private void processNotStreamingWaitForResp() {
 			//Discard first read
 			if(mFirstTime){
 //				printLogDataForDebugging("First Time read");
@@ -930,7 +930,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 
 		/** Process LogAndStream INSTREAM_CMD_RESPONSE while not streaming */ 
-		private synchronized void processBytesAvailableAndInstreamSupported() {
+		private void processBytesAvailableAndInstreamSupported() {
 			if(isSupportedInStreamCmds()
 					&& !mWaitForAck 
 					&& !mWaitForResponse 
@@ -968,7 +968,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return mBtSetCommandMap.containsKey(setCmd);
 	}
 	
-	private synchronized void processSpecialGetCmdsAfterAck(byte currentCommand) {
+	private void processSpecialGetCmdsAfterAck(byte currentCommand) {
 		byte[] insBytes = getListofInstructions().get(0);
 
 		if(currentCommand==GET_EXG_REGS_COMMAND){
@@ -1701,7 +1701,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @param currentCommand
 	 */
-	private synchronized void processAckFromSetCommand(byte currentCommand) {
+	private void processAckFromSetCommand(byte currentCommand) {
 		// check for null and size were put in because if Shimmer was abruptly
 		// disconnected there is sometimes indexoutofboundsexceptions
 		if(getListofInstructions().size() > 0){
@@ -2319,7 +2319,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//region --------- INITIALIZE SHIMMER FUNCTIONS --------- 
 	
-	protected synchronized void initialize() {	    	//See two constructors for Shimmer
+	protected void initialize() {	    	//See two constructors for Shimmer
 		//InstructionsThread instructionsThread = new InstructionsThread();
 		//instructionsThread.start();
 		clearShimmerVersionObjectAndCreateSensorMaps();
@@ -2609,7 +2609,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				readRealTimeClock();
 			}
 		}
-
+		determineCalibrationParamsForIMU();
 		initaliseDataProcessing();
 		
 		mFirstPacketParsed=true;
@@ -2853,7 +2853,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public class readStatusTask extends TimerTask {
 
 		@Override
-		public synchronized void run() {
+		public void run() {
 			if(getListofInstructions().size()==0 
 					&& !getListofInstructions().contains(GET_STATUS_COMMAND)){
 				readStatusLogAndStream();
@@ -3380,8 +3380,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 
-	/**Write the config time to the Shimmer device. Only applicable for Log and Stream.
-	 * 
+	/**Write the config time to the Shimmer device. Only applicable for Log and Stream. 
+	 * @param time Unix Time in Seconds
 	 */
 	public void writeConfigTime(long time){
 		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
@@ -4008,7 +4008,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 
-	public synchronized void rePioritiseReadCalibDumpInstructions(){
+	public void rePioritiseReadCalibDumpInstructions(){
 		List<byte[]> listOfInstructions = new ArrayList<byte[]>();
 
 		//This for loop will prioritse the GET_CALIB_DUMP_COMMAND
@@ -5179,17 +5179,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	private synchronized byte[] getInstruction(){
+	private byte[] getInstruction(){
 		synchronized(mListofInstructions){
-			if(!getListofInstructions().isEmpty()){
-				if(getListofInstructions().get(0)!=null) {
+			if(!mListofInstructions.isEmpty()){
+				if(mListofInstructions.get(0)!=null) {
 					byte[] insBytes = (byte[]) getListofInstructions().get(0);
 					return insBytes;
+				} else{
+					return mListofInstructions.remove(0);
 				}
 			}
 		}
 		return null;
 	}
+	
 	private synchronized void removeInstruction(int index){
 		synchronized(mListofInstructions){
 		try {
