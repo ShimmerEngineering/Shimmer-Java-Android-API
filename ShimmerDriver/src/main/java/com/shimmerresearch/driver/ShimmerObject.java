@@ -1669,18 +1669,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				
 				int iGSR = getSignalIndex(mainGsrSignalName);
-				double p1=0, p2=0;//,p3=0,p4=0,p5=0;
 //				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 
 				tempData[0] = (double)newPacketInt[iGSR];
 				int gsrAdcValueUnCal = ((int)tempData[0] & 4095); 
 				
 				int currentGSRRange = getGSRRange();
-				
 				 // this is to fix a bug with SDLog v0.9
 				if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==9){
-					//Note that from FW (SDLog?) v1.0 onwards the MSB of the GSR data contains the range
-					
 //					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 
 					/*
@@ -1711,51 +1707,50 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				} 
 				else {
+					//Note that from FW (SDLog?) v1.0 onwards the MSB of the GSR data contains the range
 					if (currentGSRRange==4){
 						//Mask upper 2 bits of the 16-bit packet and then bit shift down
-//						newGSRRange=(49152 & (int)tempData[0])>>14; 
 						currentGSRRange=(49152 & (int)tempData[0])>>14; 
 					}
 				}
 
-				double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
-				p1 = p1p2[0];
-				p2 = p1p2[1];
 
 				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_RANGE)!=null){
-//					double rangeToSave = newGSRRange >=0 ? newGSRRange : currentGSRRange;
 					objectCluster.addCalDataToMap(SensorGSR.channelGsrRange,currentGSRRange);
 					objectCluster.addUncalDataToMap(SensorGSR.channelGsrRange,currentGSRRange);
 				}
 				if(SensorGSR.sensorGsrRef.mListOfChannelsRef.contains(SensorGSR.channelGsrAdc.mObjectClusterName)){
-//				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE)!=null){
 					objectCluster.addUncalDataToMap(SensorGSR.channelGsrAdc, gsrAdcValueUnCal);
 					objectCluster.addCalDataToMap(SensorGSR.channelGsrAdc, SensorADC.calibrateMspAdcChannel(gsrAdcValueUnCal));
 				}
 				
 				objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,gsrAdcValueUnCal);
-//				uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
 				uncalibratedData[iGSR] = gsrAdcValueUnCal;
 				uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
+					double gsrResistance = 0.0;
+					double gsrConductance = 0.0;
+					//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
+					if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
+						gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+						gsrConductance = 1/gsrResistance;
+					} else {
+						//double p1=0, p2=0;//,p3=0,p4=0,p5=0;
+						double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
+						double p1 = p1p2[0];
+						double p2 = p1p2[1];
+						
+						gsrResistance = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+						gsrConductance = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+					}
+					
 					//If ShimmerGQ we only want to have one GSR channel and it's units should be 'uS'
 					if(isShimmerGenGq()){
-						calibratedData[iGSR] = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+						calibratedData[iGSR] = gsrConductance;
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.U_SIEMENS;
-						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,calibratedData[iGSR]);
+						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,gsrConductance);
 					}
 					else {
-						double gsrResistance = 0.0;
-						double gsrConductance = 0.0;
-						//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
-						if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
-							gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
-							gsrConductance = 1/gsrResistance;
-						} else {
-							gsrResistance = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
-							gsrConductance = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
-						}
-						
 						calibratedData[iGSR] = gsrResistance;
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
 						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,gsrResistance);

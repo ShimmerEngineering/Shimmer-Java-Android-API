@@ -314,44 +314,12 @@ public class SensorGSR extends AbstractSensor {
 				int gsrAdcValueUnCal = ((int)rawData & 4095); 
 				objectCluster.addUncalData(channelDetails, gsrAdcValueUnCal);
 				
-//				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				double p1=0,p2=0;
-
 				int currentGSRRange = getGSRRange();
-
 				if (currentGSRRange==4){
 					//Mask upper 2 bits of the 16-bit packet and then bit shift down
 					currentGSRRange=(49152 & (int)rawData)>>14; 
 				}
-				double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
-				p1 = p1p2[0];
-				p2 = p1p2[1];
 				
-				// ---------- Method 1 - ShimmerObject Style -----------
-//				//kOhms
-//				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
-//				objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
-//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));
-//					
-//				//uS
-//				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawData,p1,p2);
-//				objectCluster.mUnitCal[objectCluster.indexKeeper] = CHANNEL_UNITS.MICROSIEMENS;
-//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR, new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
-//					objectCluster.indexKeeper++;
-
-				
-				// ---------- Method 2 - Simplified ShimmerObject Style -----------
-				
-//				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.UNCAL, CHANNEL_UNITS.NO_UNITS, rawData);
-//				//kOhms
-//				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.KOHMS, calibrateGsrData(rawData,p1,p2));
-////				//uS
-////				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.MICROSIEMENS, calibrateGsrDataToSiemens(rawData,p1,p2));
-//				objectCluster.indexKeeper++;
-
-
-				// ----- Method 3 - Approaching dynamic object based approach  -----------
-
 				if(sensorDetails.mListOfChannels.contains(channelGsrRange)){
 //					double rangeToSave = newGSRRange>=0? newGSRRange:mGSRRange;
 					objectCluster.addUncalData(channelGsrRange, currentGSRRange);
@@ -364,6 +332,7 @@ public class SensorGSR extends AbstractSensor {
 					objectCluster.incrementIndexKeeper();
 				}
 
+				double p1=0,p2=0;
 				double gsrResistance = 0.0;
 				double gsrConductance = 0.0;
 				//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
@@ -371,6 +340,10 @@ public class SensorGSR extends AbstractSensor {
 					gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
 					gsrConductance = 1/gsrResistance;
 				} else {
+					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
+					p1 = p1p2[0];
+					p2 = p1p2[1];
+
 					gsrResistance = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
 					gsrConductance = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
 				}
