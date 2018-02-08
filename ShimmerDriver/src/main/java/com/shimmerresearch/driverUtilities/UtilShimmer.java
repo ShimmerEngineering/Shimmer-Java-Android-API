@@ -450,13 +450,14 @@ public class UtilShimmer implements Serializable {
 	 */
 	public static boolean compareVersions(String thisMajor, String thisMinor, String thisInternal,
 			String compMajor, String compMinor, String compInternal) {
-
-		if ((thisMajor.compareTo(compMajor)>0)
-				||(thisMajor.equals(compMajor) && thisMinor.compareTo(compMinor)>0)
-				||(thisMajor.equals(compMajor) && thisMinor.equals(compMinor) && thisInternal.compareTo(compInternal)>=0)){
-			return true; // if FW ID is the same and version is greater or equal 
+		try {
+			return compareVersions(Integer.parseInt(thisMajor), Integer.parseInt(thisMinor), Integer.parseInt(thisInternal),
+					Integer.parseInt(compMajor), Integer.parseInt(compMinor), Integer.parseInt(compInternal));
+		} catch (NumberFormatException nFE) {
+			System.out.println("UpdateChecker - Version parsing error");
+			nFE.printStackTrace();
 		}
-		return false; // if less or not the same FW ID
+		return true;
 	}
 
 	public static String convertDuration(int duration){
