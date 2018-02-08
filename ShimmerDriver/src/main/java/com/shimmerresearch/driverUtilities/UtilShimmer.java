@@ -525,20 +525,11 @@ public class UtilShimmer implements Serializable {
 	 */
 	public static boolean compareVersions(String thisMajor, String thisMinor, String thisInternal,
 			String compMajor, String compMinor, String compInternal) {
-
-		//Doesn't work - had LogAndStream v0.8.0 in dir while v0.11.0 was available but below said v0.8.0 was the latest
-//		if ((thisMajor.compareTo(compMajor)>0)
-//				||(thisMajor.equals(compMajor) && thisMinor.compareTo(compMinor)>0)
-//				||(thisMajor.equals(compMajor) && thisMinor.equals(compMinor) && thisInternal.compareTo(compInternal)>=0)){
-//			return true; // if FW ID is the same and version is greater or equal 
-//		}
-//		return false; // if less or not the same FW ID
-		
 		try {
 			return compareVersions(Integer.parseInt(thisMajor), Integer.parseInt(thisMinor), Integer.parseInt(thisInternal),
 					Integer.parseInt(compMajor), Integer.parseInt(compMinor), Integer.parseInt(compInternal));
 		} catch (NumberFormatException nFE) {
-			
+			System.out.println("UpdateChecker - Version parsing error");
 		}
 		return true;
 	}
