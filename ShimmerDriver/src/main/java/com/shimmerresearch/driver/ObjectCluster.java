@@ -494,7 +494,18 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
-			
+			if(channelType.equals(CHANNEL_TYPE.UNCAL.toString())) {
+				sensorDataArray.mCalSensorNames[sensorDataArray.mCalArraysIndex] = channelName;
+				sensorDataArray.mCalUnits[sensorDataArray.mCalArraysIndex] = units;
+				sensorDataArray.mCalData[sensorDataArray.mCalArraysIndex] = data;
+				sensorDataArray.mIsUsingDefaultCalibrationParams[sensorDataArray.mCalArraysIndex] = isUsingDefaultCalib;
+				sensorDataArray.mCalArraysIndex++;
+			} else if(channelType.equals(CHANNEL_TYPE.CAL.toString())) {
+				sensorDataArray.mUncalSensorNames[sensorDataArray.mUncalArraysIndex] = channelName;
+				sensorDataArray.mUncalUnits[sensorDataArray.mUncalArraysIndex] = units;
+				sensorDataArray.mUncalData[sensorDataArray.mUncalArraysIndex] = data;
+				sensorDataArray.mUncalArraysIndex++;
+			}
 		} else {
 			mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
 			addChannelNameToList(channelName);
