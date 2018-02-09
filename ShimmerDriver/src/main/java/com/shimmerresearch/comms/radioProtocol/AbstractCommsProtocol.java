@@ -58,7 +58,7 @@ public abstract class AbstractCommsProtocol {
 	public abstract void stopTimerReadBattStatus();
 
 	public abstract void operationPrepare();
-	public abstract void operationStart(BT_STATE configuring);
+	public abstract void operationStart(BT_STATE btState);
 
 	public abstract void writeEnabledSensors(long enabledSensors);
 

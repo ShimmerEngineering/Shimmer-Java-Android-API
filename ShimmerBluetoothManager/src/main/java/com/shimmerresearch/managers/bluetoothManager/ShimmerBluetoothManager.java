@@ -240,79 +240,77 @@ public abstract class ShimmerBluetoothManager{
 	}
 
 	public void toggleLed(ShimmerDevice selectedShimmer) {
-		if (selectedShimmer != null) {
-			if (selectedShimmer.isConnected()) {
-				if (selectedShimmer instanceof ShimmerBluetooth) {
-					((ShimmerBluetooth) selectedShimmer).toggleLed();
-				} 
-				else if (selectedShimmer instanceof Shimmer4) {
-					((Shimmer4) selectedShimmer).toggleLed();
-				}
+		if (selectedShimmer!=null && selectedShimmer.isConnected()) {
+			if (selectedShimmer instanceof ShimmerBluetooth) {
+				((ShimmerBluetooth) selectedShimmer).toggleLed();
+			} 
+			else if (selectedShimmer instanceof Shimmer4) {
+				((Shimmer4) selectedShimmer).toggleLed();
 			}
 		}
 	}
 	
 
-	/** Use setFixedConfigWhenConnecting instead
-	 * 
-	 * @param device
-	 */
-	@Deprecated
-	public void setCadenceBTConfig(ShimmerDevice device){
-//		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(device.getComPort());
-		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(device.getBtConnectionHandle());
-
-		if(shimmerDevice!=null){
-			//TODO remove the first half of this if statement, second half is more generic and will work for Shimmer3/4
-//			if (shimmerDevice.getHardwareVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
-//				if (shimmerDevice instanceof ShimmerBluetooth){
-//					ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth)shimmerDevice;
-//					shimmerBluetooth.checkShimmerConfigBeforeConfiguring();
+//	/** Use setFixedConfigWhenConnecting instead
+//	 * 
+//	 * @param device
+//	 */
+//	@Deprecated
+//	public void setCadenceBTConfig(ShimmerDevice device){
+////		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(device.getComPort());
+//		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(device.getBtConnectionHandle());
 //
-//					shimmerBluetooth.operationPrepare();
-//					shimmerBluetooth.setSendProgressReport(true);
-//				
-//					//setting accel range +-4g
-//					shimmerBluetooth.writeAccelRange(1);
-//					//setting sampling rate 51.2 hardcoded
-//					shimmerBluetooth.writeShimmerAndSensorsSamplingRate(51.20);// s3 = 4
-//					//write sensors 
-//					shimmerBluetooth.writeEnabledSensors((long)4096); // setting wide range accel as only sensor
-//					shimmerBluetooth.operationStart(BT_STATE.CONFIGURING);
+//		if(shimmerDevice!=null){
+//			//TODO remove the first half of this if statement, second half is more generic and will work for Shimmer3/4
+////			if (shimmerDevice.getHardwareVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
+////				if (shimmerDevice instanceof ShimmerBluetooth){
+////					ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth)shimmerDevice;
+////					shimmerBluetooth.checkShimmerConfigBeforeConfiguring();
+////
+////					shimmerBluetooth.operationPrepare();
+////					shimmerBluetooth.setSendProgressReport(true);
+////				
+////					//setting accel range +-4g
+////					shimmerBluetooth.writeAccelRange(1);
+////					//setting sampling rate 51.2 hardcoded
+////					shimmerBluetooth.writeShimmerAndSensorsSamplingRate(51.20);// s3 = 4
+////					//write sensors 
+////					shimmerBluetooth.writeEnabledSensors((long)4096); // setting wide range accel as only sensor
+////					shimmerBluetooth.operationStart(BT_STATE.CONFIGURING);
+////				}
+////			}
+////			else {
+//				shimmerDevice.operationPrepare();
+//
+//				shimmerDevice.setDefaultShimmerConfiguration();
+//				shimmerDevice.disableAllAlgorithms();
+//				shimmerDevice.disableAllSensors();
+//
+//				//write sensors
+//				if(shimmerDevice.getSensorIdsSet().contains(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL)){
+//					//- setting wide range accel as only sensor
+//					shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, true); 
+//
+//					//setting accel range +/- 4g
+//					shimmerDevice.setConfigValueUsingConfigLabel(
+//							Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, 
+//							SensorLSM303DLHC.GuiLabelConfig.LSM303_ACCEL_RANGE,
+//							1);
 //				}
-//			}
-//			else {
-				shimmerDevice.operationPrepare();
-
-				shimmerDevice.setDefaultShimmerConfiguration();
-				shimmerDevice.disableAllAlgorithms();
-				shimmerDevice.disableAllSensors();
-
-				//write sensors
-				if(shimmerDevice.getSensorIdsSet().contains(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL)){
-					//- setting wide range accel as only sensor
-					shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, true); 
-
-					//setting accel range +/- 4g
-					shimmerDevice.setConfigValueUsingConfigLabel(
-							Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, 
-							SensorLSM303DLHC.GuiLabelConfig.LSM303_ACCEL_RANGE,
-							1);
-				}
-
-				//setting sampling rate 51.2 hardcoded
-				shimmerDevice.setShimmerAndSensorsSamplingRate(51.20);
-				
-				if(shimmerDevice instanceof ShimmerBluetooth){
-					ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth)shimmerDevice;
-					shimmerBluetooth.writeConfigBytes(shimmerDevice.getShimmerConfigBytes());
-					shimmerBluetooth.writeEnabledSensors(shimmerDevice.getEnabledSensors());
-				}
-				
-				shimmerDevice.operationStart(BT_STATE.CONFIGURING);
-//			}
-		}
-	}
+//
+//				//setting sampling rate 51.2 hardcoded
+//				shimmerDevice.setShimmerAndSensorsSamplingRate(51.20);
+//				
+//				if(shimmerDevice instanceof ShimmerBluetooth){
+//					ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth)shimmerDevice;
+//					shimmerBluetooth.writeConfigBytes(shimmerDevice.getShimmerConfigBytes());
+//					shimmerBluetooth.writeEnabledSensors(shimmerDevice.getEnabledSensors());
+//				}
+//				
+//				shimmerDevice.operationStart(BT_STATE.CONFIGURING);
+////			}
+//		}
+//	}
 	
 	public void configureShimmer(ShimmerDevice shimmerClone){
 		configureShimmers(Arrays.asList(shimmerClone));
@@ -410,17 +408,21 @@ public abstract class ShimmerBluetoothManager{
 			else {
 				ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmer.getMacId());
 				if(cloneShimmer.getHardwareVersion()==HW_ID.SWEATCH){
+					originalShimmerDevice.operationPrepare();
+					
+//					originalShimmerDevice.setSamplingRateShimmer(cloneShimmer.getSamplingRateShimmer());
+					
+					LiteProtocol liteProtocol = ((LiteProtocol)(originalShimmerDevice.getCommsProtocolRadio().mRadioProtocol));
+					
+					//InfoMem commands are not supported by the Sweatch
+//						liteProtocol.writeInfoMem(cloneShimmer.getConfigByteLayout().MSP430_5XX_INFOMEM_D_ADDRESS, cloneShimmer.getShimmerConfigBytes());
+
 					//TODO
-					boolean supportSweatchBtConfig = false;
-					if(supportSweatchBtConfig){
-						originalShimmerDevice.operationPrepare();
-						
-//						originalShimmerDevice.setSamplingRateShimmer(cloneShimmer.getSamplingRateShimmer());
-						
-						LiteProtocol liteProtocol = ((LiteProtocol)(originalShimmerDevice.getCommsProtocolRadio().mRadioProtocol));
-						liteProtocol.writeInfoMem(cloneShimmer.getConfigByteLayout().MSP430_5XX_INFOMEM_D_ADDRESS, cloneShimmer.getShimmerConfigBytes());
-						originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
-					}
+//						SweatchDevice cloneSweatch = (SweatchDevice)cloneShimmer;
+					liteProtocol.writeShimmerAndSensorsSamplingRate(cloneShimmer.getSamplingRateBytesShimmer());
+					liteProtocol.writeConfigByte0(cloneShimmer.configBytesGenerate(true));
+
+					originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
 				}
 			}
 			

@@ -226,8 +226,8 @@ public class CommsProtocolRadio extends BasicProcessWithCallBack {
 		mRadioProtocol.operationPrepare();
 	}
 	
-	public void operationStart(BT_STATE configuring) {
-		mRadioProtocol.operationStart(configuring);
+	public void operationStart(BT_STATE btState) {
+		mRadioProtocol.operationStart(btState);
 	}
 
 	public void setPacketSize(int expectedDataPacketSize) {

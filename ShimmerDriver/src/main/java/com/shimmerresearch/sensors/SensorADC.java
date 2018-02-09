@@ -431,7 +431,6 @@ public class SensorADC extends AbstractSensor {
 		double calData = calibrateU12AdcValue(unCalData, offset, vRefP, gain);
 		return calData;
 	}
-	
 
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {

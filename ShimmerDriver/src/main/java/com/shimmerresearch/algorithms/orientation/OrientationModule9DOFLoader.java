@@ -33,7 +33,7 @@ public class OrientationModule9DOFLoader implements AlgorithmLoaderInterface {
 	}
 
 	@Override
-	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice) {
+	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE comType) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = getMapOfSupportedAlgorithms(shimmerDevice);
 		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
 			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(shimmerDevice, algorithmDetails, shimmerDevice.getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH));
