@@ -9718,6 +9718,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
+	/**
+	 * Updates buildMsg to output ObjectClusters containing data in the Arrays data structure
+	 * This improves performance, and can improve packet reception rate, particularly on Android
+	 * Note that this has not been fully tested, and enabling this will disable the Multimap data structure
+	 * @param enable
+	 */
+	public void enableArraysDataStructure(boolean enable) {
+		mUseArraysDataStructureInObjectCluster = enable;
+	}
+	
 }
 
 
