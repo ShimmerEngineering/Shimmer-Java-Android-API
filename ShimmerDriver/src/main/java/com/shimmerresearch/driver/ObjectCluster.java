@@ -102,6 +102,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public String[] mUnitUncal;
 	// ------- Old Array approach - End -----------
 	
+	// ------- New Array approach -------
+	SensorDataArray sensorDataArray;
+	
 	/** mObjectClusterBuilder needs to be uninitialized to avoid crash when connecting on Android */
 	private Builder mObjectClusterBuilder; 
 	
@@ -116,12 +119,13 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public int mPacketIdValue = 0;
 	
 	public enum OBJECTCLUSTER_TYPE{
-		ARRAYS,
+		ARRAYS_LEGACY,
 		FORMAT_CLUSTER,
-		PROTOBUF
+		PROTOBUF,
+		ARRAYS
 	}
 	public static List<OBJECTCLUSTER_TYPE> mListOfOCTypesEnabled = Arrays.asList(
-			OBJECTCLUSTER_TYPE.ARRAYS,
+			OBJECTCLUSTER_TYPE.ARRAYS_LEGACY,
 			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER,
 			OBJECTCLUSTER_TYPE.PROTOBUF);
 
@@ -370,12 +374,14 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 	
 	public void createArrayData(int length){
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)){
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS_LEGACY)){
 			mUncalData = new double[length];
 			mCalData = new double[length];
 			mSensorNames = new String[length];
 			mUnitCal = new String[length];
 			mUnitUncal = new String[length];
+		} else if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
+			sensorDataArray = new SensorDataArray(50);		
 		}
 	}
 
@@ -427,7 +433,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 	
 	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data, int index, boolean isUsingDefaultCalib) {
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)){
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS_LEGACY)){
 			if(channelType==CHANNEL_TYPE.CAL){
 				mCalData[index] = data;
 				mUnitCal[index] = units;
@@ -459,7 +465,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void incrementIndexKeeper(){
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)){
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS_LEGACY)){
 			if(indexKeeper<mCalData.length){
 				indexKeeper++;
 			}
@@ -483,16 +489,12 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addDataToMap(String channelName, String channelType, String units, double data){
-		if(useList) {
-			mSensorDataList.add(new SensorData(channelName, channelType, units, data, false));
-		} else {
 			addDataToMap(channelName, channelType, units, data, false);
-		}
 	}
 
 	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
-		if(useList) {
-			mSensorDataList.add(new SensorData(channelName, channelType, units, data, isUsingDefaultCalib));
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
+			
 		} else {
 			mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
 			addChannelNameToList(channelName);
