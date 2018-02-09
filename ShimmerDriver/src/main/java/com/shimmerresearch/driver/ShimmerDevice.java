@@ -2588,9 +2588,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		LinkedHashMap<Integer, ChannelDetails> mapOfOjcChannels = new LinkedHashMap<Integer, ChannelDetails>();
 		
 		int ojcIndex = 0;
-		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
+		for(TreeMap<Integer, SensorDetails> mapPerCommType:mParserMap.values()){
 			ojcIndex = 0;
-			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
+			for(SensorDetails sensorDetails:mapPerCommType.values()){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					listOfOjcChannels.add(channelDetails);
 					mapOfOjcChannels.put(ojcIndex, channelDetails);
