@@ -29,6 +29,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
+import com.shimmerresearch.driver.ObjectCluster.OBJECTCLUSTER_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
@@ -524,6 +525,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
 	protected boolean mIsCrcEnabled = false;
 	protected boolean mUseInfoMemConfigMethod = true;
+	
+	protected boolean mUseArraysDataStructureInObjectCluster = false;
 
 	protected byte[] mInquiryResponseBytes;	
 	
@@ -716,6 +719,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		objectCluster.setShimmerName(mShimmerUserAssignedName);
 		objectCluster.setMacAddress(mMyBluetoothAddress);
 		objectCluster.mRawData = newPacket;
+		
+		if(mUseArraysDataStructureInObjectCluster) {
+			//Adding OBJECTCLUSTER_TYPE.ARRAYS to the listOfOCTypesEnabled will skip the Multimap and only put data into the SensorDataArrays
+			objectCluster.getListOfOCTypesEnabled().add(OBJECTCLUSTER_TYPE.ARRAYS);
+			objectCluster.getListOfOCTypesEnabled().remove(OBJECTCLUSTER_TYPE.ARRAYS_LEGACY);	//Don't use the legacy arrays approach
+			objectCluster.createArrayData(50);
+		}
 		
 		if(fwType!=COMMUNICATION_TYPE.BLUETOOTH && fwType!=COMMUNICATION_TYPE.SD){
 //			throw new Exception("The Firmware is not compatible");
