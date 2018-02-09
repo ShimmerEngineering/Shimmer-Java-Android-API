@@ -122,6 +122,8 @@ final public class ObjectClusterTest implements Cloneable,Serializable{
 	public double[] mCalDataNew = new double[50];
 	public double[] mUncalDataNew = new double[50];
 	
+	SensorDataArray sensorDataArray = new SensorDataArray(50);
+	
 	// ------- Old Array approach - End -----------
 	
 	/** mObjectClusterBuilder needs to be uninitialized to avoid crash when connecting on Android */
@@ -623,6 +625,21 @@ final public class ObjectClusterTest implements Cloneable,Serializable{
 			calArrayIndexResize++;
 		} else {
 			//TODO JOS: UNCAL ARRAYS HERE
+		}
+	}
+	
+	public void addDataToNewArrays(String channelName, String channelType, String units, double data) {
+		if(channelType.equals(CHANNEL_TYPE.CAL.toString())) {
+			sensorDataArray.mCalSensorNames[sensorDataArray.mCalArraysIndex] = channelName;
+			sensorDataArray.mCalUnits[sensorDataArray.mCalArraysIndex] = units;
+			sensorDataArray.mCalData[sensorDataArray.mCalArraysIndex] = data;
+			sensorDataArray.mIsUsingDefaultCalibrationParams[sensorDataArray.mCalArraysIndex] = false;
+			sensorDataArray.mCalArraysIndex++;
+		} else if(channelType.equals(CHANNEL_TYPE.UNCAL.toString())) {
+			sensorDataArray.mUncalSensorNames[sensorDataArray.mUncalArraysIndex] = channelName;
+			sensorDataArray.mUncalUnits[sensorDataArray.mUncalArraysIndex] = units;
+			sensorDataArray.mUncalData[sensorDataArray.mUncalArraysIndex] = data;
+			sensorDataArray.mUncalArraysIndex++;
 		}
 	}
 	

@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.Signed;
@@ -283,9 +284,9 @@ public abstract class TestObjectCluster {
 */				
 
 
-	public static long[] allInsertionTimes = new long[7];
-	public static long[] allRandomRetrievalTimes = new long[7];
-	public static long[] allStructuredRetrievalTimes = new long[7];
+	public static long[] allInsertionTimes = new long[8];
+	public static long[] allRandomRetrievalTimes = new long[8];
+	public static long[] allStructuredRetrievalTimes = new long[8];
 	
 	public static void main(String[] args) throws InterruptedException {
 //		ObjectClusterTest[] objcArray = testDataStructureOptionsInsertion();
@@ -632,10 +633,12 @@ public abstract class TestObjectCluster {
 	public static final int NUM_SENSORDATA_ARRAY = 3;
 	public static final int NUM_MULTIMAP = 4;
 	public static final int NUM_ARRAYS = 5;
+	public static final int NUM_ARRAYS_RESIZE = 6;
+	public static final int NUM_NEW_ARRAYS = 7;
 	
 	public static final int NUM_OBJECTCLUSTERS = 30;
-	public static final int NUM_DATA_STRUCTURES = 7;
-	public static String[] DATA_STRUCTURE_NAMES = {"ArrayList & SensorData", "Nested HashMap", "HashMap & Array", "Arrays & SensorData", "MultiMap", "Arrays", "Arrays with Resizing"};
+	public static final int NUM_DATA_STRUCTURES = 8;
+	public static String[] DATA_STRUCTURE_NAMES = {"ArrayList & SensorData", "Nested HashMap", "HashMap & Array", "Arrays & SensorData", "MultiMap", "Arrays", "Arrays with Resizing", "New Arrays"};
 	
 	/**
 	 * Now updated to test 30 channels, and with separate ObjectClusters for each data structure option
@@ -699,9 +702,15 @@ public abstract class TestObjectCluster {
 						objc.addDataToArrays(String.valueOf(numOfChannels), CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, numOfChannels);
 						endInsertion = System.nanoTime();
 					} else if(i == 6) {
+						//Arrays with Resize
 						startInsertion = System.nanoTime();
 						testArrayResizing(objc);
 						objc.addDataToArraysWithResize(String.valueOf(numOfChannels), CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, numOfChannels);
+						endInsertion = System.nanoTime();
+					} else if(i == 7) {
+						//New Arrays
+						startInsertion = System.nanoTime();
+						objc.addDataToNewArrays(String.valueOf(numOfChannels), CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, numOfChannels);
 						endInsertion = System.nanoTime();
 					}
 					
@@ -879,6 +888,16 @@ public abstract class TestObjectCluster {
 							}
 						}
 						endRetrieval = System.nanoTime();
+					} else if(i == 7) {
+						startRetrieval = System.nanoTime();
+						int count = 0;
+						for(int numOfData = 0; numOfData < objc.sensorDataArray.mCalArraysIndex; numOfData++) {
+							String channelName = objc.sensorDataArray.mCalSensorNames[numOfData];
+							String channelUnits = objc.sensorDataArray.mCalUnits[numOfData];
+							dataArray[count] = objc.sensorDataArray.mCalData[numOfData];
+							count++;
+						}
+						endRetrieval = System.nanoTime();
 					}
 					
 					difference = endRetrieval - startRetrieval;
@@ -1008,6 +1027,15 @@ public abstract class TestObjectCluster {
 						for(int k=0; k<60; k++) {
 							int randomNum = ThreadLocalRandom.current().nextInt(0, 30);
 							dataArray[k] = objc.mCalDataResize[randomNum];
+						}
+						endRetrieval = System.nanoTime();
+					} else if(i == 7) {
+						startRetrieval = System.nanoTime();
+						for(int k=0; k<60; k++) {
+							int randomNum = ThreadLocalRandom.current().nextInt(0, 30);
+//							String channelName = objc.sensorDataArray.mCalSensorNames[randomNum];
+//							String channelUnits = objc.sensorDataArray.mCalUnits[randomNum];
+							dataArray[k] = objc.sensorDataArray.mCalData[randomNum];
 						}
 						endRetrieval = System.nanoTime();
 					}
