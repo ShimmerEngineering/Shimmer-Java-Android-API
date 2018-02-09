@@ -1,5 +1,7 @@
 package com.shimmerresearch.comms.wiredProtocol;
 
+import com.shimmerresearch.driverUtilities.UtilShimmer;
+
 public class ShimmerCrc {
 	
     /** Calculate the CRC per byte
@@ -57,4 +59,20 @@ public class ShimmerCrc {
             return false;
     }	
 
+	
+	//Testing
+	public static void main(String[] args) {
+		
+		byte[] testPacket = new byte[] {
+				(byte) 0x00,
+				(byte) 0xb6, (byte) 0xf8, (byte) 0xbb,
+				(byte) 0xff, (byte) 0x80, (byte) 0x00, (byte) 0x01, (byte) 0x80, (byte) 0x00, (byte) 0x01,
+				(byte) 0xff, (byte) 0x80, (byte) 0x00, (byte) 0x01, (byte) 0x80, (byte) 0x00, (byte) 0x01,
+				(byte) 0x9a, (byte) 0xb0
+		};
+		System.out.println("Valid CRC?:\t" + shimmerUartCrcCheck(testPacket));
+		
+		System.out.println("CRC Bytes should be [LSB MSB]:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(shimmerUartCrcCalc(testPacket, testPacket.length-2)));
+	}
+	
 }

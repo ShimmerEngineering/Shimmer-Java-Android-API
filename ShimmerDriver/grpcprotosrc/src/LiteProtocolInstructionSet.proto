@@ -90,6 +90,7 @@ message LiteProtocolInstructionSet {
 		GET_BUFFER_SIZE_COMMAND          		= 0x36;
 		GET_MAG_GAIN_COMMAND             		= 0x39;
 		GET_MAG_SAMPLING_RATE_COMMAND    		= 0x3C;
+		GET_UNIQUE_SERIAL_COMMAND 				= 0x3E;
 		GET_ACCEL_SAMPLING_RATE_COMMAND  		= 0x42;
 		GET_LSM303DLHC_ACCEL_LPMODE_COMMAND 	= 0x45;
 		GET_LSM303DLHC_ACCEL_HRMODE_COMMAND 	= 0x48;
@@ -141,6 +142,7 @@ message LiteProtocolInstructionSet {
 		BUFFER_SIZE_RESPONSE             		= 0x35 [(response_size) = 1];
 		MAG_GAIN_RESPONSE                		= 0x38 [(response_size) = 1];
 		MAG_SAMPLING_RATE_RESPONSE       		= 0x3B [(response_size) = 1];
+		UNIQUE_SERIAL_RESPONSE		 			= 0x3D [(response_size) = 8];
 		ACCEL_SAMPLING_RATE_RESPONSE  			= 0x41 [(response_size) = 1];
 		LSM303DLHC_ACCEL_LPMODE_RESPONSE		= 0x44 [(response_size) = 1];
 		LSM303DLHC_ACCEL_HRMODE_RESPONSE		= 0x47 [(response_size) = 1];

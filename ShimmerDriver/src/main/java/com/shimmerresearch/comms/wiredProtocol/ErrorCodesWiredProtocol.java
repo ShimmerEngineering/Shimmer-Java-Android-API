@@ -84,9 +84,9 @@ public class ErrorCodesWiredProtocol extends AbstractErrorCodes {
         
         // low level errors
     	aMap.put(SHIMMERUART_COMM_ERR_TIMEOUT, "COM port timeout");
-    	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD, "ShimmerUART_Comm_Err_Response_Bad_CMD");
-    	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG, "ShimmerUART_Comm_Err_Resonse_Bad_ARG");
-    	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC, "ShimmerUART_Comm_Err_Response_Bad_CRC");
+    	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD, "Device responded with Bad_CMD");
+    	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG, "Device responded with Bad_ARG");
+    	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC, "Device responded with Bad_CRC");
     	aMap.put(SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED, "ShimmerUART_Comm_Err_Response_Unexpected");
     	aMap.put(SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS, "ShimmerUART_Comm_Err_Message_Content");
     	

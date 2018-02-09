@@ -46,11 +46,14 @@ public class ShimmerBattStatusDetails implements Serializable {
 		}
 	}
 	
-	private class CHARGING_STATUS_BYTE{
+	public class CHARGING_STATUS_BYTE{
+		//This are bits that come directly from the Battery Charging chips output pins
 		public static final int SUSPENDED = 0x00;
 		public static final int FULLY_CHARGED = 0x40;
 		public static final int PRECONDITIONING = 0x80;
 		public static final int BAD_BATTERY = 0xC0;
+		 //Added for devices that don't support the above status bits
+		public static final int UNKNOWN = 0xFF;
 	}
 	
 	public enum BATTERY_LEVEL{
@@ -76,7 +79,7 @@ public class ShimmerBattStatusDetails implements Serializable {
 		update(battAdcValue, chargingStatus);
 	}
 	
-	private void update(int battAdcValue, int chargingStatus) {
+	public void update(int battAdcValue, int chargingStatus) {
         boolean adcVoltageError = false;
         
         mBattAdcValue = battAdcValue;
@@ -99,6 +102,9 @@ public class ShimmerBattStatusDetails implements Serializable {
         }
         else if ((mChargingStatusRaw & 0xFF) == CHARGING_STATUS_BYTE.BAD_BATTERY) {
         	mChargingStatus = CHARGING_STATUS.BAD_BATTERY;
+        }
+        else if((mChargingStatusRaw & 0xFF) == CHARGING_STATUS_BYTE.UNKNOWN) {
+        	mChargingStatus = CHARGING_STATUS.UNKNOWN;
         }
         else {
         	mChargingStatus = CHARGING_STATUS.ERROR;

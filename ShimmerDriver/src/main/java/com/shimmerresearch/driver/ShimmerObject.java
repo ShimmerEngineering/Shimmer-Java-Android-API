@@ -23,7 +23,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
-import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_PROPERTY;
+import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_AND_PROPERTY;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
@@ -88,10 +88,12 @@ import com.shimmerresearch.algorithms.orientation.Orientation3DObject;
  * Rev_1.9
 * Copyright (c) 2010 - 2014, Shimmer Research, Ltd.
 * All rights reserved
+
 *
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions are
 * met:
+
 *     * Redistributions of source code must retain the above copyright
 *       notice, this list of conditions and the following disclaimer.
 *     * Redistributions in binary form must reproduce the above
@@ -101,6 +103,7 @@ import com.shimmerresearch.algorithms.orientation.Orientation3DObject;
 *     * Neither the name of Shimmer Research, Ltd. nor the names of its
 *       contributors may be used to endorse or promote products derived
 *       from this software without specific prior written permission.
+
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -1666,18 +1669,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				
 				int iGSR = getSignalIndex(mainGsrSignalName);
-				double p1=0, p2=0;//,p3=0,p4=0,p5=0;
-				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
+//				int newGSRRange = -1; // initialized to -1 so it will only come into play if mGSRRange = 4  
 
 				tempData[0] = (double)newPacketInt[iGSR];
 				int gsrAdcValueUnCal = ((int)tempData[0] & 4095); 
 				
 				int currentGSRRange = getGSRRange();
-				
 				 // this is to fix a bug with SDLog v0.9
 				if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==9){
-					//Note that from FW (SDLog?) v1.0 onwards the MSB of the GSR data contains the range
-					
 //					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 
 					/*
@@ -1691,67 +1690,79 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					 */
 					
 					if (currentGSRRange==4){
-						newGSRRange=(49152 & (int)tempData[0])>>14;
+						currentGSRRange=(49152 & (int)tempData[0])>>14;
 						if (mPastGSRFirstTime){
-							mPastGSRRange = newGSRRange;
+							mPastGSRRange = currentGSRRange;
 							mPastGSRFirstTime = false;
 						}
-						if (newGSRRange != mPastGSRRange){
+						if (currentGSRRange != mPastGSRRange){
 							if (Math.abs(mPastGSRUncalibratedValue-gsrAdcValueUnCal)<300){
-								newGSRRange = mPastGSRRange;
+								currentGSRRange = mPastGSRRange;
 							} 
 							else {
-								mPastGSRRange = newGSRRange;
+								mPastGSRRange = currentGSRRange;
 							}
 							mPastGSRUncalibratedValue = gsrAdcValueUnCal;
 						}
 					}
 				} 
 				else {
+					//Note that from FW (SDLog?) v1.0 onwards the MSB of the GSR data contains the range
 					if (currentGSRRange==4){
 						//Mask upper 2 bits of the 16-bit packet and then bit shift down
-						newGSRRange=(49152 & (int)tempData[0])>>14; 
+						currentGSRRange=(49152 & (int)tempData[0])>>14; 
 					}
 				}
 
-				double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange, newGSRRange);
-				p1 = p1p2[0];
-				p2 = p1p2[1];
 
 				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_RANGE)!=null){
-					double rangeToSave = newGSRRange >=0 ? newGSRRange : currentGSRRange;
-					objectCluster.addCalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
-					objectCluster.addUncalDataToMap(SensorGSR.channelGsrRange,rangeToSave);
+					objectCluster.addCalDataToMap(SensorGSR.channelGsrRange,currentGSRRange);
+					objectCluster.addUncalDataToMap(SensorGSR.channelGsrRange,currentGSRRange);
 				}
 				if(SensorGSR.sensorGsrRef.mListOfChannelsRef.contains(SensorGSR.channelGsrAdc.mObjectClusterName)){
-//				if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_ADC_VALUE)!=null){
 					objectCluster.addUncalDataToMap(SensorGSR.channelGsrAdc, gsrAdcValueUnCal);
 					objectCluster.addCalDataToMap(SensorGSR.channelGsrAdc, SensorADC.calibrateMspAdcChannel(gsrAdcValueUnCal));
 				}
 				
 				objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,gsrAdcValueUnCal);
-//				uncalibratedData[iGSR]=(double)newPacketInt[iGSR];
 				uncalibratedData[iGSR] = gsrAdcValueUnCal;
 				uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
+					double gsrResistance = 0.0;
+					double gsrConductance = 0.0;
+					//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
+					if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
+						gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+						gsrConductance = 1/gsrResistance;
+					} else {
+						//double p1=0, p2=0;//,p3=0,p4=0,p5=0;
+						double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
+						double p1 = p1p2[0];
+						double p2 = p1p2[1];
+						
+						gsrResistance = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+						gsrConductance = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+					}
+					
 					//If ShimmerGQ we only want to have one GSR channel and it's units should be 'uS'
 					if(isShimmerGenGq()){
-						calibratedData[iGSR] = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+						calibratedData[iGSR] = gsrConductance;
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.U_SIEMENS;
-						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,calibratedData[iGSR]);
+						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,gsrConductance);
 					}
 					else {
-						calibratedData[iGSR] = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+						calibratedData[iGSR] = gsrResistance;
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,calibratedData[iGSR]);
+						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,gsrResistance);
 						
 						if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE)!=null){
 							objectCluster.addUncalDataToMap(SensorGSR.channelGsrMicroSiemens,gsrAdcValueUnCal);
-							objectCluster.addCalDataToMap(SensorGSR.channelGsrMicroSiemens,SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2));
+							objectCluster.addCalDataToMap(SensorGSR.channelGsrMicroSiemens,gsrConductance);
 
 //							System.out.println("mGSRRange:" + mGSRRange + "\tnewGSRRange" + newGSRRange + "\tp1:" + p1 + "\tp2" + p2);
 //							System.out.println("p1:" + p1 + "\tp2" + p2 + "\tADC:" + gsrAdcValueUnCal + "\tRes:" + calibratedData[iGSR] + "\tSie:" + SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2));
 						}
+
 					}
 				}
 
@@ -4471,7 +4482,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
-			byte[] samplingRateBytes = convertSamplingRateFreqBytes(getSamplingRateShimmer(), getSamplingClockFreq());
+			byte[] samplingRateBytes = convertSamplingRateFreqToBytes(getSamplingRateShimmer(), getSamplingClockFreq());
 			mConfigBytes[configByteLayoutCast.idxShimmerSamplingRate] = samplingRateBytes[0]; 
 			mConfigBytes[configByteLayoutCast.idxShimmerSamplingRate+1] = samplingRateBytes[1]; 
 	
@@ -8546,13 +8557,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //    		case(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME):
 //    			returnValue = getTrialName();
 //    	       	break;
-			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE):
-//			case(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_AND_SENSORS_SAMPLING_RATE):
-		        Double readSamplingRate = getSamplingRateShimmer();
-				Double actualSamplingRate = roundSamplingRateToSupportedValue(readSamplingRate, getSamplingClockFreq());
-//    					    	consolePrintLn("GET SAMPLING RATE: " + componentName);
-		    	returnValue = actualSamplingRate.toString();
-	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE):
 				returnValue = Integer.toString(getBufferSize());
 	        	break;
@@ -9449,7 +9453,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	@Override
 	public void parseUartConfigResponse(UartComponentPropertyDetails cPD, byte[] response){
 		// Parse response string
-		if(cPD==UART_COMPONENT_PROPERTY.BAT.ENABLE){
+		if(cPD==UART_COMPONENT_AND_PROPERTY.BAT.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
 			if(getHardwareVersion()==HW_ID.SHIMMER_3){
 				getSensorMap().get(Configuration.Shimmer3.SENSOR_ID.SHIMMER_VBATT).setIsEnabled((response[0]==0)? false:true);
@@ -9458,11 +9462,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				getSensorMap().get(Configuration.ShimmerGqBle.SENSOR_ID.VBATT).setIsEnabled((response[0]==0)? false:true);
 			}
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.BAT.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.BAT.FREQ_DIVIDER){
 			setSamplingDividerVBatt(response[0]);
 		}
 
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
 			if(getHardwareVersion()==HW_ID.SHIMMER_3){
 				getSensorMap().get(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL).setIsEnabled((response[0]==0)? false:true);
@@ -9471,25 +9475,25 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				getSensorMap().get(Configuration.ShimmerGqBle.SENSOR_ID.LSM303DLHC_ACCEL).setIsEnabled((response[0]==0)? false:true);
 			}
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
 			setLSM303DigitalAccelRate(response[0]);
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.RANGE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.RANGE){
 			setDigitalAccelRange(response[0]);
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
 			setLowPowerAccelWR((response[0]==0)? false:true);
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
 			setHighResAccelWR((response[0]==0)? false:true);
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
 			setSamplingDividerLsm303dlhcAccel(response[0]);
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
 			parseCalibParamFromPacketAccelLsm(response, CALIB_READ_SOURCE.LEGACY_BT_COMMAND);
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.GSR.ENABLE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.GSR.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
 			if(getHardwareVersion()==HW_ID.SHIMMER_3){
 				getSensorMap().get(Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR).setIsEnabled((response[0]==0)? false:true);
@@ -9498,13 +9502,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				getSensorMap().get(Configuration.ShimmerGqBle.SENSOR_ID.GSR).setIsEnabled((response[0]==0)? false:true);
 			}
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.GSR.RANGE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.GSR.RANGE){
 			setGSRRange(response[0]);
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.GSR.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.GSR.FREQ_DIVIDER){
 			setSamplingDividerGsr(response[0]);
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.BEACON.ENABLE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.BEACON.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
 			if(getHardwareVersion()==HW_ID.SHIMMER_3){
 				getSensorMap().get(Configuration.ShimmerGqBle.SENSOR_ID.BEACON).setIsEnabled((response[0]==0)? false:true);
@@ -9513,7 +9517,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				getSensorMap().get(Configuration.ShimmerGqBle.SENSOR_ID.BEACON).setIsEnabled((response[0]==0)? false:true);
 			}
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.BEACON.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.BEACON.FREQ_DIVIDER){
 			setSamplingDividerBeacon(response[0]);
 		}
 		else {
@@ -9526,37 +9530,37 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 //		System.out.println("Component:" + cPD.component + " Property:" + cPD.property + " ByteArray:" + cPD.byteArray.length);
 		
-		if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
+		if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)(getSensorMap().get(Configuration.ShimmerGqBle.SENSOR_ID.LSM303DLHC_ACCEL).isEnabled()? 1:0);
 			return response;
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.DATA_RATE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)getLSM303DigitalAccelRate();
 			return response;
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.RANGE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.RANGE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)getAccelRange();
 			return response;
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.LP_MODE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)(isLowPowerAccelWR()? 1:0);
 			return response;
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.HR_MODE){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)(isHighResAccelWR()? 1:0);
 			return response;
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.FREQ_DIVIDER){
 			byte[] response = new byte[1]; 
 			response[0] = (byte)(getSamplingDividerLsm303dlhcAccel());
 			return response;
 		}
-		else if(cPD==UART_COMPONENT_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
+		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.CALIBRATION){
 			byte[] response = generateCalParamLSM303DLHCAccel();
 			return response;
 		}
@@ -9705,3 +9709,5 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 }
+
+

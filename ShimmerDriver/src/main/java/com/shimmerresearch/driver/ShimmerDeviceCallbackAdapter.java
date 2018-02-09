@@ -6,11 +6,23 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.exceptions.ShimmerException;
 
+/**
+ * @author Mark Nolan
+ * 
+ * TODO migrate common callback code from Shimmer4/Sweatch/ArduinoDevice etc. to here
+ *
+ */
 public class ShimmerDeviceCallbackAdapter implements Serializable {
 
 	private static final long serialVersionUID = -3826489309767259792L;
 	
+	//TODO needs testing - only send update if there is a change to reduce callbacks
+	public static final boolean ONLY_UPDATE_RATE_IF_CHANGED = false;
+
 	private ShimmerDevice shimmerDevice = null;
+	
+	public double mLastSentPacketReceptionRateOverall = ShimmerDevice.DEFAULT_RECEPTION_RATE;
+	public double mLastSentPacketReceptionRateCurrent = ShimmerDevice.DEFAULT_RECEPTION_RATE;
 	
 	public ShimmerDeviceCallbackAdapter(ShimmerDevice shimmerDevice){
 		this.shimmerDevice = shimmerDevice;
@@ -66,11 +78,43 @@ public class ShimmerDeviceCallbackAdapter implements Serializable {
 	
 	//TODO neaten below. Copy/Paste from Shimmer4
 	public void dataHandler(ObjectCluster ojc) {
+		//TODO, don't do this every data packet 
+		sendCallbackPacketReceptionRateOverall();
+		
 		shimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET, ojc);
 	}
 	
+	public void sendCallbackPacketReceptionRateOverall() {
+		double packetReceptionRateOverall = shimmerDevice.getPacketReceptionRateOverall();
+		boolean sendUpdate = true;
+		if(ONLY_UPDATE_RATE_IF_CHANGED && mLastSentPacketReceptionRateOverall==packetReceptionRateOverall){
+			sendUpdate = false;
+		}
+		if(sendUpdate) {
+			sendCallBackMsgWithSameId(new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, shimmerDevice.getMacId(), shimmerDevice.getComPort(), packetReceptionRateOverall));
+		}
+		mLastSentPacketReceptionRateOverall = packetReceptionRateOverall;
+	}
+
+	public void sendCallbackPacketReceptionRateCurrent() {
+		double packetReceptionRateCurrent = shimmerDevice.getPacketReceptionRateCurrent();
+		boolean sendUpdate = true;
+		if(ONLY_UPDATE_RATE_IF_CHANGED && mLastSentPacketReceptionRateCurrent==packetReceptionRateCurrent){
+			sendUpdate = false;
+		}
+		if(sendUpdate) {
+			sendCallBackMsgWithSameId(new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, shimmerDevice.getMacId(), shimmerDevice.getComPort(), packetReceptionRateCurrent));
+		}
+		mLastSentPacketReceptionRateCurrent = packetReceptionRateCurrent;
+	}
+	
+	public void sendCallBackMsgWithSameId(CallbackObject callBackObject) {
+		shimmerDevice.sendCallBackMsg(callBackObject.mIndicator, callBackObject);
+	}
+
 	public void sendCallBackDeviceException(ShimmerException dE) {
 		shimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DEVICE_ERROR, dE);
 	}
+
 
 }

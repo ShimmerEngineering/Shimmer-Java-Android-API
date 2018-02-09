@@ -3529,7 +3529,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				writeGyroSamplingRate(getMPU9X50GyroAccelRate());
 				writeExgSamplingRate(rate);
 				
-				byte[] buf = convertSamplingRateFreqBytes(getSamplingRateShimmer(), getSamplingClockFreq());
+				byte[] buf = convertSamplingRateFreqToBytes(getSamplingRateShimmer(), getSamplingClockFreq());
 //				writeInstruction(new byte[]{SET_SAMPLING_RATE_COMMAND, buf[0], buf[1]});
 
 				//TODO change the RM's below to the above once tested

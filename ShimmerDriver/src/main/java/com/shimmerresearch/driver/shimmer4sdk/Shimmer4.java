@@ -25,6 +25,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.ShimmerDeviceCallbackAdapter;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
@@ -74,6 +75,9 @@ public class Shimmer4 extends ShimmerDevice {
 	private boolean isOverrideShowRwcErrorLeds = true;
 	
 	protected int mBluetoothBaudRate=9; //460800
+	
+	//TODO migrate to using below
+	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
 
 	public Shimmer4() {
 		super();
@@ -555,7 +559,7 @@ public class Shimmer4 extends ShimmerDevice {
 					else if(responseCommand==InstructionsResponse.RWC_RESPONSE_VALUE){ 
 						setLastReadRealTimeClockValue((long)parsedResponse);
 					}
-					else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE){
+					else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE){
 						SensorSTC3100Details sensorSTC3100Details = (SensorSTC3100Details)parsedResponse;
 						
 						consolePrintLn(sensorSTC3100Details.getDebugString());
@@ -1072,10 +1076,7 @@ public class Shimmer4 extends ShimmerDevice {
 	 * @param ojc
 	 */
 	protected void dataHandler(ObjectCluster ojc) {
-		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, getMacId(), mComPort, getPacketReceptionRateOverall());
-		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL, callBackObject);
-		
-		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET, ojc);
+		mDeviceCallbackAdapter.dataHandler(ojc);
 	}
 
 	/**
@@ -1168,30 +1169,10 @@ public class Shimmer4 extends ShimmerDevice {
 
 	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
-
-		//Old code -> not functioning well because it only takes into account the mLastSavedCalibratedTimeStamp and not all packets lost in the interval
-//		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
-//		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
-//			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
-//			setPacketReceptionRateCurrent(shimmerClock.calculatePacketReceptionRateCurrent(intervalMs));
-//			CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
-//			sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
-//		}
-
 		super.calculatePacketReceptionRateCurrent(intervalMs);
-
-		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
-		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
+		mDeviceCallbackAdapter.sendCallbackPacketReceptionRateCurrent();
 	}
 	
-	private void resetShimmerClock() {
-		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
-		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
-			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
-			shimmerClock.resetShimmerClock();
-		}
-	}
-
 	/**
 	 * @return the mButtonStart
 	 */
@@ -1261,7 +1242,7 @@ public class Shimmer4 extends ShimmerDevice {
 
 	}
 
-	//TODO TEMP here to sync booleans in ShimmerDevice with mCommsProtocolRadio
+	//TODO TEMP here to sync booleans in ShimmerDevice with mCommsProtocolRadio until we figure out a better system 
 	@Override
 	public boolean setIsDocked(boolean state) {
 		boolean changed = super.setIsDocked(state);
