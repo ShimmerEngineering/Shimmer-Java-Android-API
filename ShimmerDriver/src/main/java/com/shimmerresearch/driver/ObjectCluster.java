@@ -103,7 +103,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	// ------- Old Array approach - End -----------
 	
 	// ------- New Array approach -------
-	SensorDataArray sensorDataArray;
+	public SensorDataArray sensorDataArray;
 	
 	/** mObjectClusterBuilder needs to be uninitialized to avoid crash when connecting on Android */
 	private Builder mObjectClusterBuilder; 
