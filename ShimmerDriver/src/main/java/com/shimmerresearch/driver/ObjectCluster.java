@@ -59,6 +59,7 @@ import java.util.Set;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.ObjectCluster.OBJECTCLUSTER_TYPE;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.Builder;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2;
@@ -103,7 +104,8 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	// ------- Old Array approach - End -----------
 	
 	// ------- New Array approach -------
-	public SensorDataArray sensorDataArray;
+//	public SensorDataArray sensorDataArray;
+	public SensorDataPerType[] sensorDataArray = new SensorDataPerType[2];
 	
 	/** mObjectClusterBuilder needs to be uninitialized to avoid crash when connecting on Android */
 	private Builder mObjectClusterBuilder; 
@@ -124,16 +126,33 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		PROTOBUF,
 		ARRAYS
 	}
-	public static List<OBJECTCLUSTER_TYPE> mListOfOCTypesEnabled = Arrays.asList(
+	public static List<OBJECTCLUSTER_TYPE> mListOfOCTypesEnabled = new ArrayList<OBJECTCLUSTER_TYPE>(Arrays.asList(
 			OBJECTCLUSTER_TYPE.ARRAYS_LEGACY,
 			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER,
-			OBJECTCLUSTER_TYPE.PROTOBUF);
-
+			OBJECTCLUSTER_TYPE.PROTOBUF));
+	
 	//TODO remove this variable? unused in PC applications
 	public BT_STATE mState;
 
+	public static final int CAL_INDEX = CHANNEL_TYPE.CAL.ordinal();
+	public static final int UNCAL_INDEX = CHANNEL_TYPE.CAL.ordinal();
+	public int mIndexCal = 0;
+	public int mIndexUncal = 0;
+	public class SensorDataPerType {
+		public SensorDataPerType(int length) {
+			mSensorNames = new String[length];
+			mUnits = new String[length];
+			mData = new double[length];
+			mIsUsingDefaultCalibParams = new boolean[length];
+		}
+		public String[] mSensorNames;
+		public String[] mUnits;
+		public double[] mData;
+		public boolean[] mIsUsingDefaultCalibParams;
+	}
 	
 	public ObjectCluster(){
+		
 	}
 	
 	public ObjectCluster(String myName){
@@ -380,8 +399,12 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			mSensorNames = new String[length];
 			mUnitCal = new String[length];
 			mUnitUncal = new String[length];
-		} else if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
-			sensorDataArray = new SensorDataArray(50);		
+		}
+		
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
+//			sensorDataArray = new SensorDataArray(50);		
+			sensorDataArray[CHANNEL_TYPE.CAL.ordinal()] = new SensorDataPerType(50);
+			sensorDataArray[CHANNEL_TYPE.UNCAL.ordinal()] = new SensorDataPerType(50);
 		}
 	}
 
@@ -495,18 +518,32 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
 		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
 			if(channelType.equals(CHANNEL_TYPE.CAL.toString())) {
-				sensorDataArray.mCalSensorNames[sensorDataArray.mCalArraysIndex] = channelName;
-				sensorDataArray.mCalUnits[sensorDataArray.mCalArraysIndex] = units;
-				sensorDataArray.mCalData[sensorDataArray.mCalArraysIndex] = data;
-				sensorDataArray.mIsUsingDefaultCalibrationParams[sensorDataArray.mCalArraysIndex] = isUsingDefaultCalib;
-				sensorDataArray.mCalArraysIndex++;
+//				sensorDataArray.mCalSensorNames[sensorDataArray.mCalArraysIndex] = channelName;
+//				sensorDataArray.mCalUnits[sensorDataArray.mCalArraysIndex] = units;
+//				sensorDataArray.mCalData[sensorDataArray.mCalArraysIndex] = data;
+//				sensorDataArray.mIsUsingDefaultCalibrationParams[sensorDataArray.mCalArraysIndex] = isUsingDefaultCalib;
+//				sensorDataArray.mCalArraysIndex++;
+				
+				sensorDataArray[CAL_INDEX].mSensorNames[mIndexCal] = channelName;
+				sensorDataArray[CAL_INDEX].mUnits[mIndexCal] = units;
+				sensorDataArray[CAL_INDEX].mData[mIndexCal] = data;
+				sensorDataArray[CAL_INDEX].mIsUsingDefaultCalibParams[mIndexCal] = isUsingDefaultCalib;
+				mIndexCal++;
 			} else if(channelType.equals(CHANNEL_TYPE.UNCAL.toString())) {
-				sensorDataArray.mUncalSensorNames[sensorDataArray.mUncalArraysIndex] = channelName;
-				sensorDataArray.mUncalUnits[sensorDataArray.mUncalArraysIndex] = units;
-				sensorDataArray.mUncalData[sensorDataArray.mUncalArraysIndex] = data;
-				sensorDataArray.mUncalArraysIndex++;
+//				sensorDataArray.mUncalSensorNames[sensorDataArray.mUncalArraysIndex] = channelName;
+//				sensorDataArray.mUncalUnits[sensorDataArray.mUncalArraysIndex] = units;
+//				sensorDataArray.mUncalData[sensorDataArray.mUncalArraysIndex] = data;
+//				sensorDataArray.mUncalArraysIndex++;
+				
+				sensorDataArray[UNCAL_INDEX].mSensorNames[mIndexUncal] = channelName;
+				sensorDataArray[UNCAL_INDEX].mUnits[mIndexUncal] = units;
+				sensorDataArray[UNCAL_INDEX].mData[mIndexUncal] = data;
+				sensorDataArray[UNCAL_INDEX].mIsUsingDefaultCalibParams[mIndexUncal] = isUsingDefaultCalib;
+				mIndexUncal++;
 			}
-		} else {
+		} 
+		
+		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)) {
 			mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
 			addChannelNameToList(channelName);
 		}

@@ -10,8 +10,8 @@ public class SensorDataArray {
 	public double[] mCalData;
 	public boolean[] mIsUsingDefaultCalibrationParams;
 	
-	int mCalArraysIndex;
-	int mUncalArraysIndex;
+	public int mCalArraysIndex;
+	public int mUncalArraysIndex;
 	
 	
 	public SensorDataArray(int length) {
