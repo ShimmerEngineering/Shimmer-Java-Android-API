@@ -529,6 +529,7 @@ public class SensorGSR extends AbstractSensor {
 
 
 	//--------- Sensor specific methods start --------------
+	@Deprecated
 	public static double calibrateGsrDataToResistance(double gsrUncalibratedData, double p1, double p2){
 //		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 //		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
@@ -542,7 +543,7 @@ public class SensorGSR extends AbstractSensor {
 		return gsrCalibratedData;  
 	}
 
-	
+	@Deprecated
 	public static double calibrateGsrDataToSiemens(double gsrUncalibratedData, double p1, double p2){
 		double gsrUncalibratedDataLcl = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
@@ -594,6 +595,7 @@ public class SensorGSR extends AbstractSensor {
 	// against the ShimmerVerObject does not have to be done per data sample and
 	// instead it should be done once on initialisation. This would need to be
 	// done in SensorGSR and for legacy support in ShimmerObject
+	@Deprecated
 	public static double[] getGSRCoefficientsFromUsingGSRRange(ShimmerVerObject svo, int currentGSRRange) {
 		double p1 = 0.0;
 		double p2 = 0.0;
@@ -643,14 +645,15 @@ public class SensorGSR extends AbstractSensor {
 	}
 
 
+	@Deprecated
 	public static boolean isSupportedImprovedGsrCalibration(ShimmerVerObject svo) {
-		if(svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 19, 0)
-				|| svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 11, 0)
-				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_LR, FW_ID.GQ_802154, 0, 4, 1)
-				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_NR, FW_ID.GQ_802154, 0, 4, 1)){
+//		if(svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 19, 0)
+//				|| svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 11, 0)
+//				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_LR, FW_ID.GQ_802154, 0, 4, 1)
+//				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_NR, FW_ID.GQ_802154, 0, 4, 1)){
 			return true;
-		}
-		return false;
+//		}
+//		return false;
 	}
 
 	//--------- Sensor specific methods end --------------

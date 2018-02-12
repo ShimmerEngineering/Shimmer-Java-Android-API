@@ -473,7 +473,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		updateExpectedDataPacketSize();
 		//Debugging
-//		printSensorParserAndAlgoMaps();
+		printSensorParserAndAlgoMaps();
 	}
 
 	public void generateConfigOptionsMap() {
@@ -2544,8 +2544,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		consolePrintLn("");
 		
+		// TODO Resetting the index is fine for Shimmer3 as all SD/BT enabled channels
+		// are the same but this might need updating for future developments, i.e., algo
+		// map per comm type;
+		int ojcIndex = 0;
 		consolePrintLn("PARSER MAP" + "\tSize=" + mParserMap.keySet().size());
 		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
+			ojcIndex = 0;
 			consolePrintLn("PARSER MAP\tCOMM TYPE:\t" + commType);
 			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
 				consolePrintLn("\tSENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
@@ -2553,7 +2558,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					consolePrintLn("\t\t"  + "Channels Missing!");
 				} else {
 					for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-						consolePrintLn("\t\t"  + "NumBytes:" + channelDetails.mDefaultNumBytes + "\tChannel:" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
+						consolePrintLn("\t\tOJC index=" + ojcIndex++ + "\tNumBytes:" + channelDetails.mDefaultNumBytes + "\tChannel:" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
 					}
 				}
 			}
@@ -2567,10 +2572,54 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			consolePrintLn("\tALGO\t" + abstractAlgorithm.getAlgorithmName() + "\tIsEnabled:\t" + abstractAlgorithm.isEnabled());
 			List<ChannelDetails> listOfChannelDetails = abstractAlgorithm.getChannelDetails();
 			for(ChannelDetails channelDetails:listOfChannelDetails){
-				consolePrintLn("\t\tChannel:\t" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
+				int index = abstractAlgorithm.isEnabled()? ojcIndex++:-1;
+				consolePrintLn("\t\tOJC index=" + index + "\tChannel:\t" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
 			}
 		}
 		consolePrintLn("");
+		
+		generateObjectClusterIndexes();
+		consolePrintLn("");
+	}
+	
+	public List<ChannelDetails> generateObjectClusterIndexes() {
+		//TODO generating both here for the moment because I'm not sure which one will be useful for parsing OJCs 
+		List<ChannelDetails> listOfOjcChannels = new ArrayList<ChannelDetails>();
+		LinkedHashMap<Integer, ChannelDetails> mapOfOjcChannels = new LinkedHashMap<Integer, ChannelDetails>();
+		
+		int ojcIndex = 0;
+		for(TreeMap<Integer, SensorDetails> mapPerCommType:mParserMap.values()){
+			ojcIndex = 0;
+			for(SensorDetails sensorDetails:mapPerCommType.values()){
+				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					listOfOjcChannels.add(channelDetails);
+					mapOfOjcChannels.put(ojcIndex, channelDetails);
+					ojcIndex++;
+				}
+			}
+			// TODO breaking here is fine for Shimmer3 as all SD/BT enabled channels
+			// are the same but this might need updating for future developments, i.e., algo
+			// map per comm type;
+			break;
+		}
+		
+		List<AbstractAlgorithm> mapOfEnabledAlgoModules = getListOfEnabledAlgorithmModules();
+		for(AbstractAlgorithm abstractAlgorithm:mapOfEnabledAlgoModules){
+			List<ChannelDetails> listOfChannelDetails = abstractAlgorithm.getChannelDetails();
+			for(ChannelDetails channelDetails:listOfChannelDetails){
+				listOfOjcChannels.add(channelDetails);
+				mapOfOjcChannels.put(ojcIndex, channelDetails);
+				ojcIndex++;
+			}
+		}
+		
+		consolePrintLn("\tObjectClusterIndexs:");
+		for(int i=0;i<listOfOjcChannels.size();i++) {
+			consolePrintLn("\t\t" + i + "\t" + listOfOjcChannels.get(i).mObjectClusterName);
+		}
+		
+//		return mapOfOjcChannels;
+		return listOfOjcChannels;
 	}
 	
 	/** added special cases (e.g., for SensorEXG) */
