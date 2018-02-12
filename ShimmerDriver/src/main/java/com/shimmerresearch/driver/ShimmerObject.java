@@ -715,18 +715,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE fwType, boolean isTimeSyncEnabled, long pcTimestamp) {
+		
+//		if(mUseArraysDataStructureInObjectCluster) {
+//			ObjectCluster.getListOfOCTypesEnabled().add(OBJECTCLUSTER_TYPE.ARRAYS);
+//			ObjectCluster.getListOfOCTypesEnabled().remove(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER);
+//		}
+		
 		ObjectCluster objectCluster = new ObjectCluster();
+		
+		if(mUseArraysDataStructureInObjectCluster) {
+			objectCluster.createArrayData(50);
+		}
+
 		objectCluster.setShimmerName(mShimmerUserAssignedName);
 		objectCluster.setMacAddress(mMyBluetoothAddress);
 		objectCluster.mRawData = newPacket;
-		
-		if(mUseArraysDataStructureInObjectCluster) {
-			//Adding OBJECTCLUSTER_TYPE.ARRAYS to the listOfOCTypesEnabled will skip the Multimap and only put data into the SensorDataArrays
-			objectCluster.getListOfOCTypesEnabled().add(OBJECTCLUSTER_TYPE.ARRAYS);
-			objectCluster.getListOfOCTypesEnabled().remove(OBJECTCLUSTER_TYPE.ARRAYS_LEGACY);	//Don't use the legacy arrays approach
-			objectCluster.createArrayData(50);
-		}
-		
+						
 		if(fwType!=COMMUNICATION_TYPE.BLUETOOTH && fwType!=COMMUNICATION_TYPE.SD){
 //			throw new Exception("The Firmware is not compatible");
 			consolePrintErrLn("The Firmware is not compatible");
@@ -9725,6 +9729,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param enable
 	 */
 	public void enableArraysDataStructure(boolean enable) {
+		if(enable) {
+			if(!ObjectCluster.mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
+				ObjectCluster.mListOfOCTypesEnabled.add(OBJECTCLUSTER_TYPE.ARRAYS);
+			}
+			if(ObjectCluster.mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)) {
+				ObjectCluster.mListOfOCTypesEnabled.remove(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER);
+			}
+		}
 		mUseArraysDataStructureInObjectCluster = enable;
 	}
 	
