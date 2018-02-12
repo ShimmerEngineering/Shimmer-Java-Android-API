@@ -724,6 +724,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		ObjectCluster objectCluster = new ObjectCluster();
 		
 		if(mUseArraysDataStructureInObjectCluster) {
+			objectCluster.mEnableArraysDataStructure = true;
 			objectCluster.createArrayData(50);
 		}
 
@@ -9729,14 +9730,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param enable
 	 */
 	public void enableArraysDataStructure(boolean enable) {
-		if(enable) {
-			if(!ObjectCluster.mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
-				ObjectCluster.mListOfOCTypesEnabled.add(OBJECTCLUSTER_TYPE.ARRAYS);
-			}
-			if(ObjectCluster.mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)) {
-				ObjectCluster.mListOfOCTypesEnabled.remove(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER);
-			}
-		}
+//		if(enable) {
+//			if(!ObjectCluster.mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
+//				ObjectCluster.mListOfOCTypesEnabled.add(OBJECTCLUSTER_TYPE.ARRAYS);
+//			}
+//			if(ObjectCluster.mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)) {
+//				ObjectCluster.mListOfOCTypesEnabled.remove(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER);
+//			}
+//		}
 		mUseArraysDataStructureInObjectCluster = enable;
 	}
 	

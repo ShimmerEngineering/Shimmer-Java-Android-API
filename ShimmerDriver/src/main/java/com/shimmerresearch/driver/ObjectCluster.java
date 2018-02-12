@@ -138,17 +138,22 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public static final int UNCAL_INDEX = CHANNEL_TYPE.CAL.ordinal();
 	public int mIndexCal = 0;
 	public int mIndexUncal = 0;
+	public boolean mEnableArraysDataStructure = false;
+	
 	public class SensorDataPerType {
+		
 		public SensorDataPerType(int length) {
 			mSensorNames = new String[length];
 			mUnits = new String[length];
 			mData = new double[length];
 			mIsUsingDefaultCalibParams = new boolean[length];
 		}
+		
 		public String[] mSensorNames;
 		public String[] mUnits;
 		public double[] mData;
 		public boolean[] mIsUsingDefaultCalibParams;
+		
 	}
 	
 	public ObjectCluster(){
@@ -516,7 +521,8 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 
 	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
+//		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
+		if(mEnableArraysDataStructure) {
 			if(channelType.equals(CHANNEL_TYPE.CAL.toString())) {
 //				sensorDataArray.mCalSensorNames[sensorDataArray.mCalArraysIndex] = channelName;
 //				sensorDataArray.mCalUnits[sensorDataArray.mCalArraysIndex] = units;
@@ -541,11 +547,11 @@ final public class ObjectCluster implements Cloneable,Serializable{
 				sensorDataArray[UNCAL_INDEX].mIsUsingDefaultCalibParams[mIndexUncal] = isUsingDefaultCalib;
 				mIndexUncal++;
 			}
-		} 
-		
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)) {
-			mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
-			addChannelNameToList(channelName);
+		} else {
+			if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)) {
+				mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
+				addChannelNameToList(channelName);
+			}
 		}
 	}
 
