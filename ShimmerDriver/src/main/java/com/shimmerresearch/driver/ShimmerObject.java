@@ -723,11 +723,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		ObjectCluster objectCluster = new ObjectCluster();
 		
-		if(mUseArraysDataStructureInObjectCluster) {
-			objectCluster.mEnableArraysDataStructure = true;
-			objectCluster.createArrayData(50);
-		}
-
 		objectCluster.setShimmerName(mShimmerUserAssignedName);
 		objectCluster.setMacAddress(mMyBluetoothAddress);
 		objectCluster.mRawData = newPacket;
@@ -785,6 +780,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		String [] uncalibratedDataUnits = new String[numUncalibratedDataUnits+numAdditionalChannels];
 		String [] calibratedDataUnits = new String[numCalibratedDataUnits+numAdditionalChannels];
 		String [] sensorNames = new String[numSensorNames+numAdditionalChannels];
+		objectCluster.sensorDataArray = new SensorDataArray(numCalibratedData+numAdditionalChannels);
+		
 		
 		System.arraycopy(mSignalNameArray, 0, sensorNames, 0, sensorNames.length);
 		// the above is throwing an error
@@ -2076,12 +2073,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //				additionalChannelsOffset+=1;
 			}
 			
-			objectCluster.mCalData = calibratedData;
-			objectCluster.mUncalData = uncalibratedData;
-			objectCluster.mUnitCal = calibratedDataUnits;
-			objectCluster.mUnitUncal = uncalibratedDataUnits;
-			objectCluster.mSensorNames = sensorNames;
+//			objectCluster.mCalData = calibratedData;
+//			objectCluster.mUncalData = uncalibratedData;
+//			objectCluster.mUnitCal = calibratedDataUnits;
+//			objectCluster.mUnitUncal = uncalibratedDataUnits;
+//			objectCluster.mSensorNames = sensorNames;
 
+			objectCluster.sensorDataArray.mCalData=calibratedData;
+			objectCluster.sensorDataArray.mUncalData=uncalibratedData;
+			objectCluster.sensorDataArray.mCalUnits = calibratedDataUnits;
+			objectCluster.sensorDataArray.mUncalUnits = uncalibratedDataUnits;
+			objectCluster.sensorDataArray.mSensorNames = sensorNames;
+			objectCluster.setIndexKeeper(additionalChannelsOffset);
+			
 //			printSensorNames(objectCluster.mSensorNames);
 //			printSensorNames(objectCluster.getChannelNamesByInsertionOrder());
 			
