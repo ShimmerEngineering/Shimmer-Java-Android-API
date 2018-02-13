@@ -218,6 +218,18 @@ public class UtilShimmer implements Serializable {
 	}
 
 	/**
+	 * Converts from milliseconds in Unix time to a formatted local time string
+	 * (specific to the local timezone of the computer)
+	 * 
+	 * @param milliSeconds
+	 * @param format
+	 * @return
+	 */
+	public static String convertMilliSecondsToHrMinSecMilliSecLocal(long milliSeconds) {
+		return convertMilliSecondsToFormat(milliSeconds, "HH:mm:ss.SSS", false);
+	}
+	
+	/**
 	 * Converts from milliseconds in Unix time 
 	 * 
 	 * @param milliSeconds
