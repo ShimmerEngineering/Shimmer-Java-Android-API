@@ -553,7 +553,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//-------- Timestamp related start --------
 	protected double mLastReceivedTimeStampTicksUnwrapped=0;
 	protected double mCurrentTimeStampCycle=0;
-	protected long mInitialTsTicks = 0;
+	protected long mInitialTimeStampTicksSd = 0;
 	@Deprecated //not needed any more
 	protected double mLastReceivedCalibratedTimeStamp=-1; 
 	
@@ -561,7 +561,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected double mStreamingStartTimeMilliSecs;
 	
 	protected int mTimeStampPacketByteSize = 2;
-	protected int mTimeStampTicksMaxValue = 65536-1;// (16777216 or 65536)-1
+	protected int mTimeStampTicksMaxValue = 65536;// 16777216 or 65536
 	
 	protected long mRTCDifferenceInTicks = 0; //this is in ticks
 	public int mRTCSetByBT = 1; // RTC source, = 1 because it comes from the BT
@@ -1733,7 +1733,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
 					if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
 						gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
-						gsrConductance = 1/gsrResistance;
+						gsrConductance = 1.0/gsrResistance;
 					} else {
 						//double p1=0, p2=0;//,p3=0,p4=0,p5=0;
 						double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
@@ -2387,9 +2387,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			//This is to circumvent a bug with old StroKare firmware. Resolved in firmware v1.0.1 
 			if(getFirmwareIdentifier()==FW_ID.STROKARE
 					&& !isThisVerCompatibleWith(FW_ID.STROKARE, 1, 0, 1)){
-				long initialTsTicksOriginal = getInitialTsTicks();
+				long initialTsTicksOriginal = getInitialTimeStampTicksSd();
 				long initialTsTicksNew = (long) ((initialTsTicksOriginal&0xFFFF000000L)+shimmerTimestampTicks);
-				setInitialTsTicks(initialTsTicksNew);
+				setInitialTimeStampTicksSd(initialTsTicksNew);
 			}
 			
 			mFirstTime = false;
@@ -2405,7 +2405,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		double timestampUnwrappedWithOffsetTicks = 0;
 		if (fwType==COMMUNICATION_TYPE.SD){
 			// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
-			timestampUnwrappedWithOffsetTicks = timestampUnwrappedTicks + getInitialTsTicks();
+			timestampUnwrappedWithOffsetTicks = timestampUnwrappedTicks + getInitialTimeStampTicksSd();
 
 			if (isLegacySdLog()){
 				uncalibratedData[iTimeStamp] = shimmerTimestampTicks;
@@ -2457,8 +2457,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				} else {
 					//TODO remove below, no need for it
 					rtcTimestampMilliSecs = timestampUnwrappedMilliSecs;
-					if(getInitialTsTicks()!=0){
-						rtcTimestampMilliSecs += ((double)getInitialTsTicks()/getSamplingClockFreq()*1000.0);
+					if(getInitialTimeStampTicksSd()!=0){
+						rtcTimestampMilliSecs += ((double)getInitialTimeStampTicksSd()/getSamplingClockFreq()*1000.0);
 					}
 					if(isRtcDifferenceSet()){
 						rtcTimestampMilliSecs += ((double)getRTCDifferenceInTicks()/getSamplingClockFreq()*1000.0);
@@ -3249,13 +3249,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	protected double unwrapTimeStamp(double timeStampTicks){
 		//first convert to continuous time stamp
-		double timestampUnwrappedTicks = timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
+		double timestampUnwrappedTicks = calculateTimeStampUnwrapped(timeStampTicks);
 		
 		//Check if there was a roll-over
 		if (getLastReceivedTimeStampTicksUnwrapped()>timestampUnwrappedTicks){ 
 			mCurrentTimeStampCycle += 1;
 			//Recalculate timestamp
-			timestampUnwrappedTicks = timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
+			timestampUnwrappedTicks = calculateTimeStampUnwrapped(timeStampTicks);
 		}
 
 		setLastReceivedTimeStampTicksUnwrapped(timestampUnwrappedTicks);
@@ -3263,8 +3263,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return timestampUnwrappedTicks;
 	}
 
+	private double calculateTimeStampUnwrapped(double timeStampTicks) {
+		return timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
+	}
+
+
 //	@Override
 	private void calculateTrialPacketLoss(double timestampUnwrappedMilliSecs) {
+		//TODO currently this check is ok here as this method is called for each packet but this is excessive. 
 		//Store in order to trigger packet loss calculations while streaming in real-time
 		if (!mStreamingStartTimeSaved){
 			mStreamingStartTimeSaved=true;
@@ -3289,6 +3295,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			double packetReceptionRateTrial = ((double)packetReceivedCount/(double)packetExpectedCount)*100; 
 			setPacketReceptionRateOverall(packetReceptionRateTrial);
 		}
+	}
+
+	public void resetCalibratedTimeStamp(){
+		setLastReceivedTimeStampTicksUnwrapped(0);
+		mLastReceivedCalibratedTimeStamp = -1;
+		
+		mStreamingStartTimeSaved = false;
+		mStreamingStartTimeMilliSecs = -1;
+		
+		setCurrentTimeStampCycle(0);
 	}
 
 
@@ -4003,8 +4019,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @return
 	 */
-	public long getInitialTsTicks(){
-		return mInitialTsTicks;
+	public long getInitialTimeStampTicksSd(){
+		return mInitialTimeStampTicksSd;
 	}
 	
 	/**
@@ -4014,8 +4030,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 * @param initialTimeStamp
 	 */
-	public void setInitialTsTicks(long initialTimeStamp){
-		mInitialTsTicks = initialTimeStamp;
+	public void setInitialTimeStampTicksSd(long initialTimeStamp){
+		mInitialTimeStampTicksSd = initialTimeStamp;
 	}
 	
 	/** This sets the time stamp cycle, when unwrapping time stamps
@@ -4198,7 +4214,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mNChannels=0; 
 			mBufferSize=0;
 			mSyncBroadcastInterval = 0;
-			setInitialTsTicks(0);
+			setInitialTimeStampTicksSd(0);
 			
 			setShimmerAndSensorsSamplingRate(51.2);
 			
@@ -8885,7 +8901,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 		SensorEXG.addExgConfigToDbConfigMap(configMapForDb, getEXG1RegisterArray(), getEXG2RegisterArray());
 		
-		configMapForDb.put(ShimmerDevice.DatabaseConfigHandle.INITIAL_TIMESTAMP, (double) getInitialTsTicks());
+		configMapForDb.put(ShimmerDevice.DatabaseConfigHandle.INITIAL_TIMESTAMP, (double) getInitialTimeStampTicksSd());
 
 		configMapForDb.put(DatabaseConfigHandleShimmerObject.SYNC_WHEN_LOGGING, (double) getSyncWhenLogging());
 		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_ESTIMATED, (double) getTrialDurationEstimatedInSecs());
@@ -8976,7 +8992,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		//Initial TimeStamp
 		if(mapOfConfigPerShimmer.containsKey(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)){
-			setInitialTsTicks(((Double) mapOfConfigPerShimmer.get(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
+			setInitialTimeStampTicksSd(((Double) mapOfConfigPerShimmer.get(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
 		}
 
 
@@ -9313,7 +9329,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//Initial TimeStamp
-			configValues.add((double) shimmerObject.getInitialTsTicks());
+			configValues.add((double) shimmerObject.getInitialTimeStampTicksSd());
 
 			//Expansion board
 			configValues.add((double) shimmerObject.getExpansionBoardId());

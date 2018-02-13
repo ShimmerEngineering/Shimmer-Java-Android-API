@@ -338,7 +338,7 @@ public class SensorGSR extends AbstractSensor {
 				//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
 				if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
 					gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
-					gsrConductance = 1/gsrResistance;
+					gsrConductance = 1.0/gsrResistance;
 				} else {
 					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
 					p1 = p1p2[0];
