@@ -3092,17 +3092,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 
 		// TODO load algorithm modules automatically from any included algorithm
-		// jars depending on licence?
+		// jars depending on license?
 	}
 
 	public void loadAlgorithms(List<AlgorithmLoaderInterface> listOfAlgorithms, COMMUNICATION_TYPE commType) {
 		for(AlgorithmLoaderInterface algorithmLoader:listOfAlgorithms){
-			loadAlgorithm(algorithmLoader, commType);
+			algorithmLoader.initialiseSupportedAlgorithms(this, commType);
 		}
-	}
-
-	public void loadAlgorithm(AlgorithmLoaderInterface algorithmLoader, COMMUNICATION_TYPE commType) {
-		algorithmLoader.initialiseSupportedAlgorithms(this, commType);
 	}
 
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
@@ -3133,33 +3129,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				consolePrintException("Error initialising algorithm module\t" + aa.getAlgorithmName(), e1.getStackTrace());
 			}
 		}
-	}
-
-	
-	public HashMap<String, Object> syncAlgoGroupConfig(String groupName, boolean enabled){
-		HashMap<String, Object> mapOfAlgoSettings = null;
-		
-		List<AbstractAlgorithm> listOfEnabledAlgoModulesPerGroup = getListOfEnabledAlgorithmModulesPerGroup(groupName);
-		//check if another algorithm in the group has been enabled 
-		if(listOfEnabledAlgoModulesPerGroup!=null && listOfEnabledAlgoModulesPerGroup.size()>0){
-			//Take the first enabled algorithm settings and configure all the other algorithms to be the same
-			AbstractAlgorithm firstEnabledAlgo = listOfEnabledAlgoModulesPerGroup.get(0);
-			
-			mapOfAlgoSettings = firstEnabledAlgo.getAlgorithmSettings();
-
-			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
-			Iterator<AbstractAlgorithm> iterator = listOfAlgoModulesPerGroup.iterator();
-			while(iterator.hasNext()){
-				AbstractAlgorithm abstractAlgorithm = iterator.next();
-				abstractAlgorithm.setAlgorithmSettings(mapOfAlgoSettings);
-			}
-		}
-		else{
-			//Set defaults for off?
-			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
-		}
-		
-		return mapOfAlgoSettings;
 	}
 
 	@Deprecated
@@ -3206,6 +3175,32 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 			
 		}
+	}
+	
+	public HashMap<String, Object> syncAlgoGroupConfig(String groupName, boolean enabled){
+		HashMap<String, Object> mapOfAlgoSettings = null;
+		
+		List<AbstractAlgorithm> listOfEnabledAlgoModulesPerGroup = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+		//check if another algorithm in the group has been enabled 
+		if(listOfEnabledAlgoModulesPerGroup!=null && listOfEnabledAlgoModulesPerGroup.size()>0){
+			//Take the first enabled algorithm settings and configure all the other algorithms to be the same
+			AbstractAlgorithm firstEnabledAlgo = listOfEnabledAlgoModulesPerGroup.get(0);
+			
+			mapOfAlgoSettings = firstEnabledAlgo.getAlgorithmSettings();
+
+			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
+			Iterator<AbstractAlgorithm> iterator = listOfAlgoModulesPerGroup.iterator();
+			while(iterator.hasNext()){
+				AbstractAlgorithm abstractAlgorithm = iterator.next();
+				abstractAlgorithm.setAlgorithmSettings(mapOfAlgoSettings);
+			}
+		}
+		else{
+			//Set defaults for off?
+			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
+		}
+		
+		return mapOfAlgoSettings;
 	}
 	
 	// ------------- Algorithm Code end -----------------------
