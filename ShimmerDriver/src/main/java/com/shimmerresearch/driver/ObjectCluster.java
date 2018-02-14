@@ -235,12 +235,34 @@ final public class ObjectCluster implements Cloneable,Serializable{
 //		return getFormatClusterValue(channelDetails.mObjectClusterName, format);
 //	}
 
+	/**
+	 * Returns data for the given channel name and format (CAL/UNCAL). Works for both Multimap/FormatCluster & Arrays data structures.
+	 * Note: returns Double.NaN if channel name and/or type is not found. Also, using this method with the Arrays may cause a performance impact.
+	 * @param channelName
+	 * @param format
+	 * @return data
+	 */
 	public double getFormatClusterValue(String channelName, String format){
-		FormatCluster formatCluster = getLastFormatCluster(channelName, format);
-		if(formatCluster!=null){
-			return formatCluster.mData;
+		if(mEnableArraysDataStructure) {
+			int index = getIndexForChannelName(channelName);
+			if(index == -1) {	//Index was not found
+				return Double.NaN;
+			} else {
+				if(format.equals(CHANNEL_TYPE.CAL.toString())) {
+					return sensorDataArray.mCalData[index];
+				} else if(format.equals(CHANNEL_TYPE.UNCAL.toString())) {
+					return sensorDataArray.mUncalData[index];
+				} else {
+					return Double.NaN;	//TODO JOS: Implement support for DERIVED format(?)
+				}
+			}
+		} else {
+			FormatCluster formatCluster = getLastFormatCluster(channelName, format);
+			if(formatCluster!=null){
+				return formatCluster.mData;
+			}
+			return Double.NaN;
 		}
-		return Double.NaN;
 	}
 	
 	public FormatCluster getLastFormatCluster(String channelName, String format){
@@ -712,6 +734,24 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	/**
+	 * Retrieves the index for a particular channel name in the SensorDataArray. This index can then be used to retrieve CAL/UNCAL data from the SensorDataArray
+	 * Note: returns -1 if the index is not found.
+	 * @param channelName
+	 * @return index 
+	 */
+	public int getIndexForChannelName(String channelName) {
+		//TODO JOS: add parser map support here so we don't have to parse the array
+		for(int i=0; i<sensorDataArray.mSensorNames.length; i++) {
+			if(sensorDataArray.mSensorNames[i] != null) {
+				if(sensorDataArray.mSensorNames[i].equals(channelName)) {
+					return i;
+				}
+			}
+		}
+		return -1;
 	}
 
 }

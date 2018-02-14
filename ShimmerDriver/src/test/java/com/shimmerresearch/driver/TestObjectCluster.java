@@ -892,7 +892,7 @@ public abstract class TestObjectCluster {
 						startRetrieval = System.nanoTime();
 						int count = 0;
 						for(int numOfData = 0; numOfData < objc.sensorDataArray.mCalArraysIndex; numOfData++) {
-							String channelName = objc.sensorDataArray.mCalSensorNames[numOfData];
+							String channelName = objc.sensorDataArray.mSensorNames[numOfData];
 							String channelUnits = objc.sensorDataArray.mCalUnits[numOfData];
 							dataArray[count] = objc.sensorDataArray.mCalData[numOfData];
 							count++;

@@ -723,6 +723,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		ObjectCluster objectCluster = new ObjectCluster();
 		
+		if(mUseArraysDataStructureInObjectCluster) {
+			objectCluster.mEnableArraysDataStructure = true;	//This will disable the Multimap as well
+		}
+		
 		objectCluster.setShimmerName(mShimmerUserAssignedName);
 		objectCluster.setMacAddress(mMyBluetoothAddress);
 		objectCluster.mRawData = newPacket;
@@ -9722,7 +9726,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	/**
-	 * Updates the booleans mIsUsingDefault___Params in each Shimmer3 sensor with the current values
+	 * Updates the booleans mIsUsingDefaultParams in each Shimmer3 sensor with the current values
 	 * Main purpose is to only query if it's using the default params once, e.g. when start streaming, as this can be resource-intensive on old Android devices
 	 */
 	protected void determineCalibrationParamsForIMU(){		
@@ -9745,14 +9749,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param enable
 	 */
 	public void enableArraysDataStructure(boolean enable) {
-//		if(enable) {
-//			if(!ObjectCluster.mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
-//				ObjectCluster.mListOfOCTypesEnabled.add(OBJECTCLUSTER_TYPE.ARRAYS);
-//			}
-//			if(ObjectCluster.mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)) {
-//				ObjectCluster.mListOfOCTypesEnabled.remove(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER);
-//			}
-//		}
 		mUseArraysDataStructureInObjectCluster = enable;
 	}
 	
