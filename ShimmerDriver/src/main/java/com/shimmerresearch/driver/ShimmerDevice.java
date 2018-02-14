@@ -473,7 +473,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		updateExpectedDataPacketSize();
 		//Debugging
-		printSensorParserAndAlgoMaps();
+//		printSensorParserAndAlgoMaps();
 	}
 
 	public void generateConfigOptionsMap() {
@@ -742,6 +742,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//TODO temp here -> check if the best place for it
 		updateSensorDetailsWithCommsTypes();
 		updateSamplingRatesMapWithCommsTypes();
+	}
+	
+	public List<COMMUNICATION_TYPE> getCommunicationRoutes() {
+		return mListOfAvailableCommunicationTypes;
 	}
 	//------------------- Communication route related End -------------------------------
 	
@@ -2456,42 +2460,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		generateParserMap();
 	}
 	
-//	/**
-//	 * Very messy approach, deprecating this method 
-//	 */
-//	@Deprecated
-//	public void prepareAllMapsAfterConfigRead() {
-//		//Debugging
-////		System.err.println("Before");
-////		printSensorParserAndAlgoMaps();
-//
-//		//TODO ideally this line shouldn't be here
-//		sensorAndConfigMapsCreate();
-//		
-//		setEnabledAndDerivedSensorsAndUpdateMaps(mEnabledSensors, mDerivedSensors);
-//		
-////		sensorMapUpdateFromEnabledSensorsVars();
-////		algorithmMapUpdateFromEnabledSensorsVars();
-//////		sensorMapCheckandCorrectSensorDependencies();
-////		generateParserMap();
-//		
-//		//Debugging
-////		System.err.println("After");
-////		printSensorParserAndAlgoMaps();
-//		
-//		//TODO include this here after testing
-////		// Configuration from each Sensor settings
-////		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-////			abstractSensor.configByteArrayParse(this, mConfigBytes);
-////		}
-////
-//		
-//		// This is to update the newly created sensor/algorithm classes (created
-//		// above) with the current Shimmer sampling rate
-//		
-//		setSamplingRateSensors(getSamplingRateShimmer());
-//	}
-	
 	protected void handleSpecialCasesAfterSensorMapCreate() {
 		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
 		while(iterator.hasNext()){
@@ -2544,13 +2512,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		consolePrintLn("");
 		
-		// TODO Resetting the index is fine for Shimmer3 as all SD/BT enabled channels
-		// are the same but this might need updating for future developments, i.e., algo
-		// map per comm type;
-		int ojcIndex = 0;
 		consolePrintLn("PARSER MAP" + "\tSize=" + mParserMap.keySet().size());
 		for(COMMUNICATION_TYPE commType:mParserMap.keySet()){
-			ojcIndex = 0;
 			consolePrintLn("PARSER MAP\tCOMM TYPE:\t" + commType);
 			for(SensorDetails sensorDetails:mParserMap.get(commType).values()){
 				consolePrintLn("\tSENSOR\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
@@ -2558,7 +2521,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					consolePrintLn("\t\t"  + "Channels Missing!");
 				} else {
 					for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-						consolePrintLn("\t\tOJC index=" + ojcIndex++ + "\tNumBytes:" + channelDetails.mDefaultNumBytes + "\tChannel:" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
+						consolePrintLn("\t\tNumBytes:" + channelDetails.mDefaultNumBytes + "\tChannel:" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
 					}
 				}
 			}
@@ -2572,54 +2535,49 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			consolePrintLn("\tALGO\t" + abstractAlgorithm.getAlgorithmName() + "\tIsEnabled:\t" + abstractAlgorithm.isEnabled());
 			List<ChannelDetails> listOfChannelDetails = abstractAlgorithm.getChannelDetails();
 			for(ChannelDetails channelDetails:listOfChannelDetails){
-				int index = abstractAlgorithm.isEnabled()? ojcIndex++:-1;
-				consolePrintLn("\t\tOJC index=" + index + "\tChannel:\t" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
+				consolePrintLn("\t\tChannel:\t" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
 			}
 		}
 		consolePrintLn("");
 		
-		generateObjectClusterIndexes();
+		LinkedHashMap<COMMUNICATION_TYPE, List<ChannelDetails>> mapOfOjcChannels = generateObjectClusterIndexes();
+		consolePrintLn("\tObjectClusterIndexes:");
+		for(COMMUNICATION_TYPE commType:mapOfOjcChannels.keySet()) {
+			consolePrintLn("\tComm Type: " + commType);
+			List<ChannelDetails> listOfOjcChannels = mapOfOjcChannels.get(commType);
+			for(int i=0;i<listOfOjcChannels.size();i++) {
+				consolePrintLn("\t\t" + i + "\t" + listOfOjcChannels.get(i).mObjectClusterName);
+			}
+		}
+		
 		consolePrintLn("");
 	}
 	
-	public List<ChannelDetails> generateObjectClusterIndexes() {
-		//TODO generating both here for the moment because I'm not sure which one will be useful for parsing OJCs 
-		List<ChannelDetails> listOfOjcChannels = new ArrayList<ChannelDetails>();
-		LinkedHashMap<Integer, ChannelDetails> mapOfOjcChannels = new LinkedHashMap<Integer, ChannelDetails>();
+	public LinkedHashMap<COMMUNICATION_TYPE, List<ChannelDetails>> generateObjectClusterIndexes() {
+		LinkedHashMap<COMMUNICATION_TYPE, List<ChannelDetails>> mapOfOjcChannels = new LinkedHashMap<COMMUNICATION_TYPE, List<ChannelDetails>>();
 		
-		int ojcIndex = 0;
-		for(TreeMap<Integer, SensorDetails> mapPerCommType:mParserMap.values()){
-			ojcIndex = 0;
+		for(COMMUNICATION_TYPE commType:mParserMap.keySet()) {
+			List<ChannelDetails> listOfOjcChannels = new ArrayList<ChannelDetails>();
+			
+			TreeMap<Integer, SensorDetails> mapPerCommType = mParserMap.get(commType);
 			for(SensorDetails sensorDetails:mapPerCommType.values()){
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					listOfOjcChannels.add(channelDetails);
-					mapOfOjcChannels.put(ojcIndex, channelDetails);
-					ojcIndex++;
 				}
 			}
-			// TODO breaking here is fine for Shimmer3 as all SD/BT enabled channels
-			// are the same but this might need updating for future developments, i.e., algo
-			// map per comm type;
-			break;
-		}
-		
-		List<AbstractAlgorithm> mapOfEnabledAlgoModules = getListOfEnabledAlgorithmModules();
-		for(AbstractAlgorithm abstractAlgorithm:mapOfEnabledAlgoModules){
-			List<ChannelDetails> listOfChannelDetails = abstractAlgorithm.getChannelDetails();
-			for(ChannelDetails channelDetails:listOfChannelDetails){
-				listOfOjcChannels.add(channelDetails);
-				mapOfOjcChannels.put(ojcIndex, channelDetails);
-				ojcIndex++;
+			
+			// TODO need an enabled algo per commType map
+			List<AbstractAlgorithm> mapOfEnabledAlgoModules = getListOfEnabledAlgorithmModules();
+			for(AbstractAlgorithm abstractAlgorithm:mapOfEnabledAlgoModules){
+				List<ChannelDetails> listOfChannelDetails = abstractAlgorithm.getChannelDetails();
+				for(ChannelDetails channelDetails:listOfChannelDetails){
+					listOfOjcChannels.add(channelDetails);
+				}
 			}
+			mapOfOjcChannels.put(commType, listOfOjcChannels);
 		}
 		
-		consolePrintLn("\tObjectClusterIndexs:");
-		for(int i=0;i<listOfOjcChannels.size();i++) {
-			consolePrintLn("\t\t" + i + "\t" + listOfOjcChannels.get(i).mObjectClusterName);
-		}
-		
-//		return mapOfOjcChannels;
-		return listOfOjcChannels;
+		return mapOfOjcChannels;
 	}
 	
 	/** added special cases (e.g., for SensorEXG) */
@@ -3134,17 +3092,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 
 		// TODO load algorithm modules automatically from any included algorithm
-		// jars depending on licence?
+		// jars depending on license?
 	}
 
 	public void loadAlgorithms(List<AlgorithmLoaderInterface> listOfAlgorithms, COMMUNICATION_TYPE commType) {
 		for(AlgorithmLoaderInterface algorithmLoader:listOfAlgorithms){
-			loadAlgorithm(algorithmLoader, commType);
+			algorithmLoader.initialiseSupportedAlgorithms(this, commType);
 		}
-	}
-
-	public void loadAlgorithm(AlgorithmLoaderInterface algorithmLoader, COMMUNICATION_TYPE commType) {
-		algorithmLoader.initialiseSupportedAlgorithms(this, commType);
 	}
 
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
@@ -3162,48 +3116,19 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void initializeAlgorithms() {
 		for (AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){
 			try {
-				if(!aa.isInitialized() && aa.isEnabled()){
+				if(aa.isEnabled() && !aa.isInitialized()){
 					aa.setShimmerSamplingRate(getSamplingRateShimmer());
 					aa.initialize();
 				}
-				else {
-					if(!aa.isEnabled()){
-						//orientationChannelSync(aa.mAlgorithmName, aa.isEnabled());
-//						aa.reset();
-						//TODO stop the algorithm
-					}
+				else if(!aa.isEnabled()){
+					//orientationChannelSync(aa.mAlgorithmName, aa.isEnabled());
+//					aa.reset();
+					//TODO stop the algorithm
 				}
 			} catch (Exception e1) {
 				consolePrintException("Error initialising algorithm module\t" + aa.getAlgorithmName(), e1.getStackTrace());
 			}
 		}
-	}
-	
-	
-	public HashMap<String, Object> syncAlgoGroupConfig(String groupName, boolean enabled){
-		HashMap<String, Object> mapOfAlgoSettings = null;
-		
-		List<AbstractAlgorithm> listOfEnabledAlgoModulesPerGroup = getListOfEnabledAlgorithmModulesPerGroup(groupName);
-		//check if another algorithm in the group has been enabled 
-		if(listOfEnabledAlgoModulesPerGroup!=null && listOfEnabledAlgoModulesPerGroup.size()>0){
-			//Take the first enabled algorithm settings and configure all the other algorithms to be the same
-			AbstractAlgorithm firstEnabledAlgo = listOfEnabledAlgoModulesPerGroup.get(0);
-			
-			mapOfAlgoSettings = firstEnabledAlgo.getAlgorithmSettings();
-
-			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
-			Iterator<AbstractAlgorithm> iterator = listOfAlgoModulesPerGroup.iterator();
-			while(iterator.hasNext()){
-				AbstractAlgorithm abstractAlgorithm = iterator.next();
-				abstractAlgorithm.setAlgorithmSettings(mapOfAlgoSettings);
-			}
-		}
-		else{
-			//Set defaults for off?
-			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
-		}
-		
-		return mapOfAlgoSettings;
 	}
 
 	@Deprecated
@@ -3250,6 +3175,32 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			}
 			
 		}
+	}
+	
+	public HashMap<String, Object> syncAlgoGroupConfig(String groupName, boolean enabled){
+		HashMap<String, Object> mapOfAlgoSettings = null;
+		
+		List<AbstractAlgorithm> listOfEnabledAlgoModulesPerGroup = getListOfEnabledAlgorithmModulesPerGroup(groupName);
+		//check if another algorithm in the group has been enabled 
+		if(listOfEnabledAlgoModulesPerGroup!=null && listOfEnabledAlgoModulesPerGroup.size()>0){
+			//Take the first enabled algorithm settings and configure all the other algorithms to be the same
+			AbstractAlgorithm firstEnabledAlgo = listOfEnabledAlgoModulesPerGroup.get(0);
+			
+			mapOfAlgoSettings = firstEnabledAlgo.getAlgorithmSettings();
+
+			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
+			Iterator<AbstractAlgorithm> iterator = listOfAlgoModulesPerGroup.iterator();
+			while(iterator.hasNext()){
+				AbstractAlgorithm abstractAlgorithm = iterator.next();
+				abstractAlgorithm.setAlgorithmSettings(mapOfAlgoSettings);
+			}
+		}
+		else{
+			//Set defaults for off?
+			List<AbstractAlgorithm> listOfAlgoModulesPerGroup = getListOfAlgorithmModulesPerGroup(groupName);
+		}
+		
+		return mapOfAlgoSettings;
 	}
 	
 	// ------------- Algorithm Code end -----------------------

@@ -31,19 +31,22 @@ public class ShimmerClock extends AbstractSensor {
 	private static final long serialVersionUID = 4841055784366989272L;
 
 	//--------- Sensor specific variables start --------------
+	protected double mLastReceivedTimeStampTicksUnwrapped=0;
+	protected double mCurrentTimeStampCycle=0;
+	protected long mInitialTimeStampTicksSd = 0;
+	@Deprecated //not needed any more
+	protected double mLastReceivedCalibratedTimeStamp=-1; 
+
+	protected boolean mStreamingStartTimeSaved = false;	
+	protected double mStreamingStartTimeMilliSecs;	
+
+	protected int mTimeStampTicksMaxValue = 16777216; // or 65536 
+
 	protected boolean mFirstTime = true;
-	double mFirstRawTS = 0;
+	double mFirstTsOffsetFromInitialTsTicks = 0;
 	long mSystemTimeStamp = 0;
 	public int OFFSET_LENGTH = 9;
-	protected long mInitialTimeStamp = 0;
 	protected long mRTCOffset = 0; //this is in ticks
-	protected int mTimeStampPacketRawMaxValue = 16777216; // or 65536 
-	protected double mLastReceivedCalibratedTimeStamp=-1; 
-	protected double mLastReceivedTimeStamp=0;
-	protected double mCurrentTimeStampCycle=0;
-	
-	protected boolean mStreamingStartTimeSaved = false;	
-	protected double mStreamingStartTimeMs;	
 	
 	private boolean mFirstPacketParsed=true;
 	private double mOffsetFirstTime=-1;
@@ -51,6 +54,9 @@ public class ShimmerClock extends AbstractSensor {
 	//For debugging only
 	double mPreviousTimeStamp = 0;
 	double mSystemTimeStampPrevious = 0;
+	
+	double mLastSavedCalibratedTimeStamp = 0.0;
+
 	//--------- Sensor specific variables end --------------
 
 	//--------- Bluetooth commands start --------------
@@ -330,11 +336,11 @@ public class ShimmerClock extends AbstractSensor {
 		else {// if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			if(mShimmerVerObject.getFirmwareVersionCode()>=6 || mShimmerVerObject.mHardwareVersion==HW_ID.ARDUINO){
 				channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
-				mTimeStampPacketRawMaxValue = (int) Math.pow(2, 24);
+				mTimeStampTicksMaxValue = (int) Math.pow(2, 24);
 			}
 			else{
 				channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
-				mTimeStampPacketRawMaxValue = (int) Math.pow(2, 16);
+				mTimeStampTicksMaxValue = (int) Math.pow(2, 16);
 			}
 			channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE, ShimmerClock.channelShimmerTsDiffernce);
 			channelMapRef.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
@@ -383,70 +389,50 @@ public class ShimmerClock extends AbstractSensor {
 						//PARSE DATA
 						byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 						System.arraycopy(sensorByteArray, 0, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-						double newTimestamp = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
+						double shimmerTimestampTicks = UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
 						
 						if(mFirstTime && commType==COMMUNICATION_TYPE.SD){
-							//this is to make sure the Raw starts from zero
-							mFirstRawTS = newTimestamp;
+							//this is to make sure the Raw starts from zero for SD data. See comment for mFirstTsOffsetFromInitialTsTicks. 
+							mFirstTsOffsetFromInitialTsTicks = shimmerTimestampTicks;
 							mFirstTime = false;
 						}
 						
-						
-						double calibratedTS = calibrateTimeStamp(newTimestamp);
-						double timestampCalToSave = calibratedTS;
-						double timestampUnCalToSave = newTimestamp; 
+						double timestampUnwrappedTicks = unwrapTimeStamp(shimmerTimestampTicks);
+						double timestampUnwrappedMilliSecs = timestampUnwrappedTicks/mShimmerDevice.getRtcClockFreq()*1000;   // to convert into mS
 
-						calculateTrialPacketLoss(calibratedTS);
+						double timestampCalToSave = timestampUnwrappedMilliSecs;
+						double timestampUnCalToSave = shimmerTimestampTicks; 
 
+						//incrementPacketsReceivedCounters();
+						calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
+
+						//TODO update from ShimmerObject
+						double timestampUnwrappedWithOffsetTicks = 0;
 						if(commType==COMMUNICATION_TYPE.SD){
-							double samplingClockFreq = mShimmerDevice.getRtcClockFreq();
-
-							//TIMESTAMP
 							// RTC timestamp uncal. (shimmer timestamp + RTC offset from header); unit = ticks
-							double unwrappedRawTimestamp = calibratedTS*samplingClockFreq/1000;
-							unwrappedRawTimestamp -= mFirstRawTS; //deduct this so it will start from 0
-							
-							long sdlogRawTimestamp = (long)mInitialTimeStamp + (long)unwrappedRawTimestamp;
-							timestampUnCalToSave = (double)sdlogRawTimestamp;
-							if (mEnableCalibration){
-								double sdLogCalTimestamp = (double)sdlogRawTimestamp/samplingClockFreq*1000;
-								timestampCalToSave = sdLogCalTimestamp; 
+							timestampUnwrappedWithOffsetTicks = timestampUnwrappedTicks + getInitialTimeStampTicksSd();
+
+							if (mShimmerDevice.isLegacySdLog()){
+								timestampUnCalToSave = shimmerTimestampTicks;
+							} else {
+								//See Javadocs tooltip for description of mFirstTsOffsetFromInitialTsTicks
+								timestampUnwrappedWithOffsetTicks -= mFirstTsOffsetFromInitialTsTicks; //deduct this so it will start from 0
+								timestampUnCalToSave = timestampUnwrappedWithOffsetTicks;
 							}
-
-//							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,(double)sdlogRawTimestamp));
-//							uncalibratedData[iTimeStamp] = (double)sdlogRawTimestamp;
-//							uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.CLOCK_UNIT;
-//							sensorNames[iTimeStamp]= Shimmer3.ObjectClusterSensorName.TIMESTAMP;
-				//
-//							if (mEnableCalibration){
-//								double sdLogcalTimestamp = (double)sdlogRawTimestamp/samplingClockFreq*1000;
-//								
-//								objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,sdLogcalTimestamp));
-//								calibratedData[iTimeStamp] = sdLogcalTimestamp;
-//								calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
-//							}
-
+							
+							if (mEnableCalibration){
+								double timestampUnwrappedWithOffsetMilliSecs = timestampUnwrappedWithOffsetTicks/mShimmerDevice.getRtcClockFreq()*1000;   // to convert into mS
+								timestampCalToSave = timestampUnwrappedWithOffsetMilliSecs;
+							}
 						}
 						else if(commType==COMMUNICATION_TYPE.BLUETOOTH){
 							//TIMESTAMP
-							timestampUnCalToSave = newTimestamp;
+							timestampUnCalToSave = shimmerTimestampTicks;
 							if (mEnableCalibration){
-								timestampCalToSave = calibratedTS; 
-								objectCluster.setTimeStampMilliSecs(calibratedTS);
+								timestampCalToSave = timestampUnwrappedMilliSecs; 
+								objectCluster.setTimeStampMilliSecs(timestampUnwrappedMilliSecs);
 							}
-							
-//							objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,newTimestamp));
-//							uncalibratedData[iTimeStamp] = newTimestamp;
-//							uncalibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.NO_UNITS;
-//							if (mEnableCalibration){
-//								objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.TIMESTAMP,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,calibratedTS));
-//								calibratedData[iTimeStamp] = calibratedTS;
-//								calibratedDataUnits[iTimeStamp] = CHANNEL_UNITS.MILLISECONDS;
-//								
-//								objectCluster.mShimmerCalibratedTimeStamp = calibratedTS;
-//							}
 						}
-						
 						
 						objectCluster.addData(channelDetails, timestampUnCalToSave, timestampCalToSave);
 						objectCluster.incrementIndexKeeper();
@@ -480,14 +466,14 @@ public class ShimmerClock extends AbstractSensor {
 									double rtctimestampcal = Double.NaN;
 									if (mEnableCalibration){
 										rtctimestampcal = timestampCal;
-										if(mInitialTimeStamp!=0){
-											rtctimestampcal += ((double)mInitialTimeStamp/samplingClockFreq*1000.0);
+										if(mInitialTimeStampTicksSd!=0){
+											rtctimestampcal += ((double)mInitialTimeStampTicksSd/samplingClockFreq*1000.0);
 										}
 										if(mRTCOffset!=0){
 											rtctimestampcal += ((double)mRTCOffset/samplingClockFreq*1000.0);
 										}
-										if(mFirstRawTS!=0){
-											rtctimestampcal -= (mFirstRawTS/samplingClockFreq*1000.0);
+										if(mFirstTsOffsetFromInitialTsTicks!=0){
+											rtctimestampcal -= (mFirstTsOffsetFromInitialTsTicks/samplingClockFreq*1000.0);
 										}
 									}
 									objectCluster.addData(channelRealTimeClock, (double)rtctimestamp, rtctimestampcal);
@@ -739,50 +725,49 @@ public class ShimmerClock extends AbstractSensor {
 			LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		//Initial TimeStamp
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.INITIAL_TIMESTAMP)){
-			setInitialTimeStamp(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
+			setInitialTimeStampTicksSd(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
 		}
 		
 	}
 
-	/** Mirrors calibrateTimeStamp() in ShimmerObject */
-	protected double calibrateTimeStamp(double timeStamp){
+	/**
+	 * Unwraps the timestamp based on the current recording (i.e., per file for
+	 * SD recordings not taking into account the initial file start time)
+	 * 
+	 * @param timeStampTicks
+	 * @return
+	 */
+	protected double unwrapTimeStamp(double timeStampTicks){
 		//first convert to continuous time stamp
-		double calibratedTimeStamp = 0;
-		if (mLastReceivedTimeStamp>(timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle))){ 
-			mCurrentTimeStampCycle=mCurrentTimeStampCycle+1;
+		double timestampUnwrappedTicks = calculateTimeStampUnwrapped(timeStampTicks);
+		
+		//Check if there was a roll-over
+		if (getLastReceivedTimeStampTicksUnwrapped()>timestampUnwrappedTicks){ 
+			mCurrentTimeStampCycle += 1;
+			//Recalculate timestamp
+			timestampUnwrappedTicks = calculateTimeStampUnwrapped(timeStampTicks);
 		}
 
-		mLastReceivedTimeStamp = (timeStamp+(mTimeStampPacketRawMaxValue*mCurrentTimeStampCycle));
-		calibratedTimeStamp = mLastReceivedTimeStamp/mShimmerDevice.getRtcClockFreq()*1000;   // to convert into mS
+		setLastReceivedTimeStampTicksUnwrapped(timestampUnwrappedTicks);
+
+		return timestampUnwrappedTicks;
+	}
+	
+	private double calculateTimeStampUnwrapped(double timeStampTicks) {
+		return timeStampTicks+(mTimeStampTicksMaxValue*mCurrentTimeStampCycle);
+	}
+
+	private void calculateTrialPacketLoss(double timestampUnwrappedMilliSecs) {
+		//TODO currently this check is ok here as this method is called for each packet but this is excessive. 
+		//Store in order to trigger packet loss calculations while streaming in real-time
 		if (!mStreamingStartTimeSaved){
 			mStreamingStartTimeSaved=true;
-			mStreamingStartTimeMs = calibratedTimeStamp;
+			mStreamingStartTimeMilliSecs = timestampUnwrappedMilliSecs;   // to convert into mS
 		}
 
-		return calibratedTimeStamp;
-	}
-
-	private void calculateTrialPacketLoss(double currentTimeStampMs) {
-//		if (mLastReceivedCalibratedTimeStamp!=-1){
-//			double timeDifference = currentTimeStampMs - mLastReceivedCalibratedTimeStamp;
-//			double expectedTimeDifference = (1/mShimmerDevice.getSamplingRateShimmer())*1000;
-//			double expectedTimeDifferenceLimit = expectedTimeDifference * 1.1; // 10% limit? 
-//			if (timeDifference>expectedTimeDifferenceLimit){
-//				long packetLossCountPerTrial = mShimmerDevice.getPacketLossCountPerTrial() + (long) (timeDifference/expectedTimeDifference);
-//				mShimmerDevice.setPacketLossCountPerTrial(packetLossCountPerTrial);
-//			}
-//		}
-//		
-//		Long totalNumberOfPackets = (long) ((currentTimeStampMs-mCalTimeStart)/(1/mShimmerDevice.getSamplingRateShimmer()*1000));
-//		if(totalNumberOfPackets>0){
-//			double packetReceptionRateTrial = (double)((totalNumberOfPackets-mShimmerDevice.getPacketLossCountPerTrial())/(double)totalNumberOfPackets)*100;
-//			mShimmerDevice.setPacketReceptionRateOverall(packetReceptionRateTrial);
-//		}
-//		
-//		mLastReceivedCalibratedTimeStamp = currentTimeStampMs;
-		
-		if(mStreamingStartTimeMs>0){
-			double timeDifference = currentTimeStampMs - mStreamingStartTimeMs;
+		if(mStreamingStartTimeMilliSecs>0){
+			double timeDifference = timestampUnwrappedMilliSecs - mStreamingStartTimeMilliSecs;
+			//The expected time difference (in milliseconds) based on the device's sampling rate
 			double expectedTimeDifference = (1/mShimmerDevice.getSamplingRateShimmer())*1000;
 	
 			long packetExpectedCount = (long) (timeDifference/expectedTimeDifference);
@@ -811,13 +796,7 @@ public class ShimmerClock extends AbstractSensor {
 		// TODO Auto-generated method stub
 		
 	}
-	public void setInitialTimeStamp(long initialTimeStamp){
-		mInitialTimeStamp = initialTimeStamp;
-	}
 
-//	protected double mLastReceivedCalibratedTimeStamp=-1; 
-	double mLastSavedCalibratedTimeStamp = 0.0;
-	
 	
 	/**Replaced by simpler approach in ShimmerDevice
 	 * @param intervalMs
@@ -839,6 +818,9 @@ public class ShimmerClock extends AbstractSensor {
 		return mShimmerDevice.getPacketReceptionRateCurrent();
 	}
 
+	//--------- Optional methods to override in Sensor Class start --------
+	//--------- Optional methods to override in Sensor Class end --------
+
 	//Contents copied from ShimmerBluetooth.initialiseStreaming()
 	public void resetShimmerClock() {
 		mFirstPacketParsed=true;
@@ -850,15 +832,46 @@ public class ShimmerClock extends AbstractSensor {
 	
 	//Copied from ShimmerBluetooth.resetCalibratedTimeStamp()
 	public void resetCalibratedTimeStamp(){
-		mLastReceivedTimeStamp = 0;
+		setLastReceivedTimeStampTicksUnwrapped(0);
 		mLastReceivedCalibratedTimeStamp = -1;
 		
 		mStreamingStartTimeSaved = false;
+		mStreamingStartTimeMilliSecs = -1;
 		
 		mCurrentTimeStampCycle = 0;
 	}
+	
+	/**
+	 * @return the mLastReceivedTimeStamp
+	 */
+	public double getLastReceivedTimeStampTicksUnwrapped(){
+		return mLastReceivedTimeStampTicksUnwrapped;
+	}
+	
+	public void setLastReceivedTimeStampTicksUnwrapped(double lastReceivedTimeStampTicksUnwrapped){
+		mLastReceivedTimeStampTicksUnwrapped = lastReceivedTimeStampTicksUnwrapped;
+	}
 
-	//--------- Optional methods to override in Sensor Class start --------
-	//--------- Optional methods to override in Sensor Class end --------
+	/**
+	 * The initial timestamp is stored in 8 bytes (legacy=5 bytes) in the header
+	 * of each SD data file. This is the Shimmer clock value at the point at
+	 * which each file is created.
+	 * 
+	 * @return
+	 */
+	public long getInitialTimeStampTicksSd(){
+		return mInitialTimeStampTicksSd;
+	}
+	
+	/**
+	 * The initial timestamp is stored in 8 bytes (legacy=5 bytes) in the header
+	 * of each SD data file. This is the Shimmer clock value at the point at
+	 * which each file is created.
+	 * 
+	 * @param initialTimeStamp
+	 */
+	public void setInitialTimeStampTicksSd(long initialTimeStamp){
+		mInitialTimeStampTicksSd = initialTimeStamp;
+	}
 
 }
