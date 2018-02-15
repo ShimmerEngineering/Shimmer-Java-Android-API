@@ -251,66 +251,66 @@ public abstract class ShimmerBluetoothManager{
 	}
 	
 
-//	/** Use setFixedConfigWhenConnecting instead
-//	 * 
-//	 * @param device
-//	 */
-//	@Deprecated
-//	public void setCadenceBTConfig(ShimmerDevice device){
-////		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(device.getComPort());
-//		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(device.getBtConnectionHandle());
-//
-//		if(shimmerDevice!=null){
-//			//TODO remove the first half of this if statement, second half is more generic and will work for Shimmer3/4
-////			if (shimmerDevice.getHardwareVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
-////				if (shimmerDevice instanceof ShimmerBluetooth){
-////					ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth)shimmerDevice;
-////					shimmerBluetooth.checkShimmerConfigBeforeConfiguring();
-////
-////					shimmerBluetooth.operationPrepare();
-////					shimmerBluetooth.setSendProgressReport(true);
-////				
-////					//setting accel range +-4g
-////					shimmerBluetooth.writeAccelRange(1);
-////					//setting sampling rate 51.2 hardcoded
-////					shimmerBluetooth.writeShimmerAndSensorsSamplingRate(51.20);// s3 = 4
-////					//write sensors 
-////					shimmerBluetooth.writeEnabledSensors((long)4096); // setting wide range accel as only sensor
-////					shimmerBluetooth.operationStart(BT_STATE.CONFIGURING);
-////				}
-////			}
-////			else {
-//				shimmerDevice.operationPrepare();
-//
-//				shimmerDevice.setDefaultShimmerConfiguration();
-//				shimmerDevice.disableAllAlgorithms();
-//				shimmerDevice.disableAllSensors();
-//
-//				//write sensors
-//				if(shimmerDevice.getSensorIdsSet().contains(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL)){
-//					//- setting wide range accel as only sensor
-//					shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, true); 
-//
-//					//setting accel range +/- 4g
-//					shimmerDevice.setConfigValueUsingConfigLabel(
-//							Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, 
-//							SensorLSM303DLHC.GuiLabelConfig.LSM303_ACCEL_RANGE,
-//							1);
-//				}
-//
-//				//setting sampling rate 51.2 hardcoded
-//				shimmerDevice.setShimmerAndSensorsSamplingRate(51.20);
-//				
-//				if(shimmerDevice instanceof ShimmerBluetooth){
+	/** Use setFixedConfigWhenConnecting instead
+	 * 
+	 * @param device
+	 */
+	@Deprecated
+	public void setCadenceBTConfig(ShimmerDevice device){
+//		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(device.getComPort());
+		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(device.getBtConnectionHandle());
+
+		if(shimmerDevice!=null){
+			//TODO remove the first half of this if statement, second half is more generic and will work for Shimmer3/4
+//			if (shimmerDevice.getHardwareVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3){
+//				if (shimmerDevice instanceof ShimmerBluetooth){
 //					ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth)shimmerDevice;
-//					shimmerBluetooth.writeConfigBytes(shimmerDevice.getShimmerConfigBytes());
-//					shimmerBluetooth.writeEnabledSensors(shimmerDevice.getEnabledSensors());
-//				}
+//					shimmerBluetooth.checkShimmerConfigBeforeConfiguring();
+//
+//					shimmerBluetooth.operationPrepare();
+//					shimmerBluetooth.setSendProgressReport(true);
 //				
-//				shimmerDevice.operationStart(BT_STATE.CONFIGURING);
-////			}
-//		}
-//	}
+//					//setting accel range +-4g
+//					shimmerBluetooth.writeAccelRange(1);
+//					//setting sampling rate 51.2 hardcoded
+//					shimmerBluetooth.writeShimmerAndSensorsSamplingRate(51.20);// s3 = 4
+//					//write sensors 
+//					shimmerBluetooth.writeEnabledSensors((long)4096); // setting wide range accel as only sensor
+//					shimmerBluetooth.operationStart(BT_STATE.CONFIGURING);
+//				}
+//			}
+//			else {
+				shimmerDevice.operationPrepare();
+
+				shimmerDevice.setDefaultShimmerConfiguration();
+				shimmerDevice.disableAllAlgorithms();
+				shimmerDevice.disableAllSensors();
+
+				//write sensors
+				if(shimmerDevice.getSensorIdsSet().contains(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL)){
+					//- setting wide range accel as only sensor
+					shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, true); 
+
+					//setting accel range +/- 4g
+					shimmerDevice.setConfigValueUsingConfigLabel(
+							Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL, 
+							SensorLSM303DLHC.GuiLabelConfig.LSM303_ACCEL_RANGE,
+							1);
+				}
+
+				//setting sampling rate 51.2 hardcoded
+				shimmerDevice.setShimmerAndSensorsSamplingRate(51.20);
+				
+				if(shimmerDevice instanceof ShimmerBluetooth){
+					ShimmerBluetooth shimmerBluetooth = (ShimmerBluetooth)shimmerDevice;
+					shimmerBluetooth.writeConfigBytes(shimmerDevice.getShimmerConfigBytes());
+					shimmerBluetooth.writeEnabledSensors(shimmerDevice.getEnabledSensors());
+				}
+				
+				shimmerDevice.operationStart(BT_STATE.CONFIGURING);
+//			}
+		}
+	}
 	
 	public void configureShimmer(ShimmerDevice shimmerClone){
 		configureShimmers(Arrays.asList(shimmerClone));

@@ -190,11 +190,18 @@ public class UtilShimmer implements Serializable {
 	}
 	
 	public static String convertMilliSecondsToHrMinSecUTC(long milliSeconds) {
-		DateFormat dfLocal = new SimpleDateFormat("HH:mm:ss");
+		return convertMilliSecondsToUTC(milliSeconds, "HH:mm:ss");
+	}
+	
+	public static String convertMilliSecondsToHrMinSecMilliSecUTC(long milliSeconds) {
+		return convertMilliSecondsToUTC(milliSeconds, "HH:mm:ss.SSS");
+	}
+	
+	private static String convertMilliSecondsToUTC(long milliSeconds, String simpleDateFormat) {
+		DateFormat dfLocal = new SimpleDateFormat(simpleDateFormat);
 		dfLocal.setTimeZone(TimeZone.getTimeZone("UTC"));
-		// int style = DateFormat.MEDIUM;
-		// dfLocal = DateFormat.getDateInstance("HH:mm:ss", Locale.UK);
 		String timeString = dfLocal.format(new Date(milliSeconds));
+		
 		return timeString;
 	}
 	
@@ -210,6 +217,18 @@ public class UtilShimmer implements Serializable {
 		return convertMilliSecondsToFormat(milliSeconds, "HH:mm:ss", false);
 	}
 
+	/**
+	 * Converts from milliseconds in Unix time to a formatted local time string
+	 * (specific to the local timezone of the computer)
+	 * 
+	 * @param milliSeconds
+	 * @param format
+	 * @return
+	 */
+	public static String convertMilliSecondsToHrMinSecMilliSecLocal(long milliSeconds) {
+		return convertMilliSecondsToFormat(milliSeconds, "HH:mm:ss.SSS", false);
+	}
+	
 	/**
 	 * Converts from milliseconds in Unix time 
 	 * 
@@ -525,13 +544,13 @@ public class UtilShimmer implements Serializable {
 	 */
 	public static boolean compareVersions(String thisMajor, String thisMinor, String thisInternal,
 			String compMajor, String compMinor, String compInternal) {
-
-		if ((thisMajor.compareTo(compMajor)>0)
-				||(thisMajor.equals(compMajor) && thisMinor.compareTo(compMinor)>0)
-				||(thisMajor.equals(compMajor) && thisMinor.equals(compMinor) && thisInternal.compareTo(compInternal)>=0)){
-			return true; // if FW ID is the same and version is greater or equal 
+		try {
+			return compareVersions(Integer.parseInt(thisMajor), Integer.parseInt(thisMinor), Integer.parseInt(thisInternal),
+					Integer.parseInt(compMajor), Integer.parseInt(compMinor), Integer.parseInt(compInternal));
+		} catch (NumberFormatException nFE) {
+			System.out.println("UpdateChecker - Version parsing error");
 		}
-		return false; // if less or not the same FW ID
+		return true;
 	}
 
 	public static String convertDuration(int duration){

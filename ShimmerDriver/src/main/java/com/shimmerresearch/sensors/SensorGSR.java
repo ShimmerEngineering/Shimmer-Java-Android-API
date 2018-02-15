@@ -314,44 +314,12 @@ public class SensorGSR extends AbstractSensor {
 				int gsrAdcValueUnCal = ((int)rawData & 4095); 
 				objectCluster.addUncalData(channelDetails, gsrAdcValueUnCal);
 				
-//				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				double p1=0,p2=0;
-
 				int currentGSRRange = getGSRRange();
-
 				if (currentGSRRange==4){
 					//Mask upper 2 bits of the 16-bit packet and then bit shift down
 					currentGSRRange=(49152 & (int)rawData)>>14; 
 				}
-				double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
-				p1 = p1p2[0];
-				p2 = p1p2[1];
 				
-				// ---------- Method 1 - ShimmerObject Style -----------
-//				//kOhms
-//				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrData(rawData,p1,p2);
-//				objectCluster.mUnitCal[objectCluster.indexKeeper]=CHANNEL_UNITS.KOHMS;
-//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR,new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,objectCluster.mCalData[objectCluster.indexKeeper]));
-//					
-//				//uS
-//				objectCluster.mCalData[objectCluster.indexKeeper] = calibrateGsrDataToSiemens(rawData,p1,p2);
-//				objectCluster.mUnitCal[objectCluster.indexKeeper] = CHANNEL_UNITS.MICROSIEMENS;
-//				objectCluster.mPropertyCluster.put(Shimmer3.ObjectClusterSensorName.GSR, new FormatCluster(CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MICROSIEMENS,objectCluster.mCalData[objectCluster.indexKeeper]));
-//					objectCluster.indexKeeper++;
-
-				
-				// ---------- Method 2 - Simplified ShimmerObject Style -----------
-				
-//				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.UNCAL, CHANNEL_UNITS.NO_UNITS, rawData);
-//				//kOhms
-//				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.KOHMS, calibrateGsrData(rawData,p1,p2));
-////				//uS
-////				objectCluster.addData(Shimmer3.ObjectClusterSensorName.GSR, CHANNEL_TYPE.CAL, CHANNEL_UNITS.MICROSIEMENS, calibrateGsrDataToSiemens(rawData,p1,p2));
-//				objectCluster.indexKeeper++;
-
-
-				// ----- Method 3 - Approaching dynamic object based approach  -----------
-
 				if(sensorDetails.mListOfChannels.contains(channelGsrRange)){
 //					double rangeToSave = newGSRRange>=0? newGSRRange:mGSRRange;
 					objectCluster.addUncalData(channelGsrRange, currentGSRRange);
@@ -364,24 +332,29 @@ public class SensorGSR extends AbstractSensor {
 					objectCluster.incrementIndexKeeper();
 				}
 
-				double gsrResistance = 0.0;
-				double gsrConductance = 0.0;
+				double p1=0,p2=0;
+				double gsrResistanceKOhms = 0.0;
+				double gsrConductanceUSiemens = 0.0;
 				//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
 				if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
-					gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
-					gsrConductance = 1/gsrResistance;
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+					gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
 				} else {
-					gsrResistance = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
-					gsrConductance = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
+					p1 = p1p2[0];
+					p2 = p1p2[1];
+
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+					gsrConductanceUSiemens = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
 				}
 				
 				double calData = 0.0;
 				//This section is needed for GQ since the primary GSR KOHMS channel is replaced by U_SIEMENS 
 				if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.KOHMS)){
-					calData = gsrResistance;
+					calData = gsrResistanceKOhms;
 				}
 				else if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.U_SIEMENS)){
-					calData = gsrConductance;
+					calData = gsrConductanceUSiemens;
 				}
 				objectCluster.addCalData(channelDetails, calData);
 				objectCluster.incrementIndexKeeper();
@@ -389,7 +362,7 @@ public class SensorGSR extends AbstractSensor {
 				
 				if(sensorDetails.mListOfChannels.contains(channelGsrMicroSiemens)){
 					objectCluster.addUncalData(channelGsrMicroSiemens, gsrAdcValueUnCal);
-					objectCluster.addCalData(channelGsrMicroSiemens, gsrConductance);
+					objectCluster.addCalData(channelGsrMicroSiemens, gsrConductanceUSiemens);
 					objectCluster.incrementIndexKeeper();
 				}
 				
@@ -556,6 +529,7 @@ public class SensorGSR extends AbstractSensor {
 
 
 	//--------- Sensor specific methods start --------------
+	@Deprecated
 	public static double calibrateGsrDataToResistance(double gsrUncalibratedData, double p1, double p2){
 //		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 //		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
@@ -569,7 +543,7 @@ public class SensorGSR extends AbstractSensor {
 		return gsrCalibratedData;  
 	}
 
-	
+	@Deprecated
 	public static double calibrateGsrDataToSiemens(double gsrUncalibratedData, double p1, double p2){
 		double gsrUncalibratedDataLcl = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
@@ -621,6 +595,7 @@ public class SensorGSR extends AbstractSensor {
 	// against the ShimmerVerObject does not have to be done per data sample and
 	// instead it should be done once on initialisation. This would need to be
 	// done in SensorGSR and for legacy support in ShimmerObject
+	@Deprecated
 	public static double[] getGSRCoefficientsFromUsingGSRRange(ShimmerVerObject svo, int currentGSRRange) {
 		double p1 = 0.0;
 		double p2 = 0.0;
@@ -670,16 +645,15 @@ public class SensorGSR extends AbstractSensor {
 	}
 
 
+	@Deprecated
 	public static boolean isSupportedImprovedGsrCalibration(ShimmerVerObject svo) {
 //		if(svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 19, 0)
 //				|| svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 11, 0)
 //				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_LR, FW_ID.GQ_802154, 0, 4, 1)
 //				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_NR, FW_ID.GQ_802154, 0, 4, 1)){
-//			return true;
+			return true;
 //		}
 //		return false;
-		
-		return true;
 	}
 
 	//--------- Sensor specific methods end --------------
