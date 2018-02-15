@@ -333,28 +333,28 @@ public class SensorGSR extends AbstractSensor {
 				}
 
 				double p1=0,p2=0;
-				double gsrResistance = 0.0;
-				double gsrConductance = 0.0;
+				double gsrResistanceKOhms = 0.0;
+				double gsrConductanceUSiemens = 0.0;
 				//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
 				if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
-					gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
-					gsrConductance = 1.0/gsrResistance;
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+					gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
 				} else {
 					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
 					p1 = p1p2[0];
 					p2 = p1p2[1];
 
-					gsrResistance = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
-					gsrConductance = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+					gsrConductanceUSiemens = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
 				}
 				
 				double calData = 0.0;
 				//This section is needed for GQ since the primary GSR KOHMS channel is replaced by U_SIEMENS 
 				if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.KOHMS)){
-					calData = gsrResistance;
+					calData = gsrResistanceKOhms;
 				}
 				else if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.U_SIEMENS)){
-					calData = gsrConductance;
+					calData = gsrConductanceUSiemens;
 				}
 				objectCluster.addCalData(channelDetails, calData);
 				objectCluster.incrementIndexKeeper();
@@ -362,7 +362,7 @@ public class SensorGSR extends AbstractSensor {
 				
 				if(sensorDetails.mListOfChannels.contains(channelGsrMicroSiemens)){
 					objectCluster.addUncalData(channelGsrMicroSiemens, gsrAdcValueUnCal);
-					objectCluster.addCalData(channelGsrMicroSiemens, gsrConductance);
+					objectCluster.addCalData(channelGsrMicroSiemens, gsrConductanceUSiemens);
 					objectCluster.incrementIndexKeeper();
 				}
 				
