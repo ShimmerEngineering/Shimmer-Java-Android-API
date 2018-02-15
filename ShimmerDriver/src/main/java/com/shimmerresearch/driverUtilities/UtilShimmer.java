@@ -190,11 +190,18 @@ public class UtilShimmer implements Serializable {
 	}
 	
 	public static String convertMilliSecondsToHrMinSecUTC(long milliSeconds) {
-		DateFormat dfLocal = new SimpleDateFormat("HH:mm:ss");
+		return convertMilliSecondsToUTC(milliSeconds, "HH:mm:ss");
+	}
+	
+	public static String convertMilliSecondsToHrMinSecMilliSecUTC(long milliSeconds) {
+		return convertMilliSecondsToUTC(milliSeconds, "HH:mm:ss.SSS");
+	}
+	
+	private static String convertMilliSecondsToUTC(long milliSeconds, String simpleDateFormat) {
+		DateFormat dfLocal = new SimpleDateFormat(simpleDateFormat);
 		dfLocal.setTimeZone(TimeZone.getTimeZone("UTC"));
-		// int style = DateFormat.MEDIUM;
-		// dfLocal = DateFormat.getDateInstance("HH:mm:ss", Locale.UK);
 		String timeString = dfLocal.format(new Date(milliSeconds));
+		
 		return timeString;
 	}
 	
@@ -210,6 +217,18 @@ public class UtilShimmer implements Serializable {
 		return convertMilliSecondsToFormat(milliSeconds, "HH:mm:ss", false);
 	}
 
+	/**
+	 * Converts from milliseconds in Unix time to a formatted local time string
+	 * (specific to the local timezone of the computer)
+	 * 
+	 * @param milliSeconds
+	 * @param format
+	 * @return
+	 */
+	public static String convertMilliSecondsToHrMinSecMilliSecLocal(long milliSeconds) {
+		return convertMilliSecondsToFormat(milliSeconds, "HH:mm:ss.SSS", false);
+	}
+	
 	/**
 	 * Converts from milliseconds in Unix time 
 	 * 
