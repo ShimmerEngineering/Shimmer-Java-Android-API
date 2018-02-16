@@ -25,7 +25,7 @@ import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
-import com.shimmerresearch.driverUtilities.OnTheFlyCalGyro;
+import com.shimmerresearch.driverUtilities.OnTheFlyGyroOffsetCal;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -232,6 +232,10 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		
 		public static final String MPU9X50_GYRO_VALID_CALIB = "Gyro Valid Calibration";
 		public static final String MPU9X50_GYRO_CALIB_PARAM = "Gyro Calibration Details";
+		
+		//TODO add support for the below
+//		public static final String MPU9X50_ON_THE_FLY_CALIB_STATE = "Gyro on-the-fly offset calibration";
+//		public static final String MPU9X50_ON_THE_FLY_CALIB_THRESHOLD = "Gyro on-the-fly offset calibration";
 	}
 	
 	public class GuiLabelSensors{
@@ -325,7 +329,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		public static String ORIENT = "Orient";
 	}
 	
-	transient protected OnTheFlyCalGyro mOnTheFlyCalGyro = new OnTheFlyCalGyro(); 
+	transient protected OnTheFlyGyroOffsetCal mOnTheFlyGyroOffsetCal = new OnTheFlyGyroOffsetCal(); 
 
 	public boolean mEnableXCalibration = true;
 	public byte[] mInquiryResponseXBytes;
@@ -1194,6 +1198,8 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 			setMPU9150MplRateFromFreq(samplingRateHz);
 		}
 		
+		setOnTheFlyCalGyroBufferSize(samplingRateHz);
+		
     	checkLowPowerGyro();
 	}
 
@@ -1982,19 +1988,27 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	 * @param threshold sets the threshold of when to use the incoming data to recalibrate gyroscope offset, this is in degrees, and the default value is 1.2
 	 */
 	public void enableOnTheFlyGyroCal(boolean state, int bufferSize, double threshold){
-		mOnTheFlyCalGyro.enableOnTheFlyGyroCal(state, bufferSize, threshold);
+		mOnTheFlyGyroOffsetCal.enableOnTheFlyGyroCal(state, bufferSize, threshold);
 	}
 	
 	public void setOnTheFlyGyroCal(boolean state){
-		mOnTheFlyCalGyro.setOnTheFlyGyroCal(state);
+		mOnTheFlyGyroOffsetCal.setOnTheFlyGyroCal(state);
 	}
 
     public boolean isGyroOnTheFlyCalEnabled(){
-    	return mOnTheFlyCalGyro.isGyroOnTheFlyCalEnabled();
+    	return mOnTheFlyGyroOffsetCal.isGyroOnTheFlyCalEnabled();
 	}
 
-    public OnTheFlyCalGyro getOnTheFlyCalGyro(){
-    	return mOnTheFlyCalGyro;
+    public OnTheFlyGyroOffsetCal getOnTheFlyCalGyro(){
+    	return mOnTheFlyGyroOffsetCal;
+    }
+    
+    public void setOnTheFlyCalGyroBufferSize(double samplingRate) {
+    	mOnTheFlyGyroOffsetCal.setBufferSizeFromSamplingRate(samplingRate);
+    }
+    
+    public void setOnTheFlyCalGyroThreshold(int threshold) {
+    	mOnTheFlyGyroOffsetCal.setGyroOVCalThreshold(threshold);
     }
 
 	

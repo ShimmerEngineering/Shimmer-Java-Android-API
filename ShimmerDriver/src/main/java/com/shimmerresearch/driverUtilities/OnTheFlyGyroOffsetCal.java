@@ -4,16 +4,18 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 
-public class OnTheFlyCalGyro {
+public class OnTheFlyGyroOffsetCal {
 
+	protected boolean mEnableOntheFlyGyroOVCal = false;
 	protected double mGyroOVCalThreshold = 1.2;
+	private int bufferSize;
+	
 	DescriptiveStatistics mGyroX;
 	DescriptiveStatistics mGyroY;
 	DescriptiveStatistics mGyroZ;
 	DescriptiveStatistics mGyroXRaw;
 	DescriptiveStatistics mGyroYRaw;
 	DescriptiveStatistics mGyroZRaw;
-	protected boolean mEnableOntheFlyGyroOVCal = false;
 	
 	/**
 	 * @param enable this enables the calibration of the gyroscope while streaming
@@ -22,19 +24,42 @@ public class OnTheFlyCalGyro {
 	 */
 	public void enableOnTheFlyGyroCal(boolean state, int bufferSize, double threshold){
 		setOnTheFlyGyroCal(state);
-		if (mEnableOntheFlyGyroOVCal){
-			mGyroOVCalThreshold=threshold;
-			mGyroX=new DescriptiveStatistics(bufferSize);
-			mGyroY=new DescriptiveStatistics(bufferSize);
-			mGyroZ=new DescriptiveStatistics(bufferSize);
-			mGyroXRaw=new DescriptiveStatistics(bufferSize);
-			mGyroYRaw=new DescriptiveStatistics(bufferSize);
-			mGyroZRaw=new DescriptiveStatistics(bufferSize);
+		setGyroOVCalThreshold(threshold);
+		setBufferSize(bufferSize);
+	}
+
+	public void setBufferSizeFromSamplingRate(double samplingRate) {
+		setBufferSize((int)Math.round(samplingRate));
+	}
+
+	public void setBufferSize(int bufferSize) {
+		this.bufferSize = bufferSize;
+		
+		if (mEnableOntheFlyGyroOVCal && mGyroX!=null){
+			mGyroX.setWindowSize(bufferSize);
+			mGyroY.setWindowSize(bufferSize);
+			mGyroZ.setWindowSize(bufferSize);
+			mGyroXRaw.setWindowSize(bufferSize);
+			mGyroYRaw.setWindowSize(bufferSize);
+			mGyroZRaw.setWindowSize(bufferSize);
 		}
+	}
+
+	public void setGyroOVCalThreshold(double threshold) {
+		this.mGyroOVCalThreshold = threshold;
 	}
 
 	public void setOnTheFlyGyroCal(boolean state){
 		mEnableOntheFlyGyroOVCal = state;
+		
+		if(mEnableOntheFlyGyroOVCal && mGyroX==null) {
+			mGyroX = new DescriptiveStatistics(bufferSize);
+			mGyroY = new DescriptiveStatistics(bufferSize);
+			mGyroZ = new DescriptiveStatistics(bufferSize);
+			mGyroXRaw = new DescriptiveStatistics(bufferSize);
+			mGyroYRaw = new DescriptiveStatistics(bufferSize);
+			mGyroZRaw = new DescriptiveStatistics(bufferSize);
+		}
 	}
 
     public boolean isGyroOnTheFlyCalEnabled(){
