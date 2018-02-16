@@ -39,7 +39,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
-import com.shimmerresearch.driverUtilities.OnTheFlyCalGyro;
+import com.shimmerresearch.driverUtilities.OnTheFlyGyroOffsetCal;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -7935,7 +7935,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
     
-    private OnTheFlyCalGyro getOnTheFlyCalGyro(){
+    private OnTheFlyGyroOffsetCal getOnTheFlyCalGyro(){
 		if(isShimmerGen2()){
 			return mSensorShimmer2Gyro.getOnTheFlyCalGyro();
 		} else {
