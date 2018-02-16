@@ -100,21 +100,21 @@ public class OrientationModule9DOF extends OrientationModule {
 			ObjectClusterSensorName.EULER_9DOF_YAW_LN, //ObjectClusterName
 			ObjectClusterSensorName.EULER_9DOF_YAW_LN, //GUI friendly text to display
 			ObjectClusterSensorName.EULER_9DOF_YAW_LN, //database name
-			CHANNEL_UNITS.NO_UNITS,
+			CHANNEL_UNITS.DEGREES,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
 	private static final ChannelDetails channel_Euler_Pitch_9DOF_LN = new ChannelDetails(
 			ObjectClusterSensorName.EULER_9DOF_PITCH_LN, //ObjectClusterName
 			ObjectClusterSensorName.EULER_9DOF_PITCH_LN, //GUI friendly text to display
 			ObjectClusterSensorName.EULER_9DOF_PITCH_LN, //database name
-			CHANNEL_UNITS.NO_UNITS,
+			CHANNEL_UNITS.DEGREES,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
 	private static final ChannelDetails channel_Euler_Roll_9DOF_LN = new ChannelDetails(
 			ObjectClusterSensorName.EULER_9DOF_ROLL_LN, //ObjectClusterName
 			ObjectClusterSensorName.EULER_9DOF_ROLL_LN, //GUI friendly text to display
 			ObjectClusterSensorName.EULER_9DOF_ROLL_LN, //database name
-			CHANNEL_UNITS.NO_UNITS,
+			CHANNEL_UNITS.DEGREES,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
 	private static final ChannelDetails channelAngleA_9DOF_LN = new ChannelDetails(
@@ -180,21 +180,21 @@ public class OrientationModule9DOF extends OrientationModule {
 			ObjectClusterSensorName.EULER_9DOF_YAW_WR, //ObjectClusterName
 			ObjectClusterSensorName.EULER_9DOF_YAW_WR, //GUI friendly text to display
 			ObjectClusterSensorName.EULER_9DOF_YAW_WR, //database name
-			CHANNEL_UNITS.NO_UNITS,
+			CHANNEL_UNITS.DEGREES,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
 	private static final ChannelDetails channel_Euler_Pitch_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.EULER_9DOF_PITCH_WR, //ObjectClusterName
 			ObjectClusterSensorName.EULER_9DOF_PITCH_WR, //GUI friendly text to display
 			ObjectClusterSensorName.EULER_9DOF_PITCH_WR, //database name
-			CHANNEL_UNITS.NO_UNITS,
+			CHANNEL_UNITS.DEGREES,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 
 	private static final ChannelDetails channel_Euler_Roll_9DOF_WR = new ChannelDetails(
 			ObjectClusterSensorName.EULER_9DOF_ROLL_WR, //ObjectClusterName
 			ObjectClusterSensorName.EULER_9DOF_ROLL_WR, //GUI friendly text to display
 			ObjectClusterSensorName.EULER_9DOF_ROLL_WR, //database name
-			CHANNEL_UNITS.NO_UNITS,
+			CHANNEL_UNITS.DEGREES,
 			Arrays.asList(CHANNEL_TYPE.CAL));
 	
 	private static final ChannelDetails channelAngleA_9DOF_WR = new ChannelDetails(
