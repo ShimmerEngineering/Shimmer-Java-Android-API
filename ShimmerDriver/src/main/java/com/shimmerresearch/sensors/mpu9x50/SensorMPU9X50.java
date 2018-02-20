@@ -329,7 +329,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		public static String ORIENT = "Orient";
 	}
 	
-	transient protected OnTheFlyGyroOffsetCal mOnTheFlyGyroOffsetCal = new OnTheFlyGyroOffsetCal(); 
+	protected OnTheFlyGyroOffsetCal mOnTheFlyGyroOffsetCal = new OnTheFlyGyroOffsetCal(); 
 
 	public boolean mEnableXCalibration = true;
 	public byte[] mInquiryResponseXBytes;
