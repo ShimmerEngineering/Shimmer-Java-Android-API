@@ -40,7 +40,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
-import com.shimmerresearch.driverUtilities.OnTheFlyCalGyro;
+import com.shimmerresearch.driverUtilities.OnTheFlyGyroOffsetCal;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -1755,36 +1755,36 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedData[iGSR] = gsrAdcValueUnCal;
 				uncalibratedDataUnits[iGSR]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					double gsrResistance = 0.0;
-					double gsrConductance = 0.0;
+					double gsrResistanceKOhms = 0.0;
+					double gsrConductanceUSiemens = 0.0;
 					//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
 					if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
-						gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
-						gsrConductance = 1.0/gsrResistance;
+						gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+						gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
 					} else {
 						//double p1=0, p2=0;//,p3=0,p4=0,p5=0;
 						double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
 						double p1 = p1p2[0];
 						double p2 = p1p2[1];
 						
-						gsrResistance = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
-						gsrConductance = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+						gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+						gsrConductanceUSiemens = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
 					}
 					
 					//If ShimmerGQ we only want to have one GSR channel and it's units should be 'uS'
 					if(isShimmerGenGq()){
-						calibratedData[iGSR] = gsrConductance;
+						calibratedData[iGSR] = gsrConductanceUSiemens;
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.U_SIEMENS;
-						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,gsrConductance);
+						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.U_SIEMENS,gsrConductanceUSiemens);
 					}
 					else {
-						calibratedData[iGSR] = gsrResistance;
+						calibratedData[iGSR] = gsrResistanceKOhms;
 						calibratedDataUnits[iGSR]=CHANNEL_UNITS.KOHMS;
-						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,gsrResistance);
+						objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KOHMS,gsrResistanceKOhms);
 						
 						if(mChannelMap.get(SensorGSR.ObjectClusterSensorName.GSR_CONDUCTANCE)!=null){
 							objectCluster.addUncalDataToMap(SensorGSR.channelGsrMicroSiemens,gsrAdcValueUnCal);
-							objectCluster.addCalDataToMap(SensorGSR.channelGsrMicroSiemens,gsrConductance);
+							objectCluster.addCalDataToMap(SensorGSR.channelGsrMicroSiemens,gsrConductanceUSiemens);
 
 //							System.out.println("mGSRRange:" + mGSRRange + "\tnewGSRRange" + newGSRRange + "\tp1:" + p1 + "\tp2" + p2);
 //							System.out.println("p1:" + p1 + "\tp2" + p2 + "\tADC:" + gsrAdcValueUnCal + "\tRes:" + calibratedData[iGSR] + "\tSie:" + SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2));
@@ -7969,7 +7969,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
     
-    private OnTheFlyCalGyro getOnTheFlyCalGyro(){
+    private OnTheFlyGyroOffsetCal getOnTheFlyCalGyro(){
 		if(isShimmerGen2()){
 			return mSensorShimmer2Gyro.getOnTheFlyCalGyro();
 		} else {
