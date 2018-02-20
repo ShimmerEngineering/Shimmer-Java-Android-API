@@ -9,7 +9,7 @@ import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driverUtilities.OnTheFlyCalGyro;
+import com.shimmerresearch.driverUtilities.OnTheFlyGyroOffsetCal;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
@@ -29,7 +29,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	/** all raw params should start with a 1 byte identifier in position [0] */
 	protected byte[] mGyroCalRawParams  = new byte[22];
 
-	transient protected OnTheFlyCalGyro mOnTheFlyCalGyro = new OnTheFlyCalGyro(); 
+	transient protected OnTheFlyGyroOffsetCal mOnTheFlyGyroOffsetCal = new OnTheFlyGyroOffsetCal(); 
 
 	//Shimmer2/2r Calibration - Default values (LPR450AL = X+Y axes, LPY450AL = X axis)
 	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
@@ -129,8 +129,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
-		// TODO Auto-generated method stub
-		
+		setOnTheFlyCalGyroBufferSize(samplingRateHz);
 	}
 
 	@Override
@@ -227,19 +226,27 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	 * @param threshold sets the threshold of when to use the incoming data to recalibrate gyroscope offset, this is in degrees, and the default value is 1.2
 	 */
 	public void enableOnTheFlyGyroCal(boolean state, int bufferSize, double threshold){
-		mOnTheFlyCalGyro.enableOnTheFlyGyroCal(state, bufferSize, threshold);
+		mOnTheFlyGyroOffsetCal.enableOnTheFlyGyroCal(state, bufferSize, threshold);
 	}
 	
 	public void setOnTheFlyGyroCal(boolean state){
-		mOnTheFlyCalGyro.setOnTheFlyGyroCal(state);
+		mOnTheFlyGyroOffsetCal.setOnTheFlyGyroCal(state);
 	}
 
     public boolean isGyroOnTheFlyCalEnabled(){
-    	return mOnTheFlyCalGyro.isGyroOnTheFlyCalEnabled();
+    	return mOnTheFlyGyroOffsetCal.isGyroOnTheFlyCalEnabled();
 	}
 
-    public OnTheFlyCalGyro getOnTheFlyCalGyro(){
-    	return mOnTheFlyCalGyro;
+    public OnTheFlyGyroOffsetCal getOnTheFlyCalGyro(){
+    	return mOnTheFlyGyroOffsetCal;
+    }
+    
+    public void setOnTheFlyCalGyroBufferSize(double samplingRate) {
+    	mOnTheFlyGyroOffsetCal.setBufferSizeFromSamplingRate(samplingRate);
+    }
+    
+    public void setOnTheFlyCalGyroThreshold(int threshold) {
+    	mOnTheFlyGyroOffsetCal.setGyroOVCalThreshold(threshold);
     }
 
 	public void setLowPowerGyro(boolean enable) {
