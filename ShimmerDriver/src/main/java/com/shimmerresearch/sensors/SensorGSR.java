@@ -335,18 +335,18 @@ public class SensorGSR extends AbstractSensor {
 				double p1=0,p2=0;
 				double gsrResistanceKOhms = 0.0;
 				double gsrConductanceUSiemens = 0.0;
-				//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
-				if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
+				//TODO can remove old code
+//				if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
 					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
 					gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
-				} else {
-					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
-					p1 = p1p2[0];
-					p2 = p1p2[1];
-
-					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
-					gsrConductanceUSiemens = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
-				}
+//				} else {
+//					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
+//					p1 = p1p2[0];
+//					p2 = p1p2[1];
+//
+//					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+//					gsrConductanceUSiemens = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+//				}
 				
 				double calData = 0.0;
 				//This section is needed for GQ since the primary GSR KOHMS channel is replaced by U_SIEMENS 
@@ -645,16 +645,16 @@ public class SensorGSR extends AbstractSensor {
 	}
 
 
-	@Deprecated
-	public static boolean isSupportedImprovedGsrCalibration(ShimmerVerObject svo) {
+//	@Deprecated
+//	public static boolean isSupportedImprovedGsrCalibration(ShimmerVerObject svo) {
 //		if(svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 19, 0)
 //				|| svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 11, 0)
 //				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_LR, FW_ID.GQ_802154, 0, 4, 1)
 //				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_NR, FW_ID.GQ_802154, 0, 4, 1)){
-			return true;
+//			return true;
 //		}
 //		return false;
-	}
+//	}
 
 	//--------- Sensor specific methods end --------------
 
