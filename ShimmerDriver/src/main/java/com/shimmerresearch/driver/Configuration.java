@@ -713,18 +713,18 @@ public class Configuration {
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
 			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
 			
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF = 50;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_9DOF = 51;
-			public static final int SHIMMER_MPU9150_MPL_EULER_6DOF = 52;
-			public static final int SHIMMER_MPU9150_MPL_EULER_9DOF = 53;
-			public static final int SHIMMER_MPU9150_MPL_HEADING = 54;
-			public static final int SHIMMER_MPU9150_MPL_PEDOMETER = 55;
-			public static final int SHIMMER_MPU9150_MPL_TAP = 56;
-			public static final int SHIMMER_MPU9150_MPL_MOTION_ORIENT = 57;
-			public static final int SHIMMER_MPU9150_MPL_GYRO = 58;
-			public static final int SHIMMER_MPU9150_MPL_ACCEL = 59;
-			public static final int SHIMMER_MPU9150_MPL_MAG = 60;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = 61;
+			public static final int SHIMMER_MPU9X50_MPL_QUAT_6DOF = 50;
+			public static final int SHIMMER_MPU9X50_MPL_QUAT_9DOF = 51;
+			public static final int SHIMMER_MPU9X50_MPL_EULER_6DOF = 52;
+			public static final int SHIMMER_MPU9X50_MPL_EULER_9DOF = 53;
+			public static final int SHIMMER_MPU9X50_MPL_HEADING = 54;
+			public static final int SHIMMER_MPU9X50_MPL_PEDOMETER = 55;
+			public static final int SHIMMER_MPU9X50_MPL_TAP = 56;
+			public static final int SHIMMER_MPU9X50_MPL_MOTION_ORIENT = 57;
+			public static final int SHIMMER_MPU9X50_MPL_GYRO = 58;
+			public static final int SHIMMER_MPU9X50_MPL_ACCEL = 59;
+			public static final int SHIMMER_MPU9X50_MPL_MAG = 60;
+			public static final int SHIMMER_MPU9X50_MPL_QUAT_6DOF_RAW = 61;
 			
 			// STC3100 Channels
 			public static final int SHIMMER_STC3100 = 62;

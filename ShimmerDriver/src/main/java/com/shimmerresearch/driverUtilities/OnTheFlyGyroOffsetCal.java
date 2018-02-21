@@ -10,16 +10,16 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 
 	private static final long serialVersionUID = -4153196345016560456L;
 	
-	protected boolean mEnableOntheFlyGyroOVCal = false;
-	protected double mGyroOVCalThreshold = 1.2;
+	private boolean mIsEnabled = false;
+	private double mOffsetThreshold = 1.2;
 	private int bufferSize;
 	
-	transient DescriptiveStatistics mGyroX;
-	transient DescriptiveStatistics mGyroY;
-	transient DescriptiveStatistics mGyroZ;
-	transient DescriptiveStatistics mGyroXRaw;
-	transient DescriptiveStatistics mGyroYRaw;
-	transient DescriptiveStatistics mGyroZRaw;
+	transient DescriptiveStatistics mGyroXCal;
+	transient DescriptiveStatistics mGyroYCal;
+	transient DescriptiveStatistics mGyroZCal;
+	transient DescriptiveStatistics mGyroXUncal;
+	transient DescriptiveStatistics mGyroYUncal;
+	transient DescriptiveStatistics mGyroZUncal;
 	
 	/**
 	 * @param enable this enables the calibration of the gyroscope while streaming
@@ -27,8 +27,8 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 	 * @param threshold sets the threshold of when to use the incoming data to recalibrate gyroscope offset, this is in degrees, and the default value is 1.2
 	 */
 	public void enableOnTheFlyGyroCal(boolean state, int bufferSize, double threshold){
-		setOnTheFlyGyroCal(state);
-		setGyroOVCalThreshold(threshold);
+		enableOnTheFlyGyroCal(state);
+		setGyroOnTheFlyCalThreshold(threshold);
 		setBufferSize(bufferSize);
 	}
 
@@ -39,51 +39,60 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 	public void setBufferSize(int bufferSize) {
 		this.bufferSize = bufferSize;
 		
-		if (mEnableOntheFlyGyroOVCal && mGyroX!=null){
-			mGyroX.setWindowSize(bufferSize);
-			mGyroY.setWindowSize(bufferSize);
-			mGyroZ.setWindowSize(bufferSize);
-			mGyroXRaw.setWindowSize(bufferSize);
-			mGyroYRaw.setWindowSize(bufferSize);
-			mGyroZRaw.setWindowSize(bufferSize);
+		if (mIsEnabled && mGyroXCal!=null){
+			mGyroXCal.setWindowSize(bufferSize);
+			mGyroYCal.setWindowSize(bufferSize);
+			mGyroZCal.setWindowSize(bufferSize);
+			mGyroXUncal.setWindowSize(bufferSize);
+			mGyroYUncal.setWindowSize(bufferSize);
+			mGyroZUncal.setWindowSize(bufferSize);
 		}
 	}
 
-	public void setGyroOVCalThreshold(double threshold) {
-		this.mGyroOVCalThreshold = threshold;
+	public void setGyroOnTheFlyCalThreshold(double threshold) {
+		this.mOffsetThreshold = threshold;
 	}
 
-	public void setOnTheFlyGyroCal(boolean state){
-		mEnableOntheFlyGyroOVCal = state;
+	public double getGyroOnTheFlyCalThreshold() {
+		return mOffsetThreshold;
+	}
+
+	public void enableOnTheFlyGyroCal(boolean state){
+		mIsEnabled = state;
 		
-		if(mEnableOntheFlyGyroOVCal && mGyroX==null) {
-			mGyroX = new DescriptiveStatistics(bufferSize);
-			mGyroY = new DescriptiveStatistics(bufferSize);
-			mGyroZ = new DescriptiveStatistics(bufferSize);
-			mGyroXRaw = new DescriptiveStatistics(bufferSize);
-			mGyroYRaw = new DescriptiveStatistics(bufferSize);
-			mGyroZRaw = new DescriptiveStatistics(bufferSize);
+		if(mIsEnabled && mGyroXCal==null) {
+			mGyroXCal = new DescriptiveStatistics(bufferSize);
+			mGyroYCal = new DescriptiveStatistics(bufferSize);
+			mGyroZCal = new DescriptiveStatistics(bufferSize);
+			mGyroXUncal = new DescriptiveStatistics(bufferSize);
+			mGyroYUncal = new DescriptiveStatistics(bufferSize);
+			mGyroZUncal = new DescriptiveStatistics(bufferSize);
 		}
 	}
 
     public boolean isGyroOnTheFlyCalEnabled(){
-		return mEnableOntheFlyGyroOVCal;
+		return mIsEnabled;
+	}
+
+	public void updateGyroOnTheFlyGyroOVCal(CalibDetailsKinematic calibDetails, double[] gyroCalibratedData, double[] gyroUncalibratedData) {
+		updateGyroOnTheFlyGyroOVCal(calibDetails, gyroCalibratedData, gyroUncalibratedData[0], gyroUncalibratedData[1], gyroUncalibratedData[2]);
 	}
 
 	public void updateGyroOnTheFlyGyroOVCal(CalibDetailsKinematic calibDetails, double[] gyroCalibratedData, double uncalX, double uncalY, double uncalZ) {
-		if (mEnableOntheFlyGyroOVCal){
-			mGyroX.addValue(gyroCalibratedData[0]);
-			mGyroY.addValue(gyroCalibratedData[1]);
-			mGyroZ.addValue(gyroCalibratedData[2]);
-			mGyroXRaw.addValue(uncalX);
-			mGyroYRaw.addValue(uncalY);
-			mGyroZRaw.addValue(uncalZ);
-			if (mGyroX.getStandardDeviation()<mGyroOVCalThreshold && mGyroY.getStandardDeviation()<mGyroOVCalThreshold && mGyroZ.getStandardDeviation()<mGyroOVCalThreshold){
-//				mOffsetVectorGyroscope[0][0]=mGyroXRaw.getMean();
-//				mOffsetVectorGyroscope[1][0]=mGyroYRaw.getMean();
-//				mOffsetVectorGyroscope[2][0]=mGyroZRaw.getMean();
-				calibDetails.updateCurrentOffsetVector(mGyroXRaw.getMean(), mGyroYRaw.getMean(), mGyroZRaw.getMean());
+		//Already checked if isEnabled in ShimmerDevice class/sensor class, no need to do a second time.
+//		if (mIsEnabled){
+			mGyroXCal.addValue(gyroCalibratedData[0]);
+			mGyroYCal.addValue(gyroCalibratedData[1]);
+			mGyroZCal.addValue(gyroCalibratedData[2]);
+			mGyroXUncal.addValue(uncalX);
+			mGyroYUncal.addValue(uncalY);
+			mGyroZUncal.addValue(uncalZ);
+			if (mGyroXCal.getStandardDeviation()<mOffsetThreshold 
+					&& mGyroYCal.getStandardDeviation()<mOffsetThreshold 
+					&& mGyroZCal.getStandardDeviation()<mOffsetThreshold){
+				calibDetails.updateCurrentOffsetVector(mGyroXUncal.getMean(), mGyroYUncal.getMean(), mGyroZUncal.getMean());
 			}
-		}
+//		}
 	}
+	
 }
