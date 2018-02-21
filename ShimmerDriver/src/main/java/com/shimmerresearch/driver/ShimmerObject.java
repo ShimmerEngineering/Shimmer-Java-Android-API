@@ -1757,19 +1757,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					double gsrResistanceKOhms = 0.0;
 					double gsrConductanceUSiemens = 0.0;
-					//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
-					if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
+					//TODO can remove old code
+//					if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
 						gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
 						gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
-					} else {
-						//double p1=0, p2=0;//,p3=0,p4=0,p5=0;
-						double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
-						double p1 = p1p2[0];
-						double p2 = p1p2[1];
-						
-						gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
-						gsrConductanceUSiemens = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
-					}
+//					} else {
+//						//double p1=0, p2=0;//,p3=0,p4=0,p5=0;
+//						double[] p1p2 = SensorGSR.getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
+//						double p1 = p1p2[0];
+//						double p2 = p1p2[1];
+//						
+//						gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+//						gsrConductanceUSiemens = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+//					}
 					
 					//If ShimmerGQ we only want to have one GSR channel and it's units should be 'uS'
 					if(isShimmerGenGq()){

@@ -1,21 +1,25 @@
 package com.shimmerresearch.driverUtilities;
 
+import java.io.Serializable;
+
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 
-public class OnTheFlyGyroOffsetCal {
+public class OnTheFlyGyroOffsetCal implements Serializable {
 
+	private static final long serialVersionUID = -4153196345016560456L;
+	
 	protected boolean mEnableOntheFlyGyroOVCal = false;
 	protected double mGyroOVCalThreshold = 1.2;
 	private int bufferSize;
 	
-	DescriptiveStatistics mGyroX;
-	DescriptiveStatistics mGyroY;
-	DescriptiveStatistics mGyroZ;
-	DescriptiveStatistics mGyroXRaw;
-	DescriptiveStatistics mGyroYRaw;
-	DescriptiveStatistics mGyroZRaw;
+	transient DescriptiveStatistics mGyroX;
+	transient DescriptiveStatistics mGyroY;
+	transient DescriptiveStatistics mGyroZ;
+	transient DescriptiveStatistics mGyroXRaw;
+	transient DescriptiveStatistics mGyroYRaw;
+	transient DescriptiveStatistics mGyroZRaw;
 	
 	/**
 	 * @param enable this enables the calibration of the gyroscope while streaming
