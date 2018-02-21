@@ -239,6 +239,7 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	public int bitShiftMPLEnable = 				3;
 	public int maskMPLEnable = 					0x01;
 
+	//TODO move to derived sensor bits as this setting won't be stored to the SD config file
 	public int bitShiftGyroOnTheFly = 			2;
 	public int maskGyroOnTheFly = 				0x01;
 

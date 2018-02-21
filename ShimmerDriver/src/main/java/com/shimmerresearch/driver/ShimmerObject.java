@@ -1025,7 +1025,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					} 
 					
 					if (isGyroOnTheFlyCalEnabled()){
-						getOnTheFlyCalGyro().updateGyroOnTheFlyGyroOVCal(getCurrentCalibDetailsGyro(), gyroCalibratedData, (double) newPacketInt[iGyroX], (double) newPacketInt[iGyroY], (double) newPacketInt[iGyroZ]);
+						getOnTheFlyCalGyro().updateGyroOnTheFlyGyroOVCal(getCurrentCalibDetailsGyro(), gyroCalibratedData,
+								(double) newPacketInt[iGyroX], (double) newPacketInt[iGyroY], (double) newPacketInt[iGyroZ]);
 					}
 				}
 

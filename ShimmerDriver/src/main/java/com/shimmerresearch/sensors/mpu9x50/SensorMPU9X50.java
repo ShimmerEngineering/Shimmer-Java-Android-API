@@ -125,11 +125,6 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 
 	// ----------   Gyro start ---------------
 
-//	//TODO Shimmer2 doesn't belong here
-//	//Default values Shimmer2
-//	protected static final double[][] AlignmentMatrixGyroShimmer2 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
-//	protected static final double[][] SensitivityMatrixGyroShimmer2 = {{2.73,0,0},{0,2.73,0},{0,0,2.73}}; 		
-//	protected static final double[][] OffsetVectorGyroShimmer2 = {{1843},{1843},{1843}};
 	//Shimmer3
 	public static final double[][] AlignmentMatrixGyroShimmer3 = {{0,-1,0},{-1,0,0},{0,0,-1}}; 				
 	public static final double[][] OffsetVectorGyroShimmer3 = {{0},{0},{0}};	

@@ -83,16 +83,15 @@ public class GradDes3DOrientation6DoF extends GradDes3DOrientation {
 		if(!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
 
 			// Normalise accelerometer measurement
-			 norm = Math.sqrt(ax * ax + ay * ay + az * az);
-			    if (norm > 0.0){
-			       norm = 1.0 / norm; 
-			       ax *= norm;
-			       ay *= norm;
-			       az *= norm;
-			    }
-			    else{
-			
-			    }
+			norm = Math.sqrt(ax * ax + ay * ay + az * az);
+			//Above line has a potential NaN/Infinity result so need to check if >0
+//			if (norm > 0.0) {
+			if (Double.isFinite(norm) && norm > 0.0) {
+				norm = 1.0 / norm;
+				ax *= norm;
+				ay *= norm;
+				az *= norm;
+			}
 
 			// Auxiliary variables to avoid repeated  
 			_2q1 = 2.0f * q1;
@@ -116,10 +115,14 @@ public class GradDes3DOrientation6DoF extends GradDes3DOrientation {
 			s3 = 4.0f * q2q2 * q4 - _2q2 * ax + 4.0f * q3q3 * q4 - _2q3 * ay;
 
 		    norm = 1.0 / Math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s0 * s0);    // normalise
-		    s0 *= norm;
-		    s1 *= norm;
-		    s2 *= norm;
-		    s3 *= norm;
+			//Above line has a potential NaN/Infinity result so need to check if >0
+//			if (norm > 0.0) {
+			if (Double.isFinite(norm) && norm > 0.0) {
+			    s0 *= norm;
+			    s1 *= norm;
+			    s2 *= norm;
+			    s3 *= norm;
+			}
 
 			// Apply feedback step
 			qDot1 -= mBeta * s0;
