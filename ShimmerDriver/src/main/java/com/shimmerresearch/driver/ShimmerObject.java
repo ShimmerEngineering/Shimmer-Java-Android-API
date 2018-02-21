@@ -8093,7 +8093,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param mMPU9150AccelRange the mMPU9150AccelRange to set
 	 */
 	public void setMPU9150AccelRange(int i) {
-		mSensorMpu9x50.setMPU9150AccelRange(i);
+		mSensorMpu9x50.setMPU9X50AccelRange(i);
 	}
 
 	/**
@@ -8139,7 +8139,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public void setMPU9150MagSamplingRate(int mMPU9150MagSamplingRate) {
 		if(mSensorMpu9x50!=null){
-			mSensorMpu9x50.setMPU9150MagSamplingRate(mMPU9150MagSamplingRate);
+			mSensorMpu9x50.setMPU9X50MagSamplingRate(mMPU9150MagSamplingRate);
 		}
 	}
 	
@@ -8315,7 +8315,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public void setMPU9150MotCalCfg(int state) {
 		if(mSensorMpu9x50!=null){
-			mSensorMpu9x50.setMPU9150MotCalCfg(state);
+			mSensorMpu9x50.setMPU9X150MotCalCfg(state);
 		}
 	}
 
@@ -8324,7 +8324,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public void setMPU9150LPF(int mMPU9150LPF) {
 		if(mSensorMpu9x50!=null){
-			mSensorMpu9x50.setMPU9150LPF(mMPU9150LPF);
+			mSensorMpu9x50.setMPU9X50LPF(mMPU9150LPF);
 		}
 	}
 
