@@ -86,6 +86,35 @@ public class UtilShimmer implements Serializable {
 		public static final int[] colourLightRed = new int[]{255, 0, 0};
 	}
 	
+	//TODO utilise this enum widely in future
+	public enum ENUM_FILE_DELIMITERS{
+		TAB("\t", "tab (\\t)"),
+		COMMA(",", "Comma (,)"),
+		SEMI_COLON(";", "Semicolon (;)");
+		
+		public String delimiter;
+		public String guiFriendlyName;
+		
+		ENUM_FILE_DELIMITERS(String delimiter, String guiFriendlyName){
+			this.delimiter = delimiter;
+			this.guiFriendlyName = guiFriendlyName;
+		}
+	}
+	
+	//TODO utilise this enum widely in future
+	public enum ENUM_FILE_FORMAT{
+		CSV(".csv"),
+		DAT(".dat"),
+		TXT(".txt"),
+		MAT(".mat");
+		
+		public String fileExtension;
+		
+		ENUM_FILE_FORMAT(String fileExtension){
+			this.fileExtension = fileExtension;
+		}
+	}
+
 	public UtilShimmer(String parentClassName, Boolean verboseMode){
 		this.mParentClassName = parentClassName;
 		this.mVerboseMode = verboseMode;

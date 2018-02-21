@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
@@ -18,7 +19,8 @@ public class FixedShimmerConfigs {
     	CADENCE,
     	CIMIT,
     	CALIBRATION_IMU,
-    	USER
+    	USER,
+    	SWEATCH
     }
     
 	public static boolean setFixedConfigWhenConnecting(ShimmerDevice shimmerDevice, FIXED_SHIMMER_CONFIG_MODE fixedConfig, LinkedHashMap<String, Object> fixedConfigMap) {
@@ -53,6 +55,9 @@ public class FixedShimmerConfigs {
 			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.CALIBRATION_IMU){
 				triggerConfiguration = true;
 				setFixedConfig2(shimmerDevice);
+			}
+			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.SWEATCH){
+				setFixedConfig3(shimmerDevice);
 			}
 			
 //			if(triggerConfiguration){
@@ -117,8 +122,31 @@ public class FixedShimmerConfigs {
 		}
 	}
 
+	//TODO 
 	public static void setFixedConfig2(ShimmerDevice shimmerDevice) {
-		//TODO
+		
+	}
+	
+	//TODO
+	public static void setFixedConfig3(ShimmerDevice shimmerDevice) {
+		int hwId = shimmerDevice.getHardwareVersion();
+		if(hwId==HW_ID.SWEATCH){
+//			//ADC RATE
+//			shimmerDevice.setConfigValueUsingConfigLabel(
+//					Shimmer3.SENSOR_ID.SWEATCH_ADC, 
+//					Swea.GuiLabelConfig.EXG_GAIN,
+//					0);
+//			//PGA GAIN
+//			shimmerDevice.setConfigValueUsingConfigLabel(
+//					Shimmer3.SENSOR_ID.HOST_ECG, 
+//					SensorEXG.GuiLabelConfig.EXG_GAIN,
+//					0);
+//			//Device Sampling rate
+//			shimmerDevice.setConfigValueUsingConfigLabel(
+//					Shimmer3.SENSOR_ID.HOST_ECG, 
+//					SensorEXG.GuiLabelConfig.EXG_GAIN,
+//					0);
+		}
 	}
 
 	
