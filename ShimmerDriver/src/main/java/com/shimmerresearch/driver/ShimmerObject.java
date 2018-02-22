@@ -1102,7 +1102,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedData[iBatt]=(double)newPacketInt[iBatt];
 				uncalibratedDataUnits[iBatt]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					calibratedData[iBatt]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1)*2;
+					calibratedData[iBatt]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1)*2;
 					calibratedDataUnits[iBatt] = CHANNEL_UNITS.MILLIVOLTS;
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBatt]);
 					mVSenseBattMA.addValue(calibratedData[iBatt]);
@@ -1120,7 +1120,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedData[iA7]=(double)newPacketInt[iA7];
 				uncalibratedDataUnits[iA7]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					calibratedData[iA7]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1);
+					calibratedData[iA7]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 					calibratedDataUnits[iA7] = CHANNEL_UNITS.MILLIVOLTS;
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]);
 				}
@@ -1134,7 +1134,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedData[iA6]=(double)newPacketInt[iA6];
 				uncalibratedDataUnits[iA6]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					calibratedData[iA6]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1);
+					calibratedData[iA6]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 					calibratedDataUnits[iA6] = CHANNEL_UNITS.MILLIVOLTS;
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA6]);
 				}
@@ -1149,7 +1149,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iA15]=CHANNEL_UNITS.NO_UNITS;
 
 				if (mEnableCalibration){
-					calibratedData[iA15]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1);
+					calibratedData[iA15]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 					calibratedDataUnits[iA15] = CHANNEL_UNITS.MILLIVOLTS;
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA15]);
 				}
@@ -1184,7 +1184,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							objectCluster.addDataToMap(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,calibratedData[iA1]);
 						}
 						else{
-							calibratedData[iA1]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1);
+							calibratedData[iA1]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 							calibratedDataUnits[iA1] = CHANNEL_UNITS.MILLIVOLTS;
 							objectCluster.addDataToMap(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA1]);
 						}
@@ -1211,7 +1211,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedData[iA12]=(double)newPacketInt[iA12];
 				uncalibratedDataUnits[iA12]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					calibratedData[iA12]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1);
+					calibratedData[iA12]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 					objectCluster.addDataToMap(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA12]);
 					calibratedDataUnits[iA12] = CHANNEL_UNITS.MILLIVOLTS;
 
@@ -1238,7 +1238,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedData[iA13]=(double)newPacketInt[iA13];
 				uncalibratedDataUnits[iA13]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					calibratedData[iA13]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1);
+					calibratedData[iA13]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 					objectCluster.addDataToMap(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA13]);
 					calibratedDataUnits[iA13] = CHANNEL_UNITS.MILLIVOLTS;
 				}
@@ -1261,7 +1261,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedData[iA14]=(double)newPacketInt[iA14];
 				uncalibratedDataUnits[iA14]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					calibratedData[iA14]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1);
+					calibratedData[iA14]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 					objectCluster.addDataToMap(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA14]);
 					calibratedDataUnits[iA14] = CHANNEL_UNITS.MILLIVOLTS;
 				}
@@ -1653,8 +1653,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iBAHigh];
 					tempData[1] = (double)newPacketInt[iBALow];
-					calibratedData[iBAHigh]=SensorADC.calibrateU12AdcValue(tempData[0],60,3,551);
-					calibratedData[iBALow]=SensorADC.calibrateU12AdcValue(tempData[1],1950,3,183.7);
+					calibratedData[iBAHigh]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],60,3,551);
+					calibratedData[iBALow]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[1],1950,3,183.7);
 					calibratedDataUnits[iBAHigh]=CHANNEL_UNITS.MILLIVOLTS;
 					calibratedDataUnits[iBALow]=CHANNEL_UNITS.MILLIVOLTS;
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBAHigh]);
@@ -1723,7 +1723,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				if(SensorGSR.sensorGsrRef.mListOfChannelsRef.contains(SensorGSR.channelGsrAdc.mObjectClusterName)){
 					objectCluster.addUncalDataToMap(SensorGSR.channelGsrAdc, gsrAdcValueUnCal);
-					objectCluster.addCalDataToMap(SensorGSR.channelGsrAdc, SensorADC.calibrateMspAdcChannel(gsrAdcValueUnCal));
+					objectCluster.addCalDataToMap(SensorGSR.channelGsrAdc, SensorADC.calibrateMspAdcChannelToMillivolts(gsrAdcValueUnCal));
 				}
 				
 				objectCluster.addDataToMap(mainGsrSignalName,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,gsrAdcValueUnCal);
@@ -1734,6 +1734,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					double gsrConductanceUSiemens = 0.0;
 					//TODO can remove old code
 //					if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
+						if(currentGSRRange==3 && gsrAdcValueUnCal<SensorGSR.GSR_UNCAL_LIMIT_RANGE3) {
+							gsrAdcValueUnCal = SensorGSR.GSR_UNCAL_LIMIT_RANGE3;
+						}
+
 						gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
 						gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
 //					} else {
@@ -2253,8 +2257,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iECGRALL];
 					tempData[1] = (double)newPacketInt[iECGLALL];
-					calibratedData[iECGRALL]=SensorADC.calibrateU12AdcValue(tempData[0],OffsetECGRALL,3,GainECGRALL);
-					calibratedData[iECGLALL]=SensorADC.calibrateU12AdcValue(tempData[1],OffsetECGLALL,3,GainECGLALL);
+					calibratedData[iECGRALL]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],OffsetECGRALL,3,GainECGRALL);
+					calibratedData[iECGLALL]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[1],OffsetECGLALL,3,GainECGLALL);
 					if (mDefaultCalibrationParametersECG == true) {
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.ECG_RA_LL,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS+"*",calibratedData[iECGRALL]);
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.ECG_LA_LL,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS+"*",calibratedData[iECGLALL]);
@@ -2269,7 +2273,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.EMG,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iEMG]);
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iEMG];
-					calibratedData[iEMG]=SensorADC.calibrateU12AdcValue(tempData[0],OffsetEMG,3,GainEMG);
+					calibratedData[iEMG]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],OffsetEMG,3,GainEMG);
 					if (mDefaultCalibrationParametersEMG == true){
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.EMG,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS+"*",calibratedData[iEMG]);
 					} else {
@@ -2285,8 +2289,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iBAHigh];
 					tempData[1] = (double)newPacketInt[iBALow];
-					calibratedData[iBAHigh]=SensorADC.calibrateU12AdcValue(tempData[0],60,3,551);
-					calibratedData[iBALow]=SensorADC.calibrateU12AdcValue(tempData[1],1950,3,183.7);
+					calibratedData[iBAHigh]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],60,3,551);
+					calibratedData[iBALow]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[1],1950,3,183.7);
 					objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_HIGH,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBAHigh]);
 					objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.BRIDGE_AMP_LOW,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iBALow]);	
 				}
@@ -2316,13 +2320,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (getPMux()==0){
 					objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA0]);
 					if (mEnableCalibration){
-						calibratedData[iA0]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1);
+						calibratedData[iA0]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.EXP_BOARD_A0,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA0]);
 					}
 				} else {
 					objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.VOLT_REG,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA0]);
 					if (mEnableCalibration){
-						calibratedData[iA0]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1)*1.988;
+						calibratedData[iA0]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1)*1.988;
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.VOLT_REG,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA0]);
 					}
 
@@ -2334,12 +2338,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (getPMux()==0){
 					objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA7]);
 					if (mEnableCalibration){
-						calibratedData[iA7]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1);
+						calibratedData[iA7]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.EXP_BOARD_A7,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]);
 					} else {
 						objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA7]);
 						if (mEnableCalibration){
-							calibratedData[iA7]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1)*2;
+							calibratedData[iA7]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1)*2;
 							objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]);
 						}
 
@@ -2356,11 +2360,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				if (mEnableCalibration){
 					tempData[0] = (double)newPacketInt[iA0];
-					calibratedData[iA0]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1)*1.988;
+					calibratedData[iA0]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1)*1.988;
 					objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.VOLT_REG,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA0]);
 
 					tempData[0] = (double)newPacketInt[iA7];
-					calibratedData[iA7]=SensorADC.calibrateU12AdcValue(tempData[0],0,3,1)*2;
+					calibratedData[iA7]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1)*2;
 					objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]);	
 					mVSenseBattMA.addValue(calibratedData[iA7]);
 					checkBattery();

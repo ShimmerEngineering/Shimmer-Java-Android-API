@@ -764,9 +764,8 @@ public class Configuration {
 			public static final int HOST_MOUSE_LISTENER = 1002;
 			public static final int HOST_WEBCAM = 1003;
 			public static final int HOST_CPU_USAGE = 1004;
-			public static final int SWEATCH_ADC = 1005;
 		}
-		
+
 		/**
 		 * The bit mask must not change for each algorithm as this is what is
 		 * stored in the Shimmer's infomem and the SD file configuration header.
@@ -2121,7 +2120,7 @@ public class Configuration {
 	}
 
 	
-	public static final class Arduino{
+	public static final class Arduino {
 		
 		public static enum LABEL_SENSOR_TILE{
 			ANALOG_IN("Analog In"),//SensorArduino.LABEL_SENSOR_TILE.ANALOG_IN),
@@ -2143,7 +2142,12 @@ public class Configuration {
 		public static final String[] ListOfOnOff = {"On","Off"};
 		public static final Integer[] ListOfOnOffConfigValues = {0x01,0x00};
 	}
-	
+
+	public static final class Sweatch {
+		public class SENSOR_ID {
+			public static final int SWEATCH_ADC = 1005;
+		}
+	}
 	
 	public static class Webcam{
 		public static class CompatibilityInfoForMaps{

@@ -108,6 +108,11 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel);
 
 	public abstract void setSensorSamplingRate(double samplingRateHz);
+	/** A sensor ID is needed as some sensor classes contain a number of sensors
+	 * @param sensorId
+	 * @param isSensorEnabled
+	 * @return
+	 */
 	public abstract boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled);
 	/** TODO populate in individual AbstractSensor classes the relevant entries from ShimmerObject */
 	public abstract boolean checkConfigOptionValues(String stringKey);
