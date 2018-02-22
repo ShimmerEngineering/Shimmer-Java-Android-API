@@ -58,14 +58,14 @@ public class GradDes3DOrientation9DoF extends GradDes3DOrientation{
 	/**
 	 * @param beta
 	 * @param samplingPeriod
+	 * @param q0
 	 * @param q1
 	 * @param q2
 	 * @param q3
-	 * @param q4
 	 * @see GradDes3DOrientation
 	 */
-	public GradDes3DOrientation9DoF(double beta, double samplingPeriod, double q1, double q2, double q3, double q4) {
-		super(beta, samplingPeriod, q1, q2, q3, q4);
+	public GradDes3DOrientation9DoF(double beta, double samplingPeriod, double q0, double q1, double q2, double q3) {
+		super(beta, samplingPeriod, q0, q1, q2, q3);
 	}
 
 	/**
@@ -81,114 +81,117 @@ public class GradDes3DOrientation9DoF extends GradDes3DOrientation{
 	 * @return Calculated Quaternion value
 	 */
 	public Orientation3DObject update(double ax, double ay, double az, double gx, double gy, double gz, double mx, double my, double mz) {
-	    double norm;
-	    double hx, hy;
-	    double s1, s2, s3, s4;
+	    double recipNorm;
+	    double s0, s1, s2, s3;
 	    double qDot1, qDot2, qDot3, qDot4;
+	    double hx, hy;
+	    double _2q0, _2q1, _2q2, _2q3, _2bz, _2bx, q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;
 	
-	    double q1q1, q1q2, q1q3, q1q4, q2q2, q2q3, q2q4, q3q3, q3q4, q4q4, twoq1, twoq2, twoq3, twoq4, twobz, twobx;
-	
+        q0q0 = q0*q0;
         q1q1 = q1*q1;
         q2q2 = q2*q2;
         q3q3 = q3*q3;
-        q4q4 = q4*q4;
         
-        twoq1 = 2*q1;
-        twoq2 = 2*q2;
-        twoq3 = 2*q3;
-        twoq4 = 2*q4;
+        _2q0 = 2*q0;
+        _2q1 = 2*q1;
+        _2q2 = 2*q2;
+        _2q3 = 2*q3;
         
+        q0q1 = q0*q1;
+        q0q2 = q0*q2;
+        q0q3 = q0*q3;
         q1q2 = q1*q2;
         q1q3 = q1*q3;
-        q1q4 = q1*q4;
         q2q3 = q2*q3;
-        q2q4 = q2*q4;
-        q3q4 = q3*q4;
         
-	
 	    // Normalise accelerometer measurement
-	    norm = Math.sqrt(ax * ax + ay * ay + az * az);
-	    if (norm > 0.0){
-	       norm = 1.0 / norm; 
-	       ax *= norm;
-	       ay *= norm;
-	       az *= norm;
-	    }
-	    else{
-	
+	    recipNorm = Math.sqrt(ax * ax + ay * ay + az * az);
+		//Above line has a potential NaN/Infinity result so need to check the result
+		if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
+	       recipNorm = 1.0 / recipNorm; 
+	       ax *= recipNorm;
+	       ay *= recipNorm;
+	       az *= recipNorm;
+		} else {
+			//TODO
 	    }
 	
 	    // Normalise magnetometer measurement
-	    norm = Math.sqrt(mx * mx + my * my + mz * mz);
-	    if (norm > 0.0){
-	       norm = 1.0 / norm;
-	       mx *= norm;
-	       my *= norm;
-	       mz *= norm;
+	    recipNorm = Math.sqrt(mx * mx + my * my + mz * mz);
+		//Above line has a potential NaN/Infinity result so need to check the result
+		if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
+	       recipNorm = 1.0 / recipNorm;
+	       mx *= recipNorm;
+	       my *= recipNorm;
+	       mz *= recipNorm;
+		} else {
+			//TODO
 	    }
-	    else{
 	
-	    }
-	
-        hx = mx*(q1q1 + q2q2 - q3q3-q4q4) + 2*my*(q2q3 - q1q4) + 2*mz*(q2q4 + q1q3);
-        hy = 2*mx*(q1q4 + q2q3) + my*(q1q1 - q2q2 + q3q3 - q4q4) * 2*mz*(q3q4 - q1q2);
-        twobz = 2*mx*(q2q4 - q1q3) + 2*my*(q1q2 + q3q4) + mz*(q1q1 - q2q2 - q3q3 + q4q4);
-        twobx = Math.sqrt(hx * hx + hy * hy);
+		// Reference direction of Earth's magnetic field
+        hx = mx*(q0q0 + q1q1 - q2q2-q3q3) + 2*my*(q1q2 - q0q3) + 2*mz*(q1q3 + q0q2);
+        hy = 2*mx*(q0q3 + q1q2) + my*(q0q0 - q1q1 + q2q2 - q3q3) * 2*mz*(q2q3 - q0q1);
+        _2bz = 2*mx*(q1q3 - q0q2) + 2*my*(q0q1 + q2q3) + mz*(q0q0 - q1q1 - q2q2 + q3q3);
+        _2bx = Math.sqrt(hx * hx + hy * hy);
 
-	
-	    // Corrective step
-       
-        s1 = -twoq3 * (2*(q2q4 - q1q3) - ax) +
-        		twoq2*(2*(q1q2 + q3q4) - ay) - twobz*q3*(twobx*(0.5 - q3q3 - q4q4) + 
-        		twobz*(q2q4 - q1q3) - mx) + (-twobx*q4 + twobz*q2)*(twobx*(q2q3 - q1q4) + 
-        		twobz*(q1q2 + q3q4) - my) +twobx*q3*(twobx*(q1q3 + q2q4) + twobz*(0.5 - q2q2 - q3q3) - mz);
+        // Gradient decent algorithm corrective step
+        s0 = -_2q2 * (2*(q1q3 - q0q2) - ax) +
+        		_2q1*(2*(q0q1 + q2q3) - ay) - _2bz*q2*(_2bx*(0.5 - q2q2 - q3q3) + 
+        		_2bz*(q1q3 - q0q2) - mx) + (-_2bx*q3 + _2bz*q1)*(_2bx*(q1q2 - q0q3) + 
+        		_2bz*(q0q1 + q2q3) - my) +_2bx*q2*(_2bx*(q0q2 + q1q3) + _2bz*(0.5 - q1q1 - q2q2) - mz);
             
-            s2 = twoq4*(2*(q2q4 - q1q3) - ax) +
-                twoq1*(2*(q1q2 + q3q4) - ay) - 
-                4*q2*(1 - 2*(q2q2 + q3q3) - az) +
-                twobz*q4*(twobx*(0.5 - q3q3 - q4q4) + twobz*(q2q4 - q1q3) - mx) + 
-                (twobx*q3 + twobz*q1)*(twobx*(q2q3 - q1q4) + twobz*(q1q2 + q3q4) - my) +
-                (twobx*q4 - twobz*twoq2)*(twobx*(q1q3 + q2q4) + twobz*(0.5 - q2q2 - q3q3) - mz);
-            
-            s3 = -twoq1*(2*(q2q4 - q1q3) - ax) + 
-                twoq4*(2*(q1q2 + q3q4) - ay) - 
-                4*q3*(1 - 2*(q2q2 + q3q3) - az) + 
-                (-twobx*twoq3 - twobz*q1)*(twobx*(0.5 - q3q3 - q4q4) + twobz*(q2q4 - q1q3) - mx) + 
-                (twobx * q2 + twobz * q4)*(twobx*(q2q3 - q1q4) + twobz*(q1q2 + q3q4) - my) + 
-                (twobx * q1 - twobz*twoq3)*(twobx*(q1q3 + q2q4) + twobz*(0.5 - q2q2 - q3q3) - mz);
-            
-            s4 = twoq2 * (2.0 * (q2q4 - q1q3) - ax) + 
-                twoq3 * (2*(q1q2 + q3q4) - ay) + 
-                (-twobx * twoq4 + twobz * q2) * (twobx * (0.5 - q3q3 - q4q4) + twobz * (q2q4 - q1q3) - mx) + 
-                (-twobx * q1 + twobz * q3) * (twobx * (q2q3 - q1q4) + twobz * (q1q2 + q3q4) - my) + 
-                twobx * q2 * (twobx * (q1q3 + q2q4) + twobz * (0.5 - q2q2 - q3q3) - mz);
+        s1 = _2q3*(2*(q1q3 - q0q2) - ax) +
+            _2q0*(2*(q0q1 + q2q3) - ay) - 
+            4*q1*(1 - 2*(q1q1 + q2q2) - az) +
+            _2bz*q3*(_2bx*(0.5 - q2q2 - q3q3) + _2bz*(q1q3 - q0q2) - mx) + 
+            (_2bx*q2 + _2bz*q0)*(_2bx*(q1q2 - q0q3) + _2bz*(q0q1 + q2q3) - my) +
+            (_2bx*q3 - _2bz*_2q1)*(_2bx*(q0q2 + q1q3) + _2bz*(0.5 - q1q1 - q2q2) - mz);
+        
+        s2 = -_2q0*(2*(q1q3 - q0q2) - ax) + 
+            _2q3*(2*(q0q1 + q2q3) - ay) - 
+            4*q2*(1 - 2*(q1q1 + q2q2) - az) + 
+            (-_2bx*_2q2 - _2bz*q0)*(_2bx*(0.5 - q2q2 - q3q3) + _2bz*(q1q3 - q0q2) - mx) + 
+            (_2bx * q1 + _2bz * q3)*(_2bx*(q1q2 - q0q3) + _2bz*(q0q1 + q2q3) - my) + 
+            (_2bx * q0 - _2bz*_2q2)*(_2bx*(q0q2 + q1q3) + _2bz*(0.5 - q1q1 - q2q2) - mz);
+        
+        s3 = _2q1 * (2.0 * (q1q3 - q0q2) - ax) + 
+            _2q2 * (2*(q0q1 + q2q3) - ay) + 
+            (-_2bx * _2q3 + _2bz * q1) * (_2bx * (0.5 - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) + 
+            (-_2bx * q0 + _2bz * q2) * (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) + 
+            _2bx * q1 * (_2bx * (q0q2 + q1q3) + _2bz * (0.5 - q1q1 - q2q2) - mz);
             
             
-	    norm = 1.0 / Math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4);    // normalise
-	    s1 *= norm;
-	    s2 *= norm;
-	    s3 *= norm;
-	    s4 *= norm;
+        // normalise step magnitude
+        recipNorm = 1.0 / Math.sqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3);
+		//Above line has a potential NaN/Infinity result so need to check the result
+		if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
+		    s0 *= recipNorm;
+		    s1 *= recipNorm;
+		    s2 *= recipNorm;
+		    s3 *= recipNorm;
+		} else {
+			//TODO
+		}
 	
 	    // Compute rate of change of quaternion
-	    qDot1 = 0.5 * (-q2 * gx - q3 * gy - q4 * gz) - mBeta * s1;
-	    qDot2 = 0.5 * ( q1 * gx - q4 * gy + q3 * gz) - mBeta * s2;
-	    qDot3 = 0.5 * ( q4 * gx + q1 * gy - q2 * gz)  - mBeta * s3;
-	    qDot4 = 0.5 * (-q3 * gx + q2 * gy + q1 * gz) - mBeta * s4;
+	    qDot1 = 0.5 * (-q1 * gx - q2 * gy - q3 * gz) - mBeta * s0;
+	    qDot2 = 0.5 * ( q0 * gx - q3 * gy + q2 * gz) - mBeta * s1;
+	    qDot3 = 0.5 * ( q3 * gx + q0 * gy - q1 * gz)  - mBeta * s2;
+	    qDot4 = 0.5 * (-q2 * gx + q1 * gy + q0 * gz) - mBeta * s3;
 	
-	    // Integrate to yield quaternion
-        q1 += qDot1 * mSamplingPeriod;
-        q2 += qDot2 * mSamplingPeriod;
-        q3 += qDot3 * mSamplingPeriod;
-        q4 += qDot4 * mSamplingPeriod;
-	    norm = 1.0 / Math.sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);    // normalise quaternion
+	    // Integrate rate of change of quaternion to yield quaternion
+        q0 += qDot1 * mSamplingPeriod;
+        q1 += qDot2 * mSamplingPeriod;
+        q2 += qDot3 * mSamplingPeriod;
+        q3 += qDot4 * mSamplingPeriod;
+	    recipNorm = 1.0 / Math.sqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);    // normalise quaternion
 	
-	    q1 = q1 * norm;
-	    q2 = q2 * norm;
-	    q3 = q3 * norm;
-	    q4 = q4 * norm;
+	    // Normalise quaternion
+	    q0 *= recipNorm;
+	    q1 *= recipNorm;
+	    q2 *= recipNorm;
+	    q3 *= recipNorm;
 
-	    
-	    return new Orientation3DObject(q1,q2,q3,q4);
+	    return new Orientation3DObject(q0,q1,q2,q3);
     }
 }
