@@ -137,7 +137,7 @@ public class GradDes3DOrientation {
 	    // Normalise accelerometer measurement
 	    recipNorm = Math.sqrt(ax * ax + ay * ay + az * az);
 		//Above line has a potential NaN/Infinity result so need to check the result
-		if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
+		if (isFinite(recipNorm) && recipNorm > 0.0) {
 	       recipNorm = 1.0 / recipNorm; 
 	       ax *= recipNorm;
 	       ay *= recipNorm;
@@ -149,7 +149,7 @@ public class GradDes3DOrientation {
 	    // Normalise magnetometer measurement
 	    recipNorm = Math.sqrt(mx * mx + my * my + mz * mz);
 		//Above line has a potential NaN/Infinity result so need to check the result
-		if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
+		if (isFinite(recipNorm) && recipNorm > 0.0) {
 	       recipNorm = 1.0 / recipNorm;
 	       mx *= recipNorm;
 	       my *= recipNorm;
@@ -194,7 +194,7 @@ public class GradDes3DOrientation {
         // normalise step magnitude
         recipNorm = 1.0 / Math.sqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3);
 		//Above line has a potential NaN/Infinity result so need to check the result
-		if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
+		if (isFinite(recipNorm) && recipNorm > 0.0) {
 		    s0 *= recipNorm;
 		    s1 *= recipNorm;
 		    s2 *= recipNorm;
@@ -253,7 +253,7 @@ public class GradDes3DOrientation {
 			// Normalise accelerometer measurement
 			recipNorm = Math.sqrt(ax * ax + ay * ay + az * az);
 			//Above line has a potential NaN/Infinity result so need to check the result
-			if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
+			if (isFinite(recipNorm) && recipNorm > 0.0) {
 				recipNorm = 1.0 / recipNorm;
 				ax *= recipNorm;
 				ay *= recipNorm;
@@ -285,7 +285,7 @@ public class GradDes3DOrientation {
 
 		    recipNorm = 1.0 / Math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s0 * s0);    // normalise
 			//Above line has a potential NaN/Infinity result so need to check the result
-			if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
+			if (isFinite(recipNorm) && recipNorm > 0.0) {
 			    s0 *= recipNorm;
 			    s1 *= recipNorm;
 			    s2 *= recipNorm;
@@ -315,6 +315,13 @@ public class GradDes3DOrientation {
 	    q3 *= recipNorm;
 	    
 	    return new Orientation3DObject(q0,q1,q2,q3);
+	}
+	
+	public boolean isFinite(double d) {
+		//Below is only supported in Java v1.8
+		//return Double.isFinite(d);
+		
+		return !(Double.isNaN(d) || Double.isInfinite(d));
 	}
 	
 }
