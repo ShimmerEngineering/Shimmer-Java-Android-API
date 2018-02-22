@@ -35,6 +35,10 @@ package com.shimmerresearch.algorithms.orientation;
  * @date   October, 2013
  */
 
+/**
+ * Use GradDes3DOrientation directly instead 
+ */
+@Deprecated
 public class GradDes3DOrientation6DoF extends GradDes3DOrientation {
 
 	/**
@@ -58,93 +62,5 @@ public class GradDes3DOrientation6DoF extends GradDes3DOrientation {
 		super(beta, samplingPeriod, q0, q1, q2, q3);
 	}
 
-	/**
-	 * @param ax Accelerometer X in m/(sec^2)
-	 * @param ay Accelerometer Y in m/(sec^2)
-	 * @param az Accelerometer Z in m/(sec^2)
-	 * @param gx Gyroscope X in rad/sec
-	 * @param gy Gyroscope X in rad/sec
-	 * @param gz Gyroscope X in rad/sec
-	 * @return Calculated Quaternion value
-	 */
-	public Orientation3DObject update(double ax, double ay, double az, double gx, double gy, double gz) {
-		double recipNorm;
-		double s0, s1, s2, s3;
-		double qDot1, qDot2, qDot3, qDot4;
-		double _2q0, _2q1, _2q2, _2q3, _4q0, _4q1, _4q2 ,_8q1, _8q2, q0q0, q1q1, q2q2, q3q3;
 
-		// Rate of change of quaternion from gyroscope
-		qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
-		qDot2 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
-		qDot3 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
-		qDot4 = 0.5f * (q0 * gz + q1 * gy - q2 * gx);
-	
-		// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
-		if(!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
-
-			// Normalise accelerometer measurement
-			recipNorm = Math.sqrt(ax * ax + ay * ay + az * az);
-			//Above line has a potential NaN/Infinity result so need to check the result
-			if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
-				recipNorm = 1.0 / recipNorm;
-				ax *= recipNorm;
-				ay *= recipNorm;
-				az *= recipNorm;
-			} else {
-				//TODO
-			}
-
-			// Auxiliary variables to avoid repeated  
-			_2q0 = 2.0f * q0;
-			_2q1 = 2.0f * q1;
-			_2q2 = 2.0f * q2;
-			_2q3 = 2.0f * q3;
-			_4q0 = 4.0f * q0;
-			_4q1 = 4.0f * q1;
-			_4q2 = 4.0f * q2;
-			_8q1 = 8.0f * q1;
-			_8q2 = 8.0f * q2;
-			q0q0 = q0 * q0;
-			q1q1 = q1 * q1;
-			q2q2 = q2 * q2;
-			q3q3 = q3 * q3;
-
-			// Gradient decent algorithm corrective step
-			s0 = _4q0 * q2q2 + _2q2 * ax + _4q0 * q1q1 - _2q1 * ay;
-			s1 = _4q1 * q3q3 - _2q3 * ax + 4.0f * q0q0 * q1 - _2q0 * ay - _4q1 + _8q1 * q1q1 + _8q1 * q2q2 + _4q1 * az;
-			s2 = 4.0f * q0q0 * q2 + _2q0 * ax + _4q2 * q3q3 - _2q3 * ay - _4q2 + _8q2 * q1q1 + _8q2 * q2q2 + _4q2 * az;
-			s3 = 4.0f * q1q1 * q3 - _2q1 * ax + 4.0f * q2q2 * q3 - _2q2 * ay;
-
-		    recipNorm = 1.0 / Math.sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s0 * s0);    // normalise
-			//Above line has a potential NaN/Infinity result so need to check the result
-			if (Double.isFinite(recipNorm) && recipNorm > 0.0) {
-			    s0 *= recipNorm;
-			    s1 *= recipNorm;
-			    s2 *= recipNorm;
-			    s3 *= recipNorm;
-			} else {
-				//TODO
-			}
-
-			// Apply feedback step
-			qDot1 -= mBeta * s0;
-			qDot2 -= mBeta * s1;
-			qDot3 -= mBeta * s2;
-			qDot4 -= mBeta * s3;
-		}
-		
-		 // Integrate to yield quaternion
-        q0 += qDot1 * mSamplingPeriod;
-        q1 += qDot2 * mSamplingPeriod;
-        q2 += qDot3 * mSamplingPeriod;
-        q3 += qDot4 * mSamplingPeriod;
-	    recipNorm = 1.0 / Math.sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q0 * q0);    // normalise quaternion
-	
-	    q0 *= recipNorm;
-	    q1 *= recipNorm;
-	    q2 *= recipNorm;
-	    q3 *= recipNorm;
-	    
-	    return new Orientation3DObject(q0,q1,q2,q3);
-	}
 }
