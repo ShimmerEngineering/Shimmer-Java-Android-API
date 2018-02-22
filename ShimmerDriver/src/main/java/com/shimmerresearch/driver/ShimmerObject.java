@@ -81,6 +81,7 @@ import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.sensors.shimmer2.SensorMMA736x;
 import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Gyro;
 import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Mag;
+import com.shimmerresearch.algorithms.orientation.GradDes3DOrientation;
 import com.shimmerresearch.algorithms.orientation.GradDes3DOrientation9DoF;
 import com.shimmerresearch.algorithms.orientation.Orientation3DObject;
 
@@ -515,7 +516,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private double mLastKnownHeartRate=0;
 	protected DescriptiveStatistics mVSenseBattMA = new DescriptiveStatistics(1024); //YYY -BattVolt-SensorClass
 	Quat4d mQ = new Quat4d();	
-	transient GradDes3DOrientation9DoF mOrientationAlgo;	
+	transient GradDes3DOrientation mOrientationAlgo;	
 	private boolean mIsOrientationEnabled = false;	
 	protected double mDefaultOnTheFlyGyroCalibThreshold = 1.2;	
 
@@ -1272,7 +1273,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
-						mOrientationAlgo = new GradDes3DOrientation9DoF((double)1/getSamplingRateShimmer());
+						mOrientationAlgo = new GradDes3DOrientation((double)1/getSamplingRateShimmer());
 //						mOrientationAlgo = new GradDes3DOrientation(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
 					}
 					//New 2016-05-31
@@ -2199,7 +2200,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
 //						mOrientationAlgo = new GradDes3DOrientation9DoF(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
-						mOrientationAlgo = new GradDes3DOrientation9DoF((double)1/getSamplingRateShimmer());
+						mOrientationAlgo = new GradDes3DOrientation((double)1/getSamplingRateShimmer());
 					}
 //					Orientation3DObject q = mOrientationAlgo.update(accelerometer.x,accelerometer.y,accelerometer.z, gyroscope.x,gyroscope.y,gyroscope.z, magnetometer.x,magnetometer.y,magnetometer.z);
 //					objectCluster.addData(Shimmer2.ObjectClusterSensorName.AXIS_ANGLE_A,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
