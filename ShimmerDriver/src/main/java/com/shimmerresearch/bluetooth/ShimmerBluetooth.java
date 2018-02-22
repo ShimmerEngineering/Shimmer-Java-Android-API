@@ -1238,7 +1238,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			
 			inquiryDone();
 			
-			if(mAutoStartStreaming){
+			if(isAutoStartStreaming()){
 				startStreaming();
 			}
 		} 
@@ -2369,7 +2369,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readConfigByte0();
 		readCalibrationParameters("All");
 		if(isSetupDeviceWhileConnecting()){
-			FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfigMode, mFixedShimmerConfigMap);
+			setFixedConfigWhenConnecting();
 			writeMagRange(getMagRange()); //set to default Shimmer mag gain
 			writeAccelRange(getAccelRange());
 			writeGSRRange(getGSRRange());
@@ -2411,7 +2411,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		if (isSetupDeviceWhileConnecting()){
 			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
-				boolean triggerConfig = FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfigMode, mFixedShimmerConfigMap);
+				boolean triggerConfig = setFixedConfigWhenConnecting();
 				if(triggerConfig){
 					writeConfigBytes(false);
 				}
