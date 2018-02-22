@@ -520,10 +520,10 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 			OrientationModule orientationModuleSource = (OrientationModule) abstractAlgorithmSource;
 			GradDes3DOrientation gradDes3DOrientation = orientationModuleSource.orientationAlgorithm;
 			orientationAlgorithm.setInitialConditions(gradDes3DOrientation.mBeta, 
+					gradDes3DOrientation.q0, 
 					gradDes3DOrientation.q1, 
 					gradDes3DOrientation.q2, 
-					gradDes3DOrientation.q3, 
-					gradDes3DOrientation.q4);
+					gradDes3DOrientation.q3);
 		}
 	}
 	
