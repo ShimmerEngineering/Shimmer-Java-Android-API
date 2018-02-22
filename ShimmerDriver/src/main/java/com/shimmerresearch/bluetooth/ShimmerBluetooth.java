@@ -516,7 +516,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		addFixedShimmerConfig(SensorMMA736x.GuiLabelConfig.ACCEL_RANGE, accelRange);
 		addFixedShimmerConfig(SensorShimmer2Mag.GuiLabelConfig.MAG_RANGE, magRange);
 		mSetEnabledSensors=enabledSensors;
-		mSetupDeviceWhileConnecting = true;
+		setSetupDeviceWhileConnecting(true);
     	setSamplingRateShimmer(samplingRate);
 	}
 	
@@ -2341,7 +2341,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readCalibrationParameters("Accelerometer");
 		readCalibrationParameters("Magnetometer");
 		readCalibrationParameters("Gyroscope");
-		if(mSetupDeviceWhileConnecting && getHardwareVersion()!=4){
+		if(isSetupDeviceWhileConnecting() && getHardwareVersion()!=4){
 			writeAccelRange(getAccelRange());
 			writeGSRRange(getGSRRange());
 			writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
@@ -2368,7 +2368,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		readLEDCommand();
 		readConfigByte0();
 		readCalibrationParameters("All");
-		if(mSetupDeviceWhileConnecting){
+		if(isSetupDeviceWhileConnecting()){
 			FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfigMode, mFixedShimmerConfigMap);
 			writeMagRange(getMagRange()); //set to default Shimmer mag gain
 			writeAccelRange(getAccelRange());
@@ -2400,7 +2400,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		setHardwareVersionAndCreateSensorMaps(HW_ID.SHIMMER_3);
 //		initialise(HW_ID.SHIMMER_3);
 		
-		mHaveAttemptedToReadConfig = true;
+		setHaveAttemptedToReadConfig(true);
 		
 		if(mSendProgressReport){
 			operationPrepare();
@@ -2409,7 +2409,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		//readExpansionBoardID();
 		
-		if (mSetupDeviceWhileConnecting){
+		if (isSetupDeviceWhileConnecting()){
 			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
 				boolean triggerConfig = FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfigMode, mFixedShimmerConfigMap);
 				if(triggerConfig){
@@ -2482,7 +2482,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readCalibrationDump();
 		}
 		
-		if(mSetupDeviceWhileConnecting){
+		if(isSetupDeviceWhileConnecting()){
 			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
 				writeEnabledSensors(mEnabledSensors); //this should always be the last command
 			} else {
@@ -3513,7 +3513,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param rate Defines the sampling rate to be set (e.g.51.2 sets the sampling rate to 51.2Hz). User should refer to the document Sampling Rate Table to see all possible values.
 	 */
 	public void writeShimmerAndSensorsSamplingRate(double rate) {
-		if(mIsInitialised || mSetupDeviceWhileConnecting) {
+		if(mIsInitialised || isSetupDeviceWhileConnecting()) {
 			setShimmerAndSensorsSamplingRate(rate);
 			if(getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 
@@ -5261,6 +5261,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public boolean isSetupDeviceWhileConnecting() {
 		return mSetupDeviceWhileConnecting;
 	}
+	
 	/**
 	 * @param mSetupDevice the mSetupDevice to set
 	 */

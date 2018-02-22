@@ -206,7 +206,7 @@ public class SensorBattVoltage extends AbstractSensor{
 				
 					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 					double offset = 0; double vRefP = 3; double gain = 1; 
-					double calData = SensorADC.calibrateU12AdcValue(unCalData, offset, vRefP, gain);
+					double calData = SensorADC.calibrateU12AdcValueToMillivolts(unCalData, offset, vRefP, gain);
 					calData *= 1.988;
 					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-1);
 					
