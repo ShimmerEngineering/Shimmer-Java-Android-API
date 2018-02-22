@@ -70,14 +70,14 @@ public class GradDes3DOrientation {
 	/** Initialise Gradient Descent algorithm with provided BETA and initial Quaternion.
      * @param beta
      * @param samplingPeriod
+     * @param q0
      * @param q1
      * @param q2
      * @param q3
-     * @param q4
      */
-    public GradDes3DOrientation(double beta, double samplingPeriod, double q1, double q2, double q3, double q4) {
+    public GradDes3DOrientation(double beta, double samplingPeriod, double q0, double q1, double q2, double q3) {
         setSamplingPeriod(samplingPeriod);
-        setInitialConditions(beta, q1, q2, q3, q4);
+        setInitialConditions(beta, q0, q1, q2, q3);
     }
 
 	public void setSamplingPeriod(double samplingPeriod) {
