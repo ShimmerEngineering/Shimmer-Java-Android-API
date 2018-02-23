@@ -713,18 +713,18 @@ public class Configuration {
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
 			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
 			
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF = 50;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_9DOF = 51;
-			public static final int SHIMMER_MPU9150_MPL_EULER_6DOF = 52;
-			public static final int SHIMMER_MPU9150_MPL_EULER_9DOF = 53;
-			public static final int SHIMMER_MPU9150_MPL_HEADING = 54;
-			public static final int SHIMMER_MPU9150_MPL_PEDOMETER = 55;
-			public static final int SHIMMER_MPU9150_MPL_TAP = 56;
-			public static final int SHIMMER_MPU9150_MPL_MOTION_ORIENT = 57;
-			public static final int SHIMMER_MPU9150_MPL_GYRO = 58;
-			public static final int SHIMMER_MPU9150_MPL_ACCEL = 59;
-			public static final int SHIMMER_MPU9150_MPL_MAG = 60;
-			public static final int SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW = 61;
+			public static final int SHIMMER_MPU9X50_MPL_QUAT_6DOF = 50;
+			public static final int SHIMMER_MPU9X50_MPL_QUAT_9DOF = 51;
+			public static final int SHIMMER_MPU9X50_MPL_EULER_6DOF = 52;
+			public static final int SHIMMER_MPU9X50_MPL_EULER_9DOF = 53;
+			public static final int SHIMMER_MPU9X50_MPL_HEADING = 54;
+			public static final int SHIMMER_MPU9X50_MPL_PEDOMETER = 55;
+			public static final int SHIMMER_MPU9X50_MPL_TAP = 56;
+			public static final int SHIMMER_MPU9X50_MPL_MOTION_ORIENT = 57;
+			public static final int SHIMMER_MPU9X50_MPL_GYRO = 58;
+			public static final int SHIMMER_MPU9X50_MPL_ACCEL = 59;
+			public static final int SHIMMER_MPU9X50_MPL_MAG = 60;
+			public static final int SHIMMER_MPU9X50_MPL_QUAT_6DOF_RAW = 61;
 			
 			// STC3100 Channels
 			public static final int SHIMMER_STC3100 = 62;
@@ -764,9 +764,8 @@ public class Configuration {
 			public static final int HOST_MOUSE_LISTENER = 1002;
 			public static final int HOST_WEBCAM = 1003;
 			public static final int HOST_CPU_USAGE = 1004;
-			public static final int SWEATCH_ADC = 1005;
 		}
-		
+
 		/**
 		 * The bit mask must not change for each algorithm as this is what is
 		 * stored in the Shimmer's infomem and the SD file configuration header.
@@ -2121,7 +2120,7 @@ public class Configuration {
 	}
 
 	
-	public static final class Arduino{
+	public static final class Arduino {
 		
 		public static enum LABEL_SENSOR_TILE{
 			ANALOG_IN("Analog In"),//SensorArduino.LABEL_SENSOR_TILE.ANALOG_IN),
@@ -2143,7 +2142,12 @@ public class Configuration {
 		public static final String[] ListOfOnOff = {"On","Off"};
 		public static final Integer[] ListOfOnOffConfigValues = {0x01,0x00};
 	}
-	
+
+	public static final class Sweatch {
+		public class SENSOR_ID {
+			public static final int SWEATCH_ADC = 1005;
+		}
+	}
 	
 	public static class Webcam{
 		public static class CompatibilityInfoForMaps{

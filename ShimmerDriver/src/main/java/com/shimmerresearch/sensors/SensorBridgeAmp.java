@@ -326,7 +326,7 @@ public class SensorBridgeAmp extends AbstractSensor{
 				
 				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.RESISTANCE_AMP)){
 					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-					double calData = SensorADC.calibrateU12AdcValue(unCalData,0,3,1);
+					double calData = SensorADC.calibrateU12AdcValueToMillivolts(unCalData,0,3,1);
 					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-1);
 				}
 				
@@ -423,7 +423,7 @@ public class SensorBridgeAmp extends AbstractSensor{
 //			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 
 				double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				double calData = SensorADC.calibrateU12AdcValue(unCalData, offset, vRefP, gain);
+				double calData = SensorADC.calibrateU12AdcValueToMillivolts(unCalData, offset, vRefP, gain);
 //			}
 //		}
 		return calData;

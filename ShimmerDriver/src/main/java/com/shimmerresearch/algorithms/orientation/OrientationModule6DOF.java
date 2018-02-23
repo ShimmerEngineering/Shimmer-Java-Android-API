@@ -410,7 +410,7 @@ public class OrientationModule6DOF extends OrientationModule{
 			orientationType = ORIENTATION_TYPE.SIX_DOF;
 
 			if(orientationAlgorithm==null){
-				orientationAlgorithm = new GradDes3DOrientation6DoF(samplingPeriod);
+				orientationAlgorithm = new GradDes3DOrientation(samplingPeriod);
 			} else {
 				orientationAlgorithm.setSamplingPeriod(samplingPeriod);
 			}
@@ -429,7 +429,7 @@ public class OrientationModule6DOF extends OrientationModule{
 
 		Orientation3DObject quaternion;
 
-		quaternion = ((GradDes3DOrientation6DoF) orientationAlgorithm).update(
+		quaternion = ((GradDes3DOrientation) orientationAlgorithm).update(
 				accValues.x, accValues.y, accValues.z, 
 				gyroValues.x, gyroValues.y, gyroValues.z);
 

@@ -230,7 +230,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	}
 	
 	public void setOnTheFlyGyroCal(boolean state){
-		mOnTheFlyGyroOffsetCal.setOnTheFlyGyroCal(state);
+		mOnTheFlyGyroOffsetCal.enableOnTheFlyGyroCal(state);
 	}
 
     public boolean isGyroOnTheFlyCalEnabled(){
@@ -246,7 +246,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
     }
     
     public void setOnTheFlyCalGyroThreshold(int threshold) {
-    	mOnTheFlyGyroOffsetCal.setGyroOVCalThreshold(threshold);
+    	mOnTheFlyGyroOffsetCal.setGyroOnTheFlyCalThreshold(threshold);
     }
 
 	public void setLowPowerGyro(boolean enable) {

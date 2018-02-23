@@ -68,6 +68,7 @@ import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.ShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
+import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
@@ -284,7 +285,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //	public static TreeMap<Integer,String> mMapOfErrorCodes = new TreeMap<Integer,String>();
 
 	protected FIXED_SHIMMER_CONFIG_MODE mFixedShimmerConfigMode = FIXED_SHIMMER_CONFIG_MODE.NONE;
-	protected LinkedHashMap<String, Object> mFixedShimmerConfigMap;
+	protected LinkedHashMap<String, Object> mFixedShimmerConfigMap = null;
 
 	protected boolean mAutoStartStreaming = false;
 	public boolean mIsTrialDetailsStoredOnDevice = true;
@@ -4484,9 +4485,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		mFixedShimmerConfigMap.put(configKey, configValue);
 	}
+	
+	protected boolean setFixedConfigWhenConnecting() {
+		return FixedShimmerConfigs.setFixedConfigWhenConnecting(this, mFixedShimmerConfigMode, mFixedShimmerConfigMap);
+	}
 
 	public void setAutoStartStreaming(boolean state){
 		mAutoStartStreaming = state;
+	}
+	
+	public boolean isAutoStartStreaming(){
+		return mAutoStartStreaming;
 	}
 
 	public void setEnableProcessMarker(boolean enable){

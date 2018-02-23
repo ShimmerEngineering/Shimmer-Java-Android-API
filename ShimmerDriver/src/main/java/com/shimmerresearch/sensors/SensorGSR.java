@@ -43,6 +43,8 @@ public class SensorGSR extends AbstractSensor {
 			287.000, 	//Range 1
 			1000.000, 	//Range 2
 			3300.000}; 	//Range 3
+	// Equation breaks down below 683 for range 3
+	public static final int GSR_UNCAL_LIMIT_RANGE3 = 683; 	
 	
 	public class GuiLabelConfig{
 		public static final String GSR_RANGE = "GSR Range";
@@ -328,21 +330,25 @@ public class SensorGSR extends AbstractSensor {
 				}
 				if(sensorDetails.mListOfChannels.contains(channelGsrAdc)){
 					objectCluster.addUncalData(channelGsrAdc, gsrAdcValueUnCal);
-					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannel(gsrAdcValueUnCal));
+					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannelToMillivolts(gsrAdcValueUnCal));
 					objectCluster.incrementIndexKeeper();
 				}
-
-				double p1=0,p2=0;
+				
 				double gsrResistanceKOhms = 0.0;
 				double gsrConductanceUSiemens = 0.0;
 				//TODO can remove old code
 //				if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
+					//Limit the GSR value for open circuit situations. 
+					if(currentGSRRange==3 && gsrAdcValueUnCal<GSR_UNCAL_LIMIT_RANGE3) {
+						gsrAdcValueUnCal = GSR_UNCAL_LIMIT_RANGE3;
+					}
+
 					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
 					gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
 //				} else {
 //					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
-//					p1 = p1p2[0];
-//					p2 = p1p2[1];
+//					double p1 = p1p2[0];
+//					double p2 = p1p2[1];
 //
 //					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
 //					gsrConductanceUSiemens = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
@@ -561,7 +567,7 @@ public class SensorGSR extends AbstractSensor {
 	 */
 	public static double calibrateGsrDataToResistanceFromAmplifierEq(double gsrUncalibratedData, int range){
 		double rFeedback = SHIMMER3_GSR_REF_RESISTORS_KOHMS[range];
-		double volts = (SensorADC.calibrateMspAdcChannel(gsrUncalibratedData))/1000.0;
+		double volts = SensorADC.calibrateMspAdcChannelToVolts(gsrUncalibratedData);
 		double rSource = rFeedback/((volts/0.5)-1.0);
 		return rSource;
 	}

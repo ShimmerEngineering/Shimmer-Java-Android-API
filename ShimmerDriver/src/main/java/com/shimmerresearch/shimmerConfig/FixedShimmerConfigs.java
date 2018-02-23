@@ -6,11 +6,16 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import com.shimmerresearch.driver.Configuration.Shimmer3;
+import com.shimmerresearch.driver.Configuration.Sweatch;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 
+/**This class is used for setting up the same hardware with default configurations but for different applications.
+ * 
+ * @author Mark Nolan
+ */
 public class FixedShimmerConfigs {
 
 	//TODO change to code names for release
@@ -20,7 +25,8 @@ public class FixedShimmerConfigs {
     	CIMIT,
     	CALIBRATION_IMU,
     	USER,
-    	SWEATCH
+    	//TODO might need to update this approach as SWEATCH is inaccessible to this class and shares no commonality with Shimmer3/4. 
+    	SWEATCH_ANDROID
     }
     
 	public static boolean setFixedConfigWhenConnecting(ShimmerDevice shimmerDevice, FIXED_SHIMMER_CONFIG_MODE fixedConfig, LinkedHashMap<String, Object> fixedConfigMap) {
@@ -56,9 +62,9 @@ public class FixedShimmerConfigs {
 				triggerConfiguration = true;
 				setFixedConfig2(shimmerDevice);
 			}
-			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.SWEATCH){
-				setFixedConfig3(shimmerDevice);
-			}
+//			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.SWEATCH_ANDROID){
+//				setFixedConfig3(shimmerDevice);
+//			}
 			
 //			if(triggerConfiguration){
 //				if(shimmerDevice instanceof ShimmerBluetooth){
@@ -128,26 +134,27 @@ public class FixedShimmerConfigs {
 	}
 	
 	//TODO
-	public static void setFixedConfig3(ShimmerDevice shimmerDevice) {
-		int hwId = shimmerDevice.getHardwareVersion();
-		if(hwId==HW_ID.SWEATCH){
-//			//ADC RATE
-//			shimmerDevice.setConfigValueUsingConfigLabel(
-//					Shimmer3.SENSOR_ID.SWEATCH_ADC, 
-//					Swea.GuiLabelConfig.EXG_GAIN,
-//					0);
-//			//PGA GAIN
-//			shimmerDevice.setConfigValueUsingConfigLabel(
-//					Shimmer3.SENSOR_ID.HOST_ECG, 
-//					SensorEXG.GuiLabelConfig.EXG_GAIN,
-//					0);
-//			//Device Sampling rate
-//			shimmerDevice.setConfigValueUsingConfigLabel(
-//					Shimmer3.SENSOR_ID.HOST_ECG, 
-//					SensorEXG.GuiLabelConfig.EXG_GAIN,
-//					0);
-		}
-	}
+//	public static void setFixedConfig3(ShimmerDevice shimmerDevice) {
+//		int hwId = shimmerDevice.getHardwareVersion();
+//		if(hwId==HW_ID.SWEATCH){
+//			shimmerDevice.setDefaultShimmerConfiguration();
+////			//ADC RATE
+////			shimmerDevice.setConfigValueUsingConfigLabel(
+////					Sweatch.SENSOR_ID.SWEATCH_ADC, 
+////					SensorSweatch.GuiLabelConfig.EXG_GAIN,
+////					0);
+////			//PGA GAIN
+////			shimmerDevice.setConfigValueUsingConfigLabel(
+////					Sweatch.SENSOR_ID.SWEATCH_ADC, 
+////					SensorEXG.GuiLabelConfig.EXG_GAIN,
+////					0);
+////			//Device Sampling rate
+////			shimmerDevice.setConfigValueUsingConfigLabel(
+////					Sweatch.SENSOR_ID.SWEATCH_ADC, 
+////					SensorEXG.GuiLabelConfig.EXG_GAIN,
+////					0);
+//		}
+//	}
 
 	
 }
