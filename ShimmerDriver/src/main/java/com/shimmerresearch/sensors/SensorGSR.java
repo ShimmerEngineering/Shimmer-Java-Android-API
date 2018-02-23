@@ -39,10 +39,15 @@ public class SensorGSR extends AbstractSensor {
 	public int mGSRRange = 4; 					// 4 = Auto
 	
 	public static final double[] SHIMMER3_GSR_REF_RESISTORS_KOHMS = new double[] {
-			40.000, 	//Range 0
-			287.000, 	//Range 1
-			1000.000, 	//Range 2
-			3300.000}; 	//Range 3
+			40.0, 		//Range 0
+			287.0, 		//Range 1
+			1000.0, 	//Range 2
+			3300.0}; 	//Range 3
+	public static final double[][] SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS = new double[][] {
+			{8.0, 63.0}, 		//Range 0
+			{63.0, 220.0}, 		//Range 1
+			{220.0, 680.0}, 	//Range 2
+			{680.0, 4700.0}}; 	//Range 3
 	// Equation breaks down below 683 for range 3
 	public static final int GSR_UNCAL_LIMIT_RANGE3 = 683; 	
 	
@@ -105,14 +110,14 @@ public class SensorGSR extends AbstractSensor {
 
 	//--------- Configuration options start --------------
 	public static final String[] ListofGSRRangeResistance = {
-		"10k" + UtilShimmer.UNICODE_OHMS + " to 62k" + UtilShimmer.UNICODE_OHMS,
-		"62k" + UtilShimmer.UNICODE_OHMS + " to 220k" + UtilShimmer.UNICODE_OHMS,
+		"8k" + UtilShimmer.UNICODE_OHMS + " to 63k" + UtilShimmer.UNICODE_OHMS,
+		"63k" + UtilShimmer.UNICODE_OHMS + " to 220k" + UtilShimmer.UNICODE_OHMS,
 		"220k" + UtilShimmer.UNICODE_OHMS + " to 680k" + UtilShimmer.UNICODE_OHMS,
 		"680k" + UtilShimmer.UNICODE_OHMS + " to 4.7M" + UtilShimmer.UNICODE_OHMS,
 		"Auto Range"};
 	public static final String[] ListofGSRRangeConductance = {
-		"100" + UtilShimmer.UNICODE_MICRO + "S to 17.9" + UtilShimmer.UNICODE_MICRO + "S",
-		"17.9" + UtilShimmer.UNICODE_MICRO + "S to 4.5" + UtilShimmer.UNICODE_MICRO + "S",
+		"125" + UtilShimmer.UNICODE_MICRO + "S to 15.9" + UtilShimmer.UNICODE_MICRO + "S",
+		"15.9" + UtilShimmer.UNICODE_MICRO + "S to 4.5" + UtilShimmer.UNICODE_MICRO + "S",
 		"4.5" + UtilShimmer.UNICODE_MICRO + "S to 1.5" + UtilShimmer.UNICODE_MICRO + "S",
 		"1.5" + UtilShimmer.UNICODE_MICRO + "S to 0.2" + UtilShimmer.UNICODE_MICRO + "S",
 		"Auto Range"};
@@ -344,6 +349,7 @@ public class SensorGSR extends AbstractSensor {
 					}
 
 					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
 					gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
 //				} else {
 //					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
@@ -390,6 +396,15 @@ public class SensorGSR extends AbstractSensor {
 		return objectCluster;
 	}
 	
+
+	public static double nudgeGsrResistance(double gsrResistanceKOhms, int gsrRangeSetting) {
+		if(gsrRangeSetting!=4) {
+			double[] minMax = SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS[gsrRangeSetting];
+			return UtilShimmer.nudgeDouble(gsrResistanceKOhms, minMax[0], minMax[1]);
+		}
+		return gsrResistanceKOhms;
+	}
+
 
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
