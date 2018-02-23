@@ -1739,6 +1739,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						}
 
 						gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+						gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
 						gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
 //					} else {
 //						//double p1=0, p2=0;//,p3=0,p4=0,p5=0;
