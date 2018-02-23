@@ -15,7 +15,6 @@ import com.shimmerresearch.driver.calibration.OldCalDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -83,6 +82,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 		public static final String MPU_QUAT_6DOF_DMP_Z = "MPU9150_QUAT_6DOF_Z";
 		
 	}
+	
 	public static final class DatabaseConfigHandle{
 //		public static final String GYRO = "MPU9150_Gyro";
 //		public static final String ALTERNATIVE_ACC = "MPU9150_Acc"; // not available but supported in FW
@@ -666,10 +666,12 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 
 	public static final SensorDetailsRef sensorMpu9150GyroRef = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.GYRO,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_GYRO),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_GYRO_RANGE, 
-					GuiLabelConfig.MPU9X50_GYRO_RATE),
+					GuiLabelConfig.MPU9X50_GYRO_RATE,
+					GuiLabelConfig.GYRO_ON_THE_FLY_CALIB_STATE,
+					GuiLabelConfig.GYRO_ON_THE_FLY_CALIB_THRESHOLD),
 			Arrays.asList(
 					ObjectClusterSensorName.GYRO_X, 
 					ObjectClusterSensorName.GYRO_Y, 
@@ -681,7 +683,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 	
 	public static final SensorDetailsRef sensorMpu9150AccelRef = new SensorDetailsRef(0x40<<(2*8), 0x40<<(2*8), GuiLabelSensors.ACCEL_MPU,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer4,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL), 
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_ACCEL), 
 			Arrays.asList(GuiLabelConfig.MPU9X50_ACCEL_RANGE),
 			Arrays.asList(
 					ObjectClusterSensorName.ACCEL_MPU_X,
@@ -691,7 +693,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 
 	public static final SensorDetailsRef sensorMpu9150MagRef = new SensorDetailsRef(0x20<<(2*8), 0x20<<(2*8), GuiLabelSensors.MAG_MPU,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoShimmer4,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MAG),
 			Arrays.asList(GuiLabelConfig.MPU9X50_MAG_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.MAG_MPU_X,
@@ -871,6 +873,9 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 		//General Config
 		addConfigOption(configOptionMpu9150GyroRate);
 		addConfigOption(configOptionMpu9150GyroLpm);
+		//Calibration Config
+		addConfigOption(configOptionGyroOnTheFlyCalibState);
+		addConfigOption(configOptionGyroOnTheFlyCalibThreshold);
 	}
 
 	@Override
@@ -959,6 +964,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 
 		return mapOfConfig;
 	}
+	
 	@Override
 	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.GYRO_RATE)){
@@ -968,22 +974,22 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 			setGyroRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.GYRO_RANGE)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)){
-			setMPU9150AccelRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)).intValue());
+			setMPU9X50AccelRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.ALTERNATIVE_ACC_RANGE)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_DMP)){
 			setMPU9150DMP(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_DMP)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_LPF)){
-			setMPU9150LPF(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_LPF)).intValue());
+			setMPU9X50LPF(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_LPF)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MOT_CAL_CFG)){
-			setMPU9150MotCalCfg(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MOT_CAL_CFG)).intValue());
+			setMPU9X150MotCalCfg(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MOT_CAL_CFG)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE)){
 			setMPU9150MPLSamplingRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MPL_SAMPLING_RATE)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE)){
-			setMPU9150MagSamplingRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE)).intValue());
+			setMPU9X50MagSamplingRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MAG_SAMPLING_RATE)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION)){
 			setMPLSensorFusion(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.MPU_MPL_SENSOR_FUSION))>0? true:false);
@@ -1011,21 +1017,21 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 		//TODO
 		//MPL Accel Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL, 
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_ACCEL, 
 				getMPU9X50AccelRange(), 
 				SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_ACC);
 
 		//TODO
 		//MPL Mag Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG, 
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MAG, 
 				0, 
 				SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_MAG);
 		
 		//TODO
 		//MPL Gyro Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO, 
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_GYRO, 
 				getGyroRange(), 
 				SensorMPU9150.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MPU_MPL_GYRO);
 	}

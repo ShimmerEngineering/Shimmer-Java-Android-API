@@ -24,7 +24,6 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
-import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.SensorSTC3100Details;
 
 public class LiteProtocol extends AbstractCommsProtocol{
@@ -128,7 +127,6 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	private static final int MAX_CALIB_DUMP_MAX = 4096;
 
 
-	
 	/**
 	 * Constructor
 	 * @param connectionHandle 
@@ -1649,7 +1647,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	 */
 //	public void writeShimmerAndSensorsSamplingRate(int samplingByteValue) {
 	public void writeShimmerAndSensorsSamplingRate(byte[] samplingRateBytes) {
-		if(mIsInitialised) {
+//		if(mIsInitialised) {
 //			if(mShimmerVerObject.isShimmerGen2()){
 //				writeInstruction(new byte[]{InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, (byte)Math.rint(samplingByteValue), 0x00});
 //			} 
@@ -1658,7 +1656,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //			}
 			
 			writePacket(InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, samplingRateBytes);
-		}
+//		}
 		readSamplingRate();
 	}
 	

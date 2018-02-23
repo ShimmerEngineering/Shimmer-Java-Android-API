@@ -414,7 +414,7 @@ public class OrientationModule9DOF extends OrientationModule {
 			orientationType = ORIENTATION_TYPE.NINE_DOF;
 
 			if(orientationAlgorithm==null){
-				orientationAlgorithm = new GradDes3DOrientation9DoF(samplingPeriod);
+				orientationAlgorithm = new GradDes3DOrientation(samplingPeriod);
 			} else {
 				orientationAlgorithm.setSamplingPeriod(samplingPeriod);
 			}
@@ -431,7 +431,7 @@ public class OrientationModule9DOF extends OrientationModule {
 	public Orientation3DObject applyOrientationAlgorithm(){
 
 		Orientation3DObject quaternion;
-		quaternion = ((GradDes3DOrientation9DoF) orientationAlgorithm).update(
+		quaternion = ((GradDes3DOrientation) orientationAlgorithm).update(
 				accValues.x, accValues.y, accValues.z, 
 				gyroValues.x, gyroValues.y, gyroValues.z
 				,magValues.x, magValues.y, magValues.z);

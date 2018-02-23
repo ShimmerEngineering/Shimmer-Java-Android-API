@@ -410,15 +410,7 @@ public abstract class ShimmerBluetoothManager{
 				if(cloneShimmer.getHardwareVersion()==HW_ID.SWEATCH){
 					originalShimmerDevice.operationPrepare();
 					
-//					originalShimmerDevice.setSamplingRateShimmer(cloneShimmer.getSamplingRateShimmer());
-					
 					LiteProtocol liteProtocol = ((LiteProtocol)(originalShimmerDevice.getCommsProtocolRadio().mRadioProtocol));
-					
-					//InfoMem commands are not supported by the Sweatch
-//						liteProtocol.writeInfoMem(cloneShimmer.getConfigByteLayout().MSP430_5XX_INFOMEM_D_ADDRESS, cloneShimmer.getShimmerConfigBytes());
-
-					//TODO
-//						SweatchDevice cloneSweatch = (SweatchDevice)cloneShimmer;
 					liteProtocol.writeShimmerAndSensorsSamplingRate(cloneShimmer.getSamplingRateBytesShimmer());
 					liteProtocol.writeConfigByte0(cloneShimmer.configBytesGenerate(true));
 
