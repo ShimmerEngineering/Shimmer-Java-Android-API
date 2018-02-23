@@ -48,6 +48,11 @@ public class SensorGSR extends AbstractSensor {
 			{63.0, 220.0}, 		//Range 1
 			{220.0, 680.0}, 	//Range 2
 			{680.0, 4700.0}}; 	//Range 3
+//	public static final int[][] SHIMMER3_GSR_RESISTANCE_MIN_MAX_ADC = new int[][] {
+//		{4119, 1120}, 		//Range 0
+//		{3798, 1575}, 		//Range 1
+//		{3791, 1689}, 	//Range 2
+//		{4001, 683}};//834}}; 	//Range 3
 	// Equation breaks down below 683 for range 3
 	public static final int GSR_UNCAL_LIMIT_RANGE3 = 683; 	
 	
@@ -347,6 +352,7 @@ public class SensorGSR extends AbstractSensor {
 					if(currentGSRRange==3 && gsrAdcValueUnCal<GSR_UNCAL_LIMIT_RANGE3) {
 						gsrAdcValueUnCal = GSR_UNCAL_LIMIT_RANGE3;
 					}
+//					gsrAdcValueUnCal = SensorGSR.nudgeGsrADC(gsrAdcValueUnCal, currentGSRRange);
 
 					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
 					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
@@ -405,6 +411,10 @@ public class SensorGSR extends AbstractSensor {
 		return gsrResistanceKOhms;
 	}
 
+//	public static int nudgeGsrADC(int gsrAdcValueUnCal, int gsrRangeSetting) {
+//		int[] minMax = SHIMMER3_GSR_RESISTANCE_MIN_MAX_ADC[gsrRangeSetting];
+//		return UtilShimmer.nudgeInteger(gsrAdcValueUnCal, minMax[1], minMax[0]);
+//	}
 
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
