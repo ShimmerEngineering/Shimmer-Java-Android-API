@@ -7,7 +7,7 @@ archivesBaseName = 'ShimmerBluetoothManager'
 group = 'com.shimmerresearch.managers.bluetoothmanager'
 //group = "myorg"
 
-version = '0.9.24beta'
+version = '0.9.30beta'
 
 
 sourceCompatibility = 1.7
@@ -118,6 +118,7 @@ sourceSets {
         }
     }
     */
+    
     /*
     bintray {
         user = shimmer_bintray_username //this usually comes from gradle.properties file in ~/.gradle
@@ -168,6 +169,7 @@ sourceSets {
         }
     }
     */
+    
 /*
 sourceSets.all { set ->
     def jarTask = task("${set.name}Jar", type: Jar) {

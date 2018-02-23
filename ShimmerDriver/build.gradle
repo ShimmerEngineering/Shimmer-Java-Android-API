@@ -8,7 +8,7 @@ archivesBaseName = 'ShimmerDriver'
 /*Rev0.2
 * - fixes for shimmer2r and writeSensors not working after streaming
 */
-version = '0.9.25beta' 
+version = '0.9.107beta' 
 
     group = 'com.shimmerresearch.driver'
 
@@ -118,8 +118,8 @@ sourceSets {
         }
     }
   */  
-  /*
-    bintray {
+  
+    /*bintray {
         user = shimmer_bintray_username //this usually comes from gradle.properties file in ~/.gradle
         key = shimmer_bintray_api_key //this usually comes from gradle.properties file in ~/.gradle
         
