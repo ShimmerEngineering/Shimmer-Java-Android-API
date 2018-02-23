@@ -1737,6 +1737,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						if(currentGSRRange==3 && gsrAdcValueUnCal<SensorGSR.GSR_UNCAL_LIMIT_RANGE3) {
 							gsrAdcValueUnCal = SensorGSR.GSR_UNCAL_LIMIT_RANGE3;
 						}
+//						gsrAdcValueUnCal = SensorGSR.nudgeGsrADC(gsrAdcValueUnCal, currentGSRRange);
 
 						gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
 						gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
