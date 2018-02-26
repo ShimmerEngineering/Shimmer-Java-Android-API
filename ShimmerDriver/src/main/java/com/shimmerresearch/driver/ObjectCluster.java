@@ -127,9 +127,10 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		ARRAYS
 	}
 	public static List<OBJECTCLUSTER_TYPE> mListOfOCTypesEnabled = new ArrayList<OBJECTCLUSTER_TYPE>(Arrays.asList(
-			OBJECTCLUSTER_TYPE.ARRAYS_LEGACY,
-			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER,
-			OBJECTCLUSTER_TYPE.PROTOBUF));
+//			OBJECTCLUSTER_TYPE.ARRAYS_LEGACY,
+			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER
+//			OBJECTCLUSTER_TYPE.PROTOBUF
+			));
 	
 	//TODO remove this variable? unused in PC applications
 	public BT_STATE mState;

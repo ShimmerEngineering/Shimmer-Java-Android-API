@@ -598,8 +598,7 @@ public class OrientationModule6DOF extends OrientationModule{
 	}
 
 	public ObjectCluster addQuaternionToObjectCluster(Orientation3DObject quaternion, ObjectCluster objectCluster){
-
-
+		
 		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
 			if(isEulerOutput()){
 				objectCluster.addData(ObjectClusterSensorName.EULER_6DOF_YAW_LN,CHANNEL_TYPE.CAL,CHANNEL_UNITS.NO_UNITS,quaternion.getYaw());
