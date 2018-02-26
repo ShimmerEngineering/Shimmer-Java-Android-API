@@ -20,7 +20,7 @@ import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
-import com.shimmerresearch.driver.shimmer4sdk.Shimmer4;
+import com.shimmerresearch.driver.shimmer4sdk.Shimmer4sdk;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerShell;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
@@ -78,11 +78,11 @@ public abstract class ShimmerBluetoothManager{
     protected abstract ShimmerDevice createNewShimmer3(ShimmerRadioInitializer bldc, String bluetoothAddress);
     
     /** This method is used to create a new Shimmer4 instance without setting the radio */ 
-	protected abstract Shimmer4 createNewShimmer4(String comPort, String bluetoothAddress);
+	protected abstract Shimmer4sdk createNewShimmer4(String comPort, String bluetoothAddress);
 	/** This method is used to create a new Shimmer4 instance after a serial port
 	 * connection has already been established (e.g. after a connection has been
 	 * made to a Shimmer and we have determined what hardware version it is)*/
-    protected abstract Shimmer4 createNewShimmer4(ShimmerRadioInitializer radioInitializer, String bluetoothAddress);
+    protected abstract Shimmer4sdk createNewShimmer4(ShimmerRadioInitializer radioInitializer, String bluetoothAddress);
 
 	// TODO Might be better to be able to set mFixedShimmerConfig and
 	// mAutoStartStreaming on a per Shimmer basis through the connect() method
@@ -244,8 +244,8 @@ public abstract class ShimmerBluetoothManager{
 			if (selectedShimmer instanceof ShimmerBluetooth) {
 				((ShimmerBluetooth) selectedShimmer).toggleLed();
 			} 
-			else if (selectedShimmer instanceof Shimmer4) {
-				((Shimmer4) selectedShimmer).toggleLed();
+			else if (selectedShimmer instanceof Shimmer4sdk) {
+				((Shimmer4sdk) selectedShimmer).toggleLed();
 			}
 		}
 	}
@@ -390,11 +390,11 @@ public abstract class ShimmerBluetoothManager{
 					}
 				}
 			}
-			else if(cloneShimmer instanceof Shimmer4){
-				Shimmer4 cloneShimmerCast = (Shimmer4) cloneShimmer;
+			else if(cloneShimmer instanceof Shimmer4sdk){
+				Shimmer4sdk cloneShimmerCast = (Shimmer4sdk) cloneShimmer;
 				ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmerCast.getMacId());
-				if(originalShimmerDevice instanceof Shimmer4){
-					Shimmer4 originalShimmer = (Shimmer4) originalShimmerDevice;
+				if(originalShimmerDevice instanceof Shimmer4sdk){
+					Shimmer4sdk originalShimmer = (Shimmer4sdk) originalShimmerDevice;
 					
 					originalShimmer.operationPrepare();
 //					originalShimmer.setSendProgressReport(true);
@@ -676,7 +676,7 @@ public abstract class ShimmerBluetoothManager{
 				ShimmerBluetooth spc = (ShimmerBluetooth) shimmerDevice;
 				list.addAll(spc.getListofEnabledChannelSignalsandFormats());
 			}
-			else if(shimmerDevice instanceof Shimmer4){
+			else if(shimmerDevice instanceof Shimmer4sdk){
 				
 			}
 		}
@@ -693,7 +693,7 @@ public abstract class ShimmerBluetoothManager{
 					list.addAll(spc.getListofEnabledChannelSignalsandFormats());
 				}
 			}
-			else if(shimmerDevice instanceof Shimmer4){
+			else if(shimmerDevice instanceof Shimmer4sdk){
 				
 			}
 		}
@@ -709,7 +709,7 @@ public abstract class ShimmerBluetoothManager{
 				ShimmerBluetooth spc = (ShimmerBluetooth) shimmerDevice;
 				list.addAll(spc.getListofEnabledChannelSignalsandFormats());
 			}
-			else if(shimmerDevice instanceof Shimmer4){
+			else if(shimmerDevice instanceof Shimmer4sdk){
 				
 			}
 		}

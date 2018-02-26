@@ -1237,10 +1237,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //			prepareAllMapsAfterConfigRead();
 			
 			inquiryDone();
-			
-			if(isAutoStartStreaming()){
-				startStreaming();
-			}
 		} 
 
 		else if(responseCommand==SAMPLING_RATE_RESPONSE) {
