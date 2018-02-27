@@ -191,7 +191,7 @@ public class ShimmerDeviceCallbackAdapter implements Serializable {
 					+ "\tProgressCounter" + progressReportPerDevice.mProgressCounter 
 					+ "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
 			
-			// From Shimmer4/SweatchDevice/Arduino
+			// From Shimmer4/SweatchDevice/Arduino but shouldn't be needed here as it's a bit of a hack
 //			if(progressReportPerDevice.mCurrentOperationBtState==BT_STATE.CONNECTING){
 //				if(progressReportPerDevice.mProgressCounter==progressReportPerDevice.mProgressEndValue){
 //					isReadyForStreaming();

@@ -13,7 +13,6 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportAll;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerRadioInitializer;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
@@ -33,7 +32,6 @@ import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_T
 import com.shimmerresearch.exceptions.ConnectionExceptionListener;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.thirdpartyDevices.noninOnyxII.NoninOnyxIIDevice;
@@ -85,9 +83,11 @@ public abstract class ShimmerBluetoothManager{
     protected abstract Shimmer4sdk createNewShimmer4(ShimmerRadioInitializer radioInitializer, String bluetoothAddress);
 
 	// TODO Might be better to be able to set mFixedShimmerConfig and
-	// mAutoStartStreaming on a per Shimmer basis through the connect() method
-	// rather then globals
+	// mAutoStartStreaming on a per Shimmer basis through variables passed into the
+	// connect() method rather then globals for all devices
+    /** Used to load a set configuration to the devices based on different applications */
     protected FIXED_SHIMMER_CONFIG_MODE mFixedShimmerConfig = FIXED_SHIMMER_CONFIG_MODE.NONE;
+	/** If true, all devices will auto-stream once a connection is established */
 	protected boolean mAutoStartStreaming = false;		
 
 	public ShimmerBluetoothManager() {
