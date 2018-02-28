@@ -421,7 +421,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 	
 	public void createArrayData(int length){
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS_LEGACY)){
+/*		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS_LEGACY)){
 			mUncalData = new double[length];
 			mCalData = new double[length];
 			mSensorNames = new String[length];
@@ -433,6 +433,16 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			sensorDataArray = new SensorDataArray(length);		
 //			sensorDataArray[CHANNEL_TYPE.CAL.ordinal()] = new SensorDataPerType(50);
 //			sensorDataArray[CHANNEL_TYPE.UNCAL.ordinal()] = new SensorDataPerType(50);
+		}
+*/		
+		if(mEnableArraysDataStructure) {
+			sensorDataArray = new SensorDataArray(length);		
+		} else {
+			mUncalData = new double[length];
+			mCalData = new double[length];
+			mSensorNames = new String[length];
+			mUnitCal = new String[length];
+			mUnitUncal = new String[length];
 		}
 	}
 
