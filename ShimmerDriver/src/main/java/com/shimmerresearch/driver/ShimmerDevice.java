@@ -4252,6 +4252,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.disconnect();
 		}
+		mCommsProtocolRadio = null;
 	}
 
 	//TODO copied from ShimmerBluetooth
@@ -4363,19 +4364,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
-		//Old code -> not functioning well because it only takes into account the mLastSavedCalibratedTimeStamp and not all packets lost in the interval
-//		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
-//		
-//		if (mLastReceivedCalibratedTimeStamp!=-1 && mLastSavedCalibratedTimeStamp!=-1){
-//			double timeDifference=mLastReceivedCalibratedTimeStamp-mLastSavedCalibratedTimeStamp;
-//			double numPacketsReceived= ((timeDifference/1000) * getSamplingRateShimmer());
-//			setPacketReceptionRateCurrent((numPacketsReceived/numPacketsShouldHaveReceived)*100.0);
-//		}	
-//
-//		if (mLastReceivedCalibratedTimeStamp!=-1){
-//			mLastSavedCalibratedTimeStamp = mLastReceivedCalibratedTimeStamp;
-//		}
-
 		double numPacketsShouldHaveReceived = (((double)intervalMs)/1000) * getSamplingRateShimmer();
 		double packetsReceivedSinceLastRequest = getPacketReceivedCountCurrent();
 		setPacketReceptionRateCurrent((packetsReceivedSinceLastRequest/numPacketsShouldHaveReceived)*100.0);
