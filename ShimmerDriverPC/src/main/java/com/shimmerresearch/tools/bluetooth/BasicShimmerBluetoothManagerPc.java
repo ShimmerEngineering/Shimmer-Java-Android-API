@@ -12,7 +12,7 @@ import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.shimmer4sdk.Shimmer4;
+import com.shimmerresearch.driver.shimmer4sdk.Shimmer4sdk;
 import com.shimmerresearch.exceptions.ConnectionExceptionListener;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
@@ -88,24 +88,24 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
     	return shimmerDevice;
     }
 
-	protected Shimmer4 createNewShimmer4() {
-		return new Shimmer4();
+	protected Shimmer4sdk createNewShimmer4() {
+		return new Shimmer4sdk();
 	}
 	
 	@Override
-	protected Shimmer4 createNewShimmer4(String comPort, String bluetoothAddress) {
-		Shimmer4 shimmer4 = createNewShimmer4();
+	protected Shimmer4sdk createNewShimmer4(String comPort, String bluetoothAddress) {
+		Shimmer4sdk shimmer4 = createNewShimmer4();
 		shimmer4.setComPort(comPort);
 		putShimmerGlobalMap(bluetoothAddress, shimmer4);
 		return shimmer4;
 	}
 
 	@Override
-	protected Shimmer4 createNewShimmer4(ShimmerRadioInitializer radioInitializer, String bluetoothAddress) {
+	protected Shimmer4sdk createNewShimmer4(ShimmerRadioInitializer radioInitializer, String bluetoothAddress) {
     	SerialPortCommJssc serialPortComm = (SerialPortCommJssc) radioInitializer.getSerialCommPort();
     	String comPort = serialPortComm.mComPort;
 
-		Shimmer4 shimmer4 = createNewShimmer4(comPort, bluetoothAddress);
+		Shimmer4sdk shimmer4 = createNewShimmer4(comPort, bluetoothAddress);
 		if(serialPortComm!=null){
 			CommsProtocolRadio commsProtocolRadio = new CommsProtocolRadio(serialPortComm, new LiteProtocol(comPort));
 			shimmer4.setCommsProtocolRadio(commsProtocolRadio);

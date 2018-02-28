@@ -198,31 +198,6 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		
 	}
 
-//	@Override
-//	public void initialize() throws Exception {
-//		
-//		double samplingPeriod = 1/samplingRate;
-//		
-//		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)
-//				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
-//			orientationType = ORIENTATION_TYPE.NINE_DOF;
-//			orientationAlgorithm = new GradDes3DOrientation(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
-//		}
-//		else if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)
-//				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
-//			orientationType = ORIENTATION_TYPE.SIX_DOF;
-//			orientationAlgorithm = new GradDes3DOrientation6DoF(BETA, samplingPeriod, Q1, Q2, Q3, Q4);
-//		}
-//		
-//		if(mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)
-//				||mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
-//			accelerometerSensor = Shimmer3.GuiLabelSensors.ACCEL_LN;
-//		}
-//		else{
-//			accelerometerSensor = Shimmer3.GuiLabelSensors.ACCEL_WR;
-//		}
-//	}
-
 	@Override
 	public String printBatchMetrics() {
 		return null;
@@ -261,16 +236,6 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	@Override
 	public void setIsEnabled(boolean isEnabled) {
 		mIsEnabled = isEnabled;
-//		if(mIsEnabled){
-//			if(!isQuaternionOutput() && !isEulerOutput()){
-//				setQuaternionOutput(true);
-////				setEulerOutput(false);
-//			}
-//		}
-//		else {
-//			setQuaternionOutput(false);
-//			setEulerOutput(false);
-//		}
 	}
 	
 	protected void checkIfToDisable(){
@@ -278,102 +243,6 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 			setIsEnabled(false);
 		}
 	}
-	
-//	@Override
-//	public void setIsEnabled(boolean isEnabled, boolean groupEnabled) {
-//		mIsEnabled = isEnabled;
-//		if(mIsEnabled && !groupEnabled){
-//				setQuaternionOutput(true);
-//				setEulerOutput(false);
-//		}
-//		else if(!mIsEnabled && !groupEnabled){
-//			setQuaternionOutput(false);
-//			setEulerOutput(false);
-//		}
-//	}
-	
-	
-//	public void setAccelerometer(String accelerometerName){
-//		this.accelerometerSensor = accelerometerName;
-//	}
-//	@Override
-//	public Object getSettings(String componentName) {
-//		Object returnValue = null;
-//		switch(componentName){
-//
-//			case(GuiLabelConfigCommon.SAMPLING_RATE):
-//				returnValue = getSamplingRate();
-//			break;
-//			case(GuiLabelConfig.ACCELEROMETER):
-//				returnValue = getAccelerometer();
-//			break;
-//			case(GuiLabelConfig.QUATERNION_OUTPUT):
-//				returnValue = isQuaternionOutput();
-//			break;
-//			case(GuiLabelConfig.EULER_OUTPUT):
-//				returnValue = isEulerOutput();
-//			break;
-//		}
-//		return returnValue;
-//	}
-//	
-//
-//	@Override
-//	public Object getDefaultSettings(String componentName) {
-//		Object returnValue = null;
-//		switch(componentName){
-//			case(GuiLabelConfigCommon.SAMPLING_RATE):
-//				returnValue = 512;
-//				break;
-//			case(GuiLabelConfig.ACCELEROMETER):
-//				returnValue = Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL;
-//				break;
-//			case(GuiLabelConfig.QUATERNION_OUTPUT):
-//				returnValue = true;
-//				break;
-//			case(GuiLabelConfig.EULER_OUTPUT):
-//				returnValue = false;
-//				break;
-//		}
-//		return returnValue;
-//	}
-//
-//	@Override
-//	public void setSettings(String componentName, Object valueToSet){
-//		
-//		switch(componentName){
-//			case(GuiLabelConfigCommon.SAMPLING_RATE):
-//				if(valueToSet instanceof String){
-//					setSamplingRate(Double.parseDouble((String) valueToSet));
-//				}
-//				else if(valueToSet instanceof Double){
-//					setSamplingRate((Double) valueToSet);
-//				}
-//				break;
-//			case(GuiLabelConfig.ACCELEROMETER):
-//				setAccelerometer((String) valueToSet);
-//				break;
-//			case(GuiLabelConfig.QUATERNION_OUTPUT):
-//				if(valueToSet instanceof Boolean){
-//					setQuaternionOutput((boolean) valueToSet);
-//				}
-//				else if(valueToSet instanceof Integer){
-//					setQuaternionOutput(((Integer) valueToSet)>0? true:false);
-//				}
-//				break;
-//			case(GuiLabelConfig.EULER_OUTPUT):
-//				if(valueToSet instanceof Boolean){
-//					setEulerOutput((boolean) valueToSet);
-//				}
-//				else if(valueToSet instanceof Integer){
-//					setEulerOutput(((Integer) valueToSet)>0? true:false);
-//				}
-//				break;
-//		}
-//	}
-	
-	//trying to split combo box connection
-	
 	
 	public boolean isAxisAngleOutput() {
 		return axisAngleOutput;
@@ -413,47 +282,6 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		this.orientationType = algorithmType;
 	}
 		
-//	@Override
-//	public void algorithmMapUpdateFromEnabledSensorsVars(long derivedSensorBitmapID) {
-//		setQuaternionOutput(false);
-//		setEulerOutput(false);
-//		
-//		if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_LN)){
-//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT)>0){
-//				setQuaternionOutput(true);
-//			}
-//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER)>0){
-//				setEulerOutput(true);
-//			}
-//		}
-//		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_9DOF_WR)){
-//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT)>0){
-//				setQuaternionOutput(true);
-//			}
-//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER)>0){
-//				setEulerOutput(true);
-//			}
-//		}
-//		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_LN)){
-//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_QUAT)>0){
-//				setQuaternionOutput(true);
-//			}
-//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_LN_EULER)>0){
-//				setEulerOutput(true);
-//			}
-//		}
-//		else if(mAlgorithmDetails.mAlgorithmName.equals(AlgorithmName.ORIENTATION_6DOF_WR)){
-//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_QUAT)>0){
-//				setQuaternionOutput(true);
-//			}
-//			if((derivedSensorBitmapID&DerivedSensorsBitMask.ORIENTATION_6DOF_WR_EULER)>0){
-//				setEulerOutput(true);
-//			}
-//		}
-//		
-//		setIsEnabled(isEulerOutput()||isQuaternionOutput());
-//	}
-	
 	@Override
 	public long getDerivedSensorBitmapID() {
 		long bitmask = 0;

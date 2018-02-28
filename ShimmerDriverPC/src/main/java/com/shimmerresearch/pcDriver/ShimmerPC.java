@@ -102,15 +102,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	double mLastSavedCalibratedTimeStamp = -1;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
 	
-	//TODO remove
-//	public static final boolean ONLY_UPDATE_RATE_IF_CHANGED = false;
-//	public double mLastSentPacketReceptionRateOverall = DEFAULT_RECEPTION_RATE;
-//	public double mLastSentPacketReceptionRateCurrent = DEFAULT_RECEPTION_RATE;
-
 	//TODO switch to using rather then using JSSC directly in this class 
 //	private SerialPortCommJssc SerialPortCommJssc = new SerialPortCommJssc(comPort, uniqueId, baudToUse);
 	
-	//TODO migrate to using below
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
 
 	//--------------- Constructors start ----------------------------
@@ -496,29 +490,36 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void inquiryDone() {
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
-		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+		mDeviceCallbackAdapter.inquiryDone();
 		isReadyForStreaming();
+		
+		//TODO 2018-02-26 MN: Remove below when ready 
+//		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
+//		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+//		isReadyForStreaming();
 	}
 
 	@Override
 	protected void isReadyForStreaming() {
-		// Send msg fully initialized, send notification message,  
-		// Do something here
-        mIsInitialised = true;
-//        prepareAllAfterConfigRead();
-
-        if (mSendProgressReport){
-        	finishOperation(BT_STATE.CONNECTING);
-        }
-        
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_FULLY_INITIALIZED, getMacId(), getComPort());
-		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-		
+		mDeviceCallbackAdapter.isReadyForStreaming();
 		restartTimersIfNull();
-		setBluetoothRadioState(BT_STATE.CONNECTED);
+		
+		//TODO 2018-02-26 MN: Remove below when ready 
+//		// Send msg fully initialized, send notification message,  
+//		// Do something here
+//        mIsInitialised = true;
+////        prepareAllAfterConfigRead();
+//
+//        if (mSendProgressReport){
+//        	finishOperation(BT_STATE.CONNECTING);
+//        }
+//        
+//		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_FULLY_INITIALIZED, getMacId(), getComPort());
+//		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+//		
+//		restartTimersIfNull();
+//		setBluetoothRadioState(BT_STATE.CONNECTED);
 	}
-
 
 	@Override
 	public void calculatePacketReceptionRateCurrent(int intervalMs) {
@@ -646,30 +647,35 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public boolean setBluetoothRadioState(BT_STATE state) {
-		boolean changed = super.setBluetoothRadioState(state);
+		boolean isChanged = super.setBluetoothRadioState(state);
+		mDeviceCallbackAdapter.setBluetoothRadioState(state, isChanged);
+		return isChanged;
 
-		if(mBluetoothRadioState==BT_STATE.CONNECTED){
-			mIsInitialised = true;
-			mIsStreaming = false;
-		}
-		else if(mBluetoothRadioState==BT_STATE.STREAMING){
-			mIsStreaming = true;
-		}		
-		else if((mBluetoothRadioState==BT_STATE.DISCONNECTED)
-				||(mBluetoothRadioState==BT_STATE.CONNECTION_LOST)
-				||(mBluetoothRadioState==BT_STATE.CONNECTION_FAILED)){
-			setIsConnected(false);
-			mIsStreaming = false;
-			mIsInitialised = false;
-		}
-		
-		consolePrintLn("State change: " + mBluetoothRadioState.toString());
-
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
-		if (changed){
-			sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
-		}
-		return changed;
+		//TODO 2018-02-26 MN: Remove below when ready 
+//		boolean changed = super.setBluetoothRadioState(state);
+//
+//		if(mBluetoothRadioState==BT_STATE.CONNECTED){
+//			mIsInitialised = true;
+//			mIsStreaming = false;
+//		}
+//		else if(mBluetoothRadioState==BT_STATE.STREAMING){
+//			mIsStreaming = true;
+//		}		
+//		else if((mBluetoothRadioState==BT_STATE.DISCONNECTED)
+//				||(mBluetoothRadioState==BT_STATE.CONNECTION_LOST)
+//				||(mBluetoothRadioState==BT_STATE.CONNECTION_FAILED)){
+//			setIsConnected(false);
+//			mIsStreaming = false;
+//			mIsInitialised = false;
+//		}
+//		
+//		consolePrintLn("State change: " + mBluetoothRadioState.toString());
+//
+//		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
+//		if (changed){
+//			sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+//		}
+//		return changed;
 	}
 	
 	@Override
@@ -681,66 +687,75 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public void startOperation(BT_STATE currentOperation, int totalNumOfCmds){
-		consolePrintLn(currentOperation + " START");
-
-		progressReportPerDevice = new BluetoothProgressReportPerDevice(this, currentOperation, totalNumOfCmds);
-		progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.INPROGRESS;
+		mDeviceCallbackAdapter.startOperation(currentOperation, totalNumOfCmds);
 		
-		CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
-		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+		//TODO 2018-02-26 MN: Remove below when ready 
+//		consolePrintLn(currentOperation + " START");
+//
+//		progressReportPerDevice = new BluetoothProgressReportPerDevice(this, currentOperation, totalNumOfCmds);
+//		progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.INPROGRESS;
+//		
+//		CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
+//		sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
 	}
 	
 	@Override
-	public void finishOperation(BT_STATE btState){
-		
-		if(progressReportPerDevice!=null){
-			consolePrintLn("CURRENT OPERATION " + progressReportPerDevice.mCurrentOperationBtState + "\tFINISHED:" + btState);
-			
-			if(progressReportPerDevice.mCurrentOperationBtState == btState){
+	public void finishOperation(BT_STATE state){
+		mDeviceCallbackAdapter.finishOperation(state);
 
-				progressReportPerDevice.finishOperation();
-				progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.SUCCESS;
-				//JC: moved operationFinished to is ready for streaming, seems to be called before the inquiry response is received
-				super.operationFinished();
-				CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
-				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
-				
-				//Removed to try and stop progress going to 0% after finishing
-//				progressReportPerDevice = new ProgressReportPerDevice(this, BT_STATE.NONE, 1);
-//				callBackObject = new CallbackObject(mState, getMacId(), mUniqueID, progressReportPerDevice);
+		//TODO 2018-02-26 MN: Remove below when ready 
+//		if(progressReportPerDevice!=null){
+//			consolePrintLn("CURRENT OPERATION " + progressReportPerDevice.mCurrentOperationBtState + "\tFINISHED:" + state);
+//			
+//			if(progressReportPerDevice.mCurrentOperationBtState == state){
+//
+//				progressReportPerDevice.finishOperation();
+//				progressReportPerDevice.mOperationState = BluetoothProgressReportPerDevice.OperationState.SUCCESS;
+//				//JC: moved operationFinished to is ready for streaming, seems to be called before the inquiry response is received
+//				super.operationFinished();
+//				CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
 //				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
-			}
-		}
-		else {
-			consolePrintLn("CURRENT OPERATION - UNKNOWN, null progressReportPerDevice" + "\tFINISHED:" + btState);
-		}
-
+//				
+//				//Removed to try and stop progress going to 0% after finishing
+////				progressReportPerDevice = new ProgressReportPerDevice(this, BT_STATE.NONE, 1);
+////				callBackObject = new CallbackObject(mState, getMacId(), mUniqueID, progressReportPerDevice);
+////				sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+//			}
+//		}
+//		else {
+//			consolePrintLn("CURRENT OPERATION - UNKNOWN, null progressReportPerDevice" + "\tFINISHED:" + state);
+//		}
 	}
 	
 	@Override
 	protected void hasStopStreaming() {
-		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
-				// Do something here
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STOP_STREAMING, getMacId(), getComPort());
-		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-		startTimerReadStatus();
-		setBluetoothRadioState(BT_STATE.CONNECTED);
+		mDeviceCallbackAdapter.hasStopStreaming();
+		
+		//TODO 2018-02-26 MN: Remove below when ready 
+//		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
+//				// Do something here
+//		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STOP_STREAMING, getMacId(), getComPort());
+//		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+//		startTimerReadStatus();
+//		setBluetoothRadioState(BT_STATE.CONNECTED);
 	}
 	
 	@Override
 	protected void isNowStreaming() {
-		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
-		// Do something here
-		
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_START_STREAMING, getMacId(), getComPort());
-		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-		
-		if (isSDLogging()){
-			setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
-		} else {
-			setBluetoothRadioState(BT_STATE.STREAMING);
-		}
-		
+		mDeviceCallbackAdapter.isNowStreaming();
+
+		//TODO 2018-02-26 MN: Remove below when ready 
+//		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
+//		// Do something here
+//		
+//		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_START_STREAMING, getMacId(), getComPort());
+//		sendCallBackMsg(MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
+//		
+//		if (isSDLogging()){
+//			setBluetoothRadioState(BT_STATE.STREAMING_AND_SDLOGGING);
+//		} else {
+//			setBluetoothRadioState(BT_STATE.STREAMING);
+//		}
 	}
 
 
@@ -794,43 +809,27 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
-		// TODO Auto-generated method stub
-		
+		// NOT USED IN THIS CLASS
 	}
 	
 	@Override
 	protected void sendProgressReport(BluetoothProgressReportPerCmd pRPC) {
-		if(progressReportPerDevice!=null){
-			progressReportPerDevice.updateProgress(pRPC);
-			
-			CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
-			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
-			
-//			consolePrintLn("ProgressCounter" + progressReportPerDevice.mProgressCounter + "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
-			
-			if(progressReportPerDevice.mProgressCounter==progressReportPerDevice.mProgressEndValue){
-				finishOperation(progressReportPerDevice.mCurrentOperationBtState);
-			}
-		}
+		mDeviceCallbackAdapter.sendProgressReport(pRPC);
+		
+		//TODO 2018-02-26 MN: Remove below when ready 
+//		if(progressReportPerDevice!=null){
+//			progressReportPerDevice.updateProgress(pRPC);
+//			
+//			CallbackObject callBackObject = new CallbackObject(mBluetoothRadioState, getMacId(), getComPort(), progressReportPerDevice);
+//			sendCallBackMsg(MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE, callBackObject);
+//			
+////			consolePrintLn("ProgressCounter" + progressReportPerDevice.mProgressCounter + "\tProgressEndValue " + progressReportPerDevice.mProgressEndValue);
+//			
+//			if(progressReportPerDevice.mProgressCounter==progressReportPerDevice.mProgressEndValue){
+//				finishOperation(progressReportPerDevice.mCurrentOperationBtState);
+//			}
+//		}
 	}
-
-	@Override
-	protected void batteryStatusChanged() {
-		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
-		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
-	}
-	
-	
-//	private void consolePrintLn(String message) {
-//		if(mVerboseMode) {
-//			Calendar rightNow = Calendar.getInstance();
-//			String rightNowString = "[" + String.format("%02d",rightNow.get(Calendar.HOUR_OF_DAY)) 
-//					+ ":" + String.format("%02d",rightNow.get(Calendar.MINUTE)) 
-//					+ ":" + String.format("%02d",rightNow.get(Calendar.SECOND)) 
-//					+ ":" + String.format("%03d",rightNow.get(Calendar.MILLISECOND)) + "]";
-//			System.out.println(rightNowString + " " + mParentClassName + ": " + getComPort() + " " + getMacIdFromBtParsed() + " " + message);
-//		}		
-//	}
 
 	@Override
 	public ShimmerPC deepClone() {
@@ -858,20 +857,25 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	@Override
+	protected void batteryStatusChanged() {
+		mDeviceCallbackAdapter.batteryStatusChanged();
+		
+//		CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
+//		sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
+	}
+
+	@Override
 	protected void dockedStateChange() {
-		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, getMacId(), getComPort());
-		sendCallBackMsg(MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, callBackObject);
+		mDeviceCallbackAdapter.dockedStateChange();
+		
+//		CallbackObject callBackObject = new CallbackObject(MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, getMacId(), getComPort());
+//		sendCallBackMsg(MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE, callBackObject);
 	}
 
 	@Override
 	public void createConfigBytesLayout() {
 		mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 	}
-
-	
-	
-	
-	
 	
 	public boolean isChannelEnabled(int sensorKey) {
 		return super.isSensorEnabled(COMMUNICATION_TYPE.BLUETOOTH, sensorKey);
@@ -893,26 +897,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	    }
 		return null;
 	}
-
-	//TODO 2017-08-03 MN: Removed as ShimmerDevice is no longer using a different map
-//	//Need to override here because ShimmerDevice class uses a different map
-//	@Override
-//	public List<ShimmerVerObject> getListOfCompatibleVersionInfoForSensor(int sensorKey) {
-////		super.getListOfCompatibleVersionInfoForSensor(sensorId);
-//		SensorDetails sensor = mSensorMap.get(sensorKey);
-//	    if(sensor!=null){
-//		    return sensor.mSensorDetailsRef.mListOfCompatibleVersionInfo;
-//	    }
-//		return null;
-//	}
-
-	//TODO 2017-08-03 MN: Removed as ShimmerDevice is no longer using a different map
-//	//Need to override here because ShimmerDevice class uses a different map
-//	@Override
-//	public Set<Integer> getSensorIdsSet() {
-////		super.getSensorIdsSet();
-//		return mSensorMap.keySet();
-//	}
 
 }
 

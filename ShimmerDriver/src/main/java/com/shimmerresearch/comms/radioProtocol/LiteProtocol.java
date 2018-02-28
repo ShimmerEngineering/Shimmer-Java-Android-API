@@ -2267,10 +2267,13 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			if(mTimerCheckAlive==null){ 
 				mTimerCheckAlive = new Timer("Shimmer_" + getConnectionHandle() + "_TimerCheckAlive");
 			}
+			int hwId = getHardwareVersion();
+			int fwId = getFirmwareIdentifier();
 			//dont really need this for log and stream since we already have the get status timer
-			if((getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
-					|| (getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.BTSTREAM)
-					|| (getHardwareVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){
+			if((hwId==HW_ID.SHIMMER_3 && fwId==FW_ID.LOGANDSTREAM)
+					|| (hwId==HW_ID.SHIMMER_3 && fwId==FW_ID.BTSTREAM)
+					|| (hwId==HW_ID.SHIMMER_4_SDK && fwId==FW_ID.SHIMMER4_SDK_STOCK)
+					|| (hwId==HW_ID.SWEATCH)){
 				mTimerCheckAlive.schedule(new checkIfAliveTask(), TIMER_CHECK_ALIVE_PERIOD, TIMER_CHECK_ALIVE_PERIOD);
 			}
 		}
@@ -2298,15 +2301,20 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				mIamAlive=false;
 			}
 			else{
-				if((getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && isStreaming())
-						|| (getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.BTSTREAM)
-						|| (getHardwareVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK && isStreaming())){
+				int hwId = getHardwareVersion();
+				int fwId = getFirmwareIdentifier();
+				
+				if(isStreaming()) {
+//				if((hwId==HW_ID.SHIMMER_3 && fwId==FW_ID.LOGANDSTREAM && isStreaming())
+//						|| (hwId==HW_ID.SHIMMER_3 && fwId==FW_ID.BTSTREAM)
+//						|| (hwId==HW_ID.SHIMMER_4_SDK && fwId==FW_ID.SHIMMER4_SDK_STOCK && isStreaming())
+//						|| (hwId==HW_ID.SWEATCH && isStreaming())){
 					mCountDeadConnection++;
 				}
 				
 				if(getFirmwareVersionCode()>=6 && !isStreaming()){
 					if(getListofInstructions().size()==0 
-							&&!getListofInstructions().contains(InstructionsSet.TEST_CONNECTION_COMMAND_VALUE)){
+							&& !getListofInstructions().contains(InstructionsSet.TEST_CONNECTION_COMMAND_VALUE)){
 						printLogDataForDebugging("Check Alive Task");
 						if((getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
 								||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){
@@ -2525,14 +2533,14 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 	
 	public void writeLEDCommand(int command) {
-////		if(mShimmerVersion!=HW_ID.SHIMMER_3){
-//			if(isThisVerCompatibleWith(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0)){
-//	//			if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
-//			}
-//			else {
-//				writeInstruction(InstructionsSet.SET_BLINK_LED_VALUE, (byte)command});
-//			}
-////		}
+//		if(mShimmerVersion!=HW_ID.SHIMMER_3){
+			if(mShimmerVerObject.compareVersions(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0)){
+	//			if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
+			}
+			else {
+				writeInstruction(new byte[]{InstructionsSet.SET_BLINK_LED_VALUE, (byte)command});
+			}
+//		}
 	}
 
 
