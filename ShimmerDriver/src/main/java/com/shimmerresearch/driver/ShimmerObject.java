@@ -2085,18 +2085,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //				additionalChannelsOffset+=1;
 			}
 			
-//			objectCluster.mCalData = calibratedData;
-//			objectCluster.mUncalData = uncalibratedData;
-//			objectCluster.mUnitCal = calibratedDataUnits;
-//			objectCluster.mUnitUncal = uncalibratedDataUnits;
-//			objectCluster.mSensorNames = sensorNames;
-
-			objectCluster.sensorDataArray.mCalData=calibratedData;
-			objectCluster.sensorDataArray.mUncalData=uncalibratedData;
-			objectCluster.sensorDataArray.mCalUnits = calibratedDataUnits;
-			objectCluster.sensorDataArray.mUncalUnits = uncalibratedDataUnits;
-			objectCluster.sensorDataArray.mSensorNames = sensorNames;
-			objectCluster.setIndexKeeper(additionalChannelsOffset);
+			if(!objectCluster.mEnableArraysDataStructure) {
+				objectCluster.mCalData = calibratedData;
+				objectCluster.mUncalData = uncalibratedData;
+				objectCluster.mUnitCal = calibratedDataUnits;
+				objectCluster.mUnitUncal = uncalibratedDataUnits;
+				objectCluster.mSensorNames = sensorNames;
+			} else {
+				objectCluster.sensorDataArray.mCalData=calibratedData;
+				objectCluster.sensorDataArray.mUncalData=uncalibratedData;
+				objectCluster.sensorDataArray.mCalUnits = calibratedDataUnits;
+				objectCluster.sensorDataArray.mUncalUnits = uncalibratedDataUnits;
+				objectCluster.sensorDataArray.mSensorNames = sensorNames;
+				objectCluster.setIndexKeeper(additionalChannelsOffset);
+			}
 			
 //			printSensorNames(objectCluster.mSensorNames);
 //			printSensorNames(objectCluster.getChannelNamesByInsertionOrder());
