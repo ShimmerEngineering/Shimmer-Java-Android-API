@@ -546,6 +546,9 @@ final public class ObjectCluster implements Cloneable,Serializable{
 //		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
 		if(mEnableArraysDataStructure) {
 			
+			
+			//TODO JOS: Add new arrays data here
+			
 //			if(channelType.equals(CHANNEL_TYPE.CAL.toString())) {
 //				sensorDataArray.mSensorNames[mIndexCal] = channelName;
 //				sensorDataArray.mCalUnits[mIndexCal] = units;
@@ -570,6 +573,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 ////				sensorDataArray[UNCAL_INDEX].mIsUsingDefaultCalibParams[mIndexUncal] = isUsingDefaultCalib;
 //				//mIndexUncal++;
 //			}
+			
 		} else {
 			if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)) {
 				mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
