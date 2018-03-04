@@ -176,6 +176,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	 */
 	public void openSafely() throws DockException {
 		try {
+			consolePrintLn("Opening port - " + mUniqueId + " - " + mComPort);
 			mSerialPortInterface.connect();
 		} catch (ShimmerException devE) {
 			DockException de = new DockException(devE);
