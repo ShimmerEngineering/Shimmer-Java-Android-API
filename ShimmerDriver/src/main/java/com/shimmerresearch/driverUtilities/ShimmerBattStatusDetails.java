@@ -66,6 +66,10 @@ public class ShimmerBattStatusDetails implements Serializable {
 	public ShimmerBattStatusDetails() {
 	}
 	
+	
+	/** Used via dock communication
+	 * @param rxBuf
+	 */
 	public ShimmerBattStatusDetails(byte[] rxBuf) {
 		if(rxBuf.length >= 3) {
 			// Parse response string
@@ -77,6 +81,14 @@ public class ShimmerBattStatusDetails implements Serializable {
 
 	public ShimmerBattStatusDetails(int battAdcValue, int chargingStatus) {
 		update(battAdcValue, chargingStatus);
+	}
+	
+	public byte[] generateBattStatusBytes() {
+		byte[] battStatusBytes = new byte[3];
+		battStatusBytes[0] = (byte) (mBattAdcValue&0xFF);
+		battStatusBytes[1] = (byte) ((mBattAdcValue>>8)&0xFF);
+		battStatusBytes[2] = (byte) mChargingStatusRaw;
+		return battStatusBytes;
 	}
 	
 	public void update(int battAdcValue, int chargingStatus) {

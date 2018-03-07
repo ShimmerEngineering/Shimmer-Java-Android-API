@@ -12,6 +12,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  *
  */
 public class UartComponentPropertyDetails {
+	
 	public UartPacketDetails.UART_COMPONENT mComponent;
 	public byte mComponentByte = 0;
 	public int mProperty = 0;

@@ -1196,10 +1196,29 @@ public class UtilShimmer implements Serializable {
 		return listOfUniqueIds;
 	}
 
+	public static String getCheckOrCrossForBoolean(boolean state) {
+		return state? CHECK_MARK_STRING:CROSS_MARK_STRING;
+	}
+
 	public static String removeCheckMarkIfPresent(String origString) {
 		String modifiedString = origString.replace((CHECK_MARK_STRING), "");
 		modifiedString = modifiedString.replace((CROSS_MARK_STRING), "");
 		return modifiedString;
+	}
+
+	public static int[] generateSawToothIntSignal(int min, int max, int size, int increment, int startVal) {
+		int[] signal = new int[size];
+		
+		signal[0] = startVal;
+		for(int i=1;i<size;i++) {
+			signal[i] = signal[i-1] + increment;
+			
+			if(signal[i]>max) {
+				signal[i] = min;
+			}
+		}
+		
+		return signal;
 	}
 
 }
