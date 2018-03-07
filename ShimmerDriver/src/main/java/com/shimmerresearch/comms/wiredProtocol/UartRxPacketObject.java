@@ -3,6 +3,7 @@ package com.shimmerresearch.comms.wiredProtocol;
 import java.util.Arrays;
 
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT;
+import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_AND_PROPERTY;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_PACKET_CMD;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 
@@ -22,6 +23,10 @@ public class UartRxPacketObject{
 	public byte[] mPayload = null;
 	public byte[] mCrc = null;
 	
+	//For IEEE802.15.4 AM packets wrapped in the Shimmer CommsProtocol UART protocol
+	public int mRadioDestId = UNKNOWN; 
+	public byte mAmType = UNKNOWN;
+	
 	public byte[] mLeftOverBytes = null;
 	public long mSystemTimeMillis = UNKNOWN;
 
@@ -31,12 +36,28 @@ public class UartRxPacketObject{
 		if(rxBuf[0]==UartPacketDetails.PACKET_HEADER.getBytes()[0]){
 			mUartCommandByte = rxBuf[1];
 			
-			if(mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
+			if(mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()
+					|| mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.READ.toCmdByte()
+					|| mUartCommandByte == UartPacketDetails.UART_PACKET_CMD.WRITE.toCmdByte()){
 				mPayloadLength = rxBuf[2]&0xFF;
 				mUartComponentByte = rxBuf[3];
 				mUartPropertyByte = rxBuf[4];
 				
 				mPayload = Arrays.copyOfRange(rxBuf, 5, 5+mPayloadLength-2);
+				
+				//Parse wrapped AM packets 
+				if(mUartCommandByte==UART_PACKET_CMD.WRITE.toCmdByte()){
+					if(mUartComponentByte==UART_COMPONENT.RADIO_802154.toCmdByte()){
+						if(mUartPropertyByte==UART_COMPONENT_AND_PROPERTY.RADIO_802154.TX_TO_SHIMMER.mPropertyByte){
+							if(mPayload.length>=3) {
+								mRadioDestId = ((mPayload[1]&0xFF)<<8) | (mPayload[0]&0xFF);
+								mAmType = mPayload[2];
+//								mPayload[3];
+							}
+						}
+					}
+				}
+				
 				mCrc = Arrays.copyOfRange(rxBuf, 5+mPayloadLength-1, 5+mPayloadLength);
 				packetLength = 5+mPayloadLength;
 			}
@@ -98,12 +119,18 @@ public class UartRxPacketObject{
 	}
 
 	public String getConsoleString() {
-		return ("Command:" 		+ getUartCommandParsed() 
+		String consoleString = "Command:" 		+ getUartCommandParsed() 
 				+ (mUartComponentByte==UartRxPacketObject.UNKNOWN? "":"\tComponent:" 		+ getUartComponentParsed()) 
-				+ (mUartPropertyByte==UartRxPacketObject.UNKNOWN? 	"":"\tProperty:" 		+ getUartPropertyParsed()) 
-				+ (mPayload==null? 								"":"\tPayload" + "(" + mPayload.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mPayload)) 
-//				+ "\n" 				+ UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf)
-				);
+				+ (mUartPropertyByte==UartRxPacketObject.UNKNOWN? 	"":"\tProperty:" 		+ getUartPropertyParsed());
+		
+		if(mAmType!=UNKNOWN) {
+			consoleString += "\tAM Type:" + UtilShimmer.byteToHexStringFormatted((byte) (mAmType&0xFF));//AmCommandDetails.getAmTypeParsedmAmType(mAmType);
+		}
+		
+		consoleString += (mPayload==null? "":"\tPayload" + "(" + mPayload.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mPayload)); 
+//		consoleString += "\n" 				+ UtilShimmer.bytesToHexStringWithSpacesFormatted(mRxPacket);
+		
+		return consoleString;
 	}
 	
 	

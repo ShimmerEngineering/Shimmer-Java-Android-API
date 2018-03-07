@@ -113,7 +113,19 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 			if(!mLeavePortOpen) closeSafely();
 		}
 	}
-	
+
+	public void processShimmerCommandNoWait(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails compPropDetails, int errorCode, byte[] payload) throws DockException{
+		if(!mLeavePortOpen) openSafely();
+		try {
+			shimmerUartCommandNoWait(packetCmd, compPropDetails, payload);
+		} catch(DockException de) {
+			de.mErrorCode = errorCode;
+			throw(de);
+		} finally{
+			if(!mLeavePortOpen) closeSafely();
+		}
+	}
+
 	public byte[] processShimmerGetCommand(UartComponentPropertyDetails compPropDetails, int errorCode) throws DockException{
 		return processShimmerGetCommand(compPropDetails, errorCode, null);
 	}
@@ -248,7 +260,12 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 		mThrownException = null;
 		txPacket(UartPacketDetails.UART_PACKET_CMD.WRITE, msgArg, payload);
 	}
-	
+
+	protected void shimmerUartCommandNoWait(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg, byte[] payload) throws DockException {
+		mThrownException = null;
+		txPacket(packetCmd, msgArg, payload);
+	}
+
     /**Get information from the Shimmer based on passed in message argument
      * @param msgArg a byte array of containing the Component and Property to get
      * @return byte array containing data response from Shimmer
@@ -368,6 +385,8 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	}
 
 	/**
+	 * msgArg is null for ACK, Bad Cmd, Bad Arg and Bad CRC responses
+	 * 
      * @param command
      * @param msgArg a two-byte array of containing the Component and respective Property to get
      * @param value
@@ -376,35 +395,95 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	protected byte[] assembleTxPacket(int command, UartComponentPropertyDetails msgArg, byte[] value) {
 		byte[] header = (UartPacketDetails.PACKET_HEADER).getBytes();
 		byte[] cmd = new byte[]{(byte) command};
-		byte[] msgLength = new byte[]{(byte) 2};
-		if(value!=null) {
-			msgLength[0] += value.length;
+		int msgLength = 0;
+		if(msgArg!=null) {
+			msgLength += msgArg.mCompPropByteArray.length;
 		}
+		if(value!=null) {
+			msgLength += value.length;
+		}
+		byte[] msgLengthByte = new byte[]{(byte) msgLength};
 		
-		byte[] txBufPreCrc;
+		int txBufPreCrcSize = header.length + cmd.length;
+		if(msgLength>0) {
+			txBufPreCrcSize += msgLengthByte.length;
+		}
+		if(msgArg!=null) {
+			txBufPreCrcSize += msgArg.mCompPropByteArray.length;
+		}
 		if(value!=null) {
-			txBufPreCrc = new byte[header.length + cmd.length + msgArg.mCompPropByteArray.length + msgLength.length + value.length];
+			txBufPreCrcSize += value.length;
 		}
-		else {
-			txBufPreCrc = new byte[header.length + cmd.length + msgArg.mCompPropByteArray.length + msgLength.length];
-		}
+		//Full Sequence order
+		//byte[] txBufPreCrc = new byte[header.length + cmd.length + msgArg.mCompPropByteArray.length + msgLength.length + value.length];
+		byte[] txBufPreCrc = new byte[txBufPreCrcSize];
 		
-		System.arraycopy(header, 0, txBufPreCrc, 0, header.length);
-		System.arraycopy(cmd, 0, txBufPreCrc, header.length, cmd.length);
-		System.arraycopy(msgLength, 0, txBufPreCrc, header.length + cmd.length, msgLength.length);
-		System.arraycopy(msgArg.mCompPropByteArray, 0, txBufPreCrc, header.length + cmd.length + msgLength.length, msgArg.mCompPropByteArray.length);
+		int currentIndex = 0;
+		System.arraycopy(header, 0, txBufPreCrc, currentIndex, header.length);
+		currentIndex += header.length;
+		System.arraycopy(cmd, 0, txBufPreCrc, currentIndex, cmd.length);
+		currentIndex += cmd.length;
+		if(msgLength>0) {
+			System.arraycopy(msgLengthByte, 0, txBufPreCrc, currentIndex, msgLengthByte.length);
+			currentIndex += msgLengthByte.length;
+		}
+		if(msgArg!=null) {
+			System.arraycopy(msgArg.mCompPropByteArray, 0, txBufPreCrc, currentIndex, msgArg.mCompPropByteArray.length);
+			currentIndex += msgArg.mCompPropByteArray.length;
+		}
 		if(value!=null) {
-			System.arraycopy(value, 0, txBufPreCrc, header.length + cmd.length + msgLength.length + msgArg.mCompPropByteArray.length, value.length);
+			System.arraycopy(value, 0, txBufPreCrc, currentIndex, value.length);
+			currentIndex += value.length;
 		}
 
 		byte[] calculatedCrc = ShimmerCrc.shimmerUartCrcCalc(txBufPreCrc, txBufPreCrc.length);
 		
+		//+2 for CRC
 		byte[] txBufPostCrc = new byte[txBufPreCrc.length + 2]; 
 		System.arraycopy(txBufPreCrc, 0, txBufPostCrc, 0, txBufPreCrc.length);
 		System.arraycopy(calculatedCrc, 0, txBufPostCrc, txBufPreCrc.length, calculatedCrc.length);
 		
 		return txBufPostCrc;
     }
+	
+//	/**
+//     * @param command
+//     * @param msgArg a two-byte array of containing the Component and respective Property to get
+//     * @param value
+//     * @return
+//     */
+//	protected byte[] assembleTxPacket(int command, UartComponentPropertyDetails msgArg, byte[] value) {
+//		byte[] header = (UartPacketDetails.PACKET_HEADER).getBytes();
+//		byte[] cmd = new byte[]{(byte) command};
+//		byte[] msgLength = new byte[]{(byte) 2};
+//		if(value!=null) {
+//			msgLength[0] += value.length;
+//		}
+//		
+//		byte[] txBufPreCrc;
+//		if(value!=null) {
+//			txBufPreCrc = new byte[header.length + cmd.length + msgArg.mCompPropByteArray.length + msgLength.length + value.length];
+//		}
+//		else {
+//			txBufPreCrc = new byte[header.length + cmd.length + msgArg.mCompPropByteArray.length + msgLength.length];
+//		}
+//		
+//		System.arraycopy(header, 0, txBufPreCrc, 0, header.length);
+//		System.arraycopy(cmd, 0, txBufPreCrc, header.length, cmd.length);
+//		System.arraycopy(msgLength, 0, txBufPreCrc, header.length + cmd.length, msgLength.length);
+//		System.arraycopy(msgArg.mCompPropByteArray, 0, txBufPreCrc, header.length + cmd.length + msgLength.length, msgArg.mCompPropByteArray.length);
+//		if(value!=null) {
+//			System.arraycopy(value, 0, txBufPreCrc, header.length + cmd.length + msgLength.length + msgArg.mCompPropByteArray.length, value.length);
+//		}
+//
+//		byte[] calculatedCrc = ShimmerCrc.shimmerUartCrcCalc(txBufPreCrc, txBufPreCrc.length);
+//		
+//		byte[] txBufPostCrc = new byte[txBufPreCrc.length + 2]; 
+//		System.arraycopy(txBufPreCrc, 0, txBufPostCrc, 0, txBufPreCrc.length);
+//		System.arraycopy(calculatedCrc, 0, txBufPostCrc, txBufPreCrc.length, calculatedCrc.length);
+//		
+//		return txBufPostCrc;
+//    }
 	
     
 	private byte[] waitForResponse(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg) throws DockException {
@@ -504,22 +583,25 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	private void processUnexpectedResponse(UartRxPacketObject uRPO) throws DockException {
 		// Response is not the expected response type
 		byte commandByte = uRPO.mUartCommandByte;
-		
-		if(commandByte!=UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte() 
-				&& commandByte!=UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
-			if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()) {
-				throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD);
-			}
-			else if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()) {
-				throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG);
-			}
-			else if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()) {
-				throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC);
-			}
-			else {
+
+		if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_CMD_RESPONSE.toCmdByte()) {
+			throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CMD);
+		}
+		else if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_ARG_RESPONSE.toCmdByte()) {
+			throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_ARG);
+		}
+		else if(commandByte == UartPacketDetails.UART_PACKET_CMD.BAD_CRC_RESPONSE.toCmdByte()) {
+			throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_BAD_CRC);
+		}
+		else {
+			if(commandByte!=UartPacketDetails.UART_PACKET_CMD.ACK_RESPONSE.toCmdByte() 
+					&& commandByte!=UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()
+					&& commandByte!=UartPacketDetails.UART_PACKET_CMD.READ.toCmdByte()
+					&& commandByte!=UartPacketDetails.UART_PACKET_CMD.WRITE.toCmdByte()){
 				throw new DockException(mUniqueId, mComPort, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED, ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_RESPONSE_UNEXPECTED);
 			}
 		}
+
 	}
 	
 	@Override
@@ -560,7 +642,9 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 			// proceed with parsing.
 			int expectedResponseLength = 0;
 			if(continueWithParsing){
-        		if(cmdByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()){
+        		if(cmdByte == UartPacketDetails.UART_PACKET_CMD.DATA_RESPONSE.toCmdByte()
+        				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.READ.toCmdByte()
+        				|| cmdByte == UartPacketDetails.UART_PACKET_CMD.WRITE.toCmdByte()){
         			int payloadLength = rxBuf[2]&0xFF;
         			// handle invalid payload length
         			if(payloadLength<0){
@@ -809,8 +893,8 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	
 	private String assemblePrintTxPacketInfo(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg, byte[] valueBuffer) {
 		String consoleString = "TX\tCommand:" + packetCmd.toString()
-							+ "\tComponent:" + msgArg.mComponent.toString()
-							+ "\tProperty:" + msgArg.mPropertyName
+							+ "\tComponent:" + (msgArg==null? "null":msgArg.mComponent.toString())
+							+ "\tProperty:" + (msgArg==null? "null":msgArg.mPropertyName)
 					//				+ (valueBuffer==null? "":("\tPayload:" + UtilShimmer.bytesToHexStringWithSpacesFormatted(valueBuffer)))
 		;
 
