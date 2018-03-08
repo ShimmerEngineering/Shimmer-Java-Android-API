@@ -24,8 +24,9 @@ public class UartRxPacketObject{
 	public byte[] mCrc = null;
 	
 	//For IEEE802.15.4 AM packets wrapped in the Shimmer CommsProtocol UART protocol
-	public int mRadioDestId = UNKNOWN; 
-	public byte mAmType = UNKNOWN;
+	public int mAmPktRadioDestId = UNKNOWN; 
+	public byte mAmPktType = UNKNOWN;
+	public byte[] mAmPktPayload = null;
 	
 	public byte[] mLeftOverBytes = null;
 	public long mSystemTimeMillis = UNKNOWN;
@@ -50,9 +51,13 @@ public class UartRxPacketObject{
 					if(mUartComponentByte==UART_COMPONENT.RADIO_802154.toCmdByte()){
 						if(mUartPropertyByte==UART_COMPONENT_AND_PROPERTY.RADIO_802154.TX_TO_SHIMMER.mPropertyByte){
 							if(mPayload.length>=3) {
-								mRadioDestId = ((mPayload[1]&0xFF)<<8) | (mPayload[0]&0xFF);
-								mAmType = mPayload[2];
-//								mPayload[3];
+								mAmPktRadioDestId = ((mPayload[1]&0xFF)<<8) | (mPayload[0]&0xFF);
+								mAmPktType = mPayload[2];
+								
+								if(mPayload.length>3) {
+									mAmPktPayload = new byte[mPayload.length-3];
+									System.arraycopy(mPayload, 3, mAmPktPayload, 0, mAmPktPayload.length);
+								}
 							}
 						}
 					}
@@ -123,13 +128,15 @@ public class UartRxPacketObject{
 				+ (mUartComponentByte==UartRxPacketObject.UNKNOWN? "":"\tComponent:" 		+ getUartComponentParsed()) 
 				+ (mUartPropertyByte==UartRxPacketObject.UNKNOWN? 	"":"\tProperty:" 		+ getUartPropertyParsed());
 		
-		if(mAmType!=UNKNOWN) {
-			consoleString += "\tAM Type:" + UtilShimmer.byteToHexStringFormatted((byte) (mAmType&0xFF));//AmCommandDetails.getAmTypeParsedmAmType(mAmType);
-		}
-		
 		consoleString += (mPayload==null? "":"\tPayload" + "(" + mPayload.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(mPayload)); 
 //		consoleString += "\n" 				+ UtilShimmer.bytesToHexStringWithSpacesFormatted(mRxPacket);
-		
+
+		if(mAmPktType!=UNKNOWN) {
+			consoleString += "\n\tAM Packet -> \tType=" + UtilShimmer.byteToHexStringFormatted((byte) (mAmPktType&0xFF))//AmCommandDetails.getAmTypeParsedmAmType(mAmType);
+			+ "\tDest=" + UtilShimmer.intToHexStringFormatted(mAmPktRadioDestId, 2, true)
+			+ "\tPayload=" + (mAmPktPayload==null? "NULL":UtilShimmer.bytesToHexStringWithSpacesFormatted(mAmPktPayload));
+		}
+
 		return consoleString;
 	}
 	
