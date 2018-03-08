@@ -1941,7 +1941,13 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 								continue;
 							}
 
-							double yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
+							double yData = f.mData;
+							try {
+								yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
+							} catch (Exception e) {
+								//2018-03-08 MN:Used to throw the entire method here but removing this for the moment
+								continue;
+							}
 							
 							if (yData!=-1){ //marker detected
 								xData=mCurrentXValue; //ensure the timestamp doesnt go back in time
@@ -1961,7 +1967,13 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 							continue;
 						}
 
-						double yData = checkAndCorrectData(shimmerName, props[1], traceName, f.mData);
+						double yData = f.mData;
+						try {
+							yData = checkAndCorrectData(shimmerName, props[1], traceName, f.mData);
+						} catch (Exception e) {
+							//2018-03-08 MN:Used to throw the entire method here but removing this for the moment
+							continue;
+						}
 
 						if (i>mListofTraces.size()){
 							throw new Exception("Trace does not exist: (" + traceName + ")");

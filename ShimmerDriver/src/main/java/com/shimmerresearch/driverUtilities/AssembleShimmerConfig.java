@@ -148,7 +148,7 @@ public class AssembleShimmerConfig {
 					// Configure for bluetooth. 
 					else if(commType==COMMUNICATION_TYPE.BLUETOOTH
 //							&& ((shimmerDevice instanceof ShimmerBluetooth) || (shimmerDevice instanceof Shimmer4))
-							&& shimmerDevice.isConnected()
+//							&& shimmerDevice.isConnected()
 							&& (shimmerDevice.isInitialised() && !shimmerDevice.isStreaming())){
 						listForConfiguringBT.add(shimmerDevice.deepClone());
 					}
