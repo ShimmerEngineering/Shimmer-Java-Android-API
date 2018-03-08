@@ -82,8 +82,6 @@ public class ShimmerSDCardDetails implements Serializable {
 
 	public void setDriveUsedSpace(long driveUsedSpace) {
 		mDriveUsedSpace = driveUsedSpace;
-		
-		System.err.println("Drive used space received = " + driveUsedSpace + " Bytes" + "\tor\t" + spaceToString(driveUsedSpace));
 	}
 	
 	public boolean isFirstSdAccess() {

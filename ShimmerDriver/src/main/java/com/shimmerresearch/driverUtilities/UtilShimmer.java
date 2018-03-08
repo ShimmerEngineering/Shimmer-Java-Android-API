@@ -385,6 +385,29 @@ public class UtilShimmer implements Serializable {
 	    returnString = "[" + returnString + "]";
 	    return returnString;
 	}
+	
+	public static String intToHexStringFormatted(int intValue, int numBytes, boolean isMsbOrder) {
+		byte[] bytes = null;
+		if(isMsbOrder) {
+			bytes = intToByteArrayMsb(intValue, numBytes);
+		} else {
+			bytes = intToByteArrayLsb(intValue, numBytes);
+		}
+		int charCntPerByte = 2+(numBytes*2);
+	    char hexChars[] = new char[charCntPerByte];
+        hexChars[0] = '0';
+        hexChars[1] = 'x';
+        int i = 2;
+        for(byte v:bytes) {
+            hexChars[i] = hexArray[(v&0xFF) >>> 4];
+            hexChars[i+1] = hexArray[(v&0xFF) & 0x0F];
+            i+=2;
+        }
+	    String returnString = new String(hexChars);
+//	    returnString = "[" + returnString + "]";
+	    return returnString;
+	}
+	
 
 	public static byte[] intToByteArrayLsb(int intToUse, int numBytes) {
 		byte[] buffer = new byte[numBytes]; 
@@ -732,6 +755,15 @@ public class UtilShimmer implements Serializable {
 	public void millisecondDelay(long millis) {
 		try {
 			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			consolePrintLn("Thread sleep FAIL");
+		//	e.printStackTrace();
+		}
+	}
+
+	public void nanosecondDelay(int nanos) {
+		try {
+			Thread.sleep(0,nanos);
 		} catch (InterruptedException e) {
 			consolePrintLn("Thread sleep FAIL");
 		//	e.printStackTrace();
