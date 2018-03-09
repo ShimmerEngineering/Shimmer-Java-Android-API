@@ -65,7 +65,7 @@ import com.shimmerresearch.sensors.SensorECGToHRFw;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorPPG;
-import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
@@ -743,7 +743,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int indexAlgo = 0;
 		
 		if (fwType == COMMUNICATION_TYPE.BLUETOOTH){
-			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(pcTimestamp).array();
+//			objectCluster.mSystemTimeStampBytes=ByteBuffer.allocate(8).putLong(pcTimestamp).array();
+			objectCluster.setSystemTimeStamp(pcTimestamp);
 			//plus 1 because of: timestamp
 			numAdditionalChannels += 1;
 			
@@ -823,7 +824,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			//OFFSET
 			if(isTimeSyncEnabled && (fwType == COMMUNICATION_TYPE.SD)){
-				int iOffset=getSignalIndex(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
+				int iOffset=getSignalIndex(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET); //find index
 				double offsetValue = Double.NaN;
 				if (OFFSET_LENGTH==9){
 					if(newPacketInt[iOffset] == 1152921504606846975L){
@@ -840,8 +841,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					}
 				}
 
-				objectCluster.addDataToMap(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue);
-				objectCluster.addDataToMap(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,Double.NaN);
+				objectCluster.addDataToMap(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,offsetValue);
+				objectCluster.addDataToMap(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.NO_UNITS,Double.NaN);
 				uncalibratedData[iOffset] = offsetValue;
 				calibratedData[iOffset] = Double.NaN;
 				uncalibratedDataUnits[iOffset] = CHANNEL_UNITS.NO_UNITS;
@@ -4922,8 +4923,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				
 				if(getFirmwareVersionCode()>=6){
-					mChannelMap.remove(ShimmerClock.ObjectClusterSensorName.TIMESTAMP);
-					mChannelMap.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock3byte);
+					mChannelMap.remove(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP);
+					mChannelMap.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP, SensorShimmerClock.channelShimmerClock3byte);
 				}
 				
 				if(isShimmerGen3()){
@@ -4931,7 +4932,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				else if(isShimmerGenGq()){
 					LinkedHashMap<Integer, SensorDetails> sensorMap = new LinkedHashMap<Integer, SensorDetails>();
-					sensorMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_TIMESTAMP, new SensorDetails(false, 0, ShimmerClock.sensorShimmerClock));
+					sensorMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_TIMESTAMP, new SensorDetails(false, 0, SensorShimmerClock.sensorShimmerClock));
 					sensorMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, new SensorDetails(false, 0, SensorEXG.sDRefEcgGq));
 					updateSensorMapChannelsFromChannelMap(sensorMap);
 					mSensorMap.putAll(sensorMap);
@@ -9095,8 +9096,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		checkExgResolutionFromEnabledSensorsVar();
 		
 		//Initial TimeStamp
-		if(mapOfConfigPerShimmer.containsKey(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)){
-			setInitialTimeStampTicksSd(((Double) mapOfConfigPerShimmer.get(ShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
+		if(mapOfConfigPerShimmer.containsKey(SensorShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)){
+			setInitialTimeStampTicksSd(((Double) mapOfConfigPerShimmer.get(SensorShimmerClock.DatabaseConfigHandle.INITIAL_TIMESTAMP)).longValue());
 		}
 
 
@@ -9760,11 +9761,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		//TODO temp hack. Need to move these channels to their own sensors so that they can be disabled per comm type
 		if(commType!=COMMUNICATION_TYPE.SD || (commType==COMMUNICATION_TYPE.SD && !isSyncWhenLogging())){
-			mapOfChannelsForStoringToDb.remove(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET);
+			mapOfChannelsForStoringToDb.remove(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET);
 		}
 		
 		if(!isRtcDifferenceSet()){
-			mapOfChannelsForStoringToDb.remove(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK);
+			mapOfChannelsForStoringToDb.remove(SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK);
 		}
 		
 		return mapOfChannelsForStoringToDb;

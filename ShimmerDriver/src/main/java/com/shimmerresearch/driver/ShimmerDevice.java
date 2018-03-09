@@ -65,7 +65,7 @@ import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.DatabaseChannelHandlesCommon;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
-import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
@@ -684,7 +684,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(mEnableProcessMarkers){
 			//event marker channel
 			//		objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EVENT_MARKER,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.NO_UNITS, mEventMarkers);
-			objectCluster.addCalDataToMap(ShimmerClock.channelEventMarker, mEventMarkers);
+			objectCluster.addCalDataToMap(SensorShimmerClock.channelEventMarker, mEventMarkers);
 			untriggerEventIfLastOneWasPulse();
 		}
 	}
@@ -1175,8 +1175,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected void resetShimmerClock() {
 		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
-		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
-			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
+		if(abstractSensor!=null && abstractSensor instanceof SensorShimmerClock){
+			SensorShimmerClock shimmerClock = (SensorShimmerClock)abstractSensor;
 			shimmerClock.resetShimmerClock();
 		}
 	}
@@ -1515,6 +1515,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		String macToUse = getMacId();
 		if(macToUse.length()>=12) {
 //			return macToUse.substring(8, 12);
+			macToUse.replace(":", "");
 			return macToUse.substring(macToUse.length()-4, macToUse.length());
 		}
 		return "";
@@ -3568,7 +3569,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(commType==COMMUNICATION_TYPE.SD){
 			channelToRemove = isKeyOJCName? SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP:AbstractSensor.DatabaseChannelHandlesCommon.TIMESTAMP_SYSTEM;
 		} else if(commType==COMMUNICATION_TYPE.BLUETOOTH){
-			channelToRemove = isKeyOJCName? ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK:ShimmerClock.DatabaseChannelHandles.REAL_TIME_CLOCK;
+			channelToRemove = isKeyOJCName? SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK:SensorShimmerClock.DatabaseChannelHandles.REAL_TIME_CLOCK;
 		}
 		if(!channelToRemove.isEmpty()){
 			mapOfChannelsForStoringToDb.remove(channelToRemove);
