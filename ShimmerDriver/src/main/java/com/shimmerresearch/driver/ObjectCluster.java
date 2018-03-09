@@ -64,7 +64,8 @@ import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.Builder;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2;
-import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorShimmerClock;
+import com.shimmerresearch.driverUtilities.ByteUtils;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
@@ -112,7 +113,10 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	
 	private int indexKeeper = 0;
 	
-	public byte[] mSystemTimeStamp = new byte[8];
+	//TODO is mSystemTimeStampBytes actually used by anything?
+	private byte[] mSystemTimeStampBytes = new byte[8];
+	public long mSystemTimeStamp = 0;
+	
 	private double mTimeStampMilliSecs;
 	public boolean mIsValidObjectCluster = true;
 	
@@ -656,11 +660,12 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		if(mMyName!=null)
 			mObjectClusterBuilder.setName(mMyName);
 		mObjectClusterBuilder.setCalibratedTimeStamp(mTimeStampMilliSecs);
-		ByteBuffer bb = ByteBuffer.allocate(8);
-    	bb.put(mSystemTimeStamp);
-    	bb.flip();
-    	long systemTimeStamp = bb.getLong();
-		mObjectClusterBuilder.setSystemTime(systemTimeStamp);
+//		ByteBuffer bb = ByteBuffer.allocate(8);
+//    	bb.put(mSystemTimeStampBytes);
+//    	bb.flip();
+//    	long systemTimeStamp = bb.getLong();
+//		mObjectClusterBuilder.setSystemTime(systemTimeStamp);
+		mObjectClusterBuilder.setSystemTime(mSystemTimeStamp);
 		return mObjectClusterBuilder.build();
 	}
 	
@@ -724,7 +729,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			ObjectCluster ojc = new ObjectCluster(deviceName);
 			ojc.createArrayData(1);
 			ojc.addData(signalName, CHANNEL_TYPE.CAL, "", dataArray[i]);
-			ojc.addCalData(ShimmerClock.channelSystemTimestampPlot, timestamp);
+			ojc.addCalData(SensorShimmerClock.channelSystemTimestampPlot, timestamp);
 			timestamp+=1;
 			ojcArray[i] = ojc;
 		}
@@ -767,6 +772,21 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			}
 		}
 		return -1;
+	}
+	
+	public void setSystemTimeStampBytes(byte[] systemTimeStampBytes) {
+		mSystemTimeStampBytes = systemTimeStampBytes;
+		
+		ByteBuffer bb = ByteBuffer.allocate(8);
+    	bb.put(mSystemTimeStampBytes);
+    	bb.flip();
+    	mSystemTimeStamp = bb.getLong();
+	}
+
+	public void setSystemTimeStamp(long systemTimeStamp) {
+		mSystemTimeStamp = systemTimeStamp;
+//		mSystemTimeStampBytes=ByteBuffer.allocate(8).putLong(systemTimeStamp).array();
+		mSystemTimeStampBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(systemTimeStamp).array();
 	}
 
 }
