@@ -55,6 +55,14 @@ public class ShimmerSDCardDetails implements Serializable {
 			return spaceToString(mDriveTotalSpace);
 		}
 	}
+	
+	public void setDriveUsedSpaceTotal(long driveUsedTotal) {
+		mDriveTotalSpace = driveUsedTotal;
+	}
+
+	public void setDriveUsedSpaceTotalKB(long driveUsedTotalKB) {
+		mDriveTotalSpace = driveUsedTotalKB*1024;
+	}
 
 	private void updateDriveUsedSpace() {
 		mDriveUsedSpace = mDriveTotalSpace - mDriveFreeSpace;
