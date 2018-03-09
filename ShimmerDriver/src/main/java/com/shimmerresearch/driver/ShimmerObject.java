@@ -1307,15 +1307,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					Ry = q.q3 / Math.sin(rho);
 //					Rz = q.q4 / Math.sin(rho);
 					
-					int iAA = getSignalIndex(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A);
-					int iAX = getSignalIndex(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X);
-					int iAY = getSignalIndex(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y);
-					int iAZ = getSignalIndex(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Z);
-					int iQW = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);
-					int iQX = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X);
-					int iQY = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y); 
-					int iQZ = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z);
-					
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleX());
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleY());
@@ -2141,7 +2132,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					//First, find the last index of the sensor names, ignoring the other null values after
 					int indexSensorNames = -1;
 					for(int i=0; i<sensorNames.length; i++) {
-						if(sensorNames[i] == null || sensorNames[i].equals("")) {
+						if(sensorNames[i] == null 
+							&& sensorNames[i+1] == null
+							&& sensorNames[i+2] == null
+							&& sensorNames[i+3] == null
+							&& sensorNames[i+4] == null
+							&& sensorNames[i+5] == null
+							&& sensorNames[i+6] == null
+							&& sensorNames[i+7] == null) { //JC:This is temporary until we can come up with a better efficient solution, there are 8 channels for orientation which needs to be added, this null checks is just to ensure nothing is overwritten. only orientation algo is using this and if other algorithms are used this should be updated
 							indexSensorNames = i;
 							break;
 						}
