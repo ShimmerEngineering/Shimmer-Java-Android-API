@@ -717,11 +717,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	@Override
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE fwType, boolean isTimeSyncEnabled, long pcTimestamp) {
 		
-//		if(mUseArraysDataStructureInObjectCluster) {
-//			ObjectCluster.getListOfOCTypesEnabled().add(OBJECTCLUSTER_TYPE.ARRAYS);
-//			ObjectCluster.getListOfOCTypesEnabled().remove(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER);
-//		}
-		
 		ObjectCluster objectCluster = new ObjectCluster();
 		
 		if(mUseArraysDataStructureInObjectCluster) {
@@ -743,6 +738,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int numCalibratedDataUnits = mNChannels; 
 		int numSensorNames = mNChannels;
 		int numAdditionalChannels = 0;
+		int numAlgorithms = 0;
+		
+		int indexAlgo = 0;
 		
 		if (fwType == COMMUNICATION_TYPE.BLUETOOTH){
 			objectCluster.mSystemTimeStamp=ByteBuffer.allocate(8).putLong(pcTimestamp).array();
@@ -776,6 +774,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//
 		for(AbstractAlgorithm aA: getListOfEnabledAlgorithmModules()){
 			numAdditionalChannels += aA.getNumberOfEnabledChannels();
+			numAlgorithms += aA.getNumberOfEnabledChannels();
 		}
 		
 		//numAdditionalChannels += 15;
@@ -785,6 +784,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		String [] uncalibratedDataUnits = new String[numUncalibratedDataUnits+numAdditionalChannels];
 		String [] calibratedDataUnits = new String[numCalibratedDataUnits+numAdditionalChannels];
 		String [] sensorNames = new String[numSensorNames+numAdditionalChannels];
+		
+		double [] calDataAlgo = new double[numAlgorithms];
+		String [] calDataUnitsAlgo = new String[numAlgorithms];
+		String [] sensorNamesAlgo = new String[numAlgorithms];
+		
 		objectCluster.sensorDataArray = new SensorDataArray(numCalibratedData+numAdditionalChannels);
 		
 		
@@ -1302,6 +1306,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					Rx = q.q2 / Math.sin(rho);
 //					Ry = q.q3 / Math.sin(rho);
 //					Rz = q.q4 / Math.sin(rho);
+					
+					int iAA = getSignalIndex(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A);
+					int iAX = getSignalIndex(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X);
+					int iAY = getSignalIndex(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y);
+					int iAZ = getSignalIndex(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Z);
+					int iQW = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);
+					int iQX = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X);
+					int iQY = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y); 
+					int iQZ = getSignalIndex(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z);
+					
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getTheta());
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleX());
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getAngleY());
@@ -1310,6 +1324,35 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionX());
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionY());
 					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL,q.getQuaternionZ());
+					
+					sensorNamesAlgo[indexAlgo] = Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_A;
+					sensorNamesAlgo[indexAlgo+1] = Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_X;
+					sensorNamesAlgo[indexAlgo+2] = Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Y;
+					sensorNamesAlgo[indexAlgo+3] = Shimmer3.ObjectClusterSensorName.AXIS_ANGLE_9DOF_Z;
+					sensorNamesAlgo[indexAlgo+4] = Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_W;
+					sensorNamesAlgo[indexAlgo+5] = Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_X;
+					sensorNamesAlgo[indexAlgo+6] = Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y;
+					sensorNamesAlgo[indexAlgo+7] = Shimmer3.ObjectClusterSensorName.QUAT_MADGE_9DOF_Z;
+					
+					calDataUnitsAlgo[indexAlgo] = CHANNEL_UNITS.LOCAL;
+					calDataUnitsAlgo[indexAlgo+1] = CHANNEL_UNITS.LOCAL;
+					calDataUnitsAlgo[indexAlgo+2] = CHANNEL_UNITS.LOCAL;
+					calDataUnitsAlgo[indexAlgo+3] = CHANNEL_UNITS.LOCAL;
+					calDataUnitsAlgo[indexAlgo+4] = CHANNEL_UNITS.LOCAL;
+					calDataUnitsAlgo[indexAlgo+5] = CHANNEL_UNITS.LOCAL;
+					calDataUnitsAlgo[indexAlgo+6] = CHANNEL_UNITS.LOCAL;
+					calDataUnitsAlgo[indexAlgo+7] = CHANNEL_UNITS.LOCAL;
+					
+					calDataAlgo[indexAlgo] = q.getTheta();
+					calDataAlgo[indexAlgo+1] = q.getAngleX();
+					calDataAlgo[indexAlgo+2] = q.getAngleY();
+					calDataAlgo[indexAlgo+3] = q.getAngleZ();
+					calDataAlgo[indexAlgo+4] = q.getQuaternionW();
+					calDataAlgo[indexAlgo+5] = q.getQuaternionX();
+					calDataAlgo[indexAlgo+6] = q.getQuaternionY();
+					calDataAlgo[indexAlgo+7] = q.getQuaternionZ();
+					
+					indexAlgo += 8;
 				}
 			}
 
@@ -1984,7 +2027,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//Additional Channels Offset
-			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels;//+1; //+1 because timestamp channel appears at the start
+			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels+1;//+1; //+1 because timestamp channel appears at the start
 			
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				if(isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultRespirationConfiguration()){
@@ -2091,7 +2134,26 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				objectCluster.mUnitCal = calibratedDataUnits;
 				objectCluster.mUnitUncal = uncalibratedDataUnits;
 				objectCluster.mSensorNames = sensorNames;
+				objectCluster.setIndexKeeper(additionalChannelsOffset);
 			} else {
+				if(((fwType == COMMUNICATION_TYPE.BLUETOOTH)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && is3DOrientatioEnabled() )
+						||((fwType == COMMUNICATION_TYPE.SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && is3DOrientatioEnabled() )){
+					//First, find the last index of the sensor names, ignoring the other null values after
+					int indexSensorNames = -1;
+					for(int i=0; i<sensorNames.length; i++) {
+						if(sensorNames[i] == null || sensorNames[i].equals("")) {
+							indexSensorNames = i;
+							break;
+						}
+					}
+					
+					//Append the 9DOF data to the end of the array if 3D Orientation is enabled
+					System.arraycopy(sensorNamesAlgo, 0, sensorNames, indexSensorNames, (indexAlgo+1));
+					System.arraycopy(calDataUnitsAlgo, 0, calibratedDataUnits, indexSensorNames, (indexAlgo+1));
+					System.arraycopy(calDataAlgo, 0, calibratedData, indexSensorNames, (indexAlgo+1));
+					additionalChannelsOffset += (indexAlgo+1);
+				}
+				
 				objectCluster.sensorDataArray.mCalData=calibratedData;
 				objectCluster.sensorDataArray.mUncalData=uncalibratedData;
 				objectCluster.sensorDataArray.mCalUnits = calibratedDataUnits;
@@ -9777,6 +9839,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void enableArraysDataStructure(boolean enable) {
 		mUseArraysDataStructureInObjectCluster = enable;
 	}
+	
 	
 }
 
