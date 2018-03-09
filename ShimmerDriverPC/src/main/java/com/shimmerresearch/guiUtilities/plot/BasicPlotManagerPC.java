@@ -89,7 +89,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
 	private boolean mIsTraceDataBuffered = false;
-	private boolean isFirstPointOnFillTrace = true;
+	protected boolean isFirstPointOnFillTrace = true;
 	
 	public PlotCustomFeature pcf=null;
 	
@@ -1989,7 +1989,6 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 						
 						Double halfWindowSize = mMapofHalfWindowSize.get(traceName);
 						if (halfWindowSize!=null){
-							currentTrace.getTracePainters();
 							if(addDummyPointToFillTraceIfRequired(currentTrace, xData-halfWindowSize)) {
 								isDummyPointAddedToFillTrace = true;
 							}
@@ -2042,24 +2041,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 
 	/**
 	 * Method to add a dummy point as the first point in the trace if the line style is fill
-	 * so that the chart doesn't plot from (0, 0)
+	 * so that the chart doesn't plot from (0, 0), this method is overriden in PlotManagerPC
 	 * @param currentTrace
 	 * @param xData
 	 */
-	private boolean addDummyPointToFillTraceIfRequired(ITrace2D currentTrace, double xData) {
-		if(isFirstPointOnFillTrace && isTracePainterFill(currentTrace) && currentTrace.getSize()==0) {
-			addTracePoint(currentTrace, xData, 0);
-			return true;
-		}
-		return false;
-	}
-	
-	private boolean isTracePainterFill(ITrace2D trace) {
-		for(ITracePainter<?> tp : trace.getTracePainters()) {
-			if(tp instanceof TracePainterFill) {
-				return true;
-			}
-		}
+	public boolean addDummyPointToFillTraceIfRequired(ITrace2D currentTrace, double xData) {
 		return false;
 	}
 	
