@@ -50,8 +50,24 @@ public class ParserStreamedDataToCSV {
 		this.fileDelimiter = fileSeparator;
 	}
 	
+	public String getFileSeparator() {
+		return this.fileDelimiter;
+	}
+	
 	private void setFileExtension(String fileExtension){
 		this.fileExtension = fileExtension;
+	}
+	
+	public String getFileExtension() {
+		return this.fileExtension;
+	}
+	
+	public String getFilePath() {
+		return this.filePath;
+	}
+	
+	public String getFileName() {
+		return this.fileName;
 	}
 	
 	public void setFileDelimiterDescriptorInFile(boolean isFileDelimiterDescriptorInFile){
