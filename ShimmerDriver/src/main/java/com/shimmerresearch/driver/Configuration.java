@@ -77,7 +77,7 @@ import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
-import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
@@ -875,7 +875,7 @@ public class Configuration {
 		 *	Order of Enum is the order in which they will be generated in the GUI
 		 */
 		public enum LABEL_SENSOR_TILE{
-			STREAMING_PROPERTIES(ShimmerClock.LABEL_SENSOR_TILE.STREAMING_PROPERTIES),
+			STREAMING_PROPERTIES(SensorShimmerClock.LABEL_SENSOR_TILE.STREAMING_PROPERTIES),
 			LOW_NOISE_ACCEL(SensorKionixAccel.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL),
 			WIDE_RANGE_ACCEL(SensorLSM303.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL),
 			GYRO(SensorMPU9X50.LABEL_SENSOR_TILE.GYRO),
@@ -1035,14 +1035,14 @@ public class Configuration {
 			public static final String PACKET_RECEPTION_RATE_CURRENT = ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT;//"Packet_Reception_Rate_Current";
 			public static final String PACKET_RECEPTION_RATE_OVERALL = ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL;//"Packet_Reception_Rate_Trial";
 			
-			public static String TIMESTAMP = 			ShimmerClock.ObjectClusterSensorName.TIMESTAMP;//"Timestamp";
-			public static String REAL_TIME_CLOCK = 		ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK;//"RealTime";
+			public static String TIMESTAMP = 			SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP;//"Timestamp";
+			public static String REAL_TIME_CLOCK = 		SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK;//"RealTime";
 //			public static String REAL_TIME_CLOCK_SYNC = TimeSyncModule.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;//"RealTime_Sync";
 //			public static String TIMESTAMP_SYNC = 		TimeSyncModule.ObjectClusterSensorName.TIMESTAMP_SYNC;//"Timestamp_Sync";
 			public static String SYSTEM_TIMESTAMP = 	SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP;//"System_Timestamp";
 			public static String SYSTEM_TIMESTAMP_PLOT = SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT;//"System_Timestamp_plot";
 
-			public static String TIMESTAMP_OFFSET = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET;//"Offset";
+			public static String TIMESTAMP_OFFSET = SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET;//"Offset";
 
 			public static String ACCEL_LN_X = SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_X;
 			public static String ACCEL_LN_Y = SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Y;
@@ -1510,7 +1510,7 @@ public class Configuration {
 //			aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SYSTEM_TIMESTAMP, ShimmerClock.sensorSystemTimeStampRef);
 //	        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_TIMESTAMP, ShimmerClock.sensorShimmerClock);
 //	        aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception);
-	        aMap.putAll(ShimmerClock.mSensorMapRef);
+	        aMap.putAll(SensorShimmerClock.mSensorMapRef);
 
 			aMap.putAll(SensorGSR.mSensorMapRef);
 			aMap.putAll(SensorADC.mSensorMapRef);
@@ -1532,21 +1532,21 @@ public class Configuration {
 	        
 			aMap.put(SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE, SensorBattVoltage.channelBattPercentage);
 	        
-			aMap.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, ShimmerClock.channelReceptionRateCurrent);
-			aMap.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, ShimmerClock.channelReceptionRateTrial);
+			aMap.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, SensorShimmerClock.channelReceptionRateCurrent);
+			aMap.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, SensorShimmerClock.channelReceptionRateTrial);
 			
-			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER, ShimmerClock.channelEventMarker);
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER, SensorShimmerClock.channelEventMarker);
 			
 			// All Information required for parsing each of the channels
 			//TODO incorporate 3 byte timestamp change for newer firmware
-			aMap.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP, ShimmerClock.channelShimmerClock2byte);
+			aMap.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP, SensorShimmerClock.channelShimmerClock2byte);
 			
-			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP, ShimmerClock.channelSystemTimestamp);
-			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, ShimmerClock.channelSystemTimestampPlot);
+			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP, SensorShimmerClock.channelSystemTimestamp);
+			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorShimmerClock.channelSystemTimestampPlot);
 			
-			aMap.put(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClock);
+			aMap.put(SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, SensorShimmerClock.channelRealTimeClock);
 //			aMap.put(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
-			aMap.put(ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, ShimmerClock.channelShimmerClockOffset);
+			aMap.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, SensorShimmerClock.channelShimmerClockOffset);
 //			aMap.putAll(ShimmerClock.mChannelMapRef);
 			
 
@@ -1578,7 +1578,7 @@ public class Configuration {
 	        Map<Integer, SensorGroupingDetails> aMap = new TreeMap<Integer, SensorGroupingDetails>();
 		
 			//Sensor Grouping for Configuration Panel 'tile' generation. 
-			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.STREAMING_PROPERTIES.ordinal(), ShimmerClock.sensorGroupStreamingProperties);
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.STREAMING_PROPERTIES.ordinal(), SensorShimmerClock.sensorGroupStreamingProperties);
 
 			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BATTERY_MONITORING.ordinal(), SensorBattVoltage.sensorGroupBattVoltage);
 			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.EXTERNAL_EXPANSION_ADC.ordinal(), SensorADC.sensorGroupExternalExpansionADCs);

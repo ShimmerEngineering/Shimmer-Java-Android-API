@@ -495,6 +495,7 @@ public class UtilShimmer implements Serializable {
 	}
 
 	
+	//TODO move to ByteUtils
 	public static byte[] convertLongToByteArray(long longNumber){
 		byte[] returnVal = ByteBuffer.allocate(8).putLong(longNumber).array();
 
@@ -504,6 +505,7 @@ public class UtilShimmer implements Serializable {
 		return returnVal;
 	}
 
+	//TODO move to ByteUtils
 	public static long convertByteArrayToLong(byte[] byteArray){
 		byte[] bSystemTS = byteArray;
 		ByteBuffer bb = ByteBuffer.allocate(8);

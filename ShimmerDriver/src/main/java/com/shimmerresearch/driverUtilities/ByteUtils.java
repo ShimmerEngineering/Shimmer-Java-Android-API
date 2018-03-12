@@ -9,9 +9,8 @@ public class ByteUtils {
 //	private static ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE/8);   
 	
 	//Above can't be static as they'll be used in multiple places in code.
-	//TODO I don't understand the sizes below (based on the above original lines)
-	private static int longSize = Long.SIZE/8;
-	private static int shortSize = Short.SIZE/8;
+	private static int longSize = Long.SIZE / Byte.SIZE;
+	private static int shortSize = Long.SIZE / Byte.SIZE;
 
     public static byte[] longToBytes(long x) {
     	ByteBuffer buffer = ByteBuffer.allocate(longSize);

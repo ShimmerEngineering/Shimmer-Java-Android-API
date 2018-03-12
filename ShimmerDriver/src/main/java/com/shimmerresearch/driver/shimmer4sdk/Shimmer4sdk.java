@@ -51,7 +51,7 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9250;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
-import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorShimmerClock;
 
 public class Shimmer4sdk extends ShimmerDevice {
 	
@@ -114,7 +114,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 //			putSensorClass(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 //		}
 		
-		addSensorClass(SENSORS.CLOCK, new ShimmerClock(this));
+		addSensorClass(SENSORS.CLOCK, new SensorShimmerClock(this));
 		
 		addSensorClass(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
 		addSensorClass(SENSORS.LSM303, new SensorLSM303DLHC(this));
