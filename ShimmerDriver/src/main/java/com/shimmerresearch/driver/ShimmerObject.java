@@ -738,7 +738,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int numCalibratedDataUnits = mNChannels; 
 		int numSensorNames = mNChannels;
 		int numAdditionalChannels = 0;
-		int numAlgorithms = 0;
 		
 		int indexAlgo = 0;
 		
@@ -774,7 +773,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		//
 		for(AbstractAlgorithm aA: getListOfEnabledAlgorithmModules()){
 			numAdditionalChannels += aA.getNumberOfEnabledChannels();
-			numAlgorithms += aA.getNumberOfEnabledChannels();
 		}
 		
 		//numAdditionalChannels += 15;
@@ -785,9 +783,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		String [] calibratedDataUnits = new String[numCalibratedDataUnits+numAdditionalChannels];
 		String [] sensorNames = new String[numSensorNames+numAdditionalChannels];
 		
-		double [] calDataAlgo = new double[numAlgorithms];
-		String [] calDataUnitsAlgo = new String[numAlgorithms];
-		String [] sensorNamesAlgo = new String[numAlgorithms];
+		double [] calDataAlgo = null;
+		String [] calDataUnitsAlgo = null;
+		String [] sensorNamesAlgo = null;
+		
+		if(is3DOrientationEnabled()) {
+			//Add 8 channels for 9DOF Quats & Eulers
+			calDataAlgo = new double[8];
+			calDataUnitsAlgo = new String[8];
+			sensorNamesAlgo = new String[8];
+		}
 		
 		objectCluster.sensorDataArray = new SensorDataArray(numCalibratedData+numAdditionalChannels);
 		
@@ -1288,8 +1293,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			//((fwIdentifier == FW_IDEN_BTSTREAM) && (mEnabledSensors & BTStream.ACCEL_WR) > 0) 
 			//|| ((fwIdentifier == FW_IDEN_SD) && (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0)
-			if(((fwType == COMMUNICATION_TYPE.BLUETOOTH)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && is3DOrientatioEnabled() )
-					||((fwType == COMMUNICATION_TYPE.SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && is3DOrientatioEnabled() )){
+			if(((fwType == COMMUNICATION_TYPE.BLUETOOTH)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && is3DOrientationEnabled() )
+					||((fwType == COMMUNICATION_TYPE.SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && is3DOrientationEnabled() )){
 
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
@@ -2127,8 +2132,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				objectCluster.mSensorNames = sensorNames;
 				objectCluster.setIndexKeeper(additionalChannelsOffset);
 			} else {
-				if(((fwType == COMMUNICATION_TYPE.BLUETOOTH)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && is3DOrientatioEnabled() )
-						||((fwType == COMMUNICATION_TYPE.SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && is3DOrientatioEnabled() )){
+				if(((fwType == COMMUNICATION_TYPE.BLUETOOTH)&&((mEnabledSensors & BTStream.ACCEL_LN) > 0 || (mEnabledSensors & BTStream.ACCEL_WR) > 0) && ((mEnabledSensors & BTStream.GYRO) > 0) && ((mEnabledSensors & BTStream.MAG) > 0) && is3DOrientationEnabled() )
+						||((fwType == COMMUNICATION_TYPE.SD)&&((mEnabledSensors & SDLogHeader.ACCEL_LN) > 0 || (mEnabledSensors & SDLogHeader.ACCEL_WR) > 0) && ((mEnabledSensors & SDLogHeader.GYRO) > 0) && ((mEnabledSensors & SDLogHeader.MAG) > 0) && is3DOrientationEnabled() )){
 					//First, find the last index of the sensor names, ignoring the other null values after
 					int indexSensorNames = -1;
 					for(int i=0; i<sensorNames.length; i++) {
@@ -2298,7 +2303,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 
-			if ((mEnabledSensors & SENSOR_ACCEL) > 0 && (mEnabledSensors & SENSOR_GYRO) > 0 && (mEnabledSensors & SENSOR_MAG) > 0 && is3DOrientatioEnabled() ){
+			if ((mEnabledSensors & SENSOR_ACCEL) > 0 && (mEnabledSensors & SENSOR_GYRO) > 0 && (mEnabledSensors & SENSOR_MAG) > 0 && is3DOrientationEnabled() ){
 				if (mEnableCalibration){
 					if (mOrientationAlgo==null){
 //						mOrientationAlgo = new GradDes3DOrientation9DoF(0.4, (double)1/getSamplingRateShimmer(), 1, 0, 0,0);
@@ -3294,12 +3299,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				listofSignals.add(Shimmer2.ObjectClusterSensorName.BATTERY);
 				listofSignals.add(Shimmer2.ObjectClusterSensorName.REG);
 			}
-			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && is3DOrientatioEnabled()){
+			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && is3DOrientationEnabled()){
 				listofSignals.add(Shimmer2.ObjectClusterSensorName.EULER_9DOF_YAW);
 				listofSignals.add(Shimmer2.ObjectClusterSensorName.EULER_9DOF_PITCH);
 				listofSignals.add(Shimmer2.ObjectClusterSensorName.EULER_9DOF_ROLL);
 			}
-			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && is3DOrientatioEnabled()){
+			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && is3DOrientationEnabled()){
 				listofSignals.add(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_W);
 				listofSignals.add(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_X);
 				listofSignals.add(Shimmer2.ObjectClusterSensorName.QUAT_MADGE_9DOF_Y);
@@ -3972,7 +3977,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.BATTERY,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS};
 				listofSignals.add(channel);
 			}
-			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && is3DOrientatioEnabled()){
+			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_GYRO) > 0 && ((mEnabledSensors & 0xFF)& SENSOR_MAG) > 0 && is3DOrientationEnabled()){
 				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.EULER_9DOF_YAW,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL};
 				listofSignals.add(channel);
 				channel = new String[]{mShimmerUserAssignedName,Shimmer2.ObjectClusterSensorName.EULER_9DOF_PITCH,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.LOCAL};
@@ -4253,7 +4258,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mIsOrientationEnabled = enable;
 	}
 	
-	public boolean is3DOrientatioEnabled(){
+	public boolean is3DOrientationEnabled(){
 		return mIsOrientationEnabled;
 	}
 	
