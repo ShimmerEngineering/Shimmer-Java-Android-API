@@ -28,7 +28,7 @@ import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
-import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorShimmerClock;
 
 //https://www.numed.co.uk/files/uploads/Product/Nonin%209560%20Bluetooth%20Specification.pdf
 public class NoninOnyxIIDevice extends ShimmerDevice implements SerialPortListener{

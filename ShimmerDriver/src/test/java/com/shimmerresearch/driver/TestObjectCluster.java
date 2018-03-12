@@ -37,7 +37,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.FormatCluster;
-import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorShimmerClock;
 
 public abstract class TestObjectCluster {
 
@@ -147,7 +147,7 @@ public abstract class TestObjectCluster {
 			
 			long worstCaseListRetrievalTime = 0;
 			long worstCaseMultimapRetrievalTime = 0;
-			String retrievalKey = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(lastValue);
+			String retrievalKey = SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(lastValue);
 			
 			long startListRetrievalTime = System.nanoTime();
 			if(firstRun) {
@@ -201,7 +201,7 @@ public abstract class TestObjectCluster {
 			
 			long startHashMapStorage = System.nanoTime();
 			for(int i=0; i<numberOfIterations; i++) {
-				String sensorName = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(i);
+				String sensorName = SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(i);
 				HashMap<CHANNEL_TYPE, FormatCluster> formatMap = new HashMap<CHANNEL_TYPE, FormatCluster>();
 				formatMap.put(CHANNEL_TYPE.UNCAL, new FormatCluster(CHANNEL_TYPE.UNCAL.toString(), CHANNEL_UNITS.NO_UNITS, 1.0));
 				hashMap.put(sensorName, formatMap);
@@ -210,7 +210,7 @@ public abstract class TestObjectCluster {
 				
 			long startMultiMapStorage = System.nanoTime();
 			for(int i=0; i<numberOfIterations; i++) {
-				String sensorName = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(i);
+				String sensorName = SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(i);
 				multiMap.put(sensorName, new FormatCluster(CHANNEL_TYPE.UNCAL.toString(), CHANNEL_UNITS.NO_UNITS, 2.0));
 			}
 			long endMultiMapStorage = System.nanoTime();
@@ -237,7 +237,7 @@ public abstract class TestObjectCluster {
 	public static void hashMapRetrieveTest(HashMap hashMap, Multimap multiMap) {
 		
 		System.out.print("-------------------------------------------------------------------------\n\n");
-		String retrievalKey = ShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(99999);
+		String retrievalKey = SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET + Integer.toString(99999);
 		
 		long cumulativeHashMapRetrievalTime = 0;
 		long cumulativeMultimapRetrievalTime = 0;

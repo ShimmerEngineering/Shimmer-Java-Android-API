@@ -18,9 +18,16 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_SOURCE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.AbstractSensor.DatabaseChannelHandlesCommon;
+import com.shimmerresearch.sensors.SensorShimmerClock.GuiLabelSensors;
 
 //TODO I've only started on this class. I need to extract any old code from ShimmerClock and put it in here
-/** 
+/**
+ * This class is currently only able to be used for devices that don't sent a
+ * timestamp per packet. ShimmerClock has the code needed to handle offsets in
+ * the clock value between multiple units - the code of which needs to be moved
+ * here.
+ * 
  * @author Mark Nolan
  *
  */
@@ -29,12 +36,14 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	/** * */
 	private static final long serialVersionUID = 8974371709657275355L;
 
+	public boolean doesDeviceSendATimestamp = false; 
 
 	//--------- Sensor specific variables start --------------
 	public static class ObjectClusterSensorName{
-		public static final  String SYSTEM_TIMESTAMP = "System_Timestamp";
-		public static final  String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_plot";
+		public static final String SYSTEM_TIMESTAMP = "System_Timestamp";
+		public static final String SYSTEM_TIMESTAMP_PLOT = "System_Timestamp_Plot";
 		public static final String SYSTEM_TIMESTAMP_DIFFERENCE = "System_Timestamp_Difference";
+		public static final String SYSTEM_TIMESTAMP_PLOT_ZEROED = "System_Timestamp_Plot_Zeroed";
 	}
 	//--------- Sensor specific variables end --------------
 
@@ -45,17 +54,17 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	//--------- Configuration options end --------------
 
 	//--------- Sensor info start --------------
-	//TODO check below
 	public static final SensorDetailsRef sensorSystemTimeStampRef = new SensorDetailsRef(
-			0, 
-			0, 
-			"SystemTimestmp",//TODO define as static somewhere
+			GuiLabelSensors.SYSTEM_TIMESTAMP,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
-			null,
-			null,
-			Arrays.asList(ObjectClusterSensorName.SYSTEM_TIMESTAMP,
-					ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT),
-			false);
+			Arrays.asList(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP,
+					SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,
+					SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
+					SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT_ZEROED
+					));
+	{
+		sensorSystemTimeStampRef.mIsApiSensor = true;
+	}
 
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -85,14 +94,41 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		Arrays.asList(CHANNEL_TYPE.CAL), false, false);
 	{
 		channelSystemTimestampPlot.mChannelSource = CHANNEL_SOURCE.API;
-		channelSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+		//channelSystemTimestampPlot.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
 	}
 	
+	public static final ChannelDetails channelSystemTimestampPlotZeroed = new ChannelDetails(
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT_ZEROED,
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT_ZEROED,
+			DatabaseChannelHandlesCommon.NONE,
+			CHANNEL_UNITS.MILLISECONDS,
+			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
+	{
+		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
+		channelSystemTimestampPlotZeroed.mChannelSource = CHANNEL_SOURCE.API;
+//		channelSystemTimestampPlotZeroed.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+	}
+
+	public static final ChannelDetails channelSystemTimestampDiff = new ChannelDetails(
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
+			SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE,
+			DatabaseChannelHandlesCommon.NONE,
+			CHANNEL_UNITS.MILLISECONDS,
+			Arrays.asList(CHANNEL_TYPE.CAL), false, false);
+	{
+		//TODO put below into constructor - not sure if it's possible to modify here because the channel is a static final
+		channelSystemTimestampDiff.mChannelSource = CHANNEL_SOURCE.API;
+//		channelSystemTimestamp.mChannelFormatDerivedFromShimmerDataPacket = CHANNEL_TYPE.CAL;
+	}
+
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
         Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
 		aMap.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP, channelSystemTimestamp);
 		aMap.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, channelSystemTimestampPlot);
+		//TODO why is below not enabled 
+//		aMap.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, channelSystemTimestampDiff);
+		aMap.put(ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT_ZEROED, channelSystemTimestampPlotZeroed);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
 
@@ -128,13 +164,18 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
-				objectCluster.mSystemTimeStamp = UtilShimmer.convertLongToByteArray(pcTimestamp);
+//				objectCluster.mSystemTimeStampBytes = UtilShimmer.convertLongToByteArray(pcTimestamp);
+				objectCluster.setSystemTimeStamp(pcTimestamp);
 				objectCluster.addCalData(channelDetails, pcTimestamp);
 				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
-				objectCluster.addCalData(channelDetails, pcTimestamp);
-				objectCluster.incrementIndexKeeper();
+				if(doesDeviceSendATimestamp) {
+					//TODO move from ShimmerClock
+				} else {
+					objectCluster.addCalData(channelDetails, pcTimestamp);
+					objectCluster.incrementIndexKeeper();
+				}
 			}
 		}
 		
