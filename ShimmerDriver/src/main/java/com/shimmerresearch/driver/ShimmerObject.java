@@ -776,6 +776,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			numAdditionalChannels += aA.getNumberOfEnabledChannels();
 		}
 		
+		if(is3DOrientationEnabled()) {
+			//JY: Add the number of 9DOF channels to sensorNames so that sensorNamesAlgo has space to be copied in later.
+			//This is because setting mIsOrientationEnabled does not add to the listOfEnabledAlgorithmModules 
+			numAdditionalChannels += 8;
+		}
+		
 		//numAdditionalChannels += 15;
 		
 		double [] calibratedData = new double[numCalibratedData+numAdditionalChannels];
@@ -1349,7 +1355,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calDataAlgo[indexAlgo+6] = q.getQuaternionY();
 					calDataAlgo[indexAlgo+7] = q.getQuaternionZ();
 					
-					indexAlgo += 8;
+					indexAlgo += 7;
 				}
 			}
 
