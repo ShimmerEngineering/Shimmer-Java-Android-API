@@ -490,7 +490,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 		for(String configOptionKey:mConfigOptionsMap.keySet()){
 			Object configValue = getSettings(configOptionKey);
 			if(configValue!=null){
-				consolePrintLn("getEnabledAlgorithmSettings\t" + configOptionKey);
+				consolePrintLn("getEnabledAlgorithmSettings\t" + "\tConfigKey=" + configOptionKey + "\tConfigValue=" + configValue);
 				mapOfAlgorithmSettings.put(configOptionKey, configValue);
 			}
 		}

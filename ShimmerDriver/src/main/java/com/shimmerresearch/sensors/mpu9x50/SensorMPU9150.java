@@ -669,9 +669,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_GYRO),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_GYRO_RANGE, 
-					GuiLabelConfig.MPU9X50_GYRO_RATE,
-					GuiLabelConfig.GYRO_ON_THE_FLY_CALIB_STATE,
-					GuiLabelConfig.GYRO_ON_THE_FLY_CALIB_THRESHOLD),
+					GuiLabelConfig.MPU9X50_GYRO_RATE),
 			Arrays.asList(
 					ObjectClusterSensorName.GYRO_X, 
 					ObjectClusterSensorName.GYRO_Y, 
@@ -873,9 +871,6 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 		//General Config
 		addConfigOption(configOptionMpu9150GyroRate);
 		addConfigOption(configOptionMpu9150GyroLpm);
-		//Calibration Config
-		addConfigOption(configOptionGyroOnTheFlyCalibState);
-		addConfigOption(configOptionGyroOnTheFlyCalibThreshold);
 	}
 
 	@Override

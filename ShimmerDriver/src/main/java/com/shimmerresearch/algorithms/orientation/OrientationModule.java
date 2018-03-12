@@ -84,6 +84,8 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 			null);
 	// --------- Configuration options end --------------
 
+	public abstract ObjectCluster addQuaternionToObjectCluster(Orientation3DObject quaternion, ObjectCluster objectCluster);
+	public abstract Orientation3DObject applyOrientationAlgorithm();
 
 	
     //--------- Constructors for this class start --------------
@@ -101,7 +103,7 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 		magValues = new Vector3d();
 		gyroValues = new Vector3d();
 
-		for(String associatedChannel: mAlgorithmDetails.mListOfAssociatedSensors){
+		for(String associatedChannel: mAlgorithmDetails.mListOfAssociatedSensorChannels){
 			Collection<FormatCluster> dataFormatsSignal = object.getCollectionOfFormatClusters(associatedChannel);  // first retrieve all the possible formats for the current sensor device
 			if(dataFormatsSignal!=null){
 				FormatCluster formatClusterSignal = ((FormatCluster)ObjectCluster.returnFormatCluster(dataFormatsSignal, mAlgorithmDetails.mChannelType.toString())); // retrieve the calibrated data
@@ -182,10 +184,6 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 
 	}	
 	
-	public abstract ObjectCluster addQuaternionToObjectCluster(Orientation3DObject quaternion, ObjectCluster objectCluster);
-	
-	public abstract Orientation3DObject applyOrientationAlgorithm();
-
 	@Override
 	public AlgorithmResultObject processDataPostCapture(Object object)
 			throws Exception {

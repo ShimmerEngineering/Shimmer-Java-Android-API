@@ -6,15 +6,14 @@ import java.util.TreeMap;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
+import com.shimmerresearch.algorithms.gyroOnTheFlyCal.OnTheFlyGyroOffsetCal;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driverUtilities.OnTheFlyGyroOffsetCal;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
-import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 
 public class SensorShimmer2Gyro extends AbstractSensor {
 
@@ -226,15 +225,15 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	 * @param threshold sets the threshold of when to use the incoming data to recalibrate gyroscope offset, this is in degrees, and the default value is 1.2
 	 */
 	public void enableOnTheFlyGyroCal(boolean state, int bufferSize, double threshold){
-		mOnTheFlyGyroOffsetCal.enableOnTheFlyGyroCal(state, bufferSize, threshold);
+		mOnTheFlyGyroOffsetCal.setIsEnabled(state, bufferSize, threshold);
 	}
 	
 	public void setOnTheFlyGyroCal(boolean state){
-		mOnTheFlyGyroOffsetCal.enableOnTheFlyGyroCal(state);
+		mOnTheFlyGyroOffsetCal.setIsEnabled(state);
 	}
 
     public boolean isGyroOnTheFlyCalEnabled(){
-    	return mOnTheFlyGyroOffsetCal.isGyroOnTheFlyCalEnabled();
+    	return mOnTheFlyGyroOffsetCal.isEnabled();
 	}
 
     public OnTheFlyGyroOffsetCal getOnTheFlyCalGyro(){
@@ -246,7 +245,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
     }
     
     public void setOnTheFlyCalGyroThreshold(int threshold) {
-    	mOnTheFlyGyroOffsetCal.setGyroOnTheFlyCalThreshold(threshold);
+    	mOnTheFlyGyroOffsetCal.setOffsetThreshold(threshold);
     }
 
 	public void setLowPowerGyro(boolean enable) {
