@@ -1046,7 +1046,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //						calibratedDataUnits[iGyroZ]=CHANNEL_UNITS.GYRO_CAL_UNIT;
 //					} 
 					
-					if (isGyroOnTheFlyCalEnabled()){
+					if(isShimmerGen2() && isGyroOnTheFlyCalEnabled()){
 						getOnTheFlyCalGyro().updateGyroOnTheFlyGyroOVCal(getCurrentCalibDetailsGyro(), gyroCalibratedData,
 								(double) newPacketInt[iGyroX], (double) newPacketInt[iGyroY], (double) newPacketInt[iGyroZ]);
 					}
@@ -2257,7 +2257,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						gyroscope.y=gyroCalibratedData[1]*Math.PI/180;
 						gyroscope.z=gyroCalibratedData[2]*Math.PI/180;
 
-						if (isGyroOnTheFlyCalEnabled()){
+						if(isShimmerGen2() && isGyroOnTheFlyCalEnabled()){
 							getOnTheFlyCalGyro().updateGyroOnTheFlyGyroOVCal(getCurrentCalibDetailsGyro(), gyroCalibratedData, (double) newPacketInt[iGyroX], (double) newPacketInt[iGyroY], (double) newPacketInt[iGyroZ]);
 						}
 					} 
@@ -8022,8 +8022,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen2()){
 			mSensorShimmer2Gyro.enableOnTheFlyGyroCal(state, bufferSize, threshold);
 		} else {
-			//TODO 2018-03-12 MN
 //			mSensorMpu9x50.enableOnTheFlyGyroCal(state, bufferSize, threshold);
+			AbstractAlgorithm abstractAlgorithm = getAlgorithmModule(GyroOnTheFlyCalModule.GENERAL_ALGORITHM_NAME);
+			if(abstractAlgorithm!=null) {
+				setIsAlgorithmEnabled(GyroOnTheFlyCalModule.GENERAL_ALGORITHM_NAME, state);
+				GyroOnTheFlyCalModule gyroOnTheFlyCalModule = (GyroOnTheFlyCalModule) abstractAlgorithm;
+				gyroOnTheFlyCalModule.enableOnTheFlyGyroCal(state, bufferSize, threshold);
+			}
 		}
 	}
 
@@ -8031,8 +8036,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen2()){
 			mSensorShimmer2Gyro.setOnTheFlyGyroCal(state);
 		} else {
-			//TODO 2018-03-12 MN
 //			mSensorMpu9x50.setOnTheFlyGyroCal(state);
+			setIsAlgorithmEnabled(GyroOnTheFlyCalModule.GENERAL_ALGORITHM_NAME, state);
 		}
 	}
 
@@ -8040,9 +8045,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen2()){
 			return mSensorShimmer2Gyro.isGyroOnTheFlyCalEnabled();
 		} else {
-			//TODO 2018-03-12 MN
 //			return mSensorMpu9x50.isGyroOnTheFlyCalEnabled();
-			return false;
+			return isAlgorithmEnabled(GyroOnTheFlyCalModule.GENERAL_ALGORITHM_NAME);
 		}
 	}
     
@@ -8050,7 +8054,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen2()){
 			return mSensorShimmer2Gyro.getOnTheFlyCalGyro();
 		} else {
-			//TODO 2018-03-12 MN
 //			return mSensorMpu9x50.getOnTheFlyCalGyro();
 			return null;
 		}
