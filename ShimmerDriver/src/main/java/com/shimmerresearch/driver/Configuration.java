@@ -819,7 +819,7 @@ public class Configuration {
 			
 			public final static int GAIT_MODULE 				= 1 << 28; // (3*8 + 4);
 
-//			public final static int UNUSED		 				= 1 << 29; // (3*8 + 5);
+			public final static int GYRO_ON_THE_FLY_CAL			= 1 << 29; // (3*8 + 5);
 //			public final static int UNUSED 						= 1 << 30; // (3*8 + 6);
 //			public final static int UNUSED 						= 1 << 31; // (3*8 + 7);
 
@@ -994,6 +994,7 @@ public class Configuration {
 		// GUI Algorithm Grouping
 		public enum GuiLabelAlgorithmGrouping{
 			TIME_SYNC("Time Sync"),
+			GYRO_ON_THE_FLY_CAL("Gyro on-the-fly Calibration"),
 			ORIENTATION_9DOF("9DOF"),  
 			ORIENTATION_6DOF("6DOF"),  
 			ECG_TO_HR("ECG-to-HR (with IBI)"),

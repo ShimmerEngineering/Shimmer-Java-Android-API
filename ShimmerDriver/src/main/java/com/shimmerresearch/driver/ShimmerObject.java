@@ -22,6 +22,8 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
+import com.shimmerresearch.algorithms.gyroOnTheFlyCal.GyroOnTheFlyCalModule;
+import com.shimmerresearch.algorithms.gyroOnTheFlyCal.OnTheFlyGyroOffsetCal;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.comms.wiredProtocol.UartPacketDetails.UART_COMPONENT_AND_PROPERTY;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -29,7 +31,6 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer2;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
-import com.shimmerresearch.driver.ObjectCluster.OBJECTCLUSTER_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
@@ -40,7 +41,6 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
-import com.shimmerresearch.driverUtilities.OnTheFlyGyroOffsetCal;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -4290,6 +4290,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO, true);
 					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG, true);
 					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_VBATT, true);
+					
+					setIsAlgorithmEnabled(GyroOnTheFlyCalModule.GENERAL_ALGORITHM_NAME, true);
 				}
 			}
 
@@ -8020,7 +8022,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen2()){
 			mSensorShimmer2Gyro.enableOnTheFlyGyroCal(state, bufferSize, threshold);
 		} else {
-			mSensorMpu9x50.enableOnTheFlyGyroCal(state, bufferSize, threshold);
+			//TODO 2018-03-12 MN
+//			mSensorMpu9x50.enableOnTheFlyGyroCal(state, bufferSize, threshold);
 		}
 	}
 
@@ -8028,7 +8031,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen2()){
 			mSensorShimmer2Gyro.setOnTheFlyGyroCal(state);
 		} else {
-			mSensorMpu9x50.setOnTheFlyGyroCal(state);
+			//TODO 2018-03-12 MN
+//			mSensorMpu9x50.setOnTheFlyGyroCal(state);
 		}
 	}
 
@@ -8036,7 +8040,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen2()){
 			return mSensorShimmer2Gyro.isGyroOnTheFlyCalEnabled();
 		} else {
-			return mSensorMpu9x50.isGyroOnTheFlyCalEnabled();
+			//TODO 2018-03-12 MN
+//			return mSensorMpu9x50.isGyroOnTheFlyCalEnabled();
+			return false;
 		}
 	}
     
@@ -8044,11 +8050,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen2()){
 			return mSensorShimmer2Gyro.getOnTheFlyCalGyro();
 		} else {
-			return mSensorMpu9x50.getOnTheFlyCalGyro();
+			//TODO 2018-03-12 MN
+//			return mSensorMpu9x50.getOnTheFlyCalGyro();
+			return null;
 		}
     }
 
-	protected CalibDetailsKinematic getCurrentCalibDetailsGyro() {
+	public CalibDetailsKinematic getCurrentCalibDetailsGyro() {
 		if(isShimmerGen2()){
 			return mSensorShimmer2Gyro.getCurrentCalibDetailsGyro();
 		} else {
@@ -9838,8 +9846,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void enableArraysDataStructure(boolean enable) {
 		mUseArraysDataStructureInObjectCluster = enable;
 	}
-	
-	
+
 }
 
 

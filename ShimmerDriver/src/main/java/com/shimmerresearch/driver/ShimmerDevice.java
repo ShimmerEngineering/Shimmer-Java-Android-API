@@ -25,6 +25,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
+import com.shimmerresearch.algorithms.gyroOnTheFlyCal.GyroOnTheFlyCalLoader;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
@@ -294,6 +295,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public int mNumConnectionAttempts = -1;		
 
 	private static final List<AlgorithmLoaderInterface> OPEN_SOURCE_ALGORITHMS = Arrays.asList(
+			new GyroOnTheFlyCalLoader(),
 			new OrientationModule6DOFLoader(), 
 			new OrientationModule9DOFLoader());
 
@@ -726,6 +728,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		//TODO temp here -> check if the best place for it
 		updateSensorDetailsWithCommsTypes();
 		updateSamplingRatesMapWithCommsTypes();
+	}
+
+	public void setCommunicationRoute(COMMUNICATION_TYPE communicationType) {
+		mListOfAvailableCommunicationTypes.clear();
+		addCommunicationRoute(communicationType);
 	}
 
 	public void removeCommunicationRoute(COMMUNICATION_TYPE communicationType) {
@@ -2932,6 +2939,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(abstractAlgorithm!=null && abstractAlgorithm.mAlgorithmDetails!=null){
 			if(state){ 
 				//switch on the required sensors
+				//TODO add support for ANY/ALL sensors
 				for (Integer sensorId:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
 					setSensorEnabledState(sensorId, true);
 				}
@@ -3020,24 +3028,24 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mMapOfAlgorithmGrouping;
 	}
 
-	private boolean checkIfToEnableAlgo(AlgorithmDetails algorithmDetails){
-		for(Integer sensorId:algorithmDetails.mListOfRequiredSensors){
-			boolean isSensorEnabled = isSensorEnabled(sensorId); 
-			if(algorithmDetails.mSensorCheckMethod==SENSOR_CHECK_METHOD.ANY){
-				if(isSensorEnabled){
-					//One of the required sensors is enabled -> create algorithm
-					return true;
-				}
-			}
-			else if(algorithmDetails.mSensorCheckMethod==SENSOR_CHECK_METHOD.ALL){
-				if(!isSensorEnabled){
-					//One of the required sensors is not enabled -> continue to next algorithm
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+//	private boolean checkIfToEnableAlgo(AlgorithmDetails algorithmDetails){
+//		for(Integer sensorId:algorithmDetails.mListOfRequiredSensors){
+//			boolean isSensorEnabled = isSensorEnabled(sensorId); 
+//			if(algorithmDetails.mSensorCheckMethod==SENSOR_CHECK_METHOD.ANY){
+//				if(isSensorEnabled){
+//					//One of the required sensors is enabled -> create algorithm
+//					return true;
+//				}
+//			}
+//			else if(algorithmDetails.mSensorCheckMethod==SENSOR_CHECK_METHOD.ALL){
+//				if(!isSensorEnabled){
+//					//One of the required sensors is not enabled -> continue to next algorithm
+//					return false;
+//				}
+//			}
+//		}
+//		return true;
+//	}
 	
 	protected void generateMapOfAlgorithmConfigOptions(){
 		mConfigOptionsMapAlgorithms = new HashMap<String, ConfigOptionDetails>();

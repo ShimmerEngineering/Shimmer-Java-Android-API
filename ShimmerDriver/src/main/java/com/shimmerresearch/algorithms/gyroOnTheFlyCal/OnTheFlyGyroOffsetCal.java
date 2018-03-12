@@ -1,4 +1,4 @@
-package com.shimmerresearch.driverUtilities;
+package com.shimmerresearch.algorithms.gyroOnTheFlyCal;
 
 import java.io.Serializable;
 
@@ -10,9 +10,11 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 
 	private static final long serialVersionUID = -4153196345016560456L;
 	
+	public static final double DEFAULT_THRESHOLD = 1.2;
+	
 	private boolean mIsEnabled = false;
-	private double mOffsetThreshold = 1.2;
-	private int bufferSize;
+	private double mOffsetThreshold = DEFAULT_THRESHOLD;
+	private int bufferSize = 1;
 	
 	transient DescriptiveStatistics mGyroXCal;
 	transient DescriptiveStatistics mGyroYCal;
@@ -26,10 +28,21 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 	 * @param bufferSize sets the buffersize of the window used to determine the new calibration parameters, see implementation for more details
 	 * @param threshold sets the threshold of when to use the incoming data to recalibrate gyroscope offset, this is in degrees, and the default value is 1.2
 	 */
-	public void enableOnTheFlyGyroCal(boolean state, int bufferSize, double threshold){
-		enableOnTheFlyGyroCal(state);
-		setGyroOnTheFlyCalThreshold(threshold);
+	public void setIsEnabled(boolean state, int bufferSize, double threshold){
+		setIsEnabled(state);
+		setOffsetThreshold(threshold);
 		setBufferSize(bufferSize);
+	}
+
+	public void setIsEnabled(boolean state){
+		mIsEnabled = state;
+		if(mIsEnabled && mGyroXCal==null && bufferSize>0) {
+			setupBuffers();
+		}
+	}
+
+	public boolean isEnabled() {
+		return mIsEnabled;
 	}
 
 	public void setBufferSizeFromSamplingRate(double samplingRate) {
@@ -39,7 +52,7 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 	public void setBufferSize(int bufferSize) {
 		this.bufferSize = bufferSize;
 		
-		if (mIsEnabled && mGyroXCal!=null){
+		if(mIsEnabled && mGyroXCal!=null && bufferSize>0) {
 			mGyroXCal.setWindowSize(bufferSize);
 			mGyroYCal.setWindowSize(bufferSize);
 			mGyroZCal.setWindowSize(bufferSize);
@@ -49,29 +62,25 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 		}
 	}
 
-	public void setGyroOnTheFlyCalThreshold(double threshold) {
+	protected void setupBuffers() {
+		mGyroXCal = new DescriptiveStatistics(bufferSize);
+		mGyroYCal = new DescriptiveStatistics(bufferSize);
+		mGyroZCal = new DescriptiveStatistics(bufferSize);
+		mGyroXUncal = new DescriptiveStatistics(bufferSize);
+		mGyroYUncal = new DescriptiveStatistics(bufferSize);
+		mGyroZUncal = new DescriptiveStatistics(bufferSize);
+	}
+
+	public int getBufferSize() {
+		return bufferSize;
+	}
+
+	public void setOffsetThreshold(double threshold) {
 		this.mOffsetThreshold = threshold;
 	}
 
-	public double getGyroOnTheFlyCalThreshold() {
+	public double getOffsetThreshold() {
 		return mOffsetThreshold;
-	}
-
-	public void enableOnTheFlyGyroCal(boolean state){
-		mIsEnabled = state;
-		
-		if(mIsEnabled && mGyroXCal==null) {
-			mGyroXCal = new DescriptiveStatistics(bufferSize);
-			mGyroYCal = new DescriptiveStatistics(bufferSize);
-			mGyroZCal = new DescriptiveStatistics(bufferSize);
-			mGyroXUncal = new DescriptiveStatistics(bufferSize);
-			mGyroYUncal = new DescriptiveStatistics(bufferSize);
-			mGyroZUncal = new DescriptiveStatistics(bufferSize);
-		}
-	}
-
-    public boolean isGyroOnTheFlyCalEnabled(){
-		return mIsEnabled;
 	}
 
 	public void updateGyroOnTheFlyGyroOVCal(CalibDetailsKinematic calibDetails, double[] gyroCalibratedData, double[] gyroUncalibratedData) {
@@ -91,8 +100,9 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 					&& mGyroYCal.getStandardDeviation()<mOffsetThreshold 
 					&& mGyroZCal.getStandardDeviation()<mOffsetThreshold){
 				calibDetails.updateCurrentOffsetVector(mGyroXUncal.getMean(), mGyroYUncal.getMean(), mGyroZUncal.getMean());
+//				System.err.println("UPDATING");
 			}
 //		}
 	}
-	
+
 }
