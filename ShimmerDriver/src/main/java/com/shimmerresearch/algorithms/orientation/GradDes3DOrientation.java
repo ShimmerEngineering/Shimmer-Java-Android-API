@@ -51,20 +51,21 @@ public class GradDes3DOrientation {
 	//	beta = sqrt(3.0f / 4.0f) * GyroMeasError; // compute beta
 	//We have typically found 0.5 works better with the Shimmer
 	public static double BETA = 0.5;
-	public final static double Q0_INITIAL = 1;
-	public final static double Q1_INITIAL = 0;
-	public final static double Q2_INITIAL = 0;
-	public final static double Q3_INITIAL = 0;
+	public final static double Q0_INITIAL_DEFAULT = 1;
+	public final static double Q1_INITIAL_DEFAULT = 0;
+	public final static double Q2_INITIAL_DEFAULT = 0;
+	public final static double Q3_INITIAL_DEFAULT = 0;
 
 	double mBeta = BETA;
     double mSamplingPeriod = 1;
+    double q0Initial, q1Initial, q2Initial, q3Initial;
     double q0, q1, q2, q3;
 
 	/** Initialise Gradient Descent algorithm with default BETA and initial Quaternion.
 	 * @param samplingPeriod
 	 */
 	public GradDes3DOrientation(double samplingPeriod) {
-		this(BETA, samplingPeriod, Q0_INITIAL, Q1_INITIAL, Q2_INITIAL, Q3_INITIAL);
+		this(BETA, samplingPeriod, Q0_INITIAL_DEFAULT, Q1_INITIAL_DEFAULT, Q2_INITIAL_DEFAULT, Q3_INITIAL_DEFAULT);
 	}
 
 	/** Initialise Gradient Descent algorithm with provided BETA and initial Quaternion.
@@ -84,13 +85,20 @@ public class GradDes3DOrientation {
 		mSamplingPeriod = samplingPeriod;		
 	}
 	
-	
 	public void setInitialConditions(double beta, double q0, double q1, double q2, double q3) {
         mBeta = beta;
         this.q0 = q0;
         this.q1 = q1;
         this.q2 = q2;
         this.q3 = q3;
+        this.q0Initial = q0;
+        this.q1Initial = q1;
+        this.q2Initial = q2;
+        this.q3Initial = q3;
+	}
+	
+	public void resetInitialConditions() {
+		setInitialConditions(mBeta, q0Initial, q1Initial, q2Initial, q3Initial);
 	}
 
 	/**
@@ -323,5 +331,7 @@ public class GradDes3DOrientation {
 		
 		return !(Double.isNaN(d) || Double.isInfinite(d));
 	}
+	
+	
 	
 }

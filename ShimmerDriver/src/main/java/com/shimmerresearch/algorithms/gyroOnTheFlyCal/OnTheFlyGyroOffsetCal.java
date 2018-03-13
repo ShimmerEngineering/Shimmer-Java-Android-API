@@ -36,9 +36,7 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 
 	public void setIsEnabled(boolean state){
 		mIsEnabled = state;
-		if(mIsEnabled && mGyroXCal==null && bufferSize>0) {
-			setupBuffers();
-		}
+		setupBuffers();
 	}
 
 	public boolean isEnabled() {
@@ -52,23 +50,29 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 	public void setBufferSize(int bufferSize) {
 		this.bufferSize = bufferSize;
 		
-		if(mIsEnabled && mGyroXCal!=null && bufferSize>0) {
-			mGyroXCal.setWindowSize(bufferSize);
-			mGyroYCal.setWindowSize(bufferSize);
-			mGyroZCal.setWindowSize(bufferSize);
-			mGyroXUncal.setWindowSize(bufferSize);
-			mGyroYUncal.setWindowSize(bufferSize);
-			mGyroZUncal.setWindowSize(bufferSize);
+		if(mIsEnabled && bufferSize>0) {
+			if(mGyroXCal==null) {
+				setupBuffers();
+			} else {
+				mGyroXCal.setWindowSize(bufferSize);
+				mGyroYCal.setWindowSize(bufferSize);
+				mGyroZCal.setWindowSize(bufferSize);
+				mGyroXUncal.setWindowSize(bufferSize);
+				mGyroYUncal.setWindowSize(bufferSize);
+				mGyroZUncal.setWindowSize(bufferSize);
+			}
 		}
 	}
 
 	protected void setupBuffers() {
-		mGyroXCal = new DescriptiveStatistics(bufferSize);
-		mGyroYCal = new DescriptiveStatistics(bufferSize);
-		mGyroZCal = new DescriptiveStatistics(bufferSize);
-		mGyroXUncal = new DescriptiveStatistics(bufferSize);
-		mGyroYUncal = new DescriptiveStatistics(bufferSize);
-		mGyroZUncal = new DescriptiveStatistics(bufferSize);
+		if(mIsEnabled && mGyroXCal==null && bufferSize>0) {
+			mGyroXCal = new DescriptiveStatistics(bufferSize);
+			mGyroYCal = new DescriptiveStatistics(bufferSize);
+			mGyroZCal = new DescriptiveStatistics(bufferSize);
+			mGyroXUncal = new DescriptiveStatistics(bufferSize);
+			mGyroYUncal = new DescriptiveStatistics(bufferSize);
+			mGyroZUncal = new DescriptiveStatistics(bufferSize);
+		}
 	}
 
 	public int getBufferSize() {
@@ -88,21 +92,27 @@ public class OnTheFlyGyroOffsetCal implements Serializable {
 	}
 
 	public void updateGyroOnTheFlyGyroOVCal(CalibDetailsKinematic calibDetails, double[] gyroCalibratedData, double uncalX, double uncalY, double uncalZ) {
-		//Already checked if isEnabled in ShimmerDevice class/sensor class, no need to do a second time.
-//		if (mIsEnabled){
-			mGyroXCal.addValue(gyroCalibratedData[0]);
-			mGyroYCal.addValue(gyroCalibratedData[1]);
-			mGyroZCal.addValue(gyroCalibratedData[2]);
-			mGyroXUncal.addValue(uncalX);
-			mGyroYUncal.addValue(uncalY);
-			mGyroZUncal.addValue(uncalZ);
+		if(mGyroXCal==null) {
+			System.err.println("Gyro on-the-fly gyro calibration wasn't setup on connection...setting up now");
+			setupBuffers();
+		}
+	
+		mGyroXCal.addValue(gyroCalibratedData[0]);
+		mGyroYCal.addValue(gyroCalibratedData[1]);
+		mGyroZCal.addValue(gyroCalibratedData[2]);
+		mGyroXUncal.addValue(uncalX);
+		mGyroYUncal.addValue(uncalY);
+		mGyroZUncal.addValue(uncalZ);
+		
+		//Process if the buffer is full
+		if(mGyroYCal.getWindowSize()==mGyroYCal.getN()) {
 			if (mGyroXCal.getStandardDeviation()<mOffsetThreshold 
 					&& mGyroYCal.getStandardDeviation()<mOffsetThreshold 
 					&& mGyroZCal.getStandardDeviation()<mOffsetThreshold){
 				calibDetails.updateCurrentOffsetVector(mGyroXUncal.getMean(), mGyroYUncal.getMean(), mGyroZUncal.getMean());
-//				System.err.println("UPDATING");
+//				System.err.println("UPDATING\tBufferSize=" + bufferSize);
 			}
-//		}
+		}
 	}
 
 }

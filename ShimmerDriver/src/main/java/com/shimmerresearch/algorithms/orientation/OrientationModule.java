@@ -192,8 +192,15 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
 
 	@Override
-	public void reset() throws Exception {
-		
+	public void resetAlgorithm() throws Exception {
+		resetAlgorithmBuffers();
+	}
+	
+	@Override
+	public void resetAlgorithmBuffers() {
+		if(orientationAlgorithm!=null) {
+			orientationAlgorithm.resetInitialConditions();
+		}
 	}
 
 	@Override
