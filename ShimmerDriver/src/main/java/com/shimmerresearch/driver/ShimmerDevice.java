@@ -4499,6 +4499,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mAlternativeName;
 	}
 
+	public boolean isFixedShimmerConfigModeSet() {
+		return (mFixedShimmerConfigMode==FIXED_SHIMMER_CONFIG_MODE.NONE? false:true);
+	}
+
+	public FIXED_SHIMMER_CONFIG_MODE getFixedShimmerConfigMode() {
+		return mFixedShimmerConfigMode;
+	}
+
 	public void setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE fixedShimmerConfig) {
 		mFixedShimmerConfigMode = fixedShimmerConfig;
 	}
@@ -4552,8 +4560,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
-		// TODO Auto-generated method stub
-		
+		//Not current used in this class but can be overwritten in ShimmerDevice instances
 	}
 
 }
