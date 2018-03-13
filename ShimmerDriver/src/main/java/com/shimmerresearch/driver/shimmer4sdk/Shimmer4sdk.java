@@ -1179,4 +1179,13 @@ public class Shimmer4sdk extends ShimmerDevice {
 		return isConnected;
 	}
 	
+	@Override
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+		super.configureFromClone(shimmerDeviceClone);
+		
+		writeConfigBytes(shimmerDeviceClone.getShimmerConfigBytes());
+		writeCalibrationDump(shimmerDeviceClone.calibByteDumpGenerate());
+
+	}
+	
 }

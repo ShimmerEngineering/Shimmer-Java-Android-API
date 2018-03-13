@@ -112,6 +112,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
@@ -5317,4 +5318,63 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mEnablePCTimeStamps = enable;
 	}
 
+	
+	@Override
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+		super.configureFromClone(shimmerDeviceClone);
+		
+		ShimmerBluetooth cloneShimmerCast = (ShimmerBluetooth) shimmerDeviceClone;
+
+		setSendProgressReport(true);
+
+		if(isUseInfoMemConfigMethod()){
+			writeConfigBytes(cloneShimmerCast.getShimmerConfigBytes());
+			// Hack because infomem is getting updated but
+			// enabledsensors aren't getting updated on the Shimmer
+			// and we need an inquiry() to determine packet format
+			// for legacy code
+			writeEnabledSensors(cloneShimmerCast.getEnabledSensors());
+		}
+		else {
+			//TODO below is writing accel, gyro, mag rate + ExG bytes -> for the moment moved to be the first command and then overwrite other rates below 
+			writeShimmerAndSensorsSamplingRate(cloneShimmerCast.getSamplingRateShimmer());// s3 = 4
+
+			writeAccelRange(cloneShimmerCast.getAccelRange());
+			writeGSRRange(cloneShimmerCast.getGSRRange());
+			writeGyroRange(cloneShimmerCast.getGyroRange());
+			writeMagRange(cloneShimmerCast.getMagRange());
+			writePressureResolution(cloneShimmerCast.getPressureResolution());
+
+			//set the low power modes here
+			enableLowPowerAccel(cloneShimmerCast.isLowPowerAccelWR());//3
+			enableLowPowerGyro(cloneShimmerCast.isLowPowerGyroEnabled());
+			enableLowPowerMag(cloneShimmerCast.isLowPowerMagEnabled());
+
+			//TODO Already done in enableLowPowerAccel, enableLowPowerMag and enableLowPowerGyro
+			writeAccelSamplingRate(cloneShimmerCast.getLSM303DigitalAccelRate());
+			writeGyroSamplingRate(cloneShimmerCast.getMPU9X50GyroAccelRate());
+			writeMagSamplingRate(cloneShimmerCast.getMagRate());
+
+			//System.out.println("Register1\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(cloneShimmerCast.getEXG1RegisterArray()));
+			//System.out.println("Register2\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(cloneShimmerCast.getEXG2RegisterArray()));
+
+			writeEXGConfiguration(cloneShimmerCast.getEXG1RegisterArray(),EXG_CHIP_INDEX.CHIP1);
+			writeEXGConfiguration(cloneShimmerCast.getEXG2RegisterArray(),EXG_CHIP_INDEX.CHIP2);
+
+			writeInternalExpPower(cloneShimmerCast.getInternalExpPower());
+			writeShimmerUserAssignedName(cloneShimmerCast.getShimmerUserAssignedName());
+			writeExperimentName(cloneShimmerCast.getTrialName());
+			writeConfigTime(cloneShimmerCast.getConfigTime());
+
+			writeDerivedChannels(cloneShimmerCast.getDerivedSensors());
+			//writeDerivedChannels(BTStreamDerivedSensors.ECG2HR_CHIP1_CH2|BTStreamDerivedSensors.ECG2HR_CHIP1_CH1);
+			//setContinuousSync(mContinousSync);
+
+			writeEnabledSensors(cloneShimmerCast.getEnabledSensors()); //this should always be the last command
+			//System.out.println(cloneShimmerCast.getEnabledSensors());
+		}
+		
+		writeCalibrationDump(cloneShimmerCast.calibByteDumpGenerate());
+	}
+	
 }

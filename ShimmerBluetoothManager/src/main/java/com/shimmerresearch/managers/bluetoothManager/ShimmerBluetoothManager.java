@@ -13,7 +13,6 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportAll;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerRadioInitializer;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -86,10 +85,12 @@ public abstract class ShimmerBluetoothManager{
 	// mAutoStartStreaming on a per Shimmer basis through variables passed into the
 	// connect() method rather then globals for all devices
     /** Used to load a set configuration to the devices based on different applications */
-    protected FIXED_SHIMMER_CONFIG_MODE mFixedShimmerConfig = FIXED_SHIMMER_CONFIG_MODE.NONE;
+    protected FIXED_SHIMMER_CONFIG_MODE mFixedShimmerConfigGlobal = FIXED_SHIMMER_CONFIG_MODE.NONE;
 	/** If true, all devices will auto-stream once a connection is established */
 	protected boolean mAutoStartStreaming = false;		
 
+	private static final List<Integer> HW_IDS_THAT_SUPPORT_CONFIG_VIA_BT = Arrays.asList(HW_ID.SHIMMER_3, HW_ID.SWEATCH, HW_ID.SHIMMER_4_SDK);
+	
 	public ShimmerBluetoothManager() {
 		startTimerCalcReceptionRate();
 	}
@@ -324,95 +325,16 @@ public abstract class ShimmerBluetoothManager{
 			//TODO include below?
 //			cloneShimmerCast.setBluetoothRadioState(BT_STATE.CONFIGURING);
 
-			if (cloneShimmer instanceof ShimmerBluetooth){
-				ShimmerBluetooth cloneShimmerCast = (ShimmerBluetooth) cloneShimmer;
-				
-				if (cloneShimmerCast.getHardwareVersion()==ShimmerVerDetails.HW_ID.SHIMMER_3){
-					
-//					ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmerCast.getComPort());
-					ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmerCast.getBtConnectionHandle());
-					if (originalShimmerDevice instanceof ShimmerBluetooth){
-						ShimmerBluetooth originalShimmer = (ShimmerBluetooth) originalShimmerDevice;
-						originalShimmer.operationPrepare();
-						originalShimmer.setSendProgressReport(true);
-
-						if(originalShimmer.isUseInfoMemConfigMethod()){
-							originalShimmer.writeConfigBytes(cloneShimmerCast.getShimmerConfigBytes());
-							// Hack because infomem is getting updated but
-							// enabledsensors aren't getting updated on the Shimmer
-							// and we need an inquiry() to determine packet format
-							// for legacy code
-							originalShimmer.writeEnabledSensors(cloneShimmerCast.getEnabledSensors());
-						}
-						else {
-							//TODO below is writing accel, gyro, mag rate + ExG bytes -> for the moment moved to be the first command and then overwrite other rates below 
-							originalShimmer.writeShimmerAndSensorsSamplingRate(cloneShimmerCast.getSamplingRateShimmer());// s3 = 4
-
-							originalShimmer.writeAccelRange(cloneShimmerCast.getAccelRange());
-							originalShimmer.writeGSRRange(cloneShimmerCast.getGSRRange());
-							originalShimmer.writeGyroRange(cloneShimmerCast.getGyroRange());
-							originalShimmer.writeMagRange(cloneShimmerCast.getMagRange());
-							originalShimmer.writePressureResolution(cloneShimmerCast.getPressureResolution());
-
-							//set the low power modes here
-							originalShimmer.enableLowPowerAccel(cloneShimmerCast.isLowPowerAccelWR());//3
-							originalShimmer.enableLowPowerGyro(cloneShimmerCast.isLowPowerGyroEnabled());
-							originalShimmer.enableLowPowerMag(cloneShimmerCast.isLowPowerMagEnabled());
-
-							//TODO Already done in enableLowPowerAccel, enableLowPowerMag and enableLowPowerGyro
-							originalShimmer.writeAccelSamplingRate(cloneShimmerCast.getLSM303DigitalAccelRate());
-							originalShimmer.writeGyroSamplingRate(cloneShimmerCast.getMPU9X50GyroAccelRate());
-							originalShimmer.writeMagSamplingRate(cloneShimmerCast.getMagRate());
-
-							//System.out.println("Register1\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(cloneShimmerCast.getEXG1RegisterArray()));
-							//System.out.println("Register2\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(cloneShimmerCast.getEXG2RegisterArray()));
-
-							originalShimmer.writeEXGConfiguration(cloneShimmerCast.getEXG1RegisterArray(),EXG_CHIP_INDEX.CHIP1);
-							originalShimmer.writeEXGConfiguration(cloneShimmerCast.getEXG2RegisterArray(),EXG_CHIP_INDEX.CHIP2);
-
-							originalShimmer.writeInternalExpPower(cloneShimmerCast.getInternalExpPower());
-							originalShimmer.writeShimmerUserAssignedName(cloneShimmerCast.getShimmerUserAssignedName());
-							originalShimmer.writeExperimentName(cloneShimmerCast.getTrialName());
-							originalShimmer.writeConfigTime(cloneShimmerCast.getConfigTime());
-
-							originalShimmer.writeDerivedChannels(cloneShimmerCast.getDerivedSensors());
-							//originalShimmer.writeDerivedChannels(BTStreamDerivedSensors.ECG2HR_CHIP1_CH2|BTStreamDerivedSensors.ECG2HR_CHIP1_CH1);
-							//setContinuousSync(mContinousSync);
-
-							originalShimmer.writeEnabledSensors(cloneShimmerCast.getEnabledSensors()); //this should always be the last command
-							//System.out.println(cloneShimmerCast.getEnabledSensors());
-						}
-						
-						originalShimmer.writeCalibrationDump(cloneShimmerCast.calibByteDumpGenerate());
-
-						//get instruction stack size
-						originalShimmer.operationStart(BT_STATE.CONFIGURING);
-					}
-				}
-			}
-			else if(cloneShimmer instanceof Shimmer4sdk){
-				Shimmer4sdk cloneShimmerCast = (Shimmer4sdk) cloneShimmer;
-				ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmerCast.getMacId());
-				if(originalShimmerDevice instanceof Shimmer4sdk){
-					Shimmer4sdk originalShimmer = (Shimmer4sdk) originalShimmerDevice;
-					
-					originalShimmer.operationPrepare();
-//					originalShimmer.setSendProgressReport(true);
-
-					originalShimmer.writeConfigBytes(cloneShimmerCast.getShimmerConfigBytes());
-					originalShimmer.writeCalibrationDump(cloneShimmerCast.calibByteDumpGenerate());
-					
-					originalShimmer.operationStart(BT_STATE.CONFIGURING);
-				}
-			}
-			else {
-				ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmer.getMacId());
-				//TODO Add support for this approach in other devices
-				if(cloneShimmer.getHardwareVersion()==HW_ID.SWEATCH){
-					originalShimmerDevice.operationPrepare();
-					originalShimmerDevice.configureFromClone(cloneShimmer);
-					originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
-				}
+			ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmer.getMacId());
+			int cloneHwId = cloneShimmer.getHardwareVersion();
+			if(originalShimmerDevice!=null 
+					&& HW_IDS_THAT_SUPPORT_CONFIG_VIA_BT.contains(cloneHwId)
+					&& originalShimmerDevice.getClass().isInstance(cloneShimmer)){
+				originalShimmerDevice.operationPrepare();
+				originalShimmerDevice.configureFromClone(cloneShimmer);
+				originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
+			} else {
+				printMessage("Hardware ID not supported currently: " + cloneHwId);
 			}
 			
 			threadSleep(SLEEP_BETWEEN_GROUP_ACTIONS_MS);
@@ -970,7 +892,11 @@ public abstract class ShimmerBluetoothManager{
 		addCallBack(shimmerDevice);
 		shimmerDevice.updateThreadName();
 		
-		shimmerDevice.setFixedShimmerConfig(mFixedShimmerConfig);
+		// If a fixed Shimmer config hasn't already been set by the driver for a
+		// particular device, set it to be the global setting in this class
+		if(!shimmerDevice.isFixedShimmerConfigModeSet()) {
+			shimmerDevice.setFixedShimmerConfig(mFixedShimmerConfigGlobal);
+		}
 		shimmerDevice.setAutoStartStreaming(mAutoStartStreaming);
 	}
 
@@ -979,7 +905,7 @@ public abstract class ShimmerBluetoothManager{
 	 * @param fixedConfig the mFixedConfig to set
 	 */
 	public void setFixedConfig(FIXED_SHIMMER_CONFIG_MODE fixedConfig) {
-		this.mFixedShimmerConfig = fixedConfig;
+		this.mFixedShimmerConfigGlobal = fixedConfig;
 	}
 	
 	public void setAutoStartStreaming(boolean state){
