@@ -4551,4 +4551,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mIsaPlaybackDevice = isPlaybackDevice;
 	}
 
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
