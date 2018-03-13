@@ -145,7 +145,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 	
 	
-	private void writeInstruction(int commandValue) {
+	protected void writeInstruction(int commandValue) {
 		writeInstruction(new byte[]{(byte) (commandValue&0xFF)});
 	}
 	
@@ -720,7 +720,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	/**
 	 * @param responseCommand
 	 */
-	private void processResponseCommand(int responseCommand) {
+	protected void processResponseCommand(int responseCommand) {
 		byte[] length = null;
 		byte[] rxBuf = null;
 		
@@ -1202,7 +1202,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			}
 
 		} catch(ShimmerException dE){
-			
+			mUtilShimmer.consolePrintShimmerException(dE);
 		}
 
 	}
@@ -1272,11 +1272,11 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		return false;
 	}
 
-	private void writeBytes(byte[] insBytes) throws ShimmerException {
+	protected void writeBytes(byte[] insBytes) throws ShimmerException {
 		mCommsInterface.txBytes(insBytes);
 	}
 
-	private byte[] readBytes(int i) throws ShimmerException {
+	protected byte[] readBytes(int i) throws ShimmerException {
 		return mCommsInterface.rxBytes(i);
 	}
 
@@ -1313,7 +1313,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		mProtocolListener.eventNewResponse(response);
 	}
 	
-	private void eventResponseReceived(int responseCommand, Object parsedResponse) {
+	protected void eventResponseReceived(int responseCommand, Object parsedResponse) {
 		mProtocolListener.eventResponseReceived(responseCommand, parsedResponse);
 	}
 

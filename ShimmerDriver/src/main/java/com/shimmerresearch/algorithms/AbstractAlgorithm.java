@@ -522,7 +522,7 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 			try {
 				initialize();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				System.err.println("sampling rate=" + samplingRate);
 				e.printStackTrace();
 			}
 		}

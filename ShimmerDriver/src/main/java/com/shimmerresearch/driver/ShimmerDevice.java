@@ -735,6 +735,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		addCommunicationRoute(communicationType);
 	}
 
+	public void setCommunicationRoutes(List<COMMUNICATION_TYPE> communicationTypes) {
+		mListOfAvailableCommunicationTypes.clear();
+		for(COMMUNICATION_TYPE communicationType:communicationTypes) {
+			addCommunicationRoute(communicationType);
+		}
+	}
+
 	public void removeCommunicationRoute(COMMUNICATION_TYPE communicationType) {
 		if(mListOfAvailableCommunicationTypes.contains(communicationType)){
 			mListOfAvailableCommunicationTypes.remove(communicationType);
@@ -755,6 +762,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public List<COMMUNICATION_TYPE> getCommunicationRoutes() {
 		return mListOfAvailableCommunicationTypes;
 	}
+	
+	public boolean isCommunicationRouteAvailable(COMMUNICATION_TYPE commType) {
+		return mListOfAvailableCommunicationTypes.contains(commType);
+	}
+
 	//------------------- Communication route related End -------------------------------
 	
 	//------------------- SD card related Start -------------------------------
