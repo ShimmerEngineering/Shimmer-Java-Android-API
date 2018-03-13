@@ -9,37 +9,24 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
 import com.shimmerresearch.bluetooth.BtCommandDetails;
-import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
-import com.shimmerresearch.driver.calibration.OldCalDetails;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
-import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
-import com.shimmerresearch.driverUtilities.OnTheFlyCalGyro;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
-import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
-import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
@@ -70,11 +57,6 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 
 	protected int mMPU9150AccelRange=0;											// This stores the current MPU9150 Accel Range. 0 = 2g, 1 = 4g, 2 = 8g, 4 = 16g
 	protected int mMPU9150GyroAccelRate=0;
-	protected int mAccelRange=0;
-	protected int mMagRange=1;
-	protected long mConfigByte0;
-	protected int mNChannels=0;	                                                // Default number of sensor channels set to three because of the on board accelerometer 
-	protected int mBufferSize;  
 	
 	protected int mMPU9150DMP = 0;
 	protected int mMPU9150LPF = 0;
@@ -86,8 +68,6 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	protected int mMPLVectCompCal = 0;
 	protected int mMPLMagDistCal = 0;
 	protected int mMPLEnable = 0;
-	protected int mPacketSize=0;
-	protected int mTimeStampPacketByteSize = 2;
 	
 	protected double[][] AlignmentMatrixMPLAccel = {{-1,0,0},{0,1,0},{0,0,-1}}; 			
 	protected double[][] SensitivityMatrixMPLAccel = {{1631,0,0},{0,1631,0},{0,0,1631}}; 	
@@ -323,13 +303,6 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		public static String ORIENT = "Orient";
 	}
 	
-	transient protected OnTheFlyCalGyro mOnTheFlyCalGyro = new OnTheFlyCalGyro(); 
-
-	public boolean mEnableXCalibration = true;
-	public byte[] mInquiryResponseXBytes;
-	
-	public byte[] mGyroCalRawXParams = new byte[22];
-	public byte[] mMagCalRawXParams = new byte[22];
 	//--------- Sensor specific variables end --------------
 
 
@@ -392,17 +365,17 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final List<Integer> mListOfMplChannels = Arrays.asList(
 			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_TEMP,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_9DOF,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_6DOF,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_9DOF,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_HEADING,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_PEDOMETER,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_TAP,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MOTION_ORIENT,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL,
-			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_QUAT_6DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_QUAT_9DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_EULER_6DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_EULER_9DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_HEADING,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_PEDOMETER,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_TAP,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MOTION_ORIENT,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_GYRO,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_ACCEL,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MAG,
 			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW);
 
 	//--------- Configuration options end --------------
@@ -502,7 +475,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	//MPL calibrated sensors
 	public static final SensorDetailsRef sensorMpu9150MplGyro = new SensorDetailsRef((long)0, (long)0x80<<(4*8), GuiLabelSensors.GYRO_MPU_MPL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_GYRO),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_GYRO_RANGE,
 					GuiLabelConfig.MPU9X50_GYRO_RATE,
@@ -516,7 +489,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 
 	public static final SensorDetailsRef sensorMpu9150MplAccel = new SensorDetailsRef((long)0, (long)0x40<<(4*8), GuiLabelSensors.ACCEL_MPU_MPL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_ACCEL),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_ACCEL_RANGE,
 					GuiLabelConfig.MPU9X50_MPL_LPF),
@@ -528,7 +501,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 	
 	public static final SensorDetailsRef sensorMpu9150MplMag = new SensorDetailsRef((long)0, (long)0x20<<(4*8), GuiLabelSensors.MAG_MPU_MPL,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPLSensors,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MAG),
 			Arrays.asList(
 					GuiLabelConfig.MPU9X50_MPL_LPF),
 			Arrays.asList(
@@ -555,17 +528,17 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		//TODO decide what to do with below -> update, I can't remember why I added this message
 		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_TEMP, SensorMPU9X50.sensorMpu9150TempRef);
 
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF, SensorMPU9X50.sensorMpu9150MplQuat6Dof);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_9DOF, SensorMPU9X50.sensorMpu9150MplQuat9Dof);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_6DOF, SensorMPU9X50.sensorMpu9150MplEuler6Dof);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_EULER_9DOF, SensorMPU9X50.sensorMpu9150MplEuler9Dof);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_HEADING, SensorMPU9X50.sensorMpu9150MplHeading);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_PEDOMETER, SensorMPU9X50.sensorMpu9150MplPedometer);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_TAP, SensorMPU9X50.sensorMpu9150MplTap);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MOTION_ORIENT, SensorMPU9X50.sensorMpu9150MplMotion);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO, SensorMPU9X50.sensorMpu9150MplGyro);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL, SensorMPU9X50.sensorMpu9150MplAccel);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG, SensorMPU9X50.sensorMpu9150MplMag);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_QUAT_6DOF, SensorMPU9X50.sensorMpu9150MplQuat6Dof);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_QUAT_9DOF, SensorMPU9X50.sensorMpu9150MplQuat9Dof);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_EULER_6DOF, SensorMPU9X50.sensorMpu9150MplEuler6Dof);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_EULER_9DOF, SensorMPU9X50.sensorMpu9150MplEuler9Dof);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_HEADING, SensorMPU9X50.sensorMpu9150MplHeading);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_PEDOMETER, SensorMPU9X50.sensorMpu9150MplPedometer);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_TAP, SensorMPU9X50.sensorMpu9150MplTap);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MOTION_ORIENT, SensorMPU9X50.sensorMpu9150MplMotion);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_GYRO, SensorMPU9X50.sensorMpu9150MplGyro);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_ACCEL, SensorMPU9X50.sensorMpu9150MplAccel);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MAG, SensorMPU9X50.sensorMpu9150MplMag);
 		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_QUAT_6DOF_RAW, SensorMPU9X50.sensorMpu9150MplQuat6DofRaw);
 
 		mSensorMapRefCommon = Collections.unmodifiableMap(aMap);
@@ -606,27 +579,27 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 
 			//Uncalibrated Gyro data
 			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO)){
-				double[] unCalibratedGyroData = new double[3];
+				double[] uncalibratedGyroData = new double[3];
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_X)){
-						unCalibratedGyroData[0] = (double)((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						uncalibratedGyroData[0] = (double)((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_Y)){
-						unCalibratedGyroData[1] = (double)((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						uncalibratedGyroData[1] = (double)((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 					}
 					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GYRO_Z)){
-						unCalibratedGyroData[2] = (double)((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+						uncalibratedGyroData[2] = (double)((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 					}
 				}
 	
-				double[] gyroCalibratedData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, getCurrentCalibDetailsGyro());
+				double[] gyroCalibratedData = UtilCalibration.calibrateInertialSensorData(uncalibratedGyroData, getCurrentCalibDetailsGyro());
 //				double[] gyroCalibratedData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, mAlignmentMatrixGyroscope, mSensitivityMatrixGyroscope, mOffsetVectorGyroscope);
 //				//for testing
 ////				double[] gyroCalibratedData = UtilCalibration.calibrateInertialSensorData(unCalibratedGyroData, AlignmentMatrixGyroShimmer3, SensitivityMatrixGyro1000dpsShimmer3, OffsetVectorGyroShimmer3);
 				
-				if (isGyroOnTheFlyCalEnabled()){
-					getOnTheFlyCalGyro().updateGyroOnTheFlyGyroOVCal(getCurrentCalibDetailsGyro(), gyroCalibratedData, unCalibratedGyroData[0], unCalibratedGyroData[1], unCalibratedGyroData[2]);
-				}
+//				if (isGyroOnTheFlyCalEnabled()){
+//					getOnTheFlyCalGyro().updateGyroOnTheFlyGyroOVCal(getCurrentCalibDetailsGyro(), gyroCalibratedData, uncalibratedGyroData[0], uncalibratedGyroData[1], uncalibratedGyroData[2]);
+//				}
 				
 				//Add calibrated data to Object cluster
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
@@ -1974,26 +1947,26 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		setLowPowerGyro(false);
 	}
 	
-	/**
-	 * @param enable this enables the calibration of the gyroscope while streaming
-	 * @param bufferSize sets the buffersize of the window used to determine the new calibration parameters, see implementation for more details
-	 * @param threshold sets the threshold of when to use the incoming data to recalibrate gyroscope offset, this is in degrees, and the default value is 1.2
-	 */
-	public void enableOnTheFlyGyroCal(boolean state, int bufferSize, double threshold){
-		mOnTheFlyCalGyro.enableOnTheFlyGyroCal(state, bufferSize, threshold);
-	}
-	
-	public void setOnTheFlyGyroCal(boolean state){
-		mOnTheFlyCalGyro.setOnTheFlyGyroCal(state);
-	}
-
-    public boolean isGyroOnTheFlyCalEnabled(){
-    	return mOnTheFlyCalGyro.isGyroOnTheFlyCalEnabled();
-	}
-
-    public OnTheFlyCalGyro getOnTheFlyCalGyro(){
-    	return mOnTheFlyCalGyro;
-    }
+//	/**
+//	 * @param enable this enables the calibration of the gyroscope while streaming
+//	 * @param bufferSize sets the buffersize of the window used to determine the new calibration parameters, see implementation for more details
+//	 * @param threshold sets the threshold of when to use the incoming data to recalibrate gyroscope offset, this is in degrees, and the default value is 1.2
+//	 */
+//	public void enableOnTheFlyGyroCal(boolean state, int bufferSize, double threshold){
+//		mOnTheFlyCalGyro.enableOnTheFlyGyroCal(state, bufferSize, threshold);
+//	}
+//	
+//	public void setOnTheFlyGyroCal(boolean state){
+//		mOnTheFlyCalGyro.setOnTheFlyGyroCal(state);
+//	}
+//
+//    public boolean isGyroOnTheFlyCalEnabled(){
+//    	return mOnTheFlyCalGyro.isGyroOnTheFlyCalEnabled();
+//	}
+//
+//    public OnTheFlyCalGyro getOnTheFlyCalGyro(){
+//    	return mOnTheFlyCalGyro;
+//    }
 
 	
 	//--------- Optional methods to override in Sensor Class start --------	
@@ -2013,15 +1986,15 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 		if(mShimmerVerObject.isSupportedMpl()){
 			TreeMap<Integer, CalibDetails> mCalibMapMplAccel = new TreeMap<Integer, CalibDetails>();
 			mCalibMapMplAccel.put(calibDetailsMplAccel.mRangeValue, calibDetailsMplAccel);
-			mCalibMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_ACCEL, calibMapGyro);
+			mCalibMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_ACCEL, calibMapGyro);
 			
 			TreeMap<Integer, CalibDetails> mCalibMapMplMag = new TreeMap<Integer, CalibDetails>();
 			mCalibMapMplMag.put(calibDetailsMplMag.mRangeValue, calibDetailsMplMag);
-			mCalibMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_MAG, calibMapGyro);
+			mCalibMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MAG, calibMapGyro);
 			
 			TreeMap<Integer, CalibDetails> mCalibMapMplGyro = new TreeMap<Integer, CalibDetails>();
 			mCalibMapMplGyro.put(calibDetailsMplGyro.mRangeValue, calibDetailsMplGyro);
-			mCalibMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9150_MPL_GYRO, calibMapGyro);
+			mCalibMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_GYRO, calibMapGyro);
 		}
 	}
 

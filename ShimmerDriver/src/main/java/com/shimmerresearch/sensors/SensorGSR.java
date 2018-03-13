@@ -16,12 +16,12 @@ import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driver.Configuration;
@@ -37,13 +37,25 @@ public class SensorGSR extends AbstractSensor {
 	public static boolean isShimmer3and4UsingShimmer2rVal = true;
 	
 	public int mGSRRange = 4; 					// 4 = Auto
-
+	
 	public static final double[] SHIMMER3_GSR_REF_RESISTORS_KOHMS = new double[] {
-			40.000, 	//Range 0
-			287.000, 	//Range 1
-			1000.000, 	//Range 2
-			3300.000}; 	//Range 3
-
+			40.0, 		//Range 0
+			287.0, 		//Range 1
+			1000.0, 	//Range 2
+			3300.0}; 	//Range 3
+	public static final double[][] SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS = new double[][] {
+			{8.0, 63.0}, 		//Range 0
+			{63.0, 220.0}, 		//Range 1
+			{220.0, 680.0}, 	//Range 2
+			{680.0, 4700.0}}; 	//Range 3
+//	public static final int[][] SHIMMER3_GSR_RESISTANCE_MIN_MAX_ADC = new int[][] {
+//		{4119, 1120}, 		//Range 0
+//		{3798, 1575}, 		//Range 1
+//		{3791, 1689}, 	//Range 2
+//		{4001, 683}};//834}}; 	//Range 3
+	// Equation breaks down below 683 for range 3
+	public static final int GSR_UNCAL_LIMIT_RANGE3 = 683; 	
+	
 	public class GuiLabelConfig{
 		public static final String GSR_RANGE = "GSR Range";
 		public static final String SAMPLING_RATE_DIVIDER_GSR = "GSR Divider";
@@ -60,6 +72,10 @@ public class SensorGSR extends AbstractSensor {
 	public static class DatabaseChannelHandles{
 		public static final String GSR_RESISTANCE = "F5437a_Int_A1_GSR";
 		public static final String GSR_CONDUCTANCE = "GSR_Conductance";
+		
+		// A legacy issue means this conductances based channel needs to be same
+		// DB column name as usually used by the Resistance channel just for GQ
+		public static final String GSR_GQ = DatabaseChannelHandles.GSR_RESISTANCE;
 	}
 	
 	public static final class DatabaseConfigHandle{
@@ -67,9 +83,6 @@ public class SensorGSR extends AbstractSensor {
 	}
 	
 	public static class ObjectClusterSensorName{
-		//2017-05-03 MN changed from "GSR" to "GSR_Resistance"
-		@Deprecated
-		public static String GSR_LEGACY = "GSR";
 		public static String GSR_RESISTANCE = "GSR_Skin_Resistance";
 		public static String GSR_CONDUCTANCE = "GSR_Skin_Conductance";
 		public static String GSR_RANGE = "GSR_Range";
@@ -102,14 +115,14 @@ public class SensorGSR extends AbstractSensor {
 
 	//--------- Configuration options start --------------
 	public static final String[] ListofGSRRangeResistance = {
-		"10k" + UtilShimmer.UNICODE_OHMS + " to 56k" + UtilShimmer.UNICODE_OHMS,
-		"56k" + UtilShimmer.UNICODE_OHMS + " to 220k" + UtilShimmer.UNICODE_OHMS,
+		"8k" + UtilShimmer.UNICODE_OHMS + " to 63k" + UtilShimmer.UNICODE_OHMS,
+		"63k" + UtilShimmer.UNICODE_OHMS + " to 220k" + UtilShimmer.UNICODE_OHMS,
 		"220k" + UtilShimmer.UNICODE_OHMS + " to 680k" + UtilShimmer.UNICODE_OHMS,
 		"680k" + UtilShimmer.UNICODE_OHMS + " to 4.7M" + UtilShimmer.UNICODE_OHMS,
 		"Auto Range"};
 	public static final String[] ListofGSRRangeConductance = {
-		"100" + UtilShimmer.UNICODE_MICRO + "S to 17.9" + UtilShimmer.UNICODE_MICRO + "S",
-		"17.9" + UtilShimmer.UNICODE_MICRO + "S to 4.5" + UtilShimmer.UNICODE_MICRO + "S",
+		"125" + UtilShimmer.UNICODE_MICRO + "S to 15.9" + UtilShimmer.UNICODE_MICRO + "S",
+		"15.9" + UtilShimmer.UNICODE_MICRO + "S to 4.5" + UtilShimmer.UNICODE_MICRO + "S",
 		"4.5" + UtilShimmer.UNICODE_MICRO + "S to 1.5" + UtilShimmer.UNICODE_MICRO + "S",
 		"1.5" + UtilShimmer.UNICODE_MICRO + "S to 0.2" + UtilShimmer.UNICODE_MICRO + "S",
 		"Auto Range"};
@@ -150,7 +163,8 @@ public class SensorGSR extends AbstractSensor {
 					//Comment in/out channel you want to appear as normal Shimmer channels
 					ObjectClusterSensorName.GSR_RESISTANCE,
 					ObjectClusterSensorName.GSR_CONDUCTANCE,
-					ObjectClusterSensorName.GSR_RANGE
+					ObjectClusterSensorName.GSR_RANGE,
+					ObjectClusterSensorName.GSR_GQ
 					//ObjectClusterSensorName.GSR_ADC_VALUE
 					),
 			true);
@@ -176,9 +190,9 @@ public class SensorGSR extends AbstractSensor {
 			0x1C);
 
 	public static final ChannelDetails channelGsrMicroSiemensGq = new ChannelDetails(
-			ObjectClusterSensorName.GSR_RESISTANCE,
-			ObjectClusterSensorName.GSR_RESISTANCE,
-			DatabaseChannelHandles.GSR_RESISTANCE,
+			ObjectClusterSensorName.GSR_GQ,
+			ObjectClusterSensorName.GSR_GQ,
+			DatabaseChannelHandles.GSR_GQ,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.U_SIEMENS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -254,7 +268,7 @@ public class SensorGSR extends AbstractSensor {
 		//Allow NeuroLynQ to just use a single GSR channel based on MicroSiemens
 		if(mShimmerVerObject.isShimmerGenGq()){
 			Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
-			channelMapRef.put(Configuration.Shimmer3.ObjectClusterSensorName.GSR_RESISTANCE, SensorGSR.channelGsrMicroSiemensGq);
+			channelMapRef.put(SensorGSR.channelGsrMicroSiemensGq.mObjectClusterName, SensorGSR.channelGsrMicroSiemensGq);
 			super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 		}
 		else{
@@ -303,7 +317,8 @@ public class SensorGSR extends AbstractSensor {
 //			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
 			
 			//next process other data
-			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GSR_RESISTANCE)){
+			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GSR_RESISTANCE)
+					|| channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.GSR_GQ)){
 
 				byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 				System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
@@ -311,8 +326,6 @@ public class SensorGSR extends AbstractSensor {
 				int gsrAdcValueUnCal = ((int)rawData & 4095); 
 				objectCluster.addUncalData(channelDetails, gsrAdcValueUnCal);
 				
-//				double rawData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-
 				int currentGSRRange = getGSRRange();
 				if (currentGSRRange==4){
 					//Mask upper 2 bits of the 16-bit packet and then bit shift down
@@ -327,33 +340,39 @@ public class SensorGSR extends AbstractSensor {
 				}
 				if(sensorDetails.mListOfChannels.contains(channelGsrAdc)){
 					objectCluster.addUncalData(channelGsrAdc, gsrAdcValueUnCal);
-					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannel(gsrAdcValueUnCal));
+					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannelToMillivolts(gsrAdcValueUnCal));
 					objectCluster.incrementIndexKeeper();
 				}
+				
+				double gsrResistanceKOhms = 0.0;
+				double gsrConductanceUSiemens = 0.0;
+				//TODO can remove old code
+//				if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
+					//Limit the GSR value for open circuit situations. 
+					if(currentGSRRange==3 && gsrAdcValueUnCal<GSR_UNCAL_LIMIT_RANGE3) {
+						gsrAdcValueUnCal = GSR_UNCAL_LIMIT_RANGE3;
+					}
+//					gsrAdcValueUnCal = SensorGSR.nudgeGsrADC(gsrAdcValueUnCal, currentGSRRange);
 
-				double p1=0,p2=0;
-				double gsrResistance = 0.0;
-				double gsrConductance = 0.0;
-				//TODO no need to check every time if the improved GSR calibration works better for Shimmer3 
-				if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
-					gsrResistance = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
-					gsrConductance = 1/gsrResistance;
-				} else {
-					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
-					p1 = p1p2[0];
-					p2 = p1p2[1];
-					
-					gsrResistance = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
-					gsrConductance = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
-				}
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
+					gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
+//				} else {
+//					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
+//					double p1 = p1p2[0];
+//					double p2 = p1p2[1];
+//
+//					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistance(gsrAdcValueUnCal,p1,p2);
+//					gsrConductanceUSiemens = SensorGSR.calibrateGsrDataToSiemens(gsrAdcValueUnCal,p1,p2);
+//				}
 				
 				double calData = 0.0;
 				//This section is needed for GQ since the primary GSR KOHMS channel is replaced by U_SIEMENS 
 				if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.KOHMS)){
-					calData = gsrResistance;
+					calData = gsrResistanceKOhms;
 				}
 				else if(channelDetails.mDefaultCalUnits.equals(Configuration.CHANNEL_UNITS.U_SIEMENS)){
-					calData = gsrConductance;
+					calData = gsrConductanceUSiemens;
 				}
 				objectCluster.addCalData(channelDetails, calData);
 				objectCluster.incrementIndexKeeper();
@@ -361,7 +380,7 @@ public class SensorGSR extends AbstractSensor {
 				
 				if(sensorDetails.mListOfChannels.contains(channelGsrMicroSiemens)){
 					objectCluster.addUncalData(channelGsrMicroSiemens, gsrAdcValueUnCal);
-					objectCluster.addCalData(channelGsrMicroSiemens, gsrConductance);
+					objectCluster.addCalData(channelGsrMicroSiemens, gsrConductanceUSiemens);
 					objectCluster.incrementIndexKeeper();
 				}
 				
@@ -383,6 +402,19 @@ public class SensorGSR extends AbstractSensor {
 		return objectCluster;
 	}
 	
+
+	public static double nudgeGsrResistance(double gsrResistanceKOhms, int gsrRangeSetting) {
+		if(gsrRangeSetting!=4) {
+			double[] minMax = SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS[gsrRangeSetting];
+			return UtilShimmer.nudgeDouble(gsrResistanceKOhms, minMax[0], minMax[1]);
+		}
+		return gsrResistanceKOhms;
+	}
+
+//	public static int nudgeGsrADC(int gsrAdcValueUnCal, int gsrRangeSetting) {
+//		int[] minMax = SHIMMER3_GSR_RESISTANCE_MIN_MAX_ADC[gsrRangeSetting];
+//		return UtilShimmer.nudgeInteger(gsrAdcValueUnCal, minMax[1], minMax[0]);
+//	}
 
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
@@ -528,6 +560,7 @@ public class SensorGSR extends AbstractSensor {
 
 
 	//--------- Sensor specific methods start --------------
+	@Deprecated
 	public static double calibrateGsrDataToResistance(double gsrUncalibratedData, double p1, double p2){
 //		gsrUncalibratedData = (double)((int)gsrUncalibratedData & 4095); 
 //		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
@@ -541,7 +574,7 @@ public class SensorGSR extends AbstractSensor {
 		return gsrCalibratedData;  
 	}
 
-	
+	@Deprecated
 	public static double calibrateGsrDataToSiemens(double gsrUncalibratedData, double p1, double p2){
 		double gsrUncalibratedDataLcl = (double)((int)gsrUncalibratedData & 4095); 
 		//the following polynomial is deprecated and has been replaced with a more accurate linear one, see GSR user guide for further details
@@ -559,7 +592,7 @@ public class SensorGSR extends AbstractSensor {
 	 */
 	public static double calibrateGsrDataToResistanceFromAmplifierEq(double gsrUncalibratedData, int range){
 		double rFeedback = SHIMMER3_GSR_REF_RESISTORS_KOHMS[range];
-		double volts = (SensorADC.calibrateMspAdcChannel(gsrUncalibratedData))/1000.0;
+		double volts = SensorADC.calibrateMspAdcChannelToVolts(gsrUncalibratedData);
 		double rSource = rFeedback/((volts/0.5)-1.0);
 		return rSource;
 	}
@@ -593,6 +626,7 @@ public class SensorGSR extends AbstractSensor {
 	// against the ShimmerVerObject does not have to be done per data sample and
 	// instead it should be done once on initialisation. This would need to be
 	// done in SensorGSR and for legacy support in ShimmerObject
+	@Deprecated
 	public static double[] getGSRCoefficientsFromUsingGSRRange(ShimmerVerObject svo, int currentGSRRange) {
 		double p1 = 0.0;
 		double p2 = 0.0;
@@ -641,16 +675,17 @@ public class SensorGSR extends AbstractSensor {
 		return new double[]{p1, p2};
 	}
 
-	public static boolean isSupportedImprovedGsrCalibration(ShimmerVerObject svo) {
-		if(svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 19, 0)
-				|| svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 11, 0)
-				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_LR, FW_ID.GQ_802154, 0, 4, 1)
-				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_NR, FW_ID.GQ_802154, 0, 4, 1)){
-			return true;
-		}
-		return false;
-	}
-	
+
+//	@Deprecated
+//	public static boolean isSupportedImprovedGsrCalibration(ShimmerVerObject svo) {
+//		if(svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 19, 0)
+//				|| svo.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 11, 0)
+//				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_LR, FW_ID.GQ_802154, 0, 4, 1)
+//				|| svo.compareVersions(HW_ID.SHIMMER_GQ_802154_NR, FW_ID.GQ_802154, 0, 4, 1)){
+//			return true;
+//		}
+//		return false;
+//	}
 
 	//--------- Sensor specific methods end --------------
 

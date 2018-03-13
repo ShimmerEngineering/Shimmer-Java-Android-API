@@ -332,6 +332,9 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	public int bitShiftSingleTouch = 			7;
 	public int maskTimeSingleTouch = 			0x01;
 	
+	public int bitShiftLowBattStop = 			0;
+	public int maskLowBattStop =				0x01;
+
 	public int bitShiftTCX0 = 					4;
 	public int maskTimeTCX0 = 					0x01;
 

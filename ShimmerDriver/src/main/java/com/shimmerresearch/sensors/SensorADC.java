@@ -115,21 +115,21 @@ public class SensorADC extends AbstractSensor {
 	
 	//--------- Sensor info start --------------
 	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A7Ref = new SensorDetailsRef(0x02<<(0*8), 0x02<<(0*8), GuiLabelSensors.EXT_EXP_A7,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs,
 			null,
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A7), 
 			false);
 	
 	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A6Ref = new SensorDetailsRef(0x01<<(0*8), 0x01<<(0*8), GuiLabelSensors.EXT_EXP_A6,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs,
 			null,
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A6), 
 			false);
 
 	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A15Ref = new SensorDetailsRef(0x08<<(1*8), 0x08<<(1*8), GuiLabelSensors.EXT_EXP_A15,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs,
 			null,
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A15), 
@@ -261,7 +261,7 @@ public class SensorADC extends AbstractSensor {
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A6,
 						Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A7,
 						Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A15),
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs);
 
     public static final SensorGroupingDetails sensorGroupInternalExpansionADCs = new SensorGroupingDetails(
 			LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC, 
@@ -291,7 +291,10 @@ public class SensorADC extends AbstractSensor {
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0E);
-
+    //TODO add this to all of the ADC channels?
+//    {
+//    	channel_EXT_EXP_ADC_A6.mDefaultUncalUnit = CHANNEL_UNITS.NO_UNITS;
+//    }
 
     public static final ChannelDetails channel_EXT_EXP_ADC_A15 = new ChannelDetails(
     		ObjectClusterSensorName.EXT_EXP_ADC_A15,
@@ -414,7 +417,7 @@ public class SensorADC extends AbstractSensor {
 			int index = sensorDetails.mListOfChannels.size();
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 				double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
-				double calData = calibrateMspAdcChannel(unCalData);
+				double calData = calibrateMspAdcChannelToMillivolts(unCalData);
 				objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-index);
 				index--;
 			}
@@ -423,13 +426,6 @@ public class SensorADC extends AbstractSensor {
 		return objectCluster;
 	}
 	
-	public static double calibrateMspAdcChannel(double unCalData){
-		double offset = 0; double vRefP = 3; double gain = 1; 
-		double calData = calibrateU12AdcValue(unCalData, offset, vRefP, gain);
-		return calData;
-	}
-	
-
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
 		// TODO Auto-generated method stub
@@ -507,14 +503,34 @@ public class SensorADC extends AbstractSensor {
 	
 	//--------- Abstract methods implemented end --------------
 	//--------- Sensor specific methods start --------------
-	public static double calibrateU12AdcValue(double uncalibratedData, double offset, double vRefP, double gain){
-		double calibratedData = (uncalibratedData-offset) * (((vRefP*1000)/gain)/4095);
+	public static double calibrateMspAdcChannelToMillivolts(double unCalData){
+		double offset = 0; double vRefP = 3; double gain = 1; 
+		double calData = calibrateU12AdcValueToMillivolts(unCalData, offset, vRefP, gain);
+		return calData;
+	}
+
+	public static double calibrateMspAdcChannelToVolts(double unCalData){
+		double offset = 0; double vRefP = 3; double gain = 1; 
+		double calData = calibrateU12AdcValueToVolts(unCalData, offset, vRefP, gain);
+		return calData;
+	}
+
+	public static double calibrateU12AdcValueToMillivolts(double uncalibratedData, double offset, double vRefP, double gain){
+//		double calibratedData = (uncalibratedData-offset) * (((vRefP*1000)/gain)/4095);
+//		return calibratedData;
+		return calibrateU12AdcValueToVolts(uncalibratedData, offset, vRefP, gain)*1000;
+	}
+
+	public static double calibrateU12AdcValueToVolts(double uncalibratedData, double offset, double vRefP, double gain){
+		double calibratedData = (uncalibratedData-offset) * ((vRefP/gain)/4095);
 		return calibratedData;
 	}
-	public static double calibrateAdcValue(double uncalibratedData, double offset, double vRefP, double gain, CHANNEL_DATA_TYPE channelDataType){
+
+	public static double calibrateAdcValueToMillivolts(double uncalibratedData, double offset, double vRefP, double gain, CHANNEL_DATA_TYPE channelDataType){
 		double calibratedData = (uncalibratedData-offset) * (((vRefP*1000)/gain)/channelDataType.getMaxVal());
 		return calibratedData;
 	}
+	
 	//--------- Sensor specific methods end --------------
 
 	public static int uncalibrateU12AdcValue(double uncalibratedData, double offset, double vRefP, double gain) {

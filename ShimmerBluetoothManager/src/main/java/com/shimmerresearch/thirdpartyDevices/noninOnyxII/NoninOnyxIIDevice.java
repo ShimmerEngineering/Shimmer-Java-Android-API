@@ -28,7 +28,7 @@ import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
-import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorShimmerClock;
 
 //https://www.numed.co.uk/files/uploads/Product/Nonin%209560%20Bluetooth%20Specification.pdf
 public class NoninOnyxIIDevice extends ShimmerDevice implements SerialPortListener{
@@ -65,7 +65,7 @@ public class NoninOnyxIIDevice extends ShimmerDevice implements SerialPortListen
 		setMacIdFromUart(mUniqueID);
 		setShimmerUserAssignedNameWithMac("Nonin");
 		
-		setShimmerVersionInfoAndCreateSensorMap(SVO);
+		setShimmerVersionObjectAndCreateSensorMap(SVO);
 	}
 	
 	@Override
@@ -232,49 +232,19 @@ public class NoninOnyxIIDevice extends ShimmerDevice implements SerialPortListen
 	 * Shimmer Device Overrides end
 	 * ******************************************/
 
-	//TODO neaten below. Copy/Paste from Shimmer4
 	protected void dataHandler(ObjectCluster ojc) {
-//		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_DATA_PACKET, ojc);
 		mDeviceCallbackAdapter.dataHandler(ojc);
 	}
 
-	//TODO neaten below. Copy/Paste from ShimmerBluetooth
 	@Override
 	public boolean setBluetoothRadioState(BT_STATE state) {
-		boolean changed = super.setBluetoothRadioState(state);
-		mDeviceCallbackAdapter.setBluetoothRadioState(state);
-		
-//		if(mBluetoothRadioState==BT_STATE.CONNECTED){
-//			setIsConnected(true);
-//			setIsInitialised(true);
-//			setIsStreaming(false);
-//		}
-//		else if(mBluetoothRadioState==BT_STATE.STREAMING){
-//			setIsStreaming(true);
-//		}		
-//		else if((mBluetoothRadioState==BT_STATE.DISCONNECTED)
-//				||(mBluetoothRadioState==BT_STATE.CONNECTION_LOST)
-//				||(mBluetoothRadioState==BT_STATE.CONNECTION_FAILED)){
-//			setIsConnected(false);
-//			setIsStreaming(false);
-//			setIsInitialised(false);
-//		}
-//		
-//		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STATE_CHANGE, state, getMacIdFromUart(), getComPort());
-//		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
-		return changed;
+		boolean isChanged = super.setBluetoothRadioState(state);
+		mDeviceCallbackAdapter.setBluetoothRadioState(state, isChanged);
+		return isChanged;
 	}
 	
-	//TODO neaten below. Copy/Paste from Shimmer4
 	public void isReadyForStreaming(){
 		mDeviceCallbackAdapter.isReadyForStreaming();
-//		setIsInitialised(true);
-//		
-//		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_FULLY_INITIALIZED, getMacIdFromUart(), getComPort());
-//		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-//		if (getBluetoothRadioState()==BT_STATE.CONNECTING){
-//			setBluetoothRadioState(BT_STATE.CONNECTED);
-//		}
 	}
 
 	//TODO neaten below. Copy/Paste from Shimmer4
@@ -302,30 +272,33 @@ public class NoninOnyxIIDevice extends ShimmerDevice implements SerialPortListen
 	}
 
 	@Override
-	public void calculatePacketReceptionRateCurrent(int timeDifference) {
-		setPacketReceptionRateCurrent(calculatePacketLossCurrent(timeDifference, getSamplingRateShimmer()));
-		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
-		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
-		resetPacketReceptionCurrentCounters();
+	public void calculatePacketReceptionRateCurrent(int intervalMs) {
+		super.calculatePacketReceptionRateCurrent(intervalMs);
+		mDeviceCallbackAdapter.sendCallbackPacketReceptionRateCurrent();
+		
+//		setPacketReceptionRateCurrent(calculatePacketLossCurrent(intervalMs, getSamplingRateShimmer()));
+//		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, getMacId(), getComPort(), getPacketReceptionRateCurrent());
+//		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
+//		resetPacketReceptionCurrentCounters();
 	}
 
-	//TODO neaten below. Copy/Paste from ShimmerGQ
-	public double calculatePacketLossCurrent(long timeDifference, double samplingRate){
-		mPacketExpectedCountCurrent = (long) ((double)((timeDifference/1000)*samplingRate));
-		return calculatePacketLossCurrent(mPacketExpectedCountCurrent, mPacketReceivedCountCurrent);
-	}
-
-	//TODO neaten below. Copy/Paste from ShimmerGQ
-	public double calculatePacketLossCurrent(){
-		return calculatePacketLossCurrent(mPacketExpectedCountCurrent, mPacketReceivedCountCurrent);
-	}
-
-	//TODO neaten below. Copy/Paste from ShimmerGQ
-	private double calculatePacketLossCurrent(long packetExpectedCount, long packetReceivedCount){
-		setPacketReceptionRateCurrent((double)((packetReceivedCount)/(double)packetExpectedCount)*100);
-		//TODO 2016-09-06 remove below because if it is going to be implemented it should be in the method setPacketReceptionRateCurrent()?
-		setPacketReceptionRateCurrent(UtilShimmer.nudgeDouble(getPacketReceptionRateCurrent(), 0.0, 100.0));
-		return getPacketReceptionRateCurrent();
-	}
+//	//TODO neaten below. Copy/Paste from ShimmerGQ
+//	public double calculatePacketLossCurrent(long timeDifference, double samplingRate){
+//		mPacketExpectedCountCurrent = (long) ((double)((timeDifference/1000)*samplingRate));
+//		return calculatePacketLossCurrent(mPacketExpectedCountCurrent, mPacketReceivedCountCurrent);
+//	}
+//
+//	//TODO neaten below. Copy/Paste from ShimmerGQ
+//	public double calculatePacketLossCurrent(){
+//		return calculatePacketLossCurrent(mPacketExpectedCountCurrent, mPacketReceivedCountCurrent);
+//	}
+//
+//	//TODO neaten below. Copy/Paste from ShimmerGQ
+//	private double calculatePacketLossCurrent(long packetExpectedCount, long packetReceivedCount){
+//		setPacketReceptionRateCurrent((double)((packetReceivedCount)/(double)packetExpectedCount)*100);
+//		//TODO 2016-09-06 remove below because if it is going to be implemented it should be in the method setPacketReceptionRateCurrent()?
+//		setPacketReceptionRateCurrent(UtilShimmer.nudgeDouble(getPacketReceptionRateCurrent(), 0.0, 100.0));
+//		return getPacketReceptionRateCurrent();
+//	}
 
 }
