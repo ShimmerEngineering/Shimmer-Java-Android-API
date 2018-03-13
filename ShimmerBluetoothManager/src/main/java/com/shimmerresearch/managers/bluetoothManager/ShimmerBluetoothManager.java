@@ -847,7 +847,7 @@ public abstract class ShimmerBluetoothManager{
 			
 			if(shimmerDevice!=null){
 				if(shimmerVerObject!=null){
-					shimmerDevice.setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
+					shimmerDevice.setShimmerVersionObjectAndCreateSensorMap(shimmerVerObject);
 				}
 				if(expansionBoardDetails!=null){
 					shimmerDevice.setExpansionBoardDetailsAndCreateSensorMap(expansionBoardDetails);
@@ -915,7 +915,7 @@ public abstract class ShimmerBluetoothManager{
 			if(shimmerDeviceNew!=null){
 				shimmerDeviceNew.setComPort(comPort);
 				shimmerDeviceNew.setMacIdFromUart(bluetoothAddress);
-				shimmerDeviceNew.setShimmerVersionInfoAndCreateSensorMap(sVO);
+				shimmerDeviceNew.setShimmerVersionObjectAndCreateSensorMap(sVO);
 
 				//Temporarily added, not needed at the moment so commenting out
 //				ExpansionBoardDetails expBrdDetails = shimmerRadioInitializer.readExpansionBoardID();

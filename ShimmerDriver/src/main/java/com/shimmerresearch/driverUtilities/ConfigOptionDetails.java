@@ -13,7 +13,8 @@ public class ConfigOptionDetails implements Serializable {
 		COMBOBOX,
 		CHECKBOX,
 		TEXTFIELD,
-		JPANEL
+		JPANEL,
+		INFO
 	};
 	
 	public String mGuiHandle = "";
@@ -49,6 +50,7 @@ public class ConfigOptionDetails implements Serializable {
 		
 		if(mGuiComponentType==GUI_COMPONENT_TYPE.CHECKBOX){
 			mGuiValues = new String[]{"Off", "On"};
+			mConfigValues = new Integer[] {0, 1};
 		}
 	}
 	

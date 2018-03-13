@@ -1273,7 +1273,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				int firmwareVersionMinor = ((int)((bufferInquiry[4]&0xFF)));
 				int firmwareVersionInternal=(int)(bufferInquiry[5]&0xFF);
 				ShimmerVerObject shimmerVerObject = new ShimmerVerObject(getHardwareVersion(), firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
-				setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
+				setShimmerVersionObjectAndCreateSensorMap(shimmerVerObject);
 	
 				printLogDataForDebugging("FW Version Response Received. FW Code: " + getFirmwareVersionCode());
 				printLogDataForDebugging("FW Version Response Received: " + getFirmwareVersionParsed());
@@ -2729,7 +2729,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				
 
 				if(mCurrentCommand==GET_FW_VERSION_COMMAND){
-					setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0));
+					setShimmerVersionObjectAndCreateSensorMap(new ShimmerVerObject(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0));
 					
 //					/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
 //	      	        Bundle bundle = new Bundle();

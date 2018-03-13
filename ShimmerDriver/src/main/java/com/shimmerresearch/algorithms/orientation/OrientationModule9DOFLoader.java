@@ -12,9 +12,10 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 public class OrientationModule9DOFLoader implements AlgorithmLoaderInterface {
 
 	@Override
-	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerVerObject svo, ExpansionBoardDetails eBD) {
+	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerDevice shimmerDevice) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
 		
+		ShimmerVerObject svo = shimmerDevice.getShimmerVerObject();
 		if(svo.isShimmerGen3() || svo.isShimmerGen4()){
 			mapOfSupportedAlgorithms.putAll(OrientationModule9DOF.mAlgorithmMapRef);
 		}
@@ -23,8 +24,8 @@ public class OrientationModule9DOFLoader implements AlgorithmLoaderInterface {
 	}
 
 	@Override
-	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice) {
-		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = getMapOfSupportedAlgorithms(shimmerDevice.getShimmerVerObject(), shimmerDevice.getExpansionBoardDetails());
+	public void initialiseSupportedAlgorithms(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType) {
+		LinkedHashMap<String, AlgorithmDetails> mapOfSupported9DOFCh = getMapOfSupportedAlgorithms(shimmerDevice);
 		for (AlgorithmDetails algorithmDetails:mapOfSupported9DOFCh.values()) {
 			OrientationModule9DOF orientationModule9DOF = new OrientationModule9DOF(algorithmDetails, shimmerDevice.getSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH));
 			

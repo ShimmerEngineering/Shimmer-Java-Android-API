@@ -55,7 +55,7 @@ import com.shimmerresearch.sensors.mpu9x50.SensorMPU9250;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorSTC3100;
-import com.shimmerresearch.sensors.ShimmerClock;
+import com.shimmerresearch.sensors.SensorShimmerClock;
 
 public class Shimmer4 extends ShimmerDevice {
 	
@@ -114,7 +114,7 @@ public class Shimmer4 extends ShimmerDevice {
 //			putSensorClass(SENSORS.SYSTEM_TIMESTAMP, new SensorSystemTimeStamp(mShimmerVerObject));
 //		}
 		
-		addSensorClass(SENSORS.CLOCK, new ShimmerClock(this));
+		addSensorClass(SENSORS.CLOCK, new SensorShimmerClock(this));
 		
 		addSensorClass(SENSORS.KIONIXKXRB52042, new SensorKionixKXRB52042(mShimmerVerObject));
 		addSensorClass(SENSORS.LSM303, new SensorLSM303DLHC(this));
@@ -526,7 +526,7 @@ public class Shimmer4 extends ShimmerDevice {
 							ShimmerVerObject shimmerVerObject = (ShimmerVerObject)parsedResponse;
 							shimmerVerObject.setHardwareVersion(getHardwareVersion());
 							//TODO check with ShimmerBluetooth
-							setShimmerVersionInfoAndCreateSensorMap(shimmerVerObject);
+							setShimmerVersionObjectAndCreateSensorMap(shimmerVerObject);
 						}
 						else {
 							initialiseDevice();
@@ -555,7 +555,7 @@ public class Shimmer4 extends ShimmerDevice {
 					else if(responseCommand==InstructionsResponse.RWC_RESPONSE_VALUE){ 
 						setLastReadRealTimeClockValue((long)parsedResponse);
 					}
-					else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE){
+					else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE){
 						SensorSTC3100Details sensorSTC3100Details = (SensorSTC3100Details)parsedResponse;
 						
 						consolePrintLn(sensorSTC3100Details.getDebugString());
@@ -1184,14 +1184,6 @@ public class Shimmer4 extends ShimmerDevice {
 		sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_CURRENT, callBackObject);
 	}
 	
-	private void resetShimmerClock() {
-		AbstractSensor abstractSensor = getSensorClass(AbstractSensor.SENSORS.CLOCK);
-		if(abstractSensor!=null && abstractSensor instanceof ShimmerClock){
-			ShimmerClock shimmerClock = (ShimmerClock)abstractSensor;
-			shimmerClock.resetShimmerClock();
-		}
-	}
-
 	/**
 	 * @return the mButtonStart
 	 */

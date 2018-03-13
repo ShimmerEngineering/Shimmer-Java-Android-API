@@ -24,7 +24,6 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
-import com.shimmerresearch.sensors.SensorSTC3100;
 import com.shimmerresearch.sensors.SensorSTC3100Details;
 
 public class LiteProtocol extends AbstractCommsProtocol{
@@ -36,11 +35,13 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 		public class InstructionsResponse{
 //			 public static final int RSP_I2C_BATT_STATUS_COMMAND_VALUE = 0x9D;
-			public static final int BMP280_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE = 0x9F;
+//			public static final int BMP280_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE = 0x9F;
+//			public static final int UNIQUE_SERIAL_RESPONSE_VALUE = 0x3D;
 		}
 		public class InstructionsGet{
-//			 public static final int GET_I2C_BATT_STATUS_COMMAND_VALUE = 0x9E;
-			 public static final int GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 0xA0;
+//			public static final int GET_I2C_BATT_STATUS_COMMAND_VALUE = 0x9E;
+//			public static final int GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 0xA0;
+//			public static final int GET_UNIQUE_SERIAL_COMMAND_VALUE = 0x3E;
 		}
 	}
 
@@ -126,7 +127,6 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	private static final int MAX_CALIB_DUMP_MAX = 4096;
 
 
-	
 	/**
 	 * Constructor
 	 * @param connectionHandle 
@@ -716,6 +716,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //		eventNewResponse(response);
 //	}
 	
+	//TODO implement the remaining (i.e., commented out code sections) from ShimmerBluetooth
 	/**
 	 * @param responseCommand
 	 */
@@ -776,8 +777,8 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				inquiryDone();
 				eventResponseReceived(responseCommand, rxBuf);
 			}
-//			else if(responseCommand==InstructionsResponse.SAMPLING_RATE_RESPONSE_VALUE){
-//				if(!mIsStreaming) {
+			else if(responseCommand==InstructionsResponse.SAMPLING_RATE_RESPONSE_VALUE){
+				if(!mIsStreaming) {
 //					if(getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){    
 //						byte[] bufferSR = readBytes(1);
 //						if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND) { // this is a double check, not necessary 
@@ -787,12 +788,21 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //					} 
 //					else if(getHardwareVersion()==HW_ID.SHIMMER_3){
 //						byte[] bufferSR = readBytes(2); //read the sampling rate
-//						setSamplingRateShimmer(32768/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
+//			//TODO get clock freq from ShimmerDevice
+//						setSamplingRateShimmer(32768.0/(double)((int)(bufferSR[0] & 0xFF) + ((int)(bufferSR[1] & 0xFF) << 8)));
 //					}
-//				}
-//
-//				printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(getSamplingRateShimmer()));
-//			}
+//					printLogDataForDebugging("Sampling Rate Response Received: " + Double.toString(getSamplingRateShimmer()));
+					
+					byte[] bufferSR = null;
+					if(mShimmerVerObject.isShimmerGen2()) {
+						bufferSR = readBytes(1);
+					} else {
+						bufferSR = readBytes(2);
+					}
+					eventResponseReceived(responseCommand, bufferSR);
+				}
+
+			}
 			else if(responseCommand==InstructionsResponse.FW_VERSION_RESPONSE_VALUE){
 				delayForBtResponse(200); // Wait to ensure the packet has been fully received
 				rxBuf = readBytes(6);
@@ -845,16 +855,20 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //			else if(responseCommand==InstructionsResponse.LSM303DLHC_ACCEL_CALIBRATION_RESPONSE_VALUE){
 //				processLsm303dlhcAccelCalReadBytes();
 //			}
-//			else if(responseCommand==InstructionsResponse.CONFIG_BYTE0_RESPONSE_VALUE){
-//				if(getHardwareVersion()==HW_ID.SHIMMER_2R || getHardwareVersion()==HW_ID.SHIMMER_2){    
-//					byte[] bufferConfigByte0 = readBytes(1);
-//					mConfigByte0 = bufferConfigByte0[0] & 0xFF;
-//				} 
-//				else {
-//					byte[] bufferConfigByte0 = readBytes(4);
-//					mConfigByte0 = ((long)(bufferConfigByte0[0] & 0xFF) +((long)(bufferConfigByte0[1] & 0xFF) << 8)+((long)(bufferConfigByte0[2] & 0xFF) << 16) +((long)(bufferConfigByte0[3] & 0xFF) << 24));
-//				}
-//			}
+			else if(responseCommand==InstructionsResponse.CONFIG_BYTE0_RESPONSE_VALUE){
+				byte[] bufferConfigByte0 = null;
+//				long configByte0 = 0;
+				if(mShimmerVerObject.isShimmerGen2()){    
+					bufferConfigByte0 = readBytes(1);
+//					configByte0 = bufferConfigByte0[0] & 0xFF;
+				} 
+				else {
+					bufferConfigByte0 = readBytes(4);
+//					configByte0 = ((long)(bufferConfigByte0[0] & 0xFF) +((long)(bufferConfigByte0[1] & 0xFF) << 8)+((long)(bufferConfigByte0[2] & 0xFF) << 16) +((long)(bufferConfigByte0[3] & 0xFF) << 24));
+				}
+//				eventResponseReceived(responseCommand, configByte0);
+				eventResponseReceived(responseCommand, bufferConfigByte0);
+			}
 //			else if(responseCommand==InstructionsResponse.DERIVED_CHANNEL_BYTES_RESPONSE_VALUE){
 //				byte[] byteArray = readBytes(3);
 //				mDerivedSensors=(long)(((byteArray[2]&0xFF)<<16) + ((byteArray[1]&0xFF)<<8)+(byteArray[0]&0xFF));
@@ -966,12 +980,13 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			else if(responseCommand==InstructionsResponse.BLINK_LED_RESPONSE_VALUE){
 				byte[] byteled = readBytes(1);
 //				mCurrentLEDStatus = byteled[0]&0xFF;
-				eventResponseReceived(responseCommand, byteled[0]&0xFF);
+				eventResponseReceived(responseCommand, (int)((byte)(byteled[0]&0xFF)));
 			}
-//			else if(responseCommand==InstructionsResponse.BUFFER_SIZE_RESPONSE_VALUE){
-//				byte[] byteled = readBytes(1);
-//				mBufferSize = byteled[0] & 0xFF;
-//			}
+			else if(responseCommand==InstructionsResponse.BUFFER_SIZE_RESPONSE_VALUE){
+				byte[] byteled = readBytes(1);
+				int bufferSize = byteled[0] & 0xFF;
+				eventResponseReceived(responseCommand, bufferSize);
+			}
 //			else if(responseCommand==InstructionsResponse.MAG_GAIN_RESPONSE_VALUE){
 //				byte[] bufferAns = readBytes(1); 
 //				mMagRange=bufferAns[0];
@@ -1109,6 +1124,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //				byte[] responseData = readBytes(1);
 //				setInternalExpPower((int)(responseData[0]&0xFF));
 //			}
+			else if(responseCommand==InstructionsResponse.UNIQUE_SERIAL_RESPONSE_VALUE){
+				rxBuf = readBytes(8);
+				eventResponseReceived(responseCommand, rxBuf);
+			}
 			else if(responseCommand==InstructionsResponse.INFOMEM_RESPONSE_VALUE){
 				// Get data length to read
 				rxBuf = readBytes(1);
@@ -1173,7 +1192,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					}
 				}
 			}
-			else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE) {
+			else if(responseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
 				byte[] responseData = readBytes(10); 
 				System.err.println("STC3100 response = " + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseData));
 			}
@@ -1576,7 +1595,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 					eventNewResponse(responseData);
 				}
 			}
-			else if(inStreamResponseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE_VALUE) {
+			else if(inStreamResponseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
 				byte[] responseData = readBytes(10); 
 				SensorSTC3100Details sensorSTC3100Details = new SensorSTC3100Details(responseData); 
 				eventResponseReceived(inStreamResponseCommand, sensorSTC3100Details);
@@ -1611,6 +1630,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 	
+	public void readSamplingRate() {
+		writeInstruction(InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE);
+	}
+
 	/**
 	 * The reason for this is because sometimes the 1st response is not received by the phone
 	 */
@@ -1619,6 +1642,36 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		writeInstruction(InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE);
 	}
 
+	/**
+	 * @param rate Defines the sampling rate to be set (e.g.51.2 sets the sampling rate to 51.2Hz). User should refer to the document Sampling Rate Table to see all possible values.
+	 */
+//	public void writeShimmerAndSensorsSamplingRate(int samplingByteValue) {
+	public void writeShimmerAndSensorsSamplingRate(byte[] samplingRateBytes) {
+//		if(mIsInitialised) {
+//			if(mShimmerVerObject.isShimmerGen2()){
+//				writeInstruction(new byte[]{InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, (byte)Math.rint(samplingByteValue), 0x00});
+//			} 
+//			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
+//				writeInstruction(new byte[]{InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, (byte)(samplingByteValue&0xFF), (byte)((samplingByteValue>>8)&0xFF)});
+//			}
+			
+			writePacket(InstructionsSet.SET_SAMPLING_RATE_COMMAND_VALUE, samplingRateBytes);
+//		}
+		readSamplingRate();
+	}
+	
+	private byte[] buildCmdArray(int cmd, byte[] payload) {
+		byte[] packet = new byte[payload.length+1];
+		packet[0] = (byte) cmd;
+		System.arraycopy(payload, 0, packet, 1, payload.length);
+		return packet;
+	}
+	
+	private void writePacket(int cmd, byte[] payload) {
+		writeInstruction(buildCmdArray(cmd, payload));
+	}
+	
+	
 	@Override
 	public void toggleLed() {
 		byte[] instructionLED = {InstructionsSet.TOGGLE_LED_COMMAND_VALUE};
@@ -1656,6 +1709,74 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 
+	public void readBaudRate(){
+		if(getFirmwareVersionCode()>=5){ 
+			writeInstruction(InstructionsGet.GET_BAUD_RATE_COMMAND_VALUE);
+		}
+	}
+
+	/**
+	 * writeBaudRate(value) sets the baud rate on the Shimmer. 
+	 * @param value numeric value defining the desired Baud rate. Valid rate settings are 0 (115200 default),
+	 *  1 (1200), 2 (2400), 3 (4800), 4 (9600) 5 (19200),
+	 *  6 (38400), 7 (57600), 8 (230400), 9 (460800) and 10 (921600)
+	 */
+	public void writeBaudRate(int value) {
+		if(getFirmwareVersionCode()>=5){ 
+			if(value>=0 && value<=10){
+				writeInstruction(new byte[]{InstructionsSet.SET_BAUD_RATE_COMMAND_VALUE, (byte)value});
+				delayForBtResponse(200);
+				reconnect();
+			}
+		}
+	}
+
+	//TODO butchered from ShimmerBluetooth
+	private void reconnect() {
+//        if(isConnected() && !mIsStreaming){
+//        	String msgReconnect = "Reconnecting the Shimmer...";
+//			sendStatusMSGtoUI(msgReconnect);
+//            stop();
+//            threadSleep(300);
+//            connect(mMyBluetoothAddress,"default");
+//            setUniqueID(this.mMacIdFromUart); 
+//        }
+
+		try {
+			mCommsInterface.disconnect();
+	        threadSleep(300);
+			mCommsInterface.connect();
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void readConfigByte0() {
+		writeInstruction(InstructionsGet.GET_CONFIG_BYTE0_COMMAND_VALUE);
+	}
+	
+	/**
+	 * writeConfigByte0(configByte0) sets the config byte0 value on the Shimmer to the value of the input configByte0. 
+	 * @param configByte0 is an unsigned 8 bit value defining the desired config byte 0 value.
+	 */
+	public void writeConfigByte0(byte[] configByte0) {
+		writePacket(InstructionsSet.SET_CONFIG_BYTE0_COMMAND_VALUE, configByte0);
+		readConfigByte0();
+	}
+	
+	public void readBufferSize() {
+		writeInstruction(InstructionsGet.GET_BUFFER_SIZE_COMMAND_VALUE);
+	}
+
+	/**
+	 * writeAccelRange(range) sets the Accelerometer range on the Shimmer to the value of the input range. When setting/changing the accel range, please ensure you have the correct calibration parameters. Note that the Shimmer device can only carry one set of accel calibration parameters at a single time.
+	 * @param range is a numeric value defining the desired accelerometer range. Valid range setting values for the Shimmer 2 are 0 (+/- 1.5g), 1 (+/- 2g), 2 (+/- 4g) and 3 (+/- 6g). Valid range setting values for the Shimmer 2r are 0 (+/- 1.5g) and 3 (+/- 6g).
+	 */
+	public void writeBufferSize(int size) {
+		writeInstruction(new byte[]{InstructionsSet.SET_BUFFER_SIZE_COMMAND_VALUE, (byte)size});
+	}
+	
 	@Override
 	public void readCalibrationDump(){ //This starts off the read process, request the first block = 128 bytes
 		if(this.getFirmwareVersionCode()>=7){
@@ -1917,7 +2038,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			byte[] buf = new byte[2];
 			buf[0] = (byte) (periodInSec&0xFF);
 			buf[1] = (byte) ((periodInSec>>8)&0xFF);
-			writeInstruction(new byte[]{(byte) (InstructionsSet.SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE_VALUE&0xFF), buf[0], buf[1]});
+			writeInstruction(new byte[]{(byte) (InstructionsSet.SET_I2C_BATT_STATUS_FREQ_COMMAND_VALUE&0xFF), buf[0], buf[1]});
 		}
 	}
 
@@ -1926,7 +2047,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	@Override
 	public void readBattStatusPeriod() {
 		if(getShimmerVersion()==HW_ID.SHIMMER_4_SDK){
-			writeInstruction(InstructionsGet.GET_I2C_BATT_STATUS_COMMAND_VALUE_VALUE);
+			writeInstruction(InstructionsGet.GET_I2C_BATT_STATUS_COMMAND_VALUE);
 		}
 	}
 
@@ -2146,10 +2267,13 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			if(mTimerCheckAlive==null){ 
 				mTimerCheckAlive = new Timer("Shimmer_" + getConnectionHandle() + "_TimerCheckAlive");
 			}
+			int hwId = getHardwareVersion();
+			int fwId = getFirmwareIdentifier();
 			//dont really need this for log and stream since we already have the get status timer
-			if((getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
-					|| (getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.BTSTREAM)
-					|| (getHardwareVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){
+			if((hwId==HW_ID.SHIMMER_3 && fwId==FW_ID.LOGANDSTREAM)
+					|| (hwId==HW_ID.SHIMMER_3 && fwId==FW_ID.BTSTREAM)
+					|| (hwId==HW_ID.SHIMMER_4_SDK && fwId==FW_ID.SHIMMER4_SDK_STOCK)
+					|| (hwId==HW_ID.SWEATCH)){
 				mTimerCheckAlive.schedule(new checkIfAliveTask(), TIMER_CHECK_ALIVE_PERIOD, TIMER_CHECK_ALIVE_PERIOD);
 			}
 		}
@@ -2177,15 +2301,20 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				mIamAlive=false;
 			}
 			else{
-				if((getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM && isStreaming())
-						|| (getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.BTSTREAM)
-						|| (getHardwareVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK && isStreaming())){
+				int hwId = getHardwareVersion();
+				int fwId = getFirmwareIdentifier();
+				
+				if(isStreaming()) {
+//				if((hwId==HW_ID.SHIMMER_3 && fwId==FW_ID.LOGANDSTREAM && isStreaming())
+//						|| (hwId==HW_ID.SHIMMER_3 && fwId==FW_ID.BTSTREAM)
+//						|| (hwId==HW_ID.SHIMMER_4_SDK && fwId==FW_ID.SHIMMER4_SDK_STOCK && isStreaming())
+//						|| (hwId==HW_ID.SWEATCH && isStreaming())){
 					mCountDeadConnection++;
 				}
 				
 				if(getFirmwareVersionCode()>=6 && !isStreaming()){
 					if(getListofInstructions().size()==0 
-							&&!getListofInstructions().contains(InstructionsSet.TEST_CONNECTION_COMMAND_VALUE)){
+							&& !getListofInstructions().contains(InstructionsSet.TEST_CONNECTION_COMMAND_VALUE)){
 						printLogDataForDebugging("Check Alive Task");
 						if((getShimmerVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM)
 								||(getShimmerVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){
@@ -2404,14 +2533,14 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 	
 	public void writeLEDCommand(int command) {
-////		if(mShimmerVersion!=HW_ID.SHIMMER_3){
-//			if(isThisVerCompatibleWith(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0)){
-//	//			if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
-//			}
-//			else {
-//				writeInstruction(InstructionsSet.SET_BLINK_LED_VALUE, (byte)command});
-//			}
-////		}
+//		if(mShimmerVersion!=HW_ID.SHIMMER_3){
+			if(mShimmerVerObject.compareVersions(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0)){
+	//			if(mFirmwareVersionParsed.equals(boilerPlateStringDescription)){
+			}
+			else {
+				writeInstruction(new byte[]{InstructionsSet.SET_BLINK_LED_VALUE, (byte)command});
+			}
+//		}
 	}
 
 
@@ -2479,6 +2608,10 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		inquiry();
 	}
 	
+	public void readUniqueSerial() {
+		writeInstruction(new byte[]{InstructionsGet.GET_UNIQUE_SERIAL_COMMAND_VALUE});
+	}
+
 	
 	//TODO TEMP HERE
 	private int getFirmwareVersionCode() {
@@ -2601,7 +2734,6 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			mProtocolListener.eventSetHaveAttemptedToRead(mHaveAttemptedToReadConfig);
 		}
 	}
-
 
 	//***********************************
 	// Copied from ShimmerDevice end
