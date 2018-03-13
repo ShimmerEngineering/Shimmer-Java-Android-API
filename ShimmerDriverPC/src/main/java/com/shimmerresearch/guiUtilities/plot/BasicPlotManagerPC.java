@@ -398,8 +398,13 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		mCurrentXValue=0;
 		super.removeAllSignals();
 		if (mChart!=null){
-			mChart.removeAllTraces();
-			mChart.removeAll();
+			try {
+				mChart.removeAllTraces();
+				mChart.removeAll();
+			}
+			catch (Exception e){
+				e.printStackTrace();
+			}
 		}
 		mListofTraces.clear();
 		mMapofXAxisGeneratedValue.clear();
