@@ -442,7 +442,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 							stopTimerCheckForAckOrResp(); //cancel the ack timer
 							mWaitForAck=false;
 							
-							processAckFromSetCommand(((int)mCurrentCommand)&0xFF);
+							processAckFromSetCommandAndInstructions(((int)mCurrentCommand)&0xFF);
 							
 							mTransactionCompleted = true;
 							setInstructionStackLock(false);
@@ -591,7 +591,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //								eventAckReceived(insBytes);
 							}
 							
-							processAckFromSetCommand(((int)mCurrentCommand)&0xFF);
+							processAckFromSetCommandAndInstructions(((int)mCurrentCommand)&0xFF);
 							mTransactionCompleted = true;
 							setInstructionStackLock(false);
 						}
@@ -640,7 +640,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				mIamAlive = true;
 				
 				//Check to see whether it is a response byte
-				if(isKnownResponse(byteBuffer[0])){
+				if(isKnownResponseByte(byteBuffer[0])){
 					byte responseCommand = byteBuffer[0];
 					
 					if(mUseShimmerBluetoothApproach){
@@ -1245,23 +1245,25 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 
-	private boolean isKnownResponse(byte response) {
+	protected boolean isKnownResponseByte(byte response) {
 		return ((InstructionsResponse.valueOf(response&0xff)==null)? false:true);
 	}
 
 	private boolean isKnownGetCommand(int getCmd) {
-		return ((InstructionsGet.valueOf(getCmd&0xff)==null)? false:true);
+//		return ((InstructionsGet.valueOf(getCmd&0xff)==null)? false:true);
+		return isKnownGetCommandByte((byte) getCmd);
 	}
 
-	private boolean isKnownGetCommand(byte getCmd) {
+	protected boolean isKnownGetCommandByte(byte getCmd) {
 		return ((InstructionsGet.valueOf(getCmd&0xff)==null)? false:true);
 	}
 
 	private boolean isKnownSetCommand(int setCmd) {
-		return ((InstructionsSet.valueOf(setCmd)==null)? false:true);
+//		return ((InstructionsSet.valueOf(setCmd)==null)? false:true);
+		return isKnownSetCommandByte((byte) setCmd);
 	}
 
-	private boolean isKnownSetCommand(byte setCmd) {
+	protected boolean isKnownSetCommandByte(byte setCmd) {
 		return ((InstructionsSet.valueOf(setCmd&0xff)==null)? false:true);
 	}
 
@@ -1318,7 +1320,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 
 	@Deprecated
-	private void eventAckInstruction(byte[] bs) {
+	protected void eventAckInstruction(byte[] bs) {
 		mProtocolListener.eventAckInstruction(bs);
 	}
 
@@ -1347,7 +1349,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 		}
 	}
 
-	private String btCommandToString(int cmd) {
+	protected String btCommandToString(int cmd) {
 		InstructionsResponse instructionResponse = InstructionsResponse.valueOf(cmd&0xff); 
 		if(instructionResponse!=null){
 			return instructionResponse.name();
@@ -1384,7 +1386,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}
 	
 
-	private void processAckFromSetCommand(int currentCommand) {
+	private void processAckFromSetCommandAndInstructions(int currentCommand) {
 		// check for null and size were put in because if Shimmer was abruptly
 		// disconnected there is sometimes indexoutofboundsexceptions
 		if(getListofInstructions().size() > 0){
@@ -1392,81 +1394,83 @@ public class LiteProtocol extends AbstractCommsProtocol{
 			if(currentInstruction!=null){
 //			if(getListofInstructions().get(0)!=null){
 				
-				if(currentCommand==InstructionsSet.START_STREAMING_COMMAND_VALUE 
-						|| currentCommand==InstructionsSet.START_SDBT_COMMAND_VALUE) {
-					mByteArrayOutputStream.reset();
-					setIsStreaming(true);
-					if(currentCommand==InstructionsSet.START_SDBT_COMMAND_VALUE){
-						setIsSDLogging(true);
-						eventLogAndStreamStatusChanged(mCurrentCommand);
-					}
-					byteStack.clear();
-					isNowStreaming();
-				}
-				else if((currentCommand==InstructionsSet.STOP_STREAMING_COMMAND_VALUE)
-						||(currentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE)){
-					setIsStreaming(false);
-					if(currentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE) {
-						setIsSDLogging(false);
-						eventLogAndStreamStatusChanged(mCurrentCommand);
-					}
-					mByteArrayOutputStream = new ByteArrayOutputStream();
-					byteStack.clear();
-
-					//TODO try statement is not used in ShimmerBluetooth
-					try {
-						clearSerialBuffer();
-					} catch (ShimmerException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					hasStopStreaming();					
-					getListofInstructions().removeAll(Collections.singleton(null));
-				}
-				else if(currentCommand==InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE) {
-					setIsSDLogging(true);
-					eventLogAndStreamStatusChanged(mCurrentCommand);
-				}
-				else if(currentCommand==InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE) {
-					setIsSDLogging(false);
-					eventLogAndStreamStatusChanged(mCurrentCommand);
-				}
-				else if(currentCommand==InstructionsSet.SET_INFOMEM_COMMAND_VALUE 
-						|| currentCommand==InstructionsSet.SET_CALIB_DUMP_COMMAND_VALUE){
-					//SET InfoMem is automatically followed by a GET so no need to handle here
-					
-					//Sleep for Xsecs to allow Shimmer to process new configuration
-					mNumOfMemSetCmds -= 1;
-					if(!mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
-						if(mNumOfMemSetCmds==0){
-							threadSleep(DELAY_BETWEEN_CONFIG_BYTE_WRITES);
-						}
-						else {
-							threadSleep(DELAY_AFTER_CONFIG_BYTE_WRITE);
-						}
-					}
-				}
-				else if(currentCommand==InstructionsSet.UPD_CONFIG_MEMORY_COMMAND_VALUE){
-					if(mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
-						threadSleep(DELAY_AFTER_CONFIG_BYTE_WRITE);
-					}
-				}
-				else{
-//					printLogDataForDebugging("Unhandled ACK for current command:\t" + btCommandToString(currentCommand));
-				}
+				processAckFromSetCommand(currentCommand);
 				
 				if(getListofInstructions().size() > 0){
 					getListofInstructions().remove(0);
 				}
 
 				eventAckInstruction(currentInstruction);
-
 			}
 		}
 	}
-		
 	
+	protected void processAckFromSetCommand(int currentCommand) {
+		if(currentCommand==InstructionsSet.START_STREAMING_COMMAND_VALUE 
+				|| currentCommand==InstructionsSet.START_SDBT_COMMAND_VALUE) {
+			mByteArrayOutputStream.reset();
+			setIsStreaming(true);
+			if(currentCommand==InstructionsSet.START_SDBT_COMMAND_VALUE){
+				setIsSDLogging(true);
+				eventLogAndStreamStatusChanged(mCurrentCommand);
+			}
+			byteStack.clear();
+			isNowStreaming();
+		}
+		else if((currentCommand==InstructionsSet.STOP_STREAMING_COMMAND_VALUE)
+				||(currentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE)){
+			setIsStreaming(false);
+			if(currentCommand==InstructionsSet.STOP_SDBT_COMMAND_VALUE) {
+				setIsSDLogging(false);
+				eventLogAndStreamStatusChanged(mCurrentCommand);
+			}
+			mByteArrayOutputStream = new ByteArrayOutputStream();
+			byteStack.clear();
+
+			//TODO try statement is not used in ShimmerBluetooth
+			try {
+				clearSerialBuffer();
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			hasStopStreaming();					
+			getListofInstructions().removeAll(Collections.singleton(null));
+		}
+		else if(currentCommand==InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE) {
+			setIsSDLogging(true);
+			eventLogAndStreamStatusChanged(mCurrentCommand);
+		}
+		else if(currentCommand==InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE) {
+			setIsSDLogging(false);
+			eventLogAndStreamStatusChanged(mCurrentCommand);
+		}
+		else if(currentCommand==InstructionsSet.SET_INFOMEM_COMMAND_VALUE 
+				|| currentCommand==InstructionsSet.SET_CALIB_DUMP_COMMAND_VALUE){
+			//SET InfoMem is automatically followed by a GET so no need to handle here
+			
+			//Sleep for Xsecs to allow Shimmer to process new configuration
+			mNumOfMemSetCmds -= 1;
+			if(!mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
+				if(mNumOfMemSetCmds==0){
+					threadSleep(DELAY_BETWEEN_CONFIG_BYTE_WRITES);
+				}
+				else {
+					threadSleep(DELAY_AFTER_CONFIG_BYTE_WRITE);
+				}
+			}
+		}
+		else if(currentCommand==InstructionsSet.UPD_CONFIG_MEMORY_COMMAND_VALUE){
+			if(mShimmerVerObject.isBtMemoryUpdateCommandSupported()){
+				threadSleep(DELAY_AFTER_CONFIG_BYTE_WRITE);
+			}
+		}
+		else{
+//			printLogDataForDebugging("Unhandled ACK for current command:\t" + btCommandToString(currentCommand));
+		}
+	}
+
 	public void readRealTimeClock(){
 		if((getHardwareVersion()==HW_ID.SHIMMER_3 && getFirmwareIdentifier()==FW_ID.LOGANDSTREAM) 
 				|| (getHardwareVersion()==HW_ID.SHIMMER_4_SDK && getFirmwareIdentifier()==FW_ID.SHIMMER4_SDK_STOCK)){
@@ -1540,72 +1544,74 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	private void processInstreamResponse(){
 		try {
 			byte[] inStreamResponseCommandArray = readBytes(1);
-			int inStreamResponseCommand = ((int)inStreamResponseCommandArray[0])&0xFF;
-			printLogDataForDebugging("In-stream received = " + btCommandToString(inStreamResponseCommand));
-
-			if(inStreamResponseCommand==InstructionsResponse.DIR_RESPONSE_VALUE){ 
-				byte[] responseData = readBytes(1);
-				int directoryNameLength = responseData[0];
-				byte[] bufferDirectoryName = new byte[directoryNameLength];
-				bufferDirectoryName = readBytes(directoryNameLength);
-				String tempDirectory = new String(bufferDirectoryName);
-				mDirectoryName = tempDirectory;
-				printLogDataForDebugging("Directory Name = " + mDirectoryName);
-				
-				if(!mUseShimmerBluetoothApproach){
-					bufferDirectoryName = ArrayUtils.addAll(responseData, bufferDirectoryName);
-					eventNewResponse(bufferDirectoryName);
-				}
-				else{
-					eventResponseReceived(inStreamResponseCommand, tempDirectory);
-				}
-			}
-			else if(inStreamResponseCommand==InstructionsResponse.STATUS_RESPONSE_VALUE){
-				if(mUseShimmerBluetoothApproach){
-					byte[] responseData = readBytes(1);
-					parseStatusByte(responseData[0]);
-//					eventResponseReceived(inStreamResponseCommand, responseData[0]);
-				}
-				
-				if(!isSensing()){
-					if(mUseShimmerBluetoothApproach){
-						if(!isInitialised()){
-							writeRealTimeClock();
-						}
-					}
-					else{
-						writeRealTimeClock();
-					}
-				}
-				eventLogAndStreamStatusChanged(mCurrentCommand);
-			} 
-			else if(inStreamResponseCommand==InstructionsResponse.VBATT_RESPONSE_VALUE) {
-				byte[] responseData = readBytes(3); 
-				if(mUseShimmerBluetoothApproach){
-					ShimmerBattStatusDetails battStatusDetails = new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]);
-//					setBattStatusDetails(battStatusDetails);
-					eventResponseReceived(inStreamResponseCommand, battStatusDetails);
-					printLogDataForDebugging("Battery Status:"
-							+ "\tVoltage=" + battStatusDetails.getBattVoltageParsed()
-							+ "\tCharging status=" + battStatusDetails.getChargingStatusParsed()
-							+ "\tBatt %=" + battStatusDetails.getEstimatedChargePercentageParsed());
-				}
-				else{
-					responseData = ArrayUtils.addAll(inStreamResponseCommandArray, responseData);
-					eventNewResponse(responseData);
-				}
-			}
-			else if(inStreamResponseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
-				byte[] responseData = readBytes(10); 
-				SensorSTC3100Details sensorSTC3100Details = new SensorSTC3100Details(responseData); 
-				eventResponseReceived(inStreamResponseCommand, sensorSTC3100Details);
-			}
-
+			processInstreamResponse(inStreamResponseCommandArray);
 		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	}
+	
+	protected void processInstreamResponse(byte[] inStreamResponseCommandArray) throws ShimmerException{
+		int inStreamResponseCommand = ((int)inStreamResponseCommandArray[0])&0xFF;
+		printLogDataForDebugging("In-stream received = " + btCommandToString(inStreamResponseCommand));
+		
+		if(inStreamResponseCommand==InstructionsResponse.DIR_RESPONSE_VALUE){ 
+			byte[] responseData = readBytes(1);
+			int directoryNameLength = responseData[0];
+			byte[] bufferDirectoryName = new byte[directoryNameLength];
+			bufferDirectoryName = readBytes(directoryNameLength);
+			String tempDirectory = new String(bufferDirectoryName);
+			mDirectoryName = tempDirectory;
+			printLogDataForDebugging("Directory Name = " + mDirectoryName);
+			
+			if(!mUseShimmerBluetoothApproach){
+				bufferDirectoryName = ArrayUtils.addAll(responseData, bufferDirectoryName);
+				eventNewResponse(bufferDirectoryName);
+			}
+			else{
+				eventResponseReceived(inStreamResponseCommand, tempDirectory);
+			}
+		}
+		else if(inStreamResponseCommand==InstructionsResponse.STATUS_RESPONSE_VALUE){
+			if(mUseShimmerBluetoothApproach){
+				byte[] responseData = readBytes(1);
+				parseStatusByte(responseData[0]);
+//				eventResponseReceived(inStreamResponseCommand, responseData[0]);
+			}
+			
+			if(!isSensing()){
+				if(mUseShimmerBluetoothApproach){
+					if(!isInitialised()){
+						writeRealTimeClock();
+					}
+				}
+				else{
+					writeRealTimeClock();
+				}
+			}
+			eventLogAndStreamStatusChanged(mCurrentCommand);
+		} 
+		else if(inStreamResponseCommand==InstructionsResponse.VBATT_RESPONSE_VALUE) {
+			byte[] responseData = readBytes(3); 
+			if(mUseShimmerBluetoothApproach){
+				ShimmerBattStatusDetails battStatusDetails = new ShimmerBattStatusDetails(((responseData[1]&0xFF)<<8)+(responseData[0]&0xFF),responseData[2]);
+//				setBattStatusDetails(battStatusDetails);
+				eventResponseReceived(inStreamResponseCommand, battStatusDetails);
+				printLogDataForDebugging("Battery Status:"
+						+ "\tVoltage=" + battStatusDetails.getBattVoltageParsed()
+						+ "\tCharging status=" + battStatusDetails.getChargingStatusParsed()
+						+ "\tBatt %=" + battStatusDetails.getEstimatedChargePercentageParsed());
+			}
+			else{
+				responseData = ArrayUtils.addAll(inStreamResponseCommandArray, responseData);
+				eventNewResponse(responseData);
+			}
+		}
+		else if(inStreamResponseCommand==InstructionsResponse.RSP_I2C_BATT_STATUS_COMMAND_VALUE) {
+			byte[] responseData = readBytes(10); 
+			SensorSTC3100Details sensorSTC3100Details = new SensorSTC3100Details(responseData); 
+			eventResponseReceived(inStreamResponseCommand, sensorSTC3100Details);
+		}		
 	}
 	
 	//TODO copied from ShimmerBluetooth
@@ -2106,65 +2112,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 //					printLogDataForDebugging("Packet RR:  " + Double.toString(getPacketReceptionRateOverall()));
 //				} 
 			
-			//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response
-			//we will send the status changed to the GUI anyway
-			if(mCurrentCommand==InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE){
-				
-				printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
-				
-				setIsSDLogging(true);
-				eventLogAndStreamStatusChanged(mCurrentCommand);
-				mWaitForAck=false;
-				mWaitForResponse=false;
-				
-				getListofInstructions().remove(0);
-				mTransactionCompleted = true;
-				setInstructionStackLock(false);
-				
-				return;
-			}
-			else if(mCurrentCommand==InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE){
-				
-				printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
-				
-				setIsSDLogging(false);
-				eventLogAndStreamStatusChanged(mCurrentCommand);
-				mWaitForAck=false;
-				mWaitForResponse=false;
-				
-				getListofInstructions().remove(0);
-				mTransactionCompleted = true;
-				setInstructionStackLock(false);
-				
-				return;
-			}
-			
-
-			if(mCurrentCommand==InstructionsGet.GET_FW_VERSION_COMMAND_VALUE){
-				mFirstTime=false;
-//				eventAckReceived(mCurrentCommand);
-//					setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0));
-//					
-////					/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
-////	      	        Bundle bundle = new Bundle();
-////	      	        bundle.putString(TOAST, "Firmware Version: " +mFirmwareVersionParsed);
-////	      	        msg.setData(bundle);*/
-////					if(!mDummy){
-////						//mHandler.sendMessage(msg);
-////					}
-//					
-//					initializeBoilerPlate();
-			}
-			else if(mCurrentCommand==InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE && !isInitialised()){
-				mFirstTime=false;
-			} 
-			else if(mCurrentCommand==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
-				mFirstTime=false;
-				getListofInstructions().clear();
-				readShimmerVersionDeprecated();
-			}
-
-			
+			processCheckForAckOrRespPerCmd(mCurrentCommand);
 			
 			if(isStreaming()){
 				stopTimerCheckForAckOrResp(); //Terminate the timer thread
@@ -2206,7 +2154,68 @@ public class LiteProtocol extends AbstractCommsProtocol{
 				mNumberofTXRetriesCount++;
 			}
 		} //End Run
+
 	} //End TimerTask
+
+	protected void processCheckForAckOrRespPerCmd(int currentCommand) {
+		//handle the special case when we are starting/stopping to log in Consensys and we do not get the ACK response
+		//we will send the status changed to the GUI anyway
+		if((currentCommand&0xFF)==InstructionsSet.START_LOGGING_ONLY_COMMAND_VALUE){
+			
+			printLogDataForDebugging("START_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+			
+			setIsSDLogging(true);
+			eventLogAndStreamStatusChanged(currentCommand);
+			mWaitForAck=false;
+			mWaitForResponse=false;
+			
+			getListofInstructions().remove(0);
+			mTransactionCompleted = true;
+			setInstructionStackLock(false);
+			
+			return;
+		}
+		else if((currentCommand&0xFF)==InstructionsSet.STOP_LOGGING_ONLY_COMMAND_VALUE){
+			
+			printLogDataForDebugging("STOP_LOGGING_ONLY_COMMAND response not received. Send feedback to the GUI without killing the connection");
+			
+			setIsSDLogging(false);
+			eventLogAndStreamStatusChanged(currentCommand);
+			mWaitForAck=false;
+			mWaitForResponse=false;
+			
+			getListofInstructions().remove(0);
+			mTransactionCompleted = true;
+			setInstructionStackLock(false);
+			
+			return;
+		}
+		
+
+		if((currentCommand&0xFF)==InstructionsGet.GET_FW_VERSION_COMMAND_VALUE){
+			mFirstTime=false;
+//			eventAckReceived(mCurrentCommand);
+//				setShimmerVersionInfoAndCreateSensorMap(new ShimmerVerObject(HW_ID.SHIMMER_2R, FW_ID.BOILER_PLATE, 0, 1, 0));
+//				
+////				/*Message msg = mHandler.obtainMessage(MESSAGE_TOAST);
+////      	        Bundle bundle = new Bundle();
+////      	        bundle.putString(TOAST, "Firmware Version: " +mFirmwareVersionParsed);
+////      	        msg.setData(bundle);*/
+////				if(!mDummy){
+////					//mHandler.sendMessage(msg);
+////				}
+//				
+//				initializeBoilerPlate();
+		}
+		else if((currentCommand&0xFF)==InstructionsGet.GET_SAMPLING_RATE_COMMAND_VALUE && !isInitialised()){
+			mFirstTime=false;
+		} 
+		else if((currentCommand&0xFF)==InstructionsGet.GET_SHIMMER_VERSION_COMMAND_NEW_VALUE){ //in case the new command doesn't work, try the old command
+			mFirstTime=false;
+			getListofInstructions().clear();
+			readShimmerVersionDeprecated();
+		}
+	}
 	
 	private void killConnection(String info){
 		killConnection(null, info);
@@ -2694,6 +2703,7 @@ public class LiteProtocol extends AbstractCommsProtocol{
 	}	
 
 	public void setIsSDLogging(boolean state){
+		UtilShimmer.consolePrintCurrentStackTrace();
 		mIsSDLogging = state;
 		if(mProtocolListener!=null){
 			mProtocolListener.eventSetIsSDLogging(mIsSDLogging);

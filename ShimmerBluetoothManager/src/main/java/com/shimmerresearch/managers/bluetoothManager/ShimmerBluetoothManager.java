@@ -407,13 +407,10 @@ public abstract class ShimmerBluetoothManager{
 			}
 			else {
 				ShimmerDevice originalShimmerDevice = getShimmerDeviceBtConnected(cloneShimmer.getMacId());
+				//TODO Add support for this approach in other devices
 				if(cloneShimmer.getHardwareVersion()==HW_ID.SWEATCH){
 					originalShimmerDevice.operationPrepare();
-					
-					LiteProtocol liteProtocol = ((LiteProtocol)(originalShimmerDevice.getCommsProtocolRadio().mRadioProtocol));
-					liteProtocol.writeShimmerAndSensorsSamplingRate(cloneShimmer.getSamplingRateBytesShimmer());
-					liteProtocol.writeConfigByte0(cloneShimmer.configBytesGenerate(true));
-
+					originalShimmerDevice.configureFromClone(cloneShimmer);
 					originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
 				}
 			}
