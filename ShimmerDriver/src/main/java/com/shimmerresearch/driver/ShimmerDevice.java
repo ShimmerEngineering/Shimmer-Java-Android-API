@@ -1522,7 +1522,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		String macToUse = getMacId();
 		if(macToUse.length()>=12) {
 //			return macToUse.substring(8, 12);
-			macToUse.replace(":", "");
+			macToUse = macToUse.replace(":", "");
 			return macToUse.substring(macToUse.length()-4, macToUse.length());
 		}
 		return "";
@@ -3495,6 +3495,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return listOfEnabledAlgorthimsPerGroup;
 	}
+	
+	private void resetAlgorithmBuffers() {
+		List<AbstractAlgorithm> listOfEnabledAlgorithmModules = getListOfEnabledAlgorithmModules();
+		Iterator<AbstractAlgorithm> iterator = listOfEnabledAlgorithmModules.iterator();
+		while(iterator.hasNext()) {
+			AbstractAlgorithm abstractAlgorithm = iterator.next();
+			try {
+				abstractAlgorithm.resetAlgorithmBuffers();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 	//---------- Storing to Database related - start --------------------
 	
@@ -4281,6 +4295,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void startStreaming() {
 		resetPacketLossVariables();
 		generateParserMap();
+		resetAlgorithmBuffers();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.startStreaming();
 		}

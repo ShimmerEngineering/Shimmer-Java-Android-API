@@ -170,7 +170,10 @@ public abstract class AbstractAlgorithm extends BasicProcessWithCallBack impleme
 	public abstract void generateAlgorithmGroupingMap();
 	
 	public abstract void initialize() throws Exception;
-	public abstract void reset() throws Exception;
+	/** Can be used to reset all variables within an algorithm - not needed in most cases */
+	public abstract void resetAlgorithm() throws Exception;
+	/** Used to reset all filters/buffers on which an algorithm is based - i.e. if a device is streaming, stopped and then streams again. */
+	public abstract void resetAlgorithmBuffers();
 	
 	public abstract Object getSettings(String componentName);
 //	public abstract void setSettings(String componentName, Object valueToSet) throws Exception;

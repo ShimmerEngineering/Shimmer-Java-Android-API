@@ -49,7 +49,7 @@ public class GyroOnTheFlyCalModule extends AbstractAlgorithm {
 	//--------- Algorithm specific variables end --------------	
 
 	public class GuiLabelConfig{
-		public static final String GYRO_ON_THE_FLY_CALIB_THRESHOLD = "GyroOTFCal Threshold(m/s2)";
+		public static final String GYRO_ON_THE_FLY_CALIB_THRESHOLD = "GyroOTFCal Threshold(deg/s)";
 		public static final String GYRO_ON_THE_FLY_CALIB_BUFFER_SIZE = "GyroOTFCal BufferSize";
 	}
 	
@@ -166,7 +166,12 @@ public class GyroOnTheFlyCalModule extends AbstractAlgorithm {
 	}
 
 	@Override
-	public void reset() throws Exception {
+	public void resetAlgorithm() throws Exception {
+		resetAlgorithmBuffers();
+	}
+	
+	@Override
+	public void resetAlgorithmBuffers() {
 		mOnTheFlyGyroOffsetCal.setupBuffers();
 	}
 
