@@ -39,6 +39,7 @@ import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -2092,6 +2093,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		double xData = 0;
 		//first check is x axis signal exist
 		if (mMapofXAxis.size()>0){ 
+			//was
+			//if (mMapofXAxis.get(shimmerName)==null){
 			if (mMapofXAxis.get(shimmerName)==null && !mMapofXAxis.containsKey(mEventMarkerCheck)){
 				//check if generated x axis exist
 				if (mMapofXAxisGeneratedValue.get(shimmerName)==null){
@@ -2106,16 +2109,15 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				if (xData==mCurrentXValue){
 					xData=xData+1;
 					//				utilShimmer.consolePrintErrLn("X2 VALUE: " +xData);
-					mMapofXAxisGeneratedValue.remove(shimmerName);
-					mMapofXAxisGeneratedValue.put(shimmerName, xData);
 				} else {
 					xData=mCurrentXValue;
-					mMapofXAxisGeneratedValue.remove(shimmerName);
-					mMapofXAxisGeneratedValue.put(shimmerName, xData);
 				}
+				mMapofXAxisGeneratedValue.remove(shimmerName);
+				mMapofXAxisGeneratedValue.put(shimmerName, xData);
 			} 
 			else {
 				String[] props = mMapofXAxis.get(shimmerName);
+				//New code
 				if(props == null){
 					props = mMapofXAxis.get(mEventMarkerCheck);
 				}
@@ -2125,7 +2127,10 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					xData = f.mData;
 				}
 				else{
-					utilShimmer.consolePrintErrLn("ERROR PLOTMANGERPC -> NO X DATA");
+					utilShimmer.consolePrintErrLn("ERROR PLOTMANGERPC -> NO X DATA - " 
+							+ "\nDeviceName=" + shimmerName 
+							+ "\tSignalName=" + Arrays.toString(props)
+							+ "\tmEventMarkerCheck=" + mEventMarkerCheck);
 					throw new Exception("No X data: (" + joinChannelStringArray(props) + ")");
 				}
 			}
