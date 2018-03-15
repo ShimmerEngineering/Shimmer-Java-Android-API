@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -19,7 +20,7 @@ public class SensorDetails implements Serializable{
 	private static final long serialVersionUID = 1545530433767674139L;
 	
 	/** by default load in communication types for Bluetooth and SD	 */
-	public HashMap<COMMUNICATION_TYPE, Boolean> mapOfIsEnabledPerCommsType = new HashMap<COMMUNICATION_TYPE, Boolean>();
+	public ConcurrentHashMap<COMMUNICATION_TYPE, Boolean> mapOfIsEnabledPerCommsType = new ConcurrentHashMap<COMMUNICATION_TYPE, Boolean>();
 	{
 		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.BLUETOOTH, false);
 		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.SD, false);
