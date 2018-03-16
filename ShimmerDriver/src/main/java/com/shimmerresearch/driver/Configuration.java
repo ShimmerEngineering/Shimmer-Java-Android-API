@@ -1821,10 +1821,10 @@ public class Configuration {
 		//GUI AND EXPORT CHANNELS
 		public static class ObjectClusterSensorName{
 			//Related to the Spectrum Analyser
-			public static String POWER_CALC_85 = "SpanManager-85";//"Results-85";
-			public static String POWER_CALC_15 = "SpanManager-15";//"Results-15";
-			public static String FREQUENCY = "Frequency";
-			public static String POWER = "Power";
+			public static final String POWER_CALC_85 = "SpanManager-85";//"Results-85";
+			public static final String POWER_CALC_15 = "SpanManager-15";//"Results-15";
+			public static final String FREQUENCY = "Frequency";
+			public static final String POWER = "Power";
 			
 			public static final String RADIO_RECEPTION = "Radio_Reception";
 		}
