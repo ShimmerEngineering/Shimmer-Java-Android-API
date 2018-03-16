@@ -1743,13 +1743,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 				//check if x is the max value 
 				if (xData==mCurrentXValue){
 					xData=xData+1;
-					mMapofXAxisGeneratedValue.remove(shimmerName);
-					mMapofXAxisGeneratedValue.put(shimmerName, xData);
 				} else {
 					xData=mCurrentXValue;
-					mMapofXAxisGeneratedValue.remove(shimmerName);
-					mMapofXAxisGeneratedValue.put(shimmerName, xData);
 				}
+				mMapofXAxisGeneratedValue.remove(shimmerName);
+				mMapofXAxisGeneratedValue.put(shimmerName, xData);
 			} 
 			else {
 				String[] props = mMapofXAxis.get(shimmerName);
