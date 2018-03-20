@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import com.shimmerresearch.driverUtilities.UtilShimmer;
+
 public abstract class BasicProcessWithCallBack {
 
 	private class EndThread{};
@@ -80,7 +82,8 @@ public abstract class BasicProcessWithCallBack {
     		while (entries.hasNext()) {
     			Callable c = entries.next();
     			if (c instanceof WaitForData){
-    				System.out.println("");
+    				System.out.println("BasicProcessWithCallBack: '" + threadName + "' -> removeConsumer()");
+//    				UtilShimmer.consolePrintCurrentStackTrace();
     				for (WaitForData w: b.mListWaitForData){
     					if (c.equals(w)){
     						entries.remove();
