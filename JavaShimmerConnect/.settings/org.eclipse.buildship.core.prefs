@@ -1,5 +1,6 @@
 #Mon Jan 22 10:54:14 GMT 2018
 connection.arguments=
+connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
 connection.jvm.arguments=
 build.commands=org.eclipse.jdt.core.javabuilder
 connection.project.dir=
