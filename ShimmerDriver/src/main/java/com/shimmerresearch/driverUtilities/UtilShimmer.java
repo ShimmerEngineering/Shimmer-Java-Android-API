@@ -1255,4 +1255,9 @@ public class UtilShimmer implements Serializable {
 		return signal;
 	}
 
+	public static int generateRandomIntInRange(int low, int high) {
+		Random r = new Random();
+		return r.nextInt(high-low) + low;
+	}
+
 }

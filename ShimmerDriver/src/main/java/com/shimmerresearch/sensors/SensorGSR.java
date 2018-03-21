@@ -354,9 +354,9 @@ public class SensorGSR extends AbstractSensor {
 					}
 //					gsrAdcValueUnCal = SensorGSR.nudgeGsrADC(gsrAdcValueUnCal, currentGSRRange);
 
-					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToResistanceFromAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToKOhmsUsingAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
 					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
-					gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
+					gsrConductanceUSiemens = SensorGSR.convertkOhmToUSiemens(gsrResistanceKOhms);
 //				} else {
 //					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
 //					double p1 = p1p2[0];
@@ -402,6 +402,15 @@ public class SensorGSR extends AbstractSensor {
 		return objectCluster;
 	}
 	
+
+	public static double convertkOhmToUSiemens(double gsrResistanceKOhms) {
+//		gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
+		return 1000.0/gsrResistanceKOhms;
+	}
+	
+	public static double convertUSiemensTokOhm(double gsrUSiemens) {
+		return 1000.0/gsrUSiemens;
+	}
 
 	public static double nudgeGsrResistance(double gsrResistanceKOhms, int gsrRangeSetting) {
 		if(gsrRangeSetting!=4) {
@@ -590,13 +599,38 @@ public class SensorGSR extends AbstractSensor {
 	 * @param range
 	 * @return
 	 */
-	public static double calibrateGsrDataToResistanceFromAmplifierEq(double gsrUncalibratedData, int range){
+	public static double calibrateGsrDataToKOhmsUsingAmplifierEq(double gsrUncalibratedData, int range){
 		double rFeedback = SHIMMER3_GSR_REF_RESISTORS_KOHMS[range];
 		double volts = SensorADC.calibrateMspAdcChannelToVolts(gsrUncalibratedData);
 		double rSource = rFeedback/((volts/0.5)-1.0);
 		return rSource;
 	}
+
 	
+	/**TODO test method no functioning properly yet
+	 * @param gsrkOhms
+	 * @return
+	 */
+	public static int uncalibrateGsrDataTokOhmsUsingAmplifierEq(double gsrkOhms){
+		int range = 0;
+		for(int i=0;i<SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS.length;i++) {
+			double[] minMax = SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS[i];
+			if(gsrkOhms>minMax[0] && gsrkOhms<minMax[1]) {
+				range = i;
+//				System.err.println(gsrkOhms + " " + range);
+				break;
+			}
+		}
+
+		double rFeedback = SHIMMER3_GSR_REF_RESISTORS_KOHMS[range];
+		double volts = ((rFeedback / gsrkOhms) + 1.0) * 0.5;
+		
+		int gsrUncalibratedData = SensorADC.uncalibrateMspAdcChannelFromVolts(volts);
+		//Add range
+		gsrUncalibratedData += (range<<14);
+		return gsrUncalibratedData;
+	}
+
 	private void setDefaultGsrSensorConfig(boolean isSensorEnabled) {
 		//RS (30/5/2016): from ShimmerObject
 		if(isSensorEnabled) {
