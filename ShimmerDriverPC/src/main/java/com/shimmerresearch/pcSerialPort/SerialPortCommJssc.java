@@ -1,6 +1,8 @@
 package com.shimmerresearch.pcSerialPort;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -21,6 +23,9 @@ import com.shimmerresearch.exceptions.ShimmerException;
 public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialPortListener {
 
 	protected transient SerialPort mSerialPort = null;
+	//Using JsscByteWriter by Bastien Aracil as the JSSC library does not support timeouts for serial port writing
+	protected JsscByteWriter jsscByteWriter = null;
+	
 	public String mUniqueId = "";
 	public String mComPort = "";
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;
@@ -42,6 +47,7 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 		setConnectionHandle(comPort);
 		mBaudToUse = baudToUse;
         mSerialPort = new SerialPort(mComPort);
+        jsscByteWriter = new JsscByteWriter(mSerialPort);
 	}
 
 	public SerialPortCommJssc(String comPort, String uniqueId, int baudToUse, SerialPortListener shimmerSerialEventCallback) {
@@ -148,14 +154,17 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
     	try {
         	if(mTxSpeed == 0) { // normal speed
         		for(int i = 0; i<buf.length;i++) {
-        			mSerialPort.writeByte(buf[i]);
-        			mSerialPort.purgePort(SerialPort.PURGE_TXCLEAR); // This doesn't make sense but was working for Consensys in Windows up to v0.4.0
+//        			mSerialPort.writeByte(buf[i]);
+//        			mSerialPort.purgePort(SerialPort.PURGE_TXCLEAR); // This doesn't make sense but was working for Consensys in Windows up to v0.4.0
+        			jsscByteWriter.write(buf[i], mSerialPortTimeout);
         		}
         	}
         	else {  // fast speed - was causing issues with Windows but needed for OSX - Windows might be fixed now (23/03/2016)
-    			mSerialPort.writeBytes(buf);
+//    			mSerialPort.writeBytes(buf);
+    			jsscByteWriter.write(buf, mSerialPortTimeout);
         	}
-		} catch (SerialPortException e) {
+//		} catch (SerialPortException e) {
+		} catch (IOException | InterruptedException | TimeoutException e) {
         	ShimmerException de = generateException(ErrorCodesSerialPort.SHIMMERUART_COMM_ERR_WRITING_DATA); 
         	de.updateDeviceException(e.getMessage(), e.getStackTrace());
 			throw(de);
