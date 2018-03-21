@@ -135,7 +135,7 @@ public class ShimmerBattStatusDetails implements Serializable {
 
 	public static int battVoltageToAdcVal(double battVoltage){
 		double uncalibratedData = (battVoltage * 1000) / 1.988;
-		int adcVal = SensorADC.uncalibrateU12AdcValue(uncalibratedData, 0.0, 3.0, 1.0);
+		int adcVal = SensorADC.uncalibrateU12AdcValueFromMillivolts(uncalibratedData, 0.0, 3.0, 1.0);
 		return adcVal;
 	}
 

@@ -515,6 +515,12 @@ public class SensorADC extends AbstractSensor {
 		return calData;
 	}
 
+	public static int uncalibrateMspAdcChannelFromVolts(double unCalData){
+		double offset = 0; double vRefP = 3; double gain = 1; 
+		int calData = uncalibrateU12AdcValueFromVolts(unCalData, offset, vRefP, gain);
+		return calData;
+	}
+
 	public static double calibrateU12AdcValueToMillivolts(double uncalibratedData, double offset, double vRefP, double gain){
 //		double calibratedData = (uncalibratedData-offset) * (((vRefP*1000)/gain)/4095);
 //		return calibratedData;
@@ -533,13 +539,14 @@ public class SensorADC extends AbstractSensor {
 	
 	//--------- Sensor specific methods end --------------
 
-	public static int uncalibrateU12AdcValue(double uncalibratedData, double offset, double vRefP, double gain) {
-//		double calibratedData=(uncalibratedData-offset)*(((vRefP*1000)/gain)/4095);
-//		return calibratedData;
-		
-		double adcVal = (uncalibratedData / (((vRefP*1000)/gain)/4095)) + offset;
+	public static int uncalibrateU12AdcValueFromMillivolts(double calibratedData, double offset, double vRefP, double gain) {
+		double adcVal = (calibratedData / (((vRefP*1000)/gain)/4095)) + offset;
 		return (int) adcVal;
 	}
 
+	public static int uncalibrateU12AdcValueFromVolts(double calibratedData, double offset, double vRefP, double gain) {
+		double adcVal = (calibratedData / (((vRefP)/gain)/4095)) + offset;
+		return (int) adcVal;
+	}
 	
 }

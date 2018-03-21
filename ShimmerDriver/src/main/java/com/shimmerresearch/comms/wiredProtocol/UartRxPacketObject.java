@@ -88,7 +88,10 @@ public class UartRxPacketObject{
 		this(rxBuf);
 		mSystemTimeMillis = timestampMs;
 	}
-	
+
+	public UartRxPacketObject() {
+	}
+
 	public byte[] getPayload() {
 		return mPayload;
 	}
