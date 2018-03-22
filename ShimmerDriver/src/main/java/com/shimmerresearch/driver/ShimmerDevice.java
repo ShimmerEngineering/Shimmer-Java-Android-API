@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +26,6 @@ import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.gyroOnTheFlyCal.GyroOnTheFlyCalLoader;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
-import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
 import com.shimmerresearch.algorithms.orientation.OrientationModule6DOFLoader;
 import com.shimmerresearch.algorithms.orientation.OrientationModule9DOFLoader;
@@ -36,9 +34,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
-import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
@@ -63,12 +59,9 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.AbstractSensor;
-import com.shimmerresearch.sensors.AbstractSensor.DatabaseChannelHandlesCommon;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.SensorShimmerClock;
-import com.shimmerresearch.sensors.ShimmerStreamingProperties;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 
@@ -462,14 +455,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		for(COMMUNICATION_TYPE commType:COMMUNICATION_TYPE.values()){
 		for(COMMUNICATION_TYPE commType:mListOfAvailableCommunicationTypes){
 			for(Integer sensorId:mSensorMap.keySet()){
-				SensorDetails SensorDetails = getSensorDetails(sensorId);
-				if(SensorDetails.isEnabled(commType)){
+				SensorDetails sensorDetails = getSensorDetails(sensorId);
+				if(sensorDetails.isEnabled(commType)){
 					TreeMap<Integer, SensorDetails> parserMapPerComm = mParserMap.get(commType);
 					if(parserMapPerComm==null){
 						parserMapPerComm = new TreeMap<Integer, SensorDetails>();
 						mParserMap.put(commType, parserMapPerComm);
 					}
-					parserMapPerComm.put(sensorId, SensorDetails);
+					parserMapPerComm.put(sensorId, sensorDetails);
 				}
 			}
 		}
@@ -1369,6 +1362,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
 		boolean debug = false;
+//		printSensorParserAndAlgoMaps();
 		
 		if(debug)
 			consolePrintLn("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(newPacket));
@@ -2304,9 +2298,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				//Set sensor state
 				sensorDetails.setIsEnabled(commType, state);
 
-				setSensorEnabledStateCommon(sensorId, sensorDetails.isEnabled());
+				setSensorEnabledStateCommon(sensorId, sensorDetails.isEnabled(commType));
 
-				boolean result = sensorDetails.isEnabled();
+				boolean result = sensorDetails.isEnabled(commType);
 				boolean successfullySet = result==state? true:false; 
 				if(!successfullySet){
 					consolePrintErrLn("Failed to setSensorEnabledState for sensor:\t" + sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel);
