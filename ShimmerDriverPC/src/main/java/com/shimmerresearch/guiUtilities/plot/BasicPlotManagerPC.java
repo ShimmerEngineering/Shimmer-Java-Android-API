@@ -537,6 +537,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		y.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
 	}
 	
+	public Range getYAxisRange(){
+		IAxis<?> y = mChart.getAxisY();
+		return y.getRange();
+	}
+	
 	public void setYAxisMajorTickSpacing(double tickSpacing){
 		IAxis<?> y = mChart.getAxisY();
 		yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
@@ -1965,6 +1970,7 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 						} 
 						else {
 							if(isXAxisTime()){
+								setXAxisRange(xData-5000, xData);
 								addTracePoint(currentTrace, xData, yData);
 							}
 							else if(isXAxisFrequency()){
