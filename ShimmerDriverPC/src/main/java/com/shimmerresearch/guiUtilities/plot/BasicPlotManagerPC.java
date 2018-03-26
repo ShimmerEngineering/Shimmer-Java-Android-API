@@ -549,6 +549,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		return y.getRange();
 	}
 	
+	public Range getXAxisRange(){
+		IAxis<?> x = mChart.getAxisX();
+		return x.getRange();
+	}
+	
 	public void setYAxisMajorTickSpacing(double tickSpacing){
 		IAxis<?> y = mChart.getAxisY();
 		yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
