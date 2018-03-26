@@ -82,7 +82,6 @@ public abstract class BasicProcessWithCallBack {
     		while (entries.hasNext()) {
     			Callable c = entries.next();
     			if (c instanceof WaitForData){
-    				System.out.println("BasicProcessWithCallBack: '" + threadName + "' -> removeConsumer()");
 //    				UtilShimmer.consolePrintCurrentStackTrace();
     				for (WaitForData w: b.mListWaitForData){
     					if (c.equals(w)){
@@ -163,11 +162,15 @@ public abstract class BasicProcessWithCallBack {
 	 * @param b b is the producer
 	 */
 	public void removeSetWaitForData(BasicProcessWithCallBack b){
-		
+
+//		consolePrintLn(this.getClass().getSimpleName() + " -> Trying to remove -> " + b.hashCode());
+
+		StringBuilder builder = new StringBuilder();
+
 		if(mWaitForData!=null){
 			BasicProcessWithCallBack bpwc = mWaitForData.returnBasicProcessWithCallBack();
 			if(bpwc==b || bpwc.equals(b)){
-				consolePrintLn("Removing thread\tHashCode: " + mWaitForData.hashCode());
+				builder.append("\tRemoving thread\tHashCode: " + mWaitForData.hashCode());
 				mWaitForData = null;
 			}
 		}
@@ -179,17 +182,35 @@ public abstract class BasicProcessWithCallBack {
     			BasicProcessWithCallBack bpwc = wFD.returnBasicProcessWithCallBack();
     			if(bpwc==b || bpwc.equals(b)){
     				b.removeConsumer(this);
-    				consolePrintLn("Removing thread\tHashCode: " + wFD.hashCode());
+    				builder.append("\n\tRemoving thread\tHashCode: " + wFD.hashCode());
     				entries.remove();
-    				return;
     			}
     		}
-    		
-    		if(mListWaitForData.isEmpty()){
-    			stopConsumerThread();
+    	}
+
+    	synchronized (mListOfMsgProducers) {
+        	Iterator<BasicProcessWithCallBack> entries = mListOfMsgProducers.iterator();
+    		while (entries.hasNext()) {
+    			BasicProcessWithCallBack bpwc = entries.next();
+    			if(bpwc==b || bpwc.equals(b)){
+    				//TODO don't think removeConsumer needs to be called here as that method does not handle the mListOfMsgProducers 
+    				b.removeConsumer(this);
+    				builder.append("\n\tRemoving thread\tHashCode: " + bpwc.hashCode());
+    				entries.remove();
+    			}
     		}
     	}
     	
+    	if(builder.length()>0) {
+    		consolePrintLn("");
+    		consolePrintLn(this.getClass().getSimpleName());
+    		consolePrintLn(builder.toString());
+    	}
+
+		if(mWaitForData==null && mListWaitForData.isEmpty() && mListOfMsgProducers.isEmpty()){
+			stopConsumerThread();
+		}
+
 		if(mIsDebug){
 			printListOfThreads();
 		}
@@ -340,28 +361,59 @@ public abstract class BasicProcessWithCallBack {
 	}
 	
 	public void printListOfThreads() {
-		consolePrintLn(this.getClass().getSimpleName());
+		consolePrintLn("");
+		consolePrintLn(this.getClass().getSimpleName() + ": Printing List of Threads");
 //		consolePrintLn("BasicProcessWithCallBack:\t" + threadName);
 		
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("\tmWaitForData:");
 		if (mWaitForData!=null){
-			consolePrintLn("\tSimple Name: " + mWaitForData.getClass().getSimpleName() + "\t" + mWaitForData.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + mWaitForData.hashCode());
+			builder.append("\n\t\tSimple Name: " + mWaitForData.getClass().getSimpleName() + "\t" + mWaitForData.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + mWaitForData.hashCode());
+		} else {
+			builder.append("\n\t\tnull");
 		}
 
+		builder.append("\n\tmListOfConsumers:");
     	synchronized (mListOfConsumers) {
-        	Iterator <Callable> entries = mListOfConsumers.iterator();
-    		while (entries.hasNext()) {
-    			Callable c = entries.next();
-    			consolePrintLn("\tSimple Name: " + c.getClass().getSimpleName() + "\tHashCode: " + c.hashCode());
+    		if(mListOfConsumers.size()>0) {
+            	Iterator <Callable> entries = mListOfConsumers.iterator();
+        		while (entries.hasNext()) {
+        			Callable c = entries.next();
+        			builder.append("\n\t\tSimple Name: " + c.getClass().getSimpleName() + "\tHashCode: " + c.hashCode());
+        		}
+    		} else {
+    			builder.append("\n\t\tempty");
     		}
     	}
     	
+		builder.append("\n\tmListWaitForData:");
     	synchronized (mListWaitForData) {
-        	Iterator<WaitForData> entries = mListWaitForData.iterator();
-    		while (entries.hasNext()) {
-    			WaitForData c = entries.next();
-    			consolePrintLn("\tSimple Name: " + c.getClass().getSimpleName() + "\t" + c.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + c.hashCode());
+    		if(mListWaitForData.size()>0) {
+	        	Iterator<WaitForData> entries = mListWaitForData.iterator();
+	    		while (entries.hasNext()) {
+	    			WaitForData c = entries.next();
+	    			builder.append("\n\t\tSimple Name: " + c.getClass().getSimpleName() + "\t" + c.returnBasicProcessWithCallBack().getClass().getSimpleName() + "\tHashCode: " + c.hashCode());
+	    		}
+    		} else {
+    			builder.append("\n\t\tempty");
     		}
     	}
+
+		builder.append("\n\tmListOfMsgProducers:");
+    	synchronized (mListOfMsgProducers) {
+    		if(mListOfMsgProducers.size()>0) {
+	        	Iterator<BasicProcessWithCallBack> entries = mListOfMsgProducers.iterator();
+	    		while (entries.hasNext()) {
+	    			BasicProcessWithCallBack c = entries.next();
+	    			builder.append("\n\t\tSimple Name: " + c.getClass().getSimpleName() + "\t" + "\tHashCode: " + c.hashCode());
+	    		}
+    		} else {
+    			builder.append("\n\t\tempty");
+    		}
+    	}
+
+		consolePrintLn(builder.toString());
 		consolePrintLn("");
 	}
 	
