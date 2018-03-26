@@ -91,6 +91,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
 	private boolean mIsTraceDataBuffered = false;
+	private boolean mXAxisRangeEnabled = false;
+	private double mXAxisRangeWindow = 5000;
 	
 	public PlotCustomFeature pcf=null;
 	
@@ -535,6 +537,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public void setYAxisRange(double miny,double maxy){
 		IAxis<?> y = mChart.getAxisY();
 		y.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
+	}
+	
+	public void setYAxisAutoRange(){
+		IAxis<?> y = mChart.getAxisY();
+		yAxis.setRangePolicy(new RangePolicyUnbounded());
 	}
 	
 	public Range getYAxisRange(){
@@ -1970,7 +1977,9 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 						} 
 						else {
 							if(isXAxisTime()){
-								setXAxisRange(xData-5000, xData);
+								if(mXAxisRangeEnabled){
+									setXAxisRange(xData-mXAxisRangeWindow, xData);
+								}
 								addTracePoint(currentTrace, xData, yData);
 							}
 							else if(isXAxisFrequency()){
@@ -2133,6 +2142,10 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		}
 	}	
 	
+	public void setRangeForXAxis(boolean enable,int valueRange){
+		mXAxisRangeEnabled = enable;
+		mXAxisRangeWindow = valueRange;
+	}
 	
 	public void printListOfTraces(){
 		synchronized(mListofTraces){
