@@ -15,81 +15,89 @@ import com.shimmerresearch.driver.ShimmerDevice;
 public class ShimmerSDCardDetails implements Serializable {
 	
 	private static final long serialVersionUID = -3210542276033436303L;
-	
-	protected long mDriveTotalSpace = 0; //total disk space in bytes.
-	protected long mDriveUsableSpace = 0; ///unallocated / free disk space in bytes.
-	protected long mDriveFreeSpace = 0; //unallocated / free disk space in bytes.
-	protected long mDriveUsedSpace = 0;
+
+	public static final long DRIVE_SPACE_USED_CHANGE_TIMEOUT_MS = 30000;
+
+	protected long mDriveTotalSpaceBytes = 0; //total disk space in bytes.
+	protected long mDriveUsableSpaceBytes = 0; ///unallocated / free disk space in bytes.
+	protected long mDriveFreeSpaceBytes = 0; //unallocated / free disk space in bytes.
+	protected long mDriveUsedSpaceBytes = 0;
 	
 	protected boolean mFirstSdAccess = true;
 	protected boolean mIsSDPresent = true;
 	protected boolean mIsSDError = false;
 	protected boolean mIsSDLogging = false;											// This is used to monitor whether the device is in sd log mode
 
+	public long mDriveUsedSpaceLastTimeChanged = 0;
+
 	public ShimmerSDCardDetails() {
+		
 	}
 
 	public ShimmerSDCardDetails(File drivePath){
-		mDriveTotalSpace = drivePath.getTotalSpace(); //total disk space in bytes.
-		mDriveUsableSpace = drivePath.getUsableSpace(); ///unallocated / free disk space in bytes.
-		mDriveFreeSpace = drivePath.getFreeSpace(); //unallocated / free disk space in bytes.
+		setDriveUsedSpaceTotal(drivePath.getTotalSpace()); //total disk space in bytes.
+		mDriveUsableSpaceBytes = drivePath.getUsableSpace(); ///unallocated / free disk space in bytes.
+		mDriveFreeSpaceBytes = drivePath.getFreeSpace(); //unallocated / free disk space in bytes.
 		updateDriveUsedSpace();
 	}
 
 	public long getDriveUsableSpace() {
-		return mDriveUsableSpace;
+		return mDriveUsableSpaceBytes;
 	}
 
 	public long getDriveFreeSpace() {
-		return mDriveFreeSpace;
+		return mDriveFreeSpaceBytes;
 	}
 
 	public long getDriveTotalSpace() {
-		return mDriveTotalSpace;
+		return mDriveTotalSpaceBytes;
 	}
 
 	public String getDriveTotalSpaceParsed() {
-		if(mDriveTotalSpace==0){
+		if(mDriveTotalSpaceBytes==0){
 			return ShimmerDevice.STRING_CONSTANT_NOT_AVAILABLE;
 		} else {
-			return spaceToString(mDriveTotalSpace);
+			return spaceToString(mDriveTotalSpaceBytes);
 		}
 	}
 	
 	public void setDriveUsedSpaceTotal(long driveUsedTotal) {
-		mDriveTotalSpace = driveUsedTotal;
+		mDriveTotalSpaceBytes = driveUsedTotal;
 	}
 
 	public void setDriveUsedSpaceTotalKB(long driveUsedTotalKB) {
-		mDriveTotalSpace = driveUsedTotalKB*1024;
+		mDriveTotalSpaceBytes = driveUsedTotalKB*1024;
 	}
 
 	private void updateDriveUsedSpace() {
-		mDriveUsedSpace = mDriveTotalSpace - mDriveFreeSpace;
+		mDriveUsedSpaceBytes = mDriveTotalSpaceBytes - mDriveFreeSpaceBytes;
 	}
 
 	public long getDriveUsedSpace() {
-		return mDriveUsedSpace;
+		return mDriveUsedSpaceBytes;
 	}
 
 	public long getDriveUsedSpaceKB() {
-		return mDriveUsedSpace/1024;
+		return mDriveUsedSpaceBytes/1024;
 	}
 
 	public String getDriveUsedSpaceParsed() {
-		if(mDriveUsedSpace==0){
+		if(mDriveUsedSpaceBytes==0){
 			return ShimmerDevice.STRING_CONSTANT_NOT_AVAILABLE;
 		} else {
-			return spaceToString(mDriveUsedSpace);
+			return spaceToString(mDriveUsedSpaceBytes);
 		}
 	}
 
 	public void setDriveUsedSpaceKB(long driveUsedSpace) {
-		setDriveUsedSpace(driveUsedSpace*1024);
+		setDriveUsedSpaceBytes(driveUsedSpace*1024);
 	}
 
-	public void setDriveUsedSpace(long driveUsedSpace) {
-		mDriveUsedSpace = driveUsedSpace;
+	public void setDriveUsedSpaceBytes(long driveUsedSpace) {
+		if(driveUsedSpace!=mDriveUsedSpaceBytes) {
+			mDriveUsedSpaceLastTimeChanged = System.currentTimeMillis();
+		}
+		mDriveUsedSpaceBytes = driveUsedSpace;
 	}
 	
 	public boolean isFirstSdAccess() {
@@ -123,7 +131,11 @@ public class ShimmerSDCardDetails implements Serializable {
 	public void setIsSDLogging(boolean state){
 		mIsSDLogging = state;
 	}	
-	
+
+    public boolean isSDSpaceIncreasing() {
+    	return ((System.currentTimeMillis()-mDriveUsedSpaceLastTimeChanged)<DRIVE_SPACE_USED_CHANGE_TIMEOUT_MS);
+	}
+
 	public static String spaceToString(long spaceBytes){
 	    double spaceTotal = (double)spaceBytes / 1024 / 1024 / 1024;
 	    String spaceTotalTxt = " GB";
@@ -139,6 +151,9 @@ public class ShimmerSDCardDetails implements Serializable {
 		setIsSDError(false);
 	}
 
+	/** Used for Device Emulation
+	 * @return
+	 */
 	public byte[] generateDriveStatusBytes() {
 		byte[] sdCapacityStatus = new byte[4];
 

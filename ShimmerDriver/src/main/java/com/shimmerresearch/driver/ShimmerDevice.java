@@ -840,7 +840,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void setDriveUsedSpace(long driveUsedSpace) {
-		mShimmerSDCardDetails.setDriveUsedSpace(driveUsedSpace);
+		mShimmerSDCardDetails.setDriveUsedSpaceBytes(driveUsedSpace);
 	}
 
 	public String getDriveCapacityParsed() {
@@ -872,6 +872,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+    public boolean isSDSpaceIncreasing() {
+    	return mShimmerSDCardDetails.isSDSpaceIncreasing();
+    }
+
 	//------------------- SD card related End -------------------------------
 
 	
