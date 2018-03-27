@@ -89,7 +89,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
 	
-	private boolean mIsaPlaybackDevice = false;
+	private boolean mIsEnabledAlgorithmModulesDuringPlayback = false;
 	
 	/** A shimmer device will have multiple sensors, depending on HW type and revision, these type of sensors can change, this holds a list of all the sensors for different versions. This only works with classes which implements the ShimmerHardwareSensors interface. E.g. ShimmerGQ. A single AbstractSensor (e.g., for MPU92X50) class can contain multiple SensorDetails (e.g., Accel, gyro etc.) */
 	protected LinkedHashMap<SENSORS, AbstractSensor> mMapOfSensorClasses = new LinkedHashMap<SENSORS, AbstractSensor>();
@@ -4549,12 +4549,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return 32768.0;
 	}
 	
-	public boolean isPlaybackDevice(){
-		return mIsaPlaybackDevice;
+	public boolean isEnabledAlgorithmModulesDuringPlayback(){
+		return mIsEnabledAlgorithmModulesDuringPlayback;
 	}
 	
-	public void setPlaybackDevice(boolean isPlaybackDevice){
-		mIsaPlaybackDevice = isPlaybackDevice;
+	public void setEnabledAlgorithmModulesDuringPlayback(boolean enableAlgorithmModulesDuringPlayback){
+		mIsEnabledAlgorithmModulesDuringPlayback = enableAlgorithmModulesDuringPlayback;
 	}
 
 	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
