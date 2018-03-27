@@ -170,7 +170,7 @@ public abstract class BasicProcessWithCallBack {
 		if(mWaitForData!=null){
 			BasicProcessWithCallBack bpwc = mWaitForData.returnBasicProcessWithCallBack();
 			if(bpwc==b || bpwc.equals(b)){
-				builder.append("\tRemoving thread\tHashCode: " + mWaitForData.hashCode());
+				builder.append("\tRemoving thread\tSimpleName: " + b.threadName + "\tHashCode: " + mWaitForData.hashCode());
 				mWaitForData = null;
 			}
 		}
@@ -182,7 +182,7 @@ public abstract class BasicProcessWithCallBack {
     			BasicProcessWithCallBack bpwc = wFD.returnBasicProcessWithCallBack();
     			if(bpwc==b || bpwc.equals(b)){
     				b.removeConsumer(this);
-    				builder.append("\n\tRemoving thread\tHashCode: " + wFD.hashCode());
+    				builder.append("\n\tRemoving thread\tSimpleName: " + b.threadName + "\tHashCode: " + wFD.hashCode());
     				entries.remove();
     			}
     		}
@@ -195,7 +195,7 @@ public abstract class BasicProcessWithCallBack {
     			if(bpwc==b || bpwc.equals(b)){
     				//TODO don't think removeConsumer needs to be called here as that method does not handle the mListOfMsgProducers 
     				b.removeConsumer(this);
-    				builder.append("\n\tRemoving thread\tHashCode: " + bpwc.hashCode());
+    				builder.append("\n\tRemoving thread\tSimpleName: " + b.threadName + "\tHashCode: " + bpwc.hashCode());
     				entries.remove();
     			}
     		}
