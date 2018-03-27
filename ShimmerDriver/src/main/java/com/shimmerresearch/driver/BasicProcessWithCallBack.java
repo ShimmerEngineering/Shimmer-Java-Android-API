@@ -203,7 +203,7 @@ public abstract class BasicProcessWithCallBack {
     	
     	if(builder.length()>0) {
     		consolePrintLn("");
-    		consolePrintLn(this.getClass().getSimpleName());
+    		consolePrintLn(this.getClass().getSimpleName() + " -> BasicProcessWithCallBack");
     		consolePrintLn(builder.toString());
     	}
 
@@ -362,8 +362,7 @@ public abstract class BasicProcessWithCallBack {
 	
 	public void printListOfThreads() {
 		consolePrintLn("");
-		consolePrintLn(this.getClass().getSimpleName() + ": Printing List of Threads");
-//		consolePrintLn("BasicProcessWithCallBack:\t" + threadName);
+		consolePrintLn(this.getClass().getSimpleName() + " -> BasicProcessWithCallBack" + ": Printing List of Threads");
 		
 		StringBuilder builder = new StringBuilder();
 
