@@ -541,7 +541,12 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	
 	public void setYAxisAutoRange(){
 		IAxis<?> y = mChart.getAxisY();
-		yAxis.setRangePolicy(new RangePolicyUnbounded());
+		y.setRangePolicy(new RangePolicyUnbounded());
+	}
+	
+	public void setXAxisAutoRange(){
+		IAxis<?> x = mChart.getAxisX();
+		x.setRangePolicy(new RangePolicyUnbounded());
 	}
 	
 	public Range getYAxisRange(){
@@ -2147,8 +2152,19 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 		}
 	}	
 	
-	public void setRangeForXAxis(boolean enable,int valueRange){
+	public void enableRangeLimiterForXAxis(boolean enable,double traceDuration){
+		enableRangeLimiterForXAxis(enable);
+		mXAxisRangeWindow = traceDuration;
+	}
+	
+	public void enableRangeLimiterForXAxis(boolean enable){
 		mXAxisRangeEnabled = enable;
+		if (!enable){
+			setXAxisAutoRange();
+		}
+	}
+	
+	public void setRangeLimiterForXAxis(int valueRange){
 		mXAxisRangeWindow = valueRange;
 	}
 	
