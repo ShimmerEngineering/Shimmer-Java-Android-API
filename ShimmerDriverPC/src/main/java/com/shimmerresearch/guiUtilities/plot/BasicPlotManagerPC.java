@@ -722,7 +722,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			return null;
 		}
 	}
-
+	
 	public void changeTraceColor(int index,int[] colorArray){
 		//change color
 		mListOfTraceColorsCurrentlyUsed.set(index, colorArray);
@@ -2218,6 +2218,26 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 	}
 	//----------------------FFT timer test code start ---------------------
 
+	/**
+	 * @return the max size of the first trace within the list of traces, returns 0 if the list is empty
+	 */
+	public int getFirstTraceMaxSize(){
+		for(ITrace2D t:mListofTraces){
+			return t.getMaxSize();
+		}
+		return 0;
+	}
 	
+	public int getFirstTraceSize(){
+		for(ITrace2D t:mListofTraces){
+			return t.getSize();
+		}
+		return 0;
+	}
 	
+	public void setAllTraceSize(int Size){
+		for(ITrace2D t:mListofTraces){
+			((Trace2DLtd)t).setMaxSize(Size);
+		}
+	}
 }
