@@ -118,7 +118,12 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public long mSystemTimeStamp = 0;
 	
 	private double mTimeStampMilliSecs;
-	public boolean mIsValidObjectCluster = true;
+	/**
+	 * Used in PC software for ShimmerGQ units to indicate if the data packet is
+	 * originating from the Shimmer itself or the Span driver (i.e., when no
+	 * ShimmerGQ packet has been received)
+	 */
+	public boolean mIsShimmerObjectCluster = true;
 	
 	public boolean useList = false;
 	
@@ -136,7 +141,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 //			OBJECTCLUSTER_TYPE.PROTOBUF
 			));
 	
-	//TODO remove this variable? unused in PC applications
+	/** Used in PC software to determine if a Webcam is paused during playback */
 	public BT_STATE mState;
 
 	public static final int CAL_INDEX = CHANNEL_TYPE.CAL.ordinal();
@@ -174,7 +179,6 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mBluetoothAddress=myBlueAdd;
 	}
 
-	//TODO remove this constructor? unused in PC applications
 	public ObjectCluster(String myName, String myBlueAdd, BT_STATE state){
 		this(myName, myBlueAdd);
 		mState = state;
@@ -787,6 +791,14 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mSystemTimeStamp = systemTimeStamp;
 //		mSystemTimeStampBytes=ByteBuffer.allocate(8).putLong(systemTimeStamp).array();
 		mSystemTimeStampBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(systemTimeStamp).array();
+	}
+
+	public boolean isValidObjectCluster() {
+		return mState==null && mIsShimmerObjectCluster;
+	}
+
+	public void setIsShimmerObjectCluster(boolean isShimmerObjectCluster) {
+		mIsShimmerObjectCluster = isShimmerObjectCluster;
 	}
 
 }
