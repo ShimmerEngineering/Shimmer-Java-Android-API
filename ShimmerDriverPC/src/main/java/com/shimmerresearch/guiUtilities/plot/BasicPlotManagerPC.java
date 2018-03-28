@@ -1382,8 +1382,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					axisX.setPaintGrid(mIsGridOn);
 				}
 			}
-			catch(IndexOutOfBoundsException iOOBE){
-				
+			catch(Exception e){
+				e.printStackTrace();
 			}
 			try{
 				IAxis<?> axisY = mChart.getAxisY();
@@ -1391,8 +1391,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 					axisY.setPaintGrid(mIsGridOn);
 				}
 			}
-			catch(IndexOutOfBoundsException iOOBE){
-				
+			catch(Exception e){
+				e.printStackTrace();
 			}
 		}
 	}
