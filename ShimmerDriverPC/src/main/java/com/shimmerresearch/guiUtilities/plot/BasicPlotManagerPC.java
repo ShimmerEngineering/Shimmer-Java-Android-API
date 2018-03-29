@@ -91,8 +91,6 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
 	private boolean mIsTraceDataBuffered = false;
-	private boolean mXAxisRangeEnabled = false;
-	private double mXAxisRangeWindow = 5000;
 	
 	public PlotCustomFeature pcf=null;
 	
@@ -1987,9 +1985,6 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 						} 
 						else {
 							if(isXAxisTime()){
-								if(mXAxisRangeEnabled){
-									setXAxisRange(xData-mXAxisRangeWindow, xData);
-								}
 								addTracePoint(currentTrace, xData, yData);
 							}
 							else if(isXAxisFrequency()){
@@ -2151,22 +2146,6 @@ public void adjustTraceLengthofSignalUsingSetSize(double percentage,String signa
 			return img;
 		}
 	}	
-	
-	public void enableRangeLimiterForXAxis(boolean enable,double traceDuration){
-		enableRangeLimiterForXAxis(enable);
-		mXAxisRangeWindow = traceDuration;
-	}
-	
-	public void enableRangeLimiterForXAxis(boolean enable){
-		mXAxisRangeEnabled = enable;
-		if (!enable){
-			setXAxisAutoRange();
-		}
-	}
-	
-	public void setRangeLimiterForXAxis(int valueRange){
-		mXAxisRangeWindow = valueRange;
-	}
 	
 	public void printListOfTraces(){
 		synchronized(mListofTraces){
