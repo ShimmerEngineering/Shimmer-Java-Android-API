@@ -165,12 +165,17 @@ public abstract class BasicProcessWithCallBack {
 
 //		consolePrintLn(this.getClass().getSimpleName() + " -> Trying to remove -> " + b.hashCode());
 
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = null;
+		if(mIsDebug){
+			builder = new StringBuilder();
+		}
 
 		if(mWaitForData!=null){
 			BasicProcessWithCallBack bpwc = mWaitForData.returnBasicProcessWithCallBack();
 			if(bpwc==b || bpwc.equals(b)){
-				builder.append("\tRemoving thread\tSimpleName: " + b.threadName + "\tHashCode: " + mWaitForData.hashCode());
+				if(builder!=null) {
+					builder.append("\tRemoving thread\tSimpleName: " + b.threadName + "\tHashCode: " + mWaitForData.hashCode());
+				}
 				mWaitForData = null;
 			}
 		}
@@ -182,7 +187,9 @@ public abstract class BasicProcessWithCallBack {
     			BasicProcessWithCallBack bpwc = wFD.returnBasicProcessWithCallBack();
     			if(bpwc==b || bpwc.equals(b)){
     				b.removeConsumer(this);
-    				builder.append("\n\tRemoving thread\tSimpleName: " + b.threadName + "\tHashCode: " + wFD.hashCode());
+    				if(builder!=null) {
+    					builder.append("\n\tRemoving thread\tSimpleName: " + b.threadName + "\tHashCode: " + wFD.hashCode());
+    				}
     				entries.remove();
     			}
     		}
@@ -195,13 +202,15 @@ public abstract class BasicProcessWithCallBack {
     			if(bpwc==b || bpwc.equals(b)){
     				//TODO don't think removeConsumer needs to be called here as that method does not handle the mListOfMsgProducers 
     				b.removeConsumer(this);
-    				builder.append("\n\tRemoving thread\tSimpleName: " + b.threadName + "\tHashCode: " + bpwc.hashCode());
+    				if(builder!=null) {
+    					builder.append("\n\tRemoving thread\tSimpleName: " + b.threadName + "\tHashCode: " + bpwc.hashCode());
+    				}
     				entries.remove();
     			}
     		}
     	}
     	
-    	if(builder.length()>0) {
+    	if(builder!=null && builder.length()>0) {
     		consolePrintLn("");
     		consolePrintLn(this.getClass().getSimpleName() + " -> BasicProcessWithCallBack");
     		consolePrintLn(builder.toString());
