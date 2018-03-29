@@ -543,15 +543,25 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	}
 	
 	public void setYAxisMajorTickSpacing(double tickSpacing){
-		IAxis<?> y = mChart.getAxisY();
-		yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
-		yAxis.setMajorTickSpacing(tickSpacing);	
+		try {
+			IAxis<?> y = mChart.getAxisY();
+			yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
+			yAxis.setMajorTickSpacing(tickSpacing);	
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void setYAxisMinorTickSpacing(double tickSpacing){
-		IAxis<?> y = mChart.getAxisY();
-		yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
-		yAxis.setMinorTickSpacing(tickSpacing);	
+		try {
+			IAxis<?> y = mChart.getAxisY();
+			yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
+			yAxis.setMinorTickSpacing(tickSpacing);	
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void setYAxisTickSize(double miny, double maxy){
