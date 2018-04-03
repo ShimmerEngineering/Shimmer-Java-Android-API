@@ -59,13 +59,11 @@ import java.util.Set;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
-import com.shimmerresearch.driver.ObjectCluster.OBJECTCLUSTER_TYPE;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.Builder;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2;
 import com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.FormatCluster2.DataCluster2;
 import com.shimmerresearch.sensors.SensorShimmerClock;
-import com.shimmerresearch.driverUtilities.ByteUtils;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 
@@ -135,12 +133,20 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		PROTOBUF,
 		ARRAYS
 	}
-	public static List<OBJECTCLUSTER_TYPE> mListOfOCTypesEnabled = new ArrayList<OBJECTCLUSTER_TYPE>(Arrays.asList(
-//			OBJECTCLUSTER_TYPE.ARRAYS_LEGACY,
-			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER
-//			OBJECTCLUSTER_TYPE.PROTOBUF
-			));
-	
+	/**
+	 * Size must be kept equal to the number of values in OBJECTCLUSTER_TYPE. Can be initialised via:
+	 * 1) set equal to "OBJECTCLUSTER_TYPE.values()" to enable everything in one line
+	 * 2) set equal to "new OBJECTCLUSTER_TYPE[OBJECTCLUSTER_TYPE.values().length]" to disable
+	 * everything. 
+	 * 3) As below to set defaults
+	 */
+	public static OBJECTCLUSTER_TYPE[] mOCTypesEnabled = new OBJECTCLUSTER_TYPE[] {
+			null,
+			OBJECTCLUSTER_TYPE.FORMAT_CLUSTER,
+			null,
+			null
+	};
+
 	/** Used in PC software to determine if a Webcam is paused during playback */
 	public BT_STATE mState;
 
@@ -167,10 +173,11 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 	
 	public ObjectCluster(){
-		
+
 	}
 	
 	public ObjectCluster(String myName){
+		this();
 		mMyName = myName;
 	}
 
@@ -502,7 +509,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	}
 	
 	public void addData(String objectClusterName, CHANNEL_TYPE channelType, String units, double data, int index, boolean isUsingDefaultCalib) {
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS_LEGACY)){
+		if(mOCTypesEnabled[OBJECTCLUSTER_TYPE.ARRAYS_LEGACY.ordinal()]!=null){
 			if(channelType==CHANNEL_TYPE.CAL){
 				mCalData[index] = data;
 				mUnitCal[index] = units;
@@ -522,48 +529,6 @@ final public class ObjectCluster implements Cloneable,Serializable{
 			
 			//TODO implement below here and remove everywhere else in the code
 //			incrementIndexKeeper();
-		}
-		
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)){
-			addDataToMap(objectClusterName, channelType.toString(), units, data, isUsingDefaultCalib);
-		}
-		
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.PROTOBUF)){
-			//TODO
-		}
-	}
-
-	public void incrementIndexKeeper(){
-		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS_LEGACY)){
-			if(indexKeeper<mCalData.length){
-				indexKeeper++;
-			}
-		}
-	}
-
-	public int getIndexKeeper() {
-		return indexKeeper;
-	}
-
-	public void setIndexKeeper(int indexKeeper) {
-		this.indexKeeper = indexKeeper;
-	}
-	
-	public void addCalDataToMap(ChannelDetails channelDetails, double data){
-		addDataToMap(channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalUnits, data);
-	}
-
-	public void addUncalDataToMap(ChannelDetails channelDetails, double data){
-		addDataToMap(channelDetails.mObjectClusterName, CHANNEL_TYPE.UNCAL.toString(), channelDetails.mDefaultCalUnits, data);
-	}
-
-	public void addDataToMap(String channelName, String channelType, String units, double data){
-		addDataToMap(channelName, channelType, units, data, false);
-	}
-
-	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
-//		if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.ARRAYS)) {
-		if(mEnableArraysDataStructure) {
 			
 			
 			//TODO JOS: Add new arrays data here
@@ -592,9 +557,52 @@ final public class ObjectCluster implements Cloneable,Serializable{
 ////				sensorDataArray[UNCAL_INDEX].mIsUsingDefaultCalibParams[mIndexUncal] = isUsingDefaultCalib;
 //				//mIndexUncal++;
 //			}
+
+		}
+		
+		if(mOCTypesEnabled[OBJECTCLUSTER_TYPE.FORMAT_CLUSTER.ordinal()]!=null){
+			addDataToMap(objectClusterName, channelType.toString(), units, data, isUsingDefaultCalib);
+		}
+		
+		if(mOCTypesEnabled[OBJECTCLUSTER_TYPE.PROTOBUF.ordinal()]!=null){
+			//TODO
+		}
+	}
+
+	public void incrementIndexKeeper(){
+		if(mOCTypesEnabled[OBJECTCLUSTER_TYPE.ARRAYS_LEGACY.ordinal()]!=null){
+			if(indexKeeper<mCalData.length){
+				indexKeeper++;
+			}
+		}
+	}
+
+	public int getIndexKeeper() {
+		return indexKeeper;
+	}
+
+	public void setIndexKeeper(int indexKeeper) {
+		this.indexKeeper = indexKeeper;
+	}
+	
+	public void addCalDataToMap(ChannelDetails channelDetails, double data){
+		addDataToMap(channelDetails.mObjectClusterName, CHANNEL_TYPE.CAL.toString(), channelDetails.mDefaultCalUnits, data);
+	}
+
+	public void addUncalDataToMap(ChannelDetails channelDetails, double data){
+		addDataToMap(channelDetails.mObjectClusterName, CHANNEL_TYPE.UNCAL.toString(), channelDetails.mDefaultCalUnits, data);
+	}
+
+	public void addDataToMap(String channelName, String channelType, String units, double data){
+		addDataToMap(channelName, channelType, units, data, false);
+	}
+
+	public void addDataToMap(String channelName, String channelType, String units, double data, boolean isUsingDefaultCalib){
+//		if(mOCTypesEnabled[OBJECTCLUSTER_TYPE.ARRAYS.ordinal()]!=null){
+		if(mEnableArraysDataStructure) {
 			
 		} else {
-			if(mListOfOCTypesEnabled.contains(OBJECTCLUSTER_TYPE.FORMAT_CLUSTER)) {
+			if(mOCTypesEnabled[OBJECTCLUSTER_TYPE.FORMAT_CLUSTER.ordinal()]!=null){
 				mPropertyCluster.put(channelName,new FormatCluster(channelType, units, data, isUsingDefaultCalib));
 				addChannelNameToList(channelName);
 			}
@@ -684,15 +692,18 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	/**
 	 * @return the mListOfOCTypesEnabled
 	 */
-	public static List<OBJECTCLUSTER_TYPE> getListOfOCTypesEnabled() {
-		return mListOfOCTypesEnabled;
+	public static OBJECTCLUSTER_TYPE[] getOCTypesEnabled() {
+		return mOCTypesEnabled;
 	}
 
 	/**
 	 * @param listOfOCTypesEnabled the mListOfOCTypesEnabled to set
 	 */
-	public static void setListOfOCTypesEnabled(List<OBJECTCLUSTER_TYPE> listOfOCTypesEnabled) {
-		ObjectCluster.mListOfOCTypesEnabled = listOfOCTypesEnabled;
+	public static void setOCTypesEnabled(List<OBJECTCLUSTER_TYPE> listOfOCTypesEnabled) {
+		ObjectCluster.mOCTypesEnabled = new OBJECTCLUSTER_TYPE[OBJECTCLUSTER_TYPE.values().length];
+		for(OBJECTCLUSTER_TYPE ocType:listOfOCTypesEnabled) {
+			ObjectCluster.mOCTypesEnabled[ocType.ordinal()] = ocType;
+		}
 	}
 
 	public void consolePrintChannelsAndDataSingleLine() {
