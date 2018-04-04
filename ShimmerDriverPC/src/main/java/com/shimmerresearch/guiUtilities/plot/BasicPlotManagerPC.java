@@ -96,9 +96,9 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	
 	private String mTitle = "";
 	
-	AAxis<IAxisScalePolicy> yAxis;
-	AAxis<IAxisScalePolicy> yAxisRight;
-	IAxis< ? > xAxis;
+	//private AAxis<IAxisScalePolicy> yAxisLeft;
+	private AAxis<IAxisScalePolicy> yAxisRight;
+	private IAxis< ? > xAxis;
 	
 	//Mark test code
 	private CHANNEL_AXES mXAisType = CHANNEL_AXES.TIME;
@@ -538,26 +538,26 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	}
 	
 	public void setYAxisRange(double miny,double maxy){
-		IAxis<?> y = mChart.getAxisY();
-		y.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
+		IAxis<?> yAxisLeft = mChart.getAxisY();
+		yAxisLeft.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
 	}
 	
 	public void setYAxisMajorTickSpacing(double tickSpacing){
 		try {
-			IAxis<?> y = mChart.getAxisY();
-			yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
-			yAxis.setMajorTickSpacing(tickSpacing);	
+			IAxis<IAxisScalePolicy> yAxisLeft = (IAxis<IAxisScalePolicy>)mChart.getAxisY();
+			yAxisLeft.setAxisScalePolicy(new AxisScalePolicyManualTicks());
+			yAxisLeft.setMajorTickSpacing(tickSpacing);	
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void setYAxisMinorTickSpacing(double tickSpacing){
+	public void setYAxisMinorTickSpacing(double tickSpacing){		
 		try {
-			IAxis<?> y = mChart.getAxisY();
-			yAxis.setAxisScalePolicy(new AxisScalePolicyManualTicks());
-			yAxis.setMinorTickSpacing(tickSpacing);	
+			IAxis<IAxisScalePolicy> yAxisLeft = (IAxis<IAxisScalePolicy>)mChart.getAxisY();
+			yAxisLeft.setAxisScalePolicy(new AxisScalePolicyManualTicks());
+			yAxisLeft.setMinorTickSpacing(tickSpacing);	
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -565,8 +565,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	}
 	
 	public void setYAxisTickSize(double miny, double maxy){
-		IAxis<?> y = mChart.getAxisY();
-		y.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
+		IAxis<?> yAxisLeft = mChart.getAxisY();
+		yAxisLeft.setRangePolicy(new RangePolicyFixedViewport(new Range(miny, maxy)));
 	}
 	
 	/**
@@ -630,30 +630,30 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		  xAxis = mChart.getAxisX();
 		  xAxis.setFormatter(xAxisLblFormatter);
 		  
-		  
-		  //mChart.setRequestedRepaint(true);
-		  
-		  // JC: the yAxis code seems to be legacy code which no longer does anything (20 Jan 2015)
-		  // RM: we need to create the yAxis so we can set the range
-		  yAxis = new AxisLinear<IAxisScalePolicy>();
-		  
-		  //yAxisRight = new AxisLinear<IAxisScalePolicy>(); 
-//			NumberFormat format = new DecimalFormat("#");
-//			format.setMaximumIntegerDigits(3);
-//			yAxis.setFormatter(new LabelFormatterNumber(format));
-		  if(mChart != null){
-			  if(yAxis != null){
-				  //TODO the below line throws a NullPointerException sometimes! Don't know why (RM)
-				  
-				  try{
-					  mChart.setAxisYLeft(yAxis, 0);   
-				  }
-				  catch(Exception e){
-					  // RM Double.Nan was causing a non critical exception here
-					  //e.printStackTrace();
-				  }
-			  }
-		  }		  
+//		  
+//		  //mChart.setRequestedRepaint(true);
+//		  
+//		  // JC: the yAxis code seems to be legacy code which no longer does anything (20 Jan 2015)
+//		  // RM: we need to create the yAxis so we can set the range
+//		  yAxisLeft = new AxisLinear<IAxisScalePolicy>();
+//		  
+//		  //yAxisRight = new AxisLinear<IAxisScalePolicy>(); 
+////			NumberFormat format = new DecimalFormat("#");
+////			format.setMaximumIntegerDigits(3);
+////			yAxis.setFormatter(new LabelFormatterNumber(format));
+//		  if(mChart != null){
+//			  if(yAxisLeft != null){
+//				  //TODO the below line throws a NullPointerException sometimes! Don't know why (RM)
+//				  
+//				  try{
+//					  mChart.setAxisYLeft(yAxisLeft, 0);   
+//				  }
+//				  catch(Exception e){
+//					  // RM Double.Nan was causing a non critical exception here
+//					  //e.printStackTrace();
+//				  }
+//			  }
+//		  }		  
 		  
 		}
 	}
@@ -981,9 +981,9 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 //				yMin = (double) yAxisMin;
 //				yMax = (double) yAxisMax;
 
-				AAxis<IAxisScalePolicy> axisToUse = null;
-				if(isLeftYAxis && yAxis != null){
-					axisToUse = yAxis;
+				IAxis<?> axisToUse = null;
+				if(isLeftYAxis /*&& yAxisLeft != null*/){
+					axisToUse = mChart.getAxisY();
 				} else if (yAxisRight != null){
 					axisToUse = yAxisRight;
 				}
@@ -1044,9 +1044,9 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 
 //			utilShimmer.consolePrintErrLn("\tminY=" + minY + "\tminY=" + maxY);
 
-			AAxis<IAxisScalePolicy> axisToUse = null;
-			if(isLeftYAxis && yAxis != null){
-				axisToUse = yAxis;
+			IAxis<?> axisToUse = null;
+			if(isLeftYAxis /*&& yAxisLeft != null*/){
+				axisToUse = mChart.getAxisY();
 			} else if (yAxisRight != null){
 				axisToUse = yAxisRight;
 			}
