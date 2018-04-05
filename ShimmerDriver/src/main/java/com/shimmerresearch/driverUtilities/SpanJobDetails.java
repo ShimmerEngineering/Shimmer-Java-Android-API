@@ -70,7 +70,9 @@ public class SpanJobDetails extends AbstractErrorCodes {
 	
 	List<ShimmerDevice> listofDockedShimmersForJob = new ArrayList<ShimmerDevice>();
 	public boolean mStateToSet = false;
-	public int mChannelToSet = -1;
+	
+	public int mRadioChannelToSet = -1;
+	public int mRadioGroupIdToSet = -1;
 
 	public SpanJobDetails(SPAN_JOB_TYPE jobType){
 		this.currentJob = jobType;
@@ -81,44 +83,10 @@ public class SpanJobDetails extends AbstractErrorCodes {
 		mStateToSet = state;
 	}
 
-	public SpanJobDetails(SPAN_JOB_TYPE jobType, int channel) {
+	public SpanJobDetails(SPAN_JOB_TYPE jobType, int channel, int radioGroupId) {
 		this(jobType);
-		this.mChannelToSet = channel;
+		this.mRadioChannelToSet = channel;
+		this.mRadioGroupIdToSet = radioGroupId;
 	}
-
-	public Object deepClone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-//	public DockJobDetails(JOB_TYPE jobType, List<SlotDetails> listofDockedShimmersForJob){
-//		this.currentJob = jobType;
-//	}
-
-//	//SET_SHIMMERS_RESET_STATE,
-//	public SpanJobDetails(JOB_TYPE jobType, GPIO_STATE gpioState) {
-//		this.currentJob = jobType;
-//		this.gpioState = gpioState;
-//	}
-//	
-//	//SET_GPIO_OUT_TOGGLE
-//	public SpanJobDetails(JOB_TYPE jobType, int count, int milliSecDelay) {
-//		this.currentJob = jobType;
-//		gpioToggleCount = count;
-//		gpioToggleDelay = milliSecDelay;
-//	}
-//
-//	//SET_INDICATOR_LEDS_STATE
-//	public SpanJobDetails(JOB_TYPE jobType, List<Integer> displayList, int milliSecDelay) {
-//		this.currentJob = jobType;
-//		this.ledDisplayList = displayList;
-//		this.ledToggleDelay = milliSecDelay;
-//	}
-//	
-//	//ACCESS_SD_CARD
-//	public SpanJobDetails(JOB_TYPE jobType, int slotNumber) {
-//		this.currentJob = jobType;
-//		this.slotNumber = slotNumber;
-//	}
 
 }
