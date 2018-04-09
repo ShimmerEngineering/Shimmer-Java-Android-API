@@ -132,9 +132,9 @@ public class UtilShimmer implements Serializable {
 	}
 	
 	public void consolePrintErrLn(Object message) {
-		if(mVerboseMode) {
+//		if(mVerboseMode) {
 			System.err.println(generateConsolePrintHeader() + message);
-		}		
+//		}		
 	}
 	
 	public void consolePrintExeptionLn(String message, StackTraceElement[] stackTrace) {
