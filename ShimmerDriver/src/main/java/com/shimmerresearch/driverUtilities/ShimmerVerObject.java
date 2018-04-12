@@ -21,7 +21,6 @@ public class ShimmerVerObject implements Serializable {
 	private static final long serialVersionUID = -1966526754185423783L;
 	
 	public int mHardwareVersion = HW_ID.UNKNOWN;
-//	public String mHardwareVersionParsed = UtilShimmer.STRING_CONSTANT_FOR_UNKNOWN;
 	
 	public int mFirmwareIdentifier = FW_ID.UNKNOWN;
 	public int mFirmwareVersionMajor = FW_ID.UNKNOWN;
@@ -655,4 +654,9 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 
+	public String generateDebugString() {
+		return "HW_ID: " + getHardwareVersion() + "\tHardwareVersionParsed: " + getHardwareVersionParsed() 
+		+ "\tFW_ID: " + getFirmwareIdentifier() + "\tFirmwareVersionParsed: " + getFirmwareVersionParsed();
+	}
+	
 }
