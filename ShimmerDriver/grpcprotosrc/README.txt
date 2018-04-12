@@ -41,3 +41,9 @@ Error:
 	"google/protobuf/descriptor.proto: File not found.
 	ShimmerGrpcAndOJC.proto: Import "google/protobuf/descriptor.proto" was not found or had errors."
 Solution:
+
+
+Error:
+	warning: Import google/protobuf/descriptor.proto but not used.
+Solution:
+	

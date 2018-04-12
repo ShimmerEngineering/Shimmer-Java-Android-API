@@ -9239,6 +9239,31 @@ public final class ShimmerGRPC {
        */
       com.google.protobuf.ByteString
           getConfigTimeParsedBytes();
+
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+       */
+      boolean hasIeee802154Info();
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+       */
+      com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info();
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+       */
+      com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder getIeee802154InfoOrBuilder();
     }
     /**
      * Protobuf type {@code shimmerGRPC.ShimmersInfo.ShimmerInfo}
@@ -9417,6 +9442,19 @@ public final class ShimmerGRPC {
                 java.lang.String s = input.readStringRequireUtf8();
 
                 configTimeParsed_ = s;
+                break;
+              }
+              case 170: {
+                com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder subBuilder = null;
+                if (ieee802154Info_ != null) {
+                  subBuilder = ieee802154Info_.toBuilder();
+                }
+                ieee802154Info_ = input.readMessage(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(ieee802154Info_);
+                  ieee802154Info_ = subBuilder.buildPartial();
+                }
+
                 break;
               }
             }
@@ -9947,6 +9985,39 @@ public final class ShimmerGRPC {
         }
       }
 
+      public static final int IEEE802154INFO_FIELD_NUMBER = 21;
+      private com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info ieee802154Info_;
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+       */
+      public boolean hasIeee802154Info() {
+        return ieee802154Info_ != null;
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+       */
+      public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info() {
+        return ieee802154Info_ == null ? com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance() : ieee802154Info_;
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+       */
+      public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder getIeee802154InfoOrBuilder() {
+        return getIeee802154Info();
+      }
+
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -10018,6 +10089,9 @@ public final class ShimmerGRPC {
         }
         if (!getConfigTimeParsedBytes().isEmpty()) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 20, configTimeParsed_);
+        }
+        if (ieee802154Info_ != null) {
+          output.writeMessage(21, getIeee802154Info());
         }
         unknownFields.writeTo(output);
       }
@@ -10099,6 +10173,10 @@ public final class ShimmerGRPC {
         if (!getConfigTimeParsedBytes().isEmpty()) {
           size += com.google.protobuf.GeneratedMessageV3.computeStringSize(20, configTimeParsed_);
         }
+        if (ieee802154Info_ != null) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(21, getIeee802154Info());
+        }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
         return size;
@@ -10157,6 +10235,11 @@ public final class ShimmerGRPC {
             == other.getConfigTime());
         result = result && getConfigTimeParsed()
             .equals(other.getConfigTimeParsed());
+        result = result && (hasIeee802154Info() == other.hasIeee802154Info());
+        if (hasIeee802154Info()) {
+          result = result && getIeee802154Info()
+              .equals(other.getIeee802154Info());
+        }
         result = result && unknownFields.equals(other.unknownFields);
         return result;
       }
@@ -10217,6 +10300,10 @@ public final class ShimmerGRPC {
             getConfigTime());
         hash = (37 * hash) + CONFIGTIMEPARSED_FIELD_NUMBER;
         hash = (53 * hash) + getConfigTimeParsed().hashCode();
+        if (hasIeee802154Info()) {
+          hash = (37 * hash) + IEEE802154INFO_FIELD_NUMBER;
+          hash = (53 * hash) + getIeee802154Info().hashCode();
+        }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -10386,6 +10473,12 @@ public final class ShimmerGRPC {
 
           configTimeParsed_ = "";
 
+          if (ieee802154InfoBuilder_ == null) {
+            ieee802154Info_ = null;
+          } else {
+            ieee802154Info_ = null;
+            ieee802154InfoBuilder_ = null;
+          }
           return this;
         }
 
@@ -10434,6 +10527,11 @@ public final class ShimmerGRPC {
           result.pairedDevice_ = pairedDevice_;
           result.configTime_ = configTime_;
           result.configTimeParsed_ = configTimeParsed_;
+          if (ieee802154InfoBuilder_ == null) {
+            result.ieee802154Info_ = ieee802154Info_;
+          } else {
+            result.ieee802154Info_ = ieee802154InfoBuilder_.build();
+          }
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -10554,6 +10652,9 @@ public final class ShimmerGRPC {
           if (!other.getConfigTimeParsed().isEmpty()) {
             configTimeParsed_ = other.configTimeParsed_;
             onChanged();
+          }
+          if (other.hasIeee802154Info()) {
+            mergeIeee802154Info(other.getIeee802154Info());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -11686,6 +11787,159 @@ public final class ShimmerGRPC {
           onChanged();
           return this;
         }
+
+        private com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info ieee802154Info_ = null;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder> ieee802154InfoBuilder_;
+        /**
+         * <pre>
+         *GQ related
+         * </pre>
+         *
+         * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+         */
+        public boolean hasIeee802154Info() {
+          return ieee802154InfoBuilder_ != null || ieee802154Info_ != null;
+        }
+        /**
+         * <pre>
+         *GQ related
+         * </pre>
+         *
+         * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+         */
+        public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info() {
+          if (ieee802154InfoBuilder_ == null) {
+            return ieee802154Info_ == null ? com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance() : ieee802154Info_;
+          } else {
+            return ieee802154InfoBuilder_.getMessage();
+          }
+        }
+        /**
+         * <pre>
+         *GQ related
+         * </pre>
+         *
+         * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+         */
+        public Builder setIeee802154Info(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info value) {
+          if (ieee802154InfoBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ieee802154Info_ = value;
+            onChanged();
+          } else {
+            ieee802154InfoBuilder_.setMessage(value);
+          }
+
+          return this;
+        }
+        /**
+         * <pre>
+         *GQ related
+         * </pre>
+         *
+         * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+         */
+        public Builder setIeee802154Info(
+            com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder builderForValue) {
+          if (ieee802154InfoBuilder_ == null) {
+            ieee802154Info_ = builderForValue.build();
+            onChanged();
+          } else {
+            ieee802154InfoBuilder_.setMessage(builderForValue.build());
+          }
+
+          return this;
+        }
+        /**
+         * <pre>
+         *GQ related
+         * </pre>
+         *
+         * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+         */
+        public Builder mergeIeee802154Info(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info value) {
+          if (ieee802154InfoBuilder_ == null) {
+            if (ieee802154Info_ != null) {
+              ieee802154Info_ =
+                com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.newBuilder(ieee802154Info_).mergeFrom(value).buildPartial();
+            } else {
+              ieee802154Info_ = value;
+            }
+            onChanged();
+          } else {
+            ieee802154InfoBuilder_.mergeFrom(value);
+          }
+
+          return this;
+        }
+        /**
+         * <pre>
+         *GQ related
+         * </pre>
+         *
+         * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+         */
+        public Builder clearIeee802154Info() {
+          if (ieee802154InfoBuilder_ == null) {
+            ieee802154Info_ = null;
+            onChanged();
+          } else {
+            ieee802154Info_ = null;
+            ieee802154InfoBuilder_ = null;
+          }
+
+          return this;
+        }
+        /**
+         * <pre>
+         *GQ related
+         * </pre>
+         *
+         * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+         */
+        public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder getIeee802154InfoBuilder() {
+          
+          onChanged();
+          return getIeee802154InfoFieldBuilder().getBuilder();
+        }
+        /**
+         * <pre>
+         *GQ related
+         * </pre>
+         *
+         * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+         */
+        public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder getIeee802154InfoOrBuilder() {
+          if (ieee802154InfoBuilder_ != null) {
+            return ieee802154InfoBuilder_.getMessageOrBuilder();
+          } else {
+            return ieee802154Info_ == null ?
+                com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance() : ieee802154Info_;
+          }
+        }
+        /**
+         * <pre>
+         *GQ related
+         * </pre>
+         *
+         * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder> 
+            getIeee802154InfoFieldBuilder() {
+          if (ieee802154InfoBuilder_ == null) {
+            ieee802154InfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder>(
+                    getIeee802154Info(),
+                    getParentForChildren(),
+                    isClean());
+            ieee802154Info_ = null;
+          }
+          return ieee802154InfoBuilder_;
+        }
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFieldsProto3(unknownFields);
@@ -12475,6 +12729,2530 @@ public final class ShimmerGRPC {
 
   }
 
+  public interface Ieee802154InfoOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:shimmerGRPC.Ieee802154Info)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int64 radioChannel = 1;</code>
+     */
+    long getRadioChannel();
+
+    /**
+     * <code>int64 radioGroupId = 2;</code>
+     */
+    long getRadioGroupId();
+
+    /**
+     * <code>int64 radioDeviceId = 3;</code>
+     */
+    long getRadioDeviceId();
+  }
+  /**
+   * Protobuf type {@code shimmerGRPC.Ieee802154Info}
+   */
+  public  static final class Ieee802154Info extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:shimmerGRPC.Ieee802154Info)
+      Ieee802154InfoOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Ieee802154Info.newBuilder() to construct.
+    private Ieee802154Info(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Ieee802154Info() {
+      radioChannel_ = 0L;
+      radioGroupId_ = 0L;
+      radioDeviceId_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Ieee802154Info(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              radioChannel_ = input.readInt64();
+              break;
+            }
+            case 16: {
+
+              radioGroupId_ = input.readInt64();
+              break;
+            }
+            case 24: {
+
+              radioDeviceId_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_Ieee802154Info_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_Ieee802154Info_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.class, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder.class);
+    }
+
+    public static final int RADIOCHANNEL_FIELD_NUMBER = 1;
+    private long radioChannel_;
+    /**
+     * <code>int64 radioChannel = 1;</code>
+     */
+    public long getRadioChannel() {
+      return radioChannel_;
+    }
+
+    public static final int RADIOGROUPID_FIELD_NUMBER = 2;
+    private long radioGroupId_;
+    /**
+     * <code>int64 radioGroupId = 2;</code>
+     */
+    public long getRadioGroupId() {
+      return radioGroupId_;
+    }
+
+    public static final int RADIODEVICEID_FIELD_NUMBER = 3;
+    private long radioDeviceId_;
+    /**
+     * <code>int64 radioDeviceId = 3;</code>
+     */
+    public long getRadioDeviceId() {
+      return radioDeviceId_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (radioChannel_ != 0L) {
+        output.writeInt64(1, radioChannel_);
+      }
+      if (radioGroupId_ != 0L) {
+        output.writeInt64(2, radioGroupId_);
+      }
+      if (radioDeviceId_ != 0L) {
+        output.writeInt64(3, radioDeviceId_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (radioChannel_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, radioChannel_);
+      }
+      if (radioGroupId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, radioGroupId_);
+      }
+      if (radioDeviceId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, radioDeviceId_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info)) {
+        return super.equals(obj);
+      }
+      com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info other = (com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info) obj;
+
+      boolean result = true;
+      result = result && (getRadioChannel()
+          == other.getRadioChannel());
+      result = result && (getRadioGroupId()
+          == other.getRadioGroupId());
+      result = result && (getRadioDeviceId()
+          == other.getRadioDeviceId());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RADIOCHANNEL_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRadioChannel());
+      hash = (37 * hash) + RADIOGROUPID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRadioGroupId());
+      hash = (37 * hash) + RADIODEVICEID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRadioDeviceId());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.Ieee802154Info}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:shimmerGRPC.Ieee802154Info)
+        com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_Ieee802154Info_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_Ieee802154Info_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.class, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder.class);
+      }
+
+      // Construct using com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        radioChannel_ = 0L;
+
+        radioGroupId_ = 0L;
+
+        radioDeviceId_ = 0L;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_Ieee802154Info_descriptor;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getDefaultInstanceForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance();
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info build() {
+        com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info buildPartial() {
+        com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info result = new com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info(this);
+        result.radioChannel_ = radioChannel_;
+        result.radioGroupId_ = radioGroupId_;
+        result.radioDeviceId_ = radioDeviceId_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info) {
+          return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info other) {
+        if (other == com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance()) return this;
+        if (other.getRadioChannel() != 0L) {
+          setRadioChannel(other.getRadioChannel());
+        }
+        if (other.getRadioGroupId() != 0L) {
+          setRadioGroupId(other.getRadioGroupId());
+        }
+        if (other.getRadioDeviceId() != 0L) {
+          setRadioDeviceId(other.getRadioDeviceId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private long radioChannel_ ;
+      /**
+       * <code>int64 radioChannel = 1;</code>
+       */
+      public long getRadioChannel() {
+        return radioChannel_;
+      }
+      /**
+       * <code>int64 radioChannel = 1;</code>
+       */
+      public Builder setRadioChannel(long value) {
+        
+        radioChannel_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 radioChannel = 1;</code>
+       */
+      public Builder clearRadioChannel() {
+        
+        radioChannel_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long radioGroupId_ ;
+      /**
+       * <code>int64 radioGroupId = 2;</code>
+       */
+      public long getRadioGroupId() {
+        return radioGroupId_;
+      }
+      /**
+       * <code>int64 radioGroupId = 2;</code>
+       */
+      public Builder setRadioGroupId(long value) {
+        
+        radioGroupId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 radioGroupId = 2;</code>
+       */
+      public Builder clearRadioGroupId() {
+        
+        radioGroupId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long radioDeviceId_ ;
+      /**
+       * <code>int64 radioDeviceId = 3;</code>
+       */
+      public long getRadioDeviceId() {
+        return radioDeviceId_;
+      }
+      /**
+       * <code>int64 radioDeviceId = 3;</code>
+       */
+      public Builder setRadioDeviceId(long value) {
+        
+        radioDeviceId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 radioDeviceId = 3;</code>
+       */
+      public Builder clearRadioDeviceId() {
+        
+        radioDeviceId_ = 0L;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:shimmerGRPC.Ieee802154Info)
+    }
+
+    // @@protoc_insertion_point(class_scope:shimmerGRPC.Ieee802154Info)
+    private static final com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info();
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Ieee802154Info>
+        PARSER = new com.google.protobuf.AbstractParser<Ieee802154Info>() {
+      public Ieee802154Info parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Ieee802154Info(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Ieee802154Info> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Ieee802154Info> getParserForType() {
+      return PARSER;
+    }
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface InfoSpansOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:shimmerGRPC.InfoSpans)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool state = 1;</code>
+     */
+    boolean getState();
+
+    /**
+     * <code>string message = 2;</code>
+     */
+    java.lang.String getMessage();
+    /**
+     * <code>string message = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getMessageBytes();
+
+    /**
+     * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+     */
+    int getSpanMapCount();
+    /**
+     * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+     */
+    boolean containsSpanMap(
+        java.lang.String key);
+    /**
+     * Use {@link #getSpanMapMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan>
+    getSpanMap();
+    /**
+     * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+     */
+    java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan>
+    getSpanMapMap();
+    /**
+     * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+     */
+
+    com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan getSpanMapOrDefault(
+        java.lang.String key,
+        com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan defaultValue);
+    /**
+     * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+     */
+
+    com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan getSpanMapOrThrow(
+        java.lang.String key);
+
+    /**
+     * <pre>
+     *GQ related
+     * </pre>
+     *
+     * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+     */
+    boolean hasIeee802154Info();
+    /**
+     * <pre>
+     *GQ related
+     * </pre>
+     *
+     * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+     */
+    com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info();
+    /**
+     * <pre>
+     *GQ related
+     * </pre>
+     *
+     * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+     */
+    com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder getIeee802154InfoOrBuilder();
+  }
+  /**
+   * Protobuf type {@code shimmerGRPC.InfoSpans}
+   */
+  public  static final class InfoSpans extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:shimmerGRPC.InfoSpans)
+      InfoSpansOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use InfoSpans.newBuilder() to construct.
+    private InfoSpans(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private InfoSpans() {
+      state_ = false;
+      message_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private InfoSpans(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              state_ = input.readBool();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              message_ = s;
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                spanMap_ = com.google.protobuf.MapField.newMapField(
+                    SpanMapDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000004;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan>
+              spanMap__ = input.readMessage(
+                  SpanMapDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              spanMap_.getMutableMap().put(
+                  spanMap__.getKey(), spanMap__.getValue());
+              break;
+            }
+            case 34: {
+              com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder subBuilder = null;
+              if (ieee802154Info_ != null) {
+                subBuilder = ieee802154Info_.toBuilder();
+              }
+              ieee802154Info_ = input.readMessage(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(ieee802154Info_);
+                ieee802154Info_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetSpanMap();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.class, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.Builder.class);
+    }
+
+    public interface InfoSpanOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:shimmerGRPC.InfoSpans.InfoSpan)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>string uniqueId = 1;</code>
+       */
+      java.lang.String getUniqueId();
+      /**
+       * <code>string uniqueId = 1;</code>
+       */
+      com.google.protobuf.ByteString
+          getUniqueIdBytes();
+
+      /**
+       * <code>string portBsl = 2;</code>
+       */
+      java.lang.String getPortBsl();
+      /**
+       * <code>string portBsl = 2;</code>
+       */
+      com.google.protobuf.ByteString
+          getPortBslBytes();
+
+      /**
+       * <code>string portComms = 3;</code>
+       */
+      java.lang.String getPortComms();
+      /**
+       * <code>string portComms = 3;</code>
+       */
+      com.google.protobuf.ByteString
+          getPortCommsBytes();
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.InfoSpans.InfoSpan}
+     */
+    public  static final class InfoSpan extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:shimmerGRPC.InfoSpans.InfoSpan)
+        InfoSpanOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use InfoSpan.newBuilder() to construct.
+      private InfoSpan(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private InfoSpan() {
+        uniqueId_ = "";
+        portBsl_ = "";
+        portComms_ = "";
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private InfoSpan(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownFieldProto3(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                uniqueId_ = s;
+                break;
+              }
+              case 18: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                portBsl_ = s;
+                break;
+              }
+              case 26: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                portComms_ = s;
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_InfoSpan_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_InfoSpan_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan.class, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan.Builder.class);
+      }
+
+      public static final int UNIQUEID_FIELD_NUMBER = 1;
+      private volatile java.lang.Object uniqueId_;
+      /**
+       * <code>string uniqueId = 1;</code>
+       */
+      public java.lang.String getUniqueId() {
+        java.lang.Object ref = uniqueId_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          uniqueId_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string uniqueId = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getUniqueIdBytes() {
+        java.lang.Object ref = uniqueId_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          uniqueId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int PORTBSL_FIELD_NUMBER = 2;
+      private volatile java.lang.Object portBsl_;
+      /**
+       * <code>string portBsl = 2;</code>
+       */
+      public java.lang.String getPortBsl() {
+        java.lang.Object ref = portBsl_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          portBsl_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string portBsl = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPortBslBytes() {
+        java.lang.Object ref = portBsl_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          portBsl_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int PORTCOMMS_FIELD_NUMBER = 3;
+      private volatile java.lang.Object portComms_;
+      /**
+       * <code>string portComms = 3;</code>
+       */
+      public java.lang.String getPortComms() {
+        java.lang.Object ref = portComms_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          portComms_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string portComms = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPortCommsBytes() {
+        java.lang.Object ref = portComms_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          portComms_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!getUniqueIdBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uniqueId_);
+        }
+        if (!getPortBslBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, portBsl_);
+        }
+        if (!getPortCommsBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 3, portComms_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!getUniqueIdBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uniqueId_);
+        }
+        if (!getPortBslBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, portBsl_);
+        }
+        if (!getPortCommsBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, portComms_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan)) {
+          return super.equals(obj);
+        }
+        com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan other = (com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan) obj;
+
+        boolean result = true;
+        result = result && getUniqueId()
+            .equals(other.getUniqueId());
+        result = result && getPortBsl()
+            .equals(other.getPortBsl());
+        result = result && getPortComms()
+            .equals(other.getPortComms());
+        result = result && unknownFields.equals(other.unknownFields);
+        return result;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + UNIQUEID_FIELD_NUMBER;
+        hash = (53 * hash) + getUniqueId().hashCode();
+        hash = (37 * hash) + PORTBSL_FIELD_NUMBER;
+        hash = (53 * hash) + getPortBsl().hashCode();
+        hash = (37 * hash) + PORTCOMMS_FIELD_NUMBER;
+        hash = (53 * hash) + getPortComms().hashCode();
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code shimmerGRPC.InfoSpans.InfoSpan}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:shimmerGRPC.InfoSpans.InfoSpan)
+          com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpanOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_InfoSpan_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_InfoSpan_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan.class, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan.Builder.class);
+        }
+
+        // Construct using com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        public Builder clear() {
+          super.clear();
+          uniqueId_ = "";
+
+          portBsl_ = "";
+
+          portComms_ = "";
+
+          return this;
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_InfoSpan_descriptor;
+        }
+
+        public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan getDefaultInstanceForType() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan.getDefaultInstance();
+        }
+
+        public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan build() {
+          com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan buildPartial() {
+          com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan result = new com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan(this);
+          result.uniqueId_ = uniqueId_;
+          result.portBsl_ = portBsl_;
+          result.portComms_ = portComms_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder clone() {
+          return (Builder) super.clone();
+        }
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.setField(field, value);
+        }
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return (Builder) super.clearField(field);
+        }
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return (Builder) super.clearOneof(oneof);
+        }
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return (Builder) super.setRepeatedField(field, index, value);
+        }
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.addRepeatedField(field, value);
+        }
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan) {
+            return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan other) {
+          if (other == com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan.getDefaultInstance()) return this;
+          if (!other.getUniqueId().isEmpty()) {
+            uniqueId_ = other.uniqueId_;
+            onChanged();
+          }
+          if (!other.getPortBsl().isEmpty()) {
+            portBsl_ = other.portBsl_;
+            onChanged();
+          }
+          if (!other.getPortComms().isEmpty()) {
+            portComms_ = other.portComms_;
+            onChanged();
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private java.lang.Object uniqueId_ = "";
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public java.lang.String getUniqueId() {
+          java.lang.Object ref = uniqueId_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            uniqueId_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getUniqueIdBytes() {
+          java.lang.Object ref = uniqueId_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            uniqueId_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public Builder setUniqueId(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          uniqueId_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public Builder clearUniqueId() {
+          
+          uniqueId_ = getDefaultInstance().getUniqueId();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public Builder setUniqueIdBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          uniqueId_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object portBsl_ = "";
+        /**
+         * <code>string portBsl = 2;</code>
+         */
+        public java.lang.String getPortBsl() {
+          java.lang.Object ref = portBsl_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            portBsl_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string portBsl = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPortBslBytes() {
+          java.lang.Object ref = portBsl_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            portBsl_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string portBsl = 2;</code>
+         */
+        public Builder setPortBsl(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          portBsl_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string portBsl = 2;</code>
+         */
+        public Builder clearPortBsl() {
+          
+          portBsl_ = getDefaultInstance().getPortBsl();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string portBsl = 2;</code>
+         */
+        public Builder setPortBslBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          portBsl_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object portComms_ = "";
+        /**
+         * <code>string portComms = 3;</code>
+         */
+        public java.lang.String getPortComms() {
+          java.lang.Object ref = portComms_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            portComms_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string portComms = 3;</code>
+         */
+        public com.google.protobuf.ByteString
+            getPortCommsBytes() {
+          java.lang.Object ref = portComms_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            portComms_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string portComms = 3;</code>
+         */
+        public Builder setPortComms(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          portComms_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string portComms = 3;</code>
+         */
+        public Builder clearPortComms() {
+          
+          portComms_ = getDefaultInstance().getPortComms();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string portComms = 3;</code>
+         */
+        public Builder setPortCommsBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          portComms_ = value;
+          onChanged();
+          return this;
+        }
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFieldsProto3(unknownFields);
+        }
+
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:shimmerGRPC.InfoSpans.InfoSpan)
+      }
+
+      // @@protoc_insertion_point(class_scope:shimmerGRPC.InfoSpans.InfoSpan)
+      private static final com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan();
+      }
+
+      public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<InfoSpan>
+          PARSER = new com.google.protobuf.AbstractParser<InfoSpan>() {
+        public InfoSpan parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return new InfoSpan(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<InfoSpan> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<InfoSpan> getParserForType() {
+        return PARSER;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    private int bitField0_;
+    public static final int STATE_FIELD_NUMBER = 1;
+    private boolean state_;
+    /**
+     * <code>bool state = 1;</code>
+     */
+    public boolean getState() {
+      return state_;
+    }
+
+    public static final int MESSAGE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object message_;
+    /**
+     * <code>string message = 2;</code>
+     */
+    public java.lang.String getMessage() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        message_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string message = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMessageBytes() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        message_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SPANMAP_FIELD_NUMBER = 3;
+    private static final class SpanMapDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan>newDefaultInstance(
+                  com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                  com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan.getDefaultInstance());
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> spanMap_;
+    private com.google.protobuf.MapField<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan>
+    internalGetSpanMap() {
+      if (spanMap_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            SpanMapDefaultEntryHolder.defaultEntry);
+      }
+      return spanMap_;
+    }
+
+    public int getSpanMapCount() {
+      return internalGetSpanMap().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+     */
+
+    public boolean containsSpanMap(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetSpanMap().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getSpanMapMap()} instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> getSpanMap() {
+      return getSpanMapMap();
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+     */
+
+    public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> getSpanMapMap() {
+      return internalGetSpanMap().getMap();
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+     */
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan getSpanMapOrDefault(
+        java.lang.String key,
+        com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> map =
+          internalGetSpanMap().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+     */
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan getSpanMapOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> map =
+          internalGetSpanMap().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public static final int IEEE802154INFO_FIELD_NUMBER = 4;
+    private com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info ieee802154Info_;
+    /**
+     * <pre>
+     *GQ related
+     * </pre>
+     *
+     * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+     */
+    public boolean hasIeee802154Info() {
+      return ieee802154Info_ != null;
+    }
+    /**
+     * <pre>
+     *GQ related
+     * </pre>
+     *
+     * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info() {
+      return ieee802154Info_ == null ? com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance() : ieee802154Info_;
+    }
+    /**
+     * <pre>
+     *GQ related
+     * </pre>
+     *
+     * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder getIeee802154InfoOrBuilder() {
+      return getIeee802154Info();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (state_ != false) {
+        output.writeBool(1, state_);
+      }
+      if (!getMessageBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
+      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetSpanMap(),
+          SpanMapDefaultEntryHolder.defaultEntry,
+          3);
+      if (ieee802154Info_ != null) {
+        output.writeMessage(4, getIeee802154Info());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (state_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, state_);
+      }
+      if (!getMessageBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
+      }
+      for (java.util.Map.Entry<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> entry
+           : internalGetSpanMap().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan>
+        spanMap__ = SpanMapDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, spanMap__);
+      }
+      if (ieee802154Info_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getIeee802154Info());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans)) {
+        return super.equals(obj);
+      }
+      com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans other = (com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans) obj;
+
+      boolean result = true;
+      result = result && (getState()
+          == other.getState());
+      result = result && getMessage()
+          .equals(other.getMessage());
+      result = result && internalGetSpanMap().equals(
+          other.internalGetSpanMap());
+      result = result && (hasIeee802154Info() == other.hasIeee802154Info());
+      if (hasIeee802154Info()) {
+        result = result && getIeee802154Info()
+            .equals(other.getIeee802154Info());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + STATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getState());
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
+      if (!internalGetSpanMap().getMap().isEmpty()) {
+        hash = (37 * hash) + SPANMAP_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetSpanMap().hashCode();
+      }
+      if (hasIeee802154Info()) {
+        hash = (37 * hash) + IEEE802154INFO_FIELD_NUMBER;
+        hash = (53 * hash) + getIeee802154Info().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.InfoSpans}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:shimmerGRPC.InfoSpans)
+        com.shimmerresearch.grpc.ShimmerGRPC.InfoSpansOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetSpanMap();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableSpanMap();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.class, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.Builder.class);
+      }
+
+      // Construct using com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        state_ = false;
+
+        message_ = "";
+
+        internalGetMutableSpanMap().clear();
+        if (ieee802154InfoBuilder_ == null) {
+          ieee802154Info_ = null;
+        } else {
+          ieee802154Info_ = null;
+          ieee802154InfoBuilder_ = null;
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_InfoSpans_descriptor;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans getDefaultInstanceForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.getDefaultInstance();
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans build() {
+        com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans buildPartial() {
+        com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans result = new com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.state_ = state_;
+        result.message_ = message_;
+        result.spanMap_ = internalGetSpanMap();
+        result.spanMap_.makeImmutable();
+        if (ieee802154InfoBuilder_ == null) {
+          result.ieee802154Info_ = ieee802154Info_;
+        } else {
+          result.ieee802154Info_ = ieee802154InfoBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans) {
+          return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans other) {
+        if (other == com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.getDefaultInstance()) return this;
+        if (other.getState() != false) {
+          setState(other.getState());
+        }
+        if (!other.getMessage().isEmpty()) {
+          message_ = other.message_;
+          onChanged();
+        }
+        internalGetMutableSpanMap().mergeFrom(
+            other.internalGetSpanMap());
+        if (other.hasIeee802154Info()) {
+          mergeIeee802154Info(other.getIeee802154Info());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean state_ ;
+      /**
+       * <code>bool state = 1;</code>
+       */
+      public boolean getState() {
+        return state_;
+      }
+      /**
+       * <code>bool state = 1;</code>
+       */
+      public Builder setState(boolean value) {
+        
+        state_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool state = 1;</code>
+       */
+      public Builder clearState() {
+        
+        state_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object message_ = "";
+      /**
+       * <code>string message = 2;</code>
+       */
+      public java.lang.String getMessage() {
+        java.lang.Object ref = message_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          message_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMessageBytes() {
+        java.lang.Object ref = message_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          message_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public Builder setMessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        message_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public Builder clearMessage() {
+        
+        message_ = getDefaultInstance().getMessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public Builder setMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        message_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> spanMap_;
+      private com.google.protobuf.MapField<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan>
+      internalGetSpanMap() {
+        if (spanMap_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              SpanMapDefaultEntryHolder.defaultEntry);
+        }
+        return spanMap_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan>
+      internalGetMutableSpanMap() {
+        onChanged();;
+        if (spanMap_ == null) {
+          spanMap_ = com.google.protobuf.MapField.newMapField(
+              SpanMapDefaultEntryHolder.defaultEntry);
+        }
+        if (!spanMap_.isMutable()) {
+          spanMap_ = spanMap_.copy();
+        }
+        return spanMap_;
+      }
+
+      public int getSpanMapCount() {
+        return internalGetSpanMap().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+       */
+
+      public boolean containsSpanMap(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetSpanMap().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getSpanMapMap()} instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> getSpanMap() {
+        return getSpanMapMap();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+       */
+
+      public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> getSpanMapMap() {
+        return internalGetSpanMap().getMap();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+       */
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan getSpanMapOrDefault(
+          java.lang.String key,
+          com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> map =
+            internalGetSpanMap().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+       */
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan getSpanMapOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> map =
+            internalGetSpanMap().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearSpanMap() {
+        internalGetMutableSpanMap().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+       */
+
+      public Builder removeSpanMap(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableSpanMap().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan>
+      getMutableSpanMap() {
+        return internalGetMutableSpanMap().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+       */
+      public Builder putSpanMap(
+          java.lang.String key,
+          com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableSpanMap().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.InfoSpans.InfoSpan&gt; spanMap = 3;</code>
+       */
+
+      public Builder putAllSpanMap(
+          java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.InfoSpan> values) {
+        internalGetMutableSpanMap().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+
+      private com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info ieee802154Info_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder> ieee802154InfoBuilder_;
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+       */
+      public boolean hasIeee802154Info() {
+        return ieee802154InfoBuilder_ != null || ieee802154Info_ != null;
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+       */
+      public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info() {
+        if (ieee802154InfoBuilder_ == null) {
+          return ieee802154Info_ == null ? com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance() : ieee802154Info_;
+        } else {
+          return ieee802154InfoBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+       */
+      public Builder setIeee802154Info(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info value) {
+        if (ieee802154InfoBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ieee802154Info_ = value;
+          onChanged();
+        } else {
+          ieee802154InfoBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+       */
+      public Builder setIeee802154Info(
+          com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder builderForValue) {
+        if (ieee802154InfoBuilder_ == null) {
+          ieee802154Info_ = builderForValue.build();
+          onChanged();
+        } else {
+          ieee802154InfoBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+       */
+      public Builder mergeIeee802154Info(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info value) {
+        if (ieee802154InfoBuilder_ == null) {
+          if (ieee802154Info_ != null) {
+            ieee802154Info_ =
+              com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.newBuilder(ieee802154Info_).mergeFrom(value).buildPartial();
+          } else {
+            ieee802154Info_ = value;
+          }
+          onChanged();
+        } else {
+          ieee802154InfoBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+       */
+      public Builder clearIeee802154Info() {
+        if (ieee802154InfoBuilder_ == null) {
+          ieee802154Info_ = null;
+          onChanged();
+        } else {
+          ieee802154Info_ = null;
+          ieee802154InfoBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+       */
+      public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder getIeee802154InfoBuilder() {
+        
+        onChanged();
+        return getIeee802154InfoFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+       */
+      public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder getIeee802154InfoOrBuilder() {
+        if (ieee802154InfoBuilder_ != null) {
+          return ieee802154InfoBuilder_.getMessageOrBuilder();
+        } else {
+          return ieee802154Info_ == null ?
+              com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance() : ieee802154Info_;
+        }
+      }
+      /**
+       * <pre>
+       *GQ related
+       * </pre>
+       *
+       * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder> 
+          getIeee802154InfoFieldBuilder() {
+        if (ieee802154InfoBuilder_ == null) {
+          ieee802154InfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder>(
+                  getIeee802154Info(),
+                  getParentForChildren(),
+                  isClean());
+          ieee802154Info_ = null;
+        }
+        return ieee802154InfoBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:shimmerGRPC.InfoSpans)
+    }
+
+    // @@protoc_insertion_point(class_scope:shimmerGRPC.InfoSpans)
+    private static final com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans();
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<InfoSpans>
+        PARSER = new com.google.protobuf.AbstractParser<InfoSpans>() {
+      public InfoSpans parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new InfoSpans(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<InfoSpans> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<InfoSpans> getParserForType() {
+      return PARSER;
+    }
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_shimmerGRPC_FileByteTransfer_descriptor;
   private static final 
@@ -12570,6 +15348,26 @@ public final class ShimmerGRPC {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shimmerGRPC_ShimmersInfo_ShimmerMapEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_Ieee802154Info_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_Ieee802154Info_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_InfoSpans_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_InfoSpans_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_InfoSpans_InfoSpan_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_InfoSpans_InfoSpan_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -12609,10 +15407,10 @@ public final class ShimmerGRPC {
       " \001(\001\"\210\001\n\020OperationRequest\022\022\n\nisFinished\030" +
       "\001 \001(\010\022\021\n\tisSuccess\030\002 \001(\010\022\017\n\007message\030\003 \001(" +
       "\t\022\032\n\022progressPercentage\030\004 \001(\001\022 \n\030progres",
-      "sPercentageParsed\030\005 \001(\t\"\324\005\n\014ShimmersInfo" +
+      "sPercentageParsed\030\005 \001(\t\"\211\006\n\014ShimmersInfo" +
       "\022\r\n\005state\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022=\n\nshim" +
       "merMap\030\003 \003(\0132).shimmerGRPC.ShimmersInfo." +
-      "ShimmerMapEntry\032\212\004\n\013ShimmerInfo\022\014\n\004name\030" +
+      "ShimmerMapEntry\032\277\004\n\013ShimmerInfo\022\014\n\004name\030" +
       "\001 \001(\t\022\020\n\010uniqueId\030\002 \001(\t\022\030\n\020bluetoothAddr" +
       "ess\030\003 \001(\t\022\021\n\ttrialName\030\004 \001(\t\022\037\n\027batteryP" +
       "ercentageParsed\030\005 \001(\t\022\031\n\021batteryPercenta" +
@@ -12625,49 +15423,64 @@ public final class ShimmerGRPC {
       "ersionParsed\030\017 \001(\t\022\033\n\023expBrdVersionParse" +
       "d\030\020 \001(\t\022\027\n\017fwVersionParsed\030\021 \001(\t\022\024\n\014pair" +
       "edDevice\030\022 \003(\t\022\022\n\nconfigTime\030\023 \001(\003\022\030\n\020co" +
-      "nfigTimeParsed\030\024 \001(\t\032X\n\017ShimmerMapEntry\022" +
-      "\013\n\003key\030\001 \001(\t\0224\n\005value\030\002 \001(\0132%.shimmerGRP" +
-      "C.ShimmersInfo.ShimmerInfo:\0028\0012\364\013\n\rShimm" +
-      "erServer\022@\n\010SayHello\022\031.shimmerGRPC.Hello",
-      "Request\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rGe" +
-      "tDataStream\022\032.shimmerGRPC.StreamRequest\032" +
-      "\033.shimmerGRPC.ObjectCluster2\"\0000\001\022J\n\016Send" +
-      "DataStream\022\033.shimmerGRPC.ObjectCluster2\032" +
-      "\027.shimmerGRPC.HelloReply\"\000(\001\022L\n\016SendFile" +
-      "Stream\022\035.shimmerGRPC.FileByteTransfer\032\027." +
-      "shimmerGRPC.HelloReply\"\000(\001\022K\n\016ConnectShi" +
-      "mmer\022\033.shimmerGRPC.ShimmerRequest\032\032.shim" +
-      "merGRPC.CommandStatus\"\000\022K\n\016StartStreamin" +
-      "g\022\033.shimmerGRPC.ShimmerRequest\032\032.shimmer",
-      "GRPC.CommandStatus\"\000\022M\n\020CloseApplication" +
-      "\022\033.shimmerGRPC.ShimmerRequest\032\032.shimmerG" +
-      "RPC.CommandStatus\"\000\022P\n\025SetWorkspaceDirec" +
-      "tory\022\026.shimmerGRPC.StringMsg\032\035.shimmerGR" +
-      "PC.OperationRequest\"\000\022I\n\025GetWorkspaceDir" +
-      "ectory\022\026.shimmerGRPC.StringMsg\032\026.shimmer" +
-      "GRPC.StringMsg\"\000\022K\n\024GetDockedShimmerInfo" +
-      "\022\026.shimmerGRPC.StringMsg\032\031.shimmerGRPC.S" +
-      "himmersInfo\"\000\022I\n\025GetMadgewickBetaValue\022\026" +
-      ".shimmerGRPC.StringMsg\032\026.shimmerGRPC.Dou",
-      "bleMsg\"\000\022L\n\014PairShimmers\022\033.shimmerGRPC.S" +
-      "tringArrayMsg\032\035.shimmerGRPC.OperationReq" +
-      "uest\"\000\022O\n\024GetOperationProgress\022\026.shimmer" +
-      "GRPC.StringMsg\032\035.shimmerGRPC.OperationRe" +
-      "quest\"\000\022X\n\030ImportSdDataFromShimmers\022\033.sh" +
-      "immerGRPC.StringArrayMsg\032\035.shimmerGRPC.O" +
-      "perationRequest\"\000\022N\n\023ParseSdDataFromPath" +
-      "\022\026.shimmerGRPC.StringMsg\032\035.shimmerGRPC.O" +
-      "perationRequest\"\000\022Q\n\021ScanSdDataAndCopy\022\033" +
-      ".shimmerGRPC.StringArrayMsg\032\035.shimmerGRP",
-      "C.OperationRequest\"\000\022O\n\017ClearSdCardData\022" +
-      "\033.shimmerGRPC.StringArrayMsg\032\035.shimmerGR" +
-      "PC.OperationRequest\"\000\022X\n\030DockAccessSlotW" +
-      "ithSdCard\022\033.shimmerGRPC.StringArrayMsg\032\035" +
-      ".shimmerGRPC.OperationRequest\"\000\022T\n\024DockR" +
-      "estoreAutoTasks\022\033.shimmerGRPC.StringArra" +
-      "yMsg\032\035.shimmerGRPC.OperationRequest\"\000BB\n" +
-      "\030com.shimmerresearch.grpcB\013ShimmerGRPC\252\002" +
-      "\030com.shimmerresearch.grpcb\006proto3"
+      "nfigTimeParsed\030\024 \001(\t\0223\n\016ieee802154Info\030\025" +
+      " \001(\0132\033.shimmerGRPC.Ieee802154Info\032X\n\017Shi" +
+      "mmerMapEntry\022\013\n\003key\030\001 \001(\t\0224\n\005value\030\002 \001(\013" +
+      "2%.shimmerGRPC.ShimmersInfo.ShimmerInfo:",
+      "\0028\001\"S\n\016Ieee802154Info\022\024\n\014radioChannel\030\001 " +
+      "\001(\003\022\024\n\014radioGroupId\030\002 \001(\003\022\025\n\rradioDevice" +
+      "Id\030\003 \001(\003\"\251\002\n\tInfoSpans\022\r\n\005state\030\001 \001(\010\022\017\n" +
+      "\007message\030\002 \001(\t\0224\n\007spanMap\030\003 \003(\0132#.shimme" +
+      "rGRPC.InfoSpans.SpanMapEntry\0223\n\016ieee8021" +
+      "54Info\030\004 \001(\0132\033.shimmerGRPC.Ieee802154Inf" +
+      "o\032@\n\010InfoSpan\022\020\n\010uniqueId\030\001 \001(\t\022\017\n\007portB" +
+      "sl\030\002 \001(\t\022\021\n\tportComms\030\003 \001(\t\032O\n\014SpanMapEn" +
+      "try\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.shimme" +
+      "rGRPC.InfoSpans.InfoSpan:\0028\0012\377\014\n\rShimmer",
+      "Server\022@\n\010SayHello\022\031.shimmerGRPC.HelloRe" +
+      "quest\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rGetD" +
+      "ataStream\022\032.shimmerGRPC.StreamRequest\032\033." +
+      "shimmerGRPC.ObjectCluster2\"\0000\001\022J\n\016SendDa" +
+      "taStream\022\033.shimmerGRPC.ObjectCluster2\032\027." +
+      "shimmerGRPC.HelloReply\"\000(\001\022L\n\016SendFileSt" +
+      "ream\022\035.shimmerGRPC.FileByteTransfer\032\027.sh" +
+      "immerGRPC.HelloReply\"\000(\001\022K\n\016ConnectShimm" +
+      "er\022\033.shimmerGRPC.ShimmerRequest\032\032.shimme" +
+      "rGRPC.CommandStatus\"\000\022K\n\016StartStreaming\022",
+      "\033.shimmerGRPC.ShimmerRequest\032\032.shimmerGR" +
+      "PC.CommandStatus\"\000\022M\n\020CloseApplication\022\033" +
+      ".shimmerGRPC.ShimmerRequest\032\032.shimmerGRP" +
+      "C.CommandStatus\"\000\022P\n\025SetWorkspaceDirecto" +
+      "ry\022\026.shimmerGRPC.StringMsg\032\035.shimmerGRPC" +
+      ".OperationRequest\"\000\022I\n\025GetWorkspaceDirec" +
+      "tory\022\026.shimmerGRPC.StringMsg\032\026.shimmerGR" +
+      "PC.StringMsg\"\000\022K\n\024GetDockedShimmerInfo\022\026" +
+      ".shimmerGRPC.StringMsg\032\031.shimmerGRPC.Shi" +
+      "mmersInfo\"\000\022I\n\025GetMadgewickBetaValue\022\026.s",
+      "himmerGRPC.StringMsg\032\026.shimmerGRPC.Doubl" +
+      "eMsg\"\000\022L\n\014PairShimmers\022\033.shimmerGRPC.Str" +
+      "ingArrayMsg\032\035.shimmerGRPC.OperationReque" +
+      "st\"\000\022O\n\024GetOperationProgress\022\026.shimmerGR" +
+      "PC.StringMsg\032\035.shimmerGRPC.OperationRequ" +
+      "est\"\000\022X\n\030ImportSdDataFromShimmers\022\033.shim" +
+      "merGRPC.StringArrayMsg\032\035.shimmerGRPC.Ope" +
+      "rationRequest\"\000\022N\n\023ParseSdDataFromPath\022\026" +
+      ".shimmerGRPC.StringMsg\032\035.shimmerGRPC.Ope" +
+      "rationRequest\"\000\022Q\n\021ScanSdDataAndCopy\022\033.s",
+      "himmerGRPC.StringArrayMsg\032\035.shimmerGRPC." +
+      "OperationRequest\"\000\022O\n\017ClearSdCardData\022\033." +
+      "shimmerGRPC.StringArrayMsg\032\035.shimmerGRPC" +
+      ".OperationRequest\"\000\022X\n\030DockAccessSlotWit" +
+      "hSdCard\022\033.shimmerGRPC.StringArrayMsg\032\035.s" +
+      "himmerGRPC.OperationRequest\"\000\022T\n\024DockRes" +
+      "toreAutoTasks\022\033.shimmerGRPC.StringArrayM" +
+      "sg\032\035.shimmerGRPC.OperationRequest\"\000\022?\n\013G" +
+      "etSpanInfo\022\026.shimmerGRPC.StringMsg\032\026.shi" +
+      "mmerGRPC.InfoSpans\"\000\022H\n\021GetAllShimmerInf",
+      "o\022\026.shimmerGRPC.StringMsg\032\031.shimmerGRPC." +
+      "ShimmersInfo\"\000BB\n\030com.shimmerresearch.gr" +
+      "pcB\013ShimmerGRPC\252\002\030com.shimmerresearch.gr" +
+      "pcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -12789,12 +15602,36 @@ public final class ShimmerGRPC {
     internal_static_shimmerGRPC_ShimmersInfo_ShimmerInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_ShimmersInfo_ShimmerInfo_descriptor,
-        new java.lang.String[] { "Name", "UniqueId", "BluetoothAddress", "TrialName", "BatteryPercentageParsed", "BatteryPercentage", "ChargingStatusParsed", "DriveCapacity", "DriveSpaceUsed", "DriveSpaceFree", "DriveCapacityParsed", "IsRealTimeClockSet", "LastReadRtcValueMilliSecs", "LastReadRtcValueParsed", "HwVersionParsed", "ExpBrdVersionParsed", "FwVersionParsed", "PairedDevice", "ConfigTime", "ConfigTimeParsed", });
+        new java.lang.String[] { "Name", "UniqueId", "BluetoothAddress", "TrialName", "BatteryPercentageParsed", "BatteryPercentage", "ChargingStatusParsed", "DriveCapacity", "DriveSpaceUsed", "DriveSpaceFree", "DriveCapacityParsed", "IsRealTimeClockSet", "LastReadRtcValueMilliSecs", "LastReadRtcValueParsed", "HwVersionParsed", "ExpBrdVersionParsed", "FwVersionParsed", "PairedDevice", "ConfigTime", "ConfigTimeParsed", "Ieee802154Info", });
     internal_static_shimmerGRPC_ShimmersInfo_ShimmerMapEntry_descriptor =
       internal_static_shimmerGRPC_ShimmersInfo_descriptor.getNestedTypes().get(1);
     internal_static_shimmerGRPC_ShimmersInfo_ShimmerMapEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_ShimmersInfo_ShimmerMapEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_shimmerGRPC_Ieee802154Info_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_shimmerGRPC_Ieee802154Info_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_Ieee802154Info_descriptor,
+        new java.lang.String[] { "RadioChannel", "RadioGroupId", "RadioDeviceId", });
+    internal_static_shimmerGRPC_InfoSpans_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_shimmerGRPC_InfoSpans_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_InfoSpans_descriptor,
+        new java.lang.String[] { "State", "Message", "SpanMap", "Ieee802154Info", });
+    internal_static_shimmerGRPC_InfoSpans_InfoSpan_descriptor =
+      internal_static_shimmerGRPC_InfoSpans_descriptor.getNestedTypes().get(0);
+    internal_static_shimmerGRPC_InfoSpans_InfoSpan_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_InfoSpans_InfoSpan_descriptor,
+        new java.lang.String[] { "UniqueId", "PortBsl", "PortComms", });
+    internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_descriptor =
+      internal_static_shimmerGRPC_InfoSpans_descriptor.getNestedTypes().get(1);
+    internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     com.google.protobuf.DescriptorProtos.getDescriptor();
   }

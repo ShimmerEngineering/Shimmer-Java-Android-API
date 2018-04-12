@@ -56,6 +56,11 @@ service ShimmerServer {
 
   rpc DockRestoreAutoTasks(StringArrayMsg) returns (OperationRequest){}
 
+  //Shimmer device emulation software related
+  rpc GetSpanInfo(StringMsg) returns (InfoSpans){}
+
+  rpc GetAllShimmerInfo(StringMsg) returns (ShimmersInfo){}
+
 }
 
 message FileByteTransfer {
@@ -171,7 +176,35 @@ message ShimmersInfo {
 	string configTimeParsed = 20;
 
 	//bool isDataOnSdCard = 13;
+	
+	//GQ related
+	Ieee802154Info ieee802154Info = 21;
+    //int64 radioChannel = 13;
+	//int64 radioGroupId = 14;
+	//int64 radioDeviceId = 15;
+	
   }
   map<string,ShimmerInfo> shimmerMap = 3;
 }
 
+message Ieee802154Info {
+    int64 radioChannel = 1;
+	int64 radioGroupId = 2;
+	int64 radioDeviceId = 3;
+}
+
+message InfoSpans {
+  bool state = 1;
+  string message = 2;
+
+  message InfoSpan {
+    string uniqueId = 1;
+    string portBsl = 2;
+    string portComms = 3;
+  }
+  map<string,InfoSpan> spanMap = 3;
+  
+  //GQ related
+  Ieee802154Info ieee802154Info = 4;
+  
+}
