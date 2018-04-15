@@ -9242,7 +9242,7 @@ public final class ShimmerGRPC {
 
       /**
        * <pre>
-       *GQ related
+       *Applicable for GQ devices
        * </pre>
        *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -9250,7 +9250,7 @@ public final class ShimmerGRPC {
       boolean hasIeee802154Info();
       /**
        * <pre>
-       *GQ related
+       *Applicable for GQ devices
        * </pre>
        *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -9258,7 +9258,7 @@ public final class ShimmerGRPC {
       com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info();
       /**
        * <pre>
-       *GQ related
+       *Applicable for GQ devices
        * </pre>
        *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -9989,7 +9989,7 @@ public final class ShimmerGRPC {
       private com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info ieee802154Info_;
       /**
        * <pre>
-       *GQ related
+       *Applicable for GQ devices
        * </pre>
        *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -9999,7 +9999,7 @@ public final class ShimmerGRPC {
       }
       /**
        * <pre>
-       *GQ related
+       *Applicable for GQ devices
        * </pre>
        *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -10009,7 +10009,7 @@ public final class ShimmerGRPC {
       }
       /**
        * <pre>
-       *GQ related
+       *Applicable for GQ devices
        * </pre>
        *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -11793,7 +11793,7 @@ public final class ShimmerGRPC {
             com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder> ieee802154InfoBuilder_;
         /**
          * <pre>
-         *GQ related
+         *Applicable for GQ devices
          * </pre>
          *
          * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -11803,7 +11803,7 @@ public final class ShimmerGRPC {
         }
         /**
          * <pre>
-         *GQ related
+         *Applicable for GQ devices
          * </pre>
          *
          * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -11817,7 +11817,7 @@ public final class ShimmerGRPC {
         }
         /**
          * <pre>
-         *GQ related
+         *Applicable for GQ devices
          * </pre>
          *
          * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -11837,7 +11837,7 @@ public final class ShimmerGRPC {
         }
         /**
          * <pre>
-         *GQ related
+         *Applicable for GQ devices
          * </pre>
          *
          * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -11855,7 +11855,7 @@ public final class ShimmerGRPC {
         }
         /**
          * <pre>
-         *GQ related
+         *Applicable for GQ devices
          * </pre>
          *
          * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -11877,7 +11877,7 @@ public final class ShimmerGRPC {
         }
         /**
          * <pre>
-         *GQ related
+         *Applicable for GQ devices
          * </pre>
          *
          * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -11895,7 +11895,7 @@ public final class ShimmerGRPC {
         }
         /**
          * <pre>
-         *GQ related
+         *Applicable for GQ devices
          * </pre>
          *
          * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -11907,7 +11907,7 @@ public final class ShimmerGRPC {
         }
         /**
          * <pre>
-         *GQ related
+         *Applicable for GQ devices
          * </pre>
          *
          * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -11922,7 +11922,7 @@ public final class ShimmerGRPC {
         }
         /**
          * <pre>
-         *GQ related
+         *Applicable for GQ devices
          * </pre>
          *
          * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 21;</code>
@@ -13360,26 +13360,14 @@ public final class ShimmerGRPC {
         java.lang.String key);
 
     /**
-     * <pre>
-     *GQ related
-     * </pre>
-     *
      * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
      */
     boolean hasIeee802154Info();
     /**
-     * <pre>
-     *GQ related
-     * </pre>
-     *
      * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
      */
     com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info();
     /**
-     * <pre>
-     *GQ related
-     * </pre>
-     *
      * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
      */
     com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder getIeee802154InfoOrBuilder();
@@ -14420,30 +14408,18 @@ public final class ShimmerGRPC {
     public static final int IEEE802154INFO_FIELD_NUMBER = 4;
     private com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info ieee802154Info_;
     /**
-     * <pre>
-     *GQ related
-     * </pre>
-     *
      * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
      */
     public boolean hasIeee802154Info() {
       return ieee802154Info_ != null;
     }
     /**
-     * <pre>
-     *GQ related
-     * </pre>
-     *
      * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info() {
       return ieee802154Info_ == null ? com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance() : ieee802154Info_;
     }
     /**
-     * <pre>
-     *GQ related
-     * </pre>
-     *
      * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder getIeee802154InfoOrBuilder() {
@@ -15056,20 +15032,12 @@ public final class ShimmerGRPC {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder, com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder> ieee802154InfoBuilder_;
       /**
-       * <pre>
-       *GQ related
-       * </pre>
-       *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
        */
       public boolean hasIeee802154Info() {
         return ieee802154InfoBuilder_ != null || ieee802154Info_ != null;
       }
       /**
-       * <pre>
-       *GQ related
-       * </pre>
-       *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
        */
       public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info getIeee802154Info() {
@@ -15080,10 +15048,6 @@ public final class ShimmerGRPC {
         }
       }
       /**
-       * <pre>
-       *GQ related
-       * </pre>
-       *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
        */
       public Builder setIeee802154Info(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info value) {
@@ -15100,10 +15064,6 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <pre>
-       *GQ related
-       * </pre>
-       *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
        */
       public Builder setIeee802154Info(
@@ -15118,10 +15078,6 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <pre>
-       *GQ related
-       * </pre>
-       *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
        */
       public Builder mergeIeee802154Info(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info value) {
@@ -15140,10 +15096,6 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <pre>
-       *GQ related
-       * </pre>
-       *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
        */
       public Builder clearIeee802154Info() {
@@ -15158,10 +15110,6 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <pre>
-       *GQ related
-       * </pre>
-       *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
        */
       public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.Builder getIeee802154InfoBuilder() {
@@ -15170,10 +15118,6 @@ public final class ShimmerGRPC {
         return getIeee802154InfoFieldBuilder().getBuilder();
       }
       /**
-       * <pre>
-       *GQ related
-       * </pre>
-       *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
        */
       public com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154InfoOrBuilder getIeee802154InfoOrBuilder() {
@@ -15185,10 +15129,6 @@ public final class ShimmerGRPC {
         }
       }
       /**
-       * <pre>
-       *GQ related
-       * </pre>
-       *
        * <code>.shimmerGRPC.Ieee802154Info ieee802154Info = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -15436,7 +15376,7 @@ public final class ShimmerGRPC {
       "o\032@\n\010InfoSpan\022\020\n\010uniqueId\030\001 \001(\t\022\017\n\007portB" +
       "sl\030\002 \001(\t\022\021\n\tportComms\030\003 \001(\t\032O\n\014SpanMapEn" +
       "try\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.shimme" +
-      "rGRPC.InfoSpans.InfoSpan:\0028\0012\377\014\n\rShimmer",
+      "rGRPC.InfoSpans.InfoSpan:\0028\0012\201\r\n\rShimmer",
       "Server\022@\n\010SayHello\022\031.shimmerGRPC.HelloRe" +
       "quest\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rGetD" +
       "ataStream\022\032.shimmerGRPC.StreamRequest\032\033." +
@@ -15474,13 +15414,13 @@ public final class ShimmerGRPC {
       "hSdCard\022\033.shimmerGRPC.StringArrayMsg\032\035.s" +
       "himmerGRPC.OperationRequest\"\000\022T\n\024DockRes" +
       "toreAutoTasks\022\033.shimmerGRPC.StringArrayM" +
-      "sg\032\035.shimmerGRPC.OperationRequest\"\000\022?\n\013G" +
-      "etSpanInfo\022\026.shimmerGRPC.StringMsg\032\026.shi" +
-      "mmerGRPC.InfoSpans\"\000\022H\n\021GetAllShimmerInf",
-      "o\022\026.shimmerGRPC.StringMsg\032\031.shimmerGRPC." +
-      "ShimmersInfo\"\000BB\n\030com.shimmerresearch.gr" +
-      "pcB\013ShimmerGRPC\252\002\030com.shimmerresearch.gr" +
-      "pcb\006proto3"
+      "sg\032\035.shimmerGRPC.OperationRequest\"\000\022@\n\014G" +
+      "etInfoSpans\022\026.shimmerGRPC.StringMsg\032\026.sh" +
+      "immerGRPC.InfoSpans\"\000\022I\n\022GetInfoAllShimm",
+      "ers\022\026.shimmerGRPC.StringMsg\032\031.shimmerGRP" +
+      "C.ShimmersInfo\"\000BB\n\030com.shimmerresearch." +
+      "grpcB\013ShimmerGRPC\252\002\030com.shimmerresearch." +
+      "grpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

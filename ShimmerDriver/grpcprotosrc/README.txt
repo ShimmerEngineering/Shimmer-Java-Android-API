@@ -46,4 +46,5 @@ Solution:
 Error:
 	warning: Import google/protobuf/descriptor.proto but not used.
 Solution:
+	Normal, ignore
 	

@@ -15,6 +15,7 @@ public class AbstractErrorCodes {
 	 * ErrorCodesVideoManager 	= 9
 	 * 
 	 * ErrorCodesDatabase 		= 10
+	 * MsgPlatformHwManager 	= 11
 	 * 
 	 */
 	

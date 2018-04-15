@@ -791,7 +791,7 @@ public class UtilShimmer implements Serializable {
 		byte[] rtcTimeArray = ByteBuffer.allocate(8).putLong(milisecondTicks).array();
 		return rtcTimeArray;
 	}
-
+	
 	/**Used by the RTC sent over Bluetooth/Dock comms and calibration Dump file
 	 * @param rtcTimeArray
 	 * @return
@@ -1259,5 +1259,13 @@ public class UtilShimmer implements Serializable {
 		Random r = new Random();
 		return r.nextInt(high-low) + low;
 	}
+
+//	public static void main(String[] args) {
+//		long milliSeconds = System.currentTimeMillis();
+//		
+//		System.err.println(convertMilliSecondsToDateString(milliSeconds, true));
+//		System.err.println(milliSeconds);
+//		System.err.println(UtilShimmer.bytesToHexStringWithSpacesFormatted(convertMilliSecondsToShimmerRtcDataBytesLSB(milliSeconds)));
+//	}
 
 }
