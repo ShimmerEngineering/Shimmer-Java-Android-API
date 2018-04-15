@@ -260,11 +260,11 @@ public final class ShimmerServerGrpc {
           .build();
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> METHOD_GET_SPAN_INFO =
+      com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> METHOD_GET_INFO_SPANS =
       io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans>newBuilder()
           .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
           .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetSpanInfo"))
+              "shimmerGRPC.ShimmerServer", "GetInfoSpans"))
           .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
@@ -272,11 +272,11 @@ public final class ShimmerServerGrpc {
           .build();
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> METHOD_GET_ALL_SHIMMER_INFO =
+      com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> METHOD_GET_INFO_ALL_SHIMMERS =
       io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>newBuilder()
           .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
           .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetAllShimmerInfo"))
+              "shimmerGRPC.ShimmerServer", "GetInfoAllShimmers"))
           .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
@@ -463,16 +463,16 @@ public final class ShimmerServerGrpc {
      *Shimmer device emulation software related
      * </pre>
      */
-    public void getSpanInfo(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+    public void getInfoSpans(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_SPAN_INFO, responseObserver);
+      asyncUnimplementedUnaryCall(METHOD_GET_INFO_SPANS, responseObserver);
     }
 
     /**
      */
-    public void getAllShimmerInfo(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+    public void getInfoAllShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_ALL_SHIMMER_INFO, responseObserver);
+      asyncUnimplementedUnaryCall(METHOD_GET_INFO_ALL_SHIMMERS, responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
@@ -611,19 +611,19 @@ public final class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_DOCK_RESTORE_AUTO_TASKS)))
           .addMethod(
-            METHOD_GET_SPAN_INFO,
+            METHOD_GET_INFO_SPANS,
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans>(
-                  this, METHODID_GET_SPAN_INFO)))
+                  this, METHODID_GET_INFO_SPANS)))
           .addMethod(
-            METHOD_GET_ALL_SHIMMER_INFO,
+            METHOD_GET_INFO_ALL_SHIMMERS,
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>(
-                  this, METHODID_GET_ALL_SHIMMER_INFO)))
+                  this, METHODID_GET_INFO_ALL_SHIMMERS)))
           .build();
     }
   }
@@ -818,18 +818,18 @@ public final class ShimmerServerGrpc {
      *Shimmer device emulation software related
      * </pre>
      */
-    public void getSpanInfo(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+    public void getInfoSpans(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_GET_SPAN_INFO, getCallOptions()), request, responseObserver);
+          getChannel().newCall(METHOD_GET_INFO_SPANS, getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void getAllShimmerInfo(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+    public void getInfoAllShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_GET_ALL_SHIMMER_INFO, getCallOptions()), request, responseObserver);
+          getChannel().newCall(METHOD_GET_INFO_ALL_SHIMMERS, getCallOptions()), request, responseObserver);
     }
   }
 
@@ -988,16 +988,16 @@ public final class ShimmerServerGrpc {
      *Shimmer device emulation software related
      * </pre>
      */
-    public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans getSpanInfo(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+    public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans getInfoSpans(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_GET_SPAN_INFO, getCallOptions(), request);
+          getChannel(), METHOD_GET_INFO_SPANS, getCallOptions(), request);
     }
 
     /**
      */
-    public com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo getAllShimmerInfo(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+    public com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo getInfoAllShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_GET_ALL_SHIMMER_INFO, getCallOptions(), request);
+          getChannel(), METHOD_GET_INFO_ALL_SHIMMERS, getCallOptions(), request);
     }
   }
 
@@ -1161,18 +1161,18 @@ public final class ShimmerServerGrpc {
      *Shimmer device emulation software related
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> getSpanInfo(
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> getInfoSpans(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_GET_SPAN_INFO, getCallOptions()), request);
+          getChannel().newCall(METHOD_GET_INFO_SPANS, getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getAllShimmerInfo(
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getInfoAllShimmers(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_GET_ALL_SHIMMER_INFO, getCallOptions()), request);
+          getChannel().newCall(METHOD_GET_INFO_ALL_SHIMMERS, getCallOptions()), request);
     }
   }
 
@@ -1193,8 +1193,8 @@ public final class ShimmerServerGrpc {
   private static final int METHODID_CLEAR_SD_CARD_DATA = 14;
   private static final int METHODID_DOCK_ACCESS_SLOT_WITH_SD_CARD = 15;
   private static final int METHODID_DOCK_RESTORE_AUTO_TASKS = 16;
-  private static final int METHODID_GET_SPAN_INFO = 17;
-  private static final int METHODID_GET_ALL_SHIMMER_INFO = 18;
+  private static final int METHODID_GET_INFO_SPANS = 17;
+  private static final int METHODID_GET_INFO_ALL_SHIMMERS = 18;
   private static final int METHODID_SEND_DATA_STREAM = 19;
   private static final int METHODID_SEND_FILE_STREAM = 20;
 
@@ -1283,12 +1283,12 @@ public final class ShimmerServerGrpc {
           serviceImpl.dockRestoreAutoTasks((com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>) responseObserver);
           break;
-        case METHODID_GET_SPAN_INFO:
-          serviceImpl.getSpanInfo((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
+        case METHODID_GET_INFO_SPANS:
+          serviceImpl.getInfoSpans((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans>) responseObserver);
           break;
-        case METHODID_GET_ALL_SHIMMER_INFO:
-          serviceImpl.getAllShimmerInfo((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
+        case METHODID_GET_INFO_ALL_SHIMMERS:
+          serviceImpl.getInfoAllShimmers((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>) responseObserver);
           break;
         default:
@@ -1349,8 +1349,8 @@ public final class ShimmerServerGrpc {
               .addMethod(METHOD_CLEAR_SD_CARD_DATA)
               .addMethod(METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD)
               .addMethod(METHOD_DOCK_RESTORE_AUTO_TASKS)
-              .addMethod(METHOD_GET_SPAN_INFO)
-              .addMethod(METHOD_GET_ALL_SHIMMER_INFO)
+              .addMethod(METHOD_GET_INFO_SPANS)
+              .addMethod(METHOD_GET_INFO_ALL_SHIMMERS)
               .build();
         }
       }

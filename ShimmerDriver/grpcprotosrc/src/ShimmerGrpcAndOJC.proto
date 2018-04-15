@@ -57,9 +57,11 @@ service ShimmerServer {
   rpc DockRestoreAutoTasks(StringArrayMsg) returns (OperationRequest){}
 
   //Shimmer device emulation software related
-  rpc GetSpanInfo(StringMsg) returns (InfoSpans){}
+  rpc GetInfoSpans(StringMsg) returns (InfoSpans){}
 
-  rpc GetAllShimmerInfo(StringMsg) returns (ShimmersInfo){}
+  rpc GetInfoAllShimmers(StringMsg) returns (ShimmersInfo){}
+
+  rpc GetEmulatedDevices(StringMsg) returns (EmulatedDevices){}
 
 }
 
@@ -175,14 +177,8 @@ message ShimmersInfo {
 	int64 configTime = 19;
 	string configTimeParsed = 20;
 
-	//bool isDataOnSdCard = 13;
-	
-	//GQ related
+	//Applicable for GQ devices
 	Ieee802154Info ieee802154Info = 21;
-    //int64 radioChannel = 13;
-	//int64 radioGroupId = 14;
-	//int64 radioDeviceId = 15;
-	
   }
   map<string,ShimmerInfo> shimmerMap = 3;
 }
@@ -204,7 +200,31 @@ message InfoSpans {
   }
   map<string,InfoSpan> spanMap = 3;
   
-  //GQ related
   Ieee802154Info ieee802154Info = 4;
-  
 }
+
+message Ieee802154Info {
+  int64 radioChannel = 1;
+  int64 radioGroupId = 2;
+  int64 radioDeviceId = 3;
+}
+
+message EmulatedDevices {
+  bool state = 1;
+  string message = 2;
+
+  message EmulatedDevice {
+    string uniqueId = 1;
+    string deviceTypeOrdinal = 2;
+    EmulatedComPortPair emulatedComPortPair = 3;
+    bool isDeviceEnabled = 4;
+    bool isEmulatorSide = 5;
+  }
+  map<string,EmulatedDevice> emulatedDevice = 3;
+}
+
+//message EmulatedComPortPair {
+//  string radioChannel = 1;
+//  string radioGroupId = 2;
+//  string radioDeviceId = 3;
+//}

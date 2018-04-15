@@ -17,13 +17,13 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
-public class ShimmerStreamClientGrpc extends BasicProcessWithCallBack{
+public class ShimmerClientGrpcStream extends BasicProcessWithCallBack{
 	private final ManagedChannel channel;
 	private final ShimmerServerGrpc.ShimmerServerStub stub;
 	ObjectCluster mLastRXOJC;
 	StreamObserver<ObjectCluster2> requestObserver;
 	StreamObserver<FileByteTransfer> requestObserverFile;
-	public ShimmerStreamClientGrpc(String host, int port) {
+	public ShimmerClientGrpcStream(String host, int port) {
 		  channel = ManagedChannelBuilder.forAddress(host, port)
 		      .usePlaintext(true)
 		      .build();
