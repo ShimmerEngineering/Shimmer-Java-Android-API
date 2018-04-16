@@ -1586,7 +1586,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public boolean isShimmerNameInvalid(){
 		return isTrialOrShimmerNameInvalid(getShimmerUserAssignedName()) 
-				|| getShimmerUserAssignedName().contains(DEFAULT_SHIMMER_NAME_WITH_ERROR);
+				|| getShimmerUserAssignedName().equals(DEFAULT_SHIMMER_NAME_WITH_ERROR);
 	}
 
 	public boolean isShimmerNameValid() {
