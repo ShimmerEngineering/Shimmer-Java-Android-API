@@ -184,9 +184,9 @@ message ShimmersInfo {
 }
 
 message Ieee802154Info {
-    int64 radioChannel = 1;
-	int64 radioGroupId = 2;
-	int64 radioDeviceId = 3;
+    int32 radioChannel = 1;
+	int32 radioGroupId = 2;
+	int32 radioDeviceId = 3;
 }
 
 message InfoSpans {
@@ -203,28 +203,17 @@ message InfoSpans {
   Ieee802154Info ieee802154Info = 4;
 }
 
-message Ieee802154Info {
-  int64 radioChannel = 1;
-  int64 radioGroupId = 2;
-  int64 radioDeviceId = 3;
-}
-
 message EmulatedDevices {
   bool state = 1;
   string message = 2;
+  bool isEmulatorSide = 3;
 
   message EmulatedDevice {
     string uniqueId = 1;
-    string deviceTypeOrdinal = 2;
-    EmulatedComPortPair emulatedComPortPair = 3;
+    int32 deviceTypeOrdinal = 2;
+    repeated string hwDeviceInterfacePath = 3;
     bool isDeviceEnabled = 4;
-    bool isEmulatorSide = 5;
   }
-  map<string,EmulatedDevice> emulatedDevice = 3;
+  map<string,EmulatedDevice> emulatedDevicesMap = 4;
 }
 
-//message EmulatedComPortPair {
-//  string radioChannel = 1;
-//  string radioGroupId = 2;
-//  string radioDeviceId = 3;
-//}
