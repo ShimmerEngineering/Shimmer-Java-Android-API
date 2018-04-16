@@ -1,10 +1,9 @@
 package com.shimmerresearch.driverUtilities;
 
 import com.codeminders.hidapi.HIDDeviceInfo;
-import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
 
-
-/**Holds HW information of a connected SmartDock (used by DeviceInfo)
+/** Holds system HW information of Shimmer supported devices (used by DeviceInfo)
+ * 
  * @author Mark Nolan
  *
  */
@@ -209,14 +208,9 @@ public class HwDriverShimmerDeviceDetails {
             	MANUFACTURER_NONIN,
             	MANUFACTURER_LUMAFIT
             };
-
         }
-        
     }
     
-    
-//    public static final String OLD_BASE_NAME_V1 = "smartdock";
-//    public static final String OLD_BASE_NAME_V2 = "smartdock";
     
 	public static final class BASE_HARDWARE_IDS{
 		public static final int BASE15U = 1;
@@ -224,7 +218,6 @@ public class HwDriverShimmerDeviceDetails {
 	}
 	
     public DEVICE_TYPE deviceType = DEVICE_TYPE.UNKOWN;
-//    public String dockTypeParsed = deviceType.getString();
 	
     public HwDriverDeviceDetails usbHub = null;
 	public HwDriverDeviceDetails compositeDevice = null;
@@ -237,11 +230,6 @@ public class HwDriverShimmerDeviceDetails {
 	public HwDriverDeviceDetails serialPortBaseUart = null;
 	public HwDriverDeviceDetails serialPortShimmerFw = null;
 	public HwDriverDeviceDetails serialPortShimmerUart = null;
-
-//	DeviceDetails serialPortBaseFw = null;
-//	DeviceDetails serialPortBaseUart = null;
-//	DeviceDetails serialPortShimmerFw = null;
-//	DeviceDetails serialPortShimmerUart = null;
 
 	public HwDriverDeviceDetails massStorageDevice = null;
 	public HwDriverDeviceDetails diskDrive = null;

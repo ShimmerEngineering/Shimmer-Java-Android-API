@@ -12734,19 +12734,19 @@ public final class ShimmerGRPC {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 radioChannel = 1;</code>
+     * <code>int32 radioChannel = 1;</code>
      */
-    long getRadioChannel();
+    int getRadioChannel();
 
     /**
-     * <code>int64 radioGroupId = 2;</code>
+     * <code>int32 radioGroupId = 2;</code>
      */
-    long getRadioGroupId();
+    int getRadioGroupId();
 
     /**
-     * <code>int64 radioDeviceId = 3;</code>
+     * <code>int32 radioDeviceId = 3;</code>
      */
-    long getRadioDeviceId();
+    int getRadioDeviceId();
   }
   /**
    * Protobuf type {@code shimmerGRPC.Ieee802154Info}
@@ -12761,9 +12761,9 @@ public final class ShimmerGRPC {
       super(builder);
     }
     private Ieee802154Info() {
-      radioChannel_ = 0L;
-      radioGroupId_ = 0L;
-      radioDeviceId_ = 0L;
+      radioChannel_ = 0;
+      radioGroupId_ = 0;
+      radioDeviceId_ = 0;
     }
 
     @java.lang.Override
@@ -12796,17 +12796,17 @@ public final class ShimmerGRPC {
             }
             case 8: {
 
-              radioChannel_ = input.readInt64();
+              radioChannel_ = input.readInt32();
               break;
             }
             case 16: {
 
-              radioGroupId_ = input.readInt64();
+              radioGroupId_ = input.readInt32();
               break;
             }
             case 24: {
 
-              radioDeviceId_ = input.readInt64();
+              radioDeviceId_ = input.readInt32();
               break;
             }
           }
@@ -12834,29 +12834,29 @@ public final class ShimmerGRPC {
     }
 
     public static final int RADIOCHANNEL_FIELD_NUMBER = 1;
-    private long radioChannel_;
+    private int radioChannel_;
     /**
-     * <code>int64 radioChannel = 1;</code>
+     * <code>int32 radioChannel = 1;</code>
      */
-    public long getRadioChannel() {
+    public int getRadioChannel() {
       return radioChannel_;
     }
 
     public static final int RADIOGROUPID_FIELD_NUMBER = 2;
-    private long radioGroupId_;
+    private int radioGroupId_;
     /**
-     * <code>int64 radioGroupId = 2;</code>
+     * <code>int32 radioGroupId = 2;</code>
      */
-    public long getRadioGroupId() {
+    public int getRadioGroupId() {
       return radioGroupId_;
     }
 
     public static final int RADIODEVICEID_FIELD_NUMBER = 3;
-    private long radioDeviceId_;
+    private int radioDeviceId_;
     /**
-     * <code>int64 radioDeviceId = 3;</code>
+     * <code>int32 radioDeviceId = 3;</code>
      */
-    public long getRadioDeviceId() {
+    public int getRadioDeviceId() {
       return radioDeviceId_;
     }
 
@@ -12872,14 +12872,14 @@ public final class ShimmerGRPC {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (radioChannel_ != 0L) {
-        output.writeInt64(1, radioChannel_);
+      if (radioChannel_ != 0) {
+        output.writeInt32(1, radioChannel_);
       }
-      if (radioGroupId_ != 0L) {
-        output.writeInt64(2, radioGroupId_);
+      if (radioGroupId_ != 0) {
+        output.writeInt32(2, radioGroupId_);
       }
-      if (radioDeviceId_ != 0L) {
-        output.writeInt64(3, radioDeviceId_);
+      if (radioDeviceId_ != 0) {
+        output.writeInt32(3, radioDeviceId_);
       }
       unknownFields.writeTo(output);
     }
@@ -12889,17 +12889,17 @@ public final class ShimmerGRPC {
       if (size != -1) return size;
 
       size = 0;
-      if (radioChannel_ != 0L) {
+      if (radioChannel_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, radioChannel_);
+          .computeInt32Size(1, radioChannel_);
       }
-      if (radioGroupId_ != 0L) {
+      if (radioGroupId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, radioGroupId_);
+          .computeInt32Size(2, radioGroupId_);
       }
-      if (radioDeviceId_ != 0L) {
+      if (radioDeviceId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, radioDeviceId_);
+          .computeInt32Size(3, radioDeviceId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -12935,14 +12935,11 @@ public final class ShimmerGRPC {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + RADIOCHANNEL_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getRadioChannel());
+      hash = (53 * hash) + getRadioChannel();
       hash = (37 * hash) + RADIOGROUPID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getRadioGroupId());
+      hash = (53 * hash) + getRadioGroupId();
       hash = (37 * hash) + RADIODEVICEID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getRadioDeviceId());
+      hash = (53 * hash) + getRadioDeviceId();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -13072,11 +13069,11 @@ public final class ShimmerGRPC {
       }
       public Builder clear() {
         super.clear();
-        radioChannel_ = 0L;
+        radioChannel_ = 0;
 
-        radioGroupId_ = 0L;
+        radioGroupId_ = 0;
 
-        radioDeviceId_ = 0L;
+        radioDeviceId_ = 0;
 
         return this;
       }
@@ -13144,13 +13141,13 @@ public final class ShimmerGRPC {
 
       public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info other) {
         if (other == com.shimmerresearch.grpc.ShimmerGRPC.Ieee802154Info.getDefaultInstance()) return this;
-        if (other.getRadioChannel() != 0L) {
+        if (other.getRadioChannel() != 0) {
           setRadioChannel(other.getRadioChannel());
         }
-        if (other.getRadioGroupId() != 0L) {
+        if (other.getRadioGroupId() != 0) {
           setRadioGroupId(other.getRadioGroupId());
         }
-        if (other.getRadioDeviceId() != 0L) {
+        if (other.getRadioDeviceId() != 0) {
           setRadioDeviceId(other.getRadioDeviceId());
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -13180,80 +13177,80 @@ public final class ShimmerGRPC {
         return this;
       }
 
-      private long radioChannel_ ;
+      private int radioChannel_ ;
       /**
-       * <code>int64 radioChannel = 1;</code>
+       * <code>int32 radioChannel = 1;</code>
        */
-      public long getRadioChannel() {
+      public int getRadioChannel() {
         return radioChannel_;
       }
       /**
-       * <code>int64 radioChannel = 1;</code>
+       * <code>int32 radioChannel = 1;</code>
        */
-      public Builder setRadioChannel(long value) {
+      public Builder setRadioChannel(int value) {
         
         radioChannel_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 radioChannel = 1;</code>
+       * <code>int32 radioChannel = 1;</code>
        */
       public Builder clearRadioChannel() {
         
-        radioChannel_ = 0L;
+        radioChannel_ = 0;
         onChanged();
         return this;
       }
 
-      private long radioGroupId_ ;
+      private int radioGroupId_ ;
       /**
-       * <code>int64 radioGroupId = 2;</code>
+       * <code>int32 radioGroupId = 2;</code>
        */
-      public long getRadioGroupId() {
+      public int getRadioGroupId() {
         return radioGroupId_;
       }
       /**
-       * <code>int64 radioGroupId = 2;</code>
+       * <code>int32 radioGroupId = 2;</code>
        */
-      public Builder setRadioGroupId(long value) {
+      public Builder setRadioGroupId(int value) {
         
         radioGroupId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 radioGroupId = 2;</code>
+       * <code>int32 radioGroupId = 2;</code>
        */
       public Builder clearRadioGroupId() {
         
-        radioGroupId_ = 0L;
+        radioGroupId_ = 0;
         onChanged();
         return this;
       }
 
-      private long radioDeviceId_ ;
+      private int radioDeviceId_ ;
       /**
-       * <code>int64 radioDeviceId = 3;</code>
+       * <code>int32 radioDeviceId = 3;</code>
        */
-      public long getRadioDeviceId() {
+      public int getRadioDeviceId() {
         return radioDeviceId_;
       }
       /**
-       * <code>int64 radioDeviceId = 3;</code>
+       * <code>int32 radioDeviceId = 3;</code>
        */
-      public Builder setRadioDeviceId(long value) {
+      public Builder setRadioDeviceId(int value) {
         
         radioDeviceId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 radioDeviceId = 3;</code>
+       * <code>int32 radioDeviceId = 3;</code>
        */
       public Builder clearRadioDeviceId() {
         
-        radioDeviceId_ = 0L;
+        radioDeviceId_ = 0;
         onChanged();
         return this;
       }
@@ -15193,6 +15190,1810 @@ public final class ShimmerGRPC {
 
   }
 
+  public interface EmulatedDevicesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:shimmerGRPC.EmulatedDevices)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool state = 1;</code>
+     */
+    boolean getState();
+
+    /**
+     * <code>string message = 2;</code>
+     */
+    java.lang.String getMessage();
+    /**
+     * <code>string message = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getMessageBytes();
+
+    /**
+     * <code>bool isEmulatorSide = 3;</code>
+     */
+    boolean getIsEmulatorSide();
+
+    /**
+     * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+     */
+    int getEmulatedDevicesMapCount();
+    /**
+     * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+     */
+    boolean containsEmulatedDevicesMap(
+        java.lang.String key);
+    /**
+     * Use {@link #getEmulatedDevicesMapMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice>
+    getEmulatedDevicesMap();
+    /**
+     * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+     */
+    java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice>
+    getEmulatedDevicesMapMap();
+    /**
+     * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+     */
+
+    com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice getEmulatedDevicesMapOrDefault(
+        java.lang.String key,
+        com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice defaultValue);
+    /**
+     * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+     */
+
+    com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice getEmulatedDevicesMapOrThrow(
+        java.lang.String key);
+  }
+  /**
+   * Protobuf type {@code shimmerGRPC.EmulatedDevices}
+   */
+  public  static final class EmulatedDevices extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:shimmerGRPC.EmulatedDevices)
+      EmulatedDevicesOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use EmulatedDevices.newBuilder() to construct.
+    private EmulatedDevices(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private EmulatedDevices() {
+      state_ = false;
+      message_ = "";
+      isEmulatorSide_ = false;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private EmulatedDevices(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+
+              state_ = input.readBool();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              message_ = s;
+              break;
+            }
+            case 24: {
+
+              isEmulatorSide_ = input.readBool();
+              break;
+            }
+            case 34: {
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                emulatedDevicesMap_ = com.google.protobuf.MapField.newMapField(
+                    EmulatedDevicesMapDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000008;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice>
+              emulatedDevicesMap__ = input.readMessage(
+                  EmulatedDevicesMapDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              emulatedDevicesMap_.getMutableMap().put(
+                  emulatedDevicesMap__.getKey(), emulatedDevicesMap__.getValue());
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 4:
+          return internalGetEmulatedDevicesMap();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.class, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.Builder.class);
+    }
+
+    public interface EmulatedDeviceOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:shimmerGRPC.EmulatedDevices.EmulatedDevice)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>string uniqueId = 1;</code>
+       */
+      java.lang.String getUniqueId();
+      /**
+       * <code>string uniqueId = 1;</code>
+       */
+      com.google.protobuf.ByteString
+          getUniqueIdBytes();
+
+      /**
+       * <code>int32 deviceTypeOrdinal = 2;</code>
+       */
+      int getDeviceTypeOrdinal();
+
+      /**
+       * <code>repeated string hwDeviceInterfacePath = 3;</code>
+       */
+      java.util.List<java.lang.String>
+          getHwDeviceInterfacePathList();
+      /**
+       * <code>repeated string hwDeviceInterfacePath = 3;</code>
+       */
+      int getHwDeviceInterfacePathCount();
+      /**
+       * <code>repeated string hwDeviceInterfacePath = 3;</code>
+       */
+      java.lang.String getHwDeviceInterfacePath(int index);
+      /**
+       * <code>repeated string hwDeviceInterfacePath = 3;</code>
+       */
+      com.google.protobuf.ByteString
+          getHwDeviceInterfacePathBytes(int index);
+
+      /**
+       * <code>bool isDeviceEnabled = 4;</code>
+       */
+      boolean getIsDeviceEnabled();
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.EmulatedDevices.EmulatedDevice}
+     */
+    public  static final class EmulatedDevice extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:shimmerGRPC.EmulatedDevices.EmulatedDevice)
+        EmulatedDeviceOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use EmulatedDevice.newBuilder() to construct.
+      private EmulatedDevice(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private EmulatedDevice() {
+        uniqueId_ = "";
+        deviceTypeOrdinal_ = 0;
+        hwDeviceInterfacePath_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        isDeviceEnabled_ = false;
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private EmulatedDevice(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownFieldProto3(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                uniqueId_ = s;
+                break;
+              }
+              case 16: {
+
+                deviceTypeOrdinal_ = input.readInt32();
+                break;
+              }
+              case 26: {
+                java.lang.String s = input.readStringRequireUtf8();
+                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                  hwDeviceInterfacePath_ = new com.google.protobuf.LazyStringArrayList();
+                  mutable_bitField0_ |= 0x00000004;
+                }
+                hwDeviceInterfacePath_.add(s);
+                break;
+              }
+              case 32: {
+
+                isDeviceEnabled_ = input.readBool();
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+            hwDeviceInterfacePath_ = hwDeviceInterfacePath_.getUnmodifiableView();
+          }
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice.class, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice.Builder.class);
+      }
+
+      private int bitField0_;
+      public static final int UNIQUEID_FIELD_NUMBER = 1;
+      private volatile java.lang.Object uniqueId_;
+      /**
+       * <code>string uniqueId = 1;</code>
+       */
+      public java.lang.String getUniqueId() {
+        java.lang.Object ref = uniqueId_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          uniqueId_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string uniqueId = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getUniqueIdBytes() {
+        java.lang.Object ref = uniqueId_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          uniqueId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int DEVICETYPEORDINAL_FIELD_NUMBER = 2;
+      private int deviceTypeOrdinal_;
+      /**
+       * <code>int32 deviceTypeOrdinal = 2;</code>
+       */
+      public int getDeviceTypeOrdinal() {
+        return deviceTypeOrdinal_;
+      }
+
+      public static final int HWDEVICEINTERFACEPATH_FIELD_NUMBER = 3;
+      private com.google.protobuf.LazyStringList hwDeviceInterfacePath_;
+      /**
+       * <code>repeated string hwDeviceInterfacePath = 3;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getHwDeviceInterfacePathList() {
+        return hwDeviceInterfacePath_;
+      }
+      /**
+       * <code>repeated string hwDeviceInterfacePath = 3;</code>
+       */
+      public int getHwDeviceInterfacePathCount() {
+        return hwDeviceInterfacePath_.size();
+      }
+      /**
+       * <code>repeated string hwDeviceInterfacePath = 3;</code>
+       */
+      public java.lang.String getHwDeviceInterfacePath(int index) {
+        return hwDeviceInterfacePath_.get(index);
+      }
+      /**
+       * <code>repeated string hwDeviceInterfacePath = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getHwDeviceInterfacePathBytes(int index) {
+        return hwDeviceInterfacePath_.getByteString(index);
+      }
+
+      public static final int ISDEVICEENABLED_FIELD_NUMBER = 4;
+      private boolean isDeviceEnabled_;
+      /**
+       * <code>bool isDeviceEnabled = 4;</code>
+       */
+      public boolean getIsDeviceEnabled() {
+        return isDeviceEnabled_;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!getUniqueIdBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uniqueId_);
+        }
+        if (deviceTypeOrdinal_ != 0) {
+          output.writeInt32(2, deviceTypeOrdinal_);
+        }
+        for (int i = 0; i < hwDeviceInterfacePath_.size(); i++) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 3, hwDeviceInterfacePath_.getRaw(i));
+        }
+        if (isDeviceEnabled_ != false) {
+          output.writeBool(4, isDeviceEnabled_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!getUniqueIdBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uniqueId_);
+        }
+        if (deviceTypeOrdinal_ != 0) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(2, deviceTypeOrdinal_);
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < hwDeviceInterfacePath_.size(); i++) {
+            dataSize += computeStringSizeNoTag(hwDeviceInterfacePath_.getRaw(i));
+          }
+          size += dataSize;
+          size += 1 * getHwDeviceInterfacePathList().size();
+        }
+        if (isDeviceEnabled_ != false) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(4, isDeviceEnabled_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice)) {
+          return super.equals(obj);
+        }
+        com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice other = (com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice) obj;
+
+        boolean result = true;
+        result = result && getUniqueId()
+            .equals(other.getUniqueId());
+        result = result && (getDeviceTypeOrdinal()
+            == other.getDeviceTypeOrdinal());
+        result = result && getHwDeviceInterfacePathList()
+            .equals(other.getHwDeviceInterfacePathList());
+        result = result && (getIsDeviceEnabled()
+            == other.getIsDeviceEnabled());
+        result = result && unknownFields.equals(other.unknownFields);
+        return result;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + UNIQUEID_FIELD_NUMBER;
+        hash = (53 * hash) + getUniqueId().hashCode();
+        hash = (37 * hash) + DEVICETYPEORDINAL_FIELD_NUMBER;
+        hash = (53 * hash) + getDeviceTypeOrdinal();
+        if (getHwDeviceInterfacePathCount() > 0) {
+          hash = (37 * hash) + HWDEVICEINTERFACEPATH_FIELD_NUMBER;
+          hash = (53 * hash) + getHwDeviceInterfacePathList().hashCode();
+        }
+        hash = (37 * hash) + ISDEVICEENABLED_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getIsDeviceEnabled());
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code shimmerGRPC.EmulatedDevices.EmulatedDevice}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:shimmerGRPC.EmulatedDevices.EmulatedDevice)
+          com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDeviceOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice.class, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice.Builder.class);
+        }
+
+        // Construct using com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        public Builder clear() {
+          super.clear();
+          uniqueId_ = "";
+
+          deviceTypeOrdinal_ = 0;
+
+          hwDeviceInterfacePath_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000004);
+          isDeviceEnabled_ = false;
+
+          return this;
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_descriptor;
+        }
+
+        public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice getDefaultInstanceForType() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice.getDefaultInstance();
+        }
+
+        public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice build() {
+          com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice buildPartial() {
+          com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice result = new com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          result.uniqueId_ = uniqueId_;
+          result.deviceTypeOrdinal_ = deviceTypeOrdinal_;
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            hwDeviceInterfacePath_ = hwDeviceInterfacePath_.getUnmodifiableView();
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.hwDeviceInterfacePath_ = hwDeviceInterfacePath_;
+          result.isDeviceEnabled_ = isDeviceEnabled_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder clone() {
+          return (Builder) super.clone();
+        }
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.setField(field, value);
+        }
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return (Builder) super.clearField(field);
+        }
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return (Builder) super.clearOneof(oneof);
+        }
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return (Builder) super.setRepeatedField(field, index, value);
+        }
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return (Builder) super.addRepeatedField(field, value);
+        }
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice) {
+            return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice other) {
+          if (other == com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice.getDefaultInstance()) return this;
+          if (!other.getUniqueId().isEmpty()) {
+            uniqueId_ = other.uniqueId_;
+            onChanged();
+          }
+          if (other.getDeviceTypeOrdinal() != 0) {
+            setDeviceTypeOrdinal(other.getDeviceTypeOrdinal());
+          }
+          if (!other.hwDeviceInterfacePath_.isEmpty()) {
+            if (hwDeviceInterfacePath_.isEmpty()) {
+              hwDeviceInterfacePath_ = other.hwDeviceInterfacePath_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureHwDeviceInterfacePathIsMutable();
+              hwDeviceInterfacePath_.addAll(other.hwDeviceInterfacePath_);
+            }
+            onChanged();
+          }
+          if (other.getIsDeviceEnabled() != false) {
+            setIsDeviceEnabled(other.getIsDeviceEnabled());
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        private java.lang.Object uniqueId_ = "";
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public java.lang.String getUniqueId() {
+          java.lang.Object ref = uniqueId_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            uniqueId_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public com.google.protobuf.ByteString
+            getUniqueIdBytes() {
+          java.lang.Object ref = uniqueId_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            uniqueId_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public Builder setUniqueId(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          uniqueId_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public Builder clearUniqueId() {
+          
+          uniqueId_ = getDefaultInstance().getUniqueId();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string uniqueId = 1;</code>
+         */
+        public Builder setUniqueIdBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          uniqueId_ = value;
+          onChanged();
+          return this;
+        }
+
+        private int deviceTypeOrdinal_ ;
+        /**
+         * <code>int32 deviceTypeOrdinal = 2;</code>
+         */
+        public int getDeviceTypeOrdinal() {
+          return deviceTypeOrdinal_;
+        }
+        /**
+         * <code>int32 deviceTypeOrdinal = 2;</code>
+         */
+        public Builder setDeviceTypeOrdinal(int value) {
+          
+          deviceTypeOrdinal_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int32 deviceTypeOrdinal = 2;</code>
+         */
+        public Builder clearDeviceTypeOrdinal() {
+          
+          deviceTypeOrdinal_ = 0;
+          onChanged();
+          return this;
+        }
+
+        private com.google.protobuf.LazyStringList hwDeviceInterfacePath_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        private void ensureHwDeviceInterfacePathIsMutable() {
+          if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+            hwDeviceInterfacePath_ = new com.google.protobuf.LazyStringArrayList(hwDeviceInterfacePath_);
+            bitField0_ |= 0x00000004;
+           }
+        }
+        /**
+         * <code>repeated string hwDeviceInterfacePath = 3;</code>
+         */
+        public com.google.protobuf.ProtocolStringList
+            getHwDeviceInterfacePathList() {
+          return hwDeviceInterfacePath_.getUnmodifiableView();
+        }
+        /**
+         * <code>repeated string hwDeviceInterfacePath = 3;</code>
+         */
+        public int getHwDeviceInterfacePathCount() {
+          return hwDeviceInterfacePath_.size();
+        }
+        /**
+         * <code>repeated string hwDeviceInterfacePath = 3;</code>
+         */
+        public java.lang.String getHwDeviceInterfacePath(int index) {
+          return hwDeviceInterfacePath_.get(index);
+        }
+        /**
+         * <code>repeated string hwDeviceInterfacePath = 3;</code>
+         */
+        public com.google.protobuf.ByteString
+            getHwDeviceInterfacePathBytes(int index) {
+          return hwDeviceInterfacePath_.getByteString(index);
+        }
+        /**
+         * <code>repeated string hwDeviceInterfacePath = 3;</code>
+         */
+        public Builder setHwDeviceInterfacePath(
+            int index, java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureHwDeviceInterfacePathIsMutable();
+          hwDeviceInterfacePath_.set(index, value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string hwDeviceInterfacePath = 3;</code>
+         */
+        public Builder addHwDeviceInterfacePath(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureHwDeviceInterfacePathIsMutable();
+          hwDeviceInterfacePath_.add(value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string hwDeviceInterfacePath = 3;</code>
+         */
+        public Builder addAllHwDeviceInterfacePath(
+            java.lang.Iterable<java.lang.String> values) {
+          ensureHwDeviceInterfacePathIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, hwDeviceInterfacePath_);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string hwDeviceInterfacePath = 3;</code>
+         */
+        public Builder clearHwDeviceInterfacePath() {
+          hwDeviceInterfacePath_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated string hwDeviceInterfacePath = 3;</code>
+         */
+        public Builder addHwDeviceInterfacePathBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          ensureHwDeviceInterfacePathIsMutable();
+          hwDeviceInterfacePath_.add(value);
+          onChanged();
+          return this;
+        }
+
+        private boolean isDeviceEnabled_ ;
+        /**
+         * <code>bool isDeviceEnabled = 4;</code>
+         */
+        public boolean getIsDeviceEnabled() {
+          return isDeviceEnabled_;
+        }
+        /**
+         * <code>bool isDeviceEnabled = 4;</code>
+         */
+        public Builder setIsDeviceEnabled(boolean value) {
+          
+          isDeviceEnabled_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>bool isDeviceEnabled = 4;</code>
+         */
+        public Builder clearIsDeviceEnabled() {
+          
+          isDeviceEnabled_ = false;
+          onChanged();
+          return this;
+        }
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFieldsProto3(unknownFields);
+        }
+
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:shimmerGRPC.EmulatedDevices.EmulatedDevice)
+      }
+
+      // @@protoc_insertion_point(class_scope:shimmerGRPC.EmulatedDevices.EmulatedDevice)
+      private static final com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice();
+      }
+
+      public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<EmulatedDevice>
+          PARSER = new com.google.protobuf.AbstractParser<EmulatedDevice>() {
+        public EmulatedDevice parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return new EmulatedDevice(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<EmulatedDevice> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<EmulatedDevice> getParserForType() {
+        return PARSER;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    private int bitField0_;
+    public static final int STATE_FIELD_NUMBER = 1;
+    private boolean state_;
+    /**
+     * <code>bool state = 1;</code>
+     */
+    public boolean getState() {
+      return state_;
+    }
+
+    public static final int MESSAGE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object message_;
+    /**
+     * <code>string message = 2;</code>
+     */
+    public java.lang.String getMessage() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        message_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string message = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMessageBytes() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        message_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ISEMULATORSIDE_FIELD_NUMBER = 3;
+    private boolean isEmulatorSide_;
+    /**
+     * <code>bool isEmulatorSide = 3;</code>
+     */
+    public boolean getIsEmulatorSide() {
+      return isEmulatorSide_;
+    }
+
+    public static final int EMULATEDDEVICESMAP_FIELD_NUMBER = 4;
+    private static final class EmulatedDevicesMapDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice>newDefaultInstance(
+                  com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevicesMapEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                  com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice.getDefaultInstance());
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> emulatedDevicesMap_;
+    private com.google.protobuf.MapField<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice>
+    internalGetEmulatedDevicesMap() {
+      if (emulatedDevicesMap_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            EmulatedDevicesMapDefaultEntryHolder.defaultEntry);
+      }
+      return emulatedDevicesMap_;
+    }
+
+    public int getEmulatedDevicesMapCount() {
+      return internalGetEmulatedDevicesMap().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+     */
+
+    public boolean containsEmulatedDevicesMap(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetEmulatedDevicesMap().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getEmulatedDevicesMapMap()} instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> getEmulatedDevicesMap() {
+      return getEmulatedDevicesMapMap();
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+     */
+
+    public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> getEmulatedDevicesMapMap() {
+      return internalGetEmulatedDevicesMap().getMap();
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+     */
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice getEmulatedDevicesMapOrDefault(
+        java.lang.String key,
+        com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> map =
+          internalGetEmulatedDevicesMap().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+     */
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice getEmulatedDevicesMapOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> map =
+          internalGetEmulatedDevicesMap().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (state_ != false) {
+        output.writeBool(1, state_);
+      }
+      if (!getMessageBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
+      }
+      if (isEmulatorSide_ != false) {
+        output.writeBool(3, isEmulatorSide_);
+      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetEmulatedDevicesMap(),
+          EmulatedDevicesMapDefaultEntryHolder.defaultEntry,
+          4);
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (state_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, state_);
+      }
+      if (!getMessageBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
+      }
+      if (isEmulatorSide_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, isEmulatorSide_);
+      }
+      for (java.util.Map.Entry<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> entry
+           : internalGetEmulatedDevicesMap().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice>
+        emulatedDevicesMap__ = EmulatedDevicesMapDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(4, emulatedDevicesMap__);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices)) {
+        return super.equals(obj);
+      }
+      com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices other = (com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices) obj;
+
+      boolean result = true;
+      result = result && (getState()
+          == other.getState());
+      result = result && getMessage()
+          .equals(other.getMessage());
+      result = result && (getIsEmulatorSide()
+          == other.getIsEmulatorSide());
+      result = result && internalGetEmulatedDevicesMap().equals(
+          other.internalGetEmulatedDevicesMap());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + STATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getState());
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
+      hash = (37 * hash) + ISEMULATORSIDE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsEmulatorSide());
+      if (!internalGetEmulatedDevicesMap().getMap().isEmpty()) {
+        hash = (37 * hash) + EMULATEDDEVICESMAP_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetEmulatedDevicesMap().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.EmulatedDevices}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:shimmerGRPC.EmulatedDevices)
+        com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevicesOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 4:
+            return internalGetEmulatedDevicesMap();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 4:
+            return internalGetMutableEmulatedDevicesMap();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.class, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.Builder.class);
+      }
+
+      // Construct using com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        state_ = false;
+
+        message_ = "";
+
+        isEmulatorSide_ = false;
+
+        internalGetMutableEmulatedDevicesMap().clear();
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_EmulatedDevices_descriptor;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices getDefaultInstanceForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.getDefaultInstance();
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices build() {
+        com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices buildPartial() {
+        com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices result = new com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.state_ = state_;
+        result.message_ = message_;
+        result.isEmulatorSide_ = isEmulatorSide_;
+        result.emulatedDevicesMap_ = internalGetEmulatedDevicesMap();
+        result.emulatedDevicesMap_.makeImmutable();
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices) {
+          return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices other) {
+        if (other == com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.getDefaultInstance()) return this;
+        if (other.getState() != false) {
+          setState(other.getState());
+        }
+        if (!other.getMessage().isEmpty()) {
+          message_ = other.message_;
+          onChanged();
+        }
+        if (other.getIsEmulatorSide() != false) {
+          setIsEmulatorSide(other.getIsEmulatorSide());
+        }
+        internalGetMutableEmulatedDevicesMap().mergeFrom(
+            other.internalGetEmulatedDevicesMap());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean state_ ;
+      /**
+       * <code>bool state = 1;</code>
+       */
+      public boolean getState() {
+        return state_;
+      }
+      /**
+       * <code>bool state = 1;</code>
+       */
+      public Builder setState(boolean value) {
+        
+        state_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool state = 1;</code>
+       */
+      public Builder clearState() {
+        
+        state_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object message_ = "";
+      /**
+       * <code>string message = 2;</code>
+       */
+      public java.lang.String getMessage() {
+        java.lang.Object ref = message_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          message_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMessageBytes() {
+        java.lang.Object ref = message_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          message_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public Builder setMessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        message_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public Builder clearMessage() {
+        
+        message_ = getDefaultInstance().getMessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       */
+      public Builder setMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        message_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean isEmulatorSide_ ;
+      /**
+       * <code>bool isEmulatorSide = 3;</code>
+       */
+      public boolean getIsEmulatorSide() {
+        return isEmulatorSide_;
+      }
+      /**
+       * <code>bool isEmulatorSide = 3;</code>
+       */
+      public Builder setIsEmulatorSide(boolean value) {
+        
+        isEmulatorSide_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool isEmulatorSide = 3;</code>
+       */
+      public Builder clearIsEmulatorSide() {
+        
+        isEmulatorSide_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> emulatedDevicesMap_;
+      private com.google.protobuf.MapField<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice>
+      internalGetEmulatedDevicesMap() {
+        if (emulatedDevicesMap_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              EmulatedDevicesMapDefaultEntryHolder.defaultEntry);
+        }
+        return emulatedDevicesMap_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice>
+      internalGetMutableEmulatedDevicesMap() {
+        onChanged();;
+        if (emulatedDevicesMap_ == null) {
+          emulatedDevicesMap_ = com.google.protobuf.MapField.newMapField(
+              EmulatedDevicesMapDefaultEntryHolder.defaultEntry);
+        }
+        if (!emulatedDevicesMap_.isMutable()) {
+          emulatedDevicesMap_ = emulatedDevicesMap_.copy();
+        }
+        return emulatedDevicesMap_;
+      }
+
+      public int getEmulatedDevicesMapCount() {
+        return internalGetEmulatedDevicesMap().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+       */
+
+      public boolean containsEmulatedDevicesMap(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetEmulatedDevicesMap().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getEmulatedDevicesMapMap()} instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> getEmulatedDevicesMap() {
+        return getEmulatedDevicesMapMap();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+       */
+
+      public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> getEmulatedDevicesMapMap() {
+        return internalGetEmulatedDevicesMap().getMap();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+       */
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice getEmulatedDevicesMapOrDefault(
+          java.lang.String key,
+          com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> map =
+            internalGetEmulatedDevicesMap().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+       */
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice getEmulatedDevicesMapOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> map =
+            internalGetEmulatedDevicesMap().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearEmulatedDevicesMap() {
+        internalGetMutableEmulatedDevicesMap().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+       */
+
+      public Builder removeEmulatedDevicesMap(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableEmulatedDevicesMap().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice>
+      getMutableEmulatedDevicesMap() {
+        return internalGetMutableEmulatedDevicesMap().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+       */
+      public Builder putEmulatedDevicesMap(
+          java.lang.String key,
+          com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableEmulatedDevicesMap().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.EmulatedDevices.EmulatedDevice&gt; emulatedDevicesMap = 4;</code>
+       */
+
+      public Builder putAllEmulatedDevicesMap(
+          java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.EmulatedDevice> values) {
+        internalGetMutableEmulatedDevicesMap().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:shimmerGRPC.EmulatedDevices)
+    }
+
+    // @@protoc_insertion_point(class_scope:shimmerGRPC.EmulatedDevices)
+    private static final com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices();
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<EmulatedDevices>
+        PARSER = new com.google.protobuf.AbstractParser<EmulatedDevices>() {
+      public EmulatedDevices parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new EmulatedDevices(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<EmulatedDevices> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<EmulatedDevices> getParserForType() {
+      return PARSER;
+    }
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_shimmerGRPC_FileByteTransfer_descriptor;
   private static final 
@@ -15308,6 +17109,21 @@ public final class ShimmerGRPC {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_EmulatedDevices_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_EmulatedDevices_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevicesMapEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevicesMapEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -15368,59 +17184,70 @@ public final class ShimmerGRPC {
       "mmerMapEntry\022\013\n\003key\030\001 \001(\t\0224\n\005value\030\002 \001(\013" +
       "2%.shimmerGRPC.ShimmersInfo.ShimmerInfo:",
       "\0028\001\"S\n\016Ieee802154Info\022\024\n\014radioChannel\030\001 " +
-      "\001(\003\022\024\n\014radioGroupId\030\002 \001(\003\022\025\n\rradioDevice" +
-      "Id\030\003 \001(\003\"\251\002\n\tInfoSpans\022\r\n\005state\030\001 \001(\010\022\017\n" +
+      "\001(\005\022\024\n\014radioGroupId\030\002 \001(\005\022\025\n\rradioDevice" +
+      "Id\030\003 \001(\005\"\251\002\n\tInfoSpans\022\r\n\005state\030\001 \001(\010\022\017\n" +
       "\007message\030\002 \001(\t\0224\n\007spanMap\030\003 \003(\0132#.shimme" +
       "rGRPC.InfoSpans.SpanMapEntry\0223\n\016ieee8021" +
       "54Info\030\004 \001(\0132\033.shimmerGRPC.Ieee802154Inf" +
       "o\032@\n\010InfoSpan\022\020\n\010uniqueId\030\001 \001(\t\022\017\n\007portB" +
       "sl\030\002 \001(\t\022\021\n\tportComms\030\003 \001(\t\032O\n\014SpanMapEn" +
       "try\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.shimme" +
-      "rGRPC.InfoSpans.InfoSpan:\0028\0012\201\r\n\rShimmer",
-      "Server\022@\n\010SayHello\022\031.shimmerGRPC.HelloRe" +
-      "quest\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rGetD" +
-      "ataStream\022\032.shimmerGRPC.StreamRequest\032\033." +
-      "shimmerGRPC.ObjectCluster2\"\0000\001\022J\n\016SendDa" +
-      "taStream\022\033.shimmerGRPC.ObjectCluster2\032\027." +
-      "shimmerGRPC.HelloReply\"\000(\001\022L\n\016SendFileSt" +
-      "ream\022\035.shimmerGRPC.FileByteTransfer\032\027.sh" +
-      "immerGRPC.HelloReply\"\000(\001\022K\n\016ConnectShimm" +
-      "er\022\033.shimmerGRPC.ShimmerRequest\032\032.shimme" +
-      "rGRPC.CommandStatus\"\000\022K\n\016StartStreaming\022",
-      "\033.shimmerGRPC.ShimmerRequest\032\032.shimmerGR" +
-      "PC.CommandStatus\"\000\022M\n\020CloseApplication\022\033" +
-      ".shimmerGRPC.ShimmerRequest\032\032.shimmerGRP" +
-      "C.CommandStatus\"\000\022P\n\025SetWorkspaceDirecto" +
-      "ry\022\026.shimmerGRPC.StringMsg\032\035.shimmerGRPC" +
-      ".OperationRequest\"\000\022I\n\025GetWorkspaceDirec" +
-      "tory\022\026.shimmerGRPC.StringMsg\032\026.shimmerGR" +
-      "PC.StringMsg\"\000\022K\n\024GetDockedShimmerInfo\022\026" +
-      ".shimmerGRPC.StringMsg\032\031.shimmerGRPC.Shi" +
-      "mmersInfo\"\000\022I\n\025GetMadgewickBetaValue\022\026.s",
-      "himmerGRPC.StringMsg\032\026.shimmerGRPC.Doubl" +
-      "eMsg\"\000\022L\n\014PairShimmers\022\033.shimmerGRPC.Str" +
-      "ingArrayMsg\032\035.shimmerGRPC.OperationReque" +
-      "st\"\000\022O\n\024GetOperationProgress\022\026.shimmerGR" +
-      "PC.StringMsg\032\035.shimmerGRPC.OperationRequ" +
-      "est\"\000\022X\n\030ImportSdDataFromShimmers\022\033.shim" +
-      "merGRPC.StringArrayMsg\032\035.shimmerGRPC.Ope" +
-      "rationRequest\"\000\022N\n\023ParseSdDataFromPath\022\026" +
-      ".shimmerGRPC.StringMsg\032\035.shimmerGRPC.Ope" +
-      "rationRequest\"\000\022Q\n\021ScanSdDataAndCopy\022\033.s",
-      "himmerGRPC.StringArrayMsg\032\035.shimmerGRPC." +
-      "OperationRequest\"\000\022O\n\017ClearSdCardData\022\033." +
-      "shimmerGRPC.StringArrayMsg\032\035.shimmerGRPC" +
-      ".OperationRequest\"\000\022X\n\030DockAccessSlotWit" +
-      "hSdCard\022\033.shimmerGRPC.StringArrayMsg\032\035.s" +
-      "himmerGRPC.OperationRequest\"\000\022T\n\024DockRes" +
-      "toreAutoTasks\022\033.shimmerGRPC.StringArrayM" +
-      "sg\032\035.shimmerGRPC.OperationRequest\"\000\022@\n\014G" +
-      "etInfoSpans\022\026.shimmerGRPC.StringMsg\032\026.sh" +
-      "immerGRPC.InfoSpans\"\000\022I\n\022GetInfoAllShimm",
-      "ers\022\026.shimmerGRPC.StringMsg\032\031.shimmerGRP" +
-      "C.ShimmersInfo\"\000BB\n\030com.shimmerresearch." +
-      "grpcB\013ShimmerGRPC\252\002\030com.shimmerresearch." +
-      "grpcb\006proto3"
+      "rGRPC.InfoSpans.InfoSpan:\0028\001\"\372\002\n\017Emulate",
+      "dDevices\022\r\n\005state\030\001 \001(\010\022\017\n\007message\030\002 \001(\t" +
+      "\022\026\n\016isEmulatorSide\030\003 \001(\010\022P\n\022emulatedDevi" +
+      "cesMap\030\004 \003(\01324.shimmerGRPC.EmulatedDevic" +
+      "es.EmulatedDevicesMapEntry\032u\n\016EmulatedDe" +
+      "vice\022\020\n\010uniqueId\030\001 \001(\t\022\031\n\021deviceTypeOrdi" +
+      "nal\030\002 \001(\005\022\035\n\025hwDeviceInterfacePath\030\003 \003(\t" +
+      "\022\027\n\017isDeviceEnabled\030\004 \001(\010\032f\n\027EmulatedDev" +
+      "icesMapEntry\022\013\n\003key\030\001 \001(\t\022:\n\005value\030\002 \001(\013" +
+      "2+.shimmerGRPC.EmulatedDevices.EmulatedD" +
+      "evice:\0028\0012\317\r\n\rShimmerServer\022@\n\010SayHello\022",
+      "\031.shimmerGRPC.HelloRequest\032\027.shimmerGRPC" +
+      ".HelloReply\"\000\022L\n\rGetDataStream\022\032.shimmer" +
+      "GRPC.StreamRequest\032\033.shimmerGRPC.ObjectC" +
+      "luster2\"\0000\001\022J\n\016SendDataStream\022\033.shimmerG" +
+      "RPC.ObjectCluster2\032\027.shimmerGRPC.HelloRe" +
+      "ply\"\000(\001\022L\n\016SendFileStream\022\035.shimmerGRPC." +
+      "FileByteTransfer\032\027.shimmerGRPC.HelloRepl" +
+      "y\"\000(\001\022K\n\016ConnectShimmer\022\033.shimmerGRPC.Sh" +
+      "immerRequest\032\032.shimmerGRPC.CommandStatus" +
+      "\"\000\022K\n\016StartStreaming\022\033.shimmerGRPC.Shimm",
+      "erRequest\032\032.shimmerGRPC.CommandStatus\"\000\022" +
+      "M\n\020CloseApplication\022\033.shimmerGRPC.Shimme" +
+      "rRequest\032\032.shimmerGRPC.CommandStatus\"\000\022P" +
+      "\n\025SetWorkspaceDirectory\022\026.shimmerGRPC.St" +
+      "ringMsg\032\035.shimmerGRPC.OperationRequest\"\000" +
+      "\022I\n\025GetWorkspaceDirectory\022\026.shimmerGRPC." +
+      "StringMsg\032\026.shimmerGRPC.StringMsg\"\000\022K\n\024G" +
+      "etDockedShimmerInfo\022\026.shimmerGRPC.String" +
+      "Msg\032\031.shimmerGRPC.ShimmersInfo\"\000\022I\n\025GetM" +
+      "adgewickBetaValue\022\026.shimmerGRPC.StringMs",
+      "g\032\026.shimmerGRPC.DoubleMsg\"\000\022L\n\014PairShimm" +
+      "ers\022\033.shimmerGRPC.StringArrayMsg\032\035.shimm" +
+      "erGRPC.OperationRequest\"\000\022O\n\024GetOperatio" +
+      "nProgress\022\026.shimmerGRPC.StringMsg\032\035.shim" +
+      "merGRPC.OperationRequest\"\000\022X\n\030ImportSdDa" +
+      "taFromShimmers\022\033.shimmerGRPC.StringArray" +
+      "Msg\032\035.shimmerGRPC.OperationRequest\"\000\022N\n\023" +
+      "ParseSdDataFromPath\022\026.shimmerGRPC.String" +
+      "Msg\032\035.shimmerGRPC.OperationRequest\"\000\022Q\n\021" +
+      "ScanSdDataAndCopy\022\033.shimmerGRPC.StringAr",
+      "rayMsg\032\035.shimmerGRPC.OperationRequest\"\000\022" +
+      "O\n\017ClearSdCardData\022\033.shimmerGRPC.StringA" +
+      "rrayMsg\032\035.shimmerGRPC.OperationRequest\"\000" +
+      "\022X\n\030DockAccessSlotWithSdCard\022\033.shimmerGR" +
+      "PC.StringArrayMsg\032\035.shimmerGRPC.Operatio" +
+      "nRequest\"\000\022T\n\024DockRestoreAutoTasks\022\033.shi" +
+      "mmerGRPC.StringArrayMsg\032\035.shimmerGRPC.Op" +
+      "erationRequest\"\000\022@\n\014GetInfoSpans\022\026.shimm" +
+      "erGRPC.StringMsg\032\026.shimmerGRPC.InfoSpans" +
+      "\"\000\022I\n\022GetInfoAllShimmers\022\026.shimmerGRPC.S",
+      "tringMsg\032\031.shimmerGRPC.ShimmersInfo\"\000\022L\n" +
+      "\022GetEmulatedDevices\022\026.shimmerGRPC.String" +
+      "Msg\032\034.shimmerGRPC.EmulatedDevices\"\000BB\n\030c" +
+      "om.shimmerresearch.grpcB\013ShimmerGRPC\252\002\030c" +
+      "om.shimmerresearch.grpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -15572,6 +17399,24 @@ public final class ShimmerGRPC {
     internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_shimmerGRPC_EmulatedDevices_descriptor =
+      getDescriptor().getMessageTypes().get(15);
+    internal_static_shimmerGRPC_EmulatedDevices_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_EmulatedDevices_descriptor,
+        new java.lang.String[] { "State", "Message", "IsEmulatorSide", "EmulatedDevicesMap", });
+    internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_descriptor =
+      internal_static_shimmerGRPC_EmulatedDevices_descriptor.getNestedTypes().get(0);
+    internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevice_descriptor,
+        new java.lang.String[] { "UniqueId", "DeviceTypeOrdinal", "HwDeviceInterfacePath", "IsDeviceEnabled", });
+    internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevicesMapEntry_descriptor =
+      internal_static_shimmerGRPC_EmulatedDevices_descriptor.getNestedTypes().get(1);
+    internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevicesMapEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevicesMapEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     com.google.protobuf.DescriptorProtos.getDescriptor();
   }

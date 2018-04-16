@@ -3,6 +3,11 @@ package com.shimmerresearch.driverUtilities;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Holds system HW information
+ * 
+ * @author Mark Nolan
+ *
+ */
 public class HwDriverDeviceDetails {
 	
 	//SPDRP

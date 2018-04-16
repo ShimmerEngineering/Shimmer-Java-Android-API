@@ -282,6 +282,18 @@ public final class ShimmerServerGrpc {
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.getDefaultInstance()))
           .build();
+  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
+  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> METHOD_GET_EMULATED_DEVICES =
+      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices>newBuilder()
+          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+          .setFullMethodName(generateFullMethodName(
+              "shimmerGRPC.ShimmerServer", "GetEmulatedDevices"))
+          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+              com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.getDefaultInstance()))
+          .build();
 
   /**
    * Creates a new async stub that supports all call types for the service
@@ -475,6 +487,13 @@ public final class ShimmerServerGrpc {
       asyncUnimplementedUnaryCall(METHOD_GET_INFO_ALL_SHIMMERS, responseObserver);
     }
 
+    /**
+     */
+    public void getEmulatedDevices(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> responseObserver) {
+      asyncUnimplementedUnaryCall(METHOD_GET_EMULATED_DEVICES, responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -624,6 +643,13 @@ public final class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>(
                   this, METHODID_GET_INFO_ALL_SHIMMERS)))
+          .addMethod(
+            METHOD_GET_EMULATED_DEVICES,
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+                com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices>(
+                  this, METHODID_GET_EMULATED_DEVICES)))
           .build();
     }
   }
@@ -831,6 +857,14 @@ public final class ShimmerServerGrpc {
       asyncUnaryCall(
           getChannel().newCall(METHOD_GET_INFO_ALL_SHIMMERS, getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getEmulatedDevices(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(METHOD_GET_EMULATED_DEVICES, getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -998,6 +1032,13 @@ public final class ShimmerServerGrpc {
     public com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo getInfoAllShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
           getChannel(), METHOD_GET_INFO_ALL_SHIMMERS, getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices getEmulatedDevices(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+      return blockingUnaryCall(
+          getChannel(), METHOD_GET_EMULATED_DEVICES, getCallOptions(), request);
     }
   }
 
@@ -1174,6 +1215,14 @@ public final class ShimmerServerGrpc {
       return futureUnaryCall(
           getChannel().newCall(METHOD_GET_INFO_ALL_SHIMMERS, getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> getEmulatedDevices(
+        com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+      return futureUnaryCall(
+          getChannel().newCall(METHOD_GET_EMULATED_DEVICES, getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SAY_HELLO = 0;
@@ -1195,8 +1244,9 @@ public final class ShimmerServerGrpc {
   private static final int METHODID_DOCK_RESTORE_AUTO_TASKS = 16;
   private static final int METHODID_GET_INFO_SPANS = 17;
   private static final int METHODID_GET_INFO_ALL_SHIMMERS = 18;
-  private static final int METHODID_SEND_DATA_STREAM = 19;
-  private static final int METHODID_SEND_FILE_STREAM = 20;
+  private static final int METHODID_GET_EMULATED_DEVICES = 19;
+  private static final int METHODID_SEND_DATA_STREAM = 20;
+  private static final int METHODID_SEND_FILE_STREAM = 21;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1291,6 +1341,10 @@ public final class ShimmerServerGrpc {
           serviceImpl.getInfoAllShimmers((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>) responseObserver);
           break;
+        case METHODID_GET_EMULATED_DEVICES:
+          serviceImpl.getEmulatedDevices((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -1351,6 +1405,7 @@ public final class ShimmerServerGrpc {
               .addMethod(METHOD_DOCK_RESTORE_AUTO_TASKS)
               .addMethod(METHOD_GET_INFO_SPANS)
               .addMethod(METHOD_GET_INFO_ALL_SHIMMERS)
+              .addMethod(METHOD_GET_EMULATED_DEVICES)
               .build();
         }
       }
