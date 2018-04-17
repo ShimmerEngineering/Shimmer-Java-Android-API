@@ -72,6 +72,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public static final String DEFAULT_DOCKID = "Default.01";
 	public static final int DEFAULT_SLOTNUMBER = -1;
 	public static final String DEFAULT_SHIMMER_NAME = "Shimmer";
+	public static final String DEFAULT_SHIMMER_NAME_WITH_ERROR = DEFAULT_SHIMMER_NAME + "_" + "FFFF";
 	public static final String DEFAULT_EXPERIMENT_NAME = "DefaultTrial";
 	public static final String DEFAULT_MAC_ID = "";
 	public static final String DEVICE_ID = "Device_ID";
@@ -1584,9 +1585,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public boolean isShimmerNameInvalid(){
-		return isTrialOrShimmerNameInvalid(getShimmerUserAssignedName());
+		return isTrialOrShimmerNameInvalid(getShimmerUserAssignedName()) 
+				|| getShimmerUserAssignedName().equals(DEFAULT_SHIMMER_NAME_WITH_ERROR);
 	}
 
+	public boolean isShimmerNameValid() {
+		return !isShimmerNameInvalid();
+	}
+	
 	public static boolean isTrialOrShimmerNameInvalid(String name){
 		if(name.isEmpty()){
 			return true;
