@@ -39,7 +39,7 @@ public class SensorGSR extends AbstractSensor {
 	public int mGSRRange = 4; 					// 4 = Auto
 	
 	public static final double[] SHIMMER3_GSR_REF_RESISTORS_KOHMS = new double[] {
-			40.0, 		//Range 0
+			40.2, 		//Range 0
 			287.0, 		//Range 1
 			1000.0, 	//Range 2
 			3300.0}; 	//Range 3
