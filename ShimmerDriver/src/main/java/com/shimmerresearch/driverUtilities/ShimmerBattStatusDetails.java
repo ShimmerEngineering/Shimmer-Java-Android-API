@@ -79,6 +79,10 @@ public class ShimmerBattStatusDetails implements Serializable {
 		}
 	}
 
+	/** Used via wireless communication
+	 * @param battAdcValue
+	 * @param chargingStatus
+	 */
 	public ShimmerBattStatusDetails(int battAdcValue, int chargingStatus) {
 		update(battAdcValue, chargingStatus);
 	}
