@@ -20,12 +20,9 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 
 public class SensorGSR extends AbstractSensor {
@@ -39,7 +36,7 @@ public class SensorGSR extends AbstractSensor {
 	public int mGSRRange = 4; 					// 4 = Auto
 	
 	public static final double[] SHIMMER3_GSR_REF_RESISTORS_KOHMS = new double[] {
-			40.0, 		//Range 0
+			40.2, 		//Range 0
 			287.0, 		//Range 1
 			1000.0, 	//Range 2
 			3300.0}; 	//Range 3
