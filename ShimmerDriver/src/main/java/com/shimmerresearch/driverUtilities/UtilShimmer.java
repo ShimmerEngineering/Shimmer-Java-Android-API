@@ -13,6 +13,9 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -712,6 +715,11 @@ public class UtilShimmer implements Serializable {
 		String formattedDateAndTime = dateFormat.format(cal.getTime());
 		
 		return formattedDateAndTime;
+	}
+	
+	/** Returns the current local timezone offset in milliseconds. E.g. if current timezone is UTC+1, this will be 3600000 */
+	public static int getCurrentLocalTimezoneOffsetMillis() {
+		return ZoneId.systemDefault().getRules().getStandardOffset(Instant.now()).getTotalSeconds()*1000;
 	}
 	
 	public static File[] getArrayOfFilesWithFileType(File directory, final String fileType){
