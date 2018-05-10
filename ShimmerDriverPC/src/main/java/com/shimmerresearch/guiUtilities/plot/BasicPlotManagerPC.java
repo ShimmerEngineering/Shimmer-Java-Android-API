@@ -1734,7 +1734,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		if(ojc!=null) {
 			ojc.consolePrintChannelsAndDataSingleLine();
 		}
-		throw new Exception("Signal not found: (" + traceName + ")");
+		//throw new Exception("Signal not found: (" + traceName + ")"); MAY 2018: RM commented out for NEUR-685 as it conflicts with 'continue' keyword where this method is called
 	}
 
 	private double getXDataForPlotting(String shimmerName, ObjectCluster ojc, int index) {
@@ -1933,7 +1933,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			
 			synchronized(mListofPropertiestoPlot){
 				Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
-				int i = 0;
+				int indexOfTrace = 0;
 				boolean isDummyPointAddedToFillTrace = false; 
 				
 				while (entries.hasNext()) {
@@ -1951,6 +1951,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 							//JC: Just to be safe, do a check to ensure a marker is not missed, this is probably not needed..
 							FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 							if(f == null){
+								indexOfTrace++;
 								throwExceptionSignalNotFound(traceName, ojc);
 								continue;
 							}
@@ -1959,6 +1960,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 							try {
 								yData = checkAndCorrectData(ojc.getShimmerName(), props[1], traceName, f.mData);
 							} catch (Exception e) {
+								indexOfTrace++;
 								//2018-03-08 MN:Used to throw the entire method here but removing this for the moment
 								continue;
 							}
@@ -1977,6 +1979,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 
 						FormatCluster f = ObjectCluster.returnFormatCluster(ojc.getCollectionOfFormatClusters(props[1]), props[2]);
 						if(f == null){
+							indexOfTrace++;
 							throwExceptionSignalNotFound(traceName, ojc);
 							continue;
 						}
@@ -1985,14 +1988,15 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 						try {
 							yData = checkAndCorrectData(shimmerName, props[1], traceName, f.mData);
 						} catch (Exception e) {
+							indexOfTrace++;
 							//2018-03-08 MN:Used to throw the entire method here but removing this for the moment
 							continue;
 						}
 
-						if (i>mListofTraces.size()){
+						if (indexOfTrace>mListofTraces.size()){
 							throw new Exception("Trace does not exist: (" + traceName + ")");
 						}
-						ITrace2D currentTrace = mListofTraces.get(i); 
+						ITrace2D currentTrace = mListofTraces.get(indexOfTrace); 
 						//utilShimmer.consolePrintErrLn(currentTrace.getMaxY());
 
 						mCurrentXValue = xData;
@@ -2038,7 +2042,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 						//						}
 						//					}
 					}
-					i++;
+					indexOfTrace++;
 				}
 				if(isDummyPointAddedToFillTrace) {
 					isFirstPointOnFillTrace = false;
