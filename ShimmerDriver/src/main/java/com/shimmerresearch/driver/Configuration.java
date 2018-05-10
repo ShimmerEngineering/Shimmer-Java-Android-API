@@ -892,7 +892,7 @@ public class Configuration {
 			PROTO3_DELUXE_SUPP(SensorPPG.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP),
 			BRIDGE_AMPLIFIER(SensorBridgeAmp.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER),
 			BRIDGE_AMPLIFIER_SUPP(SensorBridgeAmp.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER_SUPP),
-			HIGH_G_ACCEL(Configuration.Shimmer3.GuiLabelSensors.HIGH_G_ACCEL),
+			ACCEL_200G(Configuration.Shimmer3.GuiLabelSensors.ACCEL_200G),
 			MPU_ACCEL_GYRO_MAG(SensorMPU9X50.LABEL_SENSOR_TILE.MPU_ACCEL_GYRO_MAG),
 			MPU(SensorMPU9X50.LABEL_SENSOR_TILE.MPU),
 			MPU_OTHER(SensorMPU9X50.LABEL_SENSOR_TILE.MPU_OTHER),
@@ -968,7 +968,7 @@ public class Configuration {
 			public static final String EULER_ANGLES_6DOF = "Euler Angles (6DOF)"; 
 			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)";   // needed in both MPU and Algorithm???
 
-			public static final String HIGH_G_ACCEL = "200g Accel";
+			public static final String ACCEL_200G = "200g Accel";
 
 //			public static final String PPG_DUMMY = SensorPPG.GuiLabelSensors.PPG_DUMMY;
 //			public static final String PPG_A12 = SensorPPG.GuiLabelSensors.PPG_A12;
@@ -1306,9 +1306,9 @@ public class Configuration {
 			private static final ShimmerVerObject svoProto3DeluxeLogAndStream =	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
 			private static final ShimmerVerObject svoProto3DeluxeNewImuLogAndStream =	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, NEW_IMU_EXP_REV.PROTO3_DELUXE);
 
-			private static final ShimmerVerObject svoHighGAccelSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
-			private static final ShimmerVerObject svoHighGAccelBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
-			private static final ShimmerVerObject svoHighGAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_HIGH_G_ACCEL);
+			private static final ShimmerVerObject svo200GAccelSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_200_G_ACCEL);
+			private static final ShimmerVerObject svo200GAccelBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_200_G_ACCEL);
+			private static final ShimmerVerObject svo200GAccelLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_200_G_ACCEL);
 
 			//TODO move non-Shimmer3 devices out of here
 			public static final ShimmerVerObject svoShimmer4Stock = 			new ShimmerVerObject(HW_ID.SHIMMER_4_SDK,FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
@@ -1438,7 +1438,6 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA1 = Arrays.asList(
 					svoProto3MiniSdLog, svoProto3MiniBtStream, svoProto3MiniLogAndStream, 
 					svoProto3DeluxeSdLog, svoProto3DeluxeBtStream, svoProto3DeluxeLogAndStream, 
-					svoHighGAccelSdLog, svoHighGAccelBtStream, svoHighGAccelLogAndStream,
 					svoShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA12 = Arrays.asList(
@@ -1446,7 +1445,7 @@ public class Configuration {
 					svoProto3DeluxeSdLog, svoProto3DeluxeBtStream, svoProto3DeluxeLogAndStream, 
 					svoGsrSdLog, svoGsrBtStream, svoGsrLogAndStream, 
 					svoGsrUnifiedSdLog, svoGsrUnifiedBtStream, svoGsrUnifiedLogAndStream,
-					svoHighGAccelSdLog, svoHighGAccelBtStream, svoHighGAccelLogAndStream,
+					svo200GAccelSdLog, svo200GAccelBtStream, svo200GAccelLogAndStream,
 					svoShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA13 = Arrays.asList(
@@ -1454,19 +1453,18 @@ public class Configuration {
 					svoProto3DeluxeSdLog, svoProto3DeluxeBtStream, svoProto3DeluxeLogAndStream, 
 					svoGsrSdLog, svoGsrBtStream, svoGsrLogAndStream, 
 					svoGsrUnifiedSdLog, svoGsrUnifiedBtStream, svoGsrUnifiedLogAndStream, 
-					svoHighGAccelSdLog, svoHighGAccelBtStream, svoHighGAccelLogAndStream, 
+					svo200GAccelSdLog, svo200GAccelBtStream, svo200GAccelLogAndStream, 
 					svoShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA14 = Arrays.asList(
 					svoProto3MiniSdLog, svoProto3MiniBtStream, svoProto3MiniLogAndStream, 
 					svoProto3DeluxeSdLog, svoProto3DeluxeBtStream, svoProto3DeluxeLogAndStream, 
-					svoHighGAccelSdLog, svoHighGAccelBtStream, svoHighGAccelLogAndStream, 
+					svo200GAccelSdLog, svo200GAccelBtStream, svo200GAccelLogAndStream, 
 					svoShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntAdcsGeneral = Arrays.asList(
 					svoGsrSdLog, svoGsrBtStream, svoGsrLogAndStream, 
 					svoGsrUnifiedSdLog, svoGsrUnifiedBtStream, svoGsrUnifiedLogAndStream,
-					svoHighGAccelSdLog, svoHighGAccelBtStream, svoHighGAccelLogAndStream,
 					svoShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExtAdcs = Arrays.asList(
@@ -1493,8 +1491,8 @@ public class Configuration {
 					svoSdLog, svoLogAndStream,
 					svoShimmer4Stock, svoStrokare);
 			
-			private static final List<ShimmerVerObject> listOfCompatibleVersionInfoHighGAccel = Arrays.asList(
-					svoHighGAccelSdLog,svoHighGAccelBtStream,svoHighGAccelLogAndStream);
+			private static final List<ShimmerVerObject> listOfCompatibleVersionInfo200GAccel = Arrays.asList(
+					svo200GAccelSdLog,svo200GAccelBtStream,svo200GAccelLogAndStream);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(svoSdLogMpl);//,baseShimmer4); //TODO Shimmer4 temp here
 			
@@ -1621,13 +1619,12 @@ public class Configuration {
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
 			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER.ordinal(), SensorBridgeAmp.sensorGroupBrAmp);
 			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER_SUPP.ordinal(), SensorBridgeAmp.sensorGroupBrAmpTemperature);
-			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.HIGH_G_ACCEL.ordinal(), new SensorGroupingDetails(
-					Configuration.Shimmer3.LABEL_SENSOR_TILE.HIGH_G_ACCEL.getTileText(),
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.ACCEL_200G.ordinal(), new SensorGroupingDetails(
+					Configuration.Shimmer3.LABEL_SENSOR_TILE.ACCEL_200G.getTileText(),
 					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12, //X-axis
 								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13, //Y-axis
-								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14, //Z-axis
-								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1),
-					CompatibilityInfoForMaps.listOfCompatibleVersionInfoHighGAccel)); //unused but accessible
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14), //Z-axis
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfo200GAccel)); //unused but accessible
 			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC.ordinal(), SensorADC.sensorGroupInternalExpansionADCs);
 			
 			//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
