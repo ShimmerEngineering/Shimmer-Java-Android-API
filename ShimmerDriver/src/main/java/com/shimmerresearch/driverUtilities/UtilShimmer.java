@@ -648,11 +648,8 @@ public class UtilShimmer implements Serializable {
 		if (miliseconds==null){
 			return "null";
 		} else {
-			String defaultTimeZoneId = null;
 			double miliInDouble = Double.parseDouble(miliseconds);
 			if(timezoneOffset != Integer.MAX_VALUE){
-				defaultTimeZoneId = TimeZone.getDefault().getID();
-				TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 				miliInDouble += timezoneOffset;
 			}
 			
@@ -665,14 +662,8 @@ public class UtilShimmer implements Serializable {
 			else{
 				formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			}
-			
-			String dateFormatted = formatter.format(date);
-			
-			if(defaultTimeZoneId != null){
-				TimeZone.setDefault(TimeZone.getTimeZone(defaultTimeZoneId));
-			}
-			
-			return dateFormatted;
+			formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+			return formatter.format(date);
 		}
 	}
 	
