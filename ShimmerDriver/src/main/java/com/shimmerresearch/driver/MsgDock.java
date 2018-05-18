@@ -330,6 +330,7 @@ public class MsgDock {
 	public String mFwImageWriteCurrentAction = "";
 	
 	public int mSessionId;
+	public double mRTCDifference;
 	
 	public int mErrorCode;
 	public int mErrorCodeLowLevel;
