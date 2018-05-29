@@ -41,6 +41,7 @@ public class ShimmerLogDetails implements Serializable{
 	
 	//TODO just use ShimmerDevice below instead of declaring new variables
 	public transient ShimmerDevice mShimmerDevice = null;
+	
 	public String mShimmerUserAssignedName;
 	public String mMacAddress;
 	public long mConfigTimeStamp;
