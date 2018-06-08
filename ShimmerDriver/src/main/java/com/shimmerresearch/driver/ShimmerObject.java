@@ -179,28 +179,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mFirstTime = true;
 	double mFirstRawTS = 0;
 	public int OFFSET_LENGTH = 9;
-	
-	/** 10th Order Butterworth Band Stop filters, with center freq = 50Hz, and notch width = 10Hz	*/
-	private Butterworth filter_LLRA_16Bit = null;
-	private Butterworth filter_LLRA_24Bit = null;
-	private Butterworth filter_LARA_16Bit = null;
-	private Butterworth filter_LARA_24Bit = null;
-	private Butterworth filter_LLLA_16Bit = null;
-	private Butterworth filter_LLLA_24Bit = null;
-	private Butterworth filter_VXRL_16Bit = null;
-	private Butterworth filter_VXRL_24Bit = null;
-	
-	private final static int FILTER_ORDER = 10;
-	private final static double CENTER_FREQ = 50.0;
-	private final static double NOTCH_WIDTH = 10.0;
-	
+		
 	public static final class DatabaseConfigHandleShimmerObject{
 		public static final String SYNC_WHEN_LOGGING = 	"Sync_When_Logging";
 		public static final String TRIAL_DURATION_ESTIMATED = "Trial_Dur_Est";
 		public static final String TRIAL_DURATION_MAXIMUM = "Trial_Dur_Max";
 	}
 	
-
 	//Sensor Bitmap for ID ; for the purpose of forward compatibility the sensor bitmap and the ID and the sensor bitmap for the Shimmer firmware has been kept separate, 
 	public static final int SENSOR_ACCEL				   = 0x80; 
 	public static final int SENSOR_DACCEL				   = 0x1000;
@@ -706,25 +691,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE fwType, boolean isTimeSyncEnabled, long pcTimestamp) {
-		if(filter_LARA_16Bit==null) {
-			filter_LLRA_16Bit = new Butterworth();
-			filter_LLRA_24Bit = new Butterworth();
-			filter_LARA_16Bit = new Butterworth();
-			filter_LARA_24Bit = new Butterworth();
-			filter_LLLA_16Bit = new Butterworth();
-			filter_LLLA_24Bit = new Butterworth();
-			filter_VXRL_16Bit = new Butterworth();
-			filter_VXRL_24Bit = new Butterworth();
-			
-			filter_LLRA_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
-			filter_LLRA_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
-			filter_LARA_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
-			filter_LARA_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
-			filter_LLLA_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
-			filter_LLLA_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
-			filter_VXRL_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
-			filter_VXRL_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
-		}
 		ObjectCluster objectCluster = new ObjectCluster();
 		objectCluster.setShimmerName(mShimmerUserAssignedName);
 		objectCluster.setMacAddress(mMyBluetoothAddress);
