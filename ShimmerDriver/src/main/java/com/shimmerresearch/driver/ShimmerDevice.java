@@ -71,6 +71,8 @@ import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 
+import uk.me.berndporr.iirj.Butterworth;
+
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
 	private static final long serialVersionUID = 5087199076353402591L;
@@ -90,6 +92,23 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9._]";
 	
+	
+	/** 10th Order Butterworth Band Stop filters, with center freq = 50Hz, and notch width = 10Hz	*/
+	protected Butterworth filter_LLRA_16Bit = null;
+	protected Butterworth filter_LLRA_24Bit = null;
+	protected Butterworth filter_LARA_16Bit = null;
+	protected Butterworth filter_LARA_24Bit = null;
+	protected Butterworth filter_LLLA_16Bit = null;
+	protected Butterworth filter_LLLA_24Bit = null;
+	protected Butterworth filter_VXRL_16Bit = null;
+	protected Butterworth filter_VXRL_24Bit = null;
+	
+	//Filter constants
+	private final static int FILTER_ORDER = 10;
+	private final static double CENTER_FREQ = 50.0;
+	private final static double NOTCH_WIDTH = 10.0;
+
+		
 	/**Holds unique location information on a dock or COM port number for Bluetooth connection*/
 	public String mUniqueID = "";
 	
@@ -201,7 +220,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
 	public DOCK_STATE mDockState = DOCK_STATE.UNDOCKED;
 	
-	private boolean mUpdateOnlyWhenStateChanges=false;
+	private boolean mUpdateOnlyWhenStateChanges=false;	
 	
 	//TODO:
 	public enum DOCK_STATE{
@@ -4434,6 +4453,27 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public double getSamplingClockFreq() {
 		return 32768.0;
+	}
+	
+	/** Initialise the hardcoded Butterworth Band Stop filters for ECG signal processing in buildMsg() for CEI to filter out 50Hz mains noise */
+	public void initialiseFilters() {
+		filter_LLRA_16Bit = new Butterworth();
+		filter_LLRA_24Bit = new Butterworth();
+		filter_LARA_16Bit = new Butterworth();
+		filter_LARA_24Bit = new Butterworth();
+		filter_LLLA_16Bit = new Butterworth();
+		filter_LLLA_24Bit = new Butterworth();
+		filter_VXRL_16Bit = new Butterworth();
+		filter_VXRL_24Bit = new Butterworth();
+		
+		filter_LLRA_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+		filter_LLRA_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+		filter_LARA_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+		filter_LARA_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+		filter_LLLA_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+		filter_LLLA_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+		filter_VXRL_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+		filter_VXRL_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
 	}
 
 }
