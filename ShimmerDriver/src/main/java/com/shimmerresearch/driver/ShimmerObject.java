@@ -80,6 +80,9 @@ import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.sensors.shimmer2.SensorMMA736x;
 import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Gyro;
 import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Mag;
+
+import uk.me.berndporr.iirj.Butterworth;
+
 import com.shimmerresearch.algorithms.orientation.GradDes3DOrientation9DoF;
 import com.shimmerresearch.algorithms.orientation.Orientation3DObject;
 
@@ -176,7 +179,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mFirstTime = true;
 	double mFirstRawTS = 0;
 	public int OFFSET_LENGTH = 9;
-
+	
+	/** 10th Order Butterworth Band Stop filters, with center freq = 50Hz, and notch width = 10Hz	*/
+	private Butterworth filter_LLRA_16Bit = null;
+	private Butterworth filter_LLRA_24Bit = null;
+	private Butterworth filter_LARA_16Bit = null;
+	private Butterworth filter_LARA_24Bit = null;
+	private Butterworth filter_LLLA_16Bit = null;
+	private Butterworth filter_LLLA_24Bit = null;
+	private Butterworth filter_VXRL_16Bit = null;
+	private Butterworth filter_VXRL_24Bit = null;
+	
+	private final static int FILTER_ORDER = 10;
+	private final static double CENTER_FREQ = 50.0;
+	private final static double NOTCH_WIDTH = 10.0;
+	
 	public static final class DatabaseConfigHandleShimmerObject{
 		public static final String SYNC_WHEN_LOGGING = 	"Sync_When_Logging";
 		public static final String TRIAL_DURATION_ESTIMATED = "Trial_Dur_Est";
@@ -689,6 +706,25 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	@Override
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE fwType, boolean isTimeSyncEnabled, long pcTimestamp) {
+		if(filter_LARA_16Bit==null) {
+			filter_LLRA_16Bit = new Butterworth();
+			filter_LLRA_24Bit = new Butterworth();
+			filter_LARA_16Bit = new Butterworth();
+			filter_LARA_24Bit = new Butterworth();
+			filter_LLLA_16Bit = new Butterworth();
+			filter_LLLA_24Bit = new Butterworth();
+			filter_VXRL_16Bit = new Butterworth();
+			filter_VXRL_24Bit = new Butterworth();
+			
+			filter_LLRA_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+			filter_LLRA_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+			filter_LARA_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+			filter_LARA_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+			filter_LLLA_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+			filter_LLLA_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+			filter_VXRL_16Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+			filter_VXRL_24Bit.bandStop(FILTER_ORDER, getSamplingRateShimmer(), CENTER_FREQ, NOTCH_WIDTH);
+		}
 		ObjectCluster objectCluster = new ObjectCluster();
 		objectCluster.setShimmerName(mShimmerUserAssignedName);
 		objectCluster.setMacAddress(mMyBluetoothAddress);
@@ -1392,11 +1428,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 						} else {
 							sensorNames[iexg1ch1]=Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT;
 							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch1);
-							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1);
+//							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1);
+							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,filter_LLRA_24Bit.filter(calexg1ch1));
 							
 							sensorNames[iexg1ch2]=Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT;
 							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg1ch2);
-							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch2);
+//							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch2);
+							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,filter_LARA_24Bit.filter(calexg1ch2));
 						}
 					} 
 					else if (isEXGUsingDefaultEMGConfiguration()){
@@ -1457,7 +1495,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
 						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT;
 						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2);
+//						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,filter_VXRL_24Bit.filter(calexg2ch2));
 //						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT;
 //						objectCluster.addData(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
 //						objectCluster.addData(Shimmer3.ObjectClusterSensorName.EXG2_CH1_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
@@ -1538,8 +1577,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1);
 							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RL_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch2);
 						} else {
-							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1);
-							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch2);
+//							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch1);
+//							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg1ch2);
+							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_RA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,filter_LLRA_16Bit.filter(calexg1ch1));
+							objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LA_RA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,filter_LARA_16Bit.filter(calexg1ch2));
 						}
 					} 
 					else if (isEXGUsingDefaultEMGConfiguration()){
@@ -1602,7 +1643,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if (isEXGUsingDefaultECGConfiguration()||isEXGUsingDefaultRespirationConfiguration()){
 						sensorNames[iexg2ch2]=Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT;
 						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch2);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2);
+//						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch2);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_VX_RL_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,filter_VXRL_16Bit.filter(calexg2ch2));
 //						sensorNames[iexg2ch1]=Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT;
 //						objectCluster.addData(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,exg2ch1));
 //						objectCluster.addData(Shimmer3.ObjectClusterSensorName.EXG2_CH1_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calexg2ch1));
@@ -1998,7 +2040,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							if(mEnableCalibration){
 								calibratedData[additionalChannelsOffset]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
 								calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
-								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]);
+//								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]);
+								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,filter_LLLA_16Bit.filter(calibratedData[additionalChannelsOffset]));
 							}
 							//additionalChannelsOffset += 1;
 						}
@@ -2019,7 +2062,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 							if(mEnableCalibration){
 								calibratedData[additionalChannelsOffset]= calibratedData[iexg1ch1] - calibratedData[iexg1ch2];
 								calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
-								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]);
+//								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]);
+								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,filter_LLLA_24Bit.filter(calibratedData[additionalChannelsOffset]));
 							}
 							//additionalChannelsOffset += 1;
 						}
