@@ -94,14 +94,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	
 	/** 10th Order Butterworth Band Stop filters, with center freq = 50Hz, and notch width = 10Hz	*/
-	protected Butterworth filter_LLRA_16Bit = null;
-	protected Butterworth filter_LLRA_24Bit = null;
-	protected Butterworth filter_LARA_16Bit = null;
-	protected Butterworth filter_LARA_24Bit = null;
-	protected Butterworth filter_LLLA_16Bit = null;
-	protected Butterworth filter_LLLA_24Bit = null;
-	protected Butterworth filter_VXRL_16Bit = null;
-	protected Butterworth filter_VXRL_24Bit = null;
+	protected transient Butterworth filter_LLRA_16Bit = null;
+	protected transient Butterworth filter_LLRA_24Bit = null;
+	protected transient Butterworth filter_LARA_16Bit = null;
+	protected transient Butterworth filter_LARA_24Bit = null;
+	protected transient Butterworth filter_LLLA_16Bit = null;
+	protected transient Butterworth filter_LLLA_24Bit = null;
+	protected transient Butterworth filter_VXRL_16Bit = null;
+	protected transient Butterworth filter_VXRL_24Bit = null;
 	
 	//Filter constants
 	private final static int FILTER_ORDER = 10;
