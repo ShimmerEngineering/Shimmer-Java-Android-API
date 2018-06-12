@@ -3529,6 +3529,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	/**
+	 * Note that setting this may also change the individual sensors' sampling rates to follow the Shimmer device sampling rate more closely
 	 * @param rate Defines the sampling rate to be set (e.g.51.2 sets the sampling rate to 51.2Hz). User should refer to the document Sampling Rate Table to see all possible values.
 	 */
 	public void writeShimmerAndSensorsSamplingRate(double rate) {
