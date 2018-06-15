@@ -19,19 +19,28 @@ public class ShimmerCrc {
     	crc &= 0xFFFF;
         return crc;
     }
-
+	
     /** Calculate the CRC for a byte array. array[0] is CRC LSB, array[1] is CRC MSB 
 	 * @param msg the input byte array
 	 * @param len the length of the byte array to calculate the CRC on
 	 * @return the calculated CRC value
 	 */
 	public static byte[] shimmerUartCrcCalc(byte[] msg, int len) {
+		return shimmerUartCrcCalc(msg, 0, len);
+	}
+
+    /** Calculate the CRC for a byte array. array[0] is CRC LSB, array[1] is CRC MSB 
+	 * @param msg the input byte array
+	 * @param len the length of the byte array to calculate the CRC on
+	 * @return the calculated CRC value
+	 */
+	public static byte[] shimmerUartCrcCalc(byte[] msg, int startIndex, int len) {
         int CRC_INIT = 0xB0CA;
         int crcCalc;
         int i;
 
-        crcCalc = shimmerUartCrcByte(CRC_INIT, msg[0]);
-        for (i = 1; i < len; i++) {
+        crcCalc = shimmerUartCrcByte(CRC_INIT, msg[startIndex]);
+        for (i = startIndex+1; i < startIndex+len; i++) {
             crcCalc = shimmerUartCrcByte(crcCalc, (msg[i]));
         }
         if (len % 2 > 0) {
@@ -54,6 +63,21 @@ public class ShimmerCrc {
         
         if ((crc[0] == msg[msg.length - 2])
         		&& (crc[1] == msg[msg.length - 1]))
+            return true;
+        else
+            return false;
+    }	
+
+    /** Check the CRC stored at the end of the byte array 
+	 * @param msg the input byte array
+	 * @return a boolean value value, true if CRC matches and false if CRC doesn't match
+	 */
+	public static boolean shimmerUartCrcCheck(byte[] msg, int startIndex, int payloadLength) {
+        byte[] crc = shimmerUartCrcCalc(msg, startIndex, payloadLength);
+        
+        int payloadEndIndex = startIndex + payloadLength - 1;
+        if ((crc[0] == msg[payloadEndIndex+1])
+        		&& (crc[1] == msg[payloadEndIndex+2]))
             return true;
         else
             return false;

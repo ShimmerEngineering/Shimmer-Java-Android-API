@@ -78,14 +78,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 
 	public HashMap<String,Double> mMapofHalfWindowSize = new HashMap<String,Double>();
 	
-	public static float DEFAULT_LINE_THICKNESS=2;
-	
 	protected double mCurrentXValue = 0;
 	protected boolean mIsPlotPaused = false;
 	public boolean mIsLegendLabelsPainted = true;
 	public boolean mIsScaleLabelsPainted = true;
 	public boolean mIsAxisLabelsPainted = true;
-	public boolean mIsGridOn = false;
 	public boolean mIsHRVisible = false;
 	public boolean mEnablePCTS = true;
 	private boolean mIsDebugMode = false;
@@ -112,6 +109,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public HashMap<String, Double> mMapOfLastDataPoints = new HashMap<String, Double>();
 	private TimeZone timeZone = Calendar.getInstance().getTimeZone();
 	
+	private UtilChart2D utilChart2D = new UtilChart2D();
 	private UtilShimmer utilShimmer = new UtilShimmer(this.getClass().getSimpleName(), true);
 	
 	/** Scale type options */
@@ -204,7 +202,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public ITrace2D addSignalAsBarPlot(String [] signal, Chart2D chart, int plotMaxSize, int windowSize) throws Exception{
 		ITrace2D trace;
 		if (!checkIfPropertyExist(signal)){
-			trace = addBarTrace(chart, plotMaxSize);
+			trace = UtilChart2D.addBarTrace(chart, plotMaxSize);
 			String name = addSignalCommon(chart, trace, signal, plotMaxSize);
 			
 			if (windowSize!=0){
@@ -228,21 +226,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public ITrace2D addSignal(String[] signal, Chart2D chart, int plotMaxSize) throws Exception{
 		ITrace2D trace;
 		if (!checkIfPropertyExist(signal)){
-			
-			if(mDefaultLineStyle==PLOT_LINE_STYLE.CONTINUOUS 
-					|| mDefaultLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
-				trace = addNormalTraceLeft(chart, plotMaxSize);
-				
-				if(mDefaultLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
-					trace.setTracePainter(new TracePainterDisc(4)); 
-				}
-			}
-			else if(mDefaultLineStyle==PLOT_LINE_STYLE.BAR){
-				trace = addBarTrace(chart, plotMaxSize);
-			}
-			else{
-				trace = addNormalTraceLeft(chart, plotMaxSize);
-			}
+			trace = UtilChart2D.createTraceAndAddToChart(chart, plotMaxSize, mDefaultLineStyle);
 			addSignalCommon(chart, trace, signal, plotMaxSize);
 			setTraceSize(trace, plotMaxSize);
 		}	
@@ -265,9 +249,9 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public ITrace2D addSignalUsingRightYAxis(String[] signal, Chart2D chart, int plotMaxSize, String title, int minRange, int maxRange) throws Exception{
 		ITrace2D trace;
 		if (!checkIfPropertyExist(signal)){
-			yAxisRight = createRightYAxis(chart);
+			yAxisRight = UtilChart2D.createRightYAxis(chart);
 			chart.setAxisYRight(yAxisRight, 0);
-			trace = addNormalTraceRight(chart, plotMaxSize);
+			trace = UtilChart2D.addContinuousTraceRight(chart, plotMaxSize, yAxisRight);
 			addSignalCommon(chart, trace, signal, plotMaxSize);
 			setTraceSize(trace, plotMaxSize);
 		}	
@@ -277,21 +261,6 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		return trace;
 	}
 	
-	private AAxis<IAxisScalePolicy> createRightYAxis(Chart2D chart) {
-		//AAxis<IAxisScalePolicy> yAxisRight;
-		AAxis<IAxisScalePolicy> yAxisRight = new AxisLinear<IAxisScalePolicy>();
-//		yAxisRight.setAxisScalePolicy(new AxisScalePolicyManualTicks());
-		yAxisRight.setAxisScalePolicy(new AxisScalePolicyAutomaticBestFit());
-		//yAxisRight.setMinorTickSpacing(10);
-		//yAxisRight.setStartMajorTick(true);
-		yAxisRight.setPaintGrid(false);
-		//yAxisRight.setAxisTitle(new IAxis.AxisTitle(title));
-		//IRangePolicy rangePolicy = new RangePolicyFixedViewport(new Range(minRange,maxRange));
-		
-		//yRightAxis.setRangePolicy(rangePolicy);
-		return yAxisRight;
-	}
-
 	private String addSignalCommon(Chart2D chart, ITrace2D trace, String[] signal, int plotMaxSize) {
 		mListofTraces.add(trace);
 		//super.addSignalGenerateRandomColor(signal);
@@ -303,7 +272,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		String traceName = joinChannelStringArray(signal);
 		//utilShimmer.consolePrintErrLn("TRACE NAME: " +name);
 		mListofTraces.get(i).setName(traceName);
-		mChart=chart;
+		mChart = chart;
 		mMapofDefaultXAxisSizes.put(traceName, plotMaxSize);
 		
 		if(isXAxisFrequency()){
@@ -315,40 +284,6 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		
 		return traceName;
 	}
-	
-	private ITrace2D addNormalTraceLeft(Chart2D chart, int plotMaxSize) {
-		ITrace2D trace = createNormalTrace(plotMaxSize);
-		chart.addTrace(trace);
-		return trace;
-	}
-
-	private ITrace2D addNormalTraceRight(Chart2D chart, int plotMaxSize) {
-		ITrace2D trace = createNormalTrace(plotMaxSize);
-		chart.addTrace(trace,chart.getAxisX(),yAxisRight);
-		return trace;
-	}
-	
-	private ITrace2D addBarTrace(Chart2D chart, int plotMaxSize) {
-		ITrace2D trace = createBarTrace(chart, plotMaxSize);
-		chart.addTrace(trace);
-		return trace;
-	}
-
-	private ITrace2D createNormalTrace(int plotMaxSize) {
-		Trace2DLtd trace = new Trace2DLtd(plotMaxSize);
-		BasicStroke stroke = ((BasicStroke)trace.getStroke());
-		BasicStroke newStroke = new BasicStroke(DEFAULT_LINE_THICKNESS,stroke.getEndCap(),stroke.getLineJoin(),stroke.getMiterLimit(),stroke.getDashArray(),stroke.getDashPhase());
-		trace.setStroke(newStroke);
-		return trace;
-	}
-
-	private ITrace2D createBarTrace(Chart2D chart, int plotMaxSize) {
-		ITrace2D trace = new Trace2DLtd(plotMaxSize);
-		trace.setTracePainter(new TracePainterVerticalBar(chart));
-		return trace;
-	}
-
-
 	
 	/** Adds a signal to the chart. The chart is referenced internally, for use in removing signals. Color is assigned randomly
 	 * @param signal Signal to plot
@@ -907,65 +842,10 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	}
 
 	public void setTraceLineStyle(ITrace2D trace, PLOT_LINE_STYLE selectedLineStyle) {
-		//Defaults
-		trace.setTracePainter(new TracePainterLine());
-		trace.setStroke(new BasicStroke());
-		
-		if(selectedLineStyle==PLOT_LINE_STYLE.CONTINUOUS 
-				|| selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS
-				|| selectedLineStyle==PLOT_LINE_STYLE.DASHED
-				|| selectedLineStyle==PLOT_LINE_STYLE.DOTTED
-				|| selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
-			BasicStroke strokeOld = ((BasicStroke)trace.getStroke());
-			BasicStroke strokeNew = null;
+		UtilChart2D.setTraceLineStyle(mChart, trace, selectedLineStyle);
+	}
 
-			if(selectedLineStyle==PLOT_LINE_STYLE.CONTINUOUS 
-					|| selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
-				strokeNew = new BasicStroke(
-//						strokeOld.getLineWidth(),
-						DEFAULT_LINE_THICKNESS,
-						strokeOld.getEndCap(),
-						strokeOld.getLineJoin(),
-						strokeOld.getMiterLimit(),
-						strokeOld.getDashArray(),
-						strokeOld.getDashPhase());
-				trace.setStroke(strokeNew);
-				
-				if(selectedLineStyle==PLOT_LINE_STYLE.INDIVIDUAL_POINTS){
-					trace.setTracePainter(new TracePainterDisc(4)); 
-				}
-			}
-			else if (selectedLineStyle==PLOT_LINE_STYLE.DASHED){
-				float dash1[] = {10.0f};
-				strokeNew = new BasicStroke(strokeOld.getLineWidth(),
-								BasicStroke.CAP_BUTT,
-								BasicStroke.JOIN_MITER,
-								10.0f, dash1, 0.0f);
-				trace.setStroke(strokeNew);
-			}
-			else if (selectedLineStyle==PLOT_LINE_STYLE.DOTTED){
-//				float dash1[] = {3.0f};
-				strokeNew = new BasicStroke(
-						1,
-//						strokeOld.getLineWidth(),
-//						DEFAULT_LINE_THICKNESS,
-						BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1,2}, 0);
-						/*new BasicStroke(stroke.getLineWidth(),
-								BasicStroke.CAP_ROUND,
-								BasicStroke.JOIN_ROUND,
-								3.0f, dash1, 0.0f);
-								*/
-				trace.setStroke(strokeNew);
-			}
-		}
-		else if(selectedLineStyle==PLOT_LINE_STYLE.BAR){
-			trace.setTracePainter(new TracePainterVerticalBar(mChart));
-		}
-		else if(selectedLineStyle==PLOT_LINE_STYLE.FILL){
-			trace.setTracePainter(new TracePainterFill(mChart));
-		}
-	}	
-	
+
 	/** Set the scale type on the y-axis.
 	 * @param scaleSetting
 	 * @param xAxisMin
@@ -1377,43 +1257,21 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	
 	/** turn on/off grids along both axes */
 	public void toggleGrid() {
-		if(mChart!=null){
-			setGridOn(!mIsGridOn);
-		}
+		utilChart2D.toggleGrid(mChart);
 	}
 	
 	/** turn on/off grids along both axes */
 	public void setGridOn(boolean state) {
-		if(mChart!=null){
-			mIsGridOn = state;
-			try{
-				IAxis<?> axisX = mChart.getAxisX();
-				if(axisX != null){
-					axisX.setPaintGrid(mIsGridOn);
-				}
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				IAxis<?> axisY = mChart.getAxisY();
-				if(axisY != null){
-					axisY.setPaintGrid(mIsGridOn);
-				}
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}
+		utilChart2D.setGridOn(mChart, state);
+	}
+	
+	public boolean isGridOn(){
+		return utilChart2D.isGridOn();
 	}
 	
 	public void turnOnGridWithSpacingValue(double spacingValue){
 		((IAxis<IAxisScalePolicy>)mChart.getAxisX()).setAxisScalePolicy(new AxisScalePolicyManualTicks()); 
 		mChart.getAxisX().setMinorTickSpacing(spacingValue);
-	}
-	
-	public boolean isGridOn(){
-		return mIsGridOn;
 	}
 
 	public void togglePause() {
