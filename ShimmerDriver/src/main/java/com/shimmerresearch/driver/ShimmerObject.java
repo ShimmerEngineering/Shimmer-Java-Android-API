@@ -2555,6 +2555,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				// to milliseconds via the following line
 				double rtcTimestampMilliSecs = 0;
 				if (fwType==COMMUNICATION_TYPE.SD){
+					double samplingClock = getSamplingClockFreq();
+					System.err.println("samplingClock: " +samplingClock);
 					rtcTimestampMilliSecs = rtcTimestampTicks/getSamplingClockFreq()*1000.0;
 				} else {
 					//TODO remove below, no need for it

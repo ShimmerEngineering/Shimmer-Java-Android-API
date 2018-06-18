@@ -184,10 +184,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	//-------- Packet reception rate end --------------
 	
 	//Events markers
-	protected int mEventMarkersCodeLast = 0;
+	protected long mEventMarkersCodeLast = 0;
 	protected boolean mEventMarkersIsPulse = false;
 	public final static int EVENT_MARKER_DEFAULT = -1; // using -1 as the default event marker value as as a value of 0 was hanging the plots and the software
-	public int mEventMarkers = EVENT_MARKER_DEFAULT;
+	public long mEventMarkers = EVENT_MARKER_DEFAULT;
 	
 	public transient ObjectCluster mLastProcessedObjectCluster = null;
 	public List<ShimmerLogDetails> mListofLogs = new ArrayList<ShimmerLogDetails>();
@@ -645,7 +645,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param eventCode
 	 * @param eventType //2 is the code for the pulse event, 1 is the code for the toggle event
 	 */
-	public void setEventTriggered(int eventCode, int eventType){
+	public void setEventTriggered(long eventCode, int eventType){
 		mEventMarkersCodeLast = eventCode;
 		
 		if(mEventMarkers > 0){
@@ -663,7 +663,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public void setEventUntrigger(int eventCode){
+	public void setEventUntrigger(long eventCode){
 		mEventMarkers = mEventMarkers - eventCode;
 		if(mEventMarkers == 0){
 			mEventMarkers = EVENT_MARKER_DEFAULT; // using -1 as the default event marker value as as a value of 0 was hanging the plots and the software
