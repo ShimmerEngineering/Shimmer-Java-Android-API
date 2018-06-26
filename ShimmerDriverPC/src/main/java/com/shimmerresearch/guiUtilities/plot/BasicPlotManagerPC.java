@@ -17,8 +17,12 @@ import info.monitorenter.gui.chart.axis.AAxis;
 import info.monitorenter.gui.chart.axis.AxisLinear;
 import info.monitorenter.gui.chart.axis.scalepolicy.AxisScalePolicyAutomaticBestFit;
 import info.monitorenter.gui.chart.axis.scalepolicy.AxisScalePolicyManualTicks;
+import info.monitorenter.gui.chart.labelformatters.ALabelFormatter;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterDate;
+import info.monitorenter.gui.chart.labelformatters.LabelFormatterNumber;
+import info.monitorenter.gui.chart.labelformatters.LabelFormatterSimple;
+import info.monitorenter.gui.chart.labelformatters.LabelFormatterUnit;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyFixedViewport;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyUnbounded;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
@@ -141,6 +145,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		mXAxisLimit = limit;
 		mChart = chart;
 		mChart.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Dec 2016: RM put this in as the default cursor for jchart2d is cross-hair
+		mChart.getAxisY().setFormatter(new LabelFormatterNumber());
 		
 		if(propertiestoPlot!=null){
 			for (int i=0;i<propertiestoPlot.size();i++){
@@ -282,6 +287,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		AAxis<IAxisScalePolicy> yAxisRight = new AxisLinear<IAxisScalePolicy>();
 //		yAxisRight.setAxisScalePolicy(new AxisScalePolicyManualTicks());
 		yAxisRight.setAxisScalePolicy(new AxisScalePolicyAutomaticBestFit());
+		yAxisRight.setFormatter(new LabelFormatterNumber());
 		//yAxisRight.setMinorTickSpacing(10);
 		//yAxisRight.setStartMajorTick(true);
 		yAxisRight.setPaintGrid(false);
@@ -629,8 +635,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		if (mEnablePCTS && mChart!=null){
 		  xAxis = mChart.getAxisX();
 		  xAxis.setFormatter(xAxisLblFormatter);
-		  
-//		  
+
 //		  //mChart.setRequestedRepaint(true);
 //		  
 //		  // JC: the yAxis code seems to be legacy code which no longer does anything (20 Jan 2015)
