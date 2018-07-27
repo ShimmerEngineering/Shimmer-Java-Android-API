@@ -69,7 +69,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_3, "Shimmer3");
         aMap.put(HW_ID.SHIMMER_SR30, "Shimmer_SR30");
         aMap.put(HW_ID.SHIMMER_GQ_BLE, "ShimmerGQBle");
-        aMap.put(HW_ID.SWEATCH, "SWEATCH");
+        aMap.put(HW_ID.SWEATCH, "SwEatch");
         aMap.put(HW_ID.SHIMMER_2R_GQ, "Shimmer2rGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
@@ -173,7 +173,7 @@ public class ShimmerVerDetails implements Serializable {
 	        aMap.put(BTSTREAM, "BtStream");
 	        aMap.put(SDLOG, "SDLog");
 	        aMap.put(LOGANDSTREAM, "LogAndStream");
-	        aMap.put(SWEATCH, "Sweatch");
+	        aMap.put(SWEATCH, "SwEatch");
 	        aMap.put(GQ_BLE, "GQ_BLE");
 	        aMap.put(BIOSENSICS_GPIO_TEST, "GPIO_TEST");
 	        aMap.put(GQ_802154, "GQ_802154");
