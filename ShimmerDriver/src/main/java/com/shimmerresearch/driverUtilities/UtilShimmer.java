@@ -1273,6 +1273,25 @@ public class UtilShimmer implements Serializable {
 		Random r = new Random();
 		return r.nextInt(high-low) + low;
 	}
+	
+	/** Method to return 1 or 0 depending if a bit is 'high' or 'low' respectively in a long value
+	 * @param value is number you wish to check if bit is 'high' in
+	 * @param bitIndex is the index of the bit to check if 'high'
+	 * @return true '1' if bit in the long value is 'high', otherwise '0'
+	 */
+	public static int getBitSetBinaryValue(long value, int bitIndex) {
+		return (isBitSet(value, bitIndex)) ? 1 : 0;
+	}
+	
+	/**
+	 * Method to return true/false if a bit is 'high' in a long value
+	 * @param value is number you wish to check if bit is 'high' in
+	 * @param bitIndex is the index of the bit to check if 'high'
+	 * @return true if bit in the long value is 'high', otherwise false
+	 */
+	public static boolean isBitSet(long value, int bitIndex) {
+		return (value & (1L << bitIndex)) != 0;
+	}
 
 //	public static void main(String[] args) {
 //		long milliSeconds = System.currentTimeMillis();
