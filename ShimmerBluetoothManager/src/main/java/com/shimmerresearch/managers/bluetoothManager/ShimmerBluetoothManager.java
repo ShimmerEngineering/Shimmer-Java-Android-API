@@ -343,7 +343,7 @@ public abstract class ShimmerBluetoothManager{
 
 
 	//-------------- EventMarkers methods start -----------------------------
-	public void setEventTriggered(int eventCode, int eventType){
+	public void setEventTriggered(long eventCode, int eventType){
 		for(ShimmerDevice spc:mMapOfBtConnectedShimmers.values()){
 			if (spc.isStreaming() || spc.isConnected()){ 
 				spc.setEventTriggered(eventCode, eventType);
@@ -351,7 +351,7 @@ public abstract class ShimmerBluetoothManager{
 		}
 	}
 	
-	public void setEventUntriggered(int eventCode){
+	public void setEventUntriggered(long eventCode){
 		for(ShimmerDevice spc:mMapOfBtConnectedShimmers.values()){
 			if (spc.isStreaming() || spc.isConnected()){
 				spc.setEventUntrigger(eventCode);
