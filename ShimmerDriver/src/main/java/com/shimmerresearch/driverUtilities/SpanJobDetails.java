@@ -30,7 +30,8 @@ public class SpanJobDetails extends AbstractErrorCodes {
 		SPECTRUM_ANALYSER_STOP, 
 		BSL_SPAN_RESET, 
 		BSL_SPAN_FW_WRITE, 
-		CLOSE_EVERYTHING_SAFELY;
+		CLOSE_EVERYTHING_SAFELY,
+		PERFORM_CONNECTION_TEST;
 	}
 	
 	public static final Map<Integer, String> mMapOfErrorCodes;
@@ -50,6 +51,7 @@ public class SpanJobDetails extends AbstractErrorCodes {
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.BSL_SPAN_RESET), "SPAN_RESET_VIA_BSL");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.BSL_SPAN_FW_WRITE), "SPAN_FW_WRITE");
         aMap.put(getJobErrorCode(SPAN_JOB_TYPE.CLOSE_EVERYTHING_SAFELY), "CLOSE_EVERYTHING_SAFELY");
+        aMap.put(getJobErrorCode(SPAN_JOB_TYPE.PERFORM_CONNECTION_TEST), "PERFORM_CONNECTION_TEST");
         
     	mMapOfErrorCodes = Collections.unmodifiableMap(aMap);
     }
