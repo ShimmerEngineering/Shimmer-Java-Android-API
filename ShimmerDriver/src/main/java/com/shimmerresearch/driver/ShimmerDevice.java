@@ -4312,7 +4312,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void startStreaming() {
 		resetPacketLossVariables();
 		generateParserMap();
-		resetAlgorithmBuffers();
+//		resetAlgorithmBuffers();
+		initializeAlgorithms();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.startStreaming();
 		}
