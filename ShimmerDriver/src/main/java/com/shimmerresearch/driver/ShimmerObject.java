@@ -2008,7 +2008,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			if ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR_FW) > 0){
 				int sigIndex = getSignalIndex(Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW);
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,(double)newPacketInt[sigIndex]);
+				
+				double ecgToHrFW = (double)newPacketInt[sigIndex];
+				//Substitute 255 (i.e., invalid HR from FW) in SD data parsing for a -1 (which the SW normally gives as invalid HR)
+				if(ecgToHrFW==255) {
+					ecgToHrFW = SensorECGToHRFw.INVALID_HR_SUBSTITUTE;
+				}
+				
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,ecgToHrFW);
 //				uncalibratedData[sigIndex]=(double)newPacketInt[sigIndex];
 //				uncalibratedDataUnits[sigIndex]=CHANNEL_UNITS.BEATS_PER_MINUTE;
 				calibratedData[sigIndex]=(double)newPacketInt[sigIndex];
