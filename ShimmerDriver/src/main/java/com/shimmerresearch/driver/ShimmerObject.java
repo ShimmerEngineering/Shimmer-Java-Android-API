@@ -4389,6 +4389,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			double samplingRate = convertSamplingRateBytesToFreq(samplingRateLSB, samplingRateMSB, getSamplingClockFreq());
 			setShimmerAndSensorsSamplingRate(samplingRate);
 
+			//Sampling rate is required in order to initialise the algorithms or else console errors are thrown.
 			// Parse Enabled and Derived sensor bytes in order to update sensor maps
 			parseEnabledDerivedSensorsForMaps(configByteLayoutCast, configBytes);
 			
