@@ -16,6 +16,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -24,6 +25,8 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 
 	/** * */
 	private static final long serialVersionUID = 4160314338085066414L;
+
+	public static final double INVALID_HR_SUBSTITUTE = -1;
 
 	//--------- Sensor specific variables start --------------
 	public static class ObjectClusterSensorName{
@@ -119,7 +122,18 @@ public class SensorECGToHRFw extends AbstractSensor implements Serializable{
 			//first process the data originating from the Shimmer sensor
 			byte[] channelByteArray = new byte[channelDetails.mDefaultNumBytes];
 			System.arraycopy(sensorByteArray, index, channelByteArray, 0, channelDetails.mDefaultNumBytes);
-			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
+
+			//Old
+//			objectCluster = SensorDetails.processShimmerChannelData(channelByteArray, channelDetails, objectCluster);
+			
+			//New
+			double parsedChannelData = (double)UtilParseData.parseData(channelByteArray, channelDetails.mDefaultChannelDataType, channelDetails.mDefaultChannelDataEndian);
+			//Substitute 255 (i.e., invalid HR from FW) in streamed data parsing for a -1 (which the SW normally gives as invalid HR)
+			if(parsedChannelData==255) {
+				parsedChannelData = INVALID_HR_SUBSTITUTE;
+			}
+			objectCluster.addData(channelDetails.mObjectClusterName, channelDetails.mChannelFormatDerivedFromShimmerDataPacket, channelDetails.mDefaultUncalUnit, parsedChannelData);
+			
 			objectCluster.incrementIndexKeeper();
 			index=index+channelDetails.mDefaultNumBytes;
 		}
