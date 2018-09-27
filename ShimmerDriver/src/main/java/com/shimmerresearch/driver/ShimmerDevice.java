@@ -3143,7 +3143,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void initializeAlgorithms() {
 		for (AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){
 			try {
-				if(aa.isEnabled() && !aa.isInitialized()){
+				if(aa.isEnabled()){
+//				if(aa.isEnabled() && !aa.isInitialized()){
 					aa.setShimmerSamplingRate(getSamplingRateShimmer());
 					aa.initialize();
 				}

@@ -4382,16 +4382,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mConfigBytes = configBytes;
 			createInfoMemLayoutObjectIfNeeded();
 			
-			// Parse Enabled and Derived sensor bytes in order to update sensor maps
-			parseEnabledDerivedSensorsForMaps(configByteLayoutCast, configBytes);
-
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
 			byte samplingRateMSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate+1] & configByteLayoutCast.maskShimmerSamplingRate);
 			byte samplingRateLSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate] & configByteLayoutCast.maskShimmerSamplingRate);
 			double samplingRate = convertSamplingRateBytesToFreq(samplingRateLSB, samplingRateMSB, getSamplingClockFreq());
 			setShimmerAndSensorsSamplingRate(samplingRate);
-	
+
+			// Parse Enabled and Derived sensor bytes in order to update sensor maps
+			parseEnabledDerivedSensorsForMaps(configByteLayoutCast, configBytes);
+			
 			mBufferSize = (int)(configBytes[configByteLayoutCast.idxBufferSize] & configByteLayoutCast.maskBufferSize);
 			
 			// Configuration
