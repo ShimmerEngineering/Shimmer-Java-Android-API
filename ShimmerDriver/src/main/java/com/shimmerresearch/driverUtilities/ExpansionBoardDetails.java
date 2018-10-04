@@ -33,7 +33,6 @@ public class ExpansionBoardDetails implements Serializable {
 			HW_ID.SHIMMER_3,
 			HW_ID.SHIMMER_GQ_802154_LR,
 			HW_ID.SHIMMER_GQ_802154_NR,
-			HW_ID.SHIMMER_ECG_MD,
 			HW_ID.SHIMMER_4_SDK
 			);
 	

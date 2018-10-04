@@ -2547,7 +2547,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					consolePrintLn("\t\t"  + "Channels Missing!");
 				} else {
 					for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
-						consolePrintLn("\t\tNumBytes:" + channelDetails.mDefaultNumBytes + "\tChannel:" + channelDetails.getChannelObjectClusterName() + "\tDbName:" + channelDetails.getDatabaseChannelHandle());
+						consolePrintLn("\t\tNumBytes:" + channelDetails.mDefaultNumBytes 
+								+ "\tChannel:" + channelDetails.getChannelObjectClusterName() 
+								+ "\tDbName:" + channelDetails.getDatabaseChannelHandle());
 					}
 				}
 			}
@@ -2570,6 +2572,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		consolePrintLn("\tObjectClusterIndexes:");
 		for(COMMUNICATION_TYPE commType:mapOfOjcChannels.keySet()) {
 			consolePrintLn("\tComm Type: " + commType);
+			consolePrintLn("\tExpectedPacketSize:" + getExpectedDataPacketSize(commType));
 			List<ChannelDetails> listOfOjcChannels = mapOfOjcChannels.get(commType);
 			for(int i=0;i<listOfOjcChannels.size();i++) {
 				consolePrintLn("\t\t" + i + "\t" + listOfOjcChannels.get(i).mObjectClusterName);

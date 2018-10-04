@@ -749,7 +749,7 @@ public abstract class ShimmerBluetoothManager{
 		private ShimmerDevice createShimmerIfKnown() {
 			ShimmerDevice shimmerDevice = null;
 			deviceTypeDetected = useMockHWID(deviceTypeDetected);
-			if(deviceTypeDetected==DEVICE_TYPE.SHIMMER3 || deviceTypeDetected==DEVICE_TYPE.SHIMMER_ECG_MD){
+			if(deviceTypeDetected==DEVICE_TYPE.SHIMMER3){
 				shimmerDevice = createNewShimmer3(comPort, bluetoothAddress);
 			}
 			else if(deviceTypeDetected==DEVICE_TYPE.SHIMMER4){
@@ -757,6 +757,9 @@ public abstract class ShimmerBluetoothManager{
 			}
 			else if(deviceTypeDetected==DEVICE_TYPE.SWEATCH){
 				shimmerDevice = createNewSweatchDevice(comPort, bluetoothAddress);
+			}
+			else if(deviceTypeDetected==DEVICE_TYPE.SHIMMER_ECG_MD){
+				shimmerDevice = createNewEcgMdDevice(comPort, bluetoothAddress);
 			}
 			
 			if(shimmerDevice!=null){
@@ -825,6 +828,9 @@ public abstract class ShimmerBluetoothManager{
 			else if(sVO.isSweatchDevice()){
 				shimmerDeviceNew = createNewSweatchDevice(shimmerRadioInitializer, bluetoothAddress);
 			}
+			else if(sVO.isShimmerECGmdDevice()){
+				shimmerDeviceNew = createNewEcgMdDevice(shimmerRadioInitializer, bluetoothAddress);
+			}
 
 			if(shimmerDeviceNew!=null){
 				shimmerDeviceNew.setComPort(comPort);
@@ -878,6 +884,16 @@ public abstract class ShimmerBluetoothManager{
 	}
 
 	protected ShimmerDevice createNewSweatchDevice(ShimmerRadioInitializer shimmerRadioInitializer, String bluetoothAddress) {
+		//Overridden in ShimmerBluetoothManagerPC
+		return null;
+	}
+
+	protected ShimmerDevice createNewEcgMdDevice(String comPort, String bluetoothAddress) {
+		//Overridden in ShimmerBluetoothManagerPC
+		return null;
+	}
+
+	protected ShimmerDevice createNewEcgMdDevice(ShimmerRadioInitializer shimmerRadioInitializer, String bluetoothAddress) {
 		//Overridden in ShimmerBluetoothManagerPC
 		return null;
 	}

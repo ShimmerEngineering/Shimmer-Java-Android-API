@@ -266,6 +266,7 @@ public class ShimmerVerObject implements Serializable {
 					|| mHardwareVersion==HW_ID.SHIMMER_4_SDK
 					|| mHardwareVersion==HW_ID.ARDUINO
 					|| mFirmwareIdentifier==FW_ID.STROKARE
+					|| mFirmwareIdentifier==FW_ID.ECG_MD
 //					|| mHardwareVersion==HW_ID.SWEATCH
 					){
 				mFirmwareVersionCode = 7;
@@ -434,6 +435,7 @@ public class ShimmerVerObject implements Serializable {
 				|| fwId==FW_ID.LOGANDSTREAM
 				|| fwId==FW_ID.SHIMMER4_SDK_STOCK
 				|| fwId==FW_ID.SWEATCH
+				|| fwId==FW_ID.ECG_MD
 				){
 			return true;
 		}
@@ -537,7 +539,7 @@ public class ShimmerVerObject implements Serializable {
 
 	//TODO GQ should be kept separate - probably used in some places to indicate MSP430 model is being used?
 	public static boolean isShimmer3Gen(int hwVer) {
-		if(hwVer==HW_ID.SHIMMER_3 || hwVer==HW_ID.SHIMMER_ECG_MD){ 
+		if(hwVer==HW_ID.SHIMMER_3){ 
 //				|| hwVer==HW_ID.SHIMMER_GQ_BLE || hwVer==HW_ID.SHIMMER_GQ_802154_LR || hwVer==HW_ID.SHIMMER_GQ_802154_NR){
 			return true;
 		}
@@ -569,7 +571,21 @@ public class ShimmerVerObject implements Serializable {
 		}
 		return false;
 	}
-	
+
+	public boolean isShimmerECGmdDevice(){
+		if(getShimmerExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_ECG_MD){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isShimmerECGmdFirmware(){
+		if(getFirmwareIdentifier()==FW_ID.ECG_MD){
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * This needs to be performed before a check for Gen3/Gen4 etc. as they
 	 * share some entries in common.

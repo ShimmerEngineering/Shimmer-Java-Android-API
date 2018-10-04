@@ -1087,7 +1087,8 @@ public class SensorEXG extends AbstractSensor{
 					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_ECG),
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral));
 		}
-		else if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
+//		else if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
+		else {
 			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
 					LABEL_SENSOR_TILE.EXG,
 					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
@@ -2805,7 +2806,8 @@ public class SensorEXG extends AbstractSensor{
 			if(mShimmerVerObject.isShimmerGenGq()){
 				sensorMap.get(Configuration.Shimmer3.SENSOR_ID.HOST_ECG).setIsEnabled(isEXGUsingDefaultECGGqConfiguration());
 			}
-			else if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
+			else {
+//			else if((mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4())){
 	//			if((mIsExg1_24bitEnabled||mIsExg2_24bitEnabled||mIsExg1_16bitEnabled||mIsExg2_16bitEnabled)){
 	//			if((isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT))
 	//					||(isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT))

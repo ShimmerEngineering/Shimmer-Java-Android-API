@@ -183,9 +183,9 @@ public class SensorBattVoltage extends AbstractSensor{
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4() || mShimmerVerObject.isSweatchDevice()){
+//		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4() || mShimmerVerObject.isSweatchDevice()){
 			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BATTERY_MONITORING.ordinal(), sensorGroupBattVoltage);
-		}
+//		}
 		super.updateSensorGroupingMap();
 	}
 

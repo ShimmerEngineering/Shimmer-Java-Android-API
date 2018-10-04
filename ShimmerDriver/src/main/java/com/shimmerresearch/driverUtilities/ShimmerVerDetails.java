@@ -40,7 +40,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_GQ_802154_LR = HW_ID_SR_CODES.SHIMMER_GQ_802154_LR; // Long Range
 		public static final int SHIMMER_GQ_802154_NR = HW_ID_SR_CODES.SHIMMER_GQ_802154_NR; // Normal Range
 		public static final int SHIMMER_4_SDK = HW_ID_SR_CODES.SHIMMER_4_SDK;
-		public static final int SHIMMER_ECG_MD = HW_ID_SR_CODES.SHIMMER_ECG_MD;
+//		public static final int SHIMMER_ECG_MD = HW_ID_SR_CODES.SHIMMER_ECG_MD;
 
 		//Third party devices
 		public static final int NONIN_ONYX_II 			= 1000;
@@ -75,7 +75,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_GQ_802154_LR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_GQ_802154_NR, "ShimmerGQ");
         aMap.put(HW_ID.SHIMMER_4_SDK, "Shimmer4 SDK");
-        aMap.put(HW_ID.SHIMMER_ECG_MD, "Shimmer ECGmd");
+//        aMap.put(HW_ID.SHIMMER_ECG_MD, "Shimmer ECGmd");
                 
         aMap.put(HW_ID.NONIN_ONYX_II, "Nonin Onyx II");
         aMap.put(HW_ID.QTI_DIRECT_TEMP, "QTI Direct Temp");
@@ -171,7 +171,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int BTSTREAM_UARTSTREAM = 13;
 		public static final int BTSTREAM_CE = 14;
 		public static final int STROKARE = 15;
-		public static final int SHIMMER_ECG_MD = 16;
+		public static final int ECG_MD = 16;
 		
 		public static final Map<Integer, String> mMapOfFirmwareLabels;
 	    static {
@@ -186,7 +186,7 @@ public class ShimmerVerDetails implements Serializable {
 	        aMap.put(FW_ID.SPAN, "SPAN");
 	        aMap.put(FW_ID.SHIMMER4_SDK_STOCK, "Shimmer4SDK");
 	        aMap.put(FW_ID.STROKARE, "StroKare");
-	        aMap.put(FW_ID.SHIMMER_ECG_MD, "ShimmerECGmd");
+	        aMap.put(FW_ID.ECG_MD, "ECGmd");
 	        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
 	    }
 
