@@ -237,6 +237,10 @@ public class ShimmerECGmdDevice extends ShimmerDevice {
 		//JC: The updateEnabledSensorsFromExgResolution(), seems to be working incorrectly because of the boolean values of mIsExg1_24bitEnabled, so updating this values first 
 		refreshEnabledSensorsFromSensorMap();
 		
+		mConfigBytes[configByteLayoutCast.idxSensors0] = (byte) ((mEnabledSensors >> configByteLayoutCast.byteShiftSensors0) & configByteLayoutCast.maskSensors);
+		mConfigBytes[configByteLayoutCast.idxSensors1] = (byte) ((mEnabledSensors >> configByteLayoutCast.byteShiftSensors1) & configByteLayoutCast.maskSensors);
+		mConfigBytes[configByteLayoutCast.idxSensors2] = (byte) ((mEnabledSensors >> configByteLayoutCast.byteShiftSensors2) & configByteLayoutCast.maskSensors);
+
 		// Configuration
 		mConfigBytes[configByteLayoutCast.idxConfigSetupByte0] = (byte) (0x00);
 		mConfigBytes[configByteLayoutCast.idxConfigSetupByte1] = (byte) (0x00);
@@ -270,6 +274,14 @@ public class ShimmerECGmdDevice extends ShimmerDevice {
 		return mConfigBytes;
 	}
 	
+	//TODO
+	@Override
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+		super.configureFromClone(shimmerDeviceClone);
+		
+		writeConfigBytes(shimmerDeviceClone.getShimmerConfigBytes());
+	}
+
 	@Override
 	public void createConfigBytesLayout() {
 		mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());

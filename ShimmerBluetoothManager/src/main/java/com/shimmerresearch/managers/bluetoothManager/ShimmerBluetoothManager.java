@@ -828,7 +828,7 @@ public abstract class ShimmerBluetoothManager{
 			else if(sVO.isSweatchDevice()){
 				shimmerDeviceNew = createNewSweatchDevice(shimmerRadioInitializer, bluetoothAddress);
 			}
-			else if(sVO.isShimmerECGmdDevice()){
+			else if(sVO.isShimmerGenECGmd()){
 				shimmerDeviceNew = createNewEcgMdDevice(shimmerRadioInitializer, bluetoothAddress);
 			}
 

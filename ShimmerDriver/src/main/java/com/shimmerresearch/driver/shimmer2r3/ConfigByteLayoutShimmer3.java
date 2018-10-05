@@ -409,6 +409,10 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 //			return 512; 
 //		}
 		
+		if(shimmerVersionObject.isShimmerGenECGmd()) {
+			return 256;
+		}
+		
 		return 384;
 	}
 

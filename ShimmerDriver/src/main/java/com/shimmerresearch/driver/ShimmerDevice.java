@@ -1999,6 +1999,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.isShimmerGenGq();
 	}
 
+	public boolean isShimmerGenECGmd(){
+		return mShimmerVerObject.isShimmerGenECGmd();
+	}
+
 	public boolean isShimmerVideoDevice(){
 		return mShimmerVerObject.isShimmerVideoDevice();
 	}
@@ -4306,9 +4310,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	//TODO copied from ShimmerBluetooth
-	public void operationStart(BT_STATE configuring) {
+	public void operationStart(BT_STATE operation) {
 		if(mCommsProtocolRadio!=null){
-			mCommsProtocolRadio.operationStart(configuring);
+			mCommsProtocolRadio.operationStart(operation);
 		}
 	}
 

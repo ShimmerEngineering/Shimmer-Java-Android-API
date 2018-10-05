@@ -572,15 +572,8 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 
-	public boolean isShimmerECGmdDevice(){
-		if(getShimmerExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_ECG_MD){
-			return true;
-		}
-		return false;
-	}
-
-	public boolean isShimmerECGmdFirmware(){
-		if(getFirmwareIdentifier()==FW_ID.ECG_MD){
+	public boolean isShimmerGenECGmd(){
+		if(getShimmerExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_ECG_MD || getFirmwareIdentifier()==FW_ID.ECG_MD){
 			return true;
 		}
 		return false;
