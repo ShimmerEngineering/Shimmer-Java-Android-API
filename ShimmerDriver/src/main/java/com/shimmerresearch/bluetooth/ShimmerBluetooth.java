@@ -2291,8 +2291,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	private boolean isSupportedInStreamCmds() {
-		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM 
-				|| isThisVerCompatibleWith(FW_ID.BTSTREAM, 0, 8, 1)){
+		if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM 
+				|| isThisVerCompatibleWith(FW_ID.BTSTREAM, 0, 8, 1))&& getHardwareVersion()!=HW_ID.SHIMMER_2R){
 			return true;
 		}
 		return false;
