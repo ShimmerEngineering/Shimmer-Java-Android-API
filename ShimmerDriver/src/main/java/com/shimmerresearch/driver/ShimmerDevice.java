@@ -2453,6 +2453,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	/**
+	 * This method has been deprecated, and we recommend users to use {@link com.shimmerresearch.driver.ShimmerDevice#setSensorEnabledState(int sensorId, boolean state)} or
+	 * {@link com.shimmerresearch.driver.ShimmerDevice#setSensorIdsEnabled(Integer[] sensorIds)}. <br>
+	 * The enabled sensors that are set in the ShimmerDevice class can then be written to the physical device by either using the clone device method, 
+	 * or by calling {@link #writeConfigBytes()}. 
+	 * @param mEnabledSensors
+	 */
+	@Deprecated
 	public void setEnabledSensors(long mEnabledSensors) {
 		this.mEnabledSensors = mEnabledSensors;
 	}
