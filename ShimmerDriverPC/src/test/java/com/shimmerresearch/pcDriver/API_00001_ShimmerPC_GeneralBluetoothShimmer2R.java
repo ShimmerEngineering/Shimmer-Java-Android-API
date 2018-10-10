@@ -21,11 +21,12 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 
 	static ShimmerPC shimmer = new ShimmerPC("ShimmerDevice"); 
 	public static final int SHIMMER_2R=2; 
+	final int DELAY_DURATION_MS = 3000;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		shimmer.connect("COM14",null);
-		Thread.sleep(3000);
+		shimmer.connect("COM7",null);
+		Thread.sleep(10000);
 	}
 
 	@AfterClass
@@ -68,7 +69,7 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 	public void testDWriteReadSamplingRate() throws Exception {
 		double samplingrate;
 		shimmer.readSamplingRate();
-		Thread.sleep(3000);
+		Thread.sleep(DELAY_DURATION_MS);
 		System.out.println("Current Shimmer 2R sampling rate is:" + shimmer.getSamplingRateShimmer());
 		
 		if (shimmer.getSamplingRateShimmer()==128) {
@@ -78,9 +79,9 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 			samplingrate = 128;
 		}
 		shimmer.writeShimmerAndSensorsSamplingRate(samplingrate);
-		Thread.sleep(3000);
+		Thread.sleep(DELAY_DURATION_MS);
 		shimmer.readSamplingRate();
-		Thread.sleep(3000);
+		Thread.sleep(DELAY_DURATION_MS);
 		if (shimmer.getSamplingRateShimmer()== samplingrate ) {
 			assert(true);
 		} else {
@@ -92,7 +93,7 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 	@Test	//test Shimmer 2R start streaming 
 	public void testEStartStreaming() throws Exception {
 			shimmer.startStreaming();
-			Thread.sleep(3000);
+			Thread.sleep(DELAY_DURATION_MS);
 			if (shimmer.isStreaming()) {
 				assert(true);
 			} else {
@@ -103,7 +104,7 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 	@Test	//test Shimmer 2R stop streaming 
 	public void testFStopStreaming() throws Exception {
 			shimmer.stopStreaming();
-			Thread.sleep(3000);
+			Thread.sleep(DELAY_DURATION_MS);
 			if (shimmer.isStreaming()) {
 				assert(false);
 			} else {
@@ -119,7 +120,7 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 			//odd value of i will start streaming
 			if (i%2!=0) {	
 				shimmer.startStreaming();
-				Thread.sleep(3000);
+				Thread.sleep(DELAY_DURATION_MS);
 				if (shimmer.isStreaming()) {
 					assert(true);
 				} else {
@@ -130,7 +131,7 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 			else		
 			{
 				shimmer.stopStreaming();
-				Thread.sleep(3000);
+				Thread.sleep(DELAY_DURATION_MS);
 				if (shimmer.isStreaming()) {
 					assert(false);
 				} else {
