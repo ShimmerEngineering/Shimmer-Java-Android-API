@@ -6,6 +6,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
@@ -24,7 +25,7 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		shimmer.connect("COM14",null);
-		Thread.sleep(10000);
+		Thread.sleep(3000);
 	}
 
 	@AfterClass
@@ -65,9 +66,22 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 	
 	@Test	//write and read sampling rate of the hardware
 	public void testDWriteReadSamplingRate() throws Exception {
-		shimmer.writeShimmerAndSensorsSamplingRate(128);
-		Thread.sleep(5000);
+		double samplingrate;
+		shimmer.readSamplingRate();
+		Thread.sleep(3000);
+		System.out.println("Current Shimmer 2R sampling rate is:" + shimmer.getSamplingRateShimmer());
+		
 		if (shimmer.getSamplingRateShimmer()==128) {
+			samplingrate = 51.2;
+		}
+		else {
+			samplingrate = 128;
+		}
+		shimmer.writeShimmerAndSensorsSamplingRate(samplingrate);
+		Thread.sleep(3000);
+		shimmer.readSamplingRate();
+		Thread.sleep(3000);
+		if (shimmer.getSamplingRateShimmer()== samplingrate ) {
 			assert(true);
 		} else {
 			assert(false);
@@ -78,7 +92,7 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 	@Test	//test Shimmer 2R start streaming 
 	public void testEStartStreaming() throws Exception {
 			shimmer.startStreaming();
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 			if (shimmer.isStreaming()) {
 				assert(true);
 			} else {
@@ -89,7 +103,7 @@ public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 	@Test	//test Shimmer 2R stop streaming 
 	public void testFStopStreaming() throws Exception {
 			shimmer.stopStreaming();
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 			if (shimmer.isStreaming()) {
 				assert(false);
 			} else {
