@@ -10,8 +10,13 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 
+/* 
+ * This test class is to test Shimmer 2R connectivity, version, sampling rate, 
+ * and check its start and stop streaming functionality.
+ */
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
+public class API_00001_ShimmerPC_GeneralBluetoothShimmer2R {
 
 	static ShimmerPC shimmer = new ShimmerPC("ShimmerDevice"); 
 	public static final int SHIMMER_2R=2; 
@@ -26,8 +31,9 @@ public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
 	public static void tearDownAfterClass() throws Exception {
 		
 	}
-
-	@Test
+	
+	
+	@Test	//test Shimmer 2R connection
 	public void testAConnect() {
 		if (shimmer.isConnected()) {
 			assert(true);
@@ -36,7 +42,8 @@ public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
 		}
 	}
 	
-	@Test
+	
+	@Test	//get hardware version of Shimmer 2R
 	public void testBGetHW() {
 		if (shimmer.getHardwareVersion()==HW_ID.SHIMMER_2R){
 			assert(true);
@@ -45,7 +52,8 @@ public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
 		}
 	}
 	
-	@Test
+	
+	@Test	//get firmware version of Shimmer 2R
 	public void testCGetFW() {
 		if (shimmer.getFirmwareIdentifier()==FW_ID.BTSTREAM){
 			assert(true);
@@ -54,7 +62,8 @@ public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
 		}
 	}
 	
-	@Test
+	
+	@Test	//write and read sampling rate of the hardware
 	public void testDWriteReadSamplingRate() throws Exception {
 		shimmer.writeShimmerAndSensorsSamplingRate(128);
 		Thread.sleep(5000);
@@ -65,7 +74,8 @@ public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
 		}
 	}
 	
-	@Test
+	
+	@Test	//test Shimmer 2R start streaming 
 	public void testEStartStreaming() throws Exception {
 			shimmer.startStreaming();
 			Thread.sleep(5000);
@@ -76,7 +86,7 @@ public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
 			}
 		}
 	
-	@Test
+	@Test	//test Shimmer 2R stop streaming 
 	public void testFStopStreaming() throws Exception {
 			shimmer.stopStreaming();
 			Thread.sleep(5000);
@@ -87,10 +97,13 @@ public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
 			}
 		}
 	
-	@Test
+	
+	@Test	//test for multiple start and stop streaming 
 	public void testGMultipleStartStopStreaming() throws Exception {
 		for (double i=1; i<8 ; i++) {
-			if (i%2!=0) {	//odd value of i will start streaming
+			
+			//odd value of i will start streaming
+			if (i%2!=0) {	
 				shimmer.startStreaming();
 				Thread.sleep(3000);
 				if (shimmer.isStreaming()) {
@@ -99,8 +112,8 @@ public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
 					assert(false);
 				}
 			}
-			
-			else		//even value of i will stop streaming
+			//even value of i will stop streaming
+			else		
 			{
 				shimmer.stopStreaming();
 				Thread.sleep(3000);
@@ -114,7 +127,7 @@ public class API_00001_GeneralBluetoothShimmer2R_ShimmerPC {
 		}
 		
 	
-	@Test
+	@Test	//test Shimmer 2R disconnection
 	public void testHDisconnect() {
 		try {
 			shimmer.disconnect();
