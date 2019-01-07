@@ -124,18 +124,29 @@ public class ParserStreamedDataToCSV {
 			}		
 		}
 		
-		writeHeaderToCSVFile(channelsHeader, unitsHeader);
+		writeDoubleLineHeaderToCSVFile(channelsHeader, unitsHeader);
 	}
 
-	public void writeHeaderToCSVFile(String channelsHeader, String unitsHeader) {
+	public void writeDoubleLineHeaderToCSVFile(String channelsHeader, String unitsHeader) {
+		try {
+			writeSingleLineHeaderToCSVFile(channelsHeader);
+			bufferedWriter.write(unitsHeader);
+			bufferedWriter.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		isFileHeaderWritten = true;
+	}
+	
+	public void writeSingleLineHeaderToCSVFile(String channelsHeader) {
 		try {
 			if(isFileDelimiterDescriptorInFile){
 				bufferedWriter.write("\"sep=" + fileDelimiter + "\"");
 				bufferedWriter.newLine();
 			}
 			bufferedWriter.write(channelsHeader);
-			bufferedWriter.newLine();
-			bufferedWriter.write(unitsHeader);
 			bufferedWriter.newLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
