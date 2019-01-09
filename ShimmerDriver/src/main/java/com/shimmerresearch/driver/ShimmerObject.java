@@ -2008,7 +2008,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			if ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.ECG_TO_HR_FW) > 0){
 				int sigIndex = getSignalIndex(Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW);
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,(double)newPacketInt[sigIndex]);
+				
+				double ecgToHrFW = (double)newPacketInt[sigIndex];
+				//Substitute 255 (i.e., invalid HR from FW) in SD data parsing for a -1 (which the SW normally gives as invalid HR)
+				if(ecgToHrFW==255) {
+					ecgToHrFW = SensorECGToHRFw.INVALID_HR_SUBSTITUTE;
+				}
+				
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.BEATS_PER_MINUTE,ecgToHrFW);
 //				uncalibratedData[sigIndex]=(double)newPacketInt[sigIndex];
 //				uncalibratedDataUnits[sigIndex]=CHANNEL_UNITS.BEATS_PER_MINUTE;
 				calibratedData[sigIndex]=(double)newPacketInt[sigIndex];
@@ -4375,16 +4382,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mConfigBytes = configBytes;
 			createInfoMemLayoutObjectIfNeeded();
 			
-			// Parse Enabled and Derived sensor bytes in order to update sensor maps
-			parseEnabledDerivedSensorsForMaps(configByteLayoutCast, configBytes);
-
 			// InfoMem D - Start - used by BtStream, SdLog and LogAndStream
 			// Sampling Rate
 			byte samplingRateMSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate+1] & configByteLayoutCast.maskShimmerSamplingRate);
 			byte samplingRateLSB = (byte) (configBytes[configByteLayoutCast.idxShimmerSamplingRate] & configByteLayoutCast.maskShimmerSamplingRate);
 			double samplingRate = convertSamplingRateBytesToFreq(samplingRateLSB, samplingRateMSB, getSamplingClockFreq());
 			setShimmerAndSensorsSamplingRate(samplingRate);
-	
+
+			//Sampling rate is required in order to initialise the algorithms or else console errors are thrown.
+			// Parse Enabled and Derived sensor bytes in order to update sensor maps
+			parseEnabledDerivedSensorsForMaps(configByteLayoutCast, configBytes);
+			
 			mBufferSize = (int)(configBytes[configByteLayoutCast.idxBufferSize] & configByteLayoutCast.maskBufferSize);
 			
 			// Configuration
