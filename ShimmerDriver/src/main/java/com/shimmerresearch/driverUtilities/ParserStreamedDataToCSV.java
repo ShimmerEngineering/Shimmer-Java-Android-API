@@ -198,7 +198,7 @@ public class ParserStreamedDataToCSV {
 	}
 	
 	private String getFormattedValue(double value) {
-		return isLimitingDecimalPlaces ? decimalFormat.format(value) : String.valueOf(value);
+		return (isLimitingDecimalPlaces && !Double.isNaN(value)) ? decimalFormat.format(value) : String.valueOf(value);
 	}
 	
 	public void writeSample(String sampleToWrite) {
