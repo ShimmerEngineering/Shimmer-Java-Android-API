@@ -144,6 +144,7 @@ public class MsgDock {
 	public final static int MSG_ID_PROCESS_DATA_OPERATION_FINISHED = 401;
 	
 	public final static int MSG_ID_APPLY_EVENTS_UPDATE = 410;
+	public final static int MSG_ID_APPLY_SD_CARD_GSR_HRV_PROCESSING = 411;
 	
 	public final static int MSG_ID_CLEARSKY_ALG_UPDATE = 430;
 	public final static int MSG_ID_CLEARSKY_ALG_FINISHED = 431;
