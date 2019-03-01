@@ -150,7 +150,7 @@ public class MsgDock {
 	public final static int MSG_ID_CLEARSKY_ALG_FINISHED = 431;
 	public final static int MSG_ID_CLEARSKY_ALG_FAILED = 432;
 
-	
+	public final static int MSG_ID_APPLY_ZSCORE_RESULT_AGGREGATOR_PROCESSING = 500;
 
 	//ImportManager
 	public final static int MSG_ID_IMPORT_DB_PARSER_UPDATE = 130;
