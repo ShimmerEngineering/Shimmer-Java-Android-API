@@ -157,6 +157,7 @@ public class MsgDock {
 	public final static int MSG_ID_PROCESS_ZSCORE_UPDATE = 600; //progress 0 - 100%
 	public final static int MSG_ID_PROCESS_ZSCORE_SUCCESS = 601;
 	public final static int MSG_ID_PROCESS_ZSCORE_FAILURE = 602;
+	public final static int MSG_ID_PROCESS_ZSCORE_CANCELLED = 603;
 	
 	//ImportManager
 	public final static int MSG_ID_IMPORT_DB_PARSER_UPDATE = 130;
