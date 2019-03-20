@@ -334,7 +334,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		return trace;
 	}
 	
-	private ITrace2D addBarTrace(Chart2D chart, int plotMaxSize) {
+	public ITrace2D addBarTrace(Chart2D chart, int plotMaxSize) {
 		ITrace2D trace = createBarTrace(chart, plotMaxSize);
 		chart.addTrace(trace);
 		return trace;
