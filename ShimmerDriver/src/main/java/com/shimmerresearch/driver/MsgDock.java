@@ -150,8 +150,19 @@ public class MsgDock {
 	public final static int MSG_ID_CLEARSKY_ALG_FINISHED = 431;
 	public final static int MSG_ID_CLEARSKY_ALG_FAILED = 432;
 
+	public final static int MSG_ID_APPLY_ZSCORE_RESULT_AGGREGATOR_PROCESSING = 500; //progress 0 - 100%
+	public final static int MSG_ID_APPLY_ZSCORE_RESULT_AGGREGATOR_SUCCESS = 501;
+	public final static int MSG_ID_APPLY_ZSCORE_RESULT_AGGREGATOR_FAILURE = 502;
 	
-
+	public final static int MSG_ID_PROCESS_ZSCORE_UPDATE = 510; //progress 0 - 100%
+	public final static int MSG_ID_PROCESS_ZSCORE_SUCCESS = 511;
+	public final static int MSG_ID_PROCESS_ZSCORE_FAILURE = 512;
+	public final static int MSG_ID_PROCESS_ZSCORE_CANCELLED = 513;
+	
+	public final static int MSG_ID_PROCESS_PEAKS_UPDATE = 520; //progress 0 - 100%
+	public final static int MSG_ID_PROCESS_PEAKS_SUCCESS = 521;
+	public final static int MSG_ID_PROCESS_PEAKS_FAILURE = 522;
+	
 	//ImportManager
 	public final static int MSG_ID_IMPORT_DB_PARSER_UPDATE = 130;
 	public final static int MSG_ID_IMPORT_DB_PARSER_SUCCESS = 131;
