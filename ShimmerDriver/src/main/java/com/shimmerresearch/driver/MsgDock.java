@@ -158,6 +158,7 @@ public class MsgDock {
 	public final static int MSG_ID_PROCESS_ZSCORE_SUCCESS = 511;
 	public final static int MSG_ID_PROCESS_ZSCORE_FAILURE = 512;
 	public final static int MSG_ID_PROCESS_ZSCORE_CANCELLED = 513;
+	public final static int MSG_ID_PROCESS_ZSCORE_DELETE_TEMP_DATA = 514;
 	
 	public final static int MSG_ID_PROCESS_PEAKS_UPDATE = 520; //progress 0 - 100%
 	public final static int MSG_ID_PROCESS_PEAKS_SUCCESS = 521;
