@@ -162,7 +162,7 @@ public class GyroOnTheFlyCalModule extends AbstractAlgorithm {
 	@Override
 	public void initialize() throws Exception {
 //		mOnTheFlyGyroOffsetCal = new OnTheFlyGyroOffsetCal();
-		setBufferSizeFromSamplingRate(mShimmerSamplingRate);
+		setBufferSizeFromSamplingRate((mShimmerDevice.getSamplingRateShimmer()));
 	}
 
 	@Override
