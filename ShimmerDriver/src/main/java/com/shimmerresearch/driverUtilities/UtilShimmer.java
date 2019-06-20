@@ -606,6 +606,7 @@ public class UtilShimmer implements Serializable {
 					Integer.parseInt(compMajor), Integer.parseInt(compMinor), Integer.parseInt(compInternal));
 		} catch (NumberFormatException nFE) {
 			System.out.println("UpdateChecker - Version parsing error");
+			nFE.printStackTrace();
 		}
 		return true;
 	}

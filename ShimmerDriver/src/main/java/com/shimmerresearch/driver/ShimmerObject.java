@@ -1752,7 +1752,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				int currentGSRRange = getGSRRange();
 				 // this is to fix a bug with SDLog v0.9
 				if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==9){
-//					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 
 					/*
 					 * 	for i = 2:length(range)
