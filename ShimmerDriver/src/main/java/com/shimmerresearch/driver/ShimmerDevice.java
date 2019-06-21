@@ -3549,7 +3549,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					channelDetails = new ChannelDetails();
 					channelDetails.mGuiName = dbChannelHandle;
 					channelDetails.mObjectClusterName = dbChannelHandle;
-					channelDetails.setDatabaseChannelHandle(dbChannelHandle);
+					String dbColumnName = dbChannelHandle.replace("-", "_");
+					channelDetails.setDatabaseChannelHandle(dbColumnName);
 				}
 			}
 			
