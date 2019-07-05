@@ -69,6 +69,23 @@ public class API_00002_Filters {
 		runTestCommon(testId, sourceCsv, referenceCsv, filterType, samplingRate, cornerFrequency, nTaps);
 	}
 
+	/**
+	 *  Basic band-stop filter test
+	 */
+	@Test
+	public void Test_004_BandStop() {
+		String testId = "Test_004";
+		int filterType = Filter.BAND_STOP;
+		double samplingRate = 1024.0;
+		double[] cornerFrequency = { 100, 400 };
+		int nTaps = 200;
+		
+		String sourceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/WhiteNoise_001.csv";
+		String referenceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/Reference/" + testId + ".csv";
+		
+		runTestCommon(testId, sourceCsv, referenceCsv, filterType, samplingRate, cornerFrequency, nTaps);
+	}
+
 	private void runTestCommon(String testId, String sourceCsv, String referenceCsv, int filterType, double samplingRate, double[] cornerFrequency, int nTaps) {
 		System.out.println("\n ------------------- " + testId + " start -------------------\n");
 		
@@ -90,7 +107,7 @@ public class API_00002_Filters {
 			double[] filteredSignal = filter.filterData(sourceSignal);
 			
 			if(REPLACE_REFERENCE_CSVS) {
-				System.out.println("\tReplacing the reference CSV");
+				System.out.println("\tWARNING! Replacing the reference CSV");
 				saveReferenceCsv(referenceCsv, filteredSignal);
 			}
 			
@@ -102,7 +119,7 @@ public class API_00002_Filters {
 			compareDoubleArrays(filteredSignal, referenceSignal);
 		} catch (Exception e) {
 			e.printStackTrace();
-			assertTrue("Error parsing the source CSV", false);
+			assertTrue("Error -> see console", false);
 		}
 		
 		System.out.println("\n ------------------- " + testId + " end -------------------\n");
