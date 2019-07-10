@@ -95,6 +95,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	private boolean mIsDebugMode = false;
 	private boolean mIsTraceDataBuffered = false;
 	protected boolean isFirstPointOnFillTrace = true;
+	protected boolean isSingleEventMarkerTest = true;
 	
 	public PlotCustomFeature pcf=null;
 	
@@ -1948,7 +1949,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 
 					//prevent eventmarkers from plotting back in time
 					boolean eventMarker=false;
-					if (props[0].equals(mEventMarkerCheck) && shimmerName.equals(props[0])){
+					
+					if (isEventMarkerData(shimmerName, props[0])){
 						if (xData>mCurrentXValue){
 							eventMarker=true;
 						} 
@@ -2062,6 +2064,21 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		}
 	}
 
+	public void setEventMarkerDataCheck(boolean isSingleEventMarkerTest) {
+		this.isSingleEventMarkerTest = isSingleEventMarkerTest;
+	}
+	
+	private boolean isEventMarkerData(String shimmerName, String signalName) {
+		if(isSingleEventMarkerTest) {
+			// used for Consensys (CON-628)
+			return mEventMarkerCheck.equals(signalName);
+		}
+		else {
+			// used for NeuroLynQ
+			return mEventMarkerCheck.equals(signalName) && shimmerName.equals(signalName);
+		}
+	}
+	
 	/**
 	 * Method to add a dummy point as the first point in the trace if the line style is fill
 	 * so that the chart doesn't plot from (0, 0), this method is overriden in PlotManagerPC
