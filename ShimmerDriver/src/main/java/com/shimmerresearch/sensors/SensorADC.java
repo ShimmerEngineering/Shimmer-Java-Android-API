@@ -522,9 +522,7 @@ public class SensorADC extends AbstractSensor {
 	}
 
 	public static double calibrateU12AdcValueToMillivolts(double uncalibratedData, double offset, double vRefP, double gain){
-//		double calibratedData = (uncalibratedData-offset) * (((vRefP*1000)/gain)/4095);
-//		return calibratedData;
-		return calibrateU12AdcValueToVolts(uncalibratedData, offset, vRefP, gain)*1000;
+		return calibrateU12AdcValueToVolts(uncalibratedData, offset, vRefP*1000, gain);
 	}
 
 	public static double calibrateU12AdcValueToVolts(double uncalibratedData, double offset, double vRefP, double gain){
