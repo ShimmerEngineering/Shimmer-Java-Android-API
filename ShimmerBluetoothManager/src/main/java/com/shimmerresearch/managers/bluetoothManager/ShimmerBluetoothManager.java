@@ -814,38 +814,37 @@ public abstract class ShimmerBluetoothManager{
 		 * @return
 		 */
 		protected ShimmerDevice resolveUnknownShimmer(ShimmerRadioInitializer shimmerRadioInitializer){
-			ShimmerVerObject sVO = shimmerRadioInitializer.readShimmerVerObject();
 			ShimmerDevice shimmerDeviceNew = null;
-			if (sVO.isShimmerGen2() || sVO.isShimmerGen3()){
-				shimmerDeviceNew = createNewShimmer3(shimmerRadioInitializer, bluetoothAddress);
-			} 
-			else if(sVO.isShimmerGen4()){
-				shimmerDeviceNew = createNewShimmer4(shimmerRadioInitializer, bluetoothAddress);
-			}
-			else if(sVO.isSweatchDevice()){
-				shimmerDeviceNew = createNewSweatchDevice(shimmerRadioInitializer, bluetoothAddress);
-			}
-
-			if(shimmerDeviceNew!=null){
-				shimmerDeviceNew.setComPort(comPort);
-				shimmerDeviceNew.setMacIdFromUart(bluetoothAddress);
-				shimmerDeviceNew.setShimmerVersionObjectAndCreateSensorMap(sVO);
-
-				//Temporarily added, not needed at the moment so commenting out
-//				ExpansionBoardDetails expBrdDetails = shimmerRadioInitializer.readExpansionBoardID();
-//				if(expBrdDetails!=null){
-//					shimmerDeviceNew.setExpansionBoardDetails(expBrdDetails);
-//				}
-
-				initializeNewShimmerCommon(shimmerDeviceNew);
-			}
-			else {
-				try {
-					shimmerRadioInitializer.getSerialCommPort().disconnect();
-				} catch (ShimmerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			try {
+				ShimmerVerObject sVO = shimmerRadioInitializer.readShimmerVerObject();
+				if (sVO.isShimmerGen2() || sVO.isShimmerGen3()){
+					shimmerDeviceNew = createNewShimmer3(shimmerRadioInitializer, bluetoothAddress);
+				} 
+				else if(sVO.isShimmerGen4()){
+					shimmerDeviceNew = createNewShimmer4(shimmerRadioInitializer, bluetoothAddress);
 				}
+				else if(sVO.isSweatchDevice()){
+					shimmerDeviceNew = createNewSweatchDevice(shimmerRadioInitializer, bluetoothAddress);
+				}
+	
+				if(shimmerDeviceNew!=null){
+					shimmerDeviceNew.setComPort(comPort);
+					shimmerDeviceNew.setMacIdFromUart(bluetoothAddress);
+					shimmerDeviceNew.setShimmerVersionObjectAndCreateSensorMap(sVO);
+	
+					//Temporarily added, not needed at the moment so commenting out
+	//				ExpansionBoardDetails expBrdDetails = shimmerRadioInitializer.readExpansionBoardID();
+	//				if(expBrdDetails!=null){
+	//					shimmerDeviceNew.setExpansionBoardDetails(expBrdDetails);
+	//				}
+	
+					initializeNewShimmerCommon(shimmerDeviceNew);
+				}
+				else {
+					shimmerRadioInitializer.getSerialCommPort().disconnect();
+				}
+			} catch(ShimmerException e) {
+				e.printStackTrace();
 			}
 			
 			return shimmerDeviceNew;
