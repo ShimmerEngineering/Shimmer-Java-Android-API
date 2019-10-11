@@ -756,6 +756,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else {
 			if (!isRtcDifferenceSet()){
 				//sd log time stamp already included in mnChannels
+				if(isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultRespirationConfiguration()){
+					//HACK for CON-644 -> Do not merge to Dev/Master
+					numAdditionalChannels += 1;
+				}
 			} 
 			else {
 				//for RTC
