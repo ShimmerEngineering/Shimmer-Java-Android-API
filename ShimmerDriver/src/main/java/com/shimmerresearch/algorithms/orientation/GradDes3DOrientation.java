@@ -234,6 +234,26 @@ public class GradDes3DOrientation {
 	    return new Orientation3DObject(q0,q1,q2,q3);
     }
 	
+	public double getBeta() {
+		return mBeta;
+	}
+	
+	public double getQ0() {
+		return q0;
+	}
+	
+	public double getQ1() {
+		return q1;
+	}
+	
+	public double getQ2() {
+		return q2;
+	}
+	
+	public double getQ3() {
+		return q3;
+	}
+	
 	/**
 	 * @param ax Accelerometer X in m/(sec^2)
 	 * @param ay Accelerometer Y in m/(sec^2)
