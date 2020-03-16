@@ -2146,7 +2146,7 @@ public class Configuration {
 			public static final int SWEATCH_ADC = 1005;
 		}
 	}
-	
+
 	public static class Webcam{
 		public static class CompatibilityInfoForMaps{
 			public static final ShimmerVerObject svoWebcamGeneric = 		new ShimmerVerObject(HW_ID.WEBCAM_GENERIC,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
@@ -2161,7 +2161,14 @@ public class Configuration {
 					svoWebcamGeneric, svoWebcamLogitechHdC920, svoWebcamLogitechHdC930E);
 
 		}
-
+	}
+	
+	public static final class Verisense {
+		public class SENSOR_ID {
+			public static final int LIS2DW12_ACCEL = 2005;
+			public static final int LSM6DS3_ACCEL = 2006;
+			public static final int LSM6DS3_GYRO = 2007;
+		}
 	}
 	
 }

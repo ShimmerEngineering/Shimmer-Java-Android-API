@@ -60,7 +60,9 @@ public abstract class AbstractSensor implements Serializable{
 		HOST_CPU_USAGE("Cpu Usage"),
 		SWEATCH_ADC("Sweatch ADC"),
 		SHIMMER2R_MAG("Shimmer2r Mag"),
-		SHIMMER2R_GYRO("Shimmer2r Gyro");
+		SHIMMER2R_GYRO("Shimmer2r Gyro"), 
+		LIS2DW12("LIS2DW12"),
+		LSM6DS3("LSM6DS3");
 		
 	    private final String text;
 

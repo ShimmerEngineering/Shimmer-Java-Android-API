@@ -41,6 +41,8 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_GQ_802154_NR = HW_ID_SR_CODES.SHIMMER_GQ_802154_NR; // Normal Range
 		public static final int SHIMMER_4_SDK = HW_ID_SR_CODES.SHIMMER_4_SDK;
 		public static final int SHIMMER_ECG_MD = HW_ID_SR_CODES.SHIMMER_ECG_MD;
+		public static final int VERISENSE_IMU = HW_ID_SR_CODES.VERISENSE_IMU;
+		public static final int VERISENSE_GSR = HW_ID_SR_CODES.VERISENSE_GSR;
 
 		//Third party devices
 		public static final int NONIN_ONYX_II 			= 1000;
@@ -85,6 +87,8 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.WEBCAM_LOGITECH_HD_C920, "Webcam");
         aMap.put(HW_ID.WEBCAM_LOGITECH_HD_C930E, "Webcam");
         aMap.put(HW_ID.WEBCAM_DIGIOPTIX_SMART_GLASSES, "Webcam");
+        aMap.put(HW_ID.VERISENSE_IMU, "Verisense IMU");
+        aMap.put(HW_ID.VERISENSE_GSR, "Verisense GSR");
         
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
@@ -115,6 +119,8 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_GQ_802154_NR 		= 57;
 		public static final int SHIMMER_4_SDK 				= 58;
 		public static final int SHIMMER_ECG_MD 				= 59;
+		public static final int VERISENSE_IMU				= 61;
+		public static final int VERISENSE_GSR				= 62;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerHardware;
@@ -143,6 +149,8 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.SHIMMER_GQ_802154_NR, "ShimmerGQ 802.15.4");
         aMap.put(HW_ID_SR_CODES.SHIMMER_4_SDK, "Shimmer4 SDK");
         aMap.put(HW_ID_SR_CODES.SHIMMER_ECG_MD, "Shimmer ECGmd");
+        aMap.put(HW_ID_SR_CODES.VERISENSE_IMU, "Verisense IMU");
+        aMap.put(HW_ID_SR_CODES.VERISENSE_GSR, "Verisense GSR");
         
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
     }
