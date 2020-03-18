@@ -100,7 +100,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector,
 			double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
 		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
-		this.setCurrentValues(currentOffsetVector, currentSensitivityMatrix, currentAlignmentMatrix);
+		this.setCurrentValues(currentOffsetVector, currentSensitivityMatrix, currentAlignmentMatrix, true);
 	}
 
 	public CalibDetailsKinematic(int rangeValue, String rangeString, 
@@ -119,10 +119,10 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}
 
 
-	public void setCurrentValues(double[][] currentOffsetVector, double[][] currentSensitivityMatrix, double[][] currentAlignmentMatrix) {
-		setCurrentAlignmentMatrix(currentAlignmentMatrix);
-		setCurrentSensitivityMatrix(currentSensitivityMatrix);
-		setCurrentOffsetVector(currentOffsetVector);
+	public void setCurrentValues(double[][] currentOffsetVector, double[][] currentSensitivityMatrix, double[][] currentAlignmentMatrix, boolean nudgeValues) {
+		setCurrentAlignmentMatrix(currentAlignmentMatrix, nudgeValues);
+		setCurrentSensitivityMatrix(currentSensitivityMatrix, nudgeValues);
+		setCurrentOffsetVector(currentOffsetVector, nudgeValues);
 		
 //		System.out.println(generateDebugString());
 	}
@@ -135,9 +135,9 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	public void resetToDefaultParameters(){
 		super.resetToDefaultParametersCommon();
 		
-		setCurrentOffsetVector(UtilShimmer.deepCopyDoubleMatrix(mDefaultCalibration.mOffsetVector));
-		setCurrentSensitivityMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultCalibration.mSensitivityMatrix));
-		setCurrentAlignmentMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultCalibration.mAlignmentMatrix));
+		setCurrentOffsetVector(UtilShimmer.deepCopyDoubleMatrix(mDefaultCalibration.mOffsetVector), true);
+		setCurrentSensitivityMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultCalibration.mSensitivityMatrix), true);
+		setCurrentAlignmentMatrix(UtilShimmer.deepCopyDoubleMatrix(mDefaultCalibration.mAlignmentMatrix), true);
 	}
 	
 	
@@ -263,9 +263,9 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 				sensitivityMatrix[i][i] = sensitivityMatrix[i][i]/mSensitivityScaleFactor.scaleFactor;
 			}
 			
-			setCurrentAlignmentMatrix(alignmentMatrix);
-			setCurrentSensitivityMatrix(sensitivityMatrix); 	
-			setCurrentOffsetVector(offsetVector);
+			setCurrentAlignmentMatrix(alignmentMatrix, true);
+			setCurrentSensitivityMatrix(sensitivityMatrix, true); 	
+			setCurrentOffsetVector(offsetVector, true);
 		}
 	}
 
@@ -333,7 +333,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		return (currentSensitivityMatrix!=null? currentSensitivityMatrix:getDefaultSensitivityMatrix());
 	}
 
-	private double[][] getCurrentSensitivityMatrix() {
+	public double[][] getCurrentSensitivityMatrix() {
 		if(mCurrentCalibration!=null && mCurrentCalibration.mSensitivityMatrix!=null)
 			return mCurrentCalibration.mSensitivityMatrix;
 		else
@@ -345,7 +345,7 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		return (currentOffsetVector!=null? currentOffsetVector:getDefaultOffsetVector());
 	}
 	
-	private double[][] getCurrentOffsetVector() {
+	public double[][] getCurrentOffsetVector() {
 		if(mCurrentCalibration!=null && mCurrentCalibration.mOffsetVector!=null)
 			return mCurrentCalibration.mOffsetVector;
 		else
@@ -404,13 +404,13 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 			return null;
 	}
 
-	private double[][] getDefaultMatrixMultipliedInverseAMSM() {
+	public double[][] getDefaultMatrixMultipliedInverseAMSM() {
 		if(mDefaultCalibration==null){
 			return null;
 		}
 		return mDefaultCalibration.mMatrixMultipliedInverseAMSM;
 	}
-
+	
 	public double[][] getValidMatrixMultipliedInverseAMSM() {
 		double[][] currentMatrixMultipliedInverseAMSM = getCurrentMatrixMultipliedInverseAMSM();
 		return (currentMatrixMultipliedInverseAMSM!=null? currentMatrixMultipliedInverseAMSM:getDefaultMatrixMultipliedInverseAMSM());
@@ -427,9 +427,12 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		mCurrentCalibration.updateOffsetVector(XXvalue, YYvalue, ZZvalue);
 	}
 	
-	private void setCurrentOffsetVector(double[][] newArray) {
-		mCurrentCalibration.setOffsetVector(UtilShimmer.nudgeDoubleArray(mOffsetMax, mOffsetMin, mOffsetPrecision, newArray));
-//		mCurrentCalibration.setOffsetVector(newArray);
+	private void setCurrentOffsetVector(double[][] newArray, boolean nudgeValues) {
+		if(nudgeValues) {
+			mCurrentCalibration.setOffsetVector(UtilShimmer.nudgeDoubleArray(mOffsetMax, mOffsetMin, mOffsetPrecision, newArray));
+		} else {
+			mCurrentCalibration.setOffsetVector(newArray);
+		}
 	}
 
 	//TODO no nudging implemented here
@@ -437,9 +440,12 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		mCurrentCalibration.updateSensitivityMatrix(XXvalue, YYvalue, ZZvalue);
 	}
 
-	private void setCurrentSensitivityMatrix(double[][] newArray) {
-		mCurrentCalibration.setSensitivityMatrix(UtilShimmer.nudgeDoubleArray(mSensitivityMax, mSensitivityMin, mSensitivityPrecision, newArray));
-//		mCurrentCalibration.setSensitivityMatrix(newArray);
+	private void setCurrentSensitivityMatrix(double[][] newArray, boolean nudgeValues) {
+		if(nudgeValues) {
+			mCurrentCalibration.setSensitivityMatrix(UtilShimmer.nudgeDoubleArray(mSensitivityMax, mSensitivityMin, mSensitivityPrecision, newArray));
+		} else {
+			mCurrentCalibration.setSensitivityMatrix(newArray);
+		}
 	}
 
 	//TODO no nudging implemented here
@@ -450,9 +456,12 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		mCurrentCalibration.updateAlignmentMatrix(XXvalue, XYvalue, XZvalue, YXvalue, YYvalue, YZvalue, ZXvalue, ZYvalue, ZZvalue);
 	}
 
-	private void setCurrentAlignmentMatrix(double[][] newArray) {
-		mCurrentCalibration.setAlignmentMatrix(UtilShimmer.nudgeDoubleArray(mAlignmentMax, mAlignmentMin, mAlignmentPrecision, newArray));
-//		mCurrentCalibration.setAlignmentMatrix(newMatrix);
+	private void setCurrentAlignmentMatrix(double[][] newArray, boolean nudgeValues) {
+		if(nudgeValues) {
+			mCurrentCalibration.setAlignmentMatrix(UtilShimmer.nudgeDoubleArray(mAlignmentMax, mAlignmentMin, mAlignmentPrecision, newArray));
+		} else {
+			mCurrentCalibration.setAlignmentMatrix(newArray);
+		}
 	}
 
 	public void setSensitivityScaleFactor(CALIBRATION_SCALE_FACTOR scaleFactor) {
@@ -514,9 +523,9 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 	}
 	
 	public void updateCurrentCalibration(CalibArraysKinematic calibArraysKinematic) {
-		setCurrentOffsetVector(calibArraysKinematic.mOffsetVector);
-		setCurrentAlignmentMatrix(calibArraysKinematic.mAlignmentMatrix);
-		setCurrentSensitivityMatrix(calibArraysKinematic.mSensitivityMatrix);
+		setCurrentOffsetVector(calibArraysKinematic.mOffsetVector, true);
+		setCurrentAlignmentMatrix(calibArraysKinematic.mAlignmentMatrix, true);
+		setCurrentSensitivityMatrix(calibArraysKinematic.mSensitivityMatrix, true);
 		setCalibTimeMs(calibArraysKinematic.getCalibTime());
 	}
 	
