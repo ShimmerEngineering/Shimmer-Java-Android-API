@@ -2169,6 +2169,18 @@ public class Configuration {
 			public static final int LSM6DS3_ACCEL = 2006;
 			public static final int LSM6DS3_GYRO = 2007;
 		}
+		
+		public static class CompatibilityInfoForMaps{
+			private static final ShimmerVerObject svoVerisenseImu = 				new ShimmerVerObject(HW_ID.VERISENSE_IMU,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			private static final ShimmerVerObject svoVerisenseGsr = 				new ShimmerVerObject(HW_ID.VERISENSE_GSR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2DW12 = Arrays.asList(
+					svoVerisenseImu);
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DS3 = Arrays.asList(
+					svoVerisenseImu);
+		}
+
 	}
 	
 }
