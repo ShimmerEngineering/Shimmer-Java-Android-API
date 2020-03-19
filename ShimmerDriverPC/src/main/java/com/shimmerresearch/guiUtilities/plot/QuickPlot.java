@@ -26,6 +26,8 @@ public class QuickPlot {
 
 	private JFrame frame;
 
+	public static final int INVALID_CHANNEL_INDEX = -1;
+	
 	public QuickPlot(String plotName) {
 		createFrame(plotName);
 	}
@@ -38,7 +40,7 @@ public class QuickPlot {
 	 */
 	public QuickPlot(String plotName, double[][] data, String[] signalNames, Color[] signalColors) {
 		this(plotName);
-		createTracesAndAddData(data, signalNames, signalColors);
+		createTracesAndAddData(data, signalNames, signalColors, INVALID_CHANNEL_INDEX);
 		chartSetupCommon();
 	}
 	
@@ -50,14 +52,22 @@ public class QuickPlot {
 		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	public void createTracesAndAddData(double[][] data, String[] signalNames, Color[] signalColors) {
+	public void createTracesAndAddData(double[][] data, String[] signalNames, Color[] signalColors, int timestampIndex) {
 		if(data.length>0 && data[0].length>0) {
 			ITrace2D[] traces = new ITrace2D[data[0].length];
 			for(int y=0;y<data[0].length;y++) {
+				if(y==timestampIndex) {
+					continue;
+				}
 				ITrace2D trace = UtilChart2D.createTraceAndAddToChart(mChart, data.length, PLOT_LINE_STYLE.CONTINUOUS);
 				
 				trace.setName(signalNames[y]);
-				trace.setColor(signalColors[y]);
+				if(signalColors!=null) {
+					trace.setColor(signalColors[y]);
+				} else {
+					//TODO
+//					trace.setColor(A);
+				}
 				
 				trace.setVisible(false);
 				
@@ -65,13 +75,23 @@ public class QuickPlot {
 			}
 			
 			for(int x=0;x<data.length;x++) {
-				for(int y=0;y<data[0].length;y++) {
-					traces[y].addPoint(x+0.0001, data[x][y]);
+				if(timestampIndex==INVALID_CHANNEL_INDEX) {
+					for(int y=0;y<data[0].length;y++) {
+						traces[y].addPoint(x+0.0001, data[x][y]);
+					}
+				} else {
+					for(int y=0;y<data[0].length;y++) {
+						if(y!=timestampIndex) {
+							traces[y].addPoint(data[x][timestampIndex], data[x][y]);
+						}
+					}
 				}
 			}
 			
 			for(ITrace2D trace:traces) {
-				trace.setVisible(true);
+				if(trace!=null) {
+					trace.setVisible(true);
+				}
 			}
 		}
 	}
