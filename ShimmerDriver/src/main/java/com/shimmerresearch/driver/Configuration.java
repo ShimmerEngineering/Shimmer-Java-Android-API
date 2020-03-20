@@ -2164,6 +2164,13 @@ public class Configuration {
 	}
 	
 	public static final class Verisense {
+		
+		public class SensorBitmap{
+			public static final int LIS2DW12_ACCEL			= 0x80;
+			public static final int LSM6DS3_ACCEL		  	= 0x40;
+			public static final int LSM6DS3_GYRO		   	= 0x20;
+		}
+		
 		public class SENSOR_ID {
 			public static final int LIS2DW12_ACCEL = 2005;
 			public static final int LSM6DS3_ACCEL = 2006;
