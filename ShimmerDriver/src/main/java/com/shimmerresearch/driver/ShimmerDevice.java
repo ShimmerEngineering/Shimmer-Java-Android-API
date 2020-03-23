@@ -4093,6 +4093,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return null;
 	}
+	
+	public TreeMap<Integer, CalibDetails> getMapOfSensorCalibrationPerSensor(SENSORS sensorClassKey, int sensorId) {
+		AbstractSensor abstractSensor = getSensorClass(sensorClassKey);
+		if(abstractSensor!=null){
+			return abstractSensor.getCalibrationMapForSensor(sensorId);
+		}
+		return null;
+	}
 
 	public byte[] calibByteDumpGenerate(){
 		byte[] calibBytesAll = new byte[]{};

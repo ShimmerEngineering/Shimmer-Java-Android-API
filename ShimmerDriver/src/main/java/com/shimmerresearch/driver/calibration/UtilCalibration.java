@@ -109,6 +109,14 @@ public class UtilCalibration {
 					calibDetails.getValidOffsetVector());
 		}
 	}
+	
+	public static double[] calibrateImuData(double[] xyzArray, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
+		double[] xyzCalArray = new double[3];
+		for(int axis=0; axis<3; axis++) {
+			xyzCalArray[axis] = xyzArray[axis]*currentSensitivityMatrix[axis][axis] + currentOffsetVector[axis][0];
+		}
+		return xyzCalArray;
+	}
 
 	public static double[][] matrixInverse3x3(double[][] data) {
 		if(data==null){
