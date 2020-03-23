@@ -2173,8 +2173,8 @@ public class Configuration {
 		
 		public class SENSOR_ID {
 			public static final int LIS2DW12_ACCEL = 2005;
-			public static final int LSM6DS3_ACCEL = 2006;
-			public static final int LSM6DS3_GYRO = 2007;
+			public static final int LSM6DS3_GYRO = 2006;
+			public static final int LSM6DS3_ACCEL = 2007;
 		}
 		
 		public static class CompatibilityInfoForMaps{
