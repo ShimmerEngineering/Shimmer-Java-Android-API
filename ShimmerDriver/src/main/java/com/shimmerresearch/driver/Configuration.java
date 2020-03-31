@@ -2169,9 +2169,10 @@ public class Configuration {
 			public static final int LIS2DW12_ACCEL			= 0x80;
 			public static final int LSM6DS3_ACCEL		  	= 0x40;
 			public static final int LSM6DS3_GYRO		   	= 0x20;
-			public static final int MAX86150_PPG_RED	 	= (0x80<<8);
-			public static final int MAX86150_PPG_IR		   	= (0x40<<8);
-			public static final int MAX86150_ECG		   	= (0x20<<8);
+			public static final int GSR	 					= (0x80<<8);
+			public static final int MAX86150_PPG_RED	 	= (0x20<<8);
+			public static final int MAX86150_PPG_IR		   	= (0x10<<8);
+			public static final int MAX86150_ECG		   	= (0x08<<8);
 		}
 		
 		public class SENSOR_ID {
