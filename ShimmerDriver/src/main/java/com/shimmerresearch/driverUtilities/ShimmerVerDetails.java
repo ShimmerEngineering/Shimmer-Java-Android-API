@@ -43,6 +43,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_ECG_MD = HW_ID_SR_CODES.SHIMMER_ECG_MD;
 		public static final int VERISENSE_IMU = HW_ID_SR_CODES.VERISENSE_IMU;
 		public static final int VERISENSE_GSR = HW_ID_SR_CODES.VERISENSE_GSR;
+		public static final int VERISENSE_PPG = HW_ID_SR_CODES.VERISENSE_PPG;
 
 		//Third party devices
 		public static final int NONIN_ONYX_II 			= 1000;
@@ -89,6 +90,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.WEBCAM_DIGIOPTIX_SMART_GLASSES, "Webcam");
         aMap.put(HW_ID.VERISENSE_IMU, "Verisense IMU");
         aMap.put(HW_ID.VERISENSE_GSR, "Verisense GSR");
+        aMap.put(HW_ID.VERISENSE_PPG, "Verisense PPG");
         
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
@@ -121,6 +123,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_ECG_MD 				= 59;
 		public static final int VERISENSE_IMU				= 61;
 		public static final int VERISENSE_GSR				= 62;
+		public static final int VERISENSE_PPG				= 63;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerHardware;
@@ -151,6 +154,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.SHIMMER_ECG_MD, "Shimmer ECGmd");
         aMap.put(HW_ID_SR_CODES.VERISENSE_IMU, "Verisense IMU");
         aMap.put(HW_ID_SR_CODES.VERISENSE_GSR, "Verisense GSR");
+        aMap.put(HW_ID_SR_CODES.VERISENSE_PPG, "Verisense PPG");
         
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
     }
