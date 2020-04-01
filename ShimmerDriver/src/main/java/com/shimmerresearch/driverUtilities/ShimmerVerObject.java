@@ -319,6 +319,13 @@ public class ShimmerVerObject implements Serializable {
 		return mFirmwareVersionParsedJustVersionNumber;
 	}
 
+	public String getFirmwareVersionParsedVersionNumberFilled() {
+		String fwVerParsed = "v" + mFirmwareVersionMajor 
+				+ "." + String.format("%02d", mFirmwareVersionMinor) 
+				+ "." + String.format("%03d", mFirmwareVersionInternal);
+		return fwVerParsed;
+	}
+
 	public void setHardwareVersion(int hardwareVersion) {
 		mHardwareVersion = hardwareVersion;
 		parseShimmerVerDetails();
