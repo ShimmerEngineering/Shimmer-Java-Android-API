@@ -2186,18 +2186,19 @@ public class Configuration {
 		}
 		
 		public static class CompatibilityInfoForMaps{
+			private static final ShimmerVerObject svoVerisenseDevBrd = 				new ShimmerVerObject(HW_ID.VERISENSE_DEV_BRD,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoVerisenseImu = 				new ShimmerVerObject(HW_ID.VERISENSE_IMU,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoVerisenseGsr = 				new ShimmerVerObject(HW_ID.VERISENSE_GSR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoVerisensePpg = 				new ShimmerVerObject(HW_ID.VERISENSE_PPG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2DW12 = Arrays.asList(
-					svoVerisenseImu, svoVerisensePpg);
+					svoVerisenseDevBrd, svoVerisenseImu, svoVerisensePpg);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DS3 = Arrays.asList(
-					svoVerisenseImu, svoVerisensePpg);
+					svoVerisenseDevBrd, svoVerisenseImu, svoVerisensePpg);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMAX86150 = Arrays.asList(
-					svoVerisensePpg);
+					svoVerisenseDevBrd, svoVerisensePpg);
 		}
 
 	}
