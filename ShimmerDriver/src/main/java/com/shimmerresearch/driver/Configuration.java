@@ -134,6 +134,7 @@ public class Configuration {
 		public static final String KOHMS_SECONDS = "kOhm.s";
 		public static final String MILLIVOLTS = "mV";
 		public static final String MILLIAMPS= "mA";
+		public static final String PICOAMPS= "pA";
 		public static final String MILLIAMP_HOUR = "mAh";
 		public static final String BEATS_PER_MINUTE = "BPM";
 		public static final String KPASCAL = "kPa";
