@@ -3514,7 +3514,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledAlgorthimsPerGroup;
 	}
 	
-	private void resetAlgorithmBuffers() {
+	public void resetAlgorithmBuffers() {
 		List<AbstractAlgorithm> listOfEnabledAlgorithmModules = getListOfEnabledAlgorithmModules();
 		Iterator<AbstractAlgorithm> iterator = listOfEnabledAlgorithmModules.iterator();
 		while(iterator.hasNext()) {
