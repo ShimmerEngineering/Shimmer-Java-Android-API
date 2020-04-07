@@ -134,7 +134,7 @@ public class Configuration {
 		public static final String KOHMS_SECONDS = "kOhm.s";
 		public static final String MILLIVOLTS = "mV";
 		public static final String MILLIAMPS= "mA";
-		public static final String PICOAMPS= "pA";
+		public static final String NANOAMPS= "nA";
 		public static final String MILLIAMP_HOUR = "mAh";
 		public static final String BEATS_PER_MINUTE = "BPM";
 		public static final String KPASCAL = "kPa";
@@ -2176,6 +2176,11 @@ public class Configuration {
 			public static final int MAX86150_ECG		   	= (0x08<<8);
 		}
 		
+		public class DerivedSensorsBitMask {
+			public final static int NON_WEAR_DETECTION			= 1 << 0;
+			public final static int PPG_METRICS					= 1 << 1;
+		}
+
 		public class SENSOR_ID {
 			//TODO not sure if there is a need for an offset here -> it was just copied from Sweatch implementation above
 			public static final int LIS2DW12_ACCEL = 2005;
