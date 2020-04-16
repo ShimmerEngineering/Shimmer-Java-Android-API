@@ -83,6 +83,7 @@ public abstract class AbstractSensor implements Serializable{
 		public static final String RANGE = "Range";
 		public static final String CALIBRATION_PER_SENSOR = "Calibration";
 		public static final String CALIBRATION_ALL = "Calibration all";
+		public static final String CALIBRATION_CURRENT_PER_SENSOR = "Calibration Current";
 	}
 	
 	public static class DatabaseChannelHandlesCommon{

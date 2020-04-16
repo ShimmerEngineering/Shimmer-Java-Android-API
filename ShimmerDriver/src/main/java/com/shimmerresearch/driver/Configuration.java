@@ -2177,25 +2177,28 @@ public class Configuration {
 		}
 		
 		public class DerivedSensorsBitMask {
-			public final static int NON_WEAR_DETECTION			= 1 << 0;
-			public final static int PPG_METRICS					= 1 << 1;
+			public final static int NON_WEAR_DETECTION		= (1 << 0);
+			public final static int PPG_METRICS				= (1 << 1);
+			public final static int GYRO_ON_THE_FLY_CAL		= (1 << 2);
+			public final static int ORIENTATION_6DOF_QUAT 	= (1 << 3);
+			public final static int ORIENTATION_6DOF_EULER 	= (1 << 4);
 		}
 
 		public class SENSOR_ID {
 			//TODO not sure if there is a need for an offset here -> it was just copied from Sweatch implementation above
-			public static final int LIS2DW12_ACCEL = 2005;
-			public static final int LSM6DS3_GYRO = 2006;
-			public static final int LSM6DS3_ACCEL = 2007;
-			public static final int MAX86150_PPG_RED = 2008;
-			public static final int MAX86150_PPG_IR = 2009;
-			public static final int MAX86150_ECG = 2010;
+			public static final int LIS2DW12_ACCEL 			= 2005;
+			public static final int LSM6DS3_GYRO 			= 2006;
+			public static final int LSM6DS3_ACCEL 			= 2007;
+			public static final int MAX86150_PPG_RED 		= 2008;
+			public static final int MAX86150_PPG_IR 		= 2009;
+			public static final int MAX86150_ECG 			= 2010;
 		}
 		
 		public static class CompatibilityInfoForMaps{
-			private static final ShimmerVerObject svoVerisenseDevBrd = 				new ShimmerVerObject(HW_ID.VERISENSE_DEV_BRD,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-			private static final ShimmerVerObject svoVerisenseImu = 				new ShimmerVerObject(HW_ID.VERISENSE_IMU,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-			private static final ShimmerVerObject svoVerisenseGsr = 				new ShimmerVerObject(HW_ID.VERISENSE_GSR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-			private static final ShimmerVerObject svoVerisensePpg = 				new ShimmerVerObject(HW_ID.VERISENSE_PPG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoVerisenseDevBrd = 	new ShimmerVerObject(HW_ID.VERISENSE_DEV_BRD,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoVerisenseImu = 		new ShimmerVerObject(HW_ID.VERISENSE_IMU,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoVerisenseGsr = 		new ShimmerVerObject(HW_ID.VERISENSE_GSR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoVerisensePpg = 		new ShimmerVerObject(HW_ID.VERISENSE_PPG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2DW12 = Arrays.asList(
 					svoVerisenseDevBrd, svoVerisenseImu, svoVerisensePpg);
