@@ -44,7 +44,11 @@ repositories {
 //		url = "http://repo1.maven.org/maven2/"
 //		url = "http://repo2.maven.org/maven2/"
 //		url = "http://repo.fusesource.com/maven2"
+	}
+    maven {
    		url = "http://dl.bintray.com/jongchern/testshimmer"
+	}
+    maven {
    		url = "http://repository.ops4j.org/maven2/"   		
 	}
 	
