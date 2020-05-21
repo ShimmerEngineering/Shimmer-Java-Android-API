@@ -59,7 +59,8 @@ public abstract class AbstractSensor implements Serializable{
 		SHIMMER2R_GYRO("Shimmer2r Gyro"), 
 		LIS2DW12("LIS2DW12"),
 		LSM6DS3("LSM6DS3"),
-		MAX86150("MAX86150");
+		MAX86150("MAX86150"),
+		MAX86916("MAX86916");
 		
 	    private final String text;
 

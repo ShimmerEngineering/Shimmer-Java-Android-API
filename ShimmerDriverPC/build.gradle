@@ -32,8 +32,7 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
     mavenCentral()
-    maven {
-		url = "http://repository.ops4j.org/maven2/" // used for BlueCove2.1.1-SNAPSHOT
+//    maven {
 //		url = "http://maven.ow2.org/maven2/"
 //		url = "http://maven.ow2.org/maven2-snapshot/"
 //		url = "http://oss.sonatype.org/content/groups/public/"
@@ -44,13 +43,13 @@ repositories {
 //		url = "http://repo1.maven.org/maven2/"
 //		url = "http://repo2.maven.org/maven2/"
 //		url = "http://repo.fusesource.com/maven2"
-	}
+//	}
     maven {
    		url = "http://dl.bintray.com/jongchern/testshimmer"
 	}
-    maven {
-   		url = "http://repository.ops4j.org/maven2/"   		
-	}
+//    maven {
+//   		url = "http://repository.ops4j.org/maven2/"   		
+//	}
 	
 //	flatDir {
 //		dirs 'libs'
@@ -237,6 +236,6 @@ dependencies {
       // https://mvnrepository.com/artifact/net.sf.jchart2d/jchart2d
 	compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
 	// https://mvnrepository.com/artifact/javax.microedition/cldc
-	compile group: 'javax.microedition', name: 'cldc', version: '1.1'
+	//compile group: 'javax.microedition', name: 'cldc', version: '1.1'
 
 }
