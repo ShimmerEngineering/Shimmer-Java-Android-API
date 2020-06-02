@@ -2171,20 +2171,23 @@ public class Configuration {
 			public static final int LSM6DS3_ACCEL		  	= 0x40;
 			public static final int LSM6DS3_GYRO		   	= 0x20;
 			public static final int GSR	 					= (0x80<<8);
-			public static final int MAX86XXX_PPG_GREEN	 	= (0x40<<8);
+			public static final int MAX86916_PPG_GREEN	 	= (0x40<<8);
 			public static final int MAX86XXX_PPG_RED	 	= (0x20<<8);
 			public static final int MAX86XXX_PPG_IR		   	= (0x10<<8);
-			public static final int MAX86XXX_ECG		   	= (0x08<<8);
-			public static final int MAX86XXX_PPG_BLUE	   	= (0x04<<8);
+			public static final int MAX86150_ECG		   	= (0x08<<8);
+			public static final int MAX86916_PPG_BLUE	   	= (0x04<<8);
 		}
 		
 		public class DerivedSensorsBitMask {
 			public final static int NON_WEAR_DETECTION		= (1 << 0);
-			public final static int PPGtoHR					= (1 << 1);
-			public final static int PPGtoSPO2				= (1 << 2);
-			public final static int GYRO_ON_THE_FLY_CAL		= (1 << 3);
-			public final static int ORIENTATION_6DOF_QUAT 	= (1 << 4);
-			public final static int ORIENTATION_6DOF_EULER 	= (1 << 5);
+			public final static int PPG_TO_HR_RED_LED		= (1 << 1);
+			public final static int PPG_TO_HR_IR_LED		= (1 << 2);
+			public final static int PPG_TO_HR_GREEN_LED		= (1 << 3);
+			public final static int PPG_TO_HR_BLUE_LED		= (1 << 4);
+			public final static int PPG_TO_SPO2				= (1 << 5);
+			public final static int GYRO_ON_THE_FLY_CAL		= (1 << 6);
+			public final static int ORIENTATION_6DOF_QUAT 	= (1 << 7);
+			public final static int ORIENTATION_6DOF_EULER 	= (1 << 8);
 		}
 
 		public class SENSOR_ID {
