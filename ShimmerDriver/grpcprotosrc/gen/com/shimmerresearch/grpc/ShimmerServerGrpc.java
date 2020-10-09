@@ -186,6 +186,37 @@ public final class ShimmerServerGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getDisconnectShimmerMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DisconnectShimmer",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getDisconnectShimmerMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getDisconnectShimmerMethod;
+    if ((getDisconnectShimmerMethod = ShimmerServerGrpc.getDisconnectShimmerMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getDisconnectShimmerMethod = ShimmerServerGrpc.getDisconnectShimmerMethod) == null) {
+          ShimmerServerGrpc.getDisconnectShimmerMethod = getDisconnectShimmerMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DisconnectShimmer"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("DisconnectShimmer"))
+              .build();
+        }
+      }
+    }
+    return getDisconnectShimmerMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
       com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStartStreamingMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
@@ -214,6 +245,37 @@ public final class ShimmerServerGrpc {
       }
     }
     return getStartStreamingMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStopStreamingMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "StopStreaming",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStopStreamingMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStopStreamingMethod;
+    if ((getStopStreamingMethod = ShimmerServerGrpc.getStopStreamingMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getStopStreamingMethod = ShimmerServerGrpc.getStopStreamingMethod) == null) {
+          ShimmerServerGrpc.getStopStreamingMethod = getStopStreamingMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "StopStreaming"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("StopStreaming"))
+              .build();
+        }
+      }
+    }
+    return getStopStreamingMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
@@ -809,9 +871,23 @@ public final class ShimmerServerGrpc {
 
     /**
      */
+    public void disconnectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnimplementedUnaryCall(getDisconnectShimmerMethod(), responseObserver);
+    }
+
+    /**
+     */
     public void startStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
       asyncUnimplementedUnaryCall(getStartStreamingMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void stopStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnimplementedUnaryCall(getStopStreamingMethod(), responseObserver);
     }
 
     /**
@@ -970,12 +1046,26 @@ public final class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
                   this, METHODID_CONNECT_SHIMMER)))
           .addMethod(
+            getDisconnectShimmerMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+                com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
+                  this, METHODID_DISCONNECT_SHIMMER)))
+          .addMethod(
             getStartStreamingMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
                 com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
                   this, METHODID_START_STREAMING)))
+          .addMethod(
+            getStopStreamingMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+                com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
+                  this, METHODID_STOP_STREAMING)))
           .addMethod(
             getCloseApplicationMethod(),
             asyncUnaryCall(
@@ -1160,10 +1250,26 @@ public final class ShimmerServerGrpc {
 
     /**
      */
+    public void disconnectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getDisconnectShimmerMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
     public void startStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getStartStreamingMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void stopStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getStopStreamingMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -1348,9 +1454,23 @@ public final class ShimmerServerGrpc {
 
     /**
      */
+    public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus disconnectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getDisconnectShimmerMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
     public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus startStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
       return blockingUnaryCall(
           getChannel(), getStartStreamingMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus stopStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getStopStreamingMethod(), getCallOptions(), request);
     }
 
     /**
@@ -1510,10 +1630,26 @@ public final class ShimmerServerGrpc {
 
     /**
      */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> disconnectShimmer(
+        com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getDisconnectShimmerMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> startStreaming(
         com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getStartStreamingMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> stopStreaming(
+        com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getStopStreamingMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1654,25 +1790,27 @@ public final class ShimmerServerGrpc {
   private static final int METHODID_SAY_HELLO = 0;
   private static final int METHODID_GET_DATA_STREAM = 1;
   private static final int METHODID_CONNECT_SHIMMER = 2;
-  private static final int METHODID_START_STREAMING = 3;
-  private static final int METHODID_CLOSE_APPLICATION = 4;
-  private static final int METHODID_SET_WORKSPACE_DIRECTORY = 5;
-  private static final int METHODID_GET_WORKSPACE_DIRECTORY = 6;
-  private static final int METHODID_GET_DOCKED_SHIMMER_INFO = 7;
-  private static final int METHODID_GET_MADGEWICK_BETA_VALUE = 8;
-  private static final int METHODID_PAIR_SHIMMERS = 9;
-  private static final int METHODID_GET_OPERATION_PROGRESS = 10;
-  private static final int METHODID_IMPORT_SD_DATA_FROM_SHIMMERS = 11;
-  private static final int METHODID_PARSE_SD_DATA_FROM_PATH = 12;
-  private static final int METHODID_SCAN_SD_DATA_AND_COPY = 13;
-  private static final int METHODID_CLEAR_SD_CARD_DATA = 14;
-  private static final int METHODID_DOCK_ACCESS_SLOT_WITH_SD_CARD = 15;
-  private static final int METHODID_DOCK_RESTORE_AUTO_TASKS = 16;
-  private static final int METHODID_GET_INFO_SPANS = 17;
-  private static final int METHODID_GET_INFO_ALL_SHIMMERS = 18;
-  private static final int METHODID_GET_EMULATED_DEVICES = 19;
-  private static final int METHODID_SEND_DATA_STREAM = 20;
-  private static final int METHODID_SEND_FILE_STREAM = 21;
+  private static final int METHODID_DISCONNECT_SHIMMER = 3;
+  private static final int METHODID_START_STREAMING = 4;
+  private static final int METHODID_STOP_STREAMING = 5;
+  private static final int METHODID_CLOSE_APPLICATION = 6;
+  private static final int METHODID_SET_WORKSPACE_DIRECTORY = 7;
+  private static final int METHODID_GET_WORKSPACE_DIRECTORY = 8;
+  private static final int METHODID_GET_DOCKED_SHIMMER_INFO = 9;
+  private static final int METHODID_GET_MADGEWICK_BETA_VALUE = 10;
+  private static final int METHODID_PAIR_SHIMMERS = 11;
+  private static final int METHODID_GET_OPERATION_PROGRESS = 12;
+  private static final int METHODID_IMPORT_SD_DATA_FROM_SHIMMERS = 13;
+  private static final int METHODID_PARSE_SD_DATA_FROM_PATH = 14;
+  private static final int METHODID_SCAN_SD_DATA_AND_COPY = 15;
+  private static final int METHODID_CLEAR_SD_CARD_DATA = 16;
+  private static final int METHODID_DOCK_ACCESS_SLOT_WITH_SD_CARD = 17;
+  private static final int METHODID_DOCK_RESTORE_AUTO_TASKS = 18;
+  private static final int METHODID_GET_INFO_SPANS = 19;
+  private static final int METHODID_GET_INFO_ALL_SHIMMERS = 20;
+  private static final int METHODID_GET_EMULATED_DEVICES = 21;
+  private static final int METHODID_SEND_DATA_STREAM = 22;
+  private static final int METHODID_SEND_FILE_STREAM = 23;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1703,8 +1841,16 @@ public final class ShimmerServerGrpc {
           serviceImpl.connectShimmer((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
           break;
+        case METHODID_DISCONNECT_SHIMMER:
+          serviceImpl.disconnectShimmer((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
+          break;
         case METHODID_START_STREAMING:
           serviceImpl.startStreaming((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
+          break;
+        case METHODID_STOP_STREAMING:
+          serviceImpl.stopStreaming((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
           break;
         case METHODID_CLOSE_APPLICATION:
@@ -1843,7 +1989,9 @@ public final class ShimmerServerGrpc {
               .addMethod(getSendDataStreamMethod())
               .addMethod(getSendFileStreamMethod())
               .addMethod(getConnectShimmerMethod())
+              .addMethod(getDisconnectShimmerMethod())
               .addMethod(getStartStreamingMethod())
+              .addMethod(getStopStreamingMethod())
               .addMethod(getCloseApplicationMethod())
               .addMethod(getSetWorkspaceDirectoryMethod())
               .addMethod(getGetWorkspaceDirectoryMethod())

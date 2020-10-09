@@ -18600,125 +18600,127 @@ public final class ShimmerGRPC {
   static {
     java.lang.String[] descriptorData = {
       "\n\033src/ShimmerGrpcAndOJC.proto\022\013shimmerGR" +
-      "PC\032 google/protobuf/descriptor.proto\"A\n\020" +
-      "FileByteTransfer\022\014\n\004name\030\001 \001(\t\022\014\n\004data\030\002" +
-      " \001(\014\022\021\n\tendoffile\030\003 \001(\010\"\037\n\rCommandStatus" +
-      "\022\016\n\006status\030\001 \001(\t\"\034\n\014HelloRequest\022\014\n\004name" +
-      "\030\001 \001(\t\"\035\n\nHelloReply\022\017\n\007message\030\001 \001(\t\"!\n" +
-      "\016ShimmerRequest\022\017\n\007address\030\001 \001(\t\" \n\rStre" +
-      "amRequest\022\017\n\007message\030\001 \001(\t\"\216\005\n\016ObjectClu" +
-      "ster2\022\014\n\004name\030\001 \001(\t\022\030\n\020bluetoothAddress\030" +
-      "\002 \001(\t\022H\n\021communicationType\030\003 \001(\0162-.shimm" +
-      "erGRPC.ObjectCluster2.CommunicationType\022" +
-      "9\n\007dataMap\030\004 \003(\0132(.shimmerGRPC.ObjectClu" +
-      "ster2.DataMapEntry\022\022\n\nsystemTime\030\005 \001(\003\022\033" +
-      "\n\023calibratedTimeStamp\030\006 \001(\001\032\210\002\n\016FormatCl" +
-      "uster2\022L\n\tformatMap\030\001 \003(\01329.shimmerGRPC." +
-      "ObjectCluster2.FormatCluster2.FormatMapE" +
-      "ntry\032=\n\014DataCluster2\022\014\n\004unit\030\001 \001(\t\022\014\n\004da" +
-      "ta\030\002 \001(\001\022\021\n\tdataArray\030\003 \003(\001\032i\n\016FormatMap" +
-      "Entry\022\013\n\003key\030\001 \001(\t\022F\n\005value\030\002 \001(\01327.shim" +
-      "merGRPC.ObjectCluster2.FormatCluster2.Da" +
-      "taCluster2:\0028\001\032Z\n\014DataMapEntry\022\013\n\003key\030\001 " +
-      "\001(\t\0229\n\005value\030\002 \001(\0132*.shimmerGRPC.ObjectC" +
-      "luster2.FormatCluster2:\0028\001\"7\n\021Communicat" +
-      "ionType\022\006\n\002BT\020\000\022\006\n\002SD\020\001\022\022\n\016Radio_802_15_" +
-      "4\020\002\"\034\n\tStringMsg\022\017\n\007message\030\001 \001(\t\"&\n\016Str" +
-      "ingArrayMsg\022\024\n\014messageArray\030\001 \003(\t\"\030\n\007Boo" +
-      "lMsg\022\r\n\005state\030\001 \001(\010\"\033\n\tDoubleMsg\022\016\n\006numb" +
-      "er\030\001 \001(\001\"\210\001\n\020OperationRequest\022\022\n\nisFinis" +
-      "hed\030\001 \001(\010\022\021\n\tisSuccess\030\002 \001(\010\022\017\n\007message\030" +
-      "\003 \001(\t\022\032\n\022progressPercentage\030\004 \001(\001\022 \n\030pro" +
-      "gressPercentageParsed\030\005 \001(\t\"\211\006\n\014Shimmers" +
-      "Info\022\r\n\005state\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022=\n\n" +
-      "shimmerMap\030\003 \003(\0132).shimmerGRPC.ShimmersI" +
-      "nfo.ShimmerMapEntry\032\277\004\n\013ShimmerInfo\022\014\n\004n" +
-      "ame\030\001 \001(\t\022\020\n\010uniqueId\030\002 \001(\t\022\030\n\020bluetooth" +
-      "Address\030\003 \001(\t\022\021\n\ttrialName\030\004 \001(\t\022\037\n\027batt" +
-      "eryPercentageParsed\030\005 \001(\t\022\031\n\021batteryPerc" +
-      "entage\030\006 \001(\001\022\034\n\024chargingStatusParsed\030\007 \001" +
-      "(\t\022\025\n\rdriveCapacity\030\010 \001(\003\022\026\n\016driveSpaceU" +
-      "sed\030\t \001(\003\022\026\n\016driveSpaceFree\030\n \001(\003\022\033\n\023dri" +
-      "veCapacityParsed\030\013 \001(\t\022\032\n\022isRealTimeCloc" +
-      "kSet\030\014 \001(\010\022!\n\031lastReadRtcValueMilliSecs\030" +
-      "\r \001(\003\022\036\n\026lastReadRtcValueParsed\030\016 \001(\t\022\027\n" +
-      "\017hwVersionParsed\030\017 \001(\t\022\033\n\023expBrdVersionP" +
-      "arsed\030\020 \001(\t\022\027\n\017fwVersionParsed\030\021 \001(\t\022\024\n\014" +
-      "pairedDevice\030\022 \003(\t\022\022\n\nconfigTime\030\023 \001(\003\022\030" +
-      "\n\020configTimeParsed\030\024 \001(\t\0223\n\016ieee802154In" +
-      "fo\030\025 \001(\0132\033.shimmerGRPC.Ieee802154Info\032X\n" +
-      "\017ShimmerMapEntry\022\013\n\003key\030\001 \001(\t\0224\n\005value\030\002" +
-      " \001(\0132%.shimmerGRPC.ShimmersInfo.ShimmerI" +
-      "nfo:\0028\001\"S\n\016Ieee802154Info\022\024\n\014radioChanne" +
-      "l\030\001 \001(\005\022\024\n\014radioGroupId\030\002 \001(\005\022\025\n\rradioDe" +
-      "viceId\030\003 \001(\005\"\251\002\n\tInfoSpans\022\r\n\005state\030\001 \001(" +
-      "\010\022\017\n\007message\030\002 \001(\t\0224\n\007spanMap\030\003 \003(\0132#.sh" +
-      "immerGRPC.InfoSpans.SpanMapEntry\0223\n\016ieee" +
-      "802154Info\030\004 \001(\0132\033.shimmerGRPC.Ieee80215" +
-      "4Info\032@\n\010InfoSpan\022\020\n\010uniqueId\030\001 \001(\t\022\017\n\007p" +
-      "ortBsl\030\002 \001(\t\022\021\n\tportComms\030\003 \001(\t\032O\n\014SpanM" +
-      "apEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.sh" +
-      "immerGRPC.InfoSpans.InfoSpan:\0028\001\"\372\002\n\017Emu" +
-      "latedDevices\022\r\n\005state\030\001 \001(\010\022\017\n\007message\030\002" +
-      " \001(\t\022\026\n\016isEmulatorSide\030\003 \001(\010\022P\n\022emulated" +
-      "DevicesMap\030\004 \003(\01324.shimmerGRPC.EmulatedD" +
-      "evices.EmulatedDevicesMapEntry\032u\n\016Emulat" +
-      "edDevice\022\020\n\010uniqueId\030\001 \001(\t\022\031\n\021deviceType" +
-      "Ordinal\030\002 \001(\005\022\035\n\025hwDeviceInterfacePath\030\003" +
-      " \003(\t\022\027\n\017isDeviceEnabled\030\004 \001(\010\032f\n\027Emulate" +
-      "dDevicesMapEntry\022\013\n\003key\030\001 \001(\t\022:\n\005value\030\002" +
-      " \001(\0132+.shimmerGRPC.EmulatedDevices.Emula" +
-      "tedDevice:\0028\0012\317\r\n\rShimmerServer\022@\n\010SayHe" +
-      "llo\022\031.shimmerGRPC.HelloRequest\032\027.shimmer" +
-      "GRPC.HelloReply\"\000\022L\n\rGetDataStream\022\032.shi" +
-      "mmerGRPC.StreamRequest\032\033.shimmerGRPC.Obj" +
-      "ectCluster2\"\0000\001\022J\n\016SendDataStream\022\033.shim" +
-      "merGRPC.ObjectCluster2\032\027.shimmerGRPC.Hel" +
-      "loReply\"\000(\001\022L\n\016SendFileStream\022\035.shimmerG" +
-      "RPC.FileByteTransfer\032\027.shimmerGRPC.Hello" +
-      "Reply\"\000(\001\022K\n\016ConnectShimmer\022\033.shimmerGRP" +
-      "C.ShimmerRequest\032\032.shimmerGRPC.CommandSt" +
-      "atus\"\000\022K\n\016StartStreaming\022\033.shimmerGRPC.S" +
-      "himmerRequest\032\032.shimmerGRPC.CommandStatu" +
-      "s\"\000\022M\n\020CloseApplication\022\033.shimmerGRPC.Sh" +
-      "immerRequest\032\032.shimmerGRPC.CommandStatus" +
-      "\"\000\022P\n\025SetWorkspaceDirectory\022\026.shimmerGRP" +
-      "C.StringMsg\032\035.shimmerGRPC.OperationReque" +
-      "st\"\000\022I\n\025GetWorkspaceDirectory\022\026.shimmerG" +
-      "RPC.StringMsg\032\026.shimmerGRPC.StringMsg\"\000\022" +
-      "K\n\024GetDockedShimmerInfo\022\026.shimmerGRPC.St" +
-      "ringMsg\032\031.shimmerGRPC.ShimmersInfo\"\000\022I\n\025" +
-      "GetMadgewickBetaValue\022\026.shimmerGRPC.Stri" +
-      "ngMsg\032\026.shimmerGRPC.DoubleMsg\"\000\022L\n\014PairS" +
-      "himmers\022\033.shimmerGRPC.StringArrayMsg\032\035.s" +
-      "himmerGRPC.OperationRequest\"\000\022O\n\024GetOper" +
-      "ationProgress\022\026.shimmerGRPC.StringMsg\032\035." +
-      "shimmerGRPC.OperationRequest\"\000\022X\n\030Import" +
-      "SdDataFromShimmers\022\033.shimmerGRPC.StringA" +
-      "rrayMsg\032\035.shimmerGRPC.OperationRequest\"\000" +
-      "\022N\n\023ParseSdDataFromPath\022\026.shimmerGRPC.St" +
-      "ringMsg\032\035.shimmerGRPC.OperationRequest\"\000" +
-      "\022Q\n\021ScanSdDataAndCopy\022\033.shimmerGRPC.Stri" +
-      "ngArrayMsg\032\035.shimmerGRPC.OperationReques" +
-      "t\"\000\022O\n\017ClearSdCardData\022\033.shimmerGRPC.Str" +
-      "ingArrayMsg\032\035.shimmerGRPC.OperationReque" +
-      "st\"\000\022X\n\030DockAccessSlotWithSdCard\022\033.shimm" +
-      "erGRPC.StringArrayMsg\032\035.shimmerGRPC.Oper" +
-      "ationRequest\"\000\022T\n\024DockRestoreAutoTasks\022\033" +
-      ".shimmerGRPC.StringArrayMsg\032\035.shimmerGRP" +
-      "C.OperationRequest\"\000\022@\n\014GetInfoSpans\022\026.s" +
-      "himmerGRPC.StringMsg\032\026.shimmerGRPC.InfoS" +
-      "pans\"\000\022I\n\022GetInfoAllShimmers\022\026.shimmerGR" +
-      "PC.StringMsg\032\031.shimmerGRPC.ShimmersInfo\"" +
-      "\000\022L\n\022GetEmulatedDevices\022\026.shimmerGRPC.St" +
-      "ringMsg\032\034.shimmerGRPC.EmulatedDevices\"\000B" +
-      "B\n\030com.shimmerresearch.grpcB\013ShimmerGRPC" +
-      "\252\002\030com.shimmerresearch.grpcb\006proto3"
+      "PC\"A\n\020FileByteTransfer\022\014\n\004name\030\001 \001(\t\022\014\n\004" +
+      "data\030\002 \001(\014\022\021\n\tendoffile\030\003 \001(\010\"\037\n\rCommand" +
+      "Status\022\016\n\006status\030\001 \001(\t\"\034\n\014HelloRequest\022\014" +
+      "\n\004name\030\001 \001(\t\"\035\n\nHelloReply\022\017\n\007message\030\001 " +
+      "\001(\t\"!\n\016ShimmerRequest\022\017\n\007address\030\001 \001(\t\" " +
+      "\n\rStreamRequest\022\017\n\007message\030\001 \001(\t\"\216\005\n\016Obj" +
+      "ectCluster2\022\014\n\004name\030\001 \001(\t\022\030\n\020bluetoothAd" +
+      "dress\030\002 \001(\t\022H\n\021communicationType\030\003 \001(\0162-" +
+      ".shimmerGRPC.ObjectCluster2.Communicatio" +
+      "nType\0229\n\007dataMap\030\004 \003(\0132(.shimmerGRPC.Obj" +
+      "ectCluster2.DataMapEntry\022\022\n\nsystemTime\030\005" +
+      " \001(\003\022\033\n\023calibratedTimeStamp\030\006 \001(\001\032\210\002\n\016Fo" +
+      "rmatCluster2\022L\n\tformatMap\030\001 \003(\01329.shimme" +
+      "rGRPC.ObjectCluster2.FormatCluster2.Form" +
+      "atMapEntry\032=\n\014DataCluster2\022\014\n\004unit\030\001 \001(\t" +
+      "\022\014\n\004data\030\002 \001(\001\022\021\n\tdataArray\030\003 \003(\001\032i\n\016For" +
+      "matMapEntry\022\013\n\003key\030\001 \001(\t\022F\n\005value\030\002 \001(\0132" +
+      "7.shimmerGRPC.ObjectCluster2.FormatClust" +
+      "er2.DataCluster2:\0028\001\032Z\n\014DataMapEntry\022\013\n\003" +
+      "key\030\001 \001(\t\0229\n\005value\030\002 \001(\0132*.shimmerGRPC.O" +
+      "bjectCluster2.FormatCluster2:\0028\001\"7\n\021Comm" +
+      "unicationType\022\006\n\002BT\020\000\022\006\n\002SD\020\001\022\022\n\016Radio_8" +
+      "02_15_4\020\002\"\034\n\tStringMsg\022\017\n\007message\030\001 \001(\t\"" +
+      "&\n\016StringArrayMsg\022\024\n\014messageArray\030\001 \003(\t\"" +
+      "\030\n\007BoolMsg\022\r\n\005state\030\001 \001(\010\"\033\n\tDoubleMsg\022\016" +
+      "\n\006number\030\001 \001(\001\"\210\001\n\020OperationRequest\022\022\n\ni" +
+      "sFinished\030\001 \001(\010\022\021\n\tisSuccess\030\002 \001(\010\022\017\n\007me" +
+      "ssage\030\003 \001(\t\022\032\n\022progressPercentage\030\004 \001(\001\022" +
+      " \n\030progressPercentageParsed\030\005 \001(\t\"\211\006\n\014Sh" +
+      "immersInfo\022\r\n\005state\030\001 \001(\010\022\017\n\007message\030\002 \001" +
+      "(\t\022=\n\nshimmerMap\030\003 \003(\0132).shimmerGRPC.Shi" +
+      "mmersInfo.ShimmerMapEntry\032\277\004\n\013ShimmerInf" +
+      "o\022\014\n\004name\030\001 \001(\t\022\020\n\010uniqueId\030\002 \001(\t\022\030\n\020blu" +
+      "etoothAddress\030\003 \001(\t\022\021\n\ttrialName\030\004 \001(\t\022\037" +
+      "\n\027batteryPercentageParsed\030\005 \001(\t\022\031\n\021batte" +
+      "ryPercentage\030\006 \001(\001\022\034\n\024chargingStatusPars" +
+      "ed\030\007 \001(\t\022\025\n\rdriveCapacity\030\010 \001(\003\022\026\n\016drive" +
+      "SpaceUsed\030\t \001(\003\022\026\n\016driveSpaceFree\030\n \001(\003\022" +
+      "\033\n\023driveCapacityParsed\030\013 \001(\t\022\032\n\022isRealTi" +
+      "meClockSet\030\014 \001(\010\022!\n\031lastReadRtcValueMill" +
+      "iSecs\030\r \001(\003\022\036\n\026lastReadRtcValueParsed\030\016 " +
+      "\001(\t\022\027\n\017hwVersionParsed\030\017 \001(\t\022\033\n\023expBrdVe" +
+      "rsionParsed\030\020 \001(\t\022\027\n\017fwVersionParsed\030\021 \001" +
+      "(\t\022\024\n\014pairedDevice\030\022 \003(\t\022\022\n\nconfigTime\030\023" +
+      " \001(\003\022\030\n\020configTimeParsed\030\024 \001(\t\0223\n\016ieee80" +
+      "2154Info\030\025 \001(\0132\033.shimmerGRPC.Ieee802154I" +
+      "nfo\032X\n\017ShimmerMapEntry\022\013\n\003key\030\001 \001(\t\0224\n\005v" +
+      "alue\030\002 \001(\0132%.shimmerGRPC.ShimmersInfo.Sh" +
+      "immerInfo:\0028\001\"S\n\016Ieee802154Info\022\024\n\014radio" +
+      "Channel\030\001 \001(\005\022\024\n\014radioGroupId\030\002 \001(\005\022\025\n\rr" +
+      "adioDeviceId\030\003 \001(\005\"\251\002\n\tInfoSpans\022\r\n\005stat" +
+      "e\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\0224\n\007spanMap\030\003 \003(" +
+      "\0132#.shimmerGRPC.InfoSpans.SpanMapEntry\0223" +
+      "\n\016ieee802154Info\030\004 \001(\0132\033.shimmerGRPC.Iee" +
+      "e802154Info\032@\n\010InfoSpan\022\020\n\010uniqueId\030\001 \001(" +
+      "\t\022\017\n\007portBsl\030\002 \001(\t\022\021\n\tportComms\030\003 \001(\t\032O\n" +
+      "\014SpanMapEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(" +
+      "\0132\037.shimmerGRPC.InfoSpans.InfoSpan:\0028\001\"\372" +
+      "\002\n\017EmulatedDevices\022\r\n\005state\030\001 \001(\010\022\017\n\007mes" +
+      "sage\030\002 \001(\t\022\026\n\016isEmulatorSide\030\003 \001(\010\022P\n\022em" +
+      "ulatedDevicesMap\030\004 \003(\01324.shimmerGRPC.Emu" +
+      "latedDevices.EmulatedDevicesMapEntry\032u\n\016" +
+      "EmulatedDevice\022\020\n\010uniqueId\030\001 \001(\t\022\031\n\021devi" +
+      "ceTypeOrdinal\030\002 \001(\005\022\035\n\025hwDeviceInterface" +
+      "Path\030\003 \003(\t\022\027\n\017isDeviceEnabled\030\004 \001(\010\032f\n\027E" +
+      "mulatedDevicesMapEntry\022\013\n\003key\030\001 \001(\t\022:\n\005v" +
+      "alue\030\002 \001(\0132+.shimmerGRPC.EmulatedDevices" +
+      ".EmulatedDevice:\0028\0012\353\016\n\rShimmerServer\022@\n" +
+      "\010SayHello\022\031.shimmerGRPC.HelloRequest\032\027.s" +
+      "himmerGRPC.HelloReply\"\000\022L\n\rGetDataStream" +
+      "\022\032.shimmerGRPC.StreamRequest\032\033.shimmerGR" +
+      "PC.ObjectCluster2\"\0000\001\022J\n\016SendDataStream\022" +
+      "\033.shimmerGRPC.ObjectCluster2\032\027.shimmerGR" +
+      "PC.HelloReply\"\000(\001\022L\n\016SendFileStream\022\035.sh" +
+      "immerGRPC.FileByteTransfer\032\027.shimmerGRPC" +
+      ".HelloReply\"\000(\001\022K\n\016ConnectShimmer\022\033.shim" +
+      "merGRPC.ShimmerRequest\032\032.shimmerGRPC.Com" +
+      "mandStatus\"\000\022N\n\021DisconnectShimmer\022\033.shim" +
+      "merGRPC.ShimmerRequest\032\032.shimmerGRPC.Com" +
+      "mandStatus\"\000\022K\n\016StartStreaming\022\033.shimmer" +
+      "GRPC.ShimmerRequest\032\032.shimmerGRPC.Comman" +
+      "dStatus\"\000\022J\n\rStopStreaming\022\033.shimmerGRPC" +
+      ".ShimmerRequest\032\032.shimmerGRPC.CommandSta" +
+      "tus\"\000\022M\n\020CloseApplication\022\033.shimmerGRPC." +
+      "ShimmerRequest\032\032.shimmerGRPC.CommandStat" +
+      "us\"\000\022P\n\025SetWorkspaceDirectory\022\026.shimmerG" +
+      "RPC.StringMsg\032\035.shimmerGRPC.OperationReq" +
+      "uest\"\000\022I\n\025GetWorkspaceDirectory\022\026.shimme" +
+      "rGRPC.StringMsg\032\026.shimmerGRPC.StringMsg\"" +
+      "\000\022K\n\024GetDockedShimmerInfo\022\026.shimmerGRPC." +
+      "StringMsg\032\031.shimmerGRPC.ShimmersInfo\"\000\022I" +
+      "\n\025GetMadgewickBetaValue\022\026.shimmerGRPC.St" +
+      "ringMsg\032\026.shimmerGRPC.DoubleMsg\"\000\022L\n\014Pai" +
+      "rShimmers\022\033.shimmerGRPC.StringArrayMsg\032\035" +
+      ".shimmerGRPC.OperationRequest\"\000\022O\n\024GetOp" +
+      "erationProgress\022\026.shimmerGRPC.StringMsg\032" +
+      "\035.shimmerGRPC.OperationRequest\"\000\022X\n\030Impo" +
+      "rtSdDataFromShimmers\022\033.shimmerGRPC.Strin" +
+      "gArrayMsg\032\035.shimmerGRPC.OperationRequest" +
+      "\"\000\022N\n\023ParseSdDataFromPath\022\026.shimmerGRPC." +
+      "StringMsg\032\035.shimmerGRPC.OperationRequest" +
+      "\"\000\022Q\n\021ScanSdDataAndCopy\022\033.shimmerGRPC.St" +
+      "ringArrayMsg\032\035.shimmerGRPC.OperationRequ" +
+      "est\"\000\022O\n\017ClearSdCardData\022\033.shimmerGRPC.S" +
+      "tringArrayMsg\032\035.shimmerGRPC.OperationReq" +
+      "uest\"\000\022X\n\030DockAccessSlotWithSdCard\022\033.shi" +
+      "mmerGRPC.StringArrayMsg\032\035.shimmerGRPC.Op" +
+      "erationRequest\"\000\022T\n\024DockRestoreAutoTasks" +
+      "\022\033.shimmerGRPC.StringArrayMsg\032\035.shimmerG" +
+      "RPC.OperationRequest\"\000\022@\n\014GetInfoSpans\022\026" +
+      ".shimmerGRPC.StringMsg\032\026.shimmerGRPC.Inf" +
+      "oSpans\"\000\022I\n\022GetInfoAllShimmers\022\026.shimmer" +
+      "GRPC.StringMsg\032\031.shimmerGRPC.ShimmersInf" +
+      "o\"\000\022L\n\022GetEmulatedDevices\022\026.shimmerGRPC." +
+      "StringMsg\032\034.shimmerGRPC.EmulatedDevices\"" +
+      "\000BB\n\030com.shimmerresearch.grpcB\013ShimmerGR" +
+      "PC\252\002\030com.shimmerresearch.grpcb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.google.protobuf.DescriptorProtos.getDescriptor(),
         });
     internal_static_shimmerGRPC_FileByteTransfer_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -18876,7 +18878,6 @@ public final class ShimmerGRPC {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_EmulatedDevices_EmulatedDevicesMapEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    com.google.protobuf.DescriptorProtos.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

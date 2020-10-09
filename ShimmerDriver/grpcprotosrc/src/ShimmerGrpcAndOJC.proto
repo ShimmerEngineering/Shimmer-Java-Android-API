@@ -3,7 +3,7 @@
 syntax = "proto3";
 //import "src/LiteProtocolInstructionSet.proto";
 
-import "google/protobuf/descriptor.proto";
+//import "google/protobuf/descriptor.proto";
 
 option csharp_namespace = "com.shimmerresearch.grpc";
 option java_package = "com.shimmerresearch.grpc";
@@ -26,8 +26,12 @@ service ShimmerServer {
   
   rpc ConnectShimmer(ShimmerRequest) returns (CommandStatus){}
   
+  rpc DisconnectShimmer(ShimmerRequest) returns (CommandStatus){}
+
   rpc StartStreaming(ShimmerRequest) returns (CommandStatus){}
   
+  rpc StopStreaming(ShimmerRequest) returns (CommandStatus){}
+
   rpc CloseApplication(ShimmerRequest) returns (CommandStatus){}
 
 
