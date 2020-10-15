@@ -897,6 +897,12 @@ public abstract class ShimmerBluetoothManager{
 		if(!shimmerDevice.isFixedShimmerConfigModeSet()) {
 			shimmerDevice.setFixedShimmerConfig(mFixedShimmerConfigGlobal);
 		}
+		//Just to be safe
+		if (mFixedShimmerConfigGlobal==FIXED_SHIMMER_CONFIG_MODE.NEUHOME) {
+			if (shimmerDevice instanceof ShimmerBluetooth) {
+				((ShimmerBluetooth)shimmerDevice).setSetupDeviceWhileConnecting(true);
+			}
+		}
 		shimmerDevice.setAutoStartStreaming(mAutoStartStreaming);
 	}
 
