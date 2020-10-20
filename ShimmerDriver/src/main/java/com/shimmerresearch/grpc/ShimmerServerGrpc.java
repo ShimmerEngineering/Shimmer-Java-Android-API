@@ -1,19 +1,19 @@
 package com.shimmerresearch.grpc;
 
-import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.blockingUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
-import static io.grpc.stub.ClientCalls.futureUnaryCall;
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncUnaryCall;
+import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
+import static io.grpc.stub.ClientCalls.blockingUnaryCall;
+import static io.grpc.stub.ClientCalls.futureUnaryCall;
 import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
+import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncUnaryCall;
 import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
  * <pre>
@@ -21,8 +21,8 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.6.1)",
-    comments = "Source: ShimmerGrpcAndOJC.proto")
+    value = "by gRPC proto compiler (version 1.32.1)",
+    comments = "Source: src/ShimmerGrpcAndOJC.proto")
 public final class ShimmerServerGrpc {
 
   private ShimmerServerGrpc() {}
@@ -30,276 +30,762 @@ public final class ShimmerServerGrpc {
   public static final String SERVICE_NAME = "shimmerGRPC.ShimmerServer";
 
   // Static method descriptors that strictly reflect the proto.
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest,
-      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> METHOD_SAY_HELLO =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "SayHello"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
-      com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> METHOD_GET_DATA_STREAM =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest, com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetDataStream"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2,
-      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> METHOD_SEND_DATA_STREAM =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "SendDataStream"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer,
-      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> METHOD_SEND_FILE_STREAM =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "SendFileStream"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
-      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> METHOD_CONNECT_SHIMMER =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "ConnectShimmer"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
-      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> METHOD_START_STREAMING =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "StartStreaming"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
-      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> METHOD_CLOSE_APPLICATION =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "CloseApplication"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_SET_WORKSPACE_DIRECTORY =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "SetWorkspaceDirectory"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> METHOD_GET_WORKSPACE_DIRECTORY =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.StringMsg>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetWorkspaceDirectory"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> METHOD_GET_DOCKED_SHIMMER_INFO =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetDockedShimmerInfo"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg> METHOD_GET_MADGEWICK_BETA_VALUE =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetMadgewickBetaValue"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_PAIR_SHIMMERS =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "PairShimmers"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_GET_OPERATION_PROGRESS =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetOperationProgress"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_IMPORT_SD_DATA_FROM_SHIMMERS =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "ImportSdDataFromShimmers"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_PARSE_SD_DATA_FROM_PATH =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "ParseSdDataFromPath"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_SCAN_SD_DATA_AND_COPY =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "ScanSdDataAndCopy"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_CLEAR_SD_CARD_DATA =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "ClearSdCardData"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "DockAccessSlotWithSdCard"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> METHOD_DOCK_RESTORE_AUTO_TASKS =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "DockRestoreAutoTasks"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> METHOD_GET_INFO_SPANS =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetInfoSpans"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> METHOD_GET_INFO_ALL_SHIMMERS =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetInfoAllShimmers"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.getDefaultInstance()))
-          .build();
-  @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static final io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
-      com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> METHOD_GET_EMULATED_DEVICES =
-      io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices>newBuilder()
-          .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-          .setFullMethodName(generateFullMethodName(
-              "shimmerGRPC.ShimmerServer", "GetEmulatedDevices"))
-          .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
-          .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-              com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.getDefaultInstance()))
-          .build();
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> getSayHelloMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SayHello",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> getSayHelloMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> getSayHelloMethod;
+    if ((getSayHelloMethod = ShimmerServerGrpc.getSayHelloMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getSayHelloMethod = ShimmerServerGrpc.getSayHelloMethod) == null) {
+          ShimmerServerGrpc.getSayHelloMethod = getSayHelloMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SayHello"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("SayHello"))
+              .build();
+        }
+      }
+    }
+    return getSayHelloMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> getGetDataStreamMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetDataStream",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> getGetDataStreamMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest, com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> getGetDataStreamMethod;
+    if ((getGetDataStreamMethod = ShimmerServerGrpc.getGetDataStreamMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetDataStreamMethod = ShimmerServerGrpc.getGetDataStreamMethod) == null) {
+          ShimmerServerGrpc.getGetDataStreamMethod = getGetDataStreamMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest, com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetDataStream"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetDataStream"))
+              .build();
+        }
+      }
+    }
+    return getGetDataStreamMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2,
+      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> getSendDataStreamMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SendDataStream",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2,
+      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> getSendDataStreamMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> getSendDataStreamMethod;
+    if ((getSendDataStreamMethod = ShimmerServerGrpc.getSendDataStreamMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getSendDataStreamMethod = ShimmerServerGrpc.getSendDataStreamMethod) == null) {
+          ShimmerServerGrpc.getSendDataStreamMethod = getSendDataStreamMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SendDataStream"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("SendDataStream"))
+              .build();
+        }
+      }
+    }
+    return getSendDataStreamMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer,
+      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> getSendFileStreamMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SendFileStream",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer,
+      com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> getSendFileStreamMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> getSendFileStreamMethod;
+    if ((getSendFileStreamMethod = ShimmerServerGrpc.getSendFileStreamMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getSendFileStreamMethod = ShimmerServerGrpc.getSendFileStreamMethod) == null) {
+          ShimmerServerGrpc.getSendFileStreamMethod = getSendFileStreamMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer, com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SendFileStream"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.HelloReply.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("SendFileStream"))
+              .build();
+        }
+      }
+    }
+    return getSendFileStreamMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getConnectShimmerMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ConnectShimmer",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getConnectShimmerMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getConnectShimmerMethod;
+    if ((getConnectShimmerMethod = ShimmerServerGrpc.getConnectShimmerMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getConnectShimmerMethod = ShimmerServerGrpc.getConnectShimmerMethod) == null) {
+          ShimmerServerGrpc.getConnectShimmerMethod = getConnectShimmerMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ConnectShimmer"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("ConnectShimmer"))
+              .build();
+        }
+      }
+    }
+    return getConnectShimmerMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getDisconnectShimmerMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DisconnectShimmer",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getDisconnectShimmerMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getDisconnectShimmerMethod;
+    if ((getDisconnectShimmerMethod = ShimmerServerGrpc.getDisconnectShimmerMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getDisconnectShimmerMethod = ShimmerServerGrpc.getDisconnectShimmerMethod) == null) {
+          ShimmerServerGrpc.getDisconnectShimmerMethod = getDisconnectShimmerMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DisconnectShimmer"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("DisconnectShimmer"))
+              .build();
+        }
+      }
+    }
+    return getDisconnectShimmerMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStartStreamingMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "StartStreaming",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStartStreamingMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStartStreamingMethod;
+    if ((getStartStreamingMethod = ShimmerServerGrpc.getStartStreamingMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getStartStreamingMethod = ShimmerServerGrpc.getStartStreamingMethod) == null) {
+          ShimmerServerGrpc.getStartStreamingMethod = getStartStreamingMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "StartStreaming"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("StartStreaming"))
+              .build();
+        }
+      }
+    }
+    return getStartStreamingMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStopStreamingMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "StopStreaming",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStopStreamingMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getStopStreamingMethod;
+    if ((getStopStreamingMethod = ShimmerServerGrpc.getStopStreamingMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getStopStreamingMethod = ShimmerServerGrpc.getStopStreamingMethod) == null) {
+          ShimmerServerGrpc.getStopStreamingMethod = getStopStreamingMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "StopStreaming"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("StopStreaming"))
+              .build();
+        }
+      }
+    }
+    return getStopStreamingMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getCloseApplicationMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CloseApplication",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getCloseApplicationMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> getCloseApplicationMethod;
+    if ((getCloseApplicationMethod = ShimmerServerGrpc.getCloseApplicationMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getCloseApplicationMethod = ShimmerServerGrpc.getCloseApplicationMethod) == null) {
+          ShimmerServerGrpc.getCloseApplicationMethod = getCloseApplicationMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest, com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CloseApplication"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("CloseApplication"))
+              .build();
+        }
+      }
+    }
+    return getCloseApplicationMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getSetWorkspaceDirectoryMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SetWorkspaceDirectory",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getSetWorkspaceDirectoryMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getSetWorkspaceDirectoryMethod;
+    if ((getSetWorkspaceDirectoryMethod = ShimmerServerGrpc.getSetWorkspaceDirectoryMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getSetWorkspaceDirectoryMethod = ShimmerServerGrpc.getSetWorkspaceDirectoryMethod) == null) {
+          ShimmerServerGrpc.getSetWorkspaceDirectoryMethod = getSetWorkspaceDirectoryMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SetWorkspaceDirectory"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("SetWorkspaceDirectory"))
+              .build();
+        }
+      }
+    }
+    return getSetWorkspaceDirectoryMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> getGetWorkspaceDirectoryMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetWorkspaceDirectory",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> getGetWorkspaceDirectoryMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> getGetWorkspaceDirectoryMethod;
+    if ((getGetWorkspaceDirectoryMethod = ShimmerServerGrpc.getGetWorkspaceDirectoryMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetWorkspaceDirectoryMethod = ShimmerServerGrpc.getGetWorkspaceDirectoryMethod) == null) {
+          ShimmerServerGrpc.getGetWorkspaceDirectoryMethod = getGetWorkspaceDirectoryMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.StringMsg>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetWorkspaceDirectory"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetWorkspaceDirectory"))
+              .build();
+        }
+      }
+    }
+    return getGetWorkspaceDirectoryMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getGetDockedShimmerInfoMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetDockedShimmerInfo",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getGetDockedShimmerInfoMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getGetDockedShimmerInfoMethod;
+    if ((getGetDockedShimmerInfoMethod = ShimmerServerGrpc.getGetDockedShimmerInfoMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetDockedShimmerInfoMethod = ShimmerServerGrpc.getGetDockedShimmerInfoMethod) == null) {
+          ShimmerServerGrpc.getGetDockedShimmerInfoMethod = getGetDockedShimmerInfoMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetDockedShimmerInfo"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetDockedShimmerInfo"))
+              .build();
+        }
+      }
+    }
+    return getGetDockedShimmerInfoMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg> getGetMadgewickBetaValueMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetMadgewickBetaValue",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg> getGetMadgewickBetaValueMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg> getGetMadgewickBetaValueMethod;
+    if ((getGetMadgewickBetaValueMethod = ShimmerServerGrpc.getGetMadgewickBetaValueMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetMadgewickBetaValueMethod = ShimmerServerGrpc.getGetMadgewickBetaValueMethod) == null) {
+          ShimmerServerGrpc.getGetMadgewickBetaValueMethod = getGetMadgewickBetaValueMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetMadgewickBetaValue"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetMadgewickBetaValue"))
+              .build();
+        }
+      }
+    }
+    return getGetMadgewickBetaValueMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getPairShimmersMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PairShimmers",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getPairShimmersMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getPairShimmersMethod;
+    if ((getPairShimmersMethod = ShimmerServerGrpc.getPairShimmersMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getPairShimmersMethod = ShimmerServerGrpc.getPairShimmersMethod) == null) {
+          ShimmerServerGrpc.getPairShimmersMethod = getPairShimmersMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PairShimmers"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("PairShimmers"))
+              .build();
+        }
+      }
+    }
+    return getPairShimmersMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getGetOperationProgressMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetOperationProgress",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getGetOperationProgressMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getGetOperationProgressMethod;
+    if ((getGetOperationProgressMethod = ShimmerServerGrpc.getGetOperationProgressMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetOperationProgressMethod = ShimmerServerGrpc.getGetOperationProgressMethod) == null) {
+          ShimmerServerGrpc.getGetOperationProgressMethod = getGetOperationProgressMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetOperationProgress"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetOperationProgress"))
+              .build();
+        }
+      }
+    }
+    return getGetOperationProgressMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getImportSdDataFromShimmersMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ImportSdDataFromShimmers",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getImportSdDataFromShimmersMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getImportSdDataFromShimmersMethod;
+    if ((getImportSdDataFromShimmersMethod = ShimmerServerGrpc.getImportSdDataFromShimmersMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getImportSdDataFromShimmersMethod = ShimmerServerGrpc.getImportSdDataFromShimmersMethod) == null) {
+          ShimmerServerGrpc.getImportSdDataFromShimmersMethod = getImportSdDataFromShimmersMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ImportSdDataFromShimmers"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("ImportSdDataFromShimmers"))
+              .build();
+        }
+      }
+    }
+    return getImportSdDataFromShimmersMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getParseSdDataFromPathMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ParseSdDataFromPath",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getParseSdDataFromPathMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getParseSdDataFromPathMethod;
+    if ((getParseSdDataFromPathMethod = ShimmerServerGrpc.getParseSdDataFromPathMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getParseSdDataFromPathMethod = ShimmerServerGrpc.getParseSdDataFromPathMethod) == null) {
+          ShimmerServerGrpc.getParseSdDataFromPathMethod = getParseSdDataFromPathMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ParseSdDataFromPath"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("ParseSdDataFromPath"))
+              .build();
+        }
+      }
+    }
+    return getParseSdDataFromPathMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getScanSdDataAndCopyMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ScanSdDataAndCopy",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getScanSdDataAndCopyMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getScanSdDataAndCopyMethod;
+    if ((getScanSdDataAndCopyMethod = ShimmerServerGrpc.getScanSdDataAndCopyMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getScanSdDataAndCopyMethod = ShimmerServerGrpc.getScanSdDataAndCopyMethod) == null) {
+          ShimmerServerGrpc.getScanSdDataAndCopyMethod = getScanSdDataAndCopyMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ScanSdDataAndCopy"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("ScanSdDataAndCopy"))
+              .build();
+        }
+      }
+    }
+    return getScanSdDataAndCopyMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getClearSdCardDataMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ClearSdCardData",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getClearSdCardDataMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getClearSdCardDataMethod;
+    if ((getClearSdCardDataMethod = ShimmerServerGrpc.getClearSdCardDataMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getClearSdCardDataMethod = ShimmerServerGrpc.getClearSdCardDataMethod) == null) {
+          ShimmerServerGrpc.getClearSdCardDataMethod = getClearSdCardDataMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ClearSdCardData"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("ClearSdCardData"))
+              .build();
+        }
+      }
+    }
+    return getClearSdCardDataMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getDockAccessSlotWithSdCardMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DockAccessSlotWithSdCard",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getDockAccessSlotWithSdCardMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getDockAccessSlotWithSdCardMethod;
+    if ((getDockAccessSlotWithSdCardMethod = ShimmerServerGrpc.getDockAccessSlotWithSdCardMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getDockAccessSlotWithSdCardMethod = ShimmerServerGrpc.getDockAccessSlotWithSdCardMethod) == null) {
+          ShimmerServerGrpc.getDockAccessSlotWithSdCardMethod = getDockAccessSlotWithSdCardMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DockAccessSlotWithSdCard"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("DockAccessSlotWithSdCard"))
+              .build();
+        }
+      }
+    }
+    return getDockAccessSlotWithSdCardMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getDockRestoreAutoTasksMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DockRestoreAutoTasks",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getDockRestoreAutoTasksMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getDockRestoreAutoTasksMethod;
+    if ((getDockRestoreAutoTasksMethod = ShimmerServerGrpc.getDockRestoreAutoTasksMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getDockRestoreAutoTasksMethod = ShimmerServerGrpc.getDockRestoreAutoTasksMethod) == null) {
+          ShimmerServerGrpc.getDockRestoreAutoTasksMethod = getDockRestoreAutoTasksMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg, com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DockRestoreAutoTasks"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("DockRestoreAutoTasks"))
+              .build();
+        }
+      }
+    }
+    return getDockRestoreAutoTasksMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> getGetInfoSpansMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetInfoSpans",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> getGetInfoSpansMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> getGetInfoSpansMethod;
+    if ((getGetInfoSpansMethod = ShimmerServerGrpc.getGetInfoSpansMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetInfoSpansMethod = ShimmerServerGrpc.getGetInfoSpansMethod) == null) {
+          ShimmerServerGrpc.getGetInfoSpansMethod = getGetInfoSpansMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetInfoSpans"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetInfoSpans"))
+              .build();
+        }
+      }
+    }
+    return getGetInfoSpansMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getGetInfoAllShimmersMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetInfoAllShimmers",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getGetInfoAllShimmersMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getGetInfoAllShimmersMethod;
+    if ((getGetInfoAllShimmersMethod = ShimmerServerGrpc.getGetInfoAllShimmersMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetInfoAllShimmersMethod = ShimmerServerGrpc.getGetInfoAllShimmersMethod) == null) {
+          ShimmerServerGrpc.getGetInfoAllShimmersMethod = getGetInfoAllShimmersMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetInfoAllShimmers"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetInfoAllShimmers"))
+              .build();
+        }
+      }
+    }
+    return getGetInfoAllShimmersMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> getGetEmulatedDevicesMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetEmulatedDevices",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> getGetEmulatedDevicesMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> getGetEmulatedDevicesMethod;
+    if ((getGetEmulatedDevicesMethod = ShimmerServerGrpc.getGetEmulatedDevicesMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetEmulatedDevicesMethod = ShimmerServerGrpc.getGetEmulatedDevicesMethod) == null) {
+          ShimmerServerGrpc.getGetEmulatedDevicesMethod = getGetEmulatedDevicesMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetEmulatedDevices"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetEmulatedDevices"))
+              .build();
+        }
+      }
+    }
+    return getGetEmulatedDevicesMethod;
+  }
 
   /**
    * Creates a new async stub that supports all call types for the service
    */
   public static ShimmerServerStub newStub(io.grpc.Channel channel) {
-    return new ShimmerServerStub(channel);
+    io.grpc.stub.AbstractStub.StubFactory<ShimmerServerStub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<ShimmerServerStub>() {
+        @java.lang.Override
+        public ShimmerServerStub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new ShimmerServerStub(channel, callOptions);
+        }
+      };
+    return ShimmerServerStub.newStub(factory, channel);
   }
 
   /**
@@ -307,7 +793,14 @@ public final class ShimmerServerGrpc {
    */
   public static ShimmerServerBlockingStub newBlockingStub(
       io.grpc.Channel channel) {
-    return new ShimmerServerBlockingStub(channel);
+    io.grpc.stub.AbstractStub.StubFactory<ShimmerServerBlockingStub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<ShimmerServerBlockingStub>() {
+        @java.lang.Override
+        public ShimmerServerBlockingStub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new ShimmerServerBlockingStub(channel, callOptions);
+        }
+      };
+    return ShimmerServerBlockingStub.newStub(factory, channel);
   }
 
   /**
@@ -315,7 +808,14 @@ public final class ShimmerServerGrpc {
    */
   public static ShimmerServerFutureStub newFutureStub(
       io.grpc.Channel channel) {
-    return new ShimmerServerFutureStub(channel);
+    io.grpc.stub.AbstractStub.StubFactory<ShimmerServerFutureStub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<ShimmerServerFutureStub>() {
+        @java.lang.Override
+        public ShimmerServerFutureStub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new ShimmerServerFutureStub(channel, callOptions);
+        }
+      };
+    return ShimmerServerFutureStub.newStub(factory, channel);
   }
 
   /**
@@ -332,7 +832,7 @@ public final class ShimmerServerGrpc {
      */
     public void sayHello(com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_SAY_HELLO, responseObserver);
+      asyncUnimplementedUnaryCall(getSayHelloMethod(), responseObserver);
     }
 
     /**
@@ -342,7 +842,7 @@ public final class ShimmerServerGrpc {
      */
     public void getDataStream(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_DATA_STREAM, responseObserver);
+      asyncUnimplementedUnaryCall(getGetDataStreamMethod(), responseObserver);
     }
 
     /**
@@ -352,35 +852,49 @@ public final class ShimmerServerGrpc {
      */
     public io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> sendDataStream(
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
-      return asyncUnimplementedStreamingCall(METHOD_SEND_DATA_STREAM, responseObserver);
+      return asyncUnimplementedStreamingCall(getSendDataStreamMethod(), responseObserver);
     }
 
     /**
      */
     public io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer> sendFileStream(
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
-      return asyncUnimplementedStreamingCall(METHOD_SEND_FILE_STREAM, responseObserver);
+      return asyncUnimplementedStreamingCall(getSendFileStreamMethod(), responseObserver);
     }
 
     /**
      */
     public void connectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_CONNECT_SHIMMER, responseObserver);
+      asyncUnimplementedUnaryCall(getConnectShimmerMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void disconnectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnimplementedUnaryCall(getDisconnectShimmerMethod(), responseObserver);
     }
 
     /**
      */
     public void startStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_START_STREAMING, responseObserver);
+      asyncUnimplementedUnaryCall(getStartStreamingMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void stopStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnimplementedUnaryCall(getStopStreamingMethod(), responseObserver);
     }
 
     /**
      */
     public void closeApplication(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_CLOSE_APPLICATION, responseObserver);
+      asyncUnimplementedUnaryCall(getCloseApplicationMethod(), responseObserver);
     }
 
     /**
@@ -390,84 +904,84 @@ public final class ShimmerServerGrpc {
      */
     public void setWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_SET_WORKSPACE_DIRECTORY, responseObserver);
+      asyncUnimplementedUnaryCall(getSetWorkspaceDirectoryMethod(), responseObserver);
     }
 
     /**
      */
     public void getWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_WORKSPACE_DIRECTORY, responseObserver);
+      asyncUnimplementedUnaryCall(getGetWorkspaceDirectoryMethod(), responseObserver);
     }
 
     /**
      */
     public void getDockedShimmerInfo(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_DOCKED_SHIMMER_INFO, responseObserver);
+      asyncUnimplementedUnaryCall(getGetDockedShimmerInfoMethod(), responseObserver);
     }
 
     /**
      */
     public void getMadgewickBetaValue(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_MADGEWICK_BETA_VALUE, responseObserver);
+      asyncUnimplementedUnaryCall(getGetMadgewickBetaValueMethod(), responseObserver);
     }
 
     /**
      */
     public void pairShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_PAIR_SHIMMERS, responseObserver);
+      asyncUnimplementedUnaryCall(getPairShimmersMethod(), responseObserver);
     }
 
     /**
      */
     public void getOperationProgress(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_OPERATION_PROGRESS, responseObserver);
+      asyncUnimplementedUnaryCall(getGetOperationProgressMethod(), responseObserver);
     }
 
     /**
      */
     public void importSdDataFromShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_IMPORT_SD_DATA_FROM_SHIMMERS, responseObserver);
+      asyncUnimplementedUnaryCall(getImportSdDataFromShimmersMethod(), responseObserver);
     }
 
     /**
      */
     public void parseSdDataFromPath(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_PARSE_SD_DATA_FROM_PATH, responseObserver);
+      asyncUnimplementedUnaryCall(getParseSdDataFromPathMethod(), responseObserver);
     }
 
     /**
      */
     public void scanSdDataAndCopy(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_SCAN_SD_DATA_AND_COPY, responseObserver);
+      asyncUnimplementedUnaryCall(getScanSdDataAndCopyMethod(), responseObserver);
     }
 
     /**
      */
     public void clearSdCardData(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_CLEAR_SD_CARD_DATA, responseObserver);
+      asyncUnimplementedUnaryCall(getClearSdCardDataMethod(), responseObserver);
     }
 
     /**
      */
     public void dockAccessSlotWithSdCard(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD, responseObserver);
+      asyncUnimplementedUnaryCall(getDockAccessSlotWithSdCardMethod(), responseObserver);
     }
 
     /**
      */
     public void dockRestoreAutoTasks(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_DOCK_RESTORE_AUTO_TASKS, responseObserver);
+      asyncUnimplementedUnaryCall(getDockRestoreAutoTasksMethod(), responseObserver);
     }
 
     /**
@@ -477,174 +991,188 @@ public final class ShimmerServerGrpc {
      */
     public void getInfoSpans(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_INFO_SPANS, responseObserver);
+      asyncUnimplementedUnaryCall(getGetInfoSpansMethod(), responseObserver);
     }
 
     /**
      */
     public void getInfoAllShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_INFO_ALL_SHIMMERS, responseObserver);
+      asyncUnimplementedUnaryCall(getGetInfoAllShimmersMethod(), responseObserver);
     }
 
     /**
      */
     public void getEmulatedDevices(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> responseObserver) {
-      asyncUnimplementedUnaryCall(METHOD_GET_EMULATED_DEVICES, responseObserver);
+      asyncUnimplementedUnaryCall(getGetEmulatedDevicesMethod(), responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
-            METHOD_SAY_HELLO,
+            getSayHelloMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest,
                 com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>(
                   this, METHODID_SAY_HELLO)))
           .addMethod(
-            METHOD_GET_DATA_STREAM,
+            getGetDataStreamMethod(),
             asyncServerStreamingCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
                 com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2>(
                   this, METHODID_GET_DATA_STREAM)))
           .addMethod(
-            METHOD_SEND_DATA_STREAM,
+            getSendDataStreamMethod(),
             asyncClientStreamingCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2,
                 com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>(
                   this, METHODID_SEND_DATA_STREAM)))
           .addMethod(
-            METHOD_SEND_FILE_STREAM,
+            getSendFileStreamMethod(),
             asyncClientStreamingCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer,
                 com.shimmerresearch.grpc.ShimmerGRPC.HelloReply>(
                   this, METHODID_SEND_FILE_STREAM)))
           .addMethod(
-            METHOD_CONNECT_SHIMMER,
+            getConnectShimmerMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
                 com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
                   this, METHODID_CONNECT_SHIMMER)))
           .addMethod(
-            METHOD_START_STREAMING,
+            getDisconnectShimmerMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+                com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
+                  this, METHODID_DISCONNECT_SHIMMER)))
+          .addMethod(
+            getStartStreamingMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
                 com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
                   this, METHODID_START_STREAMING)))
           .addMethod(
-            METHOD_CLOSE_APPLICATION,
+            getStopStreamingMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
+                com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
+                  this, METHODID_STOP_STREAMING)))
+          .addMethod(
+            getCloseApplicationMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest,
                 com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>(
                   this, METHODID_CLOSE_APPLICATION)))
           .addMethod(
-            METHOD_SET_WORKSPACE_DIRECTORY,
+            getSetWorkspaceDirectoryMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_SET_WORKSPACE_DIRECTORY)))
           .addMethod(
-            METHOD_GET_WORKSPACE_DIRECTORY,
+            getGetWorkspaceDirectoryMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg>(
                   this, METHODID_GET_WORKSPACE_DIRECTORY)))
           .addMethod(
-            METHOD_GET_DOCKED_SHIMMER_INFO,
+            getGetDockedShimmerInfoMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>(
                   this, METHODID_GET_DOCKED_SHIMMER_INFO)))
           .addMethod(
-            METHOD_GET_MADGEWICK_BETA_VALUE,
+            getGetMadgewickBetaValueMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg>(
                   this, METHODID_GET_MADGEWICK_BETA_VALUE)))
           .addMethod(
-            METHOD_PAIR_SHIMMERS,
+            getPairShimmersMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_PAIR_SHIMMERS)))
           .addMethod(
-            METHOD_GET_OPERATION_PROGRESS,
+            getGetOperationProgressMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_GET_OPERATION_PROGRESS)))
           .addMethod(
-            METHOD_IMPORT_SD_DATA_FROM_SHIMMERS,
+            getImportSdDataFromShimmersMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_IMPORT_SD_DATA_FROM_SHIMMERS)))
           .addMethod(
-            METHOD_PARSE_SD_DATA_FROM_PATH,
+            getParseSdDataFromPathMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_PARSE_SD_DATA_FROM_PATH)))
           .addMethod(
-            METHOD_SCAN_SD_DATA_AND_COPY,
+            getScanSdDataAndCopyMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_SCAN_SD_DATA_AND_COPY)))
           .addMethod(
-            METHOD_CLEAR_SD_CARD_DATA,
+            getClearSdCardDataMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_CLEAR_SD_CARD_DATA)))
           .addMethod(
-            METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD,
+            getDockAccessSlotWithSdCardMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_DOCK_ACCESS_SLOT_WITH_SD_CARD)))
           .addMethod(
-            METHOD_DOCK_RESTORE_AUTO_TASKS,
+            getDockRestoreAutoTasksMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest>(
                   this, METHODID_DOCK_RESTORE_AUTO_TASKS)))
           .addMethod(
-            METHOD_GET_INFO_SPANS,
+            getGetInfoSpansMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans>(
                   this, METHODID_GET_INFO_SPANS)))
           .addMethod(
-            METHOD_GET_INFO_ALL_SHIMMERS,
+            getGetInfoAllShimmersMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
                 com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo>(
                   this, METHODID_GET_INFO_ALL_SHIMMERS)))
           .addMethod(
-            METHOD_GET_EMULATED_DEVICES,
+            getGetEmulatedDevicesMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
@@ -659,19 +1187,15 @@ public final class ShimmerServerGrpc {
    * The greeter service definition.
    * </pre>
    */
-  public static final class ShimmerServerStub extends io.grpc.stub.AbstractStub<ShimmerServerStub> {
-    private ShimmerServerStub(io.grpc.Channel channel) {
-      super(channel);
-    }
-
-    private ShimmerServerStub(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+  public static final class ShimmerServerStub extends io.grpc.stub.AbstractAsyncStub<ShimmerServerStub> {
+    private ShimmerServerStub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected ShimmerServerStub build(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+    protected ShimmerServerStub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new ShimmerServerStub(channel, callOptions);
     }
 
@@ -683,7 +1207,7 @@ public final class ShimmerServerGrpc {
     public void sayHello(com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_SAY_HELLO, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getSayHelloMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -694,7 +1218,7 @@ public final class ShimmerServerGrpc {
     public void getDataStream(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> responseObserver) {
       asyncServerStreamingCall(
-          getChannel().newCall(METHOD_GET_DATA_STREAM, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetDataStreamMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -705,7 +1229,7 @@ public final class ShimmerServerGrpc {
     public io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> sendDataStream(
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
       return asyncClientStreamingCall(
-          getChannel().newCall(METHOD_SEND_DATA_STREAM, getCallOptions()), responseObserver);
+          getChannel().newCall(getSendDataStreamMethod(), getCallOptions()), responseObserver);
     }
 
     /**
@@ -713,7 +1237,7 @@ public final class ShimmerServerGrpc {
     public io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.FileByteTransfer> sendFileStream(
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> responseObserver) {
       return asyncClientStreamingCall(
-          getChannel().newCall(METHOD_SEND_FILE_STREAM, getCallOptions()), responseObserver);
+          getChannel().newCall(getSendFileStreamMethod(), getCallOptions()), responseObserver);
     }
 
     /**
@@ -721,7 +1245,15 @@ public final class ShimmerServerGrpc {
     public void connectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_CONNECT_SHIMMER, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getConnectShimmerMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void disconnectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getDisconnectShimmerMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -729,7 +1261,15 @@ public final class ShimmerServerGrpc {
     public void startStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_START_STREAMING, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getStartStreamingMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void stopStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getStopStreamingMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -737,7 +1277,7 @@ public final class ShimmerServerGrpc {
     public void closeApplication(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_CLOSE_APPLICATION, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getCloseApplicationMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -748,7 +1288,7 @@ public final class ShimmerServerGrpc {
     public void setWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_SET_WORKSPACE_DIRECTORY, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getSetWorkspaceDirectoryMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -756,7 +1296,7 @@ public final class ShimmerServerGrpc {
     public void getWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_GET_WORKSPACE_DIRECTORY, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetWorkspaceDirectoryMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -764,7 +1304,7 @@ public final class ShimmerServerGrpc {
     public void getDockedShimmerInfo(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_GET_DOCKED_SHIMMER_INFO, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetDockedShimmerInfoMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -772,7 +1312,7 @@ public final class ShimmerServerGrpc {
     public void getMadgewickBetaValue(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_GET_MADGEWICK_BETA_VALUE, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetMadgewickBetaValueMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -780,7 +1320,7 @@ public final class ShimmerServerGrpc {
     public void pairShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_PAIR_SHIMMERS, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getPairShimmersMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -788,7 +1328,7 @@ public final class ShimmerServerGrpc {
     public void getOperationProgress(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_GET_OPERATION_PROGRESS, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetOperationProgressMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -796,7 +1336,7 @@ public final class ShimmerServerGrpc {
     public void importSdDataFromShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_IMPORT_SD_DATA_FROM_SHIMMERS, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getImportSdDataFromShimmersMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -804,7 +1344,7 @@ public final class ShimmerServerGrpc {
     public void parseSdDataFromPath(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_PARSE_SD_DATA_FROM_PATH, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getParseSdDataFromPathMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -812,7 +1352,7 @@ public final class ShimmerServerGrpc {
     public void scanSdDataAndCopy(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_SCAN_SD_DATA_AND_COPY, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getScanSdDataAndCopyMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -820,7 +1360,7 @@ public final class ShimmerServerGrpc {
     public void clearSdCardData(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_CLEAR_SD_CARD_DATA, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getClearSdCardDataMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -828,7 +1368,7 @@ public final class ShimmerServerGrpc {
     public void dockAccessSlotWithSdCard(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getDockAccessSlotWithSdCardMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -836,7 +1376,7 @@ public final class ShimmerServerGrpc {
     public void dockRestoreAutoTasks(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_DOCK_RESTORE_AUTO_TASKS, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getDockRestoreAutoTasksMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -847,7 +1387,7 @@ public final class ShimmerServerGrpc {
     public void getInfoSpans(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_GET_INFO_SPANS, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetInfoSpansMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -855,7 +1395,7 @@ public final class ShimmerServerGrpc {
     public void getInfoAllShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_GET_INFO_ALL_SHIMMERS, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetInfoAllShimmersMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -863,7 +1403,7 @@ public final class ShimmerServerGrpc {
     public void getEmulatedDevices(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
         io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(METHOD_GET_EMULATED_DEVICES, getCallOptions()), request, responseObserver);
+          getChannel().newCall(getGetEmulatedDevicesMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -872,19 +1412,15 @@ public final class ShimmerServerGrpc {
    * The greeter service definition.
    * </pre>
    */
-  public static final class ShimmerServerBlockingStub extends io.grpc.stub.AbstractStub<ShimmerServerBlockingStub> {
-    private ShimmerServerBlockingStub(io.grpc.Channel channel) {
-      super(channel);
-    }
-
-    private ShimmerServerBlockingStub(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+  public static final class ShimmerServerBlockingStub extends io.grpc.stub.AbstractBlockingStub<ShimmerServerBlockingStub> {
+    private ShimmerServerBlockingStub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected ShimmerServerBlockingStub build(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+    protected ShimmerServerBlockingStub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new ShimmerServerBlockingStub(channel, callOptions);
     }
 
@@ -895,7 +1431,7 @@ public final class ShimmerServerGrpc {
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.HelloReply sayHello(com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_SAY_HELLO, getCallOptions(), request);
+          getChannel(), getSayHelloMethod(), getCallOptions(), request);
     }
 
     /**
@@ -906,28 +1442,42 @@ public final class ShimmerServerGrpc {
     public java.util.Iterator<com.shimmerresearch.grpc.ShimmerGRPC.ObjectCluster2> getDataStream(
         com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request) {
       return blockingServerStreamingCall(
-          getChannel(), METHOD_GET_DATA_STREAM, getCallOptions(), request);
+          getChannel(), getGetDataStreamMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus connectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_CONNECT_SHIMMER, getCallOptions(), request);
+          getChannel(), getConnectShimmerMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus disconnectShimmer(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getDisconnectShimmerMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus startStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_START_STREAMING, getCallOptions(), request);
+          getChannel(), getStartStreamingMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus stopStreaming(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getStopStreamingMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus closeApplication(com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_CLOSE_APPLICATION, getCallOptions(), request);
+          getChannel(), getCloseApplicationMethod(), getCallOptions(), request);
     }
 
     /**
@@ -937,84 +1487,84 @@ public final class ShimmerServerGrpc {
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest setWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_SET_WORKSPACE_DIRECTORY, getCallOptions(), request);
+          getChannel(), getSetWorkspaceDirectoryMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.StringMsg getWorkspaceDirectory(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_GET_WORKSPACE_DIRECTORY, getCallOptions(), request);
+          getChannel(), getGetWorkspaceDirectoryMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo getDockedShimmerInfo(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_GET_DOCKED_SHIMMER_INFO, getCallOptions(), request);
+          getChannel(), getGetDockedShimmerInfoMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg getMadgewickBetaValue(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_GET_MADGEWICK_BETA_VALUE, getCallOptions(), request);
+          getChannel(), getGetMadgewickBetaValueMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest pairShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_PAIR_SHIMMERS, getCallOptions(), request);
+          getChannel(), getPairShimmersMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest getOperationProgress(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_GET_OPERATION_PROGRESS, getCallOptions(), request);
+          getChannel(), getGetOperationProgressMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest importSdDataFromShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_IMPORT_SD_DATA_FROM_SHIMMERS, getCallOptions(), request);
+          getChannel(), getImportSdDataFromShimmersMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest parseSdDataFromPath(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_PARSE_SD_DATA_FROM_PATH, getCallOptions(), request);
+          getChannel(), getParseSdDataFromPathMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest scanSdDataAndCopy(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_SCAN_SD_DATA_AND_COPY, getCallOptions(), request);
+          getChannel(), getScanSdDataAndCopyMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest clearSdCardData(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_CLEAR_SD_CARD_DATA, getCallOptions(), request);
+          getChannel(), getClearSdCardDataMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest dockAccessSlotWithSdCard(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD, getCallOptions(), request);
+          getChannel(), getDockAccessSlotWithSdCardMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest dockRestoreAutoTasks(com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_DOCK_RESTORE_AUTO_TASKS, getCallOptions(), request);
+          getChannel(), getDockRestoreAutoTasksMethod(), getCallOptions(), request);
     }
 
     /**
@@ -1024,21 +1574,21 @@ public final class ShimmerServerGrpc {
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans getInfoSpans(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_GET_INFO_SPANS, getCallOptions(), request);
+          getChannel(), getGetInfoSpansMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo getInfoAllShimmers(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_GET_INFO_ALL_SHIMMERS, getCallOptions(), request);
+          getChannel(), getGetInfoAllShimmersMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices getEmulatedDevices(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return blockingUnaryCall(
-          getChannel(), METHOD_GET_EMULATED_DEVICES, getCallOptions(), request);
+          getChannel(), getGetEmulatedDevicesMethod(), getCallOptions(), request);
     }
   }
 
@@ -1047,19 +1597,15 @@ public final class ShimmerServerGrpc {
    * The greeter service definition.
    * </pre>
    */
-  public static final class ShimmerServerFutureStub extends io.grpc.stub.AbstractStub<ShimmerServerFutureStub> {
-    private ShimmerServerFutureStub(io.grpc.Channel channel) {
-      super(channel);
-    }
-
-    private ShimmerServerFutureStub(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+  public static final class ShimmerServerFutureStub extends io.grpc.stub.AbstractFutureStub<ShimmerServerFutureStub> {
+    private ShimmerServerFutureStub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected ShimmerServerFutureStub build(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+    protected ShimmerServerFutureStub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new ShimmerServerFutureStub(channel, callOptions);
     }
 
@@ -1071,7 +1617,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.HelloReply> sayHello(
         com.shimmerresearch.grpc.ShimmerGRPC.HelloRequest request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_SAY_HELLO, getCallOptions()), request);
+          getChannel().newCall(getSayHelloMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1079,7 +1625,15 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> connectShimmer(
         com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_CONNECT_SHIMMER, getCallOptions()), request);
+          getChannel().newCall(getConnectShimmerMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> disconnectShimmer(
+        com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getDisconnectShimmerMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1087,7 +1641,15 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> startStreaming(
         com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_START_STREAMING, getCallOptions()), request);
+          getChannel().newCall(getStartStreamingMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> stopStreaming(
+        com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getStopStreamingMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1095,7 +1657,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus> closeApplication(
         com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_CLOSE_APPLICATION, getCallOptions()), request);
+          getChannel().newCall(getCloseApplicationMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1106,7 +1668,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> setWorkspaceDirectory(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_SET_WORKSPACE_DIRECTORY, getCallOptions()), request);
+          getChannel().newCall(getSetWorkspaceDirectoryMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1114,7 +1676,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg> getWorkspaceDirectory(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_GET_WORKSPACE_DIRECTORY, getCallOptions()), request);
+          getChannel().newCall(getGetWorkspaceDirectoryMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1122,7 +1684,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getDockedShimmerInfo(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_GET_DOCKED_SHIMMER_INFO, getCallOptions()), request);
+          getChannel().newCall(getGetDockedShimmerInfoMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1130,7 +1692,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.DoubleMsg> getMadgewickBetaValue(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_GET_MADGEWICK_BETA_VALUE, getCallOptions()), request);
+          getChannel().newCall(getGetMadgewickBetaValueMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1138,7 +1700,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> pairShimmers(
         com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_PAIR_SHIMMERS, getCallOptions()), request);
+          getChannel().newCall(getPairShimmersMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1146,7 +1708,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> getOperationProgress(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_GET_OPERATION_PROGRESS, getCallOptions()), request);
+          getChannel().newCall(getGetOperationProgressMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1154,7 +1716,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> importSdDataFromShimmers(
         com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_IMPORT_SD_DATA_FROM_SHIMMERS, getCallOptions()), request);
+          getChannel().newCall(getImportSdDataFromShimmersMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1162,7 +1724,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> parseSdDataFromPath(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_PARSE_SD_DATA_FROM_PATH, getCallOptions()), request);
+          getChannel().newCall(getParseSdDataFromPathMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1170,7 +1732,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> scanSdDataAndCopy(
         com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_SCAN_SD_DATA_AND_COPY, getCallOptions()), request);
+          getChannel().newCall(getScanSdDataAndCopyMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1178,7 +1740,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> clearSdCardData(
         com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_CLEAR_SD_CARD_DATA, getCallOptions()), request);
+          getChannel().newCall(getClearSdCardDataMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1186,7 +1748,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> dockAccessSlotWithSdCard(
         com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD, getCallOptions()), request);
+          getChannel().newCall(getDockAccessSlotWithSdCardMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1194,7 +1756,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.OperationRequest> dockRestoreAutoTasks(
         com.shimmerresearch.grpc.ShimmerGRPC.StringArrayMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_DOCK_RESTORE_AUTO_TASKS, getCallOptions()), request);
+          getChannel().newCall(getDockRestoreAutoTasksMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1205,7 +1767,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.InfoSpans> getInfoSpans(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_GET_INFO_SPANS, getCallOptions()), request);
+          getChannel().newCall(getGetInfoSpansMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1213,7 +1775,7 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.ShimmersInfo> getInfoAllShimmers(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_GET_INFO_ALL_SHIMMERS, getCallOptions()), request);
+          getChannel().newCall(getGetInfoAllShimmersMethod(), getCallOptions()), request);
     }
 
     /**
@@ -1221,32 +1783,34 @@ public final class ShimmerServerGrpc {
     public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.EmulatedDevices> getEmulatedDevices(
         com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
       return futureUnaryCall(
-          getChannel().newCall(METHOD_GET_EMULATED_DEVICES, getCallOptions()), request);
+          getChannel().newCall(getGetEmulatedDevicesMethod(), getCallOptions()), request);
     }
   }
 
   private static final int METHODID_SAY_HELLO = 0;
   private static final int METHODID_GET_DATA_STREAM = 1;
   private static final int METHODID_CONNECT_SHIMMER = 2;
-  private static final int METHODID_START_STREAMING = 3;
-  private static final int METHODID_CLOSE_APPLICATION = 4;
-  private static final int METHODID_SET_WORKSPACE_DIRECTORY = 5;
-  private static final int METHODID_GET_WORKSPACE_DIRECTORY = 6;
-  private static final int METHODID_GET_DOCKED_SHIMMER_INFO = 7;
-  private static final int METHODID_GET_MADGEWICK_BETA_VALUE = 8;
-  private static final int METHODID_PAIR_SHIMMERS = 9;
-  private static final int METHODID_GET_OPERATION_PROGRESS = 10;
-  private static final int METHODID_IMPORT_SD_DATA_FROM_SHIMMERS = 11;
-  private static final int METHODID_PARSE_SD_DATA_FROM_PATH = 12;
-  private static final int METHODID_SCAN_SD_DATA_AND_COPY = 13;
-  private static final int METHODID_CLEAR_SD_CARD_DATA = 14;
-  private static final int METHODID_DOCK_ACCESS_SLOT_WITH_SD_CARD = 15;
-  private static final int METHODID_DOCK_RESTORE_AUTO_TASKS = 16;
-  private static final int METHODID_GET_INFO_SPANS = 17;
-  private static final int METHODID_GET_INFO_ALL_SHIMMERS = 18;
-  private static final int METHODID_GET_EMULATED_DEVICES = 19;
-  private static final int METHODID_SEND_DATA_STREAM = 20;
-  private static final int METHODID_SEND_FILE_STREAM = 21;
+  private static final int METHODID_DISCONNECT_SHIMMER = 3;
+  private static final int METHODID_START_STREAMING = 4;
+  private static final int METHODID_STOP_STREAMING = 5;
+  private static final int METHODID_CLOSE_APPLICATION = 6;
+  private static final int METHODID_SET_WORKSPACE_DIRECTORY = 7;
+  private static final int METHODID_GET_WORKSPACE_DIRECTORY = 8;
+  private static final int METHODID_GET_DOCKED_SHIMMER_INFO = 9;
+  private static final int METHODID_GET_MADGEWICK_BETA_VALUE = 10;
+  private static final int METHODID_PAIR_SHIMMERS = 11;
+  private static final int METHODID_GET_OPERATION_PROGRESS = 12;
+  private static final int METHODID_IMPORT_SD_DATA_FROM_SHIMMERS = 13;
+  private static final int METHODID_PARSE_SD_DATA_FROM_PATH = 14;
+  private static final int METHODID_SCAN_SD_DATA_AND_COPY = 15;
+  private static final int METHODID_CLEAR_SD_CARD_DATA = 16;
+  private static final int METHODID_DOCK_ACCESS_SLOT_WITH_SD_CARD = 17;
+  private static final int METHODID_DOCK_RESTORE_AUTO_TASKS = 18;
+  private static final int METHODID_GET_INFO_SPANS = 19;
+  private static final int METHODID_GET_INFO_ALL_SHIMMERS = 20;
+  private static final int METHODID_GET_EMULATED_DEVICES = 21;
+  private static final int METHODID_SEND_DATA_STREAM = 22;
+  private static final int METHODID_SEND_FILE_STREAM = 23;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -1277,8 +1841,16 @@ public final class ShimmerServerGrpc {
           serviceImpl.connectShimmer((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
           break;
+        case METHODID_DISCONNECT_SHIMMER:
+          serviceImpl.disconnectShimmer((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
+          break;
         case METHODID_START_STREAMING:
           serviceImpl.startStreaming((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
+          break;
+        case METHODID_STOP_STREAMING:
+          serviceImpl.stopStreaming((com.shimmerresearch.grpc.ShimmerGRPC.ShimmerRequest) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.CommandStatus>) responseObserver);
           break;
         case METHODID_CLOSE_APPLICATION:
@@ -1367,10 +1939,38 @@ public final class ShimmerServerGrpc {
     }
   }
 
-  private static final class ShimmerServerDescriptorSupplier implements io.grpc.protobuf.ProtoFileDescriptorSupplier {
+  private static abstract class ShimmerServerBaseDescriptorSupplier
+      implements io.grpc.protobuf.ProtoFileDescriptorSupplier, io.grpc.protobuf.ProtoServiceDescriptorSupplier {
+    ShimmerServerBaseDescriptorSupplier() {}
+
     @java.lang.Override
     public com.google.protobuf.Descriptors.FileDescriptor getFileDescriptor() {
       return com.shimmerresearch.grpc.ShimmerGRPC.getDescriptor();
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.ServiceDescriptor getServiceDescriptor() {
+      return getFileDescriptor().findServiceByName("ShimmerServer");
+    }
+  }
+
+  private static final class ShimmerServerFileDescriptorSupplier
+      extends ShimmerServerBaseDescriptorSupplier {
+    ShimmerServerFileDescriptorSupplier() {}
+  }
+
+  private static final class ShimmerServerMethodDescriptorSupplier
+      extends ShimmerServerBaseDescriptorSupplier
+      implements io.grpc.protobuf.ProtoMethodDescriptorSupplier {
+    private final String methodName;
+
+    ShimmerServerMethodDescriptorSupplier(String methodName) {
+      this.methodName = methodName;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.MethodDescriptor getMethodDescriptor() {
+      return getServiceDescriptor().findMethodByName(methodName);
     }
   }
 
@@ -1383,29 +1983,31 @@ public final class ShimmerServerGrpc {
         result = serviceDescriptor;
         if (result == null) {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
-              .setSchemaDescriptor(new ShimmerServerDescriptorSupplier())
-              .addMethod(METHOD_SAY_HELLO)
-              .addMethod(METHOD_GET_DATA_STREAM)
-              .addMethod(METHOD_SEND_DATA_STREAM)
-              .addMethod(METHOD_SEND_FILE_STREAM)
-              .addMethod(METHOD_CONNECT_SHIMMER)
-              .addMethod(METHOD_START_STREAMING)
-              .addMethod(METHOD_CLOSE_APPLICATION)
-              .addMethod(METHOD_SET_WORKSPACE_DIRECTORY)
-              .addMethod(METHOD_GET_WORKSPACE_DIRECTORY)
-              .addMethod(METHOD_GET_DOCKED_SHIMMER_INFO)
-              .addMethod(METHOD_GET_MADGEWICK_BETA_VALUE)
-              .addMethod(METHOD_PAIR_SHIMMERS)
-              .addMethod(METHOD_GET_OPERATION_PROGRESS)
-              .addMethod(METHOD_IMPORT_SD_DATA_FROM_SHIMMERS)
-              .addMethod(METHOD_PARSE_SD_DATA_FROM_PATH)
-              .addMethod(METHOD_SCAN_SD_DATA_AND_COPY)
-              .addMethod(METHOD_CLEAR_SD_CARD_DATA)
-              .addMethod(METHOD_DOCK_ACCESS_SLOT_WITH_SD_CARD)
-              .addMethod(METHOD_DOCK_RESTORE_AUTO_TASKS)
-              .addMethod(METHOD_GET_INFO_SPANS)
-              .addMethod(METHOD_GET_INFO_ALL_SHIMMERS)
-              .addMethod(METHOD_GET_EMULATED_DEVICES)
+              .setSchemaDescriptor(new ShimmerServerFileDescriptorSupplier())
+              .addMethod(getSayHelloMethod())
+              .addMethod(getGetDataStreamMethod())
+              .addMethod(getSendDataStreamMethod())
+              .addMethod(getSendFileStreamMethod())
+              .addMethod(getConnectShimmerMethod())
+              .addMethod(getDisconnectShimmerMethod())
+              .addMethod(getStartStreamingMethod())
+              .addMethod(getStopStreamingMethod())
+              .addMethod(getCloseApplicationMethod())
+              .addMethod(getSetWorkspaceDirectoryMethod())
+              .addMethod(getGetWorkspaceDirectoryMethod())
+              .addMethod(getGetDockedShimmerInfoMethod())
+              .addMethod(getGetMadgewickBetaValueMethod())
+              .addMethod(getPairShimmersMethod())
+              .addMethod(getGetOperationProgressMethod())
+              .addMethod(getImportSdDataFromShimmersMethod())
+              .addMethod(getParseSdDataFromPathMethod())
+              .addMethod(getScanSdDataAndCopyMethod())
+              .addMethod(getClearSdCardDataMethod())
+              .addMethod(getDockAccessSlotWithSdCardMethod())
+              .addMethod(getDockRestoreAutoTasksMethod())
+              .addMethod(getGetInfoSpansMethod())
+              .addMethod(getGetInfoAllShimmersMethod())
+              .addMethod(getGetEmulatedDevicesMethod())
               .build();
         }
       }
