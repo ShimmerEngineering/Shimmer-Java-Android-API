@@ -619,6 +619,19 @@ public abstract class ShimmerBluetoothManager{
 		return list;
 	}
 	
+	/**
+	 * @param friendlyName
+	 * @return comport if found, and null if not
+	 */
+	public String getComPortFromFriendlyName(String friendlyName) {
+		for (BluetoothDeviceDetails bdd:mMapOfParsedBtComPorts.values()) {
+			if (bdd.mFriendlyName.equals(friendlyName)) {
+				return bdd.mComPort;
+			}
+		}
+		return null;
+	}
+	
 	//TODO add support for Shimmer4
 	public List<String[]> getListOfSignalsFromDevices(String address){
 		List<String []> list = new ArrayList<String []>();
@@ -638,6 +651,10 @@ public abstract class ShimmerBluetoothManager{
 	//---------- GET Methods end -------------------------------
 	
 	
+	/**
+	 * @author User
+	 *
+	 */
 	protected class ConnectThread extends Thread{
 		
 		String comPort;
@@ -786,6 +803,7 @@ public abstract class ShimmerBluetoothManager{
 			return portDetails;
 		}
 
+		
 		protected void connectUnknownShimmer() throws ShimmerException {
 			printMessage("Connecting to new Shimmer with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 			
