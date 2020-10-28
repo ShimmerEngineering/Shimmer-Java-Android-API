@@ -37,6 +37,7 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_DATA_PROCESS_MANAGER = 1012;
 	public final static int MSG_ID_SOURCE_VIDEO_MANAGER = 1013;
 	public final static int MSG_ID_SOURCE_SIMULATOR = 1014;
+	public final static int MSG_ID_SOURCE_NEUROHOME_SERVER = 1015;
 	
 
 	// --------------- DockManager Start -------------------------

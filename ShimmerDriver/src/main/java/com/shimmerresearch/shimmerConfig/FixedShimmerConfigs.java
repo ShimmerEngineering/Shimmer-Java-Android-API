@@ -5,8 +5,10 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Sweatch;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID_SR_CODES;
 import com.shimmerresearch.sensors.SensorEXG;
@@ -26,7 +28,8 @@ public class FixedShimmerConfigs {
     	CALIBRATION_IMU,
     	USER,
     	//TODO might need to update this approach as SWEATCH is inaccessible to this class and shares no commonality with Shimmer3/4. 
-    	SWEATCH_ANDROID
+    	SWEATCH_ANDROID,
+    	NEUHOME
     }
     
 	public static boolean setFixedConfigWhenConnecting(ShimmerDevice shimmerDevice, FIXED_SHIMMER_CONFIG_MODE fixedConfig, LinkedHashMap<String, Object> fixedConfigMap) {
@@ -56,6 +59,18 @@ public class FixedShimmerConfigs {
 						|| expId==HW_ID_SR_CODES.SHIMMER_ECG_MD){
 					triggerConfiguration = true;
 					setFixedConfig1(shimmerDevice);
+				}
+			}
+			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.NEUHOME){
+				if(expId==HW_ID_SR_CODES.EXP_BRD_EXG 
+						|| expId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED 
+						){
+					//only for the future if required
+				} else if(expId==HW_ID_SR_CODES.EXP_BRD_GSR 
+						|| expId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED 
+						){
+					setFixedConfig4(shimmerDevice);
+					triggerConfiguration = true;
 				}
 			}
 			else if(fixedConfig==FIXED_SHIMMER_CONFIG_MODE.CALIBRATION_IMU){
@@ -94,6 +109,19 @@ public class FixedShimmerConfigs {
 		shimmerDevice.setShimmerAndSensorsSamplingRate(51.20);
 	}
 
+	public static void setFixedConfig4(ShimmerDevice shimmerDevice) {
+		int expId = shimmerDevice.getExpansionBoardId();
+		if(expId==HW_ID_SR_CODES.EXP_BRD_GSR 
+				|| expId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED ){
+			shimmerDevice.setShimmerAndSensorsSamplingRate(256);
+			shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.HOST_PPG_A13, true); 
+			shimmerDevice.setSensorEnabledState(Shimmer3.SENSOR_ID.SHIMMER_GSR, true);
+			
+			//setting sampling rate 1024Hz hardcoded -> ExG data rate should update automatically in the driver
+			
+		}
+	}
+	
 	public static void setFixedConfig1(ShimmerDevice shimmerDevice) {
 		
 		int expId = shimmerDevice.getExpansionBoardId();
