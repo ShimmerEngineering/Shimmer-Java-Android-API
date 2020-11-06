@@ -38,6 +38,7 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_VIDEO_MANAGER = 1013;
 	public final static int MSG_ID_SOURCE_SIMULATOR = 1014;
 	public final static int MSG_ID_SOURCE_NEUROHOME_SERVER = 1015;
+	public final static int MSG_ID_SOURCE_S3_UPLOAD_MANAGER = 1016;
 	
 
 	// --------------- DockManager Start -------------------------
