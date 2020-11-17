@@ -202,6 +202,7 @@ public class MsgDock {
 	public final static int MSG_ID_DB_MANAGER_LOADED_SUCCESS = 183;
 	public final static int MSG_ID_DB_PLAYBACK_TIMER_UPDATE = 184;
 	public final static int MSG_ID_DB_PLAYBACK_STARTED_STOPPED = 185;
+	public final static int MSG_ID_BT_TO_DB_RECORDING = 186;
 	
 	//AlgorithmManager
 	public final static int MSG_ID_DATA_TO_ALGO = 190;
@@ -301,6 +302,7 @@ public class MsgDock {
 
         aMap.put(MSG_ID_BT_TO_DB_FINISHED, "MSG_ID_BT_TO_DB_FINISHED");
         aMap.put(MSG_ID_BT_TO_DB_BUFFER_FILLED, "MSG_ID_BT_TO_DB_BUFFER_FILLED");
+        aMap.put(MSG_ID_BT_TO_DB_RECORDING, "MSG_ID_BT_TO_DB_RECORDING");
         aMap.put(MSG_ID_BT_TO_DB_FAIL, "MSG_ID_BT_TO_DB_FAIL");
         
         aMap.put(MSG_ID_DB_PLAYBACK_TIMER_UPDATE, "MSG_ID_DB_PLAYBACK_TIMER_UPDATE");
