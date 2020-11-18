@@ -202,7 +202,7 @@ public class MsgDock {
 	public final static int MSG_ID_DB_MANAGER_LOADED_SUCCESS = 183;
 	public final static int MSG_ID_DB_PLAYBACK_TIMER_UPDATE = 184;
 	public final static int MSG_ID_DB_PLAYBACK_STARTED_STOPPED = 185;
-	public final static int MSG_ID_BT_TO_DB_RECORDING = 186;
+	public final static int MSG_ID_BT_TO_DB_RECORDING_THREAD_STARTED = 186;
 	
 	//AlgorithmManager
 	public final static int MSG_ID_DATA_TO_ALGO = 190;
