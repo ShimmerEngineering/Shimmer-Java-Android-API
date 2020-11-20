@@ -39,6 +39,7 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_SIMULATOR = 1014;
 	public final static int MSG_ID_SOURCE_NEUROHOME_SERVER = 1015;
 	public final static int MSG_ID_SOURCE_S3_UPLOAD_MANAGER = 1016;
+	public final static int MSG_ID_SOURCE_S3_DOWNLOAD_MANAGER = 1017;
 	
 
 	// --------------- DockManager Start -------------------------
