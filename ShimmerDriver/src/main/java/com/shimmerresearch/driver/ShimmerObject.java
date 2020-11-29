@@ -464,7 +464,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	//new BT + SD command to Write config file after all of InfoMem is written.
 	public static final byte UPD_SDLOG_CFG_COMMAND					= (byte) 0x9C;
 	
-	public static final int MAX_NUMBER_OF_SIGNALS = 70;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
+	public static final int MAX_NUMBER_OF_SIGNALS = 77;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
 	protected int mBluetoothBaudRate=9; //460800
@@ -1752,7 +1752,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				int currentGSRRange = getGSRRange();
 				 // this is to fix a bug with SDLog v0.9
 				if (getFirmwareIdentifier()==FW_ID.SDLOG && getFirmwareVersionMajor()==0 && getFirmwareVersionMinor()==9){
-//					int gsrUncalibratedData = ((int)tempData[0] & 4095); 
 
 					/*
 					 * 	for i = 2:length(range)

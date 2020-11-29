@@ -175,7 +175,6 @@ public class AlgorithmDetails implements Serializable {
 	public List<ChannelDetails> getChannelDetails() {
 		return mListOfChannelDetails;
 	}
-
 	
 	//TODO use the following check first in future?
 	public static LinkedHashMap<String, AlgorithmDetails> loadAlgorithmsWhereSensorsAreAvailable(ShimmerDevice shimmerDevice, Map<String, AlgorithmDetails> algorithMap) {
@@ -206,6 +205,5 @@ public class AlgorithmDetails implements Serializable {
 		
 		return mapOfSupportedAlgorithms;
 	}
-
 }
 
