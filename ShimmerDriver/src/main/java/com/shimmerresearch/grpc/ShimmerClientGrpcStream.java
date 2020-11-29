@@ -24,9 +24,7 @@ public class ShimmerClientGrpcStream extends BasicProcessWithCallBack{
 	StreamObserver<ObjectCluster2> requestObserver;
 	StreamObserver<FileByteTransfer> requestObserverFile;
 	public ShimmerClientGrpcStream(String host, int port) {
-		  channel = ManagedChannelBuilder.forAddress(host, port)
-		      .usePlaintext(true)
-		      .build();
+		  channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
 		  stub = ShimmerServerGrpc.newStub(channel);
 		  StreamRequest sreq = StreamRequest.newBuilder().setMessage("All").build();
 		  
