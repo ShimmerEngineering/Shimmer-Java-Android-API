@@ -318,6 +318,7 @@ public abstract class SensorMPU9X50 extends AbstractSensor implements Serializab
 //	}
 	
 	//--------- Algorithm specific variables end --------------
+	//--------- Sensor specific variables end --------------
 
 
 	//--------- Bluetooth commands start --------------
