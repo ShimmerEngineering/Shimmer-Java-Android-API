@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="D:\Documents\GitHub\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\ExternalTools\protoc-3.13.0-win64\protoc.exe"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-I=D:\Documents\GitHub\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\ --csharp_out=D:\Documents\GitHub\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\gen --grpc_out=D:\Documents\GitHub\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\gen --plugin=protoc-gen-grpc=D:\Documents\GitHub\Shimmer-C-API\GrpcTest\packages\Grpc.Tools.2.32.0\tools\windows_x64\grpc_csharp_plugin.exe D:\Documents\GitHub\Shimmer-Java-Android-API\ShimmerDriver\grpcprotosrc\src\ShimmerGrpcAndOJC.proto"/>
+</launchConfiguration>
