@@ -66,7 +66,10 @@ service ShimmerServer {
   rpc GetInfoAllShimmers(StringMsg) returns (ShimmersInfo){}
 
   rpc GetEmulatedDevices(StringMsg) returns (EmulatedDevices){}
-
+  
+  
+  //Noldus client related
+  rpc GetBluetoothDeviceDetails(StringMsg) returns (BluetoothDevicesDetails) {}
 }
 
 message FileByteTransfer {
@@ -185,6 +188,21 @@ message ShimmersInfo {
 	Ieee802154Info ieee802154Info = 21;
   }
   map<string,ShimmerInfo> shimmerMap = 3;
+}
+
+message BluetoothDevicesDetails {
+	bool state = 1;
+	string message = 2;
+	
+	message BluetoothDeviceDetails {
+		string comPort = 1;
+		string name = 2;
+		string macId = 3;
+		string deviceType = 4;
+		string lastConnectionState = 5;
+	}
+	
+	map<string,BluetoothDeviceDetails> deviceMap = 3;
 }
 
 message Ieee802154Info {

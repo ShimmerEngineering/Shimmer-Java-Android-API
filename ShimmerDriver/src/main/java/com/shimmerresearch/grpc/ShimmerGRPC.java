@@ -13843,6 +13843,2133 @@ public final class ShimmerGRPC {
 
   }
 
+  public interface BluetoothDevicesDetailsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:shimmerGRPC.BluetoothDevicesDetails)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool state = 1;</code>
+     * @return The state.
+     */
+    boolean getState();
+
+    /**
+     * <code>string message = 2;</code>
+     * @return The message.
+     */
+    java.lang.String getMessage();
+    /**
+     * <code>string message = 2;</code>
+     * @return The bytes for message.
+     */
+    com.google.protobuf.ByteString
+        getMessageBytes();
+
+    /**
+     * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+     */
+    int getDeviceMapCount();
+    /**
+     * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+     */
+    boolean containsDeviceMap(
+        java.lang.String key);
+    /**
+     * Use {@link #getDeviceMapMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails>
+    getDeviceMap();
+    /**
+     * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+     */
+    java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails>
+    getDeviceMapMap();
+    /**
+     * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+     */
+
+    com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails getDeviceMapOrDefault(
+        java.lang.String key,
+        com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails defaultValue);
+    /**
+     * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+     */
+
+    com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails getDeviceMapOrThrow(
+        java.lang.String key);
+  }
+  /**
+   * Protobuf type {@code shimmerGRPC.BluetoothDevicesDetails}
+   */
+  public static final class BluetoothDevicesDetails extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:shimmerGRPC.BluetoothDevicesDetails)
+      BluetoothDevicesDetailsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BluetoothDevicesDetails.newBuilder() to construct.
+    private BluetoothDevicesDetails(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BluetoothDevicesDetails() {
+      message_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BluetoothDevicesDetails();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private BluetoothDevicesDetails(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+
+              state_ = input.readBool();
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              message_ = s;
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                deviceMap_ = com.google.protobuf.MapField.newMapField(
+                    DeviceMapDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000001;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails>
+              deviceMap__ = input.readMessage(
+                  DeviceMapDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              deviceMap_.getMutableMap().put(
+                  deviceMap__.getKey(), deviceMap__.getValue());
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetDeviceMap();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.class, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.Builder.class);
+    }
+
+    public interface BluetoothDeviceDetailsOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>string comPort = 1;</code>
+       * @return The comPort.
+       */
+      java.lang.String getComPort();
+      /**
+       * <code>string comPort = 1;</code>
+       * @return The bytes for comPort.
+       */
+      com.google.protobuf.ByteString
+          getComPortBytes();
+
+      /**
+       * <code>string name = 2;</code>
+       * @return The name.
+       */
+      java.lang.String getName();
+      /**
+       * <code>string name = 2;</code>
+       * @return The bytes for name.
+       */
+      com.google.protobuf.ByteString
+          getNameBytes();
+
+      /**
+       * <code>string macId = 3;</code>
+       * @return The macId.
+       */
+      java.lang.String getMacId();
+      /**
+       * <code>string macId = 3;</code>
+       * @return The bytes for macId.
+       */
+      com.google.protobuf.ByteString
+          getMacIdBytes();
+
+      /**
+       * <code>string deviceType = 4;</code>
+       * @return The deviceType.
+       */
+      java.lang.String getDeviceType();
+      /**
+       * <code>string deviceType = 4;</code>
+       * @return The bytes for deviceType.
+       */
+      com.google.protobuf.ByteString
+          getDeviceTypeBytes();
+
+      /**
+       * <code>string lastConnectionState = 5;</code>
+       * @return The lastConnectionState.
+       */
+      java.lang.String getLastConnectionState();
+      /**
+       * <code>string lastConnectionState = 5;</code>
+       * @return The bytes for lastConnectionState.
+       */
+      com.google.protobuf.ByteString
+          getLastConnectionStateBytes();
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails}
+     */
+    public static final class BluetoothDeviceDetails extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails)
+        BluetoothDeviceDetailsOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use BluetoothDeviceDetails.newBuilder() to construct.
+      private BluetoothDeviceDetails(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private BluetoothDeviceDetails() {
+        comPort_ = "";
+        name_ = "";
+        macId_ = "";
+        deviceType_ = "";
+        lastConnectionState_ = "";
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new BluetoothDeviceDetails();
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private BluetoothDeviceDetails(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                comPort_ = s;
+                break;
+              }
+              case 18: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                name_ = s;
+                break;
+              }
+              case 26: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                macId_ = s;
+                break;
+              }
+              case 34: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                deviceType_ = s;
+                break;
+              }
+              case 42: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                lastConnectionState_ = s;
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails.class, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails.Builder.class);
+      }
+
+      public static final int COMPORT_FIELD_NUMBER = 1;
+      private volatile java.lang.Object comPort_;
+      /**
+       * <code>string comPort = 1;</code>
+       * @return The comPort.
+       */
+      @java.lang.Override
+      public java.lang.String getComPort() {
+        java.lang.Object ref = comPort_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          comPort_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string comPort = 1;</code>
+       * @return The bytes for comPort.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getComPortBytes() {
+        java.lang.Object ref = comPort_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          comPort_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int NAME_FIELD_NUMBER = 2;
+      private volatile java.lang.Object name_;
+      /**
+       * <code>string name = 2;</code>
+       * @return The name.
+       */
+      @java.lang.Override
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          name_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string name = 2;</code>
+       * @return The bytes for name.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int MACID_FIELD_NUMBER = 3;
+      private volatile java.lang.Object macId_;
+      /**
+       * <code>string macId = 3;</code>
+       * @return The macId.
+       */
+      @java.lang.Override
+      public java.lang.String getMacId() {
+        java.lang.Object ref = macId_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          macId_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string macId = 3;</code>
+       * @return The bytes for macId.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getMacIdBytes() {
+        java.lang.Object ref = macId_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          macId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int DEVICETYPE_FIELD_NUMBER = 4;
+      private volatile java.lang.Object deviceType_;
+      /**
+       * <code>string deviceType = 4;</code>
+       * @return The deviceType.
+       */
+      @java.lang.Override
+      public java.lang.String getDeviceType() {
+        java.lang.Object ref = deviceType_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          deviceType_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string deviceType = 4;</code>
+       * @return The bytes for deviceType.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getDeviceTypeBytes() {
+        java.lang.Object ref = deviceType_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          deviceType_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int LASTCONNECTIONSTATE_FIELD_NUMBER = 5;
+      private volatile java.lang.Object lastConnectionState_;
+      /**
+       * <code>string lastConnectionState = 5;</code>
+       * @return The lastConnectionState.
+       */
+      @java.lang.Override
+      public java.lang.String getLastConnectionState() {
+        java.lang.Object ref = lastConnectionState_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          lastConnectionState_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string lastConnectionState = 5;</code>
+       * @return The bytes for lastConnectionState.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getLastConnectionStateBytes() {
+        java.lang.Object ref = lastConnectionState_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          lastConnectionState_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!getComPortBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, comPort_);
+        }
+        if (!getNameBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
+        }
+        if (!getMacIdBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 3, macId_);
+        }
+        if (!getDeviceTypeBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 4, deviceType_);
+        }
+        if (!getLastConnectionStateBytes().isEmpty()) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 5, lastConnectionState_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!getComPortBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, comPort_);
+        }
+        if (!getNameBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
+        }
+        if (!getMacIdBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, macId_);
+        }
+        if (!getDeviceTypeBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, deviceType_);
+        }
+        if (!getLastConnectionStateBytes().isEmpty()) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, lastConnectionState_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails)) {
+          return super.equals(obj);
+        }
+        com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails other = (com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails) obj;
+
+        if (!getComPort()
+            .equals(other.getComPort())) return false;
+        if (!getName()
+            .equals(other.getName())) return false;
+        if (!getMacId()
+            .equals(other.getMacId())) return false;
+        if (!getDeviceType()
+            .equals(other.getDeviceType())) return false;
+        if (!getLastConnectionState()
+            .equals(other.getLastConnectionState())) return false;
+        if (!unknownFields.equals(other.unknownFields)) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + COMPORT_FIELD_NUMBER;
+        hash = (53 * hash) + getComPort().hashCode();
+        hash = (37 * hash) + NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getName().hashCode();
+        hash = (37 * hash) + MACID_FIELD_NUMBER;
+        hash = (53 * hash) + getMacId().hashCode();
+        hash = (37 * hash) + DEVICETYPE_FIELD_NUMBER;
+        hash = (53 * hash) + getDeviceType().hashCode();
+        hash = (37 * hash) + LASTCONNECTIONSTATE_FIELD_NUMBER;
+        hash = (53 * hash) + getLastConnectionState().hashCode();
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails)
+          com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetailsOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails.class, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails.Builder.class);
+        }
+
+        // Construct using com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          comPort_ = "";
+
+          name_ = "";
+
+          macId_ = "";
+
+          deviceType_ = "";
+
+          lastConnectionState_ = "";
+
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_descriptor;
+        }
+
+        @java.lang.Override
+        public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails getDefaultInstanceForType() {
+          return com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails build() {
+          com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails buildPartial() {
+          com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails result = new com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails(this);
+          result.comPort_ = comPort_;
+          result.name_ = name_;
+          result.macId_ = macId_;
+          result.deviceType_ = deviceType_;
+          result.lastConnectionState_ = lastConnectionState_;
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails) {
+            return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails other) {
+          if (other == com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails.getDefaultInstance()) return this;
+          if (!other.getComPort().isEmpty()) {
+            comPort_ = other.comPort_;
+            onChanged();
+          }
+          if (!other.getName().isEmpty()) {
+            name_ = other.name_;
+            onChanged();
+          }
+          if (!other.getMacId().isEmpty()) {
+            macId_ = other.macId_;
+            onChanged();
+          }
+          if (!other.getDeviceType().isEmpty()) {
+            deviceType_ = other.deviceType_;
+            onChanged();
+          }
+          if (!other.getLastConnectionState().isEmpty()) {
+            lastConnectionState_ = other.lastConnectionState_;
+            onChanged();
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private java.lang.Object comPort_ = "";
+        /**
+         * <code>string comPort = 1;</code>
+         * @return The comPort.
+         */
+        public java.lang.String getComPort() {
+          java.lang.Object ref = comPort_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            comPort_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string comPort = 1;</code>
+         * @return The bytes for comPort.
+         */
+        public com.google.protobuf.ByteString
+            getComPortBytes() {
+          java.lang.Object ref = comPort_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            comPort_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string comPort = 1;</code>
+         * @param value The comPort to set.
+         * @return This builder for chaining.
+         */
+        public Builder setComPort(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          comPort_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string comPort = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearComPort() {
+          
+          comPort_ = getDefaultInstance().getComPort();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string comPort = 1;</code>
+         * @param value The bytes for comPort to set.
+         * @return This builder for chaining.
+         */
+        public Builder setComPortBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          comPort_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object name_ = "";
+        /**
+         * <code>string name = 2;</code>
+         * @return The name.
+         */
+        public java.lang.String getName() {
+          java.lang.Object ref = name_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            name_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string name = 2;</code>
+         * @return The bytes for name.
+         */
+        public com.google.protobuf.ByteString
+            getNameBytes() {
+          java.lang.Object ref = name_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            name_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string name = 2;</code>
+         * @param value The name to set.
+         * @return This builder for chaining.
+         */
+        public Builder setName(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          name_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string name = 2;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearName() {
+          
+          name_ = getDefaultInstance().getName();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string name = 2;</code>
+         * @param value The bytes for name to set.
+         * @return This builder for chaining.
+         */
+        public Builder setNameBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          name_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object macId_ = "";
+        /**
+         * <code>string macId = 3;</code>
+         * @return The macId.
+         */
+        public java.lang.String getMacId() {
+          java.lang.Object ref = macId_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            macId_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string macId = 3;</code>
+         * @return The bytes for macId.
+         */
+        public com.google.protobuf.ByteString
+            getMacIdBytes() {
+          java.lang.Object ref = macId_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            macId_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string macId = 3;</code>
+         * @param value The macId to set.
+         * @return This builder for chaining.
+         */
+        public Builder setMacId(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          macId_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string macId = 3;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearMacId() {
+          
+          macId_ = getDefaultInstance().getMacId();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string macId = 3;</code>
+         * @param value The bytes for macId to set.
+         * @return This builder for chaining.
+         */
+        public Builder setMacIdBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          macId_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object deviceType_ = "";
+        /**
+         * <code>string deviceType = 4;</code>
+         * @return The deviceType.
+         */
+        public java.lang.String getDeviceType() {
+          java.lang.Object ref = deviceType_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            deviceType_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string deviceType = 4;</code>
+         * @return The bytes for deviceType.
+         */
+        public com.google.protobuf.ByteString
+            getDeviceTypeBytes() {
+          java.lang.Object ref = deviceType_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            deviceType_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string deviceType = 4;</code>
+         * @param value The deviceType to set.
+         * @return This builder for chaining.
+         */
+        public Builder setDeviceType(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          deviceType_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string deviceType = 4;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearDeviceType() {
+          
+          deviceType_ = getDefaultInstance().getDeviceType();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string deviceType = 4;</code>
+         * @param value The bytes for deviceType to set.
+         * @return This builder for chaining.
+         */
+        public Builder setDeviceTypeBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          deviceType_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object lastConnectionState_ = "";
+        /**
+         * <code>string lastConnectionState = 5;</code>
+         * @return The lastConnectionState.
+         */
+        public java.lang.String getLastConnectionState() {
+          java.lang.Object ref = lastConnectionState_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            lastConnectionState_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string lastConnectionState = 5;</code>
+         * @return The bytes for lastConnectionState.
+         */
+        public com.google.protobuf.ByteString
+            getLastConnectionStateBytes() {
+          java.lang.Object ref = lastConnectionState_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            lastConnectionState_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string lastConnectionState = 5;</code>
+         * @param value The lastConnectionState to set.
+         * @return This builder for chaining.
+         */
+        public Builder setLastConnectionState(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          lastConnectionState_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string lastConnectionState = 5;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearLastConnectionState() {
+          
+          lastConnectionState_ = getDefaultInstance().getLastConnectionState();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string lastConnectionState = 5;</code>
+         * @param value The bytes for lastConnectionState to set.
+         * @return This builder for chaining.
+         */
+        public Builder setLastConnectionStateBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          lastConnectionState_ = value;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails)
+      }
+
+      // @@protoc_insertion_point(class_scope:shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails)
+      private static final com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails();
+      }
+
+      public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<BluetoothDeviceDetails>
+          PARSER = new com.google.protobuf.AbstractParser<BluetoothDeviceDetails>() {
+        @java.lang.Override
+        public BluetoothDeviceDetails parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new BluetoothDeviceDetails(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<BluetoothDeviceDetails> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<BluetoothDeviceDetails> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public static final int STATE_FIELD_NUMBER = 1;
+    private boolean state_;
+    /**
+     * <code>bool state = 1;</code>
+     * @return The state.
+     */
+    @java.lang.Override
+    public boolean getState() {
+      return state_;
+    }
+
+    public static final int MESSAGE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object message_;
+    /**
+     * <code>string message = 2;</code>
+     * @return The message.
+     */
+    @java.lang.Override
+    public java.lang.String getMessage() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        message_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string message = 2;</code>
+     * @return The bytes for message.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMessageBytes() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        message_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DEVICEMAP_FIELD_NUMBER = 3;
+    private static final class DeviceMapDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails>newDefaultInstance(
+                  com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_DeviceMapEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                  com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails.getDefaultInstance());
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> deviceMap_;
+    private com.google.protobuf.MapField<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails>
+    internalGetDeviceMap() {
+      if (deviceMap_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            DeviceMapDefaultEntryHolder.defaultEntry);
+      }
+      return deviceMap_;
+    }
+
+    public int getDeviceMapCount() {
+      return internalGetDeviceMap().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+     */
+
+    @java.lang.Override
+    public boolean containsDeviceMap(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetDeviceMap().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getDeviceMapMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> getDeviceMap() {
+      return getDeviceMapMap();
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+     */
+    @java.lang.Override
+
+    public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> getDeviceMapMap() {
+      return internalGetDeviceMap().getMap();
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+     */
+    @java.lang.Override
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails getDeviceMapOrDefault(
+        java.lang.String key,
+        com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> map =
+          internalGetDeviceMap().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+     */
+    @java.lang.Override
+
+    public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails getDeviceMapOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> map =
+          internalGetDeviceMap().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (state_ != false) {
+        output.writeBool(1, state_);
+      }
+      if (!getMessageBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
+      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetDeviceMap(),
+          DeviceMapDefaultEntryHolder.defaultEntry,
+          3);
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (state_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, state_);
+      }
+      if (!getMessageBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
+      }
+      for (java.util.Map.Entry<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> entry
+           : internalGetDeviceMap().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails>
+        deviceMap__ = DeviceMapDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, deviceMap__);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails)) {
+        return super.equals(obj);
+      }
+      com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails other = (com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails) obj;
+
+      if (getState()
+          != other.getState()) return false;
+      if (!getMessage()
+          .equals(other.getMessage())) return false;
+      if (!internalGetDeviceMap().equals(
+          other.internalGetDeviceMap())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + STATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getState());
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
+      if (!internalGetDeviceMap().getMap().isEmpty()) {
+        hash = (37 * hash) + DEVICEMAP_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetDeviceMap().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code shimmerGRPC.BluetoothDevicesDetails}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:shimmerGRPC.BluetoothDevicesDetails)
+        com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetailsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetDeviceMap();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableDeviceMap();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.class, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.Builder.class);
+      }
+
+      // Construct using com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        state_ = false;
+
+        message_ = "";
+
+        internalGetMutableDeviceMap().clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.internal_static_shimmerGRPC_BluetoothDevicesDetails_descriptor;
+      }
+
+      @java.lang.Override
+      public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails getDefaultInstanceForType() {
+        return com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails build() {
+        com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails buildPartial() {
+        com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails result = new com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails(this);
+        int from_bitField0_ = bitField0_;
+        result.state_ = state_;
+        result.message_ = message_;
+        result.deviceMap_ = internalGetDeviceMap();
+        result.deviceMap_.makeImmutable();
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails) {
+          return mergeFrom((com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails other) {
+        if (other == com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.getDefaultInstance()) return this;
+        if (other.getState() != false) {
+          setState(other.getState());
+        }
+        if (!other.getMessage().isEmpty()) {
+          message_ = other.message_;
+          onChanged();
+        }
+        internalGetMutableDeviceMap().mergeFrom(
+            other.internalGetDeviceMap());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean state_ ;
+      /**
+       * <code>bool state = 1;</code>
+       * @return The state.
+       */
+      @java.lang.Override
+      public boolean getState() {
+        return state_;
+      }
+      /**
+       * <code>bool state = 1;</code>
+       * @param value The state to set.
+       * @return This builder for chaining.
+       */
+      public Builder setState(boolean value) {
+        
+        state_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool state = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearState() {
+        
+        state_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object message_ = "";
+      /**
+       * <code>string message = 2;</code>
+       * @return The message.
+       */
+      public java.lang.String getMessage() {
+        java.lang.Object ref = message_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          message_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @return The bytes for message.
+       */
+      public com.google.protobuf.ByteString
+          getMessageBytes() {
+        java.lang.Object ref = message_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          message_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @param value The message to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        message_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMessage() {
+        
+        message_ = getDefaultInstance().getMessage();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @param value The bytes for message to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        message_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> deviceMap_;
+      private com.google.protobuf.MapField<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails>
+      internalGetDeviceMap() {
+        if (deviceMap_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              DeviceMapDefaultEntryHolder.defaultEntry);
+        }
+        return deviceMap_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails>
+      internalGetMutableDeviceMap() {
+        onChanged();;
+        if (deviceMap_ == null) {
+          deviceMap_ = com.google.protobuf.MapField.newMapField(
+              DeviceMapDefaultEntryHolder.defaultEntry);
+        }
+        if (!deviceMap_.isMutable()) {
+          deviceMap_ = deviceMap_.copy();
+        }
+        return deviceMap_;
+      }
+
+      public int getDeviceMapCount() {
+        return internalGetDeviceMap().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsDeviceMap(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetDeviceMap().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getDeviceMapMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> getDeviceMap() {
+        return getDeviceMapMap();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> getDeviceMapMap() {
+        return internalGetDeviceMap().getMap();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+       */
+      @java.lang.Override
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails getDeviceMapOrDefault(
+          java.lang.String key,
+          com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> map =
+            internalGetDeviceMap().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+       */
+      @java.lang.Override
+
+      public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails getDeviceMapOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> map =
+            internalGetDeviceMap().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearDeviceMap() {
+        internalGetMutableDeviceMap().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+       */
+
+      public Builder removeDeviceMap(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableDeviceMap().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails>
+      getMutableDeviceMap() {
+        return internalGetMutableDeviceMap().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+       */
+      public Builder putDeviceMap(
+          java.lang.String key,
+          com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableDeviceMap().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, .shimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails&gt; deviceMap = 3;</code>
+       */
+
+      public Builder putAllDeviceMap(
+          java.util.Map<java.lang.String, com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails.BluetoothDeviceDetails> values) {
+        internalGetMutableDeviceMap().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:shimmerGRPC.BluetoothDevicesDetails)
+    }
+
+    // @@protoc_insertion_point(class_scope:shimmerGRPC.BluetoothDevicesDetails)
+    private static final com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails();
+    }
+
+    public static com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BluetoothDevicesDetails>
+        PARSER = new com.google.protobuf.AbstractParser<BluetoothDevicesDetails>() {
+      @java.lang.Override
+      public BluetoothDevicesDetails parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new BluetoothDevicesDetails(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<BluetoothDevicesDetails> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BluetoothDevicesDetails> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.shimmerresearch.grpc.ShimmerGRPC.BluetoothDevicesDetails getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface Ieee802154InfoOrBuilder extends
       // @@protoc_insertion_point(interface_extends:shimmerGRPC.Ieee802154Info)
       com.google.protobuf.MessageOrBuilder {
@@ -18556,6 +20683,21 @@ public final class ShimmerGRPC {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_shimmerGRPC_ShimmersInfo_ShimmerMapEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_BluetoothDevicesDetails_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_BluetoothDevicesDetails_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_shimmerGRPC_BluetoothDevicesDetails_DeviceMapEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_shimmerGRPC_BluetoothDevicesDetails_DeviceMapEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_shimmerGRPC_Ieee802154Info_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -18648,75 +20790,87 @@ public final class ShimmerGRPC {
       "2154Info\030\025 \001(\0132\033.shimmerGRPC.Ieee802154I" +
       "nfo\032X\n\017ShimmerMapEntry\022\013\n\003key\030\001 \001(\t\0224\n\005v" +
       "alue\030\002 \001(\0132%.shimmerGRPC.ShimmersInfo.Sh" +
-      "immerInfo:\0028\001\"S\n\016Ieee802154Info\022\024\n\014radio" +
-      "Channel\030\001 \001(\005\022\024\n\014radioGroupId\030\002 \001(\005\022\025\n\rr" +
-      "adioDeviceId\030\003 \001(\005\"\251\002\n\tInfoSpans\022\r\n\005stat" +
-      "e\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\0224\n\007spanMap\030\003 \003(" +
-      "\0132#.shimmerGRPC.InfoSpans.SpanMapEntry\0223" +
-      "\n\016ieee802154Info\030\004 \001(\0132\033.shimmerGRPC.Iee" +
-      "e802154Info\032@\n\010InfoSpan\022\020\n\010uniqueId\030\001 \001(" +
-      "\t\022\017\n\007portBsl\030\002 \001(\t\022\021\n\tportComms\030\003 \001(\t\032O\n" +
-      "\014SpanMapEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(" +
-      "\0132\037.shimmerGRPC.InfoSpans.InfoSpan:\0028\001\"\372" +
-      "\002\n\017EmulatedDevices\022\r\n\005state\030\001 \001(\010\022\017\n\007mes" +
-      "sage\030\002 \001(\t\022\026\n\016isEmulatorSide\030\003 \001(\010\022P\n\022em" +
-      "ulatedDevicesMap\030\004 \003(\01324.shimmerGRPC.Emu" +
-      "latedDevices.EmulatedDevicesMapEntry\032u\n\016" +
-      "EmulatedDevice\022\020\n\010uniqueId\030\001 \001(\t\022\031\n\021devi" +
-      "ceTypeOrdinal\030\002 \001(\005\022\035\n\025hwDeviceInterface" +
-      "Path\030\003 \003(\t\022\027\n\017isDeviceEnabled\030\004 \001(\010\032f\n\027E" +
-      "mulatedDevicesMapEntry\022\013\n\003key\030\001 \001(\t\022:\n\005v" +
-      "alue\030\002 \001(\0132+.shimmerGRPC.EmulatedDevices" +
-      ".EmulatedDevice:\0028\0012\353\016\n\rShimmerServer\022@\n" +
-      "\010SayHello\022\031.shimmerGRPC.HelloRequest\032\027.s" +
-      "himmerGRPC.HelloReply\"\000\022L\n\rGetDataStream" +
-      "\022\032.shimmerGRPC.StreamRequest\032\033.shimmerGR" +
-      "PC.ObjectCluster2\"\0000\001\022J\n\016SendDataStream\022" +
-      "\033.shimmerGRPC.ObjectCluster2\032\027.shimmerGR" +
-      "PC.HelloReply\"\000(\001\022L\n\016SendFileStream\022\035.sh" +
-      "immerGRPC.FileByteTransfer\032\027.shimmerGRPC" +
-      ".HelloReply\"\000(\001\022K\n\016ConnectShimmer\022\033.shim" +
-      "merGRPC.ShimmerRequest\032\032.shimmerGRPC.Com" +
-      "mandStatus\"\000\022N\n\021DisconnectShimmer\022\033.shim" +
-      "merGRPC.ShimmerRequest\032\032.shimmerGRPC.Com" +
-      "mandStatus\"\000\022K\n\016StartStreaming\022\033.shimmer" +
+      "immerInfo:\0028\001\"\351\002\n\027BluetoothDevicesDetail" +
+      "s\022\r\n\005state\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022F\n\tdev" +
+      "iceMap\030\003 \003(\01323.shimmerGRPC.BluetoothDevi" +
+      "cesDetails.DeviceMapEntry\032w\n\026BluetoothDe" +
+      "viceDetails\022\017\n\007comPort\030\001 \001(\t\022\014\n\004name\030\002 \001" +
+      "(\t\022\r\n\005macId\030\003 \001(\t\022\022\n\ndeviceType\030\004 \001(\t\022\033\n" +
+      "\023lastConnectionState\030\005 \001(\t\032m\n\016DeviceMapE" +
+      "ntry\022\013\n\003key\030\001 \001(\t\022J\n\005value\030\002 \001(\0132;.shimm" +
+      "erGRPC.BluetoothDevicesDetails.Bluetooth" +
+      "DeviceDetails:\0028\001\"S\n\016Ieee802154Info\022\024\n\014r" +
+      "adioChannel\030\001 \001(\005\022\024\n\014radioGroupId\030\002 \001(\005\022" +
+      "\025\n\rradioDeviceId\030\003 \001(\005\"\251\002\n\tInfoSpans\022\r\n\005" +
+      "state\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\0224\n\007spanMap\030" +
+      "\003 \003(\0132#.shimmerGRPC.InfoSpans.SpanMapEnt" +
+      "ry\0223\n\016ieee802154Info\030\004 \001(\0132\033.shimmerGRPC" +
+      ".Ieee802154Info\032@\n\010InfoSpan\022\020\n\010uniqueId\030" +
+      "\001 \001(\t\022\017\n\007portBsl\030\002 \001(\t\022\021\n\tportComms\030\003 \001(" +
+      "\t\032O\n\014SpanMapEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030" +
+      "\002 \001(\0132\037.shimmerGRPC.InfoSpans.InfoSpan:\002" +
+      "8\001\"\372\002\n\017EmulatedDevices\022\r\n\005state\030\001 \001(\010\022\017\n" +
+      "\007message\030\002 \001(\t\022\026\n\016isEmulatorSide\030\003 \001(\010\022P" +
+      "\n\022emulatedDevicesMap\030\004 \003(\01324.shimmerGRPC" +
+      ".EmulatedDevices.EmulatedDevicesMapEntry" +
+      "\032u\n\016EmulatedDevice\022\020\n\010uniqueId\030\001 \001(\t\022\031\n\021" +
+      "deviceTypeOrdinal\030\002 \001(\005\022\035\n\025hwDeviceInter" +
+      "facePath\030\003 \003(\t\022\027\n\017isDeviceEnabled\030\004 \001(\010\032" +
+      "f\n\027EmulatedDevicesMapEntry\022\013\n\003key\030\001 \001(\t\022" +
+      ":\n\005value\030\002 \001(\0132+.shimmerGRPC.EmulatedDev" +
+      "ices.EmulatedDevice:\0028\0012\310\017\n\rShimmerServe" +
+      "r\022@\n\010SayHello\022\031.shimmerGRPC.HelloRequest" +
+      "\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rGetDataSt" +
+      "ream\022\032.shimmerGRPC.StreamRequest\032\033.shimm" +
+      "erGRPC.ObjectCluster2\"\0000\001\022J\n\016SendDataStr" +
+      "eam\022\033.shimmerGRPC.ObjectCluster2\032\027.shimm" +
+      "erGRPC.HelloReply\"\000(\001\022L\n\016SendFileStream\022" +
+      "\035.shimmerGRPC.FileByteTransfer\032\027.shimmer" +
+      "GRPC.HelloReply\"\000(\001\022K\n\016ConnectShimmer\022\033." +
+      "shimmerGRPC.ShimmerRequest\032\032.shimmerGRPC" +
+      ".CommandStatus\"\000\022N\n\021DisconnectShimmer\022\033." +
+      "shimmerGRPC.ShimmerRequest\032\032.shimmerGRPC" +
+      ".CommandStatus\"\000\022K\n\016StartStreaming\022\033.shi" +
+      "mmerGRPC.ShimmerRequest\032\032.shimmerGRPC.Co" +
+      "mmandStatus\"\000\022J\n\rStopStreaming\022\033.shimmer" +
       "GRPC.ShimmerRequest\032\032.shimmerGRPC.Comman" +
-      "dStatus\"\000\022J\n\rStopStreaming\022\033.shimmerGRPC" +
-      ".ShimmerRequest\032\032.shimmerGRPC.CommandSta" +
-      "tus\"\000\022M\n\020CloseApplication\022\033.shimmerGRPC." +
-      "ShimmerRequest\032\032.shimmerGRPC.CommandStat" +
-      "us\"\000\022P\n\025SetWorkspaceDirectory\022\026.shimmerG" +
-      "RPC.StringMsg\032\035.shimmerGRPC.OperationReq" +
-      "uest\"\000\022I\n\025GetWorkspaceDirectory\022\026.shimme" +
-      "rGRPC.StringMsg\032\026.shimmerGRPC.StringMsg\"" +
-      "\000\022K\n\024GetDockedShimmerInfo\022\026.shimmerGRPC." +
-      "StringMsg\032\031.shimmerGRPC.ShimmersInfo\"\000\022I" +
-      "\n\025GetMadgewickBetaValue\022\026.shimmerGRPC.St" +
-      "ringMsg\032\026.shimmerGRPC.DoubleMsg\"\000\022L\n\014Pai" +
-      "rShimmers\022\033.shimmerGRPC.StringArrayMsg\032\035" +
-      ".shimmerGRPC.OperationRequest\"\000\022O\n\024GetOp" +
-      "erationProgress\022\026.shimmerGRPC.StringMsg\032" +
-      "\035.shimmerGRPC.OperationRequest\"\000\022X\n\030Impo" +
-      "rtSdDataFromShimmers\022\033.shimmerGRPC.Strin" +
-      "gArrayMsg\032\035.shimmerGRPC.OperationRequest" +
-      "\"\000\022N\n\023ParseSdDataFromPath\022\026.shimmerGRPC." +
-      "StringMsg\032\035.shimmerGRPC.OperationRequest" +
-      "\"\000\022Q\n\021ScanSdDataAndCopy\022\033.shimmerGRPC.St" +
-      "ringArrayMsg\032\035.shimmerGRPC.OperationRequ" +
-      "est\"\000\022O\n\017ClearSdCardData\022\033.shimmerGRPC.S" +
+      "dStatus\"\000\022M\n\020CloseApplication\022\033.shimmerG" +
+      "RPC.ShimmerRequest\032\032.shimmerGRPC.Command" +
+      "Status\"\000\022P\n\025SetWorkspaceDirectory\022\026.shim" +
+      "merGRPC.StringMsg\032\035.shimmerGRPC.Operatio" +
+      "nRequest\"\000\022I\n\025GetWorkspaceDirectory\022\026.sh" +
+      "immerGRPC.StringMsg\032\026.shimmerGRPC.String" +
+      "Msg\"\000\022K\n\024GetDockedShimmerInfo\022\026.shimmerG" +
+      "RPC.StringMsg\032\031.shimmerGRPC.ShimmersInfo" +
+      "\"\000\022I\n\025GetMadgewickBetaValue\022\026.shimmerGRP" +
+      "C.StringMsg\032\026.shimmerGRPC.DoubleMsg\"\000\022L\n" +
+      "\014PairShimmers\022\033.shimmerGRPC.StringArrayM" +
+      "sg\032\035.shimmerGRPC.OperationRequest\"\000\022O\n\024G" +
+      "etOperationProgress\022\026.shimmerGRPC.String" +
+      "Msg\032\035.shimmerGRPC.OperationRequest\"\000\022X\n\030" +
+      "ImportSdDataFromShimmers\022\033.shimmerGRPC.S" +
       "tringArrayMsg\032\035.shimmerGRPC.OperationReq" +
-      "uest\"\000\022X\n\030DockAccessSlotWithSdCard\022\033.shi" +
-      "mmerGRPC.StringArrayMsg\032\035.shimmerGRPC.Op" +
-      "erationRequest\"\000\022T\n\024DockRestoreAutoTasks" +
-      "\022\033.shimmerGRPC.StringArrayMsg\032\035.shimmerG" +
-      "RPC.OperationRequest\"\000\022@\n\014GetInfoSpans\022\026" +
-      ".shimmerGRPC.StringMsg\032\026.shimmerGRPC.Inf" +
-      "oSpans\"\000\022I\n\022GetInfoAllShimmers\022\026.shimmer" +
-      "GRPC.StringMsg\032\031.shimmerGRPC.ShimmersInf" +
-      "o\"\000\022L\n\022GetEmulatedDevices\022\026.shimmerGRPC." +
-      "StringMsg\032\034.shimmerGRPC.EmulatedDevices\"" +
-      "\000BB\n\030com.shimmerresearch.grpcB\013ShimmerGR" +
-      "PC\252\002\030com.shimmerresearch.grpcb\006proto3"
+      "uest\"\000\022N\n\023ParseSdDataFromPath\022\026.shimmerG" +
+      "RPC.StringMsg\032\035.shimmerGRPC.OperationReq" +
+      "uest\"\000\022Q\n\021ScanSdDataAndCopy\022\033.shimmerGRP" +
+      "C.StringArrayMsg\032\035.shimmerGRPC.Operation" +
+      "Request\"\000\022O\n\017ClearSdCardData\022\033.shimmerGR" +
+      "PC.StringArrayMsg\032\035.shimmerGRPC.Operatio" +
+      "nRequest\"\000\022X\n\030DockAccessSlotWithSdCard\022\033" +
+      ".shimmerGRPC.StringArrayMsg\032\035.shimmerGRP" +
+      "C.OperationRequest\"\000\022T\n\024DockRestoreAutoT" +
+      "asks\022\033.shimmerGRPC.StringArrayMsg\032\035.shim" +
+      "merGRPC.OperationRequest\"\000\022@\n\014GetInfoSpa" +
+      "ns\022\026.shimmerGRPC.StringMsg\032\026.shimmerGRPC" +
+      ".InfoSpans\"\000\022I\n\022GetInfoAllShimmers\022\026.shi" +
+      "mmerGRPC.StringMsg\032\031.shimmerGRPC.Shimmer" +
+      "sInfo\"\000\022L\n\022GetEmulatedDevices\022\026.shimmerG" +
+      "RPC.StringMsg\032\034.shimmerGRPC.EmulatedDevi" +
+      "ces\"\000\022[\n\031GetBluetoothDeviceDetails\022\026.shi" +
+      "mmerGRPC.StringMsg\032$.shimmerGRPC.Bluetoo" +
+      "thDevicesDetails\"\000BB\n\030com.shimmerresearc" +
+      "h.grpcB\013ShimmerGRPC\252\002\030com.shimmerresearc" +
+      "h.grpcb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -18836,14 +20990,32 @@ public final class ShimmerGRPC {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_ShimmersInfo_ShimmerMapEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    internal_static_shimmerGRPC_Ieee802154Info_descriptor =
+    internal_static_shimmerGRPC_BluetoothDevicesDetails_descriptor =
       getDescriptor().getMessageTypes().get(13);
+    internal_static_shimmerGRPC_BluetoothDevicesDetails_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_BluetoothDevicesDetails_descriptor,
+        new java.lang.String[] { "State", "Message", "DeviceMap", });
+    internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_descriptor =
+      internal_static_shimmerGRPC_BluetoothDevicesDetails_descriptor.getNestedTypes().get(0);
+    internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_BluetoothDevicesDetails_BluetoothDeviceDetails_descriptor,
+        new java.lang.String[] { "ComPort", "Name", "MacId", "DeviceType", "LastConnectionState", });
+    internal_static_shimmerGRPC_BluetoothDevicesDetails_DeviceMapEntry_descriptor =
+      internal_static_shimmerGRPC_BluetoothDevicesDetails_descriptor.getNestedTypes().get(1);
+    internal_static_shimmerGRPC_BluetoothDevicesDetails_DeviceMapEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_shimmerGRPC_BluetoothDevicesDetails_DeviceMapEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_shimmerGRPC_Ieee802154Info_descriptor =
+      getDescriptor().getMessageTypes().get(14);
     internal_static_shimmerGRPC_Ieee802154Info_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_Ieee802154Info_descriptor,
         new java.lang.String[] { "RadioChannel", "RadioGroupId", "RadioDeviceId", });
     internal_static_shimmerGRPC_InfoSpans_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_shimmerGRPC_InfoSpans_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_InfoSpans_descriptor,
@@ -18861,7 +21033,7 @@ public final class ShimmerGRPC {
         internal_static_shimmerGRPC_InfoSpans_SpanMapEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_shimmerGRPC_EmulatedDevices_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_shimmerGRPC_EmulatedDevices_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_EmulatedDevices_descriptor,
