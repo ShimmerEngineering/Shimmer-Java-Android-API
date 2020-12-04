@@ -70,6 +70,8 @@ service ShimmerServer {
   
   //Noldus client related
   rpc GetBluetoothDeviceDetails(StringMsg) returns (BluetoothDevicesDetails) {}
+  
+  rpc GetDeviceStateStream(StreamRequest) returns (stream DeviceState) {}
 }
 
 message FileByteTransfer {
@@ -203,6 +205,23 @@ message BluetoothDevicesDetails {
 	}
 	
 	map<string,BluetoothDeviceDetails> deviceMap = 3;
+}
+
+enum BT_STATE {
+	DISCONNECTED = 0;
+	CONNECTING = 1;
+	CONNECTED = 2;
+	STREAMING = 3;
+	STREAMING_AND_SDLOGGING = 4;
+	SDLOGGING = 5;
+	CONFIGURING = 6;
+	CONNECTION_LOST = 7;
+	CONNECTION_FAILED = 8;
+}
+
+message DeviceState {
+	string comPort = 1;
+	BT_STATE state = 2;
 }
 
 message Ieee802154Info {
