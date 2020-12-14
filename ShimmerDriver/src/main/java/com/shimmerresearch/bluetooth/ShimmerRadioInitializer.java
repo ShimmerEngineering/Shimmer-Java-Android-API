@@ -75,7 +75,10 @@ public class ShimmerRadioInitializer {
 		serialCommPort.rxBytes(1);
 		serialCommPort.rxBytes(1);
 		bufferInquiry = serialCommPort.rxBytes(6);
-		
+		if (bufferInquiry==null) {
+			serialCommPort.disconnect();
+			throw new ShimmerException();
+		}
 		return bufferInquiry;
 	}
 	
