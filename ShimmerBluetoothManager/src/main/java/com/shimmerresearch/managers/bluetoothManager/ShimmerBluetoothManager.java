@@ -816,14 +816,16 @@ public abstract class ShimmerBluetoothManager{
 		protected ShimmerDevice resolveUnknownShimmer(ShimmerRadioInitializer shimmerRadioInitializer){
 			ShimmerVerObject sVO = shimmerRadioInitializer.readShimmerVerObject();
 			ShimmerDevice shimmerDeviceNew = null;
-			if (sVO.isShimmerGen2() || sVO.isShimmerGen3()){
-				shimmerDeviceNew = createNewShimmer3(shimmerRadioInitializer, bluetoothAddress);
-			} 
-			else if(sVO.isShimmerGen4()){
-				shimmerDeviceNew = createNewShimmer4(shimmerRadioInitializer, bluetoothAddress);
-			}
-			else if(sVO.isSweatchDevice()){
-				shimmerDeviceNew = createNewSweatchDevice(shimmerRadioInitializer, bluetoothAddress);
+			if (sVO!=null) {
+				if (sVO.isShimmerGen2() || sVO.isShimmerGen3()){
+					shimmerDeviceNew = createNewShimmer3(shimmerRadioInitializer, bluetoothAddress);
+				} 
+				else if(sVO.isShimmerGen4()){
+					shimmerDeviceNew = createNewShimmer4(shimmerRadioInitializer, bluetoothAddress);
+				}
+				else if(sVO.isSweatchDevice()){
+					shimmerDeviceNew = createNewSweatchDevice(shimmerRadioInitializer, bluetoothAddress);
+				}
 			}
 
 			if(shimmerDeviceNew!=null){
