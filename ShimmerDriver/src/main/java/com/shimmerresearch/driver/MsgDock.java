@@ -208,6 +208,8 @@ public class MsgDock {
 	//AlgorithmManager
 	public final static int MSG_ID_DATA_TO_ALGO = 190;
 	
+	public final static int MSG_ID_NEURO_MANAGER_END_TRIAL = 1018;
+	
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
         Map<Integer, String> aMap = new TreeMap<Integer,String>();
