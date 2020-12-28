@@ -103,6 +103,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	/** Contains all loaded Algorithm modules */
 	protected Map<String, AbstractAlgorithm> mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
+	protected ArrayList<String> mAlgorithmProcessingSequence = null;
 	/** All supported channels based on hardware, expansion board and firmware */
 //	protected Map<String, AlgorithmDetails> mMapOfAlgorithmDetails = new LinkedHashMap<String, AlgorithmDetails>();
 	/** for tile generation in GUI configuration */ 
@@ -1429,17 +1430,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public ObjectCluster processAlgorithms(ObjectCluster ojc) {
-		for (AbstractAlgorithm aA:getMapOfAlgorithmModules().values()) {
-//			consolePrintErrLn.println(aA.mAlgorithmName + "\tisEnabled:\t" + aA.isEnabled());
-			if (aA.isEnabled()) {
-				try {
-					AlgorithmResultObject algorithmResultObject = aA.processDataRealTime(ojc);
-					if(algorithmResultObject!=null){
-						ojc = (ObjectCluster) algorithmResultObject.mResult;
+		if (mAlgorithmProcessingSequence!=null) {
+			for (String algoKey:mAlgorithmProcessingSequence) {
+				AbstractAlgorithm aA = getMapOfAlgorithmModules().get(algoKey);
+				if (aA.isEnabled()) {
+					try {
+						AlgorithmResultObject algorithmResultObject = aA.processDataRealTime(ojc);
+						if(algorithmResultObject!=null){
+							ojc = (ObjectCluster) algorithmResultObject.mResult;
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				}
+			}
+		} else {
+			for (AbstractAlgorithm aA:getMapOfAlgorithmModules().values()) {
+				//			consolePrintErrLn.println(aA.mAlgorithmName + "\tisEnabled:\t" + aA.isEnabled());
+				if (aA.isEnabled()) {
+					try {
+						AlgorithmResultObject algorithmResultObject = aA.processDataRealTime(ojc);
+						if(algorithmResultObject!=null){
+							ojc = (ObjectCluster) algorithmResultObject.mResult;
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -3128,6 +3146,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
+	public void setAlgoProcessingSequence(ArrayList<String> algoOrder) {
+		mAlgorithmProcessingSequence = algoOrder;
+	}
+	
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
 		return mMapOfAlgorithmModules;
 	}
