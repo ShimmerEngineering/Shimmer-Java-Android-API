@@ -16146,24 +16146,48 @@ public final class ShimmerGRPC {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string comPort = 1;</code>
+     * <code>string deviceName = 1;</code>
+     * @return The deviceName.
+     */
+    java.lang.String getDeviceName();
+    /**
+     * <code>string deviceName = 1;</code>
+     * @return The bytes for deviceName.
+     */
+    com.google.protobuf.ByteString
+        getDeviceNameBytes();
+
+    /**
+     * <code>string comPort = 2;</code>
      * @return The comPort.
      */
     java.lang.String getComPort();
     /**
-     * <code>string comPort = 1;</code>
+     * <code>string comPort = 2;</code>
      * @return The bytes for comPort.
      */
     com.google.protobuf.ByteString
         getComPortBytes();
 
     /**
-     * <code>.shimmerGRPC.BT_STATE state = 2;</code>
+     * <code>string macId = 3;</code>
+     * @return The macId.
+     */
+    java.lang.String getMacId();
+    /**
+     * <code>string macId = 3;</code>
+     * @return The bytes for macId.
+     */
+    com.google.protobuf.ByteString
+        getMacIdBytes();
+
+    /**
+     * <code>.shimmerGRPC.BT_STATE state = 4;</code>
      * @return The enum numeric value on the wire for state.
      */
     int getStateValue();
     /**
-     * <code>.shimmerGRPC.BT_STATE state = 2;</code>
+     * <code>.shimmerGRPC.BT_STATE state = 4;</code>
      * @return The state.
      */
     com.shimmerresearch.grpc.ShimmerGRPC.BT_STATE getState();
@@ -16181,7 +16205,9 @@ public final class ShimmerGRPC {
       super(builder);
     }
     private DeviceState() {
+      deviceName_ = "";
       comPort_ = "";
+      macId_ = "";
       state_ = 0;
     }
 
@@ -16218,10 +16244,22 @@ public final class ShimmerGRPC {
             case 10: {
               java.lang.String s = input.readStringRequireUtf8();
 
+              deviceName_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
               comPort_ = s;
               break;
             }
-            case 16: {
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              macId_ = s;
+              break;
+            }
+            case 32: {
               int rawValue = input.readEnum();
 
               state_ = rawValue;
@@ -16259,10 +16297,48 @@ public final class ShimmerGRPC {
               com.shimmerresearch.grpc.ShimmerGRPC.DeviceState.class, com.shimmerresearch.grpc.ShimmerGRPC.DeviceState.Builder.class);
     }
 
-    public static final int COMPORT_FIELD_NUMBER = 1;
+    public static final int DEVICENAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object deviceName_;
+    /**
+     * <code>string deviceName = 1;</code>
+     * @return The deviceName.
+     */
+    @java.lang.Override
+    public java.lang.String getDeviceName() {
+      java.lang.Object ref = deviceName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        deviceName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string deviceName = 1;</code>
+     * @return The bytes for deviceName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDeviceNameBytes() {
+      java.lang.Object ref = deviceName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        deviceName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int COMPORT_FIELD_NUMBER = 2;
     private volatile java.lang.Object comPort_;
     /**
-     * <code>string comPort = 1;</code>
+     * <code>string comPort = 2;</code>
      * @return The comPort.
      */
     @java.lang.Override
@@ -16279,7 +16355,7 @@ public final class ShimmerGRPC {
       }
     }
     /**
-     * <code>string comPort = 1;</code>
+     * <code>string comPort = 2;</code>
      * @return The bytes for comPort.
      */
     @java.lang.Override
@@ -16297,17 +16373,55 @@ public final class ShimmerGRPC {
       }
     }
 
-    public static final int STATE_FIELD_NUMBER = 2;
+    public static final int MACID_FIELD_NUMBER = 3;
+    private volatile java.lang.Object macId_;
+    /**
+     * <code>string macId = 3;</code>
+     * @return The macId.
+     */
+    @java.lang.Override
+    public java.lang.String getMacId() {
+      java.lang.Object ref = macId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        macId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string macId = 3;</code>
+     * @return The bytes for macId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMacIdBytes() {
+      java.lang.Object ref = macId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        macId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int STATE_FIELD_NUMBER = 4;
     private int state_;
     /**
-     * <code>.shimmerGRPC.BT_STATE state = 2;</code>
+     * <code>.shimmerGRPC.BT_STATE state = 4;</code>
      * @return The enum numeric value on the wire for state.
      */
     @java.lang.Override public int getStateValue() {
       return state_;
     }
     /**
-     * <code>.shimmerGRPC.BT_STATE state = 2;</code>
+     * <code>.shimmerGRPC.BT_STATE state = 4;</code>
      * @return The state.
      */
     @java.lang.Override public com.shimmerresearch.grpc.ShimmerGRPC.BT_STATE getState() {
@@ -16330,11 +16444,17 @@ public final class ShimmerGRPC {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (!getDeviceNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, deviceName_);
+      }
       if (!getComPortBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, comPort_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, comPort_);
+      }
+      if (!getMacIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, macId_);
       }
       if (state_ != com.shimmerresearch.grpc.ShimmerGRPC.BT_STATE.DISCONNECTED.getNumber()) {
-        output.writeEnum(2, state_);
+        output.writeEnum(4, state_);
       }
       unknownFields.writeTo(output);
     }
@@ -16345,12 +16465,18 @@ public final class ShimmerGRPC {
       if (size != -1) return size;
 
       size = 0;
+      if (!getDeviceNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, deviceName_);
+      }
       if (!getComPortBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, comPort_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, comPort_);
+      }
+      if (!getMacIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, macId_);
       }
       if (state_ != com.shimmerresearch.grpc.ShimmerGRPC.BT_STATE.DISCONNECTED.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, state_);
+          .computeEnumSize(4, state_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -16367,8 +16493,12 @@ public final class ShimmerGRPC {
       }
       com.shimmerresearch.grpc.ShimmerGRPC.DeviceState other = (com.shimmerresearch.grpc.ShimmerGRPC.DeviceState) obj;
 
+      if (!getDeviceName()
+          .equals(other.getDeviceName())) return false;
       if (!getComPort()
           .equals(other.getComPort())) return false;
+      if (!getMacId()
+          .equals(other.getMacId())) return false;
       if (state_ != other.state_) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -16381,8 +16511,12 @@ public final class ShimmerGRPC {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DEVICENAME_FIELD_NUMBER;
+      hash = (53 * hash) + getDeviceName().hashCode();
       hash = (37 * hash) + COMPORT_FIELD_NUMBER;
       hash = (53 * hash) + getComPort().hashCode();
+      hash = (37 * hash) + MACID_FIELD_NUMBER;
+      hash = (53 * hash) + getMacId().hashCode();
       hash = (37 * hash) + STATE_FIELD_NUMBER;
       hash = (53 * hash) + state_;
       hash = (29 * hash) + unknownFields.hashCode();
@@ -16518,7 +16652,11 @@ public final class ShimmerGRPC {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        deviceName_ = "";
+
         comPort_ = "";
+
+        macId_ = "";
 
         state_ = 0;
 
@@ -16548,7 +16686,9 @@ public final class ShimmerGRPC {
       @java.lang.Override
       public com.shimmerresearch.grpc.ShimmerGRPC.DeviceState buildPartial() {
         com.shimmerresearch.grpc.ShimmerGRPC.DeviceState result = new com.shimmerresearch.grpc.ShimmerGRPC.DeviceState(this);
+        result.deviceName_ = deviceName_;
         result.comPort_ = comPort_;
+        result.macId_ = macId_;
         result.state_ = state_;
         onBuilt();
         return result;
@@ -16598,8 +16738,16 @@ public final class ShimmerGRPC {
 
       public Builder mergeFrom(com.shimmerresearch.grpc.ShimmerGRPC.DeviceState other) {
         if (other == com.shimmerresearch.grpc.ShimmerGRPC.DeviceState.getDefaultInstance()) return this;
+        if (!other.getDeviceName().isEmpty()) {
+          deviceName_ = other.deviceName_;
+          onChanged();
+        }
         if (!other.getComPort().isEmpty()) {
           comPort_ = other.comPort_;
+          onChanged();
+        }
+        if (!other.getMacId().isEmpty()) {
+          macId_ = other.macId_;
           onChanged();
         }
         if (other.state_ != 0) {
@@ -16634,9 +16782,85 @@ public final class ShimmerGRPC {
         return this;
       }
 
+      private java.lang.Object deviceName_ = "";
+      /**
+       * <code>string deviceName = 1;</code>
+       * @return The deviceName.
+       */
+      public java.lang.String getDeviceName() {
+        java.lang.Object ref = deviceName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          deviceName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string deviceName = 1;</code>
+       * @return The bytes for deviceName.
+       */
+      public com.google.protobuf.ByteString
+          getDeviceNameBytes() {
+        java.lang.Object ref = deviceName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          deviceName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string deviceName = 1;</code>
+       * @param value The deviceName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeviceName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        deviceName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string deviceName = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeviceName() {
+        
+        deviceName_ = getDefaultInstance().getDeviceName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string deviceName = 1;</code>
+       * @param value The bytes for deviceName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeviceNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        deviceName_ = value;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object comPort_ = "";
       /**
-       * <code>string comPort = 1;</code>
+       * <code>string comPort = 2;</code>
        * @return The comPort.
        */
       public java.lang.String getComPort() {
@@ -16652,7 +16876,7 @@ public final class ShimmerGRPC {
         }
       }
       /**
-       * <code>string comPort = 1;</code>
+       * <code>string comPort = 2;</code>
        * @return The bytes for comPort.
        */
       public com.google.protobuf.ByteString
@@ -16669,7 +16893,7 @@ public final class ShimmerGRPC {
         }
       }
       /**
-       * <code>string comPort = 1;</code>
+       * <code>string comPort = 2;</code>
        * @param value The comPort to set.
        * @return This builder for chaining.
        */
@@ -16684,7 +16908,7 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <code>string comPort = 1;</code>
+       * <code>string comPort = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearComPort() {
@@ -16694,7 +16918,7 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <code>string comPort = 1;</code>
+       * <code>string comPort = 2;</code>
        * @param value The bytes for comPort to set.
        * @return This builder for chaining.
        */
@@ -16710,16 +16934,92 @@ public final class ShimmerGRPC {
         return this;
       }
 
+      private java.lang.Object macId_ = "";
+      /**
+       * <code>string macId = 3;</code>
+       * @return The macId.
+       */
+      public java.lang.String getMacId() {
+        java.lang.Object ref = macId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          macId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string macId = 3;</code>
+       * @return The bytes for macId.
+       */
+      public com.google.protobuf.ByteString
+          getMacIdBytes() {
+        java.lang.Object ref = macId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          macId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string macId = 3;</code>
+       * @param value The macId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMacId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        macId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string macId = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMacId() {
+        
+        macId_ = getDefaultInstance().getMacId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string macId = 3;</code>
+       * @param value The bytes for macId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMacIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        macId_ = value;
+        onChanged();
+        return this;
+      }
+
       private int state_ = 0;
       /**
-       * <code>.shimmerGRPC.BT_STATE state = 2;</code>
+       * <code>.shimmerGRPC.BT_STATE state = 4;</code>
        * @return The enum numeric value on the wire for state.
        */
       @java.lang.Override public int getStateValue() {
         return state_;
       }
       /**
-       * <code>.shimmerGRPC.BT_STATE state = 2;</code>
+       * <code>.shimmerGRPC.BT_STATE state = 4;</code>
        * @param value The enum numeric value on the wire for state to set.
        * @return This builder for chaining.
        */
@@ -16730,7 +17030,7 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <code>.shimmerGRPC.BT_STATE state = 2;</code>
+       * <code>.shimmerGRPC.BT_STATE state = 4;</code>
        * @return The state.
        */
       @java.lang.Override
@@ -16740,7 +17040,7 @@ public final class ShimmerGRPC {
         return result == null ? com.shimmerresearch.grpc.ShimmerGRPC.BT_STATE.UNRECOGNIZED : result;
       }
       /**
-       * <code>.shimmerGRPC.BT_STATE state = 2;</code>
+       * <code>.shimmerGRPC.BT_STATE state = 4;</code>
        * @param value The state to set.
        * @return This builder for chaining.
        */
@@ -16754,7 +17054,7 @@ public final class ShimmerGRPC {
         return this;
       }
       /**
-       * <code>.shimmerGRPC.BT_STATE state = 2;</code>
+       * <code>.shimmerGRPC.BT_STATE state = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearState() {
@@ -21650,86 +21950,89 @@ public final class ShimmerGRPC {
       "\023lastConnectionState\030\005 \001(\t\032m\n\016DeviceMapE" +
       "ntry\022\013\n\003key\030\001 \001(\t\022J\n\005value\030\002 \001(\0132;.shimm" +
       "erGRPC.BluetoothDevicesDetails.Bluetooth" +
-      "DeviceDetails:\0028\001\"D\n\013DeviceState\022\017\n\007comP" +
-      "ort\030\001 \001(\t\022$\n\005state\030\002 \001(\0162\025.shimmerGRPC.B" +
-      "T_STATE\"S\n\016Ieee802154Info\022\024\n\014radioChanne" +
-      "l\030\001 \001(\005\022\024\n\014radioGroupId\030\002 \001(\005\022\025\n\rradioDe" +
-      "viceId\030\003 \001(\005\"\251\002\n\tInfoSpans\022\r\n\005state\030\001 \001(" +
-      "\010\022\017\n\007message\030\002 \001(\t\0224\n\007spanMap\030\003 \003(\0132#.sh" +
-      "immerGRPC.InfoSpans.SpanMapEntry\0223\n\016ieee" +
-      "802154Info\030\004 \001(\0132\033.shimmerGRPC.Ieee80215" +
-      "4Info\032@\n\010InfoSpan\022\020\n\010uniqueId\030\001 \001(\t\022\017\n\007p" +
-      "ortBsl\030\002 \001(\t\022\021\n\tportComms\030\003 \001(\t\032O\n\014SpanM" +
-      "apEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.sh" +
-      "immerGRPC.InfoSpans.InfoSpan:\0028\001\"\372\002\n\017Emu" +
-      "latedDevices\022\r\n\005state\030\001 \001(\010\022\017\n\007message\030\002" +
-      " \001(\t\022\026\n\016isEmulatorSide\030\003 \001(\010\022P\n\022emulated" +
-      "DevicesMap\030\004 \003(\01324.shimmerGRPC.EmulatedD" +
-      "evices.EmulatedDevicesMapEntry\032u\n\016Emulat" +
-      "edDevice\022\020\n\010uniqueId\030\001 \001(\t\022\031\n\021deviceType" +
-      "Ordinal\030\002 \001(\005\022\035\n\025hwDeviceInterfacePath\030\003" +
-      " \003(\t\022\027\n\017isDeviceEnabled\030\004 \001(\010\032f\n\027Emulate" +
-      "dDevicesMapEntry\022\013\n\003key\030\001 \001(\t\022:\n\005value\030\002" +
-      " \001(\0132+.shimmerGRPC.EmulatedDevices.Emula" +
-      "tedDevice:\0028\001*\263\001\n\010BT_STATE\022\020\n\014DISCONNECT" +
-      "ED\020\000\022\016\n\nCONNECTING\020\001\022\r\n\tCONNECTED\020\002\022\r\n\tS" +
-      "TREAMING\020\003\022\033\n\027STREAMING_AND_SDLOGGING\020\004\022" +
-      "\r\n\tSDLOGGING\020\005\022\017\n\013CONFIGURING\020\006\022\023\n\017CONNE" +
-      "CTION_LOST\020\007\022\025\n\021CONNECTION_FAILED\020\0102\232\020\n\r" +
-      "ShimmerServer\022@\n\010SayHello\022\031.shimmerGRPC." +
-      "HelloRequest\032\027.shimmerGRPC.HelloReply\"\000\022" +
-      "L\n\rGetDataStream\022\032.shimmerGRPC.StreamReq" +
-      "uest\032\033.shimmerGRPC.ObjectCluster2\"\0000\001\022J\n" +
-      "\016SendDataStream\022\033.shimmerGRPC.ObjectClus" +
-      "ter2\032\027.shimmerGRPC.HelloReply\"\000(\001\022L\n\016Sen" +
-      "dFileStream\022\035.shimmerGRPC.FileByteTransf" +
-      "er\032\027.shimmerGRPC.HelloReply\"\000(\001\022K\n\016Conne" +
-      "ctShimmer\022\033.shimmerGRPC.ShimmerRequest\032\032" +
-      ".shimmerGRPC.CommandStatus\"\000\022N\n\021Disconne" +
-      "ctShimmer\022\033.shimmerGRPC.ShimmerRequest\032\032" +
-      ".shimmerGRPC.CommandStatus\"\000\022K\n\016StartStr" +
-      "eaming\022\033.shimmerGRPC.ShimmerRequest\032\032.sh" +
-      "immerGRPC.CommandStatus\"\000\022J\n\rStopStreami" +
-      "ng\022\033.shimmerGRPC.ShimmerRequest\032\032.shimme" +
-      "rGRPC.CommandStatus\"\000\022M\n\020CloseApplicatio" +
-      "n\022\033.shimmerGRPC.ShimmerRequest\032\032.shimmer" +
-      "GRPC.CommandStatus\"\000\022P\n\025SetWorkspaceDire" +
-      "ctory\022\026.shimmerGRPC.StringMsg\032\035.shimmerG" +
-      "RPC.OperationRequest\"\000\022I\n\025GetWorkspaceDi" +
-      "rectory\022\026.shimmerGRPC.StringMsg\032\026.shimme" +
-      "rGRPC.StringMsg\"\000\022K\n\024GetDockedShimmerInf" +
-      "o\022\026.shimmerGRPC.StringMsg\032\031.shimmerGRPC." +
-      "ShimmersInfo\"\000\022I\n\025GetMadgewickBetaValue\022" +
-      "\026.shimmerGRPC.StringMsg\032\026.shimmerGRPC.Do" +
-      "ubleMsg\"\000\022L\n\014PairShimmers\022\033.shimmerGRPC." +
-      "StringArrayMsg\032\035.shimmerGRPC.OperationRe" +
-      "quest\"\000\022O\n\024GetOperationProgress\022\026.shimme" +
-      "rGRPC.StringMsg\032\035.shimmerGRPC.OperationR" +
-      "equest\"\000\022X\n\030ImportSdDataFromShimmers\022\033.s" +
-      "himmerGRPC.StringArrayMsg\032\035.shimmerGRPC." +
-      "OperationRequest\"\000\022N\n\023ParseSdDataFromPat" +
-      "h\022\026.shimmerGRPC.StringMsg\032\035.shimmerGRPC." +
-      "OperationRequest\"\000\022Q\n\021ScanSdDataAndCopy\022" +
-      "\033.shimmerGRPC.StringArrayMsg\032\035.shimmerGR" +
-      "PC.OperationRequest\"\000\022O\n\017ClearSdCardData" +
-      "\022\033.shimmerGRPC.StringArrayMsg\032\035.shimmerG" +
-      "RPC.OperationRequest\"\000\022X\n\030DockAccessSlot" +
-      "WithSdCard\022\033.shimmerGRPC.StringArrayMsg\032" +
-      "\035.shimmerGRPC.OperationRequest\"\000\022T\n\024Dock" +
-      "RestoreAutoTasks\022\033.shimmerGRPC.StringArr" +
-      "ayMsg\032\035.shimmerGRPC.OperationRequest\"\000\022@" +
-      "\n\014GetInfoSpans\022\026.shimmerGRPC.StringMsg\032\026" +
-      ".shimmerGRPC.InfoSpans\"\000\022I\n\022GetInfoAllSh" +
-      "immers\022\026.shimmerGRPC.StringMsg\032\031.shimmer" +
-      "GRPC.ShimmersInfo\"\000\022L\n\022GetEmulatedDevice" +
-      "s\022\026.shimmerGRPC.StringMsg\032\034.shimmerGRPC." +
-      "EmulatedDevices\"\000\022[\n\031GetBluetoothDeviceD" +
-      "etails\022\026.shimmerGRPC.StringMsg\032$.shimmer" +
-      "GRPC.BluetoothDevicesDetails\"\000\022P\n\024GetDev" +
-      "iceStateStream\022\032.shimmerGRPC.StreamReque" +
-      "st\032\030.shimmerGRPC.DeviceState\"\0000\001BB\n\030com." +
-      "shimmerresearch.grpcB\013ShimmerGRPC\252\002\030com." +
-      "shimmerresearch.grpcb\006proto3"
+      "DeviceDetails:\0028\001\"g\n\013DeviceState\022\022\n\ndevi" +
+      "ceName\030\001 \001(\t\022\017\n\007comPort\030\002 \001(\t\022\r\n\005macId\030\003" +
+      " \001(\t\022$\n\005state\030\004 \001(\0162\025.shimmerGRPC.BT_STA" +
+      "TE\"S\n\016Ieee802154Info\022\024\n\014radioChannel\030\001 \001" +
+      "(\005\022\024\n\014radioGroupId\030\002 \001(\005\022\025\n\rradioDeviceI" +
+      "d\030\003 \001(\005\"\251\002\n\tInfoSpans\022\r\n\005state\030\001 \001(\010\022\017\n\007" +
+      "message\030\002 \001(\t\0224\n\007spanMap\030\003 \003(\0132#.shimmer" +
+      "GRPC.InfoSpans.SpanMapEntry\0223\n\016ieee80215" +
+      "4Info\030\004 \001(\0132\033.shimmerGRPC.Ieee802154Info" +
+      "\032@\n\010InfoSpan\022\020\n\010uniqueId\030\001 \001(\t\022\017\n\007portBs" +
+      "l\030\002 \001(\t\022\021\n\tportComms\030\003 \001(\t\032O\n\014SpanMapEnt" +
+      "ry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.shimmer" +
+      "GRPC.InfoSpans.InfoSpan:\0028\001\"\372\002\n\017Emulated" +
+      "Devices\022\r\n\005state\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022" +
+      "\026\n\016isEmulatorSide\030\003 \001(\010\022P\n\022emulatedDevic" +
+      "esMap\030\004 \003(\01324.shimmerGRPC.EmulatedDevice" +
+      "s.EmulatedDevicesMapEntry\032u\n\016EmulatedDev" +
+      "ice\022\020\n\010uniqueId\030\001 \001(\t\022\031\n\021deviceTypeOrdin" +
+      "al\030\002 \001(\005\022\035\n\025hwDeviceInterfacePath\030\003 \003(\t\022" +
+      "\027\n\017isDeviceEnabled\030\004 \001(\010\032f\n\027EmulatedDevi" +
+      "cesMapEntry\022\013\n\003key\030\001 \001(\t\022:\n\005value\030\002 \001(\0132" +
+      "+.shimmerGRPC.EmulatedDevices.EmulatedDe" +
+      "vice:\0028\001*\263\001\n\010BT_STATE\022\020\n\014DISCONNECTED\020\000\022" +
+      "\016\n\nCONNECTING\020\001\022\r\n\tCONNECTED\020\002\022\r\n\tSTREAM" +
+      "ING\020\003\022\033\n\027STREAMING_AND_SDLOGGING\020\004\022\r\n\tSD" +
+      "LOGGING\020\005\022\017\n\013CONFIGURING\020\006\022\023\n\017CONNECTION" +
+      "_LOST\020\007\022\025\n\021CONNECTION_FAILED\020\0102\362\020\n\rShimm" +
+      "erServer\022@\n\010SayHello\022\031.shimmerGRPC.Hello" +
+      "Request\032\027.shimmerGRPC.HelloReply\"\000\022L\n\rGe" +
+      "tDataStream\022\032.shimmerGRPC.StreamRequest\032" +
+      "\033.shimmerGRPC.ObjectCluster2\"\0000\001\022J\n\016Send" +
+      "DataStream\022\033.shimmerGRPC.ObjectCluster2\032" +
+      "\027.shimmerGRPC.HelloReply\"\000(\001\022L\n\016SendFile" +
+      "Stream\022\035.shimmerGRPC.FileByteTransfer\032\027." +
+      "shimmerGRPC.HelloReply\"\000(\001\022K\n\016ConnectShi" +
+      "mmer\022\033.shimmerGRPC.ShimmerRequest\032\032.shim" +
+      "merGRPC.CommandStatus\"\000\022N\n\021DisconnectShi" +
+      "mmer\022\033.shimmerGRPC.ShimmerRequest\032\032.shim" +
+      "merGRPC.CommandStatus\"\000\022K\n\016StartStreamin" +
+      "g\022\033.shimmerGRPC.ShimmerRequest\032\032.shimmer" +
+      "GRPC.CommandStatus\"\000\022J\n\rStopStreaming\022\033." +
+      "shimmerGRPC.ShimmerRequest\032\032.shimmerGRPC" +
+      ".CommandStatus\"\000\022M\n\020CloseApplication\022\033.s" +
+      "himmerGRPC.ShimmerRequest\032\032.shimmerGRPC." +
+      "CommandStatus\"\000\022P\n\025SetWorkspaceDirectory" +
+      "\022\026.shimmerGRPC.StringMsg\032\035.shimmerGRPC.O" +
+      "perationRequest\"\000\022I\n\025GetWorkspaceDirecto" +
+      "ry\022\026.shimmerGRPC.StringMsg\032\026.shimmerGRPC" +
+      ".StringMsg\"\000\022K\n\024GetDockedShimmerInfo\022\026.s" +
+      "himmerGRPC.StringMsg\032\031.shimmerGRPC.Shimm" +
+      "ersInfo\"\000\022I\n\025GetMadgewickBetaValue\022\026.shi" +
+      "mmerGRPC.StringMsg\032\026.shimmerGRPC.DoubleM" +
+      "sg\"\000\022L\n\014PairShimmers\022\033.shimmerGRPC.Strin" +
+      "gArrayMsg\032\035.shimmerGRPC.OperationRequest" +
+      "\"\000\022O\n\024GetOperationProgress\022\026.shimmerGRPC" +
+      ".StringMsg\032\035.shimmerGRPC.OperationReques" +
+      "t\"\000\022X\n\030ImportSdDataFromShimmers\022\033.shimme" +
+      "rGRPC.StringArrayMsg\032\035.shimmerGRPC.Opera" +
+      "tionRequest\"\000\022N\n\023ParseSdDataFromPath\022\026.s" +
+      "himmerGRPC.StringMsg\032\035.shimmerGRPC.Opera" +
+      "tionRequest\"\000\022Q\n\021ScanSdDataAndCopy\022\033.shi" +
+      "mmerGRPC.StringArrayMsg\032\035.shimmerGRPC.Op" +
+      "erationRequest\"\000\022O\n\017ClearSdCardData\022\033.sh" +
+      "immerGRPC.StringArrayMsg\032\035.shimmerGRPC.O" +
+      "perationRequest\"\000\022X\n\030DockAccessSlotWithS" +
+      "dCard\022\033.shimmerGRPC.StringArrayMsg\032\035.shi" +
+      "mmerGRPC.OperationRequest\"\000\022T\n\024DockResto" +
+      "reAutoTasks\022\033.shimmerGRPC.StringArrayMsg" +
+      "\032\035.shimmerGRPC.OperationRequest\"\000\022@\n\014Get" +
+      "InfoSpans\022\026.shimmerGRPC.StringMsg\032\026.shim" +
+      "merGRPC.InfoSpans\"\000\022I\n\022GetInfoAllShimmer" +
+      "s\022\026.shimmerGRPC.StringMsg\032\031.shimmerGRPC." +
+      "ShimmersInfo\"\000\022L\n\022GetEmulatedDevices\022\026.s" +
+      "himmerGRPC.StringMsg\032\034.shimmerGRPC.Emula" +
+      "tedDevices\"\000\022[\n\031GetBluetoothDeviceDetail" +
+      "s\022\026.shimmerGRPC.StringMsg\032$.shimmerGRPC." +
+      "BluetoothDevicesDetails\"\000\022V\n\024GetConnecte" +
+      "dShimmers\022\026.shimmerGRPC.StringMsg\032$.shim" +
+      "merGRPC.BluetoothDevicesDetails\"\000\022P\n\024Get" +
+      "DeviceStateStream\022\032.shimmerGRPC.StreamRe" +
+      "quest\032\030.shimmerGRPC.DeviceState\"\0000\001BB\n\030c" +
+      "om.shimmerresearch.grpcB\013ShimmerGRPC\252\002\030c" +
+      "om.shimmerresearch.grpcb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -21872,7 +22175,7 @@ public final class ShimmerGRPC {
     internal_static_shimmerGRPC_DeviceState_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_shimmerGRPC_DeviceState_descriptor,
-        new java.lang.String[] { "ComPort", "State", });
+        new java.lang.String[] { "DeviceName", "ComPort", "MacId", "State", });
     internal_static_shimmerGRPC_Ieee802154Info_descriptor =
       getDescriptor().getMessageTypes().get(15);
     internal_static_shimmerGRPC_Ieee802154Info_fieldAccessorTable = new

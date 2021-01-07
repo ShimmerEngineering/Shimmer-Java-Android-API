@@ -71,6 +71,8 @@ service ShimmerServer {
   //Noldus client related
   rpc GetBluetoothDeviceDetails(StringMsg) returns (BluetoothDevicesDetails) {}
   
+  rpc GetConnectedShimmers(StringMsg) returns (BluetoothDevicesDetails) {}
+  
   rpc GetDeviceStateStream(StreamRequest) returns (stream DeviceState) {}
 }
 
@@ -220,8 +222,10 @@ enum BT_STATE {
 }
 
 message DeviceState {
-	string comPort = 1;
-	BT_STATE state = 2;
+	string deviceName = 1;
+	string comPort = 2;
+	string macId = 3;
+	BT_STATE state = 4;
 }
 
 message Ieee802154Info {
