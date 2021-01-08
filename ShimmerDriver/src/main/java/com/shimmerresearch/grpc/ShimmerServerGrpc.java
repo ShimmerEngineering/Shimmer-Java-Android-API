@@ -867,6 +867,68 @@ public final class ShimmerServerGrpc {
     return getGetDeviceStateStreamMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> getGetBluetoothStateStreamMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetBluetoothStateStream",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
+      com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> getGetBluetoothStateStreamMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest, com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> getGetBluetoothStateStreamMethod;
+    if ((getGetBluetoothStateStreamMethod = ShimmerServerGrpc.getGetBluetoothStateStreamMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetBluetoothStateStreamMethod = ShimmerServerGrpc.getGetBluetoothStateStreamMethod) == null) {
+          ShimmerServerGrpc.getGetBluetoothStateStreamMethod = getGetBluetoothStateStreamMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest, com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetBluetoothStateStream"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetBluetoothStateStream"))
+              .build();
+        }
+      }
+    }
+    return getGetBluetoothStateStreamMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> getGetBluetoothStateMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetBluetoothState",
+      requestType = com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.class,
+      responseType = com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+      com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> getGetBluetoothStateMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> getGetBluetoothStateMethod;
+    if ((getGetBluetoothStateMethod = ShimmerServerGrpc.getGetBluetoothStateMethod) == null) {
+      synchronized (ShimmerServerGrpc.class) {
+        if ((getGetBluetoothStateMethod = ShimmerServerGrpc.getGetBluetoothStateMethod) == null) {
+          ShimmerServerGrpc.getGetBluetoothStateMethod = getGetBluetoothStateMethod =
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerGRPC.StringMsg, com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetBluetoothState"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.StringMsg.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState.getDefaultInstance()))
+              .setSchemaDescriptor(new ShimmerServerMethodDescriptorSupplier("GetBluetoothState"))
+              .build();
+        }
+      }
+    }
+    return getGetBluetoothStateMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -1125,6 +1187,20 @@ public final class ShimmerServerGrpc {
       asyncUnimplementedUnaryCall(getGetDeviceStateStreamMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void getBluetoothStateStream(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetBluetoothStateStreamMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void getBluetoothState(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetBluetoothStateMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -1316,6 +1392,20 @@ public final class ShimmerServerGrpc {
                 com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
                 com.shimmerresearch.grpc.ShimmerGRPC.DeviceState>(
                   this, METHODID_GET_DEVICE_STATE_STREAM)))
+          .addMethod(
+            getGetBluetoothStateStreamMethod(),
+            asyncServerStreamingCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest,
+                com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState>(
+                  this, METHODID_GET_BLUETOOTH_STATE_STREAM)))
+          .addMethod(
+            getGetBluetoothStateMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.shimmerresearch.grpc.ShimmerGRPC.StringMsg,
+                com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState>(
+                  this, METHODID_GET_BLUETOOTH_STATE)))
           .build();
     }
   }
@@ -1570,6 +1660,22 @@ public final class ShimmerServerGrpc {
       asyncServerStreamingCall(
           getChannel().newCall(getGetDeviceStateStreamMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getBluetoothStateStream(com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> responseObserver) {
+      asyncServerStreamingCall(
+          getChannel().newCall(getGetBluetoothStateStreamMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void getBluetoothState(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request,
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getGetBluetoothStateMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -1779,6 +1885,21 @@ public final class ShimmerServerGrpc {
         com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request) {
       return blockingServerStreamingCall(
           getChannel(), getGetDeviceStateStreamMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public java.util.Iterator<com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> getBluetoothStateStream(
+        com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest request) {
+      return blockingServerStreamingCall(
+          getChannel(), getGetBluetoothStateStreamMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState getBluetoothState(com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+      return blockingUnaryCall(
+          getChannel(), getGetBluetoothStateMethod(), getCallOptions(), request);
     }
   }
 
@@ -1994,6 +2115,14 @@ public final class ShimmerServerGrpc {
       return futureUnaryCall(
           getChannel().newCall(getGetConnectedShimmersMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState> getBluetoothState(
+        com.shimmerresearch.grpc.ShimmerGRPC.StringMsg request) {
+      return futureUnaryCall(
+          getChannel().newCall(getGetBluetoothStateMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SAY_HELLO = 0;
@@ -2021,8 +2150,10 @@ public final class ShimmerServerGrpc {
   private static final int METHODID_GET_BLUETOOTH_DEVICE_DETAILS = 22;
   private static final int METHODID_GET_CONNECTED_SHIMMERS = 23;
   private static final int METHODID_GET_DEVICE_STATE_STREAM = 24;
-  private static final int METHODID_SEND_DATA_STREAM = 25;
-  private static final int METHODID_SEND_FILE_STREAM = 26;
+  private static final int METHODID_GET_BLUETOOTH_STATE_STREAM = 25;
+  private static final int METHODID_GET_BLUETOOTH_STATE = 26;
+  private static final int METHODID_SEND_DATA_STREAM = 27;
+  private static final int METHODID_SEND_FILE_STREAM = 28;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -2141,6 +2272,14 @@ public final class ShimmerServerGrpc {
           serviceImpl.getDeviceStateStream((com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest) request,
               (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.DeviceState>) responseObserver);
           break;
+        case METHODID_GET_BLUETOOTH_STATE_STREAM:
+          serviceImpl.getBluetoothStateStream((com.shimmerresearch.grpc.ShimmerGRPC.StreamRequest) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState>) responseObserver);
+          break;
+        case METHODID_GET_BLUETOOTH_STATE:
+          serviceImpl.getBluetoothState((com.shimmerresearch.grpc.ShimmerGRPC.StringMsg) request,
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerGRPC.DeviceBluetoothState>) responseObserver);
+          break;
         default:
           throw new AssertionError();
       }
@@ -2235,6 +2374,8 @@ public final class ShimmerServerGrpc {
               .addMethod(getGetBluetoothDeviceDetailsMethod())
               .addMethod(getGetConnectedShimmersMethod())
               .addMethod(getGetDeviceStateStreamMethod())
+              .addMethod(getGetBluetoothStateStreamMethod())
+              .addMethod(getGetBluetoothStateMethod())
               .build();
         }
       }
