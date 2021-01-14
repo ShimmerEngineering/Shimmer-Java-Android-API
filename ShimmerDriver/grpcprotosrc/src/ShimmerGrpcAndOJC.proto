@@ -69,10 +69,8 @@ service ShimmerServer {
   
   
   //Noldus client related
-  rpc GetBluetoothDeviceDetails(StringMsg) returns (BluetoothDevicesDetails) {}
-  
-  rpc GetConnectedShimmers(StringMsg) returns (BluetoothDevicesDetails) {}
-  
+  rpc GetPairedBtShimmers(StringMsg) returns (BluetoothDevicesDetails) {}
+    
   rpc GetDeviceStateStream(StreamRequest) returns (stream DeviceState) {}
 }
 
