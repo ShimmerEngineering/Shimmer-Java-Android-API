@@ -22,7 +22,7 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
  */
 @javax.annotation.Generated(
     value = "by gRPC proto compiler (version 1.32.1)",
-    comments = "Source: src/ShimmerGrpcAndOJC.proto")
+    comments = "Source: src/ShimmerGrpcAndOJC_v1.0.0.proto")
 public final class ShimmerServerGrpc {
 
   private ShimmerServerGrpc() {}

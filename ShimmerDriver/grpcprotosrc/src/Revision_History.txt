@@ -1,0 +1,4 @@
+ShimmerGrpcAndOJC
+----------------------------------------------
+v1.0.0 - 21 January 2021
+- Addition of methods to support Noldus client
