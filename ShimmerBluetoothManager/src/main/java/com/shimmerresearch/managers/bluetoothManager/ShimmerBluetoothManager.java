@@ -313,6 +313,13 @@ public abstract class ShimmerBluetoothManager{
 		}
 	}
 	
+	public void configureShimmer(ShimmerDevice shimmerClone, boolean writeCalibrationDump){
+		if (shimmerClone instanceof ShimmerBluetooth) {
+			((ShimmerBluetooth) shimmerClone).setWriteCalibrationDumpWhenConfiguringForClone(writeCalibrationDump);
+		}
+		configureShimmers(Arrays.asList(shimmerClone));
+	}
+	
 	public void configureShimmer(ShimmerDevice shimmerClone){
 		configureShimmers(Arrays.asList(shimmerClone));
 	}
