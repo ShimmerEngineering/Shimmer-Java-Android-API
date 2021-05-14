@@ -192,7 +192,7 @@ public class API_00002_Filters {
 		df.setRoundingMode(RoundingMode.HALF_UP);
 		
 		for(int i=0;i<a.length;i++) {
-			assertTrue("Arrays are not equal at index:" + i, df.format(a).equals(df.format(b)));
+			assertTrue("Arrays are not equal at index:" + i, df.format(a[i]).equals(df.format(b[i])));
 		}
 	}
 
