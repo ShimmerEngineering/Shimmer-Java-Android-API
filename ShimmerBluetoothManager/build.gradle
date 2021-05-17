@@ -6,7 +6,6 @@ apply plugin: 'com.jfrog.artifactory'
 
 version = '0.9.30beta'
 
-
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -59,7 +58,6 @@ artifactory {
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
-
         }
     }
 }

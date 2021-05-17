@@ -180,7 +180,7 @@ public class API_00002_Filters {
 			assertTrue("Array lengths are not equal", false);
 		}
 		
-		compareDoubleArraysToNDecimalPlaces(filteredSignal, referenceSignal, 12);
+		compareDoubleArraysToNDecimalPlaces(filteredSignal, referenceSignal, 10);
 	}
 
 	private void compareDoubleArraysToNDecimalPlaces(double[] a, double[] b, int nDecimalPlaces) {
@@ -192,6 +192,7 @@ public class API_00002_Filters {
 		df.setRoundingMode(RoundingMode.HALF_UP);
 		
 		for(int i=0;i<a.length;i++) {
+			System.out.println(df.format(a[i]) + "\t" + df.format(b[i]));
 			assertTrue("Arrays are not equal at index:" + i, df.format(a[i]).equals(df.format(b[i])));
 		}
 	}
