@@ -619,6 +619,19 @@ public abstract class ShimmerBluetoothManager{
 		return list;
 	}
 	
+	/**
+	 * @param friendlyName
+	 * @return comport if found, and null if not
+	 */
+	public String getComPortFromFriendlyName(String friendlyName) {
+		for (BluetoothDeviceDetails bdd:mMapOfParsedBtComPorts.values()) {
+			if (bdd.mFriendlyName.equals(friendlyName)) {
+				return bdd.mComPort;
+			}
+		}
+		return null;
+	}
+	
 	//TODO add support for Shimmer4
 	public List<String[]> getListOfSignalsFromDevices(String address){
 		List<String []> list = new ArrayList<String []>();
@@ -638,6 +651,10 @@ public abstract class ShimmerBluetoothManager{
 	//---------- GET Methods end -------------------------------
 	
 	
+	/**
+	 * @author User
+	 *
+	 */
 	protected class ConnectThread extends Thread{
 		
 		String comPort;
@@ -786,6 +803,7 @@ public abstract class ShimmerBluetoothManager{
 			return portDetails;
 		}
 
+		
 		protected void connectUnknownShimmer() throws ShimmerException {
 			printMessage("Connecting to new Shimmer with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 			
@@ -814,9 +832,11 @@ public abstract class ShimmerBluetoothManager{
 		 * @return
 		 */
 		protected ShimmerDevice resolveUnknownShimmer(ShimmerRadioInitializer shimmerRadioInitializer){
-			ShimmerVerObject sVO = shimmerRadioInitializer.readShimmerVerObject();
+
 			ShimmerDevice shimmerDeviceNew = null;
-			if (sVO!=null) {
+
+			try {
+				ShimmerVerObject sVO = shimmerRadioInitializer.readShimmerVerObject();
 				if (sVO.isShimmerGen2() || sVO.isShimmerGen3()){
 					shimmerDeviceNew = createNewShimmer3(shimmerRadioInitializer, bluetoothAddress);
 				} 
@@ -826,35 +846,41 @@ public abstract class ShimmerBluetoothManager{
 				else if(sVO.isSweatchDevice()){
 					shimmerDeviceNew = createNewSweatchDevice(shimmerRadioInitializer, bluetoothAddress);
 				}
-			}
 
-			if(shimmerDeviceNew!=null){
-				shimmerDeviceNew.setComPort(comPort);
-				shimmerDeviceNew.setMacIdFromUart(bluetoothAddress);
-				shimmerDeviceNew.setShimmerVersionObjectAndCreateSensorMap(sVO);
 
-				//Temporarily added, not needed at the moment so commenting out
-//				ExpansionBoardDetails expBrdDetails = shimmerRadioInitializer.readExpansionBoardID();
-//				if(expBrdDetails!=null){
-//					shimmerDeviceNew.setExpansionBoardDetails(expBrdDetails);
-//				}
+	
+				if(shimmerDeviceNew!=null){
+					shimmerDeviceNew.setComPort(comPort);
+					shimmerDeviceNew.setMacIdFromUart(bluetoothAddress);
+					shimmerDeviceNew.setShimmerVersionObjectAndCreateSensorMap(sVO);
 
-				initializeNewShimmerCommon(shimmerDeviceNew);
-			}
-			else {
-				try {
-					shimmerRadioInitializer.getSerialCommPort().disconnect();
-				} catch (ShimmerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+	
+					//Temporarily added, not needed at the moment so commenting out
+	//				ExpansionBoardDetails expBrdDetails = shimmerRadioInitializer.readExpansionBoardID();
+	//				if(expBrdDetails!=null){
+	//					shimmerDeviceNew.setExpansionBoardDetails(expBrdDetails);
+	//				}
+
+	
+					initializeNewShimmerCommon(shimmerDeviceNew);
+
+
+
 				}
+				else {
+					shimmerRadioInitializer.getSerialCommPort().disconnect();
+
+
+
+				}
+			} catch(ShimmerException e) {
+				e.printStackTrace();
 			}
 			
 			return shimmerDeviceNew;
 		}
 
 	}
-
 
 	protected void connectNoninOnyxII(String comPort, String bluetoothAddress) throws ShimmerException {
 		NoninOnyxIIDevice noninDevice = new NoninOnyxIIDevice(comPort, bluetoothAddress);
@@ -898,6 +924,12 @@ public abstract class ShimmerBluetoothManager{
 		// particular device, set it to be the global setting in this class
 		if(!shimmerDevice.isFixedShimmerConfigModeSet()) {
 			shimmerDevice.setFixedShimmerConfig(mFixedShimmerConfigGlobal);
+		}
+		//Just to be safe
+		if (mFixedShimmerConfigGlobal==FIXED_SHIMMER_CONFIG_MODE.NEUHOME || mFixedShimmerConfigGlobal==FIXED_SHIMMER_CONFIG_MODE.NEUHOMEGSRONLY) {
+			if (shimmerDevice instanceof ShimmerBluetooth) {
+				((ShimmerBluetooth)shimmerDevice).setSetupDeviceWhileConnecting(true);
+			}
 		}
 		shimmerDevice.setAutoStartStreaming(mAutoStartStreaming);
 	}

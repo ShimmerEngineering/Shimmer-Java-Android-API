@@ -38,6 +38,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails;
@@ -103,6 +104,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	/** Contains all loaded Algorithm modules */
 	protected Map<String, AbstractAlgorithm> mMapOfAlgorithmModules = new HashMap<String, AbstractAlgorithm>();
+	protected ArrayList<String> mAlgorithmProcessingSequence = null;
 	/** All supported channels based on hardware, expansion board and firmware */
 //	protected Map<String, AlgorithmDetails> mMapOfAlgorithmDetails = new LinkedHashMap<String, AlgorithmDetails>();
 	/** for tile generation in GUI configuration */ 
@@ -1429,17 +1431,34 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public ObjectCluster processAlgorithms(ObjectCluster ojc) {
-		for (AbstractAlgorithm aA:getMapOfAlgorithmModules().values()) {
-//			consolePrintErrLn.println(aA.mAlgorithmName + "\tisEnabled:\t" + aA.isEnabled());
-			if (aA.isEnabled()) {
-				try {
-					AlgorithmResultObject algorithmResultObject = aA.processDataRealTime(ojc);
-					if(algorithmResultObject!=null){
-						ojc = (ObjectCluster) algorithmResultObject.mResult;
+		if (mAlgorithmProcessingSequence!=null) {
+			for (String algoKey:mAlgorithmProcessingSequence) {
+				AbstractAlgorithm aA = getMapOfAlgorithmModules().get(algoKey);
+				if (aA.isEnabled()) {
+					try {
+						AlgorithmResultObject algorithmResultObject = aA.processDataRealTime(ojc);
+						if(algorithmResultObject!=null){
+							ojc = (ObjectCluster) algorithmResultObject.mResult;
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				}
+			}
+		} else {
+			for (AbstractAlgorithm aA:getMapOfAlgorithmModules().values()) {
+				//			consolePrintErrLn.println(aA.mAlgorithmName + "\tisEnabled:\t" + aA.isEnabled());
+				if (aA.isEnabled()) {
+					try {
+						AlgorithmResultObject algorithmResultObject = aA.processDataRealTime(ojc);
+						if(algorithmResultObject!=null){
+							ojc = (ObjectCluster) algorithmResultObject.mResult;
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -2453,6 +2472,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	/**
+	 * This method has been deprecated, and we recommend users to use either {@link com.shimmerresearch.driver.ShimmerDevice#setSensorEnabledState(int sensorId, boolean state)} 
+	 * <br> or {@link com.shimmerresearch.driver.ShimmerDevice#setSensorIdsEnabled(Integer[] sensorIds)}.
+	 * <p>
+	 * The enabled sensors that are set in the ShimmerDevice class can then be written to the physical device by the following methods:<br>
+	 * A) Clone device - Create a virtual representation of a Shimmer device by calling deepClone(). Update the sensor states and/or other desired settings on the clone device. 
+	 * Call {@link AssembleShimmerConfig} to generate a Shimmer config for the clone. Then call configureShimmer(clone) from ShimmerBluetoothManager to write the clone settings to the physical device.
+	 * <p> B) Call {@link #writeConfigBytes()} after changing the sensor states. 
+	 * @param mEnabledSensors
+	 */
+	@Deprecated
 	public void setEnabledSensors(long mEnabledSensors) {
 		this.mEnabledSensors = mEnabledSensors;
 	}
@@ -3128,6 +3158,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
+	public void setAlgoProcessingSequence(ArrayList<String> algoOrder) {
+		mAlgorithmProcessingSequence = algoOrder;
+	}
+	
 	public Map<String,AbstractAlgorithm> getMapOfAlgorithmModules(){
 		return mMapOfAlgorithmModules;
 	}
@@ -3143,7 +3177,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected void initializeAlgorithms() {
 		for (AbstractAlgorithm aa:mMapOfAlgorithmModules.values()){
 			try {
-				if(aa.isEnabled() && !aa.isInitialized()){
+				if(aa.isEnabled()){
+//				if(aa.isEnabled() && !aa.isInitialized()){
 					aa.setShimmerSamplingRate(getSamplingRateShimmer());
 					aa.initialize();
 				}
@@ -3653,7 +3688,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 					channelDetails = new ChannelDetails();
 					channelDetails.mGuiName = dbChannelHandle;
 					channelDetails.mObjectClusterName = dbChannelHandle;
-					channelDetails.setDatabaseChannelHandle(dbChannelHandle);
+					String dbColumnName = dbChannelHandle.replace("-", "_");
+					channelDetails.setDatabaseChannelHandle(dbColumnName);
 				}
 			}
 			
@@ -4312,7 +4348,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void startStreaming() {
 		resetPacketLossVariables();
 		generateParserMap();
-		resetAlgorithmBuffers();
+//		resetAlgorithmBuffers();
+		initializeAlgorithms();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.startStreaming();
 		}

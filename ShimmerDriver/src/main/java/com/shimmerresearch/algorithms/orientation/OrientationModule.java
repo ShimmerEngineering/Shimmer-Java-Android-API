@@ -93,9 +93,12 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	public OrientationModule(ShimmerDevice shimmerDevice, AlgorithmDetails algorithmDetails) {
 		super(shimmerDevice, algorithmDetails);
 	}
-	
     //--------- Constructors for this class end --------------
 
+	public GradDes3DOrientation getOrientationAlgorithm() {
+		return orientationAlgorithm;
+	}
+	
 	@Override
 	public AlgorithmResultObject processDataRealTime(ObjectCluster object) throws Exception {
 
