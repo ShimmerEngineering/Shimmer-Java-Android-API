@@ -29,7 +29,7 @@ public class ShimmerRadioInitializer {
 		this.serialCommPort = serialCommPort;
 	}
 	
-	public ShimmerVerObject readShimmerVerObject(){
+	public ShimmerVerObject readShimmerVerObject() throws ShimmerException {
 		try {
 			int hardwareVersion = readHardwareVersion();
 			byte[] bufferFWVersion = readFirmwareVersion(); 
@@ -38,7 +38,7 @@ public class ShimmerRadioInitializer {
 			return shimmerVerObject;
 		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw(e);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

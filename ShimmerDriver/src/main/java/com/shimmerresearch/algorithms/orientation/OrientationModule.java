@@ -95,6 +95,10 @@ public abstract class OrientationModule extends AbstractAlgorithm{
 	}
     //--------- Constructors for this class end --------------
 
+	public GradDes3DOrientation getOrientationAlgorithm() {
+		return orientationAlgorithm;
+	}
+	
 	@Override
 	public AlgorithmResultObject processDataRealTime(ObjectCluster object) throws Exception {
 
