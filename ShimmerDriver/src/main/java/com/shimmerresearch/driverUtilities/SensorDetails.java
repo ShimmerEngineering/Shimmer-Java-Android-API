@@ -20,7 +20,7 @@ public class SensorDetails implements Serializable{
 	private static final long serialVersionUID = 1545530433767674139L;
 	
 	/** by default load in communication types for Bluetooth and SD	 */
-	public ConcurrentHashMap<COMMUNICATION_TYPE, Boolean> mapOfIsEnabledPerCommsType = new ConcurrentHashMap<COMMUNICATION_TYPE, Boolean>();
+	public Map<COMMUNICATION_TYPE, Boolean> mapOfIsEnabledPerCommsType = new ConcurrentHashMap<COMMUNICATION_TYPE, Boolean>();
 	{
 		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.BLUETOOTH, false);
 		mapOfIsEnabledPerCommsType.put(COMMUNICATION_TYPE.SD, false);
