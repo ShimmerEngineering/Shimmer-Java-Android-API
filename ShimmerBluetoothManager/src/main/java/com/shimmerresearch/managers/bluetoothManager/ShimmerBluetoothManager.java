@@ -832,7 +832,9 @@ public abstract class ShimmerBluetoothManager{
 		 * @return
 		 */
 		protected ShimmerDevice resolveUnknownShimmer(ShimmerRadioInitializer shimmerRadioInitializer){
+
 			ShimmerDevice shimmerDeviceNew = null;
+
 			try {
 				ShimmerVerObject sVO = shimmerRadioInitializer.readShimmerVerObject();
 				if (sVO.isShimmerGen2() || sVO.isShimmerGen3()){
@@ -844,22 +846,32 @@ public abstract class ShimmerBluetoothManager{
 				else if(sVO.isSweatchDevice()){
 					shimmerDeviceNew = createNewSweatchDevice(shimmerRadioInitializer, bluetoothAddress);
 				}
+
+
 	
 				if(shimmerDeviceNew!=null){
 					shimmerDeviceNew.setComPort(comPort);
 					shimmerDeviceNew.setMacIdFromUart(bluetoothAddress);
 					shimmerDeviceNew.setShimmerVersionObjectAndCreateSensorMap(sVO);
+
 	
 					//Temporarily added, not needed at the moment so commenting out
 	//				ExpansionBoardDetails expBrdDetails = shimmerRadioInitializer.readExpansionBoardID();
 	//				if(expBrdDetails!=null){
 	//					shimmerDeviceNew.setExpansionBoardDetails(expBrdDetails);
 	//				}
+
 	
 					initializeNewShimmerCommon(shimmerDeviceNew);
+
+
+
 				}
 				else {
 					shimmerRadioInitializer.getSerialCommPort().disconnect();
+
+
+
 				}
 			} catch(ShimmerException e) {
 				e.printStackTrace();
@@ -869,7 +881,6 @@ public abstract class ShimmerBluetoothManager{
 		}
 
 	}
-
 
 	protected void connectNoninOnyxII(String comPort, String bluetoothAddress) throws ShimmerException {
 		NoninOnyxIIDevice noninDevice = new NoninOnyxIIDevice(comPort, bluetoothAddress);
