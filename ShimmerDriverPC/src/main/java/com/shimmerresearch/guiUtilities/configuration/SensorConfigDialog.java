@@ -43,9 +43,6 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 	
 	public SensorConfigDialog(ShimmerPC shimmerDevice, BasicShimmerBluetoothManagerPc bluetoothManager) {
 		super(shimmerDevice, bluetoothManager);
-//		createFrame();
-//		initialize(shimmerDevice, bluetoothManager);
-//		showFrame();
 	}
 	
 	/**
@@ -210,18 +207,6 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 		
 
 		panel.setLayout((LayoutManager) new BoxLayout(panel, BoxLayout.Y_AXIS));
-		//dialog.getContentPane().add(panel, BorderLayout.CENTER);
-		
-		//JScrollPane scrollPane = new JScrollPane();
-		//scrollPane.setLayout((LayoutManager) new ScrollPaneLayout());
-		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneLayout.VERTICAL_SCROLLBAR_AS_NEEDED);
-		//dialog.getContentPane().add(scrollPane, BorderLayout.CENTER);
-		
-//		Box verticalBox = Box.createVerticalBox();
-//		panel.add(verticalBox);
-			//scrollPane.add(box);
-		
-
 	}
 
 	@Override
