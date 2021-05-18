@@ -37,6 +37,9 @@ public class MsgDock {
 	public final static int MSG_ID_SOURCE_DATA_PROCESS_MANAGER = 1012;
 	public final static int MSG_ID_SOURCE_VIDEO_MANAGER = 1013;
 	public final static int MSG_ID_SOURCE_SIMULATOR = 1014;
+	public final static int MSG_ID_SOURCE_NEUROHOME_SERVER = 1015;
+	public final static int MSG_ID_SOURCE_S3_UPLOAD_MANAGER = 1016;
+	public final static int MSG_ID_SOURCE_S3_DOWNLOAD_MANAGER = 1017;
 	
 
 	// --------------- DockManager Start -------------------------
@@ -144,13 +147,28 @@ public class MsgDock {
 	public final static int MSG_ID_PROCESS_DATA_OPERATION_FINISHED = 401;
 	
 	public final static int MSG_ID_APPLY_EVENTS_UPDATE = 410;
+	public final static int MSG_ID_APPLY_SD_CARD_GSR_HRV_PROCESSING = 411;
 	
 	public final static int MSG_ID_CLEARSKY_ALG_UPDATE = 430;
 	public final static int MSG_ID_CLEARSKY_ALG_FINISHED = 431;
 	public final static int MSG_ID_CLEARSKY_ALG_FAILED = 432;
 
+	public final static int MSG_ID_APPLY_ZSCORE_RESULT_AGGREGATOR_PROCESSING = 500; //progress 0 - 100%
+	public final static int MSG_ID_APPLY_ZSCORE_RESULT_AGGREGATOR_SUCCESS = 501;
+	public final static int MSG_ID_APPLY_ZSCORE_RESULT_AGGREGATOR_FAILURE = 502;
 	
+	public final static int MSG_ID_PROCESS_ZSCORE_UPDATE = 510; //progress 0 - 100%
+	public final static int MSG_ID_PROCESS_ZSCORE_SUCCESS = 511;
+	public final static int MSG_ID_PROCESS_ZSCORE_FAILURE = 512;
+	public final static int MSG_ID_PROCESS_ZSCORE_CANCELLED = 513;
+	public final static int MSG_ID_PROCESS_ZSCORE_DELETE_TEMP_DATA = 514;
+	
+	public final static int MSG_ID_PROCESS_PEAKS_UPDATE = 520; //progress 0 - 100%
+	public final static int MSG_ID_PROCESS_PEAKS_SUCCESS = 521;
+	public final static int MSG_ID_PROCESS_PEAKS_FAILURE = 522;
+	public final static int MSG_ID_PROCESS_PEAKS_CANCELLED  = 523;
 
+	
 	//ImportManager
 	public final static int MSG_ID_IMPORT_DB_PARSER_UPDATE = 130;
 	public final static int MSG_ID_IMPORT_DB_PARSER_SUCCESS = 131;
@@ -185,9 +203,12 @@ public class MsgDock {
 	public final static int MSG_ID_DB_MANAGER_LOADED_SUCCESS = 183;
 	public final static int MSG_ID_DB_PLAYBACK_TIMER_UPDATE = 184;
 	public final static int MSG_ID_DB_PLAYBACK_STARTED_STOPPED = 185;
+	public final static int MSG_ID_BT_TO_DB_RECORDING_THREAD_STARTED = 186;
 	
 	//AlgorithmManager
 	public final static int MSG_ID_DATA_TO_ALGO = 190;
+	
+	public final static int MSG_ID_NEURO_MANAGER_END_TRIAL = 1018;
 	
     public static final Map<Integer, String> mMapOfMsgCodes;
     static {
@@ -284,6 +305,7 @@ public class MsgDock {
 
         aMap.put(MSG_ID_BT_TO_DB_FINISHED, "MSG_ID_BT_TO_DB_FINISHED");
         aMap.put(MSG_ID_BT_TO_DB_BUFFER_FILLED, "MSG_ID_BT_TO_DB_BUFFER_FILLED");
+        aMap.put(MSG_ID_BT_TO_DB_RECORDING_THREAD_STARTED, "MSG_ID_BT_TO_DB_RECORDING");
         aMap.put(MSG_ID_BT_TO_DB_FAIL, "MSG_ID_BT_TO_DB_FAIL");
         
         aMap.put(MSG_ID_DB_PLAYBACK_TIMER_UPDATE, "MSG_ID_DB_PLAYBACK_TIMER_UPDATE");

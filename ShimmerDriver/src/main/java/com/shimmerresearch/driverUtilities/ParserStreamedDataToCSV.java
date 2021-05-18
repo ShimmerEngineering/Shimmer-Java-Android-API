@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class ParserStreamedDataToCSV {
 	
 	private boolean isFileDelimiterDescriptorInFile = false;
 	private boolean isFileHeaderWritten;
+	private boolean isLimitingDecimalPlaces = false;
+	
+	private DecimalFormat decimalFormat = new DecimalFormat("#.00"); //round to two decimal places 
 	
 	private String filePath;
 	private String fileName;
@@ -72,6 +76,10 @@ public class ParserStreamedDataToCSV {
 	
 	public void setFileDelimiterDescriptorInFile(boolean isFileDelimiterDescriptorInFile){
 		this.isFileDelimiterDescriptorInFile = isFileDelimiterDescriptorInFile;
+	}
+	
+	public void setIsLimitingDecimalPlaces(boolean isLimitingDecimalPlaces) {
+		this.isLimitingDecimalPlaces = isLimitingDecimalPlaces;
 	}
 	
 	public void parseDataToCSV(ObjectCluster ojc) {
@@ -124,18 +132,29 @@ public class ParserStreamedDataToCSV {
 			}		
 		}
 		
-		writeHeaderToCSVFile(channelsHeader, unitsHeader);
+		writeDoubleLineHeaderToCSVFile(channelsHeader, unitsHeader);
 	}
 
-	public void writeHeaderToCSVFile(String channelsHeader, String unitsHeader) {
+	public void writeDoubleLineHeaderToCSVFile(String channelsHeader, String unitsHeader) {
+		try {
+			writeSingleLineHeaderToCSVFile(channelsHeader);
+			bufferedWriter.write(unitsHeader);
+			bufferedWriter.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		isFileHeaderWritten = true;
+	}
+	
+	public void writeSingleLineHeaderToCSVFile(String channelsHeader) {
 		try {
 			if(isFileDelimiterDescriptorInFile){
 				bufferedWriter.write("\"sep=" + fileDelimiter + "\"");
 				bufferedWriter.newLine();
 			}
 			bufferedWriter.write(channelsHeader);
-			bufferedWriter.newLine();
-			bufferedWriter.write(unitsHeader);
 			bufferedWriter.newLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -165,17 +184,21 @@ public class ParserStreamedDataToCSV {
 			List<String> allChannelNames = ojc.getChannelNamesByInsertionOrder();
 			for(String channelName : allChannelNames){
 				double value = ojc.getFormatClusterValue(channelName, CHANNEL_TYPE.CAL.toString());
-				sampleToWrite = sampleToWrite + String.valueOf(value) + fileDelimiter;
+				sampleToWrite = sampleToWrite + getFormattedValue(value) + fileDelimiter;
 			}
 		} 
 		else {
 			for(String channelName : listOfChannelNamesToWriteToCSV){
 				double value = ojc.getFormatClusterValue(channelName, CHANNEL_TYPE.CAL.toString());
-				sampleToWrite = sampleToWrite + String.valueOf(value) + fileDelimiter;
+				sampleToWrite = sampleToWrite + getFormattedValue(value) + fileDelimiter;
 			}
 		}
 		
 		writeSample(sampleToWrite);
+	}
+	
+	private String getFormattedValue(double value) {
+		return (isLimitingDecimalPlaces && !Double.isNaN(value)) ? decimalFormat.format(value) : String.valueOf(value);
 	}
 	
 	public void writeSample(String sampleToWrite) {

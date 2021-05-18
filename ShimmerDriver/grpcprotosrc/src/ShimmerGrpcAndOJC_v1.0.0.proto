@@ -3,7 +3,7 @@
 syntax = "proto3";
 //import "src/LiteProtocolInstructionSet.proto";
 
-import "google/protobuf/descriptor.proto";
+//import "google/protobuf/descriptor.proto";
 
 option csharp_namespace = "com.shimmerresearch.grpc";
 option java_package = "com.shimmerresearch.grpc";
@@ -26,8 +26,12 @@ service ShimmerServer {
   
   rpc ConnectShimmer(ShimmerRequest) returns (CommandStatus){}
   
+  rpc DisconnectShimmer(ShimmerRequest) returns (CommandStatus){}
+
   rpc StartStreaming(ShimmerRequest) returns (CommandStatus){}
   
+  rpc StopStreaming(ShimmerRequest) returns (CommandStatus){}
+
   rpc CloseApplication(ShimmerRequest) returns (CommandStatus){}
 
 
@@ -62,7 +66,12 @@ service ShimmerServer {
   rpc GetInfoAllShimmers(StringMsg) returns (ShimmersInfo){}
 
   rpc GetEmulatedDevices(StringMsg) returns (EmulatedDevices){}
-
+  
+  
+  //Noldus client related
+  rpc GetPairedBtShimmers(StringMsg) returns (BluetoothDevicesDetails) {}
+    
+  rpc GetDeviceStateStream(StreamRequest) returns (stream DeviceState) {}
 }
 
 message FileByteTransfer {
@@ -181,6 +190,40 @@ message ShimmersInfo {
 	Ieee802154Info ieee802154Info = 21;
   }
   map<string,ShimmerInfo> shimmerMap = 3;
+}
+
+message BluetoothDevicesDetails {
+	bool state = 1;
+	string message = 2;
+	
+	message BluetoothDeviceDetails {
+		string comPort = 1;
+		string name = 2;
+		string macId = 3;
+		string deviceType = 4;
+		string lastConnectionState = 5;
+	}
+	
+	map<string,BluetoothDeviceDetails> deviceMap = 3;
+}
+
+enum BT_STATE {
+	DISCONNECTED = 0;
+	CONNECTING = 1;
+	CONNECTED = 2;
+	STREAMING = 3;
+	STREAMING_AND_SDLOGGING = 4;
+	SDLOGGING = 5;
+	CONFIGURING = 6;
+	CONNECTION_LOST = 7;
+	CONNECTION_FAILED = 8;
+}
+
+message DeviceState {
+	string deviceName = 1;
+	string comPort = 2;
+	string macId = 3;
+	BT_STATE state = 4;
 }
 
 message Ieee802154Info {

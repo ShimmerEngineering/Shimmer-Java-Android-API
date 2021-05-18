@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,13 +14,11 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.shimmerGq.ConfigByteLayoutShimmerGq802154;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
-import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
@@ -29,12 +26,10 @@ import com.shimmerresearch.driverUtilities.ConfigOptionObject;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
-import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.exgConfig.ExGConfigBytesDetails;
 import com.shimmerresearch.exgConfig.ExGConfigOption;
@@ -1625,7 +1620,8 @@ public class SensorEXG extends AbstractSensor{
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
 		mShimmerVerObject = shimmerDevice.mShimmerVerObject;
 //		mSensorEnabledMap = shimmerDevice.getSensorEnabledMap();
-				
+		
+		//TODO make dymanic based on hardware in use
 		int idxEXGADS1292RChip1Config1 =         10;// exg bytes
 		int idxEXGADS1292RChip2Config1 =         20;
 		
@@ -2496,7 +2492,7 @@ public class SensorEXG extends AbstractSensor{
 		setExgPropertySingleChipValue(EXG_CHIP_INDEX.CHIP1,EXG_SETTINGS.REG6_CH1_RLD_POS_INPUTS,((valueToSet&0x01) == 0x01)? 1:0);
 	}
 
-	protected void setEXGLeadOffCurrentMode(int mode){
+	public void setEXGLeadOffCurrentMode(int mode){
 		if(mode==0){//Off
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG3.LEAD_OFF_FREQUENCY.DC);
 			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.LEAD_OFF_COMPARATORS.OFF);
@@ -2510,8 +2506,9 @@ public class SensorEXG extends AbstractSensor{
 			}
 		}
 		else if(mode==1){//DC Current
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG3.LEAD_OFF_FREQUENCY.DC);
-			setExgPropertyBothChips(EXG_SETTING_OPTIONS.REG2.LEAD_OFF_COMPARATORS.ON);
+			//Setup Chip 1
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG3.LEAD_OFF_FREQUENCY.DC);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG2.LEAD_OFF_COMPARATORS.ON);
 			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG6.RLD_LEAD_OFF_SENSE_FUNCTION.ON);
 			
 			if(isEXGUsingDefaultThreeUnipolarConfiguration()){
@@ -2526,13 +2523,22 @@ public class SensorEXG extends AbstractSensor{
 				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.ON);
 			}
 
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
-			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.LEAD_OFF_CURRENT.CURRENT_22NA);
+			setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP1, ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.COMPARATOR_THRESHOLD.POS90NEG10);
 
-			setExgPropertyBothChips(ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.LEAD_OFF_CURRENT.CURRENT_22NA);
-			setExgPropertyBothChips(ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.COMPARATOR_THRESHOLD.POS90NEG10);
+			//Setup Chip 2
+			if(isTwoChipExg()) {
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG3.LEAD_OFF_FREQUENCY.DC);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG2.LEAD_OFF_COMPARATORS.ON);
+
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH2.OFF);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH2.ON);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_NEG_INPUTS_CH1.OFF);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, EXG_SETTING_OPTIONS.REG7.LEAD_OFF_DETECT_POS_INPUTS_CH1.OFF);
+				
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.LEAD_OFF_CURRENT.CURRENT_22NA);
+				setExgPropertySingleChip(EXG_CHIP_INDEX.CHIP2, ExGConfigBytesDetails.EXG_SETTING_OPTIONS.REG3.COMPARATOR_THRESHOLD.POS90NEG10);
+			}
 
 			//For EMG the second chip needs to be powered up in order to support lead-off detection
 			if(isEXGUsingDefaultEMGConfiguration()){
