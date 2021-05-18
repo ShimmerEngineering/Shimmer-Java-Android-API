@@ -136,7 +136,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
-	
+	private boolean mWriteCalibrationDumpWhenConfiguringForClone = true; // true by default, this is for AA-246
 	//TODO Refactor to CONNECTION_STATE (or similar) and move to a generic class as this is used by devices other than BT
 	public enum BT_STATE{
 		DISCONNECTED("Disconnected"),
@@ -5387,7 +5387,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//System.out.println(cloneShimmerCast.getEnabledSensors());
 		}
 		
-		writeCalibrationDump(cloneShimmerCast.calibByteDumpGenerate());
+		if (cloneShimmerCast.getWriteCalibrationDumpWhenConfiguringForClone()) {
+			writeCalibrationDump(cloneShimmerCast.calibByteDumpGenerate());
+		}
 	}
 	
+	public void setWriteCalibrationDumpWhenConfiguringForClone(boolean enable) {
+		mWriteCalibrationDumpWhenConfiguringForClone = enable;
+	}
+	
+	public boolean getWriteCalibrationDumpWhenConfiguringForClone() {
+		return mWriteCalibrationDumpWhenConfiguringForClone;
+	}
 }
