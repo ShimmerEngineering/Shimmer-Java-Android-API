@@ -882,6 +882,12 @@ public abstract class ShimmerBluetoothManager{
 				}
 			} catch(ShimmerException e) {
 				e.printStackTrace();
+				try {
+					shimmerRadioInitializer.getSerialCommPort().disconnect();
+				} catch (Exception ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
 			}
 			
 			return shimmerDeviceNew;
