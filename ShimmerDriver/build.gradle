@@ -4,10 +4,16 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.artifactory'
 
-/*Rev0.2
-* - fixes for shimmer2r and writeSensors not working after streaming
+/*
+Rev0.3
+- switch to using jfrog
+
+Rev0.2
+- fixes for shimmer2r and writeSensors not working after streaming
 */
-version = '0.9.107beta' 
+
+//This version should match the git release tag
+version = '0.9.138beta' 
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -15,7 +21,7 @@ targetCompatibility = 1.7
 buildscript {
     repositories {
         maven {
-            url 'https://shimmersensing.jfrog.io/artifactory/dummyLcl'
+            url 'https://shimmersensing.jfrog.io/artifactory/ShimmerAPI'
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"
@@ -43,7 +49,7 @@ artifactory {
     contextUrl = "${artifactory_contextUrl}"
     publish {
         repository {
-            repoKey = 'dummyLcl'
+            repoKey = 'ShimmerAPI'
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
@@ -57,7 +63,7 @@ artifactory {
     }
     resolve {
         repository {
-            repoKey = 'dummyLcl'
+            repoKey = 'ShimmerAPI'
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
@@ -70,8 +76,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
            groupId = 'com.shimmersensing'
-           artifactId = 'rmshimmerapi'
-           version = '1.3'
+           artifactId = 'ShimmerDriver'
+           version = project.version
            from components.java
         }
     }
