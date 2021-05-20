@@ -14,12 +14,18 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.artifactory'
 
-version = '0.9.3beta'
+/*
+Rev0.2
+- switch to using jfrog
+*/
+
+//This version should match the git release tag
+version = '0.9.4beta'
 
 buildscript {
     repositories {
         maven {
-            url 'https://shimmersensing.jfrog.io/artifactory/dummyLcl'
+            url 'https://shimmersensing.jfrog.io/artifactory/ShimmerAPI'
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"
@@ -60,7 +66,7 @@ artifactory {
     contextUrl = "${artifactory_contextUrl}"
     publish {
         repository {
-            repoKey = 'dummyLcl'
+            repoKey = 'ShimmerAPI'
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
@@ -74,7 +80,7 @@ artifactory {
     }
     resolve {
         repository {
-            repoKey = 'dummyLcl'
+            repoKey = 'ShimmerAPI'
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
@@ -86,8 +92,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
            groupId = 'com.shimmersensing'
-           artifactId = 'rmshimmerdriverpc'
-           version = '1.3'
+           artifactId = 'ShimmerDriverPC'
+           version = project.version
            from components.java
         }
     }
