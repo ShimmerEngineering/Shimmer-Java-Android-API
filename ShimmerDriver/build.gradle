@@ -34,7 +34,10 @@ buildscript {
     }
     configurations.classpath {
         resolutionStrategy {
+	    //Added to circumvent warnings thrown when building
+	    //Sets the length of time that dynamic versions will be cached.
             cacheDynamicVersionsFor 0, 'seconds'
+	    //Sets the length of time that changing modules will be cached.
             cacheChangingModulesFor 0, 'seconds'
         }
     }
@@ -92,9 +95,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/java3d/vecmath
 	compile group: 'java3d', name: 'vecmath', version: '1.3.1'
    
-	//compile name: 'ShimmerBiophysicalProcessingLibrary_Rev_0_11'
+   	// https://mvnrepository.com/artifact/commons-collections/commons-collections
 	compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
-	testCompile group: 'junit', name: 'junit', version: '4.+'
 	
 	// https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
 	compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.4.0'
@@ -116,8 +118,11 @@ dependencies {
 	
     	// The production code uses the SLF4J logging API at compile time
     	compile 'org.slf4j:slf4j-api:1.7.21'
-    	    
-    	// Declare the dependency for your favourite test framework you want to use in your tests.
+	
+	// https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
+    	compile("javax.annotation:javax.annotation-api:1.3.2")
+    	
+	// Declare the dependency for your favourite test framework you want to use in your tests.
     	// TestNG is also supported by the Gradle Test task. Just change the
     	// testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     	// 'test.useTestNG()' to your build script.
@@ -125,10 +130,9 @@ dependencies {
     
     	// https://mvnrepository.com/artifact/org.mockito/mockito-all
 	testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
-    
-    	// https://mvnrepository.com/artifact/org.jblas/jblas
-	//compile group: 'org.jblas', name: 'jblas', version: '1.2.4'
-	
-	compile("javax.annotation:javax.annotation-api:1.3.2")
+    	
+	// https://mvnrepository.com/artifact/junit/junit
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+
 } 
 
