@@ -31,7 +31,10 @@ buildscript {
     }
     configurations.classpath {
         resolutionStrategy {
+            //Added to circumvent warnings thrown when building
+	        //Sets the length of time that dynamic versions will be cached.
             cacheDynamicVersionsFor 0, 'seconds'
+	        //Sets the length of time that changing modules will be cached.
             cacheChangingModulesFor 0, 'seconds'
         }
     }
@@ -80,21 +83,13 @@ publishing {
 }
 
 dependencies {
+    compile 'commons-codec:commons-codec:1.5'
+    compile 'commons-lang:commons-lang:2.6'
+    compile project (':ShimmerDriver')
+    
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
-
-    compile 'commons-codec:commons-codec:1.5'
-    compile 'commons-lang:commons-lang:2.6'
-
-    compile project (':ShimmerDriver')
-    //compile project (':ShimmerAlgorithms')
 }
-
-/*
-task wrapper(type: Wrapper) {
-   gradleVersion = '2.14.1' //version required
-}
-*/
