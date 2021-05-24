@@ -1,13 +1,11 @@
 syntax = "proto3";
 //import "src/LiteProtocolInstructionSet.proto";
 
-import "google/protobuf/descriptor.proto";
-import "src/ShimmerGrpcAndOJC.proto";
+import "src/ShimmerGrpcAndOJC_v1.0.0.proto";
 option java_package = "com.shimmerresearch.managers.grpc.neurolynqservice";
 option java_outer_classname = "ShimmerNeuroLynQService";
 
 package neurolynqservice;
-
 // The greeter service definition.
 service NeuroLynQService
 {
@@ -16,5 +14,18 @@ service NeuroLynQService
   rpc GetDataStream(shimmerGRPC.StreamRequest) returns (stream shimmerGRPC.ObjectCluster2) {}
   //Client sending data
   rpc SendDataStream(stream shimmerGRPC.ObjectCluster2) returns (shimmerGRPC.CommandStatus){}
+  //Get Client to Server Packets Stats
+  rpc GetClientStats(shimmerGRPC.StringMsg) returns (ClientStats){}
+  //Reset Client to Server Packet Stats
+  rpc ResetClientStats(shimmerGRPC.StringMsg) returns (ClientStats){}
+  }
+message ClientStats {
+	
+	message PacketStats {
+		int32 packetsReceived = 1;
+		double meanDelay = 2;
+		double maxDelay = 3;
+	}
+	
+	map<string,PacketStats> statsMap = 1;
 }
-
