@@ -34,10 +34,10 @@ buildscript {
     }
     configurations.classpath {
         resolutionStrategy {
-	    //Added to circumvent warnings thrown when building
-	    //Sets the length of time that dynamic versions will be cached.
+	    	//Added to circumvent warnings thrown when building
+	    	//Sets the length of time that dynamic versions will be cached.
             cacheDynamicVersionsFor 0, 'seconds'
-	    //Sets the length of time that changing modules will be cached.
+	    	//Sets the length of time that changing modules will be cached.
             cacheChangingModulesFor 0, 'seconds'
         }
     }
