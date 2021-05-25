@@ -1,5 +1,7 @@
 # Shimmer-Java-Android-API
 
+Note the gradle.properties file which hold jfrog credentials is a part of the project, this is important if we ever decide to make this project public
+
 Rev 3.00
 - Change to Handler MSGs
 
