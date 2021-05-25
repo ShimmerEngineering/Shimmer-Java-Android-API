@@ -57,14 +57,6 @@ test {
 	exclude '**/API_00001_ShimmerPC_GeneralBluetoothShimmer2R.class'
 }
 
-//TODO uncomment this to specify Java v1.7 - needed for creating a JAR for MATLAB 
-/*
-compileJava{
-	options.fork = true
-	options.forkOptions.executable = 'C:/Program Files (x86)/Java/jdk1.7.0_79/bin/javac'
-}
-*/
-
 artifactory {
     contextUrl = "${artifactory_contextUrl}"
     publish {
