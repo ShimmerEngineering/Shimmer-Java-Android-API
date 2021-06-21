@@ -37,14 +37,15 @@ public class ShimmerVerDetails implements Serializable {
 		// for each device. For newer devices from GQ onwards, we decided to just
 		// use the already defined SR number for the board.	
 		
-		public static final int SHIMMER_GQ_802154_LR = HW_ID_SR_CODES.SHIMMER_GQ_802154_LR; // Long Range
-		public static final int SHIMMER_GQ_802154_NR = HW_ID_SR_CODES.SHIMMER_GQ_802154_NR; // Normal Range
-		public static final int SHIMMER_4_SDK = HW_ID_SR_CODES.SHIMMER_4_SDK;
-		public static final int SHIMMER_ECG_MD = HW_ID_SR_CODES.SHIMMER_ECG_MD;
-		public static final int VERISENSE_IMU = HW_ID_SR_CODES.VERISENSE_IMU;
-		public static final int VERISENSE_GSR = HW_ID_SR_CODES.VERISENSE_GSR;
-		public static final int VERISENSE_PPG = HW_ID_SR_CODES.VERISENSE_PPG;
-		public static final int VERISENSE_DEV_BRD = HW_ID_SR_CODES.VERISENSE_DEV_BRD;
+		public static final int SHIMMER_GQ_802154_LR 	= HW_ID_SR_CODES.SHIMMER_GQ_802154_LR; // Long Range
+		public static final int SHIMMER_GQ_802154_NR 	= HW_ID_SR_CODES.SHIMMER_GQ_802154_NR; // Normal Range
+		public static final int SHIMMER_4_SDK 			= HW_ID_SR_CODES.SHIMMER_4_SDK;
+		public static final int SHIMMER_ECG_MD 			= HW_ID_SR_CODES.SHIMMER_ECG_MD;
+		public static final int VERISENSE_IMU 			= HW_ID_SR_CODES.VERISENSE_IMU;
+		public static final int VERISENSE_GSR_PLUS 		= HW_ID_SR_CODES.VERISENSE_GSR_PLUS;
+		public static final int VERISENSE_PPG 			= HW_ID_SR_CODES.VERISENSE_PPG;
+		public static final int VERISENSE_DEV_BRD 		= HW_ID_SR_CODES.VERISENSE_DEV_BRD;
+		public static final int VERISENSE_PULSE_PLUS	= HW_ID_SR_CODES.VERISENSE_PULSE_PLUS;
 
 		//Third party devices
 		public static final int NONIN_ONYX_II 			= 1000;
@@ -90,9 +91,10 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.WEBCAM_LOGITECH_HD_C930E, "Webcam");
         aMap.put(HW_ID.WEBCAM_DIGIOPTIX_SMART_GLASSES, "Webcam");
         aMap.put(HW_ID.VERISENSE_IMU, "Verisense IMU");
-        aMap.put(HW_ID.VERISENSE_GSR, "Verisense GSR");
+        aMap.put(HW_ID.VERISENSE_GSR_PLUS, "Verisense GSR+");
         aMap.put(HW_ID.VERISENSE_PPG, "Verisense PPG");
         aMap.put(HW_ID.VERISENSE_DEV_BRD, "Verisense Dev Brd");
+        aMap.put(HW_ID.VERISENSE_PULSE_PLUS, "Verisense Pulse+");
         
         mMapOfShimmerRevisions = Collections.unmodifiableMap(aMap);
     }
@@ -124,9 +126,10 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_4_SDK 				= 58;
 		public static final int SHIMMER_ECG_MD 				= 59;
 		public static final int VERISENSE_IMU				= 61;
-		public static final int VERISENSE_GSR				= 62;
+		public static final int VERISENSE_GSR_PLUS			= 62;
 		public static final int VERISENSE_PPG				= 63;
 		public static final int VERISENSE_DEV_BRD			= 64;
+		public static final int VERISENSE_PULSE_PLUS		= 68;
 	}
 	
 	public static final Map<Integer, String> mMapOfShimmerHardware;
@@ -156,9 +159,10 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.SHIMMER_4_SDK, "Shimmer4 SDK");
         aMap.put(HW_ID_SR_CODES.SHIMMER_ECG_MD, "Shimmer ECGmd");
         aMap.put(HW_ID_SR_CODES.VERISENSE_IMU, "Verisense IMU");
-        aMap.put(HW_ID_SR_CODES.VERISENSE_GSR, "Verisense GSR");
+        aMap.put(HW_ID_SR_CODES.VERISENSE_GSR_PLUS, "Verisense GSR+");
         aMap.put(HW_ID_SR_CODES.VERISENSE_PPG, "Verisense PPG");
         aMap.put(HW_ID_SR_CODES.VERISENSE_DEV_BRD, "Verisense Dev Brd");
+        aMap.put(HW_ID_SR_CODES.VERISENSE_PULSE_PLUS, "Verisense Pulse+");
         
         mMapOfShimmerHardware = Collections.unmodifiableMap(aMap);
     }
@@ -188,6 +192,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int BTSTREAM_CE = 14;
 		public static final int STROKARE = 15;
 		public static final int SHIMMER_ECG_MD = 16;
+		public static final int VERISENSE = 17;
 		
 		public static final Map<Integer, String> mMapOfFirmwareLabels;
 	    static {
@@ -203,6 +208,7 @@ public class ShimmerVerDetails implements Serializable {
 	        aMap.put(FW_ID.SHIMMER4_SDK_STOCK, "Shimmer4SDK");
 	        aMap.put(FW_ID.STROKARE, "StroKare");
 	        aMap.put(FW_ID.SHIMMER_ECG_MD, "ShimmerECGmd");
+	        aMap.put(FW_ID.VERISENSE, "Verisense");
 	        mMapOfFirmwareLabels = Collections.unmodifiableMap(aMap);
 	    }
 
