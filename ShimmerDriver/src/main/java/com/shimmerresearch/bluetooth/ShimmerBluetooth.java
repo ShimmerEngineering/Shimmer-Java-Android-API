@@ -104,6 +104,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -135,7 +136,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
-	
+	private boolean mWriteCalibrationDumpWhenConfiguringForClone = true; // true by default, this is for AA-246
 	//TODO Refactor to CONNECTION_STATE (or similar) and move to a generic class as this is used by devices other than BT
 	public enum BT_STATE{
 		DISCONNECTED("Disconnected"),
@@ -3089,6 +3090,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
+	 * This method has been deprecated, and we recommend users to use either {@link com.shimmerresearch.driver.ShimmerDevice#setSensorEnabledState(int sensorId, boolean state)} 
+	 * <br> or {@link com.shimmerresearch.driver.ShimmerDevice#setSensorIdsEnabled(Integer[] sensorIds)}.
+	 * <p>
+	 * The enabled sensors that are set in the ShimmerDevice class can then be written to the physical device by the following methods:<br>
+	 * A) Clone device - Create a virtual representation of a Shimmer device by calling deepClone(). Update the sensor states and/or other desired settings on the clone device. 
+	 * Call {@link AssembleShimmerConfig} to generate a Shimmer config for the clone. Then call configureShimmer(clone) from ShimmerBluetoothManager to write the clone settings to the physical device.
+	 * <p> B) Call {@link #writeConfigBytes()} after changing the sensor states. 
+	 * <p> <br>
+	 * Method documentation:<br>
 	 * Transmits a command to the Shimmer device to enable the sensors. To
 	 * enable multiple sensors an or operator should be used (e.g.
 	 * writeEnabledSensors(SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG)). Command should
@@ -3098,6 +3108,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 * @param enabledSensors e.g SENSOR_ACCEL|SENSOR_GYRO|SENSOR_MAG
 	 */
+	@Deprecated
 	public void writeEnabledSensors(long enabledSensors) {
 		
 		if(getFirmwareVersionCode()<=1){
@@ -3529,6 +3540,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	/**
+	 * Note that setting this may also change the individual sensors' sampling rates to follow the Shimmer device sampling rate more closely
 	 * @param rate Defines the sampling rate to be set (e.g.51.2 sets the sampling rate to 51.2Hz). User should refer to the document Sampling Rate Table to see all possible values.
 	 */
 	public void writeShimmerAndSensorsSamplingRate(double rate) {
@@ -5375,7 +5387,16 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			//System.out.println(cloneShimmerCast.getEnabledSensors());
 		}
 		
-		writeCalibrationDump(cloneShimmerCast.calibByteDumpGenerate());
+		if (cloneShimmerCast.getWriteCalibrationDumpWhenConfiguringForClone()) {
+			writeCalibrationDump(cloneShimmerCast.calibByteDumpGenerate());
+		}
 	}
 	
+	public void setWriteCalibrationDumpWhenConfiguringForClone(boolean enable) {
+		mWriteCalibrationDumpWhenConfiguringForClone = enable;
+	}
+	
+	public boolean getWriteCalibrationDumpWhenConfiguringForClone() {
+		return mWriteCalibrationDumpWhenConfiguringForClone;
+	}
 }

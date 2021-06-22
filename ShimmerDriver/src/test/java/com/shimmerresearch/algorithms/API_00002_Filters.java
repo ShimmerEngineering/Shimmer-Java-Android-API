@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -178,8 +180,20 @@ public class API_00002_Filters {
 			assertTrue("Array lengths are not equal", false);
 		}
 		
-		for(int i=0;i<referenceSignal.length;i++) {
-			assertTrue("Arrays are not equal at index:" + i, filteredSignal[i]==referenceSignal[i]);
+		compareDoubleArraysToNDecimalPlaces(filteredSignal, referenceSignal, 10);
+	}
+
+	private void compareDoubleArraysToNDecimalPlaces(double[] a, double[] b, int nDecimalPlaces) {
+		String format = "#.";
+		for(int i=0;i<nDecimalPlaces;i++) {
+			format += "#";
+		}
+		DecimalFormat df = new DecimalFormat(format);
+		df.setRoundingMode(RoundingMode.HALF_UP);
+		
+		for(int i=0;i<a.length;i++) {
+			System.out.println(df.format(a[i]) + "\t" + df.format(b[i]));
+			assertTrue("Arrays are not equal at index:" + i, df.format(a[i]).equals(df.format(b[i])));
 		}
 	}
 

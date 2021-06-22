@@ -12,230 +12,110 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
-archivesBaseName = 'ShimmerDriverPC'
-group = 'com.shimmerresearch.pcdriver'
-//group = "myorg"
-version = '0.9.3beta'
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-    }
-}
-
-// In this section you declare where to find the dependencies of your project
-repositories {
-    // Use 'jcenter' for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
-    mavenCentral()
-//    maven {
-//		url = "http://maven.ow2.org/maven2/"
-//		url = "http://maven.ow2.org/maven2-snapshot/"
-//		url = "http://oss.sonatype.org/content/groups/public/"
-//		url = "http://repository.jboss.org/nexus/content/groups/public-jboss/"
-//		url = "http://download.java.net/maven/2/"
-//		url = "https://maven2-repository.dev.java.net/"
-//		url = "http://snapshots.repository.codehaus.org/"
-//		url = "http://repo1.maven.org/maven2/"
-//		url = "http://repo2.maven.org/maven2/"
-//		url = "http://repo.fusesource.com/maven2"
-//	}
-    maven {
-   		url = "http://dl.bintray.com/jongchern/testshimmer"
-	}
-//    maven {
-//   		url = "http://repository.ops4j.org/maven2/"   		
-//	}
-	
-//	flatDir {
-//		dirs 'libs'
-//	}
-}
-
-//TODO uncomment this to specify Java v1.7 - needed for creating a JAR for MATLAB 
-//compileJava{
-//	options.fork = true
-//	options.forkOptions.executable = 'C:/Program Files (x86)/Java/jdk1.7.0_79/bin/javac'
-//}
-	
-//create a single Jar with all dependencies
-task fatJar(type: Jar) {
-	manifest {
-        attributes 'Implementation-Title': 'Gradle Jar File Example',  
-        	'Implementation-Version': version,
-        	'Main-Class': 'com.shimmerresearch.pcDriver'
-    }
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
-
-
- // custom tasks for creating source/javadoc jars
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    // add javadoc/source jar tasks as artifacts
-    artifacts {
-        archives sourcesJar, javadocJar
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                if (plugins.hasPlugin('war')) {
-                    from components.web
-                } else {
-                    from components.java
-                }
-
-                artifact sourcesJar 
-                //artifact javadocJar
-            }
-        }
-    }
+apply plugin: 'com.jfrog.artifactory'
 
 /*
-    bintray {
-        user = bintray_username //this usually comes from gradle.properties file in ~/.gradle
-        key = bintray_api_key //this usually comes from gradle.properties file in ~/.gradle
-        
-//        configurations = ['deployables'] //When uploading configuration files
-        // - OR -
-        publications = ['mavenJava'] //When uploading Maven-based publication files
-        // - AND/OR -
-//        filesSpec { //When uploading any arbitrary files ('filesSpec' is a standard Gradle CopySpec)
-//            from 'arbitrary-files'
-//            into 'standalone_files/level1'
-//            rename '(.+)\\.(.+)', '$1-suffix.$2'
-//        }
-        dryRun = false //Whether to run this as dry-run, without deploying
-        publish = true //If version should be auto published after an upload
-        pkg {
-//            repo = 'myrepo'
-	        repo = 'testshimmer'
-	        name = 'shimmerdriverpc'
-//            userOrg = 'myorg' //An optional organization name when the repo belongs to one of the user's orgs
-            desc = 'this is the Shimmer Driver for PC'
-            websiteUrl = 'https://github.com/bintray/bintray-examples'
-            issueTrackerUrl = 'https://github.com/bintray/bintray-examples/issues'
-            vcsUrl = 'https://github.com/JongChern/ShimmerTest'
-            licenses = ['Apache-2.0']
-            labels = ['example', 'gradle', 'bintray']
-            publicDownloadNumbers = true
-            attributes= ['a': ['ay1', 'ay2'], 'b': ['bee'], c: 'cee'] //Optional package-level attributes
-            //Optional version descriptor
-            version {
-                name = project.version //Bintray logical version name
-                desc = 'optional, version-specific description'
-//                released  = 'optional, date of the version release' //2 possible values: date in the format of 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ' OR a java.util.Date instance
-//                vcsTag = '1.3.0'
-//                attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin'] //Optional version-level attributes
-//                gpg {
-//                    sign = true //Determines whether to GPG sign the files. The default is false
-//                    passphrase = 'passphrase' //Optional. The passphrase for GPG signing'
-//                }
-                mavenCentralSync {
-                    sync = false //Optional (true by default). Determines whether to sync the version to Maven Central.
-                    user = 'userToken' //OSS user token
-                    password = 'paasword' //OSS user password
-                    close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
-                }
-            }
-        }
-    }
-    */
-    /*
-    bintray {
-        user = shimmer_bintray_username //this usually comes from gradle.properties file in ~/.gradle
-        key = shimmer_bintray_api_key //this usually comes from gradle.properties file in ~/.gradle
-        
-//        configurations = ['deployables'] //When uploading configuration files
-        // - OR -
-        publications = ['mavenJava'] //When uploading Maven-based publication files
-        // - AND/OR -
-//        filesSpec { //When uploading any arbitrary files ('filesSpec' is a standard Gradle CopySpec)
-//            from 'arbitrary-files'
-//            into 'standalone_files/level1'
-//            rename '(.+)\\.(.+)', '$1-suffix.$2'
-//        }
-        dryRun = false //Whether to run this as dry-run, without deploying
-        publish = true //If version should be auto published after an upload
-        pkg {
-//            repo = 'myrepo'
-	        repo = 'Shimmer'
-	        name = 'shimmerdriverpc'
-//            userOrg = 'myorg' //An optional organization name when the repo belongs to one of the user's orgs
-            desc = 'this is the shimmer driver for use with windows/linux/osx'
-            websiteUrl = 'https://github.com/ShimmerEngineering/Shimmer-Java-Android-API/tree/master/ShimmerDriverPC'
-            issueTrackerUrl = 'https://github.com/ShimmerEngineering/Shimmer-Java-Android-API/issues'
-            vcsUrl = 'https://github.com/ShimmerEngineering/Shimmer-Java-Android-API/'
-            licenses = ['Apache-2.0']
-            labels = ['example', 'gradle', 'bintray']
-            publicDownloadNumbers = true
-            attributes= ['a': ['ay1', 'ay2'], 'b': ['bee'], c: 'cee'] //Optional package-level attributes
-            //Optional version descriptor
-            version {
-                name = project.version //Bintray logical version name
-                desc = ''
-//                released  = 'optional, date of the version release' //2 possible values: date in the format of 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ' OR a java.util.Date instance
-//                vcsTag = '1.3.0'
-//                attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin'] //Optional version-level attributes
-//                gpg {
-//                    sign = true //Determines whether to GPG sign the files. The default is false
-//                    passphrase = 'passphrase' //Optional. The passphrase for GPG signing'
-//                }
-                mavenCentralSync {
-                    sync = false //Optional (true by default). Determines whether to sync the version to Maven Central.
-                    user = 'userToken' //OSS user token
-                    password = 'paasword' //OSS user password
-                    close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
-                }
-            }
-        }
-    }
+Rev0.2
+- switch to using jfrog
 */
+
+//This version should match the git release tag
+version = '0.9.4beta'
+
+buildscript {
+    repositories {
+        maven {
+            url 'https://shimmersensing.jfrog.io/artifactory/ShimmerAPI'
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.+')
+    }
+    configurations.classpath {
+        resolutionStrategy {
+        	//Added to circumvent warnings thrown when building
+	    	//Sets the length of time that dynamic versions will be cached.
+            cacheDynamicVersionsFor 0, 'seconds'
+            //Sets the length of time that changing modules will be cached.
+            cacheChangingModulesFor 0, 'seconds'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+test {
+	// this test requires a physical Shimmer2r to run
+	exclude '**/API_00001_ShimmerPC_GeneralBluetoothShimmer2R.class'
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"
+    publish {
+        repository {
+            repoKey = 'ShimmerAPI'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+        }
+        defaults {
+            publications('mavenJava')
+        }
+        publishBuildInfo = true
+        publishArtifacts = true
+        publishPom = true
+    }
+    resolve {
+        repository {
+            repoKey = 'ShimmerAPI'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+           groupId = 'com.shimmersensing'
+           artifactId = 'ShimmerDriverPC'
+           version = project.version
+           from components.java
+        }
+    }
+}
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
+	compile project (':ShimmerDriver')
+	compile project (':ShimmerBluetoothManager')
+    
+   	// https://mvnrepository.com/artifact/org.scream3r/jssc
+	compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
+   
+	// https://mvnrepository.com/artifact/net.sf.bluecove/bluecove
+	compile group: 'net.sf.bluecove', name: 'bluecove', version: '2.1.0'
 
+   	// https://mvnrepository.com/artifact/commons-io/commons-io
+	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+  	
+  	// https://mvnrepository.com/artifact/net.sf.jchart2d/jchart2d
+	compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
+	
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
-
-	compile project (':ShimmerDriver')
-	compile project (':ShimmerBluetoothManager')
-    
-       //compile name: 'jssc'
-   // https://mvnrepository.com/artifact/org.scream3r/jssc
-	compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
-   
-	//compile name: 'bluecove-2.1.1-SNAPSHOT'
-	// https://mvnrepository.com/artifact/net.sf.bluecove/bluecove
-	//compile group: 'net.sf.bluecove', name: 'bluecove', version: '2.1.1-SNAPSHOT'
-	// https://mvnrepository.com/artifact/net.sf.bluecove/bluecove
-	compile group: 'net.sf.bluecove', name: 'bluecove', version: '2.1.0'
-	
-   //compile name: 'jchart2d-3.2.2'
-   // https://mvnrepository.com/artifact/commons-io/commons-io
-	compile group: 'commons-io', name: 'commons-io', version: '2.4'
-      // https://mvnrepository.com/artifact/net.sf.jchart2d/jchart2d
-	compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
-	// https://mvnrepository.com/artifact/javax.microedition/cldc
-	//compile group: 'javax.microedition', name: 'cldc', version: '1.1'
-
 }
