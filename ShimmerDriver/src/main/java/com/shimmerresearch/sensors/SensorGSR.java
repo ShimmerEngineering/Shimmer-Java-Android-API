@@ -19,6 +19,7 @@ import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.sensors.SensorADC.MICROCONTROLLER_ADC_PROPERTIES;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -34,6 +35,8 @@ public class SensorGSR extends AbstractSensor {
 	public static boolean isShimmer3and4UsingShimmer2rVal = true;
 	
 	public int mGSRRange = 4; 					// 4 = Auto
+	
+	private MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties = null;
 	
 	public static final double[] SHIMMER3_GSR_REF_RESISTORS_KOHMS = new double[] {
 			40.2, 		//Range 0
@@ -255,6 +258,8 @@ public class SensorGSR extends AbstractSensor {
 	public SensorGSR(ShimmerVerObject svo) {
 		super(SENSORS.GSR, svo);
 		initialise();
+		
+		microcontrollerAdcProperties = MICROCONTROLLER_ADC_PROPERTIES.getMicrocontrollerAdcPropertiesForShimmerVersionObject(svo);
 	}
 	//--------- Constructors for this class end --------------
 
@@ -337,7 +342,7 @@ public class SensorGSR extends AbstractSensor {
 				}
 				if(sensorDetails.mListOfChannels.contains(channelGsrAdc)){
 					objectCluster.addUncalData(channelGsrAdc, gsrAdcValueUnCal);
-					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateMspAdcChannelToMillivolts(gsrAdcValueUnCal));
+					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateAdcChannelToMillivolts(gsrAdcValueUnCal, microcontrollerAdcProperties));
 					objectCluster.incrementIndexKeeper();
 				}
 				
@@ -351,7 +356,7 @@ public class SensorGSR extends AbstractSensor {
 					}
 //					gsrAdcValueUnCal = SensorGSR.nudgeGsrADC(gsrAdcValueUnCal, currentGSRRange);
 
-					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToKOhmsUsingAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToKOhmsUsingAmplifierEq(gsrAdcValueUnCal, currentGSRRange, microcontrollerAdcProperties);
 					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
 					gsrConductanceUSiemens = SensorGSR.convertkOhmToUSiemens(gsrResistanceKOhms);
 //				} else {
@@ -594,11 +599,12 @@ public class SensorGSR extends AbstractSensor {
 	 * 
 	 * @param gsrUncalibratedData
 	 * @param range
+	 * @param microcontrollerAdcProperties 
 	 * @return
 	 */
-	public static double calibrateGsrDataToKOhmsUsingAmplifierEq(double gsrUncalibratedData, int range){
+	public static double calibrateGsrDataToKOhmsUsingAmplifierEq(double gsrUncalibratedData, int range, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
 		double rFeedback = SHIMMER3_GSR_REF_RESISTORS_KOHMS[range];
-		double volts = SensorADC.calibrateMspAdcChannelToVolts(gsrUncalibratedData);
+		double volts = SensorADC.calibrateAdcChannelToVolts(gsrUncalibratedData, microcontrollerAdcProperties);
 		double rSource = rFeedback/((volts/0.5)-1.0);
 		return rSource;
 	}
@@ -608,7 +614,7 @@ public class SensorGSR extends AbstractSensor {
 	 * @param gsrkOhms
 	 * @return
 	 */
-	public static int uncalibrateGsrDataTokOhmsUsingAmplifierEq(double gsrkOhms){
+	public static int uncalibrateGsrDataTokOhmsUsingAmplifierEq(double gsrkOhms, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
 		int range = 0;
 		for(int i=0;i<SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS.length;i++) {
 			double[] minMax = SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS[i];
@@ -622,7 +628,7 @@ public class SensorGSR extends AbstractSensor {
 		double rFeedback = SHIMMER3_GSR_REF_RESISTORS_KOHMS[range];
 		double volts = ((rFeedback / gsrkOhms) + 1.0) * 0.5;
 		
-		int gsrUncalibratedData = SensorADC.uncalibrateMspAdcChannelFromVolts(volts);
+		int gsrUncalibratedData = SensorADC.uncalibrateAdcChannelFromVolts(volts, microcontrollerAdcProperties);
 		//Add range
 		gsrUncalibratedData += (range<<14);
 		return gsrUncalibratedData;

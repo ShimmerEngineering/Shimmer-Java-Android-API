@@ -624,6 +624,18 @@ public class ShimmerVerObject implements Serializable {
 			return false;
 	}
 
+	public boolean isShimmerGenVerisense() {
+		return isShimmerGenVerisense(getHardwareVersion());
+	}
+
+	public static boolean isShimmerGenVerisense(int hwVer) {
+		return (hwVer==HW_ID.VERISENSE_DEV_BRD 
+				|| hwVer==HW_ID.VERISENSE_GSR_PLUS
+				|| hwVer==HW_ID.VERISENSE_IMU
+				|| hwVer==HW_ID.VERISENSE_PPG
+				|| hwVer==HW_ID.VERISENSE_PULSE_PLUS);
+	}
+
 	public boolean compareVersions(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 		return compareVersions(this, hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}

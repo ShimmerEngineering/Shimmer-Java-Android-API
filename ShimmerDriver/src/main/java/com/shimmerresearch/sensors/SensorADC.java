@@ -16,6 +16,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -91,6 +92,31 @@ public class SensorADC extends AbstractSensor {
 	protected int mPpg1AdcSelectionProto3DeluxeBoard = 0;
 	protected int mPpg2AdcSelectionProto3DeluxeBoard = 0;
 	
+	public enum MICROCONTROLLER_ADC_PROPERTIES {
+		SHIMMER2R3_3V0(0,3,1),
+		VERISENSE_1V8(0,0.6,1.0/6.0),
+		VERISENSE_3V0(0,0.75,1.0/4.0);
+
+		double offset; double vRefP; double gain; 
+
+		private MICROCONTROLLER_ADC_PROPERTIES(double offset, double vRefP, double gain) {
+			this.offset = offset;
+			this.vRefP = vRefP;
+			this.gain = gain;
+		}
+		
+		public static MICROCONTROLLER_ADC_PROPERTIES getMicrocontrollerAdcPropertiesForShimmerVersionObject(ShimmerVerObject svo) {
+			if(svo.isShimmerGenVerisense()) {
+				if(svo.getHardwareVersion()==HW_ID.VERISENSE_GSR_PLUS) {
+					return VERISENSE_3V0;
+				} else {
+					return VERISENSE_1V8;
+				}
+			} else {
+				return SHIMMER2R3_3V0;
+			}
+		}
+	}
 	
 //--------- Sensor specific variables end --------------
 	
@@ -504,20 +530,29 @@ public class SensorADC extends AbstractSensor {
 	//--------- Abstract methods implemented end --------------
 	//--------- Sensor specific methods start --------------
 	public static double calibrateMspAdcChannelToMillivolts(double unCalData){
-		double offset = 0; double vRefP = 3; double gain = 1; 
-		double calData = calibrateU12AdcValueToMillivolts(unCalData, offset, vRefP, gain);
+		return calibrateAdcChannelToMillivolts(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
+	}
+
+	public static double calibrateAdcChannelToMillivolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
+		double calData = calibrateU12AdcValueToMillivolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
 		return calData;
 	}
 
 	public static double calibrateMspAdcChannelToVolts(double unCalData){
-		double offset = 0; double vRefP = 3; double gain = 1; 
-		double calData = calibrateU12AdcValueToVolts(unCalData, offset, vRefP, gain);
+		return calibrateAdcChannelToVolts(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
+	}
+
+	public static double calibrateAdcChannelToVolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
+		double calData = calibrateU12AdcValueToVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
 		return calData;
 	}
 
 	public static int uncalibrateMspAdcChannelFromVolts(double unCalData){
-		double offset = 0; double vRefP = 3; double gain = 1; 
-		int calData = uncalibrateU12AdcValueFromVolts(unCalData, offset, vRefP, gain);
+		return uncalibrateAdcChannelFromVolts(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
+	}
+
+	public static int uncalibrateAdcChannelFromVolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
+		int calData = uncalibrateU12AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
 		return calData;
 	}
 
@@ -546,5 +581,5 @@ public class SensorADC extends AbstractSensor {
 		double adcVal = (calibratedData / (((vRefP)/gain)/4095)) + offset;
 		return (int) adcVal;
 	}
-	
+
 }

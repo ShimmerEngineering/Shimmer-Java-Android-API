@@ -324,7 +324,7 @@ public class SensorBattVoltage extends AbstractSensor{
 		return mSamplingDividerVBatt;
 	}
 
-	private ShimmerBattStatusDetails getShimmerBattStatusDetails(){
+	protected ShimmerBattStatusDetails getShimmerBattStatusDetails(){
 		if(mShimmerDevice!=null){
 			return mShimmerDevice.mShimmerBattStatusDetails;
 		}

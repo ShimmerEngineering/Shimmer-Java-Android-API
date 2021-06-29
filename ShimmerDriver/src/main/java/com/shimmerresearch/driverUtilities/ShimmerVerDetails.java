@@ -41,6 +41,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int SHIMMER_GQ_802154_NR 	= HW_ID_SR_CODES.SHIMMER_GQ_802154_NR; // Normal Range
 		public static final int SHIMMER_4_SDK 			= HW_ID_SR_CODES.SHIMMER_4_SDK;
 		public static final int SHIMMER_ECG_MD 			= HW_ID_SR_CODES.SHIMMER_ECG_MD;
+		
 		public static final int VERISENSE_IMU 			= HW_ID_SR_CODES.VERISENSE_IMU;
 		public static final int VERISENSE_GSR_PLUS 		= HW_ID_SR_CODES.VERISENSE_GSR_PLUS;
 		public static final int VERISENSE_PPG 			= HW_ID_SR_CODES.VERISENSE_PPG;

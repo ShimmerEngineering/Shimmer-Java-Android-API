@@ -138,6 +138,7 @@ public class Configuration {
 		public static final String MILLIAMP_HOUR = "mAh";
 		public static final String BEATS_PER_MINUTE = "BPM";
 		public static final String KPASCAL = "kPa";
+		public static final String DEGREES_CELSUIS_SHORT = "\u00B0C";
 		public static final String DEGREES_CELSUIS = "Degrees Celsius";
 		public static final String DEGREES = "Degrees";
 		public static final String U_TESLA = "uT";
@@ -2179,9 +2180,7 @@ public class Configuration {
 			public static final int MAX86XXX_PPG_IR			= 1 << (4 + (8*1));
 			public static final int MAX86150_ECG			= 1 << (3 + (8*1));
 			public static final int MAX86916_PPG_BLUE		= 1 << (2 + (8*1));
-			
-			// Byte 2
-			public static final int VBATT					= 1 << (2 + (8*2));
+			public static final int VBATT					= 1 << (1 + (8*1));
 		}
 		
 		public class DerivedSensorsBitMask {
