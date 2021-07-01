@@ -94,8 +94,8 @@ public class SensorADC extends AbstractSensor {
 	
 	public enum MICROCONTROLLER_ADC_PROPERTIES {
 		SHIMMER2R3_3V0(0,3,1),
-		VERISENSE_1V8(0,0.6,1.0/6.0),
-		VERISENSE_3V0(0,0.75,1.0/4.0);
+		VERISENSE_1V8(0,1.8/4.0,1.0/4.0),
+		VERISENSE_3V0(0,3.0/4.0,1.0/4.0);
 
 		double offset; double vRefP; double gain; 
 
