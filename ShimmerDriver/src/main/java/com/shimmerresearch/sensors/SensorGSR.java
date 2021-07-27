@@ -38,6 +38,10 @@ public class SensorGSR extends AbstractSensor {
 	
 	private MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties = null;
 	
+	private double[] currentGsrRefResistorsKohms = SHIMMER3_GSR_REF_RESISTORS_KOHMS;
+	private double[][] currentGsrResistanceKohmsMinMax = SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS;
+	private int currentGsrUncalLimitRange3 = GSR_UNCAL_LIMIT_RANGE3;
+	
 	public static final double[] SHIMMER3_GSR_REF_RESISTORS_KOHMS = new double[] {
 			40.2, 		//Range 0
 			287.0, 		//Range 1
@@ -48,12 +52,6 @@ public class SensorGSR extends AbstractSensor {
 			{63.0, 220.0}, 		//Range 1
 			{220.0, 680.0}, 	//Range 2
 			{680.0, 4700.0}}; 	//Range 3
-//	public static final int[][] SHIMMER3_GSR_RESISTANCE_MIN_MAX_ADC = new int[][] {
-//		{4119, 1120}, 		//Range 0
-//		{3798, 1575}, 		//Range 1
-//		{3791, 1689}, 	//Range 2
-//		{4001, 683}};//834}}; 	//Range 3
-	// Equation breaks down below 683 for range 3
 	public static final int GSR_UNCAL_LIMIT_RANGE3 = 683; 	
 	
 	public class GuiLabelConfig{
@@ -351,13 +349,13 @@ public class SensorGSR extends AbstractSensor {
 				//TODO can remove old code
 //				if(SensorGSR.isSupportedImprovedGsrCalibration(mShimmerVerObject)) {
 					//Limit the GSR value for open circuit situations. 
-					if(currentGSRRange==3 && gsrAdcValueUnCal<GSR_UNCAL_LIMIT_RANGE3) {
-						gsrAdcValueUnCal = GSR_UNCAL_LIMIT_RANGE3;
+					if(currentGSRRange==3 && gsrAdcValueUnCal<currentGsrUncalLimitRange3) {
+						gsrAdcValueUnCal = currentGsrUncalLimitRange3;
 					}
 //					gsrAdcValueUnCal = SensorGSR.nudgeGsrADC(gsrAdcValueUnCal, currentGSRRange);
 
-					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToKOhmsUsingAmplifierEq(gsrAdcValueUnCal, currentGSRRange, microcontrollerAdcProperties);
-					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToKOhmsUsingAmplifierEq(gsrAdcValueUnCal, currentGSRRange, microcontrollerAdcProperties, currentGsrRefResistorsKohms);
+					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange(), currentGsrResistanceKohmsMinMax);
 					gsrConductanceUSiemens = SensorGSR.convertkOhmToUSiemens(gsrResistanceKOhms);
 //				} else {
 //					double[] p1p2 = getGSRCoefficientsFromUsingGSRRange(mShimmerVerObject, currentGSRRange);
@@ -414,9 +412,9 @@ public class SensorGSR extends AbstractSensor {
 		return 1000.0/gsrUSiemens;
 	}
 
-	public static double nudgeGsrResistance(double gsrResistanceKOhms, int gsrRangeSetting) {
+	public static double nudgeGsrResistance(double gsrResistanceKOhms, int gsrRangeSetting, double[][] gsrResistanceKohmsMinMax) {
 		if(gsrRangeSetting!=4) {
-			double[] minMax = SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS[gsrRangeSetting];
+			double[] minMax = gsrResistanceKohmsMinMax[gsrRangeSetting];
 			return UtilShimmer.nudgeDouble(gsrResistanceKOhms, minMax[0], minMax[1]);
 		}
 		return gsrResistanceKOhms;
@@ -594,7 +592,7 @@ public class SensorGSR extends AbstractSensor {
 		double gsrCalibratedData = (((p1*gsrUncalibratedDataLcl)+p2)); //microsiemens 
 		return gsrCalibratedData;  
 	}
-	
+
 	/** Based on circuit theory of the GSR non-inverting amplifier.  
 	 * 
 	 * @param gsrUncalibratedData
@@ -602,22 +600,21 @@ public class SensorGSR extends AbstractSensor {
 	 * @param microcontrollerAdcProperties 
 	 * @return
 	 */
-	public static double calibrateGsrDataToKOhmsUsingAmplifierEq(double gsrUncalibratedData, int range, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
-		double rFeedback = SHIMMER3_GSR_REF_RESISTORS_KOHMS[range];
+	public static double calibrateGsrDataToKOhmsUsingAmplifierEq(double gsrUncalibratedData, int range, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties, double[] gsrRefResistorsKohms){
+		double rFeedback = gsrRefResistorsKohms[range];
 		double volts = SensorADC.calibrateAdcChannelToVolts(gsrUncalibratedData, microcontrollerAdcProperties);
 		double rSource = rFeedback/((volts/0.5)-1.0);
 		return rSource;
 	}
 
-	
 	/**TODO test method no functioning properly yet
 	 * @param gsrkOhms
 	 * @return
 	 */
-	public static int uncalibrateGsrDataTokOhmsUsingAmplifierEq(double gsrkOhms, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
+	public static int uncalibrateGsrDataTokOhmsUsingAmplifierEq(double gsrkOhms, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties, double[] gsrRefResistorsKohms, double[][] gsrResistanceKohmsMinMax){
 		int range = 0;
-		for(int i=0;i<SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS.length;i++) {
-			double[] minMax = SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS[i];
+		for(int i=0;i<gsrResistanceKohmsMinMax.length;i++) {
+			double[] minMax = gsrResistanceKohmsMinMax[i];
 			if(gsrkOhms>minMax[0] && gsrkOhms<minMax[1]) {
 				range = i;
 //				System.err.println(gsrkOhms + " " + range);
@@ -625,7 +622,7 @@ public class SensorGSR extends AbstractSensor {
 			}
 		}
 
-		double rFeedback = SHIMMER3_GSR_REF_RESISTORS_KOHMS[range];
+		double rFeedback = gsrRefResistorsKohms[range];
 		double volts = ((rFeedback / gsrkOhms) + 1.0) * 0.5;
 		
 		int gsrUncalibratedData = SensorADC.uncalibrateAdcChannelFromVolts(volts, microcontrollerAdcProperties);
@@ -712,6 +709,33 @@ public class SensorGSR extends AbstractSensor {
 		return new double[]{p1, p2};
 	}
 
+	public double[] getCurrentGsrRefResistorsKohms() {
+		return currentGsrRefResistorsKohms;
+	}
+
+
+	public void setCurrentGsrRefResistorsKohms(double[] currentGsrRefResistorsKohms) {
+		this.currentGsrRefResistorsKohms = currentGsrRefResistorsKohms;
+	}
+
+
+	public double[][] getCurrentGsrResistanceKohmsMinMax() {
+		return currentGsrResistanceKohmsMinMax;
+	}
+
+
+	public void setCurrentGsrResistanceKohmsMinMax(double[][] currentGsrResistanceKohmsMinMax) {
+		this.currentGsrResistanceKohmsMinMax = currentGsrResistanceKohmsMinMax;
+	}
+	
+	public int getCurrentGsrUncalLimitRange3() {
+		return currentGsrUncalLimitRange3;
+	}
+
+
+	public void setCurrentGsrUncalLimitRange3(int currentGsrUncalLimitRange3) {
+		this.currentGsrUncalLimitRange3 = currentGsrUncalLimitRange3;
+	}
 
 //	@Deprecated
 //	public static boolean isSupportedImprovedGsrCalibration(ShimmerVerObject svo) {

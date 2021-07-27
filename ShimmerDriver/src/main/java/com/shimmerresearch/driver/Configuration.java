@@ -138,8 +138,8 @@ public class Configuration {
 		public static final String MILLIAMP_HOUR = "mAh";
 		public static final String BEATS_PER_MINUTE = "BPM";
 		public static final String KPASCAL = "kPa";
-		public static final String DEGREES_CELSUIS_SHORT = "\u00B0C";
-		public static final String DEGREES_CELSUIS = "Degrees Celsius";
+		public static final String DEGREES_CELSIUS_SHORT = "\u00B0C";
+		public static final String DEGREES_CELSIUS = "Degrees Celsius";
 		public static final String DEGREES = "Degrees";
 		public static final String U_TESLA = "uT";
 		public static final String U_SIEMENS = "uS";

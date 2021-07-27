@@ -60,14 +60,14 @@ public class SensorBattVoltage extends AbstractSensor{
 	public static class DatabaseChannelHandles{
 		public static final String BATTERY = "F5437a_Int_A2_Battery";
 	}
-	
 
-	
 	public static class ObjectClusterSensorName{
 		public static final String BATTERY = "Battery";
 		public static final String BATT_PERCENTAGE = "Batt_Percentage";
 	}
 	
+	// The battery voltage is divided by half before entering the Microcontroller's ADC.  The value is not quite equal to 2 due to the components used in the circuit.
+	public static final double BATTERY_VOLTAGE_DIVIDER_RATIO = 1.988;
 	
 	//--------- Sensor specific variables end --------------
 	
@@ -207,7 +207,7 @@ public class SensorBattVoltage extends AbstractSensor{
 					double unCalData = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
 					double offset = 0; double vRefP = 3; double gain = 1; 
 					double calData = SensorADC.calibrateU12AdcValueToMillivolts(unCalData, offset, vRefP, gain);
-					calData *= 1.988;
+					calData *= BATTERY_VOLTAGE_DIVIDER_RATIO;
 					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-1);
 					
 					getShimmerBattStatusDetails().calculateBattPercentage(calData/1000);

@@ -165,7 +165,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 			ObjectClusterSensorName.TEMPERATURE_BMP280,
 			DatabaseChannelHandles.TEMPERATURE_BMP280,
 			CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
-			CHANNEL_UNITS.DEGREES_CELSUIS,
+			CHANNEL_UNITS.DEGREES_CELSIUS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	{
 		//TODO put into above constructor
