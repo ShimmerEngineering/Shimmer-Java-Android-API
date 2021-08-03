@@ -146,6 +146,7 @@ public class Configuration {
 		public static final String GRAVITY = "g";
 		public static final String RPM = "rpm";
 		public static final String POWER = "dB";
+		public static final String SCORE = "Score";
 
 		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
 		public static final String GYRO_CAL_UNIT = DEGREES_PER_SECOND;
