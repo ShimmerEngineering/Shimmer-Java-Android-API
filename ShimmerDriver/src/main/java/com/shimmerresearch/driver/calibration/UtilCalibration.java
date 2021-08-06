@@ -109,6 +109,26 @@ public class UtilCalibration {
 					calibDetails.getValidOffsetVector());
 		}
 	}
+	
+	/**
+	 * GGIR runs on default calibrated Accel data. The auto-calibration stage in
+	 * GGIR generates correction values (sensitivity and offset -> not alignment)
+	 * that can be applied to the default calibrated data to provide auto-calibrated
+	 * accel output. This method applies those correction values to the default
+	 * calibrated data.
+	 * 
+	 * @param xyzArray
+	 * @param currentSensitivityMatrix
+	 * @param currentOffsetVector
+	 * @return
+	 */
+	public static double[] calibrateImuData(double[] xyzArray, double[][] currentSensitivityMatrix, double[][] currentOffsetVector) {
+		double[] xyzCalArray = new double[3];
+		for(int axis=0; axis<3; axis++) {
+			xyzCalArray[axis] = xyzArray[axis]*currentSensitivityMatrix[axis][axis] + currentOffsetVector[axis][0];
+		}
+		return xyzCalArray;
+	}
 
 	public static double[][] matrixInverse3x3(double[][] data) {
 		if(data==null){

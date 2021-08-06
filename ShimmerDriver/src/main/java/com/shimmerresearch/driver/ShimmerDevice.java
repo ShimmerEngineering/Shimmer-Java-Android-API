@@ -3548,7 +3548,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfEnabledAlgorthimsPerGroup;
 	}
 	
-	private void resetAlgorithmBuffers() {
+	public void resetAlgorithmBuffers() {
 		List<AbstractAlgorithm> listOfEnabledAlgorithmModules = getListOfEnabledAlgorithmModules();
 		Iterator<AbstractAlgorithm> iterator = listOfEnabledAlgorithmModules.iterator();
 		while(iterator.hasNext()) {
@@ -4122,6 +4122,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public TreeMap<Integer, CalibDetails> getMapOfSensorCalibrationPerSensor(Integer sensorId){
 		AbstractSensor abstractSensor = getSensorClass(sensorId);
+		if(abstractSensor!=null){
+			return abstractSensor.getCalibrationMapForSensor(sensorId);
+		}
+		return null;
+	}
+	
+	public TreeMap<Integer, CalibDetails> getMapOfSensorCalibrationPerSensor(SENSORS sensorClassKey, int sensorId) {
+		AbstractSensor abstractSensor = getSensorClass(sensorClassKey);
 		if(abstractSensor!=null){
 			return abstractSensor.getCalibrationMapForSensor(sensorId);
 		}

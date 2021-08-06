@@ -67,6 +67,7 @@ import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.SensorADC.MICROCONTROLLER_ADC_PROPERTIES;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
 import com.shimmerresearch.sensors.bmpX80.SensorBMPX80;
@@ -1212,8 +1213,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if (mEnableCalibration){
 						if((mDerivedSensors & DerivedSensorsBitMask.SKIN_TEMP)>0){
 							calibratedData[iA1]=SensorBridgeAmp.calibratePhillipsSkinTemperatureData(tempData[0]);
-							calibratedDataUnits[iA1] = CHANNEL_UNITS.DEGREES_CELSUIS;
-							objectCluster.addDataToMap(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,calibratedData[iA1]);
+							calibratedDataUnits[iA1] = CHANNEL_UNITS.DEGREES_CELSIUS;
+							objectCluster.addDataToMap(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSIUS,calibratedData[iA1]);
 						}
 						else{
 							calibratedData[iA1]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
@@ -1704,10 +1705,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					double[] bmp180caldata = mSensorBMPX80.calibratePressureSensorData(UP,UT);
 					objectCluster.addDataToMap(signalNameBmpX80Pressure,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KPASCAL,bmp180caldata[0]/1000);
-					objectCluster.addDataToMap(signalNameBmpX80Temperature,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,bmp180caldata[1]);
+					objectCluster.addDataToMap(signalNameBmpX80Temperature,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSIUS,bmp180caldata[1]);
 					calibratedData[iUT]=bmp180caldata[1];
 					calibratedData[iUP]=bmp180caldata[0]/1000;
-					calibratedDataUnits[iUT]=CHANNEL_UNITS.DEGREES_CELSUIS;
+					calibratedDataUnits[iUT]=CHANNEL_UNITS.DEGREES_CELSIUS;
 					calibratedDataUnits[iUP]=CHANNEL_UNITS.KPASCAL;
 				}
 			}
@@ -1807,8 +1808,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if(currentGSRRange==3 && gsrAdcValueUnCal<SensorGSR.GSR_UNCAL_LIMIT_RANGE3) {
 						gsrAdcValueUnCal = SensorGSR.GSR_UNCAL_LIMIT_RANGE3;
 					}
-					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToKOhmsUsingAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
-					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToKOhmsUsingAmplifierEq(gsrAdcValueUnCal, currentGSRRange, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0, SensorGSR.SHIMMER3_GSR_REF_RESISTORS_KOHMS);
+					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange(), SensorGSR.SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS);
 					gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
 					
 					//If ShimmerGQ we only want to have one GSR channel and it's units should be 'uS'
@@ -1945,8 +1946,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.MPL_TEMPERATURE) > 0)){
 				int iT = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE);
 				calibratedData[iT] = (double)newPacketInt[iT]/Math.pow(2, 16);
-				calibratedDataUnits[iT] = CHANNEL_UNITS.DEGREES_CELSUIS;
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,calibratedData[iT]);
+				calibratedDataUnits[iT] = CHANNEL_UNITS.DEGREES_CELSIUS;
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSIUS,calibratedData[iT]);
 				uncalibratedData[iT] = (double)newPacketInt[iT];
 				uncalibratedDataUnits[iT] = CHANNEL_UNITS.NO_UNITS;
 				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iT]);

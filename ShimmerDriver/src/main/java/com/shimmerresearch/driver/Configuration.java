@@ -134,16 +134,19 @@ public class Configuration {
 		public static final String KOHMS_SECONDS = "kOhm.s";
 		public static final String MILLIVOLTS = "mV";
 		public static final String MILLIAMPS= "mA";
+		public static final String NANOAMPS= "nA";
 		public static final String MILLIAMP_HOUR = "mAh";
 		public static final String BEATS_PER_MINUTE = "BPM";
 		public static final String KPASCAL = "kPa";
-		public static final String DEGREES_CELSUIS = "Degrees Celsius";
+		public static final String DEGREES_CELSIUS_SHORT = "\u00B0C";
+		public static final String DEGREES_CELSIUS = "Degrees Celsius";
 		public static final String DEGREES = "Degrees";
 		public static final String U_TESLA = "uT";
 		public static final String U_SIEMENS = "uS";
 		public static final String GRAVITY = "g";
 		public static final String RPM = "rpm";
 		public static final String POWER = "dB";
+		public static final String SCORE = "Score";
 
 		public static final String ACCEL_CAL_UNIT = METER_PER_SECOND_SQUARE;
 		public static final String GYRO_CAL_UNIT = DEGREES_PER_SECOND;
@@ -2146,7 +2149,7 @@ public class Configuration {
 			public static final int SWEATCH_ADC = 1005;
 		}
 	}
-	
+
 	public static class Webcam{
 		public static class CompatibilityInfoForMaps{
 			public static final ShimmerVerObject svoWebcamGeneric = 		new ShimmerVerObject(HW_ID.WEBCAM_GENERIC,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
@@ -2160,6 +2163,78 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoWebcam = Arrays.asList(
 					svoWebcamGeneric, svoWebcamLogitechHdC920, svoWebcamLogitechHdC930E);
 
+		}
+	}
+	
+	public static final class Verisense {
+		
+		public class SensorBitmap{
+			// LSB byte 0
+			public static final int LIS2DW12_ACCEL			= 1 << (7 + (8*0));
+			public static final int LSM6DS3_ACCEL			= 1 << (6 + (8*0));
+			public static final int LSM6DS3_GYRO			= 1 << (5 + (8*0));
+			
+			// Byte 1
+			public static final int GSR	 					= 1 << (7 + (8*1));
+			public static final int MAX86916_PPG_GREEN		= 1 << (6 + (8*1));
+			public static final int MAX86XXX_PPG_RED		= 1 << (5 + (8*1));
+			public static final int MAX86XXX_PPG_IR			= 1 << (4 + (8*1));
+			public static final int MAX86150_ECG			= 1 << (3 + (8*1));
+			public static final int MAX86916_PPG_BLUE		= 1 << (2 + (8*1));
+			public static final int VBATT					= 1 << (1 + (8*1));
+		}
+		
+		public class DerivedSensorsBitMask {
+			public final static int NON_WEAR_DETECTION		= (1 << 0);
+			public final static int PPG_TO_HR_RED_LED		= (1 << 1);
+			public final static int PPG_TO_HR_IR_LED		= (1 << 2);
+			public final static int PPG_TO_HR_GREEN_LED		= (1 << 3);
+			public final static int PPG_TO_HR_BLUE_LED		= (1 << 4);
+			public final static int PPG_TO_SPO2				= (1 << 5);
+			public final static int GYRO_ON_THE_FLY_CAL		= (1 << 6);
+			public final static int ORIENTATION_6DOF_QUAT 	= (1 << 7);
+			public final static int ORIENTATION_6DOF_EULER 	= (1 << 8);
+		}
+
+		public class SENSOR_ID {
+			//TODO not sure if there is a need for an offset here -> it was just copied from Sweatch implementation above
+			public static final int LIS2DW12_ACCEL 			= 2005;
+			public static final int LSM6DS3_GYRO 			= 2006;
+			public static final int LSM6DS3_ACCEL 			= 2007;
+			public static final int MAX86XXX_PPG_RED 		= 2008;
+			public static final int MAX86XXX_PPG_IR 		= 2009;
+			public static final int MAX86150_ECG 			= 2010;
+			public static final int MAX86916_PPG_GREEN 		= 2011;
+			public static final int MAX86916_PPG_BLUE 		= 2012;
+			public static final int VBATT			 		= 2013;
+			public static final int GSR				 		= 2014;
+		}
+		
+		public static class CompatibilityInfoForMaps{
+			public static final ShimmerVerObject svoVerisenseDevBrd = 	new ShimmerVerObject(HW_ID.VERISENSE_DEV_BRD,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoVerisenseImu = 		new ShimmerVerObject(HW_ID.VERISENSE_IMU,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoVerisenseGsrPlus = 		new ShimmerVerObject(HW_ID.VERISENSE_GSR_PLUS,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			public static final ShimmerVerObject svoVerisensePpg0 =		new ShimmerVerObject(HW_ID.VERISENSE_PPG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID.VERISENSE_PPG,0);
+			public static final ShimmerVerObject svoVerisensePpg1 =		new ShimmerVerObject(HW_ID.VERISENSE_PPG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID.VERISENSE_PPG,1);
+			public static final ShimmerVerObject svoVerisensePulsePlus = new ShimmerVerObject(HW_ID.VERISENSE_PULSE_PLUS,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2DW12 = Arrays.asList(
+					svoVerisenseDevBrd, svoVerisenseImu, svoVerisensePpg0, svoVerisensePpg1, svoVerisenseGsrPlus, svoVerisensePulsePlus);
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DS3 = Arrays.asList(
+					svoVerisenseDevBrd, svoVerisenseImu, svoVerisensePpg0, svoVerisensePpg1, svoVerisenseGsrPlus);
+
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMAX86150 = Arrays.asList(
+					svoVerisensePpg0);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMAX86916 = Arrays.asList(
+					svoVerisenseDevBrd, svoVerisensePpg1, svoVerisensePulsePlus);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoVbatt = Arrays.asList(
+					svoVerisenseDevBrd, svoVerisenseImu, svoVerisensePpg0, svoVerisensePpg1, svoVerisenseGsrPlus, svoVerisensePulsePlus);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
+					svoVerisenseGsrPlus, svoVerisensePulsePlus);
 		}
 
 	}

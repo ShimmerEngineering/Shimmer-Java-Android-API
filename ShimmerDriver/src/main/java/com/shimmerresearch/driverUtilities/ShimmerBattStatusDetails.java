@@ -24,6 +24,7 @@ public class ShimmerBattStatusDetails implements Serializable {
 	private CHARGING_STATUS mChargingStatus = CHARGING_STATUS.UNKNOWN;
 	private double mBattVoltage = 0.0;
 	private Double mEstimatedChargePercentage = -1.0;
+	private static final double BATTERY_ERROR_VOLTAGE = 4.5;
 	
 	public enum CHARGING_STATUS{
 		UNKNOWN("Unknown"),
@@ -96,16 +97,23 @@ public class ShimmerBattStatusDetails implements Serializable {
 	}
 	
 	public void update(int battAdcValue, int chargingStatus) {
-        boolean adcVoltageError = false;
-        
+		setBattAdcValue(battAdcValue);
+		setChargingStatus(chargingStatus);
+	}
+	
+	public void setBattAdcValue(int battAdcValue) {
         mBattAdcValue = battAdcValue;
-        mChargingStatusRaw = chargingStatus;
-
         mBattVoltage = adcValToBattVoltage(mBattAdcValue);
+        if (mBattVoltage <= BATTERY_ERROR_VOLTAGE) {
+        	calculateBattPercentage(mBattVoltage);
+        }
+	}
+
+	public void setChargingStatus(int chargingStatus) {
+        mChargingStatusRaw = chargingStatus;
         
-        if (mBattVoltage > 4.5) {
+        if (mBattVoltage > BATTERY_ERROR_VOLTAGE) {
         	mChargingStatus = CHARGING_STATUS.CHECKING;
-            adcVoltageError = true;
         }
         else if((mChargingStatusRaw & 0xFF) == CHARGING_STATUS_BYTE.SUSPENDED) {
         	mChargingStatus = CHARGING_STATUS.SUSPENDED;
@@ -125,12 +133,8 @@ public class ShimmerBattStatusDetails implements Serializable {
         else {
         	mChargingStatus = CHARGING_STATUS.ERROR;
         }
-
-        if(adcVoltageError == false) {
-        	calculateBattPercentage(mBattVoltage);
-        }
 	}
-	
+
 	public static double adcValToBattVoltage(int adcVal){
 		double calibratedData = SensorADC.calibrateU12AdcValueToMillivolts(adcVal, 0.0, 3.0, 1.0);
 		double battVoltage = ((calibratedData * 1.988)) / 1000; // 1.988 is due to components on the Shimmmer, 1000 is to convert to volts

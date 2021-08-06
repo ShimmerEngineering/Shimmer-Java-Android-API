@@ -409,7 +409,7 @@ public class SensorMPU9150 extends SensorMPU9X50 {
 					ObjectClusterSensorName.MPL_TEMPERATURE,
 					DatabaseChannelHandles.MPU_TEMP,
 					CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-					CHANNEL_UNITS.DEGREES_CELSUIS,
+					CHANNEL_UNITS.DEGREES_CELSIUS,
 					Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	
 	// MPL Pedometer
