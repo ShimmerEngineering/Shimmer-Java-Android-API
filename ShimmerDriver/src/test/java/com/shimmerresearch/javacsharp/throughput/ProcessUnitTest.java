@@ -11,16 +11,41 @@ public class ProcessUnitTest {
 		
 	}
 	
+	//steps
+	//1.set IsSendDataFromJavaToCSharp variable to true and period to 5 in c sharp 
+	//2.run the test
 	@Test
-	public void ReadDataUsingProcess() {
-		ThroughputTestUsingProcess a = new ThroughputTestUsingProcess();		
-		a.InitializeProcess();		
-		int count = a.ReadDataUsingProcess();		
-		assertTrue (count != 0);
-	}
-	
-	@Test
-	public void WriteDataUsingProcess() {
-		//TODO
+	public void ReadAndWriteDataUsingProcessTest() {
+		final ThroughputTestUsingProcess test = new ThroughputTestUsingProcess();
+
+		test.InitializeProcess();
+
+		test.MeasureLatency();
+		
+		Thread ReadDataUsingProcess = new Thread(){
+			public void run(){
+				test.ReadDataUsingProcess();
+			}
+		};
+
+		ReadDataUsingProcess.start();
+
+		Thread WriteDataUsingProcess = new Thread(){
+			public void run(){
+				test.WriteDataUsingProcess();
+			}
+		};
+
+		WriteDataUsingProcess.start();
+		
+		try {
+			Thread.sleep(6000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assertTrue (test.maximumThroughput > 0);
+		assertTrue (!test.writeToCSharpString.equals(null));
 	}
 }

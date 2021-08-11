@@ -4,19 +4,25 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-class SocketUnitTest {
+public class SocketUnitTest {
 
 	@Before
 	public void Setup() {
 		
 	}
 	
-	//need to run c# application manually
+	//steps
+	//1.set IsSendDataFromJavaToCSharp variable to true and period to 5 in c sharp 
+	//2.run the test
+	//3.run the c# application
 	@Test
-	public void WriteDataUsingSocket() {
+	public void ReadAndWriteDataUsingSocketTest() {
 		final ThroughputTestUsingSocket test = new ThroughputTestUsingSocket();
 		
-		test.InitializeSocket();
+		//initialize socket
+  		test.InitializeSocket();
+  		
+  		test.MeasureLatency();
 		
 		Thread ReadDataUsingSocket = new Thread(){
 		    public void run(){
@@ -24,34 +30,24 @@ class SocketUnitTest {
 		    }
 		};
 		
-		Thread WriteDataUsingSocket = new Thread(){
+	  	ReadDataUsingSocket.start();
+	  		
+  		Thread WriteDataUsingSocket = new Thread(){
 		    public void run(){
 		    	test.WriteDataUsingSocket();
 		    }
 		};
-	  	
-	  	ReadDataUsingSocket.start();
-	  	WriteDataUsingSocket.start();
 		
+	  	WriteDataUsingSocket.start();
+	  	
 	  	try {
-			ReadDataUsingSocket.join();
-			WriteDataUsingSocket.join();
-			
-			assertTrue (test.writeResult);
+			Thread.sleep(6000);
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	//need to run c# application manually
-	@Test
-	public void ReadDataUsingSocket() {
-		ThroughputTestUsingSocket test = new ThroughputTestUsingSocket();
-		
-		test.InitializeSocket();
-		
-	  	int count = test.ReadDataUsingSocket();
 	  	
-	  	assertTrue (count != 0);
+	  	assertTrue (test.maximumThroughput != 0);
+	  	assertTrue (!test.writeToCSharpString.equals(null));
 	}
 }

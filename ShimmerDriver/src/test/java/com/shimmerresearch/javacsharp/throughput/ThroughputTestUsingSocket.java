@@ -7,26 +7,35 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Calendar;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
+//steps
+//1.make sure the period and IsSendDataFromJavaToCSharp are the same in both c# and java application
+//2.run the ThroughputTestUsingProcess.java
+//3.run the c# application
 
 public class ThroughputTestUsingSocket {
 	
 	static ServerSocket serversocket;
 	static Socket socket;
-	public boolean writeResult;
 	static boolean IsSendDataFromJavaToCSharp = true;
+	static int period = 5;
+	static String unixTimeStampWhenSend;
+	static long unixTimeStampWhenReceive;
+	int maximumThroughput = 0;
+	String writeToCSharpString = null;
+	
 	public ThroughputTestUsingSocket() {
-		writeResult = false;
+		
 	}
 	
-	public int ReadDataUsingSocket() {
-		
-		String line = null;
+	public void ReadDataUsingSocket() {
 		int count = 0;
+		String line = null;
 		int bytePerLine = 20;
-	    int totalSeconds = 60;
 		
 		try {
 	        InputStream input = socket.getInputStream();
@@ -36,21 +45,21 @@ public class ThroughputTestUsingSocket {
 			while ((line = reader.readLine()) != null) {
             	System.out.println(line);
             	count++;
+            	
             	if(line.length() == 1) {
-            		writeResult = true;
+            		writeToCSharpString = line;
             	}
 			}
-			System.out.println(writeResult);
-			System.out.println("Total kilobytes received in " + totalSeconds + " seconds = " + count * bytePerLine / 1000);
-            System.out.println("Maximum throughput = " + (((count * bytePerLine) / 1000) / totalSeconds) + "kb per second");
-	    	
+			System.out.println("Total kilobytes received in " + period + " seconds = " + count * bytePerLine / 1000);
+			maximumThroughput = (((count * bytePerLine) / 1000) / period);
+            System.out.println("Maximum throughput = " + maximumThroughput + "kb per second");
+            Long delay = unixTimeStampWhenReceive - Long.parseLong(unixTimeStampWhenSend);
+			System.out.println("Latency = " + delay + " milliseconds");
     	}
     	catch (IOException e) 
     	{
     		e.printStackTrace();
     	}
-		
-		return count;
 	}
 	
 	public void WriteDataUsingSocket() {
@@ -59,8 +68,8 @@ public class ThroughputTestUsingSocket {
 	        new Random().nextBytes(bytes);
 	        final OutputStream output = socket.getOutputStream();
 	        
-	        final Timer timer1 = new Timer();
-	        timer1.schedule(new TimerTask() {
+	        final Timer timer = new Timer();
+	        timer.schedule(new TimerTask() {
 	          @Override
 	          public void run() {
 	        	  try {
@@ -69,7 +78,7 @@ public class ThroughputTestUsingSocket {
 	        	  {
 					//e.printStackTrace();
 					System.out.println("Client Disconnected");
-					timer1.cancel();
+					timer.cancel();
 	        	  }
 	          }
 	        }, 0, 1000);
@@ -78,6 +87,23 @@ public class ThroughputTestUsingSocket {
     	{
     		e.printStackTrace();
     	}
+	}
+	
+	public void MeasureLatency() {
+		//long unixTime = Instant.now().getEpochSecond();
+		try {
+			InputStream input = socket.getInputStream();
+	        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+		        unixTimeStampWhenSend = line;
+		        unixTimeStampWhenReceive = Calendar.getInstance().getTime().getTime();
+		        break;
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void InitializeSocket() {
@@ -92,10 +118,14 @@ public class ThroughputTestUsingSocket {
 	
 	public static void main(String[] args) {
 
+		System.out.println("Waiting for C# application to connect.");
+		
 		final ThroughputTestUsingSocket test = new ThroughputTestUsingSocket();
 			
 		//initialize socket
   		test.InitializeSocket();
+  		
+  		test.MeasureLatency();
 		
 		Thread ReadDataUsingSocket = new Thread(){
 		    public void run(){
