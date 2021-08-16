@@ -22,8 +22,9 @@ public class BleRadio {
 		BleRadio radio2;
 		String uuid;
 		
-		public BleRadio(String uuid) {
+		public BleRadio(String uuid, String exePath) {
 			this.uuid = uuid;
+			this.executablePath = exePath;
 		}
 		
 		public void DestroyProcess() {
@@ -55,7 +56,6 @@ public class BleRadio {
 		
 		public void InitializeProcess() {
 			Runtime runTime = Runtime.getRuntime();
-	        executablePath = "C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp1.exe";
 	        
 			try {
 				p = runTime.exec(executablePath + " " + uuid);

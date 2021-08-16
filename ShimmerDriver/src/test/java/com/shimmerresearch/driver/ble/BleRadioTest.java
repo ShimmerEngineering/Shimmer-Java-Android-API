@@ -10,13 +10,15 @@ import javax.swing.JFrame;
 
 public class BleRadioTest {
 	
-	BleRadio radio1 = new BleRadio("00000000-0000-0000-0000-e7452c6d6f14");
+	BleRadio radio1 = new BleRadio("00000000-0000-0000-0000-e7452c6d6f14","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp1.exe");
+	BleRadio radio2 = new BleRadio("00000000-0000-0000-0000-daa619f04ad7","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp2.exe");
+    
 	//BleRadio radio2 = new BleRadio("00000000-0000-0000-0000-daa619f04ad7");
 	
 	public void initialize() {
 
 		radio1.InitializeProcess();
-		//radio2.InitializeProcess();
+		radio2.InitializeProcess();
 		JFrame frame = new JFrame();
 		frame.setSize(331, 268);
 		frame.getContentPane().setLayout(null);
@@ -60,7 +62,7 @@ public class BleRadioTest {
 		JButton button = new JButton("Connect");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//radio2.WriteDataToProcess("Connect");
+				radio2.WriteDataToProcess("Connect");
 			}
 		});
 		button.setBounds(162, 13, 124, 25);
@@ -69,7 +71,7 @@ public class BleRadioTest {
 		JButton button_1 = new JButton("Read Status");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//radio2.WriteDataToProcess("Write110000");
+				radio2.WriteDataToProcess("Write110000");
 			}
 		});
 		button_1.setBounds(162, 51, 124, 25);
@@ -78,7 +80,7 @@ public class BleRadioTest {
 		JButton button_2 = new JButton("Sync");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//radio2.WriteDataToProcess("Write120000");
+				radio2.WriteDataToProcess("Write120000");
 			}
 		});
 		button_2.setBounds(162, 89, 124, 25);
@@ -87,7 +89,7 @@ public class BleRadioTest {
 		JButton button_3 = new JButton("Disconnect");
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//radio2.WriteDataToProcess("Disconnect");
+				radio2.WriteDataToProcess("Disconnect");
 			}
 		});
 		button_3.setBounds(162, 183, 124, 25);
@@ -100,7 +102,7 @@ public class BleRadioTest {
             public void windowClosing(WindowEvent e)
             {
             	radio1.DestroyProcess();
-            	//radio2.DestroyProcess();
+            	radio2.DestroyProcess();
             }
         });
 	}
