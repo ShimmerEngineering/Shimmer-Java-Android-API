@@ -4,7 +4,7 @@ import com.shimmerresearch.comms.radioProtocol.RadioListener;
 
 public abstract class AbstractByteCommunication {
 	
-	ByteCommunicationListener mByteCommunicationListener;
+	protected ByteCommunicationListener mByteCommunicationListener;
 	
 	public abstract void connect();
 	

@@ -2,20 +2,10 @@ package com.shimmerresearch.driver.ble;
 
 import java.lang.Runtime;
 import java.io.*;
-import java.util.*;
-
-import javax.swing.JFrame;
-
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
-import com.shimmerresearch.comms.radioProtocol.RadioListener;
 
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.ActionEvent;  
 
 public class BleRadioByteCommunication extends AbstractByteCommunication {
 	
@@ -32,6 +22,12 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 			this.uuid = uuid;
 			this.executablePath = exePath;
 			mByteCommunicationListener = listener;
+			InitializeProcess();
+		}
+
+		public BleRadioByteCommunication(String uuid, String exePath) {
+			this.uuid = uuid;
+			this.executablePath = exePath;
 			InitializeProcess();
 		}
 		
@@ -119,21 +115,22 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 		@Override
 		public void connect() {
 			// TODO Auto-generated method stub
-			
+			WriteDataToProcess("Connect");
 		}
 
 
 		@Override
 		public void disconnect() {
 			// TODO Auto-generated method stub
-			
+			WriteDataToProcess("Disconnect");
 		}
 
 
 		@Override
 		public void writeBytes(byte[] bytes) {
 			// TODO Auto-generated method stub
-			
+			String bytesstring = Hex.encodeHexString(bytes);
+			WriteDataToProcess("Write"+bytesstring);
 		}
 		
 		
