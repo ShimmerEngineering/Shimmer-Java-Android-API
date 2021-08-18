@@ -5,33 +5,44 @@ import java.io.*;
 import java.util.*;
 
 import javax.swing.JFrame;
+
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+
+import com.shimmerresearch.comms.radioProtocol.RadioListener;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;  
 
-public class BleRadio {
-
+public class BleRadioByteCommunication extends AbstractByteCommunication {
+	
 		Process p;
 		String executablePath;
 		BufferedReader reader;
 		BufferedWriter writer;
 		Boolean flag;
-		BleRadio radio1;
-		BleRadio radio2;
+		BleRadioByteCommunication radio1;
+		BleRadioByteCommunication radio2;
 		String uuid;
 		
-		public BleRadio(String uuid, String exePath) {
+		public BleRadioByteCommunication(String uuid, String exePath, ByteCommunicationListener listener) {
 			this.uuid = uuid;
 			this.executablePath = exePath;
+			mByteCommunicationListener = listener;
+			InitializeProcess();
 		}
 		
+
 		public void DestroyProcess() {
 			if (p!=null) {
 				p.destroyForcibly();
 			}
 		}
+		
+		
 		
 		public void WriteDataToProcess(String s) {
 			
@@ -54,7 +65,7 @@ public class BleRadio {
 		}
 		*/
 		
-		public void InitializeProcess() {
+		protected void InitializeProcess() {
 			Runtime runTime = Runtime.getRuntime();
 	        
 			try {
@@ -71,7 +82,27 @@ public class BleRadio {
 					    String line = null;
 					    while (true) {
 							if ((line = reader.readLine()) != null) {
-								System.out.println(line);
+								System.out.println("BleRadioByteComm: " + line);
+								if (line.equals("Connected")) {
+									if (mByteCommunicationListener!=null) {
+										mByteCommunicationListener.eventConnected();
+									}
+								} else if (line.equals("Disconnected")) {
+									if (mByteCommunicationListener!=null) {
+										mByteCommunicationListener.eventDisconnected();
+									}
+								} else if (line.substring(0, 4).equals(("RXB:"))) {
+									String bytes = line.substring(4, line.length());
+									try {
+										byte[] dataBytes = Hex.decodeHex(bytes);
+										if (mByteCommunicationListener!=null) {
+											mByteCommunicationListener.eventNewBytesReceived(dataBytes);
+										}
+									} catch (DecoderException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
 							}	
 						}
 			    	}
@@ -82,6 +113,27 @@ public class BleRadio {
 		  	};
 		  	
 		  	Example.start();
+		}
+
+
+		@Override
+		public void connect() {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		public void disconnect() {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		public void writeBytes(byte[] bytes) {
+			// TODO Auto-generated method stub
+			
 		}
 		
 		

@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 
 import org.bouncycastle.util.encoders.Hex;
 
-public class BleRadioTest {
+public class VerisenseProtocolByteCommunicationTest {
 	
 	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp2.exe", new ByteCommunicationListener() {
 		
@@ -55,6 +55,8 @@ public class BleRadioTest {
 	});
 	public void initialize() {
 
+		radio1.InitializeProcess();
+		radio2.InitializeProcess();
 		JFrame frame = new JFrame();
 		frame.setSize(331, 268);
 		frame.getContentPane().setLayout(null);
@@ -143,7 +145,7 @@ public class BleRadioTest {
         });
 	}
 	public static void main(String[] args) {
-		BleRadioTest test = new BleRadioTest();
+		VerisenseProtocolByteCommunicationTest test = new VerisenseProtocolByteCommunicationTest();
 		test.initialize();
 		
 		//connect
