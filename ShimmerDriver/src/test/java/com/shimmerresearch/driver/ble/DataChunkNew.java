@@ -4,7 +4,8 @@ public class DataChunkNew {
 	public byte[] mPackets;
     public int mExpectedLength;
     public int mCurrentLength;
-
+    public long mUnixStartTimeinMS;
+    public long mUnixFinishTimeinMS;
     public double mTransfer;
     public final int mPacketMaxSize = 32767; //Considering we are using int16 to get the length the maximum value is 7F FF which is 32767
     public boolean mCRCErrorPayload = false;

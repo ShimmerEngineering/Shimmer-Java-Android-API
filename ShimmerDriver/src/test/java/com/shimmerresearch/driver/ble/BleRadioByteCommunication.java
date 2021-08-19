@@ -78,7 +78,7 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 					    String line = null;
 					    while (true) {
 							if ((line = reader.readLine()) != null) {
-								System.out.println("BleRadioByteComm: " + line);
+								//System.out.println("BleRadioByteComm: " + line);
 								if (line.equals("Connected")) {
 									if (mByteCommunicationListener!=null) {
 										mByteCommunicationListener.eventConnected();
@@ -131,6 +131,12 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 			// TODO Auto-generated method stub
 			String bytesstring = Hex.encodeHexString(bytes);
 			WriteDataToProcess("Write"+bytesstring);
+		}
+
+		@Override
+		public void stop() {
+			// TODO Auto-generated method stub
+			DestroyProcess();
 		}
 		
 		

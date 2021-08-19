@@ -1,7 +1,14 @@
 package com.shimmerresearch.driver.ble;
 
+import java.io.File;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.util.encoders.Hex;
@@ -21,14 +28,31 @@ public class VerisenseProtocolByteCommunication {
     byte[] ReadPendingEventsRequest = new byte[] { 0x17, 0x00, 0x00 };
     byte[] DFUCommand = new byte[] { 0x26, 0x00, 0x00 };
     byte[] DisconnectRequest = new byte[] { 0x2B, 0x00, 0x00 };
+    byte[] dataACK = new byte[] { (byte) 0x82, 0x00, 0x00 };
+    byte[] dataNACK = new byte[] { 0x72, 0x00, 0x00 };
+    byte dataEndHeader = 0x42;
     
 	StatusPayload mStatusPayload;
+	boolean mNewPayload;
 	boolean mNewStreamPayload;
 	boolean WaitingForStopStreamingCommand = false;
 	public transient List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
+    public DataChunkNew DataBufferToBeSaved;
 	public DataChunkNew DataCommandBuffer;
 	public DataChunkNew DataStreamingBuffer;
-	
+	public DataChunkNew DataBuffer;
+	public int PayloadIndex;
+	public int PreviouslyWrittenPayloadIndex;
+	String dataFileName ="";
+	String dataFilePath ="";
+    String binFileFolderDir="";
+	protected final String BadCRC = "BadCRC";
+    int mNACKcounter;
+    int mNACKCRCcounter;
+
+    int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit
+    
+    
 	public enum VerisenseProtocolState
     {
         None,
@@ -64,11 +88,20 @@ public class VerisenseProtocolByteCommunication {
 			@Override
 			public void eventNewBytesReceived(byte[] rxBytes) {
 				// TODO Auto-generated method stub
-				System.out.println("PROTOCOL EVENT BYTES" + Hex.toHexString(rxBytes));
+				//System.out.println("PROTOCOL EVENT BYTES" + Hex.toHexString(rxBytes));
 				
 				 if (mState.equals(VerisenseProtocolState.StreamingLoggedData))
 	             {
-	                
+					 if (mNewPayload)
+	                    {
+	                        createNewPayload(rxBytes);
+	                    }
+	                    else
+	                    {
+	                        handleDataChunk(rxBytes);
+	                    }
+
+	                    return;
 	             } else if (mState.equals(VerisenseProtocolState.Streaming)) {
 	            	 
 	            	//System.Console.WriteLine("STREAMING DATA (" + bytes.Length + ") :" + String.Join(" ", bytes));
@@ -346,6 +379,315 @@ public class VerisenseProtocolByteCommunication {
         DataStreamingBuffer = new DataChunkNew();
     }
     
+    void createNewPayload(byte[] payload)
+    {
+        if (payload.length == 3 && payload[0] == dataEndHeader)
+        {
+            stateChange(VerisenseProtocolState.Connected);
+            return;
+        }
+
+        try
+        {
+            //AutoSyncLogger.AddLog(LogObject, "NewPayloadHead", BitConverter.ToString(payload), ASMName);
+        	DataBuffer.mUnixStartTimeinMS = System.currentTimeMillis();
+        	 byte header = payload[0];
+
+             byte[] lengthBytes = new byte[2];
+             System.arraycopy(payload, 1, lengthBytes, 0, 2);
+             
+             int length = (int)ByteUtils.bytesToShort(lengthBytes, ByteOrder.LITTLE_ENDIAN);
+             int offset = 3;
+             
+            stateChange(VerisenseProtocolState.StreamingLoggedData);
+            
+            DataBuffer.mExpectedLength = length;
+            byte[] indexBytes = new byte[2];
+            System.arraycopy(payload, 3, indexBytes, 0, 2);
+            PayloadIndex = (int)ByteUtils.bytesToShort(indexBytes, ByteOrder.LITTLE_ENDIAN);
+            System.out.println("Payload Index: " + PayloadIndex);
+            offset = 5;
+
+            System.arraycopy(indexBytes, 0, DataBuffer.mPackets, 0, indexBytes.length);
+            DataBuffer.mCurrentLength += 2; //this is the index?
+
+            byte[] remainingBytes = new byte[payload.length-offset];
+            System.arraycopy(payload, offset, remainingBytes, 0, payload.length-offset);
+            System.arraycopy(remainingBytes, 0, DataBuffer.mPackets, DataBuffer.mCurrentLength, remainingBytes.length);
+
+            DataBuffer.mCurrentLength += remainingBytes.length;
+            mNewPayload = false;
+
+            //AdvanceLog(LogObject, "PayloadIndex", string.Format("Payload Index = {0}; Expected Length = {1}", PayloadIndex, DataBuffer.ExpectedLength), ASMName);
+
+            if (DataBuffer.mCurrentLength > DataBuffer.mExpectedLength)
+            {
+                //AdvanceLog(LogObject, "CreateNewPayload", "Error Current Length: " + DataBuffer.CurrentLength + " bigger than Expected Length: " + DataBuffer.ExpectedLength, ASMName);
+                //SendDataNACK(true);
+            }
+            else if (DataBuffer.mCurrentLength == DataBuffer.mExpectedLength) //this might occur if the payload length is very small
+            {
+                //AdvanceLog(LogObject, "CreateNewPayload", "HandleCompletePayload", ASMName);
+                handleCompletePayload();
+            }
+        }
+        catch (Exception ex)
+        {
+            //AdvanceLog(LogObject, "CreateChunk Exception", ex, ASMName);
+            //SendDataNACK(false);
+            return;
+        }
+
+    }
+    
+    void handleCompletePayload()
+    {
+        try
+        {
+            DataBuffer.mUnixFinishTimeinMS = System.currentTimeMillis();
+            long duration = DataBuffer.mUnixFinishTimeinMS - DataBuffer.mUnixStartTimeinMS;
+            System.out.println("Duration : " + duration);
+            if (duration !=0 ) {
+            DataBuffer.mTransfer = DataBuffer.mCurrentLength / ((double)(DataBuffer.mUnixFinishTimeinMS - DataBuffer.mUnixStartTimeinMS)/1000);
+            String syncProgress = String.format("%f KB/s", (DataBuffer.mTransfer / 1024.0)) + "(Payload Index : " + PayloadIndex + ")";
+            System.out.println(syncProgress);
+            }
+            //AdvanceLog(LogObject, "Payload transfer rate", syncProgress, ASMName);
+            //InvokeSyncEvent(Asm_uuid.ToString(), new SyncEventData { ASMID = Asm_uuid.ToString(), CurrentEvent = SyncEvent.DataSync, SyncProgress = syncProgress });
+            //if (ShimmerBLEEvent != null)
+                //ShimmerBLEEvent.Invoke(null, new ShimmerBLEEventData { ASMID = Asm_uuid.ToString(), CurrentEvent = VerisenseBLEEvent.SyncLoggedDataNewPayload, Message = syncProgress });
+
+            if (!CRCCheck())
+            {
+                //SendDataNACK(true);
+                return;
+            }
+
+            if ((dataFileName).isEmpty() || dataFileName.contains(BadCRC)) //if the previous file name has a bad crc, create a new file, this has passed the crc check to reach here
+            {
+                createBinFile(false);
+            }
+            else //if there is an existing file check the file size
+            {
+                //check size of file and create new bin file if required
+                long length = new File(dataFilePath).length();
+                if (length > MaximumNumberOfBytesPerBinFile)
+                {
+                    //SaveBinFileToDB();
+                    //AdvanceLog(LogObject, "BinFileCheckNewFileRequired", dataFilePath + " size " + length, ASMName);
+                    createBinFile(false);
+                }
+            }
+
+            FinishPayload(false);
+        }
+        catch (Exception ex)
+        {
+            //AdvanceLog(LogObject, "ProcessingDataPayloadException", ex, ASMName);
+        	System.out.println(ex.toString());
+        }
+
+    }
+    void FinishPayload(boolean CRCError)
+    {
+        DataBufferToBeSaved = DataBuffer;
+
+        if (CRCError)
+        {
+            DataBufferToBeSaved.mCRCErrorPayload = true;
+        }
+        try
+        {
+            WritePayloadToBinFile();
+
+        } catch (Exception ex)
+        {
+            //DataTCS.TrySetResult(false);
+            return;
+        }
+        SendDataACK();
+        mNewPayload = true;
+        mNACKcounter = 0;
+        mNACKCRCcounter = 0;
+    }
+    void createBinFile(boolean crcError)
+    {
+        try
+        {
+            //var asm = RealmService.GetSensorbyID(Asm_uuid.ToString());
+            //var trialSettings = RealmService.LoadTrialSettings();
+
+            //var participantID = asm.ParticipantID;
+            binFileFolderDir = String.format("%s/%s/%s/BinaryFiles", "trialname", "participantID", "uuid");
+            Path path = Paths.get(binFileFolderDir);
+            
+            //java.nio.file.Files;
+            Files.createDirectories(path);
+            if (!Files.exists(path))
+            {
+            	Files.createDirectories(path);
+            }
+            String pIndex = String.format("%05d", PayloadIndex);
+            if (crcError)
+            {
+                dataFileName = String.format("%s_%s_%s.bin",new SimpleDateFormat("yyMMdd_HHmmss").format(new Date()),  pIndex,BadCRC);
+            }
+            else
+            {
+                dataFileName = String.format("%s_%s.bin", new SimpleDateFormat("yyMMdd_HHmmss").format(new Date()), pIndex);
+            }
+            
+            //AdvanceLog(LogObject, "BinFileNameCreated", dataFileName, ASMName);
+            Path rootPath = Paths.get(binFileFolderDir);
+            Path dfn = Paths.get(dataFileName);
+            
+            dataFilePath = rootPath.resolve(dfn).toString();
+
+            //AdvanceLog(LogObject, "BinFileCreated", dataFilePath, ASMName);
+        }
+        catch (Exception ex)
+        {
+            //AdvanceLog(LogObject, "BinFileCreatedException", ex, ASMName);
+        }
+    }
+    void SendDataACK()
+    {
+        DataBuffer = new DataChunkNew();
+
+        //AutoSyncLogger.AddLog(LogObject, "DataACKRequest", BitConverter.ToString(dataACK), ASMName);
+
+
+        try
+        {
+            //LastDataTransferReplySent = LastDataTransferReplySentFromBS.ACK;
+            /*//ASM-931 only used for testing
+            Random rnd = new Random();
+            int test = rnd.Next(0, 10);
+            if (test <= 2)
+            {
+                throw new Exception("Testing delete last payload exception");
+            }
+            */
+        	mByteCommunication.writeBytes(dataACK);
+        }
+        catch (Exception ex)
+        {
+            //Delete the last payload written to the bin file, if it isnt crc error
+        	/*
+            if (!DataBufferToBeSaved.CRCErrorPayload)
+            {
+                DeleteLastPayloadFromBinFile();
+            }
+
+            AdvanceLog(LogObject, "SendDataACKException", ex.Message, ASMName);
+            DataTCS.TrySetResult(false);
+            */
+        }
+
+    }
+    void WritePayloadToBinFile()
+    {
+    	
+        if (PreviouslyWrittenPayloadIndex != PayloadIndex)
+        {
+            try
+            {
+                //System.Console.WriteLine("Write Payload To Bin File!");
+            	File f = new File(dataFilePath);
+            	if (!f.exists()) {
+            		f.createNewFile();
+            	}
+
+            	byte[] bytesToWrite = new byte[DataBufferToBeSaved.mCurrentLength];
+            	System.arraycopy(DataBufferToBeSaved.mPackets, 0, bytesToWrite, 0, bytesToWrite.length);
+            	Files.write(Paths.get(dataFilePath), bytesToWrite, StandardOpenOption.APPEND);
+            	/*
+                using (var stream = new FileStream(dataFilePath, FileMode.Append))
+                {
+                    stream.Write(DataBufferToBeSaved.Packets, 0, DataBufferToBeSaved.CurrentLength);
+                }
+                IsFileLocked(dataFilePath);
+
+            	*/
+                if (DataBufferToBeSaved.mCRCErrorPayload)
+                {
+                    //SaveBinFileToDB();
+                } else
+                {
+                    //only assume non crc error payload index is valid
+                    PreviouslyWrittenPayloadIndex = PayloadIndex;
+                }
+                //DataBufferToBeSaved = null;
+                //RealmService.UpdateSensorDataSyncDate(Asm_uuid.ToString());
+                //UpdateSensorDataSyncDate();
+            }
+            catch (Exception ex)
+            {
+                //AdvanceLog(LogObject, "FileAppendException", ex, ASMName);
+                //throw ex;
+            	System.out.println(ex.toString());
+            }
+        }
+        else
+        {
+            //AdvanceLog(LogObject, "WritePayloadToBinFile", "Same Payload Index = " + PayloadIndex.ToString(), ASMName);
+        }
+        
+    }
+    
+    void handleDataChunk(byte[] payload)
+    {
+        try
+        {
+            System.arraycopy(payload, 0, DataBuffer.mPackets, DataBuffer.mCurrentLength, payload.length);
+            DataBuffer.mCurrentLength += payload.length;
+
+            //JC: This causes too many msgs in the logs we need a better implementation of this, maybe just logs last 10 msgs if a failure occurs
+            //AutoSyncLogger.AddLog(LogObject, "PayloadChunk", string.Format("Chunk length = {0}; Current Length = {1}; Expected Length={2}",
+            //    payload.Length, DataBuffer.CurrentLength, DataBuffer.ExpectedLength), ASMName);
+            //InternalWriteConsoleAndLog("Payload Chunk", string.Format("Chunk length = {0}; Current Length = {1}; Expected Length={2}", payload.Length, DataBuffer.CurrentLength, DataBuffer.ExpectedLength));
+            //FinalChunkLogMsgForNack = string.Format("Chunk length = {0}; Current Length = {1}; Expected Length={2}", payload.Length, DataBuffer.CurrentLength, DataBuffer.ExpectedLength);
+            if (DataBuffer.mCurrentLength >= DataBuffer.mExpectedLength) //Note: for readability it would be better for this to be == because > will cause the crc to fail anyway via a Buffer.BlockCopy exception e.g. "System.ArgumentException","Message":"Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."
+            {
+                handleCompletePayload();
+            }
+        }
+        catch (Exception ex)
+        {
+            //SendDataNACK(false);
+            //AdvanceLog(LogObject, "HandleDataChunk", ex, ASMName);
+        }
+    }
+    
+    boolean CRCCheck()
+    {
+        try
+        {
+            byte[] completeChunk = new byte[DataBuffer.mExpectedLength];
+
+            System.arraycopy(DataBuffer.mPackets, 0, completeChunk, 0, DataBuffer.mCurrentLength);
+            /*
+            var result = BitHelper.CheckCRC(completeChunk);
+
+            if (!result.result)
+            {
+                AdvanceLog(LogObject, "CRCCheck", result, ASMName);
+                //see ASM-1142, ASM-1131
+                //AutoSyncLogger.AddLog(LogObject, "Failed CRC Payload", BitConverter.ToString(DataBuffer.Packets), ASMName);
+            }
+
+            return result.result;
+            */
+            return true;
+        }
+        catch (Exception ex)
+        {
+            //AdvanceLog(LogObject, "CRCCheck Exception", ex, ASMName);
+            return false;
+        }
+
+    }
+    
 	public void connect() {
 		mByteCommunication.connect();
 	}
@@ -363,6 +705,13 @@ public class VerisenseProtocolByteCommunication {
 		mByteCommunication.writeBytes(StreamDataRequest);
 	}
 	
+	public void syncData() {
+		DataBuffer = new DataChunkNew();
+		stateChange(VerisenseProtocolState.StreamingLoggedData);
+		mNewPayload = true;
+		mByteCommunication.writeBytes(ReadDataRequest);
+	}
+	
 	public void readOpConfig() {
 		
 	}
@@ -370,5 +719,9 @@ public class VerisenseProtocolByteCommunication {
 	public void stopStreaming() {
 		WaitingForStopStreamingCommand = true;
 		mByteCommunication.writeBytes(StopStreamRequest);
+	}
+	
+	public void stop() {
+		mByteCommunication.stop();
 	}
 }

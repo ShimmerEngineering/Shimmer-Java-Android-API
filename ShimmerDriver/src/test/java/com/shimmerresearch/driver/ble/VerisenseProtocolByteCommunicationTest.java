@@ -13,9 +13,9 @@ import org.bouncycastle.util.encoders.Hex;
 public class VerisenseProtocolByteCommunicationTest {
 	
 	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp1.exe");
-	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp1.exe");
+	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp2.exe");
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
-	//VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
+	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
 	public void initialize() {
 		
 		JFrame frame = new JFrame();
@@ -52,7 +52,7 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton btnNewButton_2 = new JButton("Sync");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				radio1.WriteDataToProcess("Write120000");
+				protocol1.syncData();
 			}
 		});
 		btnNewButton_2.setBounds(12, 89, 124, 25);
@@ -61,7 +61,7 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton button = new JButton("Connect");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				radio2.WriteDataToProcess("Connect");
+				protocol2.connect();
 			}
 		});
 		button.setBounds(162, 13, 124, 25);
@@ -70,7 +70,7 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton button_1 = new JButton("Read Status");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				radio2.WriteDataToProcess("Write110000");
+				protocol2.readStatus();
 			}
 		});
 		button_1.setBounds(162, 51, 124, 25);
@@ -79,7 +79,7 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton button_2 = new JButton("Sync");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				radio2.WriteDataToProcess("Write120000");
+				protocol2.syncData();
 			}
 		});
 		button_2.setBounds(162, 89, 124, 25);
@@ -88,7 +88,7 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton button_3 = new JButton("Disconnect");
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				radio2.WriteDataToProcess("Disconnect");
+				protocol2.disconnect();
 			}
 		});
 		button_3.setBounds(162, 200, 124, 25);
@@ -127,8 +127,8 @@ public class VerisenseProtocolByteCommunicationTest {
             @Override
             public void windowClosing(WindowEvent e)
             {
-            	radio1.DestroyProcess();
-            	radio2.DestroyProcess();
+            	protocol1.stop();
+            	protocol2.stop();
             }
         });
 	}
