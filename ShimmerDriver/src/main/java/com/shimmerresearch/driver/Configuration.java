@@ -168,7 +168,7 @@ public class Configuration {
 		DOCK,
 		BLUETOOTH,
 		IEEE802154,
-		SD,
+		SD, // Bin file
 		HID,
 		USB,
 		CLASS, //this is to read the value of the class for clones etc. e.g. if you do a getsettings(accelRange,CLASS) and getsettings(accelRange,Bluetooth), the results are different. One returns the value in the object while the other should generate a read command to be sent to the shimmer device

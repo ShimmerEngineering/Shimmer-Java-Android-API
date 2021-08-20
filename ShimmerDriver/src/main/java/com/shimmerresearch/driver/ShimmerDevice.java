@@ -352,8 +352,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
 	 */
 	protected abstract void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE commType);
-	public abstract void configBytesParse(byte[] configBytes);
-	public abstract byte[] configBytesGenerate(boolean generateForWritingToShimmer);
+	public abstract void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType);
+	public abstract byte[] configBytesGenerate(boolean generateForWritingToShimmer, COMMUNICATION_TYPE commType);
 	public abstract void createConfigBytesLayout();
 
 
@@ -1702,6 +1702,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setDefaultShimmerConfiguration() {
 		// TODO Auto-generated method stub
 	}
+	
+	public void configBytesParse(byte[] configBytes) {
+		configBytesParse(configBytes, COMMUNICATION_TYPE.BLUETOOTH);
+	}
+	
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
+		return configBytesGenerate(generateForWritingToShimmer, COMMUNICATION_TYPE.BLUETOOTH);
+	}
+
 	
 	public Object setConfigValueUsingConfigLabel(String configLabel, Object valueToSet){
 		return setConfigValueUsingConfigLabel("", configLabel, valueToSet);

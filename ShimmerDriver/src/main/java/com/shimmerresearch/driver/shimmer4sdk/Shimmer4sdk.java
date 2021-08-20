@@ -171,7 +171,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 	// have duplicates in ShimmerObject, ShimmerGQ and Shimmer4. Some items only
 	// copied here for example/testing purposes
 	@Override
-	public void configBytesParse(byte[] configBytes) {
+	public void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType) {
 		String shimmerName = "";
 		mInfoMemBytesOriginal = configBytes;
 
@@ -239,7 +239,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				abstractSensor.configBytesParse(this, mConfigBytes);
+				abstractSensor.configBytesParse(this, mConfigBytes, commType);
 			}
 			
 			//need to update parser map here as ExG config bytes change which of ECG/EMG/Resp etc. is enabled
@@ -308,7 +308,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 	// have duplicates in ShimmerObject, ShimmerGQ and Shimmer4. Some items only
 	// copied here for example/testing purposes
 	@Override
-	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer, COMMUNICATION_TYPE commType) {
 		//TODO refer to same method in ShimmerGQ/ShimmerObject
 
 		//TODO create for Shimmer4 or use Shimmer3?
@@ -366,7 +366,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 
 		// Configuration from each Sensor settings
 		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-			abstractSensor.configBytesGenerate(this, mConfigBytes);
+			abstractSensor.configBytesGenerate(this, mConfigBytes, commType);
 		}
 
 		// Shimmer Name

@@ -278,7 +278,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	@Override 
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
@@ -310,7 +310,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	@Override 
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) { 
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) { 
 		
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
