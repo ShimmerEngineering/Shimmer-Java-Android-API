@@ -12,8 +12,8 @@ import org.bouncycastle.util.encoders.Hex;
 
 public class VerisenseProtocolByteCommunicationTest {
 	
-	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp1.exe");
-	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp2.exe");
+	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14","bleconsoleapp\\BLEConsoleApp1.exe");
+	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7","bleconsoleapp\\BLEConsoleApp1.exe");
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
 	public void initialize() {

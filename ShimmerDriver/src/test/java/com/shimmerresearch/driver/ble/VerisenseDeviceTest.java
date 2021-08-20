@@ -12,13 +12,15 @@ import org.bouncycastle.util.encoders.Hex;
 
 public class VerisenseDeviceTest {
 	
-	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp1.exe");
-	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp2.exe");
+	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14","bleconsoleapp\\BLEConsoleApp1.exe");
+	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7","bleconsoleapp\\BLEConsoleApp2.exe");
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
 	VerisenseDevice device1 = new VerisenseDevice();
+	VerisenseDevice device2 = new VerisenseDevice();
 	public void initialize() {
 		device1.setProtocol(protocol1);
+		device2.setProtocol(protocol2);
 		JFrame frame = new JFrame();
 		frame.setSize(333, 369);
 		frame.getContentPane().setLayout(null);
@@ -132,6 +134,11 @@ public class VerisenseDeviceTest {
 		frame.getContentPane().add(btnReadOp);
 		
 		JButton btnReadOp_1 = new JButton("Read Op");
+		btnReadOp_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				protocol2.readOpConfig();
+			}
+		});
 		btnReadOp_1.setBounds(162, 89, 124, 25);
 		frame.getContentPane().add(btnReadOp_1);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
