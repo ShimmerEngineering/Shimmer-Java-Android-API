@@ -33,6 +33,7 @@ public class VerisenseProtocolByteCommunication {
     byte dataEndHeader = 0x42;
     
 	StatusPayload mStatusPayload;
+	OpConfigPayload mOpConfigPayload;
 	boolean mNewPayload;
 	boolean mNewStreamPayload;
 	boolean WaitingForStopStreamingCommand = false;
@@ -263,12 +264,29 @@ public class VerisenseProtocolByteCommunication {
                     if (statusResult)
                     {
                     	mStatusPayload = statusData;
+                    	for (RadioListener rl:mRadioListenerList){
+                			rl.eventResponseReceived(0x31, mStatusPayload);
+                		}
+
+                    	
                     }
                     else
                     {
                         
                     }
 
+                    break;
+                case 0x34:
+                	OpConfigPayload opData = new OpConfigPayload();
+                	 boolean opResult = opData.processPayload(ResponseBuffer);
+                     if (opResult)
+                     {
+                    	 mOpConfigPayload = opData;
+                    	 for (RadioListener rl:mRadioListenerList){
+                 			rl.eventResponseReceived(0x34, mOpConfigPayload);
+                 		}
+
+                     }
                     break;
                 case 0x4A:
                     //var baseDataSS = new BasePayload();
@@ -713,7 +731,8 @@ public class VerisenseProtocolByteCommunication {
 	}
 	
 	public void readOpConfig() {
-		
+		mNewCommandPayload = true;
+		mByteCommunication.writeBytes(ReadOpConfigRequest);
 	}
 	
 	public void stopStreaming() {
