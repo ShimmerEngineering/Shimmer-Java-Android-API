@@ -32,6 +32,7 @@ public class BleRadioTest {
 			System.out.println("EVENT CONNECTED 6f14");
 		}
 	});
+	
 	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp3.exe", new ByteCommunicationListener() {
 		
 		@Override
@@ -53,12 +54,13 @@ public class BleRadioTest {
 			
 		}
 	});
+	
 	public void initialize() {
 
 		JFrame frame = new JFrame();
 		frame.setSize(331, 268);
 		frame.getContentPane().setLayout(null);
-		
+
 		JButton btnNewButton = new JButton("Connect");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -67,7 +69,7 @@ public class BleRadioTest {
 		});
 		btnNewButton.setBounds(12, 13, 124, 25);
 		frame.getContentPane().add(btnNewButton);
-		
+
 		JButton btnDisconnect = new JButton("Disconnect");
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -76,7 +78,7 @@ public class BleRadioTest {
 		});
 		btnDisconnect.setBounds(12, 183, 124, 25);
 		frame.getContentPane().add(btnDisconnect);
-		
+
 		JButton btnNewButton_1 = new JButton("Read Status");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -85,7 +87,7 @@ public class BleRadioTest {
 		});
 		btnNewButton_1.setBounds(12, 51, 124, 25);
 		frame.getContentPane().add(btnNewButton_1);
-		
+
 		JButton btnNewButton_2 = new JButton("Sync");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -94,7 +96,7 @@ public class BleRadioTest {
 		});
 		btnNewButton_2.setBounds(12, 89, 124, 25);
 		frame.getContentPane().add(btnNewButton_2);
-		
+
 		JButton button = new JButton("Connect");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -103,7 +105,7 @@ public class BleRadioTest {
 		});
 		button.setBounds(162, 13, 124, 25);
 		frame.getContentPane().add(button);
-		
+
 		JButton button_1 = new JButton("Read Status");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -112,7 +114,7 @@ public class BleRadioTest {
 		});
 		button_1.setBounds(162, 51, 124, 25);
 		frame.getContentPane().add(button_1);
-		
+
 		JButton button_2 = new JButton("Sync");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -121,7 +123,7 @@ public class BleRadioTest {
 		});
 		button_2.setBounds(162, 89, 124, 25);
 		frame.getContentPane().add(button_2);
-		
+
 		JButton button_3 = new JButton("Disconnect");
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -132,24 +134,22 @@ public class BleRadioTest {
 		frame.getContentPane().add(button_3);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		frame.addWindowListener(new WindowAdapter()
-        {
-            @Override
-            public void windowClosing(WindowEvent e)
-            {
-            	radio1.DestroyProcess();
-            	radio2.DestroyProcess();
-            }
-        });
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				radio1.DestroyProcess();
+				radio2.DestroyProcess();
+			}
+		});
 	}
+
 	public static void main(String[] args) {
 		BleRadioTest test = new BleRadioTest();
 		test.initialize();
-		
-		//connect
-		
-		
-		//System.out.println(p);
-		//p.destroy();
-}
+
+		// connect
+
+		// System.out.println(p);
+		// p.destroy();
+	}
 }
