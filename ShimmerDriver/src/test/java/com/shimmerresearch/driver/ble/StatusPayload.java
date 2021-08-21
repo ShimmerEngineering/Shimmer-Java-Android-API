@@ -7,6 +7,8 @@ import java.lang.reflect.Array;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.encoders.Hex;
 
+import com.shimmerresearch.driverUtilities.UtilShimmer;
+
 public class StatusPayload {
 	String Payload;
 	String Header;
@@ -37,8 +39,7 @@ public class StatusPayload {
 	public final static int SensorClockFrequency = 32768;
 
 	private long ConvertMinuteToMS(long timestamp) {
-		if (timestamp != MaxFourByteUnsignedValue) // special condition where the sensor/fw returns all FF values
-		{
+		if (timestamp != MaxFourByteUnsignedValue) { // special condition where the sensor/fw returns all FF values
 			timestamp = timestamp * 60 * 1000; // convert from minutes to milliseconds
 		} else {
 			timestamp = -1;
@@ -61,6 +62,7 @@ public class StatusPayload {
 	}
 
 	public boolean ProcessPayload(byte[] response) {
+		//TODO it very inefficient to be converting a byte are to a String and then converting it back into ints and longs. We have methods in UtilShimmer to convert directly from a byte array to int/longs
 		try {
 			Payload = Hex.toHexString(response);
 			ByteArrayInputStream input = new ByteArrayInputStream(response);

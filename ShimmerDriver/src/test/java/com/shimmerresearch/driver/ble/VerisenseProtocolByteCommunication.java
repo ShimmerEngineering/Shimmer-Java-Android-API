@@ -18,6 +18,52 @@ import com.shimmerresearch.driverUtilities.ByteUtils;
 
 public class VerisenseProtocolByteCommunication {
 
+	public class VERISENSE_COMMAND {
+		public static final byte READ = 0x10;
+		public static final byte WRITE = 0x20;
+		public static final byte RESPONSE = 0x30;
+		public static final byte ACK = 0x40;
+		public static final byte NACK_BAD_HEADER_COMMAND = 0x50;
+		public static final byte NACK_BAD_HEADER_PROPERTY = 0x60;
+		public static final byte NACK_GENERIC = 0x70;
+		public static final byte ACK_NEXT_STAGE = (byte) 0x80;
+	}
+	
+	public class VERISENSE_PROPERTY {
+		public static final byte STATUS = 0x01;
+		public static final byte DATA = 0x02;
+		public static final byte CONFIG_PROD = 0x03;
+		public static final byte CONFIG_OPER = 0x04;
+		public static final byte TIME = 0x05;
+		public static final byte DFU_MODE = 0x06;
+		public static final byte PENDING_EVENTS = 0x07;
+		public static final byte FW_TEST = 0x08;
+		public static final byte FW_DEBUG = 0x09;
+		public static final byte DEVICE_DISCONNECT = 0x0B;
+		public static final byte STREAMING = 0x0A;
+	}
+
+	public class VERISENSE_DEBUG_MODE {
+		public static final byte FLASH_LOOKUP_TABLE_READ = 0x01;
+		public static final byte FLASH_LOOKUP_TABLE_ERASE = 0x02;
+		public static final byte RWC_SCHEDULE_READ = 0x03;
+		public static final byte ERASE_LONG_TERM_FLASH = 0x04;
+		public static final byte ERASE_SHORT_TERM_FLASH1 = 0x05;
+		public static final byte ERASE_SHORT_TERM_FLASH2 = 0x06;
+		public static final byte ERASE_OPERATIONAL_CONFIG = 0x07;
+		public static final byte ERASE_PRODUCTION_CONFIG = 0x08;
+		public static final byte CLEAR_PENDING_EVENTS = 0x09;
+		public static final byte ERASE_FLASH_AND_LOOKUP = 0x0A;
+		public static final byte TRANSFER_LOOP = 0x0B;
+		public static final byte LOAD_FAKE_LOOKUPTABLE = 0x0C;
+		public static final byte GSR_LED_TEST = 0x0D;
+		public static final byte MAX86XXX_LED_TEST = 0x0E;
+		public static final byte CHECK_PAYLOADS_FOR_CRC_ERRORS = 0x0F;
+		public static final byte EVENT_LOG = 0x10;
+		public static final byte START_POWER_PROFILER_SEQ = 0x11;
+		public static final byte RECORD_BUFFER_DETAILS = 0x12;
+	}
+
 	byte[] ReadStatusRequest = new byte[] { 0x11, 0x00, 0x00 };
 	byte[] ReadDataRequest = new byte[] { 0x12, 0x00, 0x00 };
 	byte[] StreamDataRequest = new byte[] { 0x2A, 0x01, 0x00, 0x01 };
@@ -53,6 +99,7 @@ public class VerisenseProtocolByteCommunication {
 
 	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit
 
+	//TODO this might be doubling up on setBluetoothRadioState inside ShimmerDevice, could we reuse that instead?
 	public enum VerisenseProtocolState {
 		None, Disconnected, Connecting, Connected, Streaming, StreamingLoggedData, Limited
 	}
@@ -221,49 +268,133 @@ public class VerisenseProtocolByteCommunication {
 
 	void handleCommonResponse(byte[] ResponseBuffer) {
 		try {
-			switch (ResponseBuffer[0]) {
-			case 0x31:
-				StatusPayload statusData = new StatusPayload();
-				boolean statusResult = statusData.ProcessPayload(ResponseBuffer);
-				if (statusResult) {
-					mStatusPayload = statusData;
-					for (RadioListener rl : mRadioListenerList) {
-						rl.eventResponseReceived(0x31, mStatusPayload);
+			//TODO suggest we parse these (command, property and payloadLength) in DataChunkNew as with and pass that object in here
+			byte commandAndProperty = ResponseBuffer[0];
+			byte command = (byte) (commandAndProperty & 0xF0);
+			byte property = (byte) (commandAndProperty & 0x0F);
+
+			int payloadLength = (ResponseBuffer[2] << 8) | ResponseBuffer[1];
+
+			byte[] payloadContents = new byte[payloadLength];
+			if(payloadLength>0) {
+				System.arraycopy(ResponseBuffer, 3, ResponseBuffer, 0, payloadLength);
+			}
+
+			switch (property) {
+			case VERISENSE_PROPERTY.STATUS:
+				if(command==VERISENSE_COMMAND.RESPONSE) {
+					StatusPayload statusData = new StatusPayload();
+					boolean statusResult = statusData.ProcessPayload(ResponseBuffer);
+					if (statusResult) {
+						mStatusPayload = statusData;
+						for (RadioListener rl : mRadioListenerList) {
+							rl.eventResponseReceived(commandAndProperty, mStatusPayload);
+						}
+					} else {
+	
 					}
-
-				} else {
-
 				}
-
 				break;
-			case 0x34:
-				OpConfigPayload opData = new OpConfigPayload();
-				boolean opResult = opData.processPayload(ResponseBuffer);
-				if (opResult) {
-					mOpConfigPayload = opData;
-					for (RadioListener rl : mRadioListenerList) {
-						rl.eventResponseReceived(0x34, mOpConfigPayload);
+				
+			case VERISENSE_PROPERTY.DATA:
+				break;
+				
+			case VERISENSE_PROPERTY.CONFIG_PROD:
+				break;
+				
+			case VERISENSE_PROPERTY.CONFIG_OPER:
+				if(command==VERISENSE_COMMAND.RESPONSE) {
+					// TODO Suggest we just sent payloadContents to eventResponseReceived and let it be parsed by VerisenseDevice.configBytesParse()
+					OpConfigPayload opData = new OpConfigPayload();
+					boolean opResult = opData.processPayload(ResponseBuffer);
+					if (opResult) {
+						mOpConfigPayload = opData;
+						for (RadioListener rl : mRadioListenerList) {
+							rl.eventResponseReceived(commandAndProperty, mOpConfigPayload);
+						}
 					}
-
 				}
 				break;
-			case 0x4A:
-				// var baseDataSS = new BasePayload();
-				// var baseResultSS = baseDataSS.ProcessPayload(ResponseBuffer);
-				if (mState.equals(VerisenseProtocolState.Streaming)) {
-					stateChange(VerisenseProtocolState.Connected);
-				} else {
-					mNewStreamPayload = true;
-					stateChange(VerisenseProtocolState.Streaming);
+				
+			case VERISENSE_PROPERTY.TIME:
+				break;
+				
+			case VERISENSE_PROPERTY.DFU_MODE:
+				break;
+				
+			case VERISENSE_PROPERTY.PENDING_EVENTS:
+				break;
+				
+			case VERISENSE_PROPERTY.FW_TEST:
+				break;
+				
+			case VERISENSE_PROPERTY.FW_DEBUG:
+				byte debugMode = payloadContents[0];
+				switch (debugMode) {
+				case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ:
+					break;
+				case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_ERASE:
+					break;
+				case VERISENSE_DEBUG_MODE.RWC_SCHEDULE_READ:
+					break;
+				case VERISENSE_DEBUG_MODE.ERASE_LONG_TERM_FLASH:
+					break;
+				case VERISENSE_DEBUG_MODE.ERASE_SHORT_TERM_FLASH1:
+					break;
+				case VERISENSE_DEBUG_MODE.ERASE_SHORT_TERM_FLASH2:
+					break;
+				case VERISENSE_DEBUG_MODE.ERASE_OPERATIONAL_CONFIG:
+					break;
+				case VERISENSE_DEBUG_MODE.ERASE_PRODUCTION_CONFIG:
+					break;
+				case VERISENSE_DEBUG_MODE.CLEAR_PENDING_EVENTS:
+					break;
+				case VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP:
+					break;
+				case VERISENSE_DEBUG_MODE.TRANSFER_LOOP:
+					break;
+				case VERISENSE_DEBUG_MODE.LOAD_FAKE_LOOKUPTABLE:
+					break;
+				case VERISENSE_DEBUG_MODE.GSR_LED_TEST:
+					break;
+				case VERISENSE_DEBUG_MODE.MAX86XXX_LED_TEST:
+					break;
+				case VERISENSE_DEBUG_MODE.CHECK_PAYLOADS_FOR_CRC_ERRORS:
+					break;
+				case VERISENSE_DEBUG_MODE.EVENT_LOG:
+					break;
+				case VERISENSE_DEBUG_MODE.START_POWER_PROFILER_SEQ:
+					break;
+				case VERISENSE_DEBUG_MODE.RECORD_BUFFER_DETAILS:
+					break;
+				default:
+					break;
 				}
 				break;
+				
+			case VERISENSE_PROPERTY.DEVICE_DISCONNECT:
+				break;
+				
+			case VERISENSE_PROPERTY.STREAMING:
+				if(command==VERISENSE_COMMAND.ACK) {
+					// var baseDataSS = new BasePayload();
+					// var baseResultSS = baseDataSS.ProcessPayload(ResponseBuffer);
+					if (mState.equals(VerisenseProtocolState.Streaming)) {
+						stateChange(VerisenseProtocolState.Connected);
+					} else {
+						mNewStreamPayload = true;
+						stateChange(VerisenseProtocolState.Streaming);
+					}
+				}
+				break;
+				
 			default:
 				// AdvanceLog(LogObject, "NonDataResponse", BitConverter.ToString(ResponseBuffer), ASMName);
 				throw new Exception();
-			}
-			;
-		} catch (Exception ex) {
+			};
 
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 	
