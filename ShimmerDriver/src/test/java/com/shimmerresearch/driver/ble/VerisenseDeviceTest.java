@@ -53,10 +53,10 @@ public class VerisenseDeviceTest {
 		btnNewButton_1.setBounds(12, 51, 124, 25);
 		frame.getContentPane().add(btnNewButton_1);
 
-		JButton btnNewButton_2 = new JButton("Sync");
+		JButton btnNewButton_2 = new JButton("Read Data");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.syncData();
+				protocol1.readLoggedData();
 			}
 		});
 		btnNewButton_2.setBounds(12, 127, 124, 25);
@@ -80,10 +80,10 @@ public class VerisenseDeviceTest {
 		button_1.setBounds(162, 51, 124, 25);
 		frame.getContentPane().add(button_1);
 
-		JButton button_2 = new JButton("Sync");
+		JButton button_2 = new JButton("Read Data");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.syncData();
+				protocol2.readLoggedData();
 			}
 		});
 		button_2.setBounds(162, 127, 124, 25);

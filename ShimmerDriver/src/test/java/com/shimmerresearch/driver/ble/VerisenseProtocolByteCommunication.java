@@ -29,18 +29,58 @@ public class VerisenseProtocolByteCommunication {
 		public static final byte ACK_NEXT_STAGE = (byte) 0x80;
 	}
 	
-	public class VERISENSE_PROPERTY {
-		public static final byte STATUS = 0x01;
-		public static final byte DATA = 0x02;
-		public static final byte CONFIG_PROD = 0x03;
-		public static final byte CONFIG_OPER = 0x04;
-		public static final byte TIME = 0x05;
-		public static final byte DFU_MODE = 0x06;
-		public static final byte PENDING_EVENTS = 0x07;
-		public static final byte FW_TEST = 0x08;
-		public static final byte FW_DEBUG = 0x09;
-		public static final byte DEVICE_DISCONNECT = 0x0B;
-		public static final byte STREAMING = 0x0A;
+//	public class VERISENSE_PROPERTY {
+//		public static final byte STATUS = 0x01;
+//		public static final byte DATA = 0x02;
+//		public static final byte CONFIG_PROD = 0x03;
+//		public static final byte CONFIG_OPER = 0x04;
+//		public static final byte TIME = 0x05;
+//		public static final byte DFU_MODE = 0x06;
+//		public static final byte PENDING_EVENTS = 0x07;
+//		public static final byte FW_TEST = 0x08;
+//		public static final byte FW_DEBUG = 0x09;
+//		public static final byte DEVICE_DISCONNECT = 0x0B;
+//		public static final byte STREAMING = 0x0A;
+//	}
+
+	public static enum VERISENSE_PROPERTY {
+		STATUS((byte)0x01),
+		DATA((byte)0x02),
+		CONFIG_PROD((byte)0x03),
+		CONFIG_OPER((byte)0x04),
+		TIME((byte)0x05),
+		DFU_MODE((byte)0x06),
+		PENDING_EVENTS((byte)0x07),
+		FW_TEST((byte)0x08),
+		FW_DEBUG((byte)0x09),
+		DEVICE_DISCONNECT((byte)0x0B),
+		STREAMING((byte)0x0A);
+		
+		byte propertyMask;
+		
+		private VERISENSE_PROPERTY(byte mask) {
+			this.propertyMask = mask;
+		}
+
+		public byte mask() {
+			return propertyMask;
+		}
+
+		public byte readByte() {
+			return (byte) (propertyMask | VERISENSE_COMMAND.READ);
+		}
+		
+		public byte writeByte() {
+			return (byte) (propertyMask | VERISENSE_COMMAND.WRITE);
+		}
+		
+		public byte ackByte() {
+			return (byte) (propertyMask | VERISENSE_COMMAND.ACK);
+		}
+		
+		public byte responseByte() {
+			return (byte) (propertyMask | VERISENSE_COMMAND.RESPONSE);
+		}
 	}
 
 	public class VERISENSE_DEBUG_MODE {
@@ -64,19 +104,24 @@ public class VerisenseProtocolByteCommunication {
 		public static final byte RECORD_BUFFER_DETAILS = 0x12;
 	}
 
-	byte[] ReadStatusRequest = new byte[] { 0x11, 0x00, 0x00 };
-	byte[] ReadDataRequest = new byte[] { 0x12, 0x00, 0x00 };
-	byte[] StreamDataRequest = new byte[] { 0x2A, 0x01, 0x00, 0x01 };
-	byte[] StopStreamRequest = new byte[] { 0x2A, 0x01, 0x00, 0x02 };
-	byte[] ReadProdConfigRequest = new byte[] { 0x13, 0x00, 0x00 };
-	byte[] ReadOpConfigRequest = new byte[] { 0x14, 0x00, 0x00 };
-	byte[] ReadTimeRequest = new byte[] { 0x15, 0x00, 0x00 };
-	byte[] ReadPendingEventsRequest = new byte[] { 0x17, 0x00, 0x00 };
-	byte[] DFUCommand = new byte[] { 0x26, 0x00, 0x00 };
-	byte[] DisconnectRequest = new byte[] { 0x2B, 0x00, 0x00 };
-	byte[] dataACK = new byte[] { (byte) 0x82, 0x00, 0x00 };
-	byte[] dataNACK = new byte[] { 0x72, 0x00, 0x00 };
-	byte dataEndHeader = 0x42;
+	public class StreamingStartStop {
+		public static final byte STREAMING_START = 0x01;
+		public static final byte STREAMING_STOP = 0x02;
+	}
+
+//	byte[] ReadStatusRequest = new byte[] { 0x11, 0x00, 0x00 };
+//	byte[] ReadDataRequest = new byte[] { 0x12, 0x00, 0x00 };
+//	byte[] StreamDataRequest = new byte[] { 0x2A, 0x01, 0x00, 0x01 };
+//	byte[] StopStreamRequest = new byte[] { 0x2A, 0x01, 0x00, 0x02 };
+//	byte[] ReadProdConfigRequest = new byte[] { 0x13, 0x00, 0x00 };
+//	byte[] ReadOpConfigRequest = new byte[] { 0x14, 0x00, 0x00 };
+//	byte[] ReadTimeRequest = new byte[] { 0x15, 0x00, 0x00 };
+//	byte[] ReadPendingEventsRequest = new byte[] { 0x17, 0x00, 0x00 };
+//	byte[] DFUCommand = new byte[] { 0x26, 0x00, 0x00 };
+//	byte[] DisconnectRequest = new byte[] { 0x2B, 0x00, 0x00 };
+//	byte[] dataACK = new byte[] { (byte) 0x82, 0x00, 0x00 };
+//	byte[] dataNACK = new byte[] { 0x72, 0x00, 0x00 };
+//	byte dataEndHeader = 0x42;
 
 	StatusPayload mStatusPayload;
 	OpConfigPayload mOpConfigPayload;
@@ -142,7 +187,7 @@ public class VerisenseProtocolByteCommunication {
 
 					// System.Console.WriteLine("STREAMING DATA (" + bytes.Length + ") :" +
 					// String.Join(" ", bytes));
-					if (rxBytes.length == 3 && rxBytes[0] == 74)// 4A 00 00
+					if (rxBytes.length == 3 && rxBytes[0] == VERISENSE_PROPERTY.STREAMING.ackByte())// 4A 00 00
 					{
 						if (WaitingForStopStreamingCommand) {
 							handleCommonResponse(rxBytes);
@@ -163,7 +208,7 @@ public class VerisenseProtocolByteCommunication {
 					return;
 
 				} else {
-					if (rxBytes.length == 3 && rxBytes[0] >> 4 == 4)// if it is an ack
+					if (rxBytes.length == 3 && ((rxBytes[0] & VERISENSE_COMMAND.ACK) == VERISENSE_COMMAND.ACK))// if it is an ack
 					{
 						handleCommonResponse(rxBytes);
 					} else {
@@ -280,55 +325,30 @@ public class VerisenseProtocolByteCommunication {
 				System.arraycopy(ResponseBuffer, 3, ResponseBuffer, 0, payloadLength);
 			}
 
-			switch (property) {
-			case VERISENSE_PROPERTY.STATUS:
-				if(command==VERISENSE_COMMAND.RESPONSE) {
-					StatusPayload statusData = new StatusPayload();
-					boolean statusResult = statusData.ProcessPayload(ResponseBuffer);
-					if (statusResult) {
-						mStatusPayload = statusData;
-						for (RadioListener rl : mRadioListenerList) {
-							rl.eventResponseReceived(commandAndProperty, mStatusPayload);
-						}
-					} else {
-	
-					}
+			if(commandAndProperty == VERISENSE_PROPERTY.STATUS.responseByte()) {
+				StatusPayload statusData = new StatusPayload();
+				boolean statusResult = statusData.ProcessPayload(ResponseBuffer);
+				if (statusResult) {
+					mStatusPayload = statusData;
+					sendObjectToRadioListenerList(commandAndProperty, mStatusPayload);
+				} else {
+
 				}
-				break;
-				
-			case VERISENSE_PROPERTY.DATA:
-				break;
-				
-			case VERISENSE_PROPERTY.CONFIG_PROD:
-				break;
-				
-			case VERISENSE_PROPERTY.CONFIG_OPER:
-				if(command==VERISENSE_COMMAND.RESPONSE) {
-					// TODO Suggest we just sent payloadContents to eventResponseReceived and let it be parsed by VerisenseDevice.configBytesParse()
-					OpConfigPayload opData = new OpConfigPayload();
-					boolean opResult = opData.processPayload(ResponseBuffer);
-					if (opResult) {
-						mOpConfigPayload = opData;
-						for (RadioListener rl : mRadioListenerList) {
-							rl.eventResponseReceived(commandAndProperty, mOpConfigPayload);
-						}
-					}
+			} else if(commandAndProperty == VERISENSE_PROPERTY.DATA.responseByte()) {
+			} else if(commandAndProperty == VERISENSE_PROPERTY.CONFIG_PROD.responseByte()) {
+			} else if(commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.responseByte()) {
+				// TODO Suggest we just sent payloadContents to eventResponseReceived and let it be parsed by VerisenseDevice.configBytesParse()
+				OpConfigPayload opData = new OpConfigPayload();
+				boolean opResult = opData.processPayload(ResponseBuffer);
+				if (opResult) {
+					mOpConfigPayload = opData;
+					sendObjectToRadioListenerList(commandAndProperty, mOpConfigPayload);
 				}
-				break;
-				
-			case VERISENSE_PROPERTY.TIME:
-				break;
-				
-			case VERISENSE_PROPERTY.DFU_MODE:
-				break;
-				
-			case VERISENSE_PROPERTY.PENDING_EVENTS:
-				break;
-				
-			case VERISENSE_PROPERTY.FW_TEST:
-				break;
-				
-			case VERISENSE_PROPERTY.FW_DEBUG:
+			} else if(commandAndProperty == VERISENSE_PROPERTY.TIME.responseByte()) {
+			} else if(commandAndProperty == VERISENSE_PROPERTY.DFU_MODE.responseByte()) {
+			} else if(commandAndProperty == VERISENSE_PROPERTY.PENDING_EVENTS.responseByte()) {
+			} else if(commandAndProperty == VERISENSE_PROPERTY.FW_TEST.responseByte()) {
+			} else if(commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.responseByte()) {
 				byte debugMode = payloadContents[0];
 				switch (debugMode) {
 				case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ:
@@ -370,34 +390,33 @@ public class VerisenseProtocolByteCommunication {
 				default:
 					break;
 				}
-				break;
-				
-			case VERISENSE_PROPERTY.DEVICE_DISCONNECT:
-				break;
-				
-			case VERISENSE_PROPERTY.STREAMING:
-				if(command==VERISENSE_COMMAND.ACK) {
-					// var baseDataSS = new BasePayload();
-					// var baseResultSS = baseDataSS.ProcessPayload(ResponseBuffer);
-					if (mState.equals(VerisenseProtocolState.Streaming)) {
-						stateChange(VerisenseProtocolState.Connected);
-					} else {
-						mNewStreamPayload = true;
-						stateChange(VerisenseProtocolState.Streaming);
-					}
+			} else if(commandAndProperty == VERISENSE_PROPERTY.DEVICE_DISCONNECT.responseByte()) {
+			} else if(commandAndProperty == VERISENSE_PROPERTY.STREAMING.responseByte()) {
+			} else if(commandAndProperty == VERISENSE_PROPERTY.STREAMING.ackByte()) {
+				// var baseDataSS = new BasePayload();
+				// var baseResultSS = baseDataSS.ProcessPayload(ResponseBuffer);
+				if (mState.equals(VerisenseProtocolState.Streaming)) {
+					stateChange(VerisenseProtocolState.Connected);
+				} else {
+					mNewStreamPayload = true;
+					stateChange(VerisenseProtocolState.Streaming);
 				}
-				break;
-				
-			default:
+			} else {
 				// AdvanceLog(LogObject, "NonDataResponse", BitConverter.ToString(ResponseBuffer), ASMName);
 				throw new Exception();
-			};
+			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 	
+	private void sendObjectToRadioListenerList(byte commandAndProperty, Object object) {
+		for (RadioListener rl : mRadioListenerList) {
+			rl.eventResponseReceived(commandAndProperty, object);
+		}
+	}
+
 	void createNewStreamPayload(byte[] payload) {
 		try {
 			// AutoSyncLogger.AddLog(LogObject, "NewPayloadHead",
@@ -475,7 +494,7 @@ public class VerisenseProtocolByteCommunication {
 	}
 
 	void createNewPayload(byte[] payload) {
-		if (payload.length == 3 && payload[0] == dataEndHeader) {
+		if (payload.length == 3 && payload[0] == VERISENSE_PROPERTY.DATA.ackByte()) {
 			stateChange(VerisenseProtocolState.Connected);
 			return;
 		}
@@ -636,8 +655,9 @@ public class VerisenseProtocolByteCommunication {
 			{
 				throw new Exception("Testing delete last payload exception");
 			}
+			*
 			*/
-			mByteCommunication.writeBytes(dataACK);
+			writeMessageNoPayload(VERISENSE_PROPERTY.DATA.ackByte());
 		} catch (Exception ex) {
 			//Delete the last payload written to the bin file, if it isnt crc error
 			/*
@@ -749,30 +769,45 @@ public class VerisenseProtocolByteCommunication {
 		mByteCommunication.disconnect();
 	}
 
+	private void writeMessageNoPayload(byte commandAndProperty) {
+		byte[] txBuf = new byte[] {commandAndProperty, 0x00, 0x00};
+		mByteCommunication.writeBytes(txBuf);
+	}
+	
+	private void writeMessageWithPayload(byte commandAndProperty, byte[] payloadContents) {
+		int payloadLength = payloadContents.length;
+		byte[] txBuf = new byte[3+payloadLength];
+		txBuf[0] = commandAndProperty;
+		txBuf[1] = (byte) (payloadLength & 0xFF);
+		txBuf[2] = (byte) ((payloadLength >> 8) & 0xFF);
+		System.arraycopy(payloadContents, 0, txBuf, 3, payloadLength);
+		mByteCommunication.writeBytes(txBuf);
+	}
+
 	public void readStatus() {
 		mNewCommandPayload = true;
-		mByteCommunication.writeBytes(ReadStatusRequest);
+		writeMessageNoPayload(VERISENSE_PROPERTY.STATUS.readByte());
 	}
 
 	public void startStreaming() {
-		mByteCommunication.writeBytes(StreamDataRequest);
+		writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {StreamingStartStop.STREAMING_START});
 	}
 
-	public void syncData() {
+	public void readLoggedData() {
 		DataBuffer = new DataChunkNew();
 		stateChange(VerisenseProtocolState.StreamingLoggedData);
 		mNewPayload = true;
-		mByteCommunication.writeBytes(ReadDataRequest);
+		writeMessageNoPayload(VERISENSE_PROPERTY.DATA.readByte());
 	}
 
 	public void readOpConfig() {
 		mNewCommandPayload = true;
-		mByteCommunication.writeBytes(ReadOpConfigRequest);
+		writeMessageNoPayload(VERISENSE_PROPERTY.CONFIG_OPER.readByte());
 	}
 
 	public void stopStreaming() {
 		WaitingForStopStreamingCommand = true;
-		mByteCommunication.writeBytes(StopStreamRequest);
+		writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {StreamingStartStop.STREAMING_STOP});
 	}
 
 	public void stop() {
