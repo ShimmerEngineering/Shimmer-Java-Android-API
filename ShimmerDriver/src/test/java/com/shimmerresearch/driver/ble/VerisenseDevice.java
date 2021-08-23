@@ -162,13 +162,13 @@ public class VerisenseDevice extends ShimmerDevice {
 	}
 
 	@Override
-	public void configBytesParse(byte[] configBytes) {
+	public void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}

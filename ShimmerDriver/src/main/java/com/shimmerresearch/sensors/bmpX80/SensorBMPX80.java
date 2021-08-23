@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180.DatabaseConfigHandle;
@@ -98,7 +99,7 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 	}
 
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
@@ -111,7 +112,7 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 	}
 
 	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;

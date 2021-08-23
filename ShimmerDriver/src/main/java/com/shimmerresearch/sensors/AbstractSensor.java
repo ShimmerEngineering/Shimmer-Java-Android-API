@@ -104,8 +104,8 @@ public abstract class AbstractSensor implements Serializable{
 //	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
 	public abstract void checkShimmerConfigBeforeConfiguring();
-	public abstract void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes);
-	public abstract void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes);
+	public abstract void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType);
+	public abstract void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType);
 	public abstract Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet);
 	public abstract Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel);
 

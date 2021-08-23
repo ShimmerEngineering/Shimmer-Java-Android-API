@@ -4361,7 +4361,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 *            the array of InfoMem bytes.
 	 */
 	@Override
-	public void configBytesParse(byte[] configBytes) {
+	public void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType) {
 		String shimmerName = "";
 
 		mInfoMemBytesOriginal = configBytes;
@@ -4531,7 +4531,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				abstractSensor.configBytesParse(this, mConfigBytes);
+				abstractSensor.configBytesParse(this, mConfigBytes, commType);
 			}
 			
 
@@ -4591,7 +4591,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return
 	 */
 	@Override
-	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer, COMMUNICATION_TYPE commType) {
 
 		ConfigByteLayoutShimmer3 configByteLayoutCast = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 		
@@ -4783,7 +4783,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				abstractSensor.configBytesGenerate(this, mConfigBytes);
+				abstractSensor.configBytesGenerate(this, mConfigBytes, commType);
 			}
 		}
 		

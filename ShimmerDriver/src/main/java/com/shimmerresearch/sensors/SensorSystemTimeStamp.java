@@ -183,11 +183,11 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 	}
 
 	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 	}
 
 	@Override

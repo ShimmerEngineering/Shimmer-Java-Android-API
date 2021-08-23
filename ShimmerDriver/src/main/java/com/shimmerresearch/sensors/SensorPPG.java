@@ -567,13 +567,13 @@ public static class DatabaseConfigHandle{
 	}
 
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		//XXX What about this?
 	}
 
 	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		//XXX What about this?
 	}
