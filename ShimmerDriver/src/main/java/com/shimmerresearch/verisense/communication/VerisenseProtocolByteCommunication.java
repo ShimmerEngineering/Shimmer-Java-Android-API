@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver.ble;
+package com.shimmerresearch.verisense.communication;
 
 import java.io.File;
 import java.nio.ByteOrder;
@@ -29,20 +29,6 @@ public class VerisenseProtocolByteCommunication {
 		public static final byte ACK_NEXT_STAGE = (byte) 0x80;
 	}
 	
-//	public class VERISENSE_PROPERTY {
-//		public static final byte STATUS = 0x01;
-//		public static final byte DATA = 0x02;
-//		public static final byte CONFIG_PROD = 0x03;
-//		public static final byte CONFIG_OPER = 0x04;
-//		public static final byte TIME = 0x05;
-//		public static final byte DFU_MODE = 0x06;
-//		public static final byte PENDING_EVENTS = 0x07;
-//		public static final byte FW_TEST = 0x08;
-//		public static final byte FW_DEBUG = 0x09;
-//		public static final byte DEVICE_DISCONNECT = 0x0B;
-//		public static final byte STREAMING = 0x0A;
-//	}
-
 	public static enum VERISENSE_PROPERTY {
 		STATUS((byte)0x01),
 		DATA((byte)0x02),
@@ -109,22 +95,6 @@ public class VerisenseProtocolByteCommunication {
 		public static final byte STREAMING_STOP = 0x02;
 	}
 
-//	byte[] ReadStatusRequest = new byte[] { 0x11, 0x00, 0x00 };
-//	byte[] ReadDataRequest = new byte[] { 0x12, 0x00, 0x00 };
-//	byte[] StreamDataRequest = new byte[] { 0x2A, 0x01, 0x00, 0x01 };
-//	byte[] StopStreamRequest = new byte[] { 0x2A, 0x01, 0x00, 0x02 };
-//	byte[] ReadProdConfigRequest = new byte[] { 0x13, 0x00, 0x00 };
-//	byte[] ReadOpConfigRequest = new byte[] { 0x14, 0x00, 0x00 };
-//	byte[] ReadTimeRequest = new byte[] { 0x15, 0x00, 0x00 };
-//	byte[] ReadPendingEventsRequest = new byte[] { 0x17, 0x00, 0x00 };
-//	byte[] DFUCommand = new byte[] { 0x26, 0x00, 0x00 };
-//	byte[] DisconnectRequest = new byte[] { 0x2B, 0x00, 0x00 };
-//	byte[] dataACK = new byte[] { (byte) 0x82, 0x00, 0x00 };
-//	byte[] dataNACK = new byte[] { 0x72, 0x00, 0x00 };
-//	byte dataEndHeader = 0x42;
-
-	StatusPayload mStatusPayload;
-	OpConfigPayload mOpConfigPayload;
 	boolean mNewPayload;
 	boolean mNewStreamPayload;
 	boolean WaitingForStopStreamingCommand = false;
@@ -250,7 +220,7 @@ public class VerisenseProtocolByteCommunication {
 			//FinalChunkLogMsgForNack = string.Format("Chunk length = {0}; Current Length = {1}; Expected Length={2}", payload.Length, DataCommandBuffer.CurrentLength, DataCommandBuffer.ExpectedLength);
 			
 			//Note: for readability it would be better for this to be == because > will cause the crc to fail anyway via a Buffer.BlockCopy exception e.g. "System.ArgumentException","Message":"Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."
-			if (DataCommandBuffer.mCurrentLength >= DataCommandBuffer.mExpectedLength) {
+			if (DataCommandBuffer.isCurrentLengthGreaterThanOrEqualToExpectedLength()) {
 				handleCompleteCommandPayload();
 			}
 		} catch (Exception ex) {
@@ -269,7 +239,6 @@ public class VerisenseProtocolByteCommunication {
 			int length = (int) ByteUtils.bytesToShort(lengthBytes, ByteOrder.LITTLE_ENDIAN);
 			int offset = 3;
 			DataCommandBuffer = new DataChunkNew(length + offset);
-			DataCommandBuffer.mExpectedLength = length + offset;
 			// var sensorid = reader.ReadByte();
 			// var tickBytes = reader.ReadBytes(3);
 			// var bArray = addByteToArray(tickBytes, 0);
@@ -290,10 +259,10 @@ public class VerisenseProtocolByteCommunication {
 
 			//AdvanceLog(LogObject, "PayloadIndex", string.Format("Payload Index = {0}; Expected Length = {1}", PayloadIndex, DataCommandBuffer.ExpectedLength), ASMName);
 
-			if (DataCommandBuffer.mCurrentLength > DataCommandBuffer.mExpectedLength) {
+			if (DataCommandBuffer.isCurrentLengthGreaterThanExpectedLength()) {
 				//AdvanceLog(LogObject, "CreateNewPayload", "Error Current Length: " + DataCommandBuffer.CurrentLength + " bigger than Expected Length: " + DataCommandBuffer.ExpectedLength, ASMName);
 				//SendDataNACK(true);
-			} else if (DataCommandBuffer.mCurrentLength == DataCommandBuffer.mExpectedLength) { // this might occur if the payload length is very small
+			} else if (DataCommandBuffer.isCurrentLengthEqualToExpectedLength()) { // this might occur if the payload length is very small
 				//AdvanceLog(LogObject, "CreateNewPayload", "HandleCompleteStreamingPayload", ASMName);
 				handleCompleteCommandPayload();
 			}
@@ -322,29 +291,33 @@ public class VerisenseProtocolByteCommunication {
 
 			byte[] payloadContents = new byte[payloadLength];
 			if(payloadLength>0) {
-				System.arraycopy(ResponseBuffer, 3, ResponseBuffer, 0, payloadLength);
+				System.arraycopy(ResponseBuffer, 3, payloadContents, 0, payloadLength);
 			}
 
 			if(commandAndProperty == VERISENSE_PROPERTY.STATUS.responseByte()) {
-				StatusPayload statusData = new StatusPayload();
-				boolean statusResult = statusData.ProcessPayload(ResponseBuffer);
-				if (statusResult) {
-					mStatusPayload = statusData;
-					sendObjectToRadioListenerList(commandAndProperty, mStatusPayload);
+				StatusPayload statusPayload = new StatusPayload();
+				if (statusPayload.parsePayloadContents(payloadContents)) {
+					sendObjectToRadioListenerList(commandAndProperty, statusPayload);
 				} else {
 
 				}
 			} else if(commandAndProperty == VERISENSE_PROPERTY.DATA.responseByte()) {
 			} else if(commandAndProperty == VERISENSE_PROPERTY.CONFIG_PROD.responseByte()) {
+				ProdConfigPayload prodConfigPayload = new ProdConfigPayload();
+				if (prodConfigPayload.parsePayloadContents(payloadContents)) {
+					sendObjectToRadioListenerList(commandAndProperty, prodConfigPayload);
+				}
 			} else if(commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.responseByte()) {
-				// TODO Suggest we just sent payloadContents to eventResponseReceived and let it be parsed by VerisenseDevice.configBytesParse()
-				OpConfigPayload opData = new OpConfigPayload();
-				boolean opResult = opData.processPayload(ResponseBuffer);
-				if (opResult) {
-					mOpConfigPayload = opData;
-					sendObjectToRadioListenerList(commandAndProperty, mOpConfigPayload);
+				OpConfigPayload opConfig = new OpConfigPayload();
+				if (opConfig.parsePayloadContents(payloadContents)) {
+					sendObjectToRadioListenerList(commandAndProperty, opConfig);
 				}
 			} else if(commandAndProperty == VERISENSE_PROPERTY.TIME.responseByte()) {
+				TimePayload timePayload = new TimePayload();
+				if(timePayload.parsePayloadContents(payloadContents)) {
+					sendObjectToRadioListenerList(commandAndProperty, timePayload);
+				}
+				
 			} else if(commandAndProperty == VERISENSE_PROPERTY.DFU_MODE.responseByte()) {
 			} else if(commandAndProperty == VERISENSE_PROPERTY.PENDING_EVENTS.responseByte()) {
 			} else if(commandAndProperty == VERISENSE_PROPERTY.FW_TEST.responseByte()) {
@@ -431,7 +404,6 @@ public class VerisenseProtocolByteCommunication {
 			int offset = 3;
 
 			DataStreamingBuffer = new DataChunkNew(length);
-			DataStreamingBuffer.mExpectedLength = length;
 			// var sensorid = reader.ReadByte();
 			// var tickBytes = reader.ReadBytes(3);
 			// var bArray = addByteToArray(tickBytes, 0);
@@ -445,10 +417,10 @@ public class VerisenseProtocolByteCommunication {
 
 			//AdvanceLog(LogObject, "PayloadIndex", string.Format("Payload Index = {0}; Expected Length = {1}", PayloadIndex, DataStreamingBuffer.ExpectedLength), ASMName);
 
-			if (DataStreamingBuffer.mCurrentLength > DataStreamingBuffer.mExpectedLength) {
+			if (DataStreamingBuffer.isCurrentLengthGreaterThanExpectedLength()) {
 				//AdvanceLog(LogObject, "CreateNewPayload", "Error Current Length: " + DataStreamingBuffer.mCurrentLength + " bigger than Expected Length: " + DataStreamingBuffer.ExpectedLength, ASMName);
 				//SendDataNACK(true);
-			} else if (DataStreamingBuffer.mCurrentLength == DataStreamingBuffer.mExpectedLength) { // this might occur if the payload length is very small
+			} else if (DataStreamingBuffer.isCurrentLengthEqualToExpectedLength()) { // this might occur if the payload length is very small
 				//AdvanceLog(LogObject, "CreateNewPayload", "HandleCompleteStreamingPayload", ASMName);
 				handleCompleteStreamingPayload();
 			}
@@ -463,8 +435,7 @@ public class VerisenseProtocolByteCommunication {
 
 	void handleStreamDataChunk(byte[] payload) {
 		try {
-			System.arraycopy(payload, 0, DataStreamingBuffer.mPackets, DataStreamingBuffer.mCurrentLength, payload.length);
-			DataStreamingBuffer.mCurrentLength += payload.length;
+			DataStreamingBuffer.handleStreamDataChunk(payload);
 
 			//JC: This causes too many msgs in the logs we need a better implementation of this, maybe just logs last 10 msgs if a failure occurs
 			//AutoSyncLogger.AddLog(LogObject, "PayloadChunk", string.Format("Chunk length = {0}; Current Length = {1}; Expected Length={2}",
@@ -473,7 +444,7 @@ public class VerisenseProtocolByteCommunication {
 			//FinalChunkLogMsgForNack = string.Format("Chunk length = {0}; Current Length = {1}; Expected Length={2}", payload.Length, DataStreamingBuffer.CurrentLength, DataStreamingBuffer.ExpectedLength);
 			
 			//Note: for readability it would be better for this to be == because > will cause the crc to fail anyway via a Buffer.BlockCopy exception e.g. "System.ArgumentException","Message":"Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."
-			if (DataStreamingBuffer.mCurrentLength >= DataStreamingBuffer.mExpectedLength) {
+			if (DataStreamingBuffer.isCurrentLengthGreaterThanOrEqualToExpectedLength()) {
 				handleCompleteStreamingPayload();
 			}
 		} catch (Exception ex) {
@@ -532,10 +503,10 @@ public class VerisenseProtocolByteCommunication {
 
 			//AdvanceLog(LogObject, "PayloadIndex", string.Format("Payload Index = {0}; Expected Length = {1}", PayloadIndex, DataBuffer.ExpectedLength), ASMName);
 
-			if (DataBuffer.mCurrentLength > DataBuffer.mExpectedLength) {
+			if (DataBuffer.isCurrentLengthGreaterThanExpectedLength()) {
 				//AdvanceLog(LogObject, "CreateNewPayload", "Error Current Length: " + DataBuffer.CurrentLength + " bigger than Expected Length: " + DataBuffer.ExpectedLength, ASMName);
 				//SendDataNACK(true);
-			} else if (DataBuffer.mCurrentLength == DataBuffer.mExpectedLength) { // this might occur if the payload length is very small
+			} else if (DataBuffer.isCurrentLengthEqualToExpectedLength()) { // this might occur if the payload length is very small
 				// AdvanceLog(LogObject, "CreateNewPayload", "HandleCompletePayload", ASMName);
 				handleCompletePayload();
 			}
@@ -727,7 +698,7 @@ public class VerisenseProtocolByteCommunication {
 			//FinalChunkLogMsgForNack = string.Format("Chunk length = {0}; Current Length = {1}; Expected Length={2}", payload.Length, DataBuffer.CurrentLength, DataBuffer.ExpectedLength);
 			
 			//Note: for readability it would be better for this to be == because > will cause the crc to fail anyway via a Buffer.BlockCopy exception e.g. "System.ArgumentException","Message":"Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."
-			if (DataBuffer.mCurrentLength >= DataBuffer.mExpectedLength) {
+			if (DataBuffer.isCurrentLengthGreaterThanOrEqualToExpectedLength()) {
 				handleCompletePayload();
 			}
 		} catch (Exception ex) {
@@ -791,6 +762,16 @@ public class VerisenseProtocolByteCommunication {
 
 	public void startStreaming() {
 		writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {StreamingStartStop.STREAMING_START});
+	}
+
+	public void writeTime() {
+		TimePayload timePayload = new TimePayload();
+		timePayload.setTimeMs(System.currentTimeMillis());
+		writeMessageWithPayload(VERISENSE_PROPERTY.TIME.writeByte(), timePayload.getPayloadContents());
+	}
+
+	public void readTime() {
+		writeMessageNoPayload(VERISENSE_PROPERTY.TIME.readByte());
 	}
 
 	public void readLoggedData() {

@@ -73,7 +73,11 @@ public class BluetoothDeviceDetails {
 			}
 			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.MANUFACTURER_NONIN)){
 				mDeviceTypeDetected = DEVICE_TYPE.NONIN_ONYX_II;
-			} else {
+			} 
+			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.VERISENSE)){
+				mDeviceTypeDetected = DEVICE_TYPE.VERISENSE;
+			} 
+			else {
 				mDeviceTypeDetected = DEVICE_TYPE.UNKOWN;
 			}
 		} else {

@@ -5,6 +5,9 @@ import java.io.*;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
+import com.shimmerresearch.verisense.communication.AbstractByteCommunication;
+import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
+
 public class BleRadioByteCommunication extends AbstractByteCommunication {
 
 	Process p;

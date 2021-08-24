@@ -29,6 +29,7 @@ import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
 import com.shimmerresearch.algorithms.orientation.OrientationModule6DOFLoader;
 import com.shimmerresearch.algorithms.orientation.OrientationModule9DOFLoader;
+import com.shimmerresearch.algorithms.verisense.gyroAutoCal.GyroOnTheFlyCalLoaderVerisense;
 import com.shimmerresearch.bluetooth.DataProcessingInterface;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
@@ -294,7 +295,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	private static final List<AlgorithmLoaderInterface> OPEN_SOURCE_ALGORITHMS = Arrays.asList(
 			new GyroOnTheFlyCalLoader(),
 			new OrientationModule6DOFLoader(), 
-			new OrientationModule9DOFLoader());
+			new OrientationModule9DOFLoader(),
+			new GyroOnTheFlyCalLoaderVerisense());
 
 	public static final class DatabaseConfigHandle{
 		public static final String TRIAL_NAME = "Trial_Name";

@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver.ble;
+package com.shimmerresearch.verisense.communication;
 
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 

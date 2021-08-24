@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 
 import org.bouncycastle.util.encoders.Hex;
 
+import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
+
 public class VerisenseProtocolByteCommunicationTest {
 
 	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14", "bleconsoleapp\\BLEConsoleApp1.exe");
