@@ -119,10 +119,20 @@ public class VerisenseDeviceTest {
 		frame.getContentPane().add(btnStopstreaming);
 
 		JButton button_4 = new JButton("StartStreaming");
+		button_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				protocol2.startStreaming();
+			}
+		});
 		button_4.setBounds(162, 165, 124, 25);
 		frame.getContentPane().add(button_4);
 
 		JButton button_5 = new JButton("StopStreaming");
+		button_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				protocol2.stopStreaming();
+			}
+		});
 		button_5.setBounds(162, 200, 124, 25);
 		frame.getContentPane().add(button_5);
 
