@@ -64,6 +64,9 @@ public class VerisenseProtocolByteCommunication {
 			return (byte) (propertyMask | VERISENSE_COMMAND.ACK);
 		}
 		
+		public byte ackNextStageByte() {
+			return (byte) (propertyMask | VERISENSE_COMMAND.ACK_NEXT_STAGE);
+		}
 		public byte responseByte() {
 			return (byte) (propertyMask | VERISENSE_COMMAND.RESPONSE);
 		}
@@ -628,7 +631,7 @@ public class VerisenseProtocolByteCommunication {
 			}
 			*
 			*/
-			writeMessageNoPayload(VERISENSE_PROPERTY.DATA.ackByte());
+			writeMessageNoPayload(VERISENSE_PROPERTY.DATA.ackNextStageByte());
 		} catch (Exception ex) {
 			//Delete the last payload written to the bin file, if it isnt crc error
 			/*
