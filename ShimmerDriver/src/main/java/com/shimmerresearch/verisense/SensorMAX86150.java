@@ -20,7 +20,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.ASM_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
 public class SensorMAX86150 extends SensorMAX86XXX {
 
@@ -182,16 +182,16 @@ public class SensorMAX86150 extends SensorMAX86XXX {
 		// TODO Add bit operations for payload config details
 		if(isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_RED) ||
 				isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_IR)) {
-			configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1] |= (getPpgAdcResolutionConfigValue()&0x03)<<6;
-			configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1] |= (getRateConfigValue()&0x0F)<<2;
-			configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1] |= (getPpgPulseWidthConfigValue()&0x03)<<0;
-			configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3] |= (getPpgSmpAveConfigValue()&0x07)<<0;
-			configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4] |= (getPpgLedAmplitudeRedConfigValue()&0xFF);
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1] |= (getPpgAdcResolutionConfigValue()&0x03)<<6;
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1] |= (getRateConfigValue()&0x0F)<<2;
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1] |= (getPpgPulseWidthConfigValue()&0x03)<<0;
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3] |= (getPpgSmpAveConfigValue()&0x07)<<0;
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4] |= (getPpgLedAmplitudeRedConfigValue()&0xFF);
 			
 			if(shimmerDevice instanceof VerisenseDevice) {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
 				if(verisenseDevice.isPayloadDesignV5orAbove()) {
-					configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG5] |= (getPpgLedAmplitudeIrConfigValue()&0xFF);
+					configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG5] |= (getPpgLedAmplitudeIrConfigValue()&0xFF);
 				}
 			}
 		}
@@ -202,18 +202,18 @@ public class SensorMAX86150 extends SensorMAX86XXX {
 		if(isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_RED) ||
 				isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_IR)) {
 			
-			setPpgPulseWidthConfigValue((configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1]>>0)&0x03);
-			setRateConfigValue((configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1]>>2)&0x0F);
-			setPpgAdcResolutionConfigValue((configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1]>>6)&0x03);
+			setPpgPulseWidthConfigValue((configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1]>>0)&0x03);
+			setRateConfigValue((configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1]>>2)&0x0F);
+			setPpgAdcResolutionConfigValue((configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1]>>6)&0x03);
 			
-			setPpgSmpAveConfigValue((configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3]>>0)&0x07);
+			setPpgSmpAveConfigValue((configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3]>>0)&0x07);
 			
-			setPpgLedAmplitudeRedConfigValue(configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4]&0xFF);
+			setPpgLedAmplitudeRedConfigValue(configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4]&0xFF);
 			
 			if(shimmerDevice instanceof VerisenseDevice) {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
 				if(verisenseDevice.isPayloadDesignV5orAbove()) {
-					setPpgLedAmplitudeIrConfigValue(configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG5]&0xFF);
+					setPpgLedAmplitudeIrConfigValue(configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG5]&0xFF);
 				}
 			}
 		}

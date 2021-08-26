@@ -18,6 +18,7 @@ public class ProdConfigPayload extends AbstractPayload {
 	@Override
 	public boolean parsePayloadContents(byte[] payloadContents) {
 		super.payloadContents = payloadContents;
+		isSuccess = false;
 
 		if (payloadContents[0] != VALID_CONFIG_BYTE) {
 			return false;
@@ -43,8 +44,8 @@ public class ProdConfigPayload extends AbstractPayload {
 		}
 		shimmerVerObject = new ShimmerVerObject(-1, fwRevMajor, fwRevMinor, fwRevInternal);
 		
-		IsSuccess = true;
-		return IsSuccess;
+		isSuccess = true;
+		return isSuccess;
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public class ProdConfigPayload extends AbstractPayload {
 		sb.append("\tASM Identifier = " + verisenseId + "\n");
 		sb.append("\tManufacturing Order Number = " + manufacturingOrderNumber + "\n");
 		sb.append("\tMAC ID = " + macIdShort + "\n");
-		sb.append("\tHW = v" + shimmerVerObject.getShimmerExpansionBoardId() + "." + shimmerVerObject.getShimmerExpansionBoardRev() + "\n");
+		sb.append("\tHW = v" + expansionBoardDetails.getExpansionBoardId() + "." + expansionBoardDetails.getExpansionBoardRev() + "\n");
 		sb.append("\tFW = v" + shimmerVerObject.getFirmwareVersionMajor() 
 		+ "." + shimmerVerObject.getFirmwareVersionMinor() 
 		+ "." + shimmerVerObject.getFirmwareVersionInternal() + "\n");

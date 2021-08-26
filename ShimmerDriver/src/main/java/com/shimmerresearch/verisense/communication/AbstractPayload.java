@@ -6,10 +6,12 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 public abstract class AbstractPayload {
 	
-	public boolean IsSuccess;
+	public boolean isSuccess;
 	protected byte[] payloadContents;
 
 	public static final byte VALID_CONFIG_BYTE = 0x5A;
+
+	protected static final String CONSOLE_DIVIDER_STRING = "********************************************************\n";
 
 	abstract public boolean parsePayloadContents(byte[] payloadContents);
 
@@ -36,4 +38,5 @@ public abstract class AbstractPayload {
 	public byte[] getPayloadContents() {
 		return payloadContents;
 	}
+
 }

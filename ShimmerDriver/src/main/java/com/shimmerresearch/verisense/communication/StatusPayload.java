@@ -3,9 +3,6 @@ package com.shimmerresearch.verisense.communication;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.encoders.Hex;
 
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
-import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
-import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 public class StatusPayload extends AbstractPayload {
@@ -46,7 +43,6 @@ public class StatusPayload extends AbstractPayload {
 	public long timestampNextSyncAttempt;
 
 	public static final double MAX_FOUR_BTE_UNSIGNED_VALUE = Math.pow(2, 32) - 1;
-	public static final int SENSOR_CLOCK_FREQUENCY = 32768;
 	
 	public enum SyncType {
 		READ_AND_CLEAR_PENDING_EVENTS ("PendingEvent"),
@@ -88,7 +84,8 @@ public class StatusPayload extends AbstractPayload {
 	@Override
 	public boolean parsePayloadContents(byte[] payloadContents) {
 		super.payloadContents = payloadContents;
-		
+		isSuccess = false;
+
 		byte[] idBytes = new byte[6];
 		System.arraycopy(payloadContents, 0, idBytes, 0, idBytes.length);
 		ArrayUtils.reverse(idBytes);
@@ -174,8 +171,8 @@ public class StatusPayload extends AbstractPayload {
 		// SyncMode = (int)syncMode;
 		// BaseStationTimestamp = DateHelper.GetTimestamp(DateTime.Now);
 
-		IsSuccess = true;
-		return IsSuccess;
+		isSuccess = true;
+		return isSuccess;
 	}
 	
 	public void calculateStorageOther() {

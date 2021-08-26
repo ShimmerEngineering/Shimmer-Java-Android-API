@@ -40,13 +40,14 @@ import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.verisense.communication.AbstractPayload;
 import com.shimmerresearch.verisense.communication.OpConfigPayload;
+import com.shimmerresearch.verisense.communication.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.communication.ProdConfigPayload;
 import com.shimmerresearch.verisense.communication.StatusPayload;
 import com.shimmerresearch.verisense.communication.TimePayload;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
-import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.ASM_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.BYTE_COUNT;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.DATA_COMPRESSION_MODE;
 import com.shimmerresearch.verisense.payloaddesign.DataBlockDetails;
@@ -176,7 +177,6 @@ public class VerisenseDevice extends ShimmerDevice {
 
 	public static List<SENSORS> LIST_OF_PPG_SENSORS = Arrays.asList(new SENSORS[] {SENSORS.MAX86150, SENSORS.MAX86916});
 	
-	
 	public static final double[][] ADC_SAMPLING_RATES = new double[][] {
 		{0, Double.NaN, Double.NaN},
 		{1, 32768.0, 1},
@@ -252,39 +252,39 @@ public class VerisenseDevice extends ShimmerDevice {
 			configBytes = new byte[payloadConfigBytesSize];
 			
 			long enabledSensors = getEnabledSensors();
-			configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] = (byte) (enabledSensors & 0xFF);
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] = (byte) (enabledSensors & 0xFF);
 			if(isPayloadDesignV4orAbove()) {
-				configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG2] = (byte) ((enabledSensors >> 8) & 0xFF);
+				configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG2] = (byte) ((enabledSensors >> 8) & 0xFF);
 			}
 			
-			configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= isExtendedPayloadConfig? (0x01<<4):0x00;
-			configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= ((dataCompressionMode&0x03)<<0);
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= isExtendedPayloadConfig? (0x01<<4):0x00;
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= ((dataCompressionMode&0x03)<<0);
 			
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()) {
 				abstractSensor.configBytesGenerate(this, configBytes, commType);
 			}
 
 			if(isExtendedPayloadConfig) {
-				configBytes[ASM_CONFIG_BYTE_INDEX.REV_FW_MAJOR] = (byte) (mShimmerVerObject.mFirmwareVersionMajor&0xFF);
-				configBytes[ASM_CONFIG_BYTE_INDEX.REV_FW_MINOR] = (byte) (mShimmerVerObject.mFirmwareVersionMinor&0xFF);
-				configBytes[ASM_CONFIG_BYTE_INDEX.REV_FW_INTERNAL_LSB] = (byte) (mShimmerVerObject.mFirmwareVersionInternal&0xFF);
-				configBytes[ASM_CONFIG_BYTE_INDEX.REV_FW_INTERNAL_MSB] = (byte) ((mShimmerVerObject.mFirmwareVersionInternal>>8)&0xFF);
+				configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_FW_MAJOR] = (byte) (mShimmerVerObject.mFirmwareVersionMajor&0xFF);
+				configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_FW_MINOR] = (byte) (mShimmerVerObject.mFirmwareVersionMinor&0xFF);
+				configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_FW_INTERNAL_LSB] = (byte) (mShimmerVerObject.mFirmwareVersionInternal&0xFF);
+				configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_FW_INTERNAL_MSB] = (byte) ((mShimmerVerObject.mFirmwareVersionInternal>>8)&0xFF);
 				
 				if(isPayloadDesignV2orAbove()) {
-					configBytes[ASM_CONFIG_BYTE_INDEX.RESET_REASON] = resetReason;
+					configBytes[PAYLOAD_CONFIG_BYTE_INDEX.RESET_REASON] = resetReason;
 				}
 				if(isPayloadDesignV3orAbove()) {
 					int resetCounter = (this.resetCounter==null? 0:this.resetCounter);
-					configBytes[ASM_CONFIG_BYTE_INDEX.RESET_COUNTER_LSB] = (byte) (resetCounter & 0xFF);
-					configBytes[ASM_CONFIG_BYTE_INDEX.RESET_COUNTER_MSB] = (byte) ((resetCounter>>8) & 0xFF);
+					configBytes[PAYLOAD_CONFIG_BYTE_INDEX.RESET_COUNTER_LSB] = (byte) (resetCounter & 0xFF);
+					configBytes[PAYLOAD_CONFIG_BYTE_INDEX.RESET_COUNTER_MSB] = (byte) ((resetCounter>>8) & 0xFF);
 					int firstPayloadIndexAfterBoot = (this.firstPayloadIndexAfterBoot==null? 0:this.firstPayloadIndexAfterBoot);
-					configBytes[ASM_CONFIG_BYTE_INDEX.FIRST_PAYLOAD_AFTER_RESET_LSB] = (byte) (firstPayloadIndexAfterBoot & 0xFF);
-					configBytes[ASM_CONFIG_BYTE_INDEX.FIRST_PAYLOAD_AFTER_RESET_MSB] = (byte) ((firstPayloadIndexAfterBoot>>8) & 0xFF);
+					configBytes[PAYLOAD_CONFIG_BYTE_INDEX.FIRST_PAYLOAD_AFTER_RESET_LSB] = (byte) (firstPayloadIndexAfterBoot & 0xFF);
+					configBytes[PAYLOAD_CONFIG_BYTE_INDEX.FIRST_PAYLOAD_AFTER_RESET_MSB] = (byte) ((firstPayloadIndexAfterBoot>>8) & 0xFF);
 				}
 				
 				if(isPayloadDesignV4orAbove()) {
-					configBytes[ASM_CONFIG_BYTE_INDEX.REV_HW_MAJOR] = (byte) getExpansionBoardId();
-					configBytes[ASM_CONFIG_BYTE_INDEX.REV_HW_MINOR] = (byte) getExpansionBoardRev();
+					configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_HW_MAJOR] = (byte) getExpansionBoardId();
+					configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_HW_MINOR] = (byte) getExpansionBoardRev();
 				}
 			}
 		} else {
@@ -313,35 +313,36 @@ public class VerisenseDevice extends ShimmerDevice {
 	
 	@Override
 	public void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType) {
+		mConfigBytes = configBytes;
 		
+		long enabledSensors = 0 ; 
+				
 		if (commType == COMMUNICATION_TYPE.SD) {
-			mConfigBytes = configBytes;
-			
-			isExtendedPayloadConfig = isExtendedPayloadConfig(configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]);
-			dataCompressionMode = (configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]>>0)&0x03;
+			isExtendedPayloadConfig = isExtendedPayloadConfig(configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]);
+			dataCompressionMode = (configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]>>0)&0x03;
 			
 			ShimmerVerObject svo = defaultSvo;
 			ExpansionBoardDetails eBD = defaultEbd;
 			
 			if(isExtendedPayloadConfig){
 				byte[] payloadConfigFwVer = new byte[4];
-				System.arraycopy(configBytes, ASM_CONFIG_BYTE_INDEX.REV_FW_MAJOR, payloadConfigFwVer, 0, payloadConfigFwVer.length);
+				System.arraycopy(configBytes, PAYLOAD_CONFIG_BYTE_INDEX.REV_FW_MAJOR, payloadConfigFwVer, 0, payloadConfigFwVer.length);
 				svo = parseFirmwareVersionToShimmerVerObject(payloadConfigFwVer);
 			}
 			setShimmerVersionObject(svo);
 			
 			if(isExtendedPayloadConfig){
-				setResetReason(configBytes[ASM_CONFIG_BYTE_INDEX.RESET_REASON]);
+				setResetReason(configBytes[PAYLOAD_CONFIG_BYTE_INDEX.RESET_REASON]);
 				
 				if(isPayloadDesignV3orAbove()) {
-					Integer resetCounter = ((configBytes[ASM_CONFIG_BYTE_INDEX.RESET_COUNTER_MSB] & 0xFF) << 8) | (configBytes[ASM_CONFIG_BYTE_INDEX.RESET_COUNTER_LSB] & 0xFF);
+					Integer resetCounter = ((configBytes[PAYLOAD_CONFIG_BYTE_INDEX.RESET_COUNTER_MSB] & 0xFF) << 8) | (configBytes[PAYLOAD_CONFIG_BYTE_INDEX.RESET_COUNTER_LSB] & 0xFF);
 					setResetCounter(resetCounter);
-					Integer firstPayloadResetAfterBoot = ((configBytes[ASM_CONFIG_BYTE_INDEX.FIRST_PAYLOAD_AFTER_RESET_MSB] & 0xFF) << 8) | (configBytes[ASM_CONFIG_BYTE_INDEX.FIRST_PAYLOAD_AFTER_RESET_LSB] & 0xFF);
+					Integer firstPayloadResetAfterBoot = ((configBytes[PAYLOAD_CONFIG_BYTE_INDEX.FIRST_PAYLOAD_AFTER_RESET_MSB] & 0xFF) << 8) | (configBytes[PAYLOAD_CONFIG_BYTE_INDEX.FIRST_PAYLOAD_AFTER_RESET_LSB] & 0xFF);
 					setFirstPayloadResetAfterBoot(firstPayloadResetAfterBoot);
 				}
 				
 				if(isPayloadDesignV4orAbove()) {
-					int hwVerMajor = configBytes[ASM_CONFIG_BYTE_INDEX.REV_HW_MAJOR];
+					int hwVerMajor = configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_HW_MAJOR];
 					
 					// Fix for a legacy HW ID assignment issue
 					if(hwVerMajor==0) {
@@ -350,7 +351,7 @@ public class VerisenseDevice extends ShimmerDevice {
 						hwVerMajor = HW_ID.VERISENSE_IMU;
 					}
 					
-					int hwVerMinor = configBytes[ASM_CONFIG_BYTE_INDEX.REV_HW_MINOR];
+					int hwVerMinor = configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_HW_MINOR];
 					setHardwareVersion(hwVerMajor);
 					eBD = new ExpansionBoardDetails(hwVerMajor, hwVerMinor, INVALID_VALUE);
 				}
@@ -361,7 +362,7 @@ public class VerisenseDevice extends ShimmerDevice {
 			// and ExpansionBoardDetails have been set but before any sensor config is processed.
 			sensorAndConfigMapsCreate();
 
-			long enabledSensors = (configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] & 0xE0);
+			enabledSensors = (configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] & 0xE0);
 			int payloadConfig2Bitmask = 0;
 			if(isPayloadDesignV12orAbove()) {
 				payloadConfig2Bitmask = 0xFE;
@@ -369,17 +370,23 @@ public class VerisenseDevice extends ShimmerDevice {
 				payloadConfig2Bitmask = 0xFC;
 			}
 			if(payloadConfig2Bitmask>0) {
-				enabledSensors |= ((configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG2] & payloadConfig2Bitmask) << 8);
-			}
-			setEnabledAndDerivedSensorsAndUpdateMaps(enabledSensors, mDerivedSensors, defaultCommType);
-			
-			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()) {
-				abstractSensor.configBytesParse(this, configBytes, commType);
+				enabledSensors |= ((configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG2] & payloadConfig2Bitmask) << 8);
 			}
 		} else {
 			//TODO parse op config bytes
+			
+			enabledSensors = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & 0xE0);
+			enabledSensors |= (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] & 0x3F) << 8;
+			enabledSensors |= (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] & 0x02) << 8;
+			
 		}
+
+		setEnabledAndDerivedSensorsAndUpdateMaps(enabledSensors, mDerivedSensors, commType);
 		
+		for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()) {
+			abstractSensor.configBytesParse(this, configBytes, commType);
+		}
+
 		// Useful for debugging during development
 //		printSensorParserAndAlgoMaps();
 	}
@@ -1004,6 +1011,7 @@ public class VerisenseDevice extends ShimmerDevice {
 				|| hwId==HW_ID.VERISENSE_GSR_PLUS) {
 			addSensorClass(SENSORS.LIS2DW12, new SensorLIS2DW12(this));
 			addSensorClass(SENSORS.LSM6DS3, new SensorLSM6DS3(this));
+			addSensorClass(SENSORS.Battery, new SensorBattVoltageVerisense(this));
 			
 			if(hwId==HW_ID.VERISENSE_DEV_BRD || hwId==HW_ID.VERISENSE_PPG) {
 				int expansionBoardRev = getExpansionBoardRev();
@@ -1014,17 +1022,16 @@ public class VerisenseDevice extends ShimmerDevice {
 				}
 			} else if(hwId==HW_ID.VERISENSE_GSR_PLUS) {
 //				addSensorClass(SENSORS.PPG, new SensorPPG(this));
-				addSensorClass(SENSORS.Battery, new SensorBattVoltageVerisense(this));
 				addSensorClass(SENSORS.GSR, new SensorGSRVerisense(getShimmerVerObject()));
 			}
 		} else if(hwId==HW_ID.VERISENSE_PULSE_PLUS) {
 			addSensorClass(SENSORS.LIS2DW12, new SensorLIS2DW12(this));
 			addSensorClass(SENSORS.MAX86916, new SensorMAX86916(this));
+			addSensorClass(SENSORS.Battery, new SensorBattVoltageVerisense(this));
 			int expansionBoardRev = getExpansionBoardRev();
 			if (expansionBoardRev <= 4) {
 				// TODO add BioZ support
 			} else {
-				addSensorClass(SENSORS.Battery, new SensorBattVoltageVerisense(this));
 				addSensorClass(SENSORS.GSR, new SensorGSRVerisense(getShimmerVerObject()));
 			}
 		}

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -20,7 +21,8 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.SensorBattVoltage;
 import com.shimmerresearch.sensors.SensorADC.MICROCONTROLLER_ADC_PROPERTIES;
-import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.ASM_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.communication.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
 public class SensorBattVoltageVerisense extends SensorBattVoltage {
 
@@ -170,12 +172,14 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		int samplingRateSetting = (configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG13] >> 0) & 0x3F;
+		ConfigByteLayoutVerisenseAdc configByteLayoutVerisenseAdc = new ConfigByteLayoutVerisenseAdc(commType);
+		int samplingRateSetting = (configBytes[configByteLayoutVerisenseAdc.idxAdcRate] >> 0) & 0x3F;
 		setSamplingRateFromShimmer(VerisenseDevice.ADC_SAMPLING_RATES[samplingRateSetting][1]);
 	}
 
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
+		ConfigByteLayoutVerisenseAdc configByteLayoutVerisenseAdc = new ConfigByteLayoutVerisenseAdc(commType);
 		//TODO fill in the sampling rate byte
 		
 	}
@@ -214,5 +218,14 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	}
 
 	//--------- Abstract methods implemented end --------------
+	
+	private class ConfigByteLayoutVerisenseAdc {
+		public int idxAdcRate = -1;
+		
+		public ConfigByteLayoutVerisenseAdc(COMMUNICATION_TYPE commType) {
+			idxAdcRate = commType==COMMUNICATION_TYPE.SD? PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG13:OP_CONFIG_BYTE_INDEX.ADC_SAMPLE_RATE;
+		}
+	}
+
 }
 

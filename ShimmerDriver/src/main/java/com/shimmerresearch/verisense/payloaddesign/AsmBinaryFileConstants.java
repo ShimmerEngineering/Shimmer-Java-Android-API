@@ -12,7 +12,7 @@ public class AsmBinaryFileConstants {
 	public static final boolean IS_SPI_BUS_ADDING_HEADER_BYTE = true;
 	public static final int ACCEL_SPI_BUS_HEADER_BYTES = 1;
 	
-	public class ASM_CONFIG_BYTE_INDEX {
+	public class PAYLOAD_CONFIG_BYTE_INDEX {
 		public static final int PAYLOAD_CONFIG0 = 0;
 		public static final int PAYLOAD_CONFIG1 = 1;
 		public static final int REV_FW_MAJOR = 2;
@@ -40,7 +40,7 @@ public class AsmBinaryFileConstants {
 		public static final int PAYLOAD_CONFIG12 = 23;
 		public static final int PAYLOAD_CONFIG13 = 24;
 	}
-
+	
 	public class BYTE_COUNT {
 		// Separation here between "Payload Contents" and "Payload" as the Payload
 		// Contents alone can be compressed in the future but the payload as a whole can not

@@ -27,7 +27,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
-import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.ASM_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.communication.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
 public class SensorLIS2DW12 extends AbstractSensor {
 	
@@ -320,9 +321,9 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		if(isSensorEnabled(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL)) {
-			ConfigByteLayoutLis2dw12 configByteLayoutLis2dw12 = new ConfigByteLayoutLis2dw12(shimmerDevice);
+			ConfigByteLayoutLis2dw12 configByteLayoutLis2dw12 = new ConfigByteLayoutLis2dw12(commType);
 			
-			configBytes[configByteLayoutLis2dw12.idxFsAccel1] |= (getAccelRangeConfigValue()&0x03)<<2;
+			configBytes[configByteLayoutLis2dw12.idxFsAccel1] |= (getAccelRangeConfigValue()&0x03)<<configByteLayoutLis2dw12.bitShiftFsAccel1;
 			
 			configBytes[configByteLayoutLis2dw12.idxAccel1Cfg0] |= (getAccelRateConfigValue()&0x0F)<<4;
 			configBytes[configByteLayoutLis2dw12.idxAccel1Cfg0] |= (getAccelModeConfigValue()&0x03)<<2;
@@ -333,9 +334,9 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		if(isSensorEnabled(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL)) {
-			ConfigByteLayoutLis2dw12 configByteLayoutLis2dw12 = new ConfigByteLayoutLis2dw12(shimmerDevice);
+			ConfigByteLayoutLis2dw12 configByteLayoutLis2dw12 = new ConfigByteLayoutLis2dw12(commType);
 			
-			setAccelRangeConfigValue((configBytes[configByteLayoutLis2dw12.idxFsAccel1]>>2)&0x03);
+			setAccelRangeConfigValue((configBytes[configByteLayoutLis2dw12.idxFsAccel1]>>configByteLayoutLis2dw12.bitShiftFsAccel1)&0x03);
 			
 			byte accel1Cfg0 = configBytes[configByteLayoutLis2dw12.idxAccel1Cfg0];
 			setAccelModeConfigValue((accel1Cfg0>>2)&0x03);
@@ -607,11 +608,18 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 	
 	private class ConfigByteLayoutLis2dw12 {
-		public int idxAccel1Cfg0 = 0, idxFsAccel1 = 0;
+		public int idxAccel1Cfg0 = 0, idxFsAccel1 = 0, bitShiftFsAccel1 = 0;
 		
-		public ConfigByteLayoutLis2dw12(ShimmerDevice shimmerDevice) {
-			idxFsAccel1 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0;
-			idxAccel1Cfg0 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1;
+		public ConfigByteLayoutLis2dw12(COMMUNICATION_TYPE commType) {
+			if(commType==COMMUNICATION_TYPE.SD) {
+				idxFsAccel1 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0;
+				bitShiftFsAccel1 = 2;
+				idxAccel1Cfg0 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1;
+			} else {
+				idxFsAccel1 = OP_CONFIG_BYTE_INDEX.ACCEL1_CFG_1;
+				idxAccel1Cfg0 = OP_CONFIG_BYTE_INDEX.ACCEL1_CFG_0;
+				bitShiftFsAccel1 = 4;
+			}
 		}
 	}
 

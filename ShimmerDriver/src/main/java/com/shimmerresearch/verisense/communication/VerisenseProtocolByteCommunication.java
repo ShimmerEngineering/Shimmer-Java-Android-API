@@ -323,6 +323,11 @@ public class VerisenseProtocolByteCommunication {
 				
 			} else if(commandAndProperty == VERISENSE_PROPERTY.DFU_MODE.responseByte()) {
 			} else if(commandAndProperty == VERISENSE_PROPERTY.PENDING_EVENTS.responseByte()) {
+				PendingEventsPayload pendingEventsPayload = new PendingEventsPayload();
+				if(pendingEventsPayload.parsePayloadContents(payloadContents)) {
+					sendObjectToRadioListenerList(commandAndProperty, pendingEventsPayload);
+				}
+				
 			} else if(commandAndProperty == VERISENSE_PROPERTY.FW_TEST.responseByte()) {
 			} else if(commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.responseByte()) {
 				byte debugMode = payloadContents[0];

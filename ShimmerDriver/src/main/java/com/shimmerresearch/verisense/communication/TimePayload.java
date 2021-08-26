@@ -13,11 +13,14 @@ public class TimePayload extends AbstractPayload {
 	@Override
 	public boolean parsePayloadContents(byte[] payloadContents) {
 		super.payloadContents = payloadContents;
-		
+		isSuccess = false;
+
 		timeMinutes = parseByteArrayAtIndex(payloadContents, 0, 4);
 		timeTicks = parseByteArrayAtIndex(payloadContents, 4, 3);
 		timeMs = SensorVerisenseClock.convertRtcMinutesAndTicksToMs(timeMinutes, timeTicks);
-		return true;
+		
+		isSuccess = true;
+		return isSuccess;
 	}
 
 	@Override

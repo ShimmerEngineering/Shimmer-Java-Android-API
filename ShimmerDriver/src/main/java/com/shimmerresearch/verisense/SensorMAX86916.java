@@ -20,7 +20,8 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.ASM_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.communication.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
 public class SensorMAX86916 extends SensorMAX86XXX {
 
@@ -225,7 +226,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 				|| isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86916_PPG_GREEN)
 				|| isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86916_PPG_BLUE)) {
 			
-			ConfigByteLayoutMax86916 configByteLayout = new ConfigByteLayoutMax86916(shimmerDevice);
+			ConfigByteLayoutMax86916 configByteLayout = new ConfigByteLayoutMax86916(shimmerDevice, commType);
 			
 			if(shimmerDevice instanceof VerisenseDevice) {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
@@ -236,13 +237,15 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 				
 				configBytes[configByteLayout.idxPpgConfig2] |= (getPpgSmpAveConfigValue()&0x07)<<5;
 				
-				configBytes[configByteLayout.idxLed1Pa] |= (getPpgLedAmplitudeRedConfigValue()&0xFF);
-				configBytes[configByteLayout.idxLed2Pa] |= (getPpgLedAmplitudeIrConfigValue()&0xFF);
-				configBytes[configByteLayout.idxLed3Pa] |= (getPpgLedAmplitudeGreenConfigValue()&0xFF);
-				configBytes[configByteLayout.idxLed4Pa] |= (getPpgLedAmplitudeBlueConfigValue()&0xFF);
-				
-				if(verisenseDevice.isPayloadDesignV7orAbove()) {
-					configBytes[configByteLayout.idxLedRge] |= (getPpgLedAmplitudeRangeConfigValue()&0xFF);
+				if(commType==COMMUNICATION_TYPE.SD) {
+					configBytes[configByteLayout.idxLed1Pa] |= (getPpgLedAmplitudeRedConfigValue()&0xFF);
+					configBytes[configByteLayout.idxLed2Pa] |= (getPpgLedAmplitudeIrConfigValue()&0xFF);
+					configBytes[configByteLayout.idxLed3Pa] |= (getPpgLedAmplitudeGreenConfigValue()&0xFF);
+					configBytes[configByteLayout.idxLed4Pa] |= (getPpgLedAmplitudeBlueConfigValue()&0xFF);
+					
+					if(verisenseDevice.isPayloadDesignV7orAbove()) {
+						configBytes[configByteLayout.idxLedRge] |= (getPpgLedAmplitudeRangeConfigValue()&0xFF);
+					}
 				}
 				
 			}
@@ -256,7 +259,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 				|| isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86916_PPG_GREEN)
 				|| isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86916_PPG_BLUE)) {
 			
-			ConfigByteLayoutMax86916 configByteLayout = new ConfigByteLayoutMax86916(shimmerDevice);
+			ConfigByteLayoutMax86916 configByteLayout = new ConfigByteLayoutMax86916(shimmerDevice, commType);
 
 			if(shimmerDevice instanceof VerisenseDevice) {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
@@ -267,14 +270,17 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 				
 				setPpgSmpAveConfigValue((configBytes[configByteLayout.idxPpgConfig2]>>5)&0x07);
 	
-				setPpgLedAmplitudeIrConfigValue(configBytes[configByteLayout.idxLed1Pa]&0xFF);
-				setPpgLedAmplitudeRedConfigValue(configBytes[configByteLayout.idxLed2Pa]&0xFF);
-				setPpgLedAmplitudeGreenConfigValue(configBytes[configByteLayout.idxLed3Pa]&0xFF);
-				setPpgLedAmplitudeBlueConfigValue(configBytes[configByteLayout.idxLed4Pa]&0xFF);
-				
-				if(verisenseDevice.isPayloadDesignV7orAbove()) {
-					setPpgLedAmplitudeRangeConfigValue((byte) (configBytes[configByteLayout.idxLedRge]&0xFF));
+				if(commType==COMMUNICATION_TYPE.SD) {
+					setPpgLedAmplitudeIrConfigValue(configBytes[configByteLayout.idxLed1Pa]&0xFF);
+					setPpgLedAmplitudeRedConfigValue(configBytes[configByteLayout.idxLed2Pa]&0xFF);
+					setPpgLedAmplitudeGreenConfigValue(configBytes[configByteLayout.idxLed3Pa]&0xFF);
+					setPpgLedAmplitudeBlueConfigValue(configBytes[configByteLayout.idxLed4Pa]&0xFF);
+					
+					if(verisenseDevice.isPayloadDesignV7orAbove()) {
+						setPpgLedAmplitudeRangeConfigValue((byte) (configBytes[configByteLayout.idxLedRge]&0xFF));
+					}
 				}
+				
 			}
 		}
 	}
@@ -360,27 +366,32 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 	}
 
 	private class ConfigByteLayoutMax86916 {
-		public int idxPpgConfig1 = 0, idxPpgConfig2 = 0, idxLed1Pa = 0, idxLed2Pa = 0, idxLed3Pa = 0, idxLed4Pa = 0, idxLedRge = 0;
+		public int idxPpgConfig1 = -1, idxPpgConfig2 = -1, idxLed1Pa = -1, idxLed2Pa = -1, idxLed3Pa = -1, idxLed4Pa = -1, idxLedRge = -1;
 		
-		public ConfigByteLayoutMax86916(ShimmerDevice shimmerDevice) {
+		public ConfigByteLayoutMax86916(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType) {
 			if(shimmerDevice instanceof VerisenseDevice) {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
-				if(verisenseDevice.isPayloadDesignV8orAbove()) {
-					idxPpgConfig1 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG6;
-					idxPpgConfig2 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG7;
-					idxLed1Pa = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG8;
-					idxLed2Pa = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG9;
-					idxLed3Pa = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG10;
-					idxLed4Pa = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG11;
-					idxLedRge = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG12;
+				if(commType==COMMUNICATION_TYPE.SD) {
+					if(verisenseDevice.isPayloadDesignV8orAbove()) {
+						idxPpgConfig1 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG6;
+						idxPpgConfig2 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG7;
+						idxLed1Pa = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG8;
+						idxLed2Pa = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG9;
+						idxLed3Pa = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG10;
+						idxLed4Pa = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG11;
+						idxLedRge = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG12;
+					} else {
+						idxPpgConfig1 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1;
+						idxPpgConfig2 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3;
+						idxLed1Pa = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4;
+						idxLed2Pa = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG5;
+						idxLed3Pa = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG6;
+						idxLed4Pa = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG7;
+						idxLedRge = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG8;
+					}
 				} else {
-					idxPpgConfig1 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1;
-					idxPpgConfig2 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3;
-					idxLed1Pa = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4;
-					idxLed2Pa = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG5;
-					idxLed3Pa = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG6;
-					idxLed4Pa = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG7;
-					idxLedRge = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG8;
+					idxPpgConfig1 = OP_CONFIG_BYTE_INDEX.PPG_MODE_CONFIG2;
+					idxPpgConfig2 = OP_CONFIG_BYTE_INDEX.PPG_FIFO_CONFIG;
 				}
 			}
 		}

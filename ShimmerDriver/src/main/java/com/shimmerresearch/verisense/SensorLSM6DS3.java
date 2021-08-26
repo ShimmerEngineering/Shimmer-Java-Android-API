@@ -27,8 +27,9 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.verisense.communication.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants;
-import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.ASM_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
 public class SensorLSM6DS3 extends AbstractSensor {
 	
@@ -387,22 +388,15 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 //		if(isAnySensorChannelEnabled(VerisenseDevice.defaultCommType)) {
 		if(isEitherLsm6ds3ChannelEnabled()) {
-			ConfigByteLayoutLsm6ds3 configByteLayout = new ConfigByteLayoutLsm6ds3(shimmerDevice);
+			ConfigByteLayoutLsm6ds3 configByteLayout = new ConfigByteLayoutLsm6ds3(shimmerDevice, commType);
 
-			if(shimmerDevice instanceof VerisenseDevice) {
-				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
-				if(verisenseDevice.isPayloadDesignV8orAbove()) {
-					configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3] |= (getAccelRangeConfigValue()&0x03);
-				} else {
-					configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= (getAccelRangeConfigValue()&0x03)<<2;
-				}
+			configBytes[configByteLayout.idxAccelRange] |= (getAccelRangeConfigValue()&0x03)<<configByteLayout.bitShiftAccelRange;
 
-				configBytes[configByteLayout.idxGyroAccel2Cfg5] |= (getRateConfigValue()&0x0F)<<4;
-				configBytes[configByteLayout.idxGyroAccel2Cfg5] |= (getGyroRangeConfigValue()&0x03)<<2;	
-				
-				configBytes[configByteLayout.idxGyroAccel2Cfg0] = (byte) (fifoSizeInChip & 0xFF);
-				configBytes[configByteLayout.idxGyroAccel2Cfg1] = (byte) (((byte) (fifoSizeInChip >> 8)) & 0x0F);
-			}
+			configBytes[configByteLayout.idxGyroAccel2Cfg5] |= (getRateConfigValue()&0x0F)<<4;
+			configBytes[configByteLayout.idxGyroAccel2Cfg5] |= (getGyroRangeConfigValue()&0x03)<<2;	
+			
+			configBytes[configByteLayout.idxGyroAccel2Cfg0] = (byte) (fifoSizeInChip & 0xFF);
+			configBytes[configByteLayout.idxGyroAccel2Cfg1] = (byte) (((byte) (fifoSizeInChip >> 8)) & 0x0F);
 		}
 	}
 
@@ -410,23 +404,16 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 //		if(isAnySensorChannelEnabled(VerisenseDevice.defaultCommType)) {
 		if(isEitherLsm6ds3ChannelEnabled()) {
-			ConfigByteLayoutLsm6ds3 configByteLayout = new ConfigByteLayoutLsm6ds3(shimmerDevice);
+			ConfigByteLayoutLsm6ds3 configByteLayout = new ConfigByteLayoutLsm6ds3(shimmerDevice, commType);
 
-			if(shimmerDevice instanceof VerisenseDevice) {
-				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
-				if(verisenseDevice.isPayloadDesignV8orAbove()) {
-					setAccelRangeConfigValue(configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3]&0x03);
-				} else {
-					setAccelRangeConfigValue((configBytes[ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]>>2)&0x03);
-				}
+			setAccelRangeConfigValue((configByteLayout.idxAccelRange>>configByteLayout.bitShiftAccelRange)&0x03);
 
-				setRateConfigValue((configBytes[configByteLayout.idxGyroAccel2Cfg5]>>4)&0x0F);
-				setGyroRangeConfigValue((configBytes[configByteLayout.idxGyroAccel2Cfg5]>>2)&0x03);
-	
-				int fifoSizeInChip = (configBytes[configByteLayout.idxGyroAccel2Cfg0]&0xFF) 
-						| ((configBytes[configByteLayout.idxGyroAccel2Cfg1]&0x0F)<<8);
-				setFifoSizeInChip(fifoSizeInChip);
-			}
+			setRateConfigValue((configBytes[configByteLayout.idxGyroAccel2Cfg5]>>4)&0x0F);
+			setGyroRangeConfigValue((configBytes[configByteLayout.idxGyroAccel2Cfg5]>>2)&0x03);
+
+			int fifoSizeInChip = (configBytes[configByteLayout.idxGyroAccel2Cfg0]&0xFF) 
+					| ((configBytes[configByteLayout.idxGyroAccel2Cfg1]&0x0F)<<8);
+			setFifoSizeInChip(fifoSizeInChip);
 		}
 	}
 
@@ -674,23 +661,47 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	}
 	
 	private class ConfigByteLayoutLsm6ds3 {
-		public int idxGyroAccel2Cfg5 = 0, idxGyroAccel2Cfg0 = 0, idxGyroAccel2Cfg1 = 0;
+		public int idxGyroAccel2Cfg0 = -1, idxGyroAccel2Cfg1 = -1, idxGyroAccel2Cfg2 = -1, idxGyroAccel2Cfg3 = -1, idxGyroAccel2Cfg4 = -1, idxGyroAccel2Cfg5 = -1, idxGyroAccel2Cfg6 = -1, idxGyroAccel2Cfg7 = -1;
+		public int idxAccelRange = -1, bitShiftAccelRange = -1;
 		
-		public ConfigByteLayoutLsm6ds3(ShimmerDevice shimmerDevice) {
+		public ConfigByteLayoutLsm6ds3(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType) {
 			if(shimmerDevice instanceof VerisenseDevice) {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
-				if(verisenseDevice.isPayloadDesignV8orAbove()) {
-					idxGyroAccel2Cfg5 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3;
-					idxGyroAccel2Cfg0 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4;
-					idxGyroAccel2Cfg1 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG5;
-				} else if(verisenseDevice.isPayloadDesignV5orAbove()) {
-					idxGyroAccel2Cfg5 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1;
-					idxGyroAccel2Cfg0 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3;
-					idxGyroAccel2Cfg1 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4;
+				if(commType==COMMUNICATION_TYPE.SD) {
+					if(verisenseDevice.isPayloadDesignV8orAbove()) {
+						idxGyroAccel2Cfg5 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3;
+						idxGyroAccel2Cfg0 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4;
+						idxGyroAccel2Cfg1 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG5;
+						
+						idxAccelRange = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3;
+						bitShiftAccelRange = 0;
+					} else if(verisenseDevice.isPayloadDesignV5orAbove()) {
+						idxGyroAccel2Cfg5 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1;
+						idxGyroAccel2Cfg0 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3;
+						idxGyroAccel2Cfg1 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG4;
+						
+						idxAccelRange = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0;
+						bitShiftAccelRange = 2;
+					} else {
+						idxGyroAccel2Cfg5 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1;
+						idxGyroAccel2Cfg0 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG2;
+						idxGyroAccel2Cfg1 = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3;
+						
+						idxAccelRange = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0;
+						bitShiftAccelRange = 2;
+					}
 				} else {
-					idxGyroAccel2Cfg5 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG1;
-					idxGyroAccel2Cfg0 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG2;
-					idxGyroAccel2Cfg1 = ASM_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG3;
+					idxGyroAccel2Cfg0 = OP_CONFIG_BYTE_INDEX.GYRO_ACCEL2_CFG_0;
+					idxGyroAccel2Cfg1 = OP_CONFIG_BYTE_INDEX.GYRO_ACCEL2_CFG_1;
+					idxGyroAccel2Cfg2 = OP_CONFIG_BYTE_INDEX.GYRO_ACCEL2_CFG_2;
+					idxGyroAccel2Cfg3 = OP_CONFIG_BYTE_INDEX.GYRO_ACCEL2_CFG_3;
+					idxGyroAccel2Cfg4 = OP_CONFIG_BYTE_INDEX.GYRO_ACCEL2_CFG_4;
+					idxGyroAccel2Cfg5 = OP_CONFIG_BYTE_INDEX.GYRO_ACCEL2_CFG_5;
+					idxGyroAccel2Cfg6 = OP_CONFIG_BYTE_INDEX.GYRO_ACCEL2_CFG_6;
+					idxGyroAccel2Cfg7 = OP_CONFIG_BYTE_INDEX.GYRO_ACCEL2_CFG_7;
+					
+					idxAccelRange = idxGyroAccel2Cfg4;
+					bitShiftAccelRange = 2;
 				}
 			}
 		}
