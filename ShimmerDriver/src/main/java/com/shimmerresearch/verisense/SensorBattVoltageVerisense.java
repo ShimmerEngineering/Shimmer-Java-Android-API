@@ -172,16 +172,20 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		ConfigByteLayoutVerisenseAdc configByteLayoutVerisenseAdc = new ConfigByteLayoutVerisenseAdc(commType);
-		int samplingRateSetting = (configBytes[configByteLayoutVerisenseAdc.idxAdcRate] >> 0) & 0x3F;
-		setSamplingRateFromShimmer(VerisenseDevice.ADC_SAMPLING_RATES[samplingRateSetting][1]);
+		ConfigByteLayoutVerisenseAdc configByteLayoutVerisenseAdc = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
+		if(configByteLayoutVerisenseAdc.idxAdcRate>=0) {
+			int samplingRateSetting = (configBytes[configByteLayoutVerisenseAdc.idxAdcRate] >> 0) & 0x3F;
+			setSamplingRateFromShimmer(VerisenseDevice.ADC_SAMPLING_RATES[samplingRateSetting][1]);
+		}
 	}
 
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
-		ConfigByteLayoutVerisenseAdc configByteLayoutVerisenseAdc = new ConfigByteLayoutVerisenseAdc(commType);
+		ConfigByteLayoutVerisenseAdc configByteLayoutVerisenseAdc = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
 		//TODO fill in the sampling rate byte
-		
+		if(configByteLayoutVerisenseAdc.idxAdcRate>=0) {
+			
+		}
 	}
 
 	@Override
@@ -222,8 +226,17 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	private class ConfigByteLayoutVerisenseAdc {
 		public int idxAdcRate = -1;
 		
-		public ConfigByteLayoutVerisenseAdc(COMMUNICATION_TYPE commType) {
-			idxAdcRate = commType==COMMUNICATION_TYPE.SD? PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG13:OP_CONFIG_BYTE_INDEX.ADC_SAMPLE_RATE;
+		public ConfigByteLayoutVerisenseAdc(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType) {
+			if(shimmerDevice instanceof VerisenseDevice) {
+				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
+				if(verisenseDevice.isPayloadDesignV12orAbove()) {
+					if(commType==COMMUNICATION_TYPE.SD) {
+						idxAdcRate = PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG13;
+					} else {
+						idxAdcRate = OP_CONFIG_BYTE_INDEX.ADC_SAMPLE_RATE;
+					}
+				}
+			}
 		}
 	}
 
