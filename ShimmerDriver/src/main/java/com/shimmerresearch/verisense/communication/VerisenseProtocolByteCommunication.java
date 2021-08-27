@@ -126,19 +126,6 @@ public class VerisenseProtocolByteCommunication {
 	boolean mNewCommandPayload = false;
 	AbstractByteCommunication mByteCommunication;
 
-	public void addRadioListener(RadioListener radioListener) {
-		mRadioListenerList.add(radioListener);
-	}
-
-	protected void stateChange(VerisenseProtocolState state) {
-		System.out.println("State Change: " + state.toString());
-		mState = state;
-	}
-
-	public void removeRadioListenerList() {
-		mRadioListenerList.clear();
-	}
-
 	public VerisenseProtocolByteCommunication(AbstractByteCommunication byteComm) {
 		mByteCommunication = byteComm;
 		byteComm.setByteCommunicationListener(new ByteCommunicationListener() {
@@ -156,12 +143,12 @@ public class VerisenseProtocolByteCommunication {
 					}
 
 					return;
+					
 				} else if (mState.equals(VerisenseProtocolState.Streaming)) {
 
 					// System.Console.WriteLine("STREAMING DATA (" + bytes.Length + ") :" +
 					// String.Join(" ", bytes));
-					if (rxBytes.length == 3 && rxBytes[0] == VERISENSE_PROPERTY.STREAMING.ackByte())// 4A 00 00
-					{
+					if (rxBytes.length == 3 && rxBytes[0] == VERISENSE_PROPERTY.STREAMING.ackByte()) { // 4A 00 00
 						if (WaitingForStopStreamingCommand) {
 							handleCommonResponse(rxBytes);
 							WaitingForStopStreamingCommand = false;
@@ -181,8 +168,7 @@ public class VerisenseProtocolByteCommunication {
 					return;
 
 				} else {
-					if (rxBytes.length == 3 && ((rxBytes[0] & VERISENSE_COMMAND.ACK) == VERISENSE_COMMAND.ACK))// if it is an ack
-					{
+					if (rxBytes.length == 3 && ((rxBytes[0] & VERISENSE_COMMAND.ACK) == VERISENSE_COMMAND.ACK)) { // if it is an ack
 						handleCommonResponse(rxBytes);
 					} else {
 						if (mNewCommandPayload) {
@@ -209,6 +195,19 @@ public class VerisenseProtocolByteCommunication {
 				stateChange(VerisenseProtocolState.Connected);
 			}
 		});
+	}
+	
+	public void addRadioListener(RadioListener radioListener) {
+		mRadioListenerList.add(radioListener);
+	}
+
+	protected void stateChange(VerisenseProtocolState state) {
+		System.out.println("State Change: " + state.toString());
+		mState = state;
+	}
+
+	public void removeRadioListenerList() {
+		mRadioListenerList.clear();
 	}
 
 	void handleCommandDataChunk(byte[] payload) {
