@@ -2185,15 +2185,16 @@ public class Configuration {
 		}
 		
 		public class DerivedSensorsBitMask {
-			public final static int NON_WEAR_DETECTION		= (1 << 0);
-			public final static int PPG_TO_HR_RED_LED		= (1 << 1);
-			public final static int PPG_TO_HR_IR_LED		= (1 << 2);
-			public final static int PPG_TO_HR_GREEN_LED		= (1 << 3);
-			public final static int PPG_TO_HR_BLUE_LED		= (1 << 4);
-			public final static int PPG_TO_SPO2				= (1 << 5);
-			public final static int GYRO_ON_THE_FLY_CAL		= (1 << 6);
-			public final static int ORIENTATION_6DOF_QUAT 	= (1 << 7);
-			public final static int ORIENTATION_6DOF_EULER 	= (1 << 8);
+			public final static int NON_WEAR_DETECTION_LIS2DW12	= (1 << 0);
+			public final static int NON_WEAR_DETECTION_LSM6DS3	= (1 << 1);
+			public final static int PPG_TO_HR_RED_LED		= (1 << 2);
+			public final static int PPG_TO_HR_IR_LED		= (1 << 3);
+			public final static int PPG_TO_HR_GREEN_LED		= (1 << 4);
+			public final static int PPG_TO_HR_BLUE_LED		= (1 << 5);
+			public final static int PPG_TO_SPO2				= (1 << 6);
+			public final static int GYRO_ON_THE_FLY_CAL		= (1 << 7);
+			public final static int ORIENTATION_6DOF_QUAT 	= (1 << 8);
+			public final static int ORIENTATION_6DOF_EULER 	= (1 << 9);
 		}
 
 		public class SENSOR_ID {
