@@ -406,7 +406,7 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		if(isEitherLsm6ds3ChannelEnabled()) {
 			ConfigByteLayoutLsm6ds3 configByteLayout = new ConfigByteLayoutLsm6ds3(shimmerDevice, commType);
 
-			setAccelRangeConfigValue((configByteLayout.idxAccelRange>>configByteLayout.bitShiftAccelRange)&0x03);
+			setAccelRangeConfigValue((configBytes[configByteLayout.idxAccelRange]>>configByteLayout.bitShiftAccelRange)&0x03);
 
 			setRateConfigValue((configBytes[configByteLayout.idxGyroAccel2Cfg5]>>4)&0x0F);
 			setGyroRangeConfigValue((configBytes[configByteLayout.idxGyroAccel2Cfg5]>>2)&0x03);
