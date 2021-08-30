@@ -1,6 +1,6 @@
 package com.shimmerresearch.verisense.communication;
 
-import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication.VERISENSE_PROPERTY;
+import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_PROPERTY;
 
 public class PendingEventsPayload extends AbstractPayload {
 	

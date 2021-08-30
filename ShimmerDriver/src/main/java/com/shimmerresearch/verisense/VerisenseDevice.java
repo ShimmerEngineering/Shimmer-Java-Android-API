@@ -1562,4 +1562,12 @@ public class VerisenseDevice extends ShimmerDevice {
 		return rateHz;
 	}
 	
+	@Override
+	public void connect() throws ShimmerException{
+		//TODO
+		//1) Connect, 
+		//2) read prod config, 
+		//3) read op config
+	}
+	
 }
