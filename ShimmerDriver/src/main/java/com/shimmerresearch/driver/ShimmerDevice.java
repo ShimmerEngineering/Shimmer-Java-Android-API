@@ -3357,7 +3357,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param rateHz
 	 * @return
 	 */
-	private double correctSamplingRate(double rateHz) {
+	protected double correctSamplingRate(double rateHz) {
 		double maxSamplingRateHz = calcMaxSamplingRate();
 		double maxShimmerSamplingRateTicks = getSamplingClockFreq();
 		

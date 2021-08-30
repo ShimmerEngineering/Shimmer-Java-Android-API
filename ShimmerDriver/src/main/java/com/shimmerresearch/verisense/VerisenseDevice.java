@@ -1552,4 +1552,14 @@ public class VerisenseDevice extends ShimmerDevice {
 		}
 	}
 
+	@Override
+	protected double correctSamplingRate(double rateHz) {
+		// As Verisense uses different sampling clocks for different sensors, it is not
+		// applicable to correct the sampling rate as we would have done for Shimmer3.
+		// The only sensors that this logic could be applied to are the ADC based sensor
+		// channels such as VBatt and GSR as these are both based on the 32768Hz crystal
+		// in the Verisense.
+		return rateHz;
+	}
+	
 }
