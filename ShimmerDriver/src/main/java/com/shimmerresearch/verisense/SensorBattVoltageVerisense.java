@@ -21,7 +21,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.SensorBattVoltage;
 import com.shimmerresearch.sensors.SensorADC.MICROCONTROLLER_ADC_PROPERTIES;
-import com.shimmerresearch.verisense.communication.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
 public class SensorBattVoltageVerisense extends SensorBattVoltage {

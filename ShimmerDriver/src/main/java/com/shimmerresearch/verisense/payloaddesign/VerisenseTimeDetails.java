@@ -121,6 +121,12 @@ public class VerisenseTimeDetails implements Serializable {
 		return rtcEndTimeMinutes;
 	}
 
+	public static double parseTimeMsFromMinutesAndTicksAtIndex(byte[] byteBuffer, int currentByteIndex) {
+		long rtcTimeMinutes = parseTimeMinutesAtIndex(byteBuffer, currentByteIndex);
+		long rtcTimeTicks = parseTimeTicksAtIndex(byteBuffer, currentByteIndex+4);
+		return SensorVerisenseClock.convertRtcMinutesAndTicksToMs(rtcTimeMinutes, rtcTimeTicks);
+	}
+
 	public static byte[] generateMinutesAndTicksByteArray(double timeMs) {
 		double timeS = (double)timeMs/1000;
 		long minutes = calculateMinutesFromSeconds(timeS);

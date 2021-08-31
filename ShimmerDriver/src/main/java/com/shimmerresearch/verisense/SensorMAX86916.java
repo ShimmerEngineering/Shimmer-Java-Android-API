@@ -20,7 +20,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
-import com.shimmerresearch.verisense.communication.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
 public class SensorMAX86916 extends SensorMAX86XXX {

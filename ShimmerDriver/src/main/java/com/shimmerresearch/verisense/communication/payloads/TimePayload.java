@@ -1,9 +1,13 @@
-package com.shimmerresearch.verisense.communication;
+package com.shimmerresearch.verisense.communication.payloads;
 
 import com.shimmerresearch.verisense.SensorVerisenseClock;
 import com.shimmerresearch.verisense.UtilVerisenseDriver;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
 
+/**
+ * @author Mark Nolan
+ *
+ */
 public class TimePayload extends AbstractPayload {
 
 	private long timeMinutes = 0;

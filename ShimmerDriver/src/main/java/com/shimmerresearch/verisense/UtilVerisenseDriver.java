@@ -44,6 +44,7 @@ public class UtilVerisenseDriver implements Serializable {
 
 	public static final String DATE_FORMAT_VERISENSE_HEADER_LEGACY = "dd/MM/yyyy HH:mm:ss.SSS";
 	public static final String DATE_FORMAT_VERISENSE_HEADER = "yyyy/MM/dd HH:mm:ss.SSS";
+	public static final String DATE_FORMAT_DEBUGGING = "yyyy/MM/dd HH:mm:ss.SSS";
 	public static final String DATE_FORMAT_FILENAME = "yyMMdd_HHmmss";
 	public static final String DATE_FORMAT_IN_DB = "dd MMM yyyy HH:mm:ss:SSS";
 	public static final String DATE_FORMAT_SHORT_WITH_MILLIS = "yyMMdd HH:mm:ss.SSS";

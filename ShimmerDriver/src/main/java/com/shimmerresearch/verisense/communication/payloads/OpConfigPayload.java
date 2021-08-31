@@ -1,5 +1,9 @@
-package com.shimmerresearch.verisense.communication;
+package com.shimmerresearch.verisense.communication.payloads;
 
+/**
+ * @author Mark Nolan
+ *
+ */
 public class OpConfigPayload extends AbstractPayload {
 
 	public class OP_CONFIG_BYTE_INDEX {

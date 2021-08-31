@@ -47,5 +47,6 @@ public class SerialPortByteCommunication extends AbstractByteCommunication {
 		// TODO Auto-generated method stub
 		
 	}
+	
 
 }

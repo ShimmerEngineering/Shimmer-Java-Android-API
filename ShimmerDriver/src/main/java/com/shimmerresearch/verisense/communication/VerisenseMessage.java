@@ -129,7 +129,7 @@ public class VerisenseMessage {
 	byte command;
 	byte property;
 	
-	public byte[] messageContents;
+	public byte[] payloadBytes;
 	public int mExpectedLengthBytes;
 	public int mCurrentLengthBytes;
 	public long mUnixStartTimeinMS;
@@ -149,12 +149,12 @@ public class VerisenseMessage {
 		command = (byte) (commandAndProperty & 0xF0);
 		property = (byte) (commandAndProperty & 0x0F);
 
-		mExpectedLengthBytes = (rxBytes[2] << 8) | rxBytes[1];
-		messageContents = new byte[mExpectedLengthBytes];
+		mExpectedLengthBytes = ((rxBytes[2] << 8) | rxBytes[1]) & 0xFFFF;
+		payloadBytes = new byte[mExpectedLengthBytes];
 		
-		if (messageContents.length > 0) {
+		if (payloadBytes.length > 0) {
 			int numPayloadContentsBytes = rxBytes.length-3;
-			System.arraycopy(rxBytes, 3, messageContents, 0, numPayloadContentsBytes);
+			System.arraycopy(rxBytes, 3, payloadBytes, 0, numPayloadContentsBytes);
 			mCurrentLengthBytes += numPayloadContentsBytes;
 		}
 
@@ -167,15 +167,15 @@ public class VerisenseMessage {
 		}
 	}
 
-	public VerisenseMessage(byte commandAndProperty, byte[] payloadContents) {
+	public VerisenseMessage(byte commandAndProperty, byte[] payloadBytes) {
 		this.commandAndProperty = commandAndProperty;
-		this.messageContents = payloadContents;
-		mExpectedLengthBytes = payloadContents.length;
+		this.payloadBytes = payloadBytes;
+		mExpectedLengthBytes = payloadBytes.length;
 		mCurrentLengthBytes = mExpectedLengthBytes;
 	}
 
 	public void appendToDataChuck(byte[] rxBytes, long unixTimeinMS) {
-		System.arraycopy(rxBytes, 0, messageContents, mCurrentLengthBytes, rxBytes.length);
+		System.arraycopy(rxBytes, 0, payloadBytes, mCurrentLengthBytes, rxBytes.length);
 		mCurrentLengthBytes += rxBytes.length;
 
 		if (isCurrentLengthGreaterThanOrEqualToExpectedLength()) {
@@ -208,13 +208,13 @@ public class VerisenseMessage {
 	boolean CRCCheck() {
 		byte[] payloadWithoutCrc = new byte[mExpectedLengthBytes-2];
 
-		System.arraycopy(messageContents, 0, payloadWithoutCrc, 0, payloadWithoutCrc.length);
+		System.arraycopy(payloadBytes, 0, payloadWithoutCrc, 0, payloadWithoutCrc.length);
 
 		CRC16CCITT crc16 = new CRC16CCITT();
 
 		byte[] crcBytes = new byte[BYTE_COUNT.PAYLOAD_CRC];
-		crcBytes[0] = messageContents[messageContents.length-2];
-		crcBytes[1] = messageContents[messageContents.length-1];
+		crcBytes[0] = payloadBytes[payloadBytes.length-2];
+		crcBytes[1] = payloadBytes[payloadBytes.length-1];
 		int crcOriginal = crc16.crcBytesToInt(crcBytes);
 
 		boolean result = crc16.checkCrc(payloadWithoutCrc, crcOriginal);
@@ -239,8 +239,8 @@ public class VerisenseMessage {
 		txBuf[0] = commandAndProperty;
 		txBuf[1] = (byte) (mExpectedLengthBytes & 0xFF);
 		txBuf[2] = (byte) ((mExpectedLengthBytes >> 8) & 0xFF);
-		if(messageContents.length>0) {
-			System.arraycopy(messageContents, 0, txBuf, 3, mExpectedLengthBytes);
+		if(payloadBytes.length>0) {
+			System.arraycopy(payloadBytes, 0, txBuf, 3, mExpectedLengthBytes);
 		}
 		return txBuf;
 	}
@@ -252,7 +252,7 @@ public class VerisenseMessage {
 		sb.append(", Property=" + VERISENSE_PROPERTY.lookupByMask(property).toString());
 		sb.append(", Expected Length =" + mExpectedLengthBytes);
 		sb.append(", Current Length =" + mCurrentLengthBytes);
-		sb.append(", Payload Contents =" + UtilShimmer.bytesToHexStringWithSpacesFormatted(messageContents));
+		sb.append(", Payload Contents =" + UtilShimmer.bytesToHexStringWithSpacesFormatted(payloadBytes));
 		
 		return sb.toString();
 	}

@@ -1,4 +1,4 @@
-package com.shimmerresearch.verisense.communication;
+package com.shimmerresearch.verisense.communication.payloads;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.encoders.Hex;
@@ -6,6 +6,10 @@ import org.bouncycastle.util.encoders.Hex;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
+/**
+ * @author Mark Nolan
+ *
+ */
 public class ProdConfigPayload extends AbstractPayload {
 
 	public String verisenseId;

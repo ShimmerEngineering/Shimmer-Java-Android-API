@@ -2,42 +2,54 @@ package com.shimmerresearch.verisense.communication;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.verisense.SensorBattVoltageVerisense;
 import com.shimmerresearch.verisense.SensorLIS2DW12;
 import com.shimmerresearch.verisense.VerisenseDevice;
-import com.shimmerresearch.verisense.communication.ProdConfigPayload;
-import com.shimmerresearch.verisense.communication.StatusPayload;
+import com.shimmerresearch.verisense.communication.payloads.EventLogPayload;
+import com.shimmerresearch.verisense.communication.payloads.MemoryLookupTablePayload;
+import com.shimmerresearch.verisense.communication.payloads.PendingEventsPayload;
+import com.shimmerresearch.verisense.communication.payloads.ProdConfigPayload;
+import com.shimmerresearch.verisense.communication.payloads.RecordBufferDetailsPayload;
+import com.shimmerresearch.verisense.communication.payloads.RwcSchedulePayload;
+import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
+import com.shimmerresearch.verisense.communication.payloads.TimePayload;
 
+@FixMethodOrder
 public class API_00003_VerisenseProtocolByteCommunicationTest {
 	
 	
 	@Test
 	public void test001_status_payload() {
-		byte[] payload = new byte[] { 
+		byte[] messageBytes = new byte[] { 
 				0x31, 0x38, 0x00, (byte) 0x98, 0x58, 0x01, 0x26, 0x09, 0x18, 0x01, 
 				0x00, 0x00, 0x00, 0x57, 0x05, 0x64, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, 
 				(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, 0x00, 0x01, 0x07, 0x00, 0x00, 0x49, 
 				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, (byte) 0x91, 0x18, 
 				(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, 0x00, 0x00, 0x00, 
-				0x00, 0x00, (byte) 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00 };
+				0x00, 0x00, (byte) 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00};
 		
 		//TODO would be better to be passing statusPayloadBytes through verisenseProtocolByteCommunication rather then splitting out the payload contents
 //		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = new VerisenseProtocolByteCommunication(null);
 //		verisenseProtocolByteCommunication.addRadioListener(new RadioListener);
 //		verisenseProtocolByteCommunication.handleCommonResponse(statusPayload);
 		
-		
-		byte[] payloadContents = new byte[payload.length-3];
-		System.arraycopy(payload, 3, payloadContents, 0, payloadContents.length);
+		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
 		
 		StatusPayload statusPayload = new StatusPayload();
-		statusPayload.parsePayloadContents(payloadContents);
+		statusPayload.parsePayloadContents(verisenseMessage.payloadBytes);
 		System.out.println(statusPayload.generateDebugString());
 
 		assertTrue(statusPayload.isSuccess);
@@ -74,13 +86,12 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 
 	@Test
 	public void test002_production_config_payload() {
-		byte[] payload = new byte[] {0x33, 0x0D, 0x00, 0x5A, (byte) 0x98, 0x58, 0x01, 0x26, 0x09, 0x18, 0x40, 0x01, 0x01, 0x02, 0x5B, 0x00};
+		byte[] messageBytes = new byte[] {0x33, 0x0D, 0x00, 0x5A, (byte) 0x98, 0x58, 0x01, 0x26, 0x09, 0x18, 0x40, 0x01, 0x01, 0x02, 0x5B, 0x00};
 
-		byte[] payloadContents = new byte[payload.length-3];
-		System.arraycopy(payload, 3, payloadContents, 0, payloadContents.length);
+		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
 		
 		ProdConfigPayload prodConfigPayload = new ProdConfigPayload();
-		prodConfigPayload.parsePayloadContents(payloadContents);
+		prodConfigPayload.parsePayloadContents(verisenseMessage.payloadBytes);
 		System.out.println(prodConfigPayload.generateDebugString());
 		
 		assertTrue(prodConfigPayload.isSuccess);
@@ -98,13 +109,12 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 
 	@Test
 	public void test003_time_payload() {
-		byte[] payload = new byte[] {0x35, 0x07, 0x00, 0x02, 0x00, 0x00, 0x00, 0x3D, (byte) 0xD5, 0x15};
+		byte[] messageBytes = new byte[] {0x35, 0x07, 0x00, 0x02, 0x00, 0x00, 0x00, 0x3D, (byte) 0xD5, 0x15};
 		
-		byte[] payloadContents = new byte[payload.length-3];
-		System.arraycopy(payload, 3, payloadContents, 0, payloadContents.length);
+		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
 		
 		TimePayload timePayload = new TimePayload();
-		timePayload.parsePayloadContents(payloadContents);
+		timePayload.parsePayloadContents(verisenseMessage.payloadBytes);
 		System.out.println(timePayload.generateDebugString());
 
 		assertTrue(timePayload.isSuccess);
@@ -116,13 +126,12 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 
 	@Test
 	public void test004_pending_events_payload() {
-		byte[] payload = new byte[] {0x37, 0x03, 0x00, 0x01, 0x05, 0x02};
+		byte[] messageBytes = new byte[] {0x37, 0x03, 0x00, 0x01, 0x05, 0x02};
 
-		byte[] payloadContents = new byte[payload.length-3];
-		System.arraycopy(payload, 3, payloadContents, 0, payloadContents.length);
+		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
 
 		PendingEventsPayload pendingEventsPayload = new PendingEventsPayload();
-		pendingEventsPayload.parsePayloadContents(payloadContents);
+		pendingEventsPayload.parsePayloadContents(verisenseMessage.payloadBytes);
 		System.out.println(pendingEventsPayload.generateDebugString());
 		
 		assertTrue(pendingEventsPayload.isSuccess);
@@ -134,7 +143,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 
 	@Test
 	public void test005_read_op_config() {
-		byte[] payload = new byte[] {0x34, 0x48, 0x00, 0x5A, (byte) 0x97, 0x00, 0x02, 0x00, 
+		byte[] messageBytes = new byte[] {0x34, 0x48, 0x00, 0x5A, (byte) 0x97, 0x00, 0x02, 0x00, 
 				0x30, 0x20, 0x00, 0x7F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0x80, 
 				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 				0x03, (byte) 0xF4, 0x18, 0x3C, 0x00, 0x0A, 0x0F, 0x00, 0x18, 0x3C, 0x00, 0x0A, 
@@ -142,14 +151,14 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 				(byte) 0xFF, (byte) 0xFF, 0x3C, 0x00, 0x0E, 0x00, 0x00, 0x63, 0x28, (byte) 0xCC, 
 				(byte) 0xCC, 0x1E, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x00, 0x01};
 
-		byte[] payloadContents = new byte[payload.length-3];
-		System.arraycopy(payload, 3, payloadContents, 0, payloadContents.length);
+		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
 
 		//TODO improve below (sensor class access and running through VerisenseProtocolByteCommunication) and implement checks for more settings
 		
 		VerisenseDevice verisenseDevice = new VerisenseDevice();
+		verisenseDevice.setShimmerVersionObject(VerisenseDevice.FW_CHANGES.CCF21_010_3);
 		verisenseDevice.setHardwareVersionAndCreateSensorMaps(HW_ID.VERISENSE_DEV_BRD);
-		verisenseDevice.configBytesParse(payloadContents, COMMUNICATION_TYPE.BLUETOOTH);
+		verisenseDevice.configBytesParse(verisenseMessage.payloadBytes, COMMUNICATION_TYPE.BLUETOOTH);
 		
 		verisenseDevice.printSensorParserAndAlgoMaps();
 		
@@ -161,7 +170,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		assertTrue(abstractSensorLis2dw12!=null);
 		SensorLIS2DW12 sensorLIS2DW12 = (SensorLIS2DW12)abstractSensorLis2dw12;
 		assertTrue(sensorLIS2DW12.getAccelRateFreq()==25.0);
-		assertTrue(sensorLIS2DW12.getAccelRangeString().equals("+- 8g"));
+		assertTrue(sensorLIS2DW12.getAccelRangeString().equals("+- 8 g"));
 
 		AbstractSensor abstractSensorGsr = verisenseDevice.getSensorClass(SENSORS.Battery);
 		assertTrue(abstractSensorGsr!=null);
@@ -214,4 +223,92 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 //		ADAPTIVE_SCHEDULER_FAILCOUNT_MAX = 255
 	}
 
+	@Test
+	public void test006_read_rwc_schedule() {
+		byte[] messageBytes = new byte[] {0x39, 0x3F, 0x00, 0x0D, (byte) 0xA2, (byte) 0x9E, 0x01, 
+				(byte) 0xEF, (byte) 0x8B, 0x12, 0x00, (byte) 0x9C, (byte) 0xA5, (byte) 0x9E, 
+				0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0x9C, (byte) 0xA5, (byte) 0x9E, 0x01, 
+				0x00, 0x00, 0x00, 0x00, (byte) 0x9C, (byte) 0xA5, (byte) 0x9E, 0x01, 0x00, 
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
+		
+		RwcSchedulePayload rwcSchedulePayload = new RwcSchedulePayload();
+		rwcSchedulePayload.parsePayloadContents(verisenseMessage.payloadBytes);
+		System.out.println(rwcSchedulePayload.generateDebugString());
+		
+		assertTrue(rwcSchedulePayload.isSuccess);
+		
+		//TODO add tests
+	}
+	
+	@Test
+	public void test007_read_record_buffer_details() {
+		byte[] messageBytes = new byte[] {0x39, 0x34, 0x00, 0x00, 0x01, (byte) 0xFF, (byte) 0xFF, 0x5C, 0x61, 
+				0x00, 0x00, 0x7E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, (byte) 0xFF, (byte) 0xFF, 0x20, 0x00, 0x00, 
+				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+				0x00, 0x00, 0x00, 0x00};
+
+		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
+		
+		RecordBufferDetailsPayload recordBufferDetailsPayload = new RecordBufferDetailsPayload();
+		recordBufferDetailsPayload.parsePayloadContents(verisenseMessage.payloadBytes);
+		System.out.println(recordBufferDetailsPayload.generateDebugString());
+		
+		assertTrue(recordBufferDetailsPayload.isSuccess);
+		
+		//TODO add tests
+	}
+
+	@Test
+	public void test008_read_event_log() {
+		String messageStr = readVerisenseMessageBytesFromFile("EventLogPayload_01.txt");
+		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
+		
+		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
+		
+		EventLogPayload recordBufferDetailsPayload = new EventLogPayload();
+		recordBufferDetailsPayload.parsePayloadContents(verisenseMessage.payloadBytes);
+		System.out.println(recordBufferDetailsPayload.generateDebugString());
+		
+		assertTrue(recordBufferDetailsPayload.isSuccess);
+		
+		//TODO add tests
+	}
+
+	@Test
+	public void test009_read_memory_lookup_table() {
+		String messageStr = readVerisenseMessageBytesFromFile("MemoryLookupTable_01.txt");
+		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
+		
+		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
+		
+		MemoryLookupTablePayload memoryLookupTablePayload = new MemoryLookupTablePayload();
+		memoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes);
+		System.out.println(memoryLookupTablePayload.generateDebugString());
+		
+		assertTrue(memoryLookupTablePayload.isSuccess);
+		
+		//TODO add tests
+	}
+
+	
+	private String readVerisenseMessageBytesFromFile(String filePath) {
+		URL url = getClass().getResource(filePath);
+		StringBuilder contentBuilder = new StringBuilder();
+		try (BufferedReader br = new BufferedReader(new FileReader(url.getPath()))) {
+
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				contentBuilder.append(sCurrentLine);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return contentBuilder.toString();
+	}
+	
 }

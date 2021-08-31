@@ -15,7 +15,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensors.SensorGSR;
-import com.shimmerresearch.verisense.communication.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
 public class SensorGSRVerisense extends SensorGSR {

@@ -1,7 +1,5 @@
 package com.shimmerresearch.verisense.communication;
 
-import com.shimmerresearch.comms.radioProtocol.RadioListener;
-
 public abstract class AbstractByteCommunication {
 
 	protected ByteCommunicationListener mByteCommunicationListener;

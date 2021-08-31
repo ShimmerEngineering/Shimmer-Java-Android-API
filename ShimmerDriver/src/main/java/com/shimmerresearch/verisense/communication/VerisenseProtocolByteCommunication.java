@@ -15,6 +15,15 @@ import com.shimmerresearch.verisense.communication.VerisenseMessage.STREAMING_CO
 import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_COMMAND;
 import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_DEBUG_MODE;
 import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_PROPERTY;
+import com.shimmerresearch.verisense.communication.payloads.EventLogPayload;
+import com.shimmerresearch.verisense.communication.payloads.MemoryLookupTablePayload;
+import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload;
+import com.shimmerresearch.verisense.communication.payloads.PendingEventsPayload;
+import com.shimmerresearch.verisense.communication.payloads.ProdConfigPayload;
+import com.shimmerresearch.verisense.communication.payloads.RecordBufferDetailsPayload;
+import com.shimmerresearch.verisense.communication.payloads.RwcSchedulePayload;
+import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
+import com.shimmerresearch.verisense.communication.payloads.TimePayload;
 
 public class VerisenseProtocolByteCommunication {
 
@@ -31,7 +40,7 @@ public class VerisenseProtocolByteCommunication {
 	int mNACKcounter;
 	int mNACKCRCcounter;
 
-	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit (actually 95 MB because 100MB = 102,400KB = 104,857,600, not 100,000,000)
+	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit (actually 95 MB because 100MB = 102,400KB = 104,857,600 bytes, not 100,000,000 bytes)
 
 	//TODO this might be doubling up on setBluetoothRadioState inside ShimmerDevice, could we reuse that instead?
 	public enum VerisenseProtocolState {
@@ -70,14 +79,12 @@ public class VerisenseProtocolByteCommunication {
 
 			@Override
 			public void eventDisconnected() {
-				// TODO Auto-generated method stub
 				System.out.println("PROTOCOL DISCONNECTED");
 				stateChange(VerisenseProtocolState.Disconnected);
 			}
 
 			@Override
 			public void eventConnected() {
-				// TODO Auto-generated method stub
 				System.out.println("PROTOCOL CONNECTED");
 				stateChange(VerisenseProtocolState.Connected);
 			}
@@ -102,7 +109,7 @@ public class VerisenseProtocolByteCommunication {
 		try {
 			if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.STATUS.responseByte()) {
 				StatusPayload statusPayload = new StatusPayload();
-				if (statusPayload.parsePayloadContents(verisenseMessage.messageContents)) {
+				if (statusPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, statusPayload);
 				}
 
@@ -136,39 +143,47 @@ public class VerisenseProtocolByteCommunication {
 
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.CONFIG_PROD.responseByte()) {
 				ProdConfigPayload prodConfigPayload = new ProdConfigPayload();
-				if (prodConfigPayload.parsePayloadContents(verisenseMessage.messageContents)) {
+				if (prodConfigPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, prodConfigPayload);
 				}
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.responseByte()) {
 				OpConfigPayload opConfig = new OpConfigPayload();
-				if (opConfig.parsePayloadContents(verisenseMessage.messageContents)) {
+				if (opConfig.parsePayloadContents(verisenseMessage.payloadBytes)) {
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, opConfig);
 				}
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.TIME.responseByte()) {
 				TimePayload timePayload = new TimePayload();
-				if(timePayload.parsePayloadContents(verisenseMessage.messageContents)) {
+				if(timePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, timePayload);
 				}
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.PENDING_EVENTS.responseByte()) {
 				PendingEventsPayload pendingEventsPayload = new PendingEventsPayload();
-				if(pendingEventsPayload.parsePayloadContents(verisenseMessage.messageContents)) {
+				if(pendingEventsPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, pendingEventsPayload);
 				}
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.FW_TEST.responseByte()) {
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.responseByte()) {
-				byte debugMode = verisenseMessage.messageContents[0];
+				byte debugMode = verisenseMessage.payloadBytes[0];
 				switch (debugMode) {
 				case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ:
-					//TODO 
+					MemoryLookupTablePayload memoryLookupTablePayload = new MemoryLookupTablePayload();
+					if(memoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+						System.out.println(memoryLookupTablePayload.generateDebugString());
+						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, memoryLookupTablePayload);
+					}
 					break;
 				case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_ERASE:
 					//TODO 
 					break;
 				case VERISENSE_DEBUG_MODE.RWC_SCHEDULE_READ:
-					//TODO 
+					RwcSchedulePayload rwcSchedulePayload = new RwcSchedulePayload();
+					if(rwcSchedulePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+						System.out.println(rwcSchedulePayload.generateDebugString());
+						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, rwcSchedulePayload);
+					}
 					break;
 				case VERISENSE_DEBUG_MODE.ERASE_LONG_TERM_FLASH:
 					//TODO 
@@ -207,13 +222,21 @@ public class VerisenseProtocolByteCommunication {
 					//TODO 
 					break;
 				case VERISENSE_DEBUG_MODE.EVENT_LOG:
-					//TODO 
+					EventLogPayload eventLogPayload = new EventLogPayload();
+					if(eventLogPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+						System.out.println(eventLogPayload.generateDebugString());
+						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, eventLogPayload);
+					}
 					break;
 				case VERISENSE_DEBUG_MODE.START_POWER_PROFILER_SEQ:
 					//TODO 
 					break;
 				case VERISENSE_DEBUG_MODE.RECORD_BUFFER_DETAILS:
-					//TODO 
+					RecordBufferDetailsPayload recordBufferDetailsPayload = new RecordBufferDetailsPayload();
+					if(recordBufferDetailsPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+						System.out.println(recordBufferDetailsPayload.generateDebugString());
+						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, recordBufferDetailsPayload);
+					}
 					break;
 				default:
 					break;
@@ -223,7 +246,7 @@ public class VerisenseProtocolByteCommunication {
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.STREAMING.responseByte()) {
 				System.out.println("New Streaming Payload: " + System.currentTimeMillis());
 				for (RadioListener rl : mRadioListenerList) {
-					rl.eventNewPacket(verisenseMessage.messageContents, System.currentTimeMillis());
+					rl.eventNewPacket(verisenseMessage.payloadBytes, System.currentTimeMillis());
 				}
 
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.STREAMING.ackByte()) {
@@ -308,7 +331,7 @@ public class VerisenseProtocolByteCommunication {
 					f.createNewFile();
 				}
 
-				Files.write(Paths.get(dataFilePath), rxVerisenseMessageLatest.messageContents, StandardOpenOption.APPEND);
+				Files.write(Paths.get(dataFilePath), rxVerisenseMessageLatest.payloadBytes, StandardOpenOption.APPEND);
 				/*
 				using (var stream = new FileStream(dataFilePath, FileMode.Append))
 				{
@@ -392,6 +415,23 @@ public class VerisenseProtocolByteCommunication {
 
 	public void readOpConfig() {
 		writeMessageNoPayload(VERISENSE_PROPERTY.CONFIG_OPER.readByte());
+	}
+
+	
+	public void readRwcSchedule() {
+		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.RWC_SCHEDULE_READ});
+	}
+
+	public void readFlashLookupTable() {
+		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ});
+	}
+
+	public void readSensorEventLog() {
+		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.EVENT_LOG});
+	}
+
+	public void readRecordBufferDetails() {
+		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.RECORD_BUFFER_DETAILS});
 	}
 
 	public void stop() {
