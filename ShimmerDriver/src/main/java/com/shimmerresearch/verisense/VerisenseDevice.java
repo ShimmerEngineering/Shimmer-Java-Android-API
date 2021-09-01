@@ -1819,5 +1819,13 @@ public class VerisenseDevice extends ShimmerDevice {
 	public void setRecordingEnabled(boolean recordingEnabled) {
 		this.recordingEnabled = recordingEnabled;
 	}
+
+	public HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> getMapOfVerisenseProtocolByteCommunication() {
+		return mapOfVerisenseProtocolByteCommunication;
+	}
+
+	public void setMapOfVerisenseProtocolByteCommunication(HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication) {
+		this.mapOfVerisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication;
+	}
 	
 }
