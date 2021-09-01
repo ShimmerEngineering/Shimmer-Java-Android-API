@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.encoders.Hex;
 
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 /**
  * @author Mark Nolan
@@ -95,44 +96,44 @@ public class StatusPayload extends AbstractPayload {
 		ArrayUtils.reverse(idBytes);
 		verisenseId = Hex.toHexString(idBytes).replace("-", "");
 
-		long statusTimestampMinutes = parseByteArrayAtIndex(payloadContents, 6, 4);
+		long statusTimestampMinutes = parseByteArrayAtIndex(payloadContents, 6, CHANNEL_DATA_TYPE.UINT32);
 		long statusTimestampTicks = 0;
 		if (payloadContents.length > 34) { // supported fw for ASM-1329
-			statusTimestampTicks = parseByteArrayAtIndex(payloadContents, 34, 3);
+			statusTimestampTicks = parseByteArrayAtIndex(payloadContents, 34, CHANNEL_DATA_TYPE.UINT24);
 		}
 		verisenseStatusTimestampMs = convertRtcMinutesAndTicksToMs(statusTimestampMinutes, statusTimestampTicks);
 		
-		batteryLevelMillivolts = parseByteArrayAtIndex(payloadContents, 10, 2);
+		batteryLevelMillivolts = parseByteArrayAtIndex(payloadContents, 10, CHANNEL_DATA_TYPE.UINT16);
 		batteryPercentage = payloadContents[12];
 		
-		long lastSuccessfulDataTransferMinutes = parseByteArrayAtIndex(payloadContents, 13, 4);
+		long lastSuccessfulDataTransferMinutes = parseByteArrayAtIndex(payloadContents, 13, CHANNEL_DATA_TYPE.UINT32);
 		long lastSuccessfulDataTransferTicks = 0;
-		long lastFailedDataTransferMinutes = parseByteArrayAtIndex(payloadContents, 17, 4);
+		long lastFailedDataTransferMinutes = parseByteArrayAtIndex(payloadContents, 17, CHANNEL_DATA_TYPE.UINT32);
 		long lastFailedDataTransferTicks = 0;
 		if (payloadContents.length > 34) { // supported fw for ASM-1329
-			lastSuccessfulDataTransferTicks = parseByteArrayAtIndex(payloadContents, 37, 3);
-			lastFailedDataTransferTicks = parseByteArrayAtIndex(payloadContents, 40, 3);
+			lastSuccessfulDataTransferTicks = parseByteArrayAtIndex(payloadContents, 37, CHANNEL_DATA_TYPE.UINT24);
+			lastFailedDataTransferTicks = parseByteArrayAtIndex(payloadContents, 40, CHANNEL_DATA_TYPE.UINT24);
 		}
 		// special condition where the sensor/fw returns all FF values
 		lastTransferSuccessTimestampMs = (lastSuccessfulDataTransferMinutes == MAX_FOUR_BTE_UNSIGNED_VALUE)? -1 : convertRtcMinutesAndTicksToMs(lastSuccessfulDataTransferMinutes, lastSuccessfulDataTransferTicks);
 		lastTransferFailTimestampMs = (lastFailedDataTransferMinutes == MAX_FOUR_BTE_UNSIGNED_VALUE)? -1 : convertRtcMinutesAndTicksToMs(lastFailedDataTransferMinutes, lastFailedDataTransferTicks);
 
-		storageFreekB = (int) parseByteArrayAtIndex(payloadContents, 21, 3);
+		storageFreekB = (int) parseByteArrayAtIndex(payloadContents, 21, CHANNEL_DATA_TYPE.UINT24);
 		if (payloadContents.length >= 56) {
-			storageFullkB = (int) parseByteArrayAtIndex(payloadContents, 47, 3);
-			storageToDelkB = (int) parseByteArrayAtIndex(payloadContents, 50, 3);
-			storageBadkB = (int) parseByteArrayAtIndex(payloadContents, 53, 3);
+			storageFullkB = (int) parseByteArrayAtIndex(payloadContents, 47, CHANNEL_DATA_TYPE.UINT24);
+			storageToDelkB = (int) parseByteArrayAtIndex(payloadContents, 50, CHANNEL_DATA_TYPE.UINT24);
+			storageBadkB = (int) parseByteArrayAtIndex(payloadContents, 53, CHANNEL_DATA_TYPE.UINT24);
 			calculateStorageOther();
 		}
 		
 		if (payloadContents.length <= 24) { // old fw, no VBattFallCounter bytes
 			batteryVoltageFallCounter = -1; // set to null because 0 can be a valid value
 		} else {
-			batteryVoltageFallCounter = parseByteArrayAtIndex(payloadContents, 24, 2);
+			batteryVoltageFallCounter = parseByteArrayAtIndex(payloadContents, 24, CHANNEL_DATA_TYPE.UINT16);
 		}
 
 		if (payloadContents.length > 26) { // new fw support StatusFlags bytes
-			statusFlags = parseByteArrayAtIndex(payloadContents, 26, 8);
+			statusFlags = parseByteArrayAtIndex(payloadContents, 26, CHANNEL_DATA_TYPE.UINT64);
 
 			byte[] statusFlagBytes = new byte[8];
 			System.arraycopy(payloadContents, 26, statusFlagBytes, 0, statusFlagBytes.length);
@@ -164,12 +165,12 @@ public class StatusPayload extends AbstractPayload {
 		}
 
 		if (payloadContents.length > 34) { // supported fw for ASM-1329
-			long nextSyncAttemptTimestampMinutes = parseByteArrayAtIndex(payloadContents, 43, 4);
+			long nextSyncAttemptTimestampMinutes = parseByteArrayAtIndex(payloadContents, 43, CHANNEL_DATA_TYPE.UINT32);
 			nextSyncAttemptTimestampMs = nextSyncAttemptTimestampMinutes == MAX_FOUR_BTE_UNSIGNED_VALUE ? -1 : convertRtcMinutesAndTicksToMs(nextSyncAttemptTimestampMinutes, 0);
 		}
 		
 		if (payloadContents.length >= 56) {
-			timestampNextSyncAttempt = parseByteArrayAtIndex(payloadContents, 43, 4);
+			timestampNextSyncAttempt = parseByteArrayAtIndex(payloadContents, 43, CHANNEL_DATA_TYPE.UINT32);
 		}
 
 		// SyncMode = (int)syncMode;

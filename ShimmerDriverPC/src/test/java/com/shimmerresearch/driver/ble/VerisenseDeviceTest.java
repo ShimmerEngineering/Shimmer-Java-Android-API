@@ -140,7 +140,7 @@ public class VerisenseDeviceTest {
 		JButton btnReadOp = new JButton("Read Op");
 		btnReadOp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.readOpConfig();
+				protocol1.readOperationalConfig();
 			}
 		});
 		btnReadOp.setBounds(12, 89, 124, 25);
@@ -149,7 +149,7 @@ public class VerisenseDeviceTest {
 		JButton btnReadOp_1 = new JButton("Read Op");
 		btnReadOp_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.readOpConfig();
+				protocol2.readOperationalConfig();
 			}
 		});
 		btnReadOp_1.setBounds(162, 89, 124, 25);

@@ -3,6 +3,7 @@ package com.shimmerresearch.verisense.communication.payloads;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
 
 /**
@@ -61,7 +62,7 @@ public class EventLogPayload extends AbstractPayload {
 			int event = payloadContents[i+7] & 0xFF;
 			
 			if(event==LOG_EVENT.BATTERY_VOLTAGE.ordinal()) {
-				long batteryVoltage = parseByteArrayAtIndex(payloadContents, i, 3);
+				long batteryVoltage = parseByteArrayAtIndex(payloadContents, i, CHANNEL_DATA_TYPE.UINT24);
 				listOfEventLogEntries.add(new EventLogEntry(event, batteryVoltage));
 			} else {
 				double timeMs = VerisenseTimeDetails.parseTimeMsFromMinutesAndTicksAtIndex(payloadContents, i);

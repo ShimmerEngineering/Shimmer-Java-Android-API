@@ -1,5 +1,7 @@
 package com.shimmerresearch.verisense.communication.payloads;
 
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+
 /**
  * @author Mark Nolan
  *
@@ -98,6 +100,23 @@ public class OpConfigPayload extends AbstractPayload {
 		public static final int PROX_AGC_MODE = 71;
 	}
 	
+	public class OP_CONFIG_BIT_MASK {
+		// GEN_CFG_0
+		public static final int BLUETOOTH_ENABLED 		= 0x01 << 4;
+		public static final int USB_ENABLED 			= 0x01 << 3;
+		public static final int PRIORITISE_LONG_TERM_FLASH_STORAGE = 0x01 << 2;
+		public static final int DEVICE_ENABLED 			= 0x01 << 1;
+		public static final int RECORDING_ENABLED 		= 0x01 << 0;
+		public static final int ENABLED_SENSORS_GEN_CFG_0	= 0xE0;
+		
+		// GEN_CFG_1
+		public static final int ENABLED_SENSORS_GEN_CFG_1	= 0xFC;
+		public static final int DATA_COMPRESSION_MODE	= 0x03;
+
+		// GEN_CFG_2
+		public static final int ENABLED_SENSORS_GEN_CFG_2	= 0x02;
+}
+
 	@Override
 	public boolean parsePayloadContents(byte[] payloadContents) {
 		super.payloadContents = payloadContents;
@@ -108,5 +127,10 @@ public class OpConfigPayload extends AbstractPayload {
 	@Override
 	public String generateDebugString() {
 		return "";
+	}
+
+	public static int calculatePayloadConfigBytesSize(ShimmerVerObject mShimmerVerObject) {
+		//TODO add FW checks if supporting multiple versions of FW
+		return 72;
 	}
 }

@@ -24,22 +24,14 @@ public abstract class AbstractPayload {
 
 	abstract public String generateDebugString();
 
-	public long parseByteArrayAtIndex(byte[] byteArray, int startByteIndex, int numBytes) {
-		byte[] buf = new byte[numBytes];
-		System.arraycopy(byteArray, startByteIndex, buf, 0, numBytes);
-		
-		CHANNEL_DATA_TYPE channelDataType = CHANNEL_DATA_TYPE.UINT16;
-		if(numBytes==2) {
-			channelDataType = CHANNEL_DATA_TYPE.UINT16;
-		} else if(numBytes==3) {
-			channelDataType = CHANNEL_DATA_TYPE.UINT24;
-		} else if(numBytes==4) {
-			channelDataType = CHANNEL_DATA_TYPE.UINT32;
-		} else if(numBytes==8) {
-			channelDataType = CHANNEL_DATA_TYPE.UINT64;
-		}
-		
-		return UtilParseData.parseData(buf, channelDataType, CHANNEL_DATA_ENDIAN.LSB);
+	public static long parseByteArrayAtIndex(byte[] byteArray, int startByteIndex, CHANNEL_DATA_TYPE dataType) {
+		return parseByteArrayAtIndex(byteArray, startByteIndex, dataType, CHANNEL_DATA_ENDIAN.LSB);
+	}
+
+	public static long parseByteArrayAtIndex(byte[] byteArray, int startByteIndex, CHANNEL_DATA_TYPE dataType, CHANNEL_DATA_ENDIAN byteEndian) {
+		byte[] buf = new byte[dataType.getNumBytes()];
+		System.arraycopy(byteArray, startByteIndex, buf, 0, buf.length);
+		return UtilParseData.parseData(buf, dataType, byteEndian);
 	}
 
 	public byte[] getPayloadContents() {

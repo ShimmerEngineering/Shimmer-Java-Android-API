@@ -1,5 +1,6 @@
 package com.shimmerresearch.verisense.communication.payloads;
 
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.verisense.SensorVerisenseClock;
 import com.shimmerresearch.verisense.UtilVerisenseDriver;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
@@ -19,8 +20,8 @@ public class TimePayload extends AbstractPayload {
 		super.payloadContents = payloadContents;
 		isSuccess = false;
 
-		timeMinutes = parseByteArrayAtIndex(payloadContents, 0, 4);
-		timeTicks = parseByteArrayAtIndex(payloadContents, 4, 3);
+		timeMinutes = parseByteArrayAtIndex(payloadContents, 0, CHANNEL_DATA_TYPE.UINT32);
+		timeTicks = parseByteArrayAtIndex(payloadContents, 4, CHANNEL_DATA_TYPE.UINT24);
 		timeMs = SensorVerisenseClock.convertRtcMinutesAndTicksToMs(timeMinutes, timeTicks);
 		
 		isSuccess = true;

@@ -3,6 +3,8 @@ package com.shimmerresearch.verisense.communication.payloads;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
+
 /**
  * @author Mark Nolan
  *
@@ -26,16 +28,16 @@ public class RecordBufferDetailsPayload extends AbstractPayload {
 			RecordBufferDetails memoryBankDetails = new RecordBufferDetails(numBytesPerRecordBuffer);
 			memoryBankDetails.bufferIndex = payloadContents[i];
 			memoryBankDetails.bufferState = payloadContents[i+1];
-			memoryBankDetails.packagedPayloadIndex = parseByteArrayAtIndex(payloadContents, i+2, 2);
-			memoryBankDetails.currentByteIndexForSensorData = parseByteArrayAtIndex(payloadContents, i+4, 2);
-			memoryBankDetails.usedBufferLength = parseByteArrayAtIndex(payloadContents, i+6, 2);
-			memoryBankDetails.fifoTicks = parseByteArrayAtIndex(payloadContents, i+8, 2);
-			memoryBankDetails.dataTsRwcMinutes = parseByteArrayAtIndex(payloadContents, i+10, 4);
-			memoryBankDetails.dataTsRwcTicks = parseByteArrayAtIndex(payloadContents, i+14, 3);
-			memoryBankDetails.temperatureData = parseByteArrayAtIndex(payloadContents, i+17, 2);
+			memoryBankDetails.packagedPayloadIndex = parseByteArrayAtIndex(payloadContents, i+2, CHANNEL_DATA_TYPE.UINT16);
+			memoryBankDetails.currentByteIndexForSensorData = parseByteArrayAtIndex(payloadContents, i+4, CHANNEL_DATA_TYPE.UINT16);
+			memoryBankDetails.usedBufferLength = parseByteArrayAtIndex(payloadContents, i+6, CHANNEL_DATA_TYPE.UINT16);
+			memoryBankDetails.fifoTicks = parseByteArrayAtIndex(payloadContents, i+8, CHANNEL_DATA_TYPE.UINT16);
+			memoryBankDetails.dataTsRwcMinutes = parseByteArrayAtIndex(payloadContents, i+10, CHANNEL_DATA_TYPE.UINT32);
+			memoryBankDetails.dataTsRwcTicks = parseByteArrayAtIndex(payloadContents, i+14, CHANNEL_DATA_TYPE.UINT24);
+			memoryBankDetails.temperatureData = parseByteArrayAtIndex(payloadContents, i+17, CHANNEL_DATA_TYPE.UINT16);
 			if (numBytesPerRecordBuffer >= 25) {
-				memoryBankDetails.dataTsUcClockMinutes = parseByteArrayAtIndex(payloadContents, i+19, 4);
-				memoryBankDetails.dataTsUcClockTicks = parseByteArrayAtIndex(payloadContents, i+23, 3);
+				memoryBankDetails.dataTsUcClockMinutes = parseByteArrayAtIndex(payloadContents, i+19, CHANNEL_DATA_TYPE.UINT32);
+				memoryBankDetails.dataTsUcClockTicks = parseByteArrayAtIndex(payloadContents, i+23, CHANNEL_DATA_TYPE.UINT24);
 			}
 			listOfRecordBufferDetails.add(memoryBankDetails);
 		}

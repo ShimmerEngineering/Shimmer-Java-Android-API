@@ -31,6 +31,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.HwDriverShimmerDeviceDetails.DEVICE_TYPE;
@@ -43,6 +44,7 @@ import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload;
 import com.shimmerresearch.verisense.communication.payloads.ProdConfigPayload;
 import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
 import com.shimmerresearch.verisense.communication.payloads.TimePayload;
+import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload.OP_CONFIG_BIT_MASK;
 import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
@@ -124,7 +126,56 @@ public class VerisenseDevice extends ShimmerDevice {
 
 	// Saving in global map as we only need to do this once per datablock sensor ID per payload, not for each datablock
 	private HashMap<DATABLOCK_SENSOR_ID, List<SENSORS>> mapOfSensorIdsPerDataBlock = new HashMap<DATABLOCK_SENSOR_ID, List<SENSORS>>();
+	
+	// Operational config
+	private boolean bluetoothEnabled = true, usbEnabled = false, prioritiseLongTermFlash = true, deviceEnabled = true, recordingEnabled = true; 
+	private long recordingStartTimeMinutes = 0, recordingEndTimeMinutes = 0;
+	private int bleConnectionRetriesPerDay = 3;
+	private BLE_TX_POWER bleTxPower = BLE_TX_POWER.MINUS12DBM;
+	private PendingEventSchedule pendingEventScheduleDataTransfer = new PendingEventSchedule(24, 60, 10, 15);
+	private PendingEventSchedule pendingEventScheduleStatusSync = new PendingEventSchedule(24, 60, 10, 15);
+	private PendingEventSchedule pendingEventScheduleRwcSync = new PendingEventSchedule(24, 60, 10, 15);
+	private int adaptiveSchedulerInterval = 65535;
+	private int adaptiveSchedulerFailCount = 255;
 
+	public enum BLE_TX_POWER {
+		PLUS8DBM((byte) 0x08),
+		PLUS7DBM((byte) 0x07),
+		PLUS6DBM((byte) 0x06),
+		PLUS5DBM((byte) 0x05),
+		PLUS4DBM((byte) 0x04),
+		PLUS3DBM((byte) 0x03),
+		PLUS2DBM((byte) 0x02),
+		PLUS0DBM((byte) 0x00),
+		MINUS4DBM((byte) 0xFC),
+		MINUS8DBM((byte) 0xF8),
+		MINUS12DBM((byte) 0xF4),
+		MINUS16DBM((byte) 0xF0),
+		MINUS20DBM((byte) 0xEC),
+		MINUS40DBM((byte) 0xFF);
+		
+		private byte byteMask;
+
+		private BLE_TX_POWER(byte byteMask) {
+			this.byteMask = byteMask;
+		}
+		
+		public byte getByteMask() {
+			return byteMask;
+		}
+
+		public static BLE_TX_POWER getSettingFromMask(byte byteMask) {
+			for(BLE_TX_POWER bleTxPower : BLE_TX_POWER.values()) {
+				if(bleTxPower.getByteMask()==byteMask) {
+					return bleTxPower;
+				}
+			}
+			return null;
+		}
+	}
+
+	// Verisense Communication
+	private VerisenseProtocolByteCommunication verisenseProtocolByteCommunication;
 	private transient StatusPayload status;
 	private transient OpConfigPayload opConfig;
 	private transient ProdConfigPayload prodConfigPayload;
@@ -288,7 +339,50 @@ public class VerisenseDevice extends ShimmerDevice {
 				}
 			}
 		} else {
-			//TODO parse op config bytes
+			int payloadConfigBytesSize = OpConfigPayload.calculatePayloadConfigBytesSize(mShimmerVerObject);
+			configBytes = new byte[payloadConfigBytesSize];
+
+			configBytes[OP_CONFIG_BYTE_INDEX.HEADER_BYTE] = AbstractPayload.VALID_CONFIG_BYTE;
+			
+			long enabledSensors = getEnabledSensors();
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] = (byte) (enabledSensors & OP_CONFIG_BIT_MASK.ENABLED_SENSORS_GEN_CFG_0);
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] = (byte) ((enabledSensors >> 8) & OP_CONFIG_BIT_MASK.ENABLED_SENSORS_GEN_CFG_1);
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] = (byte) ((enabledSensors >> 8) & OP_CONFIG_BIT_MASK.ENABLED_SENSORS_GEN_CFG_2);
+
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] |= bluetoothEnabled? OP_CONFIG_BIT_MASK.BLUETOOTH_ENABLED:0x00;
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] |= usbEnabled? OP_CONFIG_BIT_MASK.USB_ENABLED:0x00;
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] |= prioritiseLongTermFlash? OP_CONFIG_BIT_MASK.PRIORITISE_LONG_TERM_FLASH_STORAGE:0x00;
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] |= deviceEnabled? OP_CONFIG_BIT_MASK.DEVICE_ENABLED:0x00;
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] |= recordingEnabled? OP_CONFIG_BIT_MASK.RECORDING_ENABLED:0x00;
+
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] |= dataCompressionMode & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE;
+
+			configBytes[OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_0] = (byte) (recordingStartTimeMinutes & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_1] = (byte) ((recordingStartTimeMinutes >> 8) & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_2] = (byte) ((recordingStartTimeMinutes >> 16) & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_3] = (byte) ((recordingStartTimeMinutes >> 24) & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.END_TIME_BYTE_0] = (byte) (recordingEndTimeMinutes & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.END_TIME_BYTE_1] = (byte) ((recordingEndTimeMinutes >> 8) & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.END_TIME_BYTE_2] = (byte) ((recordingEndTimeMinutes >> 16) & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.END_TIME_BYTE_3] = (byte) ((recordingEndTimeMinutes >> 24) & 0xFF);
+			
+			configBytes[OP_CONFIG_BYTE_INDEX.BLE_RETRY_COUNT] = (byte) bleConnectionRetriesPerDay;
+			configBytes[OP_CONFIG_BYTE_INDEX.BLE_TX_POWER] = bleTxPower.getByteMask();
+
+			byte[] pendingEventScheduleDataTransferAry = pendingEventScheduleDataTransfer.generateByteArray();
+			System.arraycopy(pendingEventScheduleDataTransferAry, 0, configBytes, OP_CONFIG_BYTE_INDEX.BLE_DATA_TRANS_WKUP_INT_HRS, pendingEventScheduleDataTransferAry.length);
+			byte[] pendingEventScheduleStatusSyncAry = pendingEventScheduleStatusSync.generateByteArray();
+			System.arraycopy(pendingEventScheduleStatusSyncAry, 0, configBytes, OP_CONFIG_BYTE_INDEX.BLE_STATUS_WKUP_INT_HRS, pendingEventScheduleStatusSyncAry.length);
+			byte[] pendingEventScheduleRwcSyncAry = pendingEventScheduleRwcSync.generateByteArray();
+			System.arraycopy(pendingEventScheduleRwcSyncAry, 0, configBytes, OP_CONFIG_BYTE_INDEX.BLE_RTC_SYNC_WKUP_INT_HRS, pendingEventScheduleRwcSyncAry.length);
+
+			configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_INT_LSB] = (byte) (adaptiveSchedulerInterval & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_INT_MSB] = (byte) ((adaptiveSchedulerInterval >> 8) & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_FAILCOUNT_MAX] = (byte) adaptiveSchedulerFailCount;
+
+			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()) {
+				abstractSensor.configBytesGenerate(this, configBytes, commType);
+			}
 		}
 		
 		return configBytes;
@@ -373,12 +467,30 @@ public class VerisenseDevice extends ShimmerDevice {
 				enabledSensors |= ((configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG2] & payloadConfig2Bitmask) << 8);
 			}
 		} else {
-			//TODO parse op config bytes
+			enabledSensors = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.ENABLED_SENSORS_GEN_CFG_0);
+			enabledSensors |= (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] & OP_CONFIG_BIT_MASK.ENABLED_SENSORS_GEN_CFG_1) << 8;
+			enabledSensors |= (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] & OP_CONFIG_BIT_MASK.ENABLED_SENSORS_GEN_CFG_2) << 8;
 			
-			enabledSensors = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & 0xE0);
-			enabledSensors |= (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] & 0x3F) << 8;
-			enabledSensors |= (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] & 0x02) << 8;
+			bluetoothEnabled = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.BLUETOOTH_ENABLED) == OP_CONFIG_BIT_MASK.BLUETOOTH_ENABLED;
+			usbEnabled = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.USB_ENABLED) == OP_CONFIG_BIT_MASK.USB_ENABLED;
+			prioritiseLongTermFlash = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.PRIORITISE_LONG_TERM_FLASH_STORAGE) == OP_CONFIG_BIT_MASK.PRIORITISE_LONG_TERM_FLASH_STORAGE;
+			deviceEnabled = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.DEVICE_ENABLED) == OP_CONFIG_BIT_MASK.DEVICE_ENABLED;
+			recordingEnabled = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.RECORDING_ENABLED) == OP_CONFIG_BIT_MASK.RECORDING_ENABLED; 
+
+			dataCompressionMode = configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE;
+
+			recordingStartTimeMinutes = AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_0, CHANNEL_DATA_TYPE.UINT24);
+			recordingEndTimeMinutes = AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.END_TIME_BYTE_0, CHANNEL_DATA_TYPE.UINT24);
 			
+			bleConnectionRetriesPerDay = configBytes[OP_CONFIG_BYTE_INDEX.BLE_RETRY_COUNT];
+			bleTxPower = BLE_TX_POWER.getSettingFromMask(configBytes[OP_CONFIG_BYTE_INDEX.BLE_TX_POWER]);
+			
+			pendingEventScheduleDataTransfer = new PendingEventSchedule(configBytes, OP_CONFIG_BYTE_INDEX.BLE_DATA_TRANS_WKUP_INT_HRS);
+			pendingEventScheduleStatusSync = new PendingEventSchedule(configBytes, OP_CONFIG_BYTE_INDEX.BLE_STATUS_WKUP_INT_HRS);
+			pendingEventScheduleRwcSync = new PendingEventSchedule(configBytes, OP_CONFIG_BYTE_INDEX.BLE_RTC_SYNC_WKUP_INT_HRS);
+			
+			adaptiveSchedulerInterval = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_INT_LSB, CHANNEL_DATA_TYPE.UINT16);
+			adaptiveSchedulerFailCount = configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_FAILCOUNT_MAX] & 0xFF;
 		}
 
 		setEnabledAndDerivedSensorsAndUpdateMaps(enabledSensors, mDerivedSensors, commType);
@@ -1312,6 +1424,7 @@ public class VerisenseDevice extends ShimmerDevice {
 	}
 
 	public void setProtocol(VerisenseProtocolByteCommunication protocol) {
+		this.verisenseProtocolByteCommunication = protocol;
 		protocol.addRadioListener(new RadioListener() {
 
 			@Override
@@ -1564,10 +1677,125 @@ public class VerisenseDevice extends ShimmerDevice {
 	
 	@Override
 	public void connect() throws ShimmerException{
-		//TODO
-		//1) Connect, 
-		//2) read prod config, 
-		//3) read op config
+		if(verisenseProtocolByteCommunication!=null) {
+			verisenseProtocolByteCommunication.connect();
+			verisenseProtocolByteCommunication.readProductionConfig();
+			verisenseProtocolByteCommunication.readOperationalConfig();
+		} else {
+			throw new ShimmerException("VerisenseProtocolByteCommunication not set");
+		}
+	}
+
+	public long getRecordingStartTimeMinutes() {
+		return recordingStartTimeMinutes;
+	}
+
+	public void setRecordingStartTimeMinutes(long recordingStartTimeMinutes) {
+		this.recordingStartTimeMinutes = recordingStartTimeMinutes;
+	}
+
+	public long getRecordingEndTimeMinutes() {
+		return recordingEndTimeMinutes;
+	}
+
+	public void setRecordingEndTimeMinutes(long recordingEndTimeMinutes) {
+		this.recordingEndTimeMinutes = recordingEndTimeMinutes;
+	}
+
+	public int getBleConnectionRetriesPerDay() {
+		return bleConnectionRetriesPerDay;
+	}
+
+	public void setBleConnectionRetriesPerDay(int bleConnectionTriesPerDay) {
+		this.bleConnectionRetriesPerDay = bleConnectionTriesPerDay;
+	}
+
+	public BLE_TX_POWER getBleTxPower() {
+		return bleTxPower;
+	}
+
+	public void setBleTxPower(BLE_TX_POWER bleTxPower) {
+		this.bleTxPower = bleTxPower;
+	}
+
+	public PendingEventSchedule getPendingEventScheduleDataTransfer() {
+		return pendingEventScheduleDataTransfer;
+	}
+
+	public void setPendingEventScheduleDataTransfer(PendingEventSchedule pendingEventScheduleDataTransfer) {
+		this.pendingEventScheduleDataTransfer = pendingEventScheduleDataTransfer;
+	}
+
+	public PendingEventSchedule getPendingEventScheduleStatusSync() {
+		return pendingEventScheduleStatusSync;
+	}
+
+	public void setPendingEventScheduleStatusSync(PendingEventSchedule pendingEventScheduleStatusSync) {
+		this.pendingEventScheduleStatusSync = pendingEventScheduleStatusSync;
+	}
+
+	public PendingEventSchedule getPendingEventScheduleRwcSync() {
+		return pendingEventScheduleRwcSync;
+	}
+
+	public void setPendingEventScheduleRwcSync(PendingEventSchedule pendingEventScheduleRwcSync) {
+		this.pendingEventScheduleRwcSync = pendingEventScheduleRwcSync;
+	}
+
+	public int getAdaptiveSchedulerInterval() {
+		return adaptiveSchedulerInterval;
+	}
+
+	public void setAdaptiveSchedulerInterval(int adaptiveSchedulerInterval) {
+		this.adaptiveSchedulerInterval = adaptiveSchedulerInterval;
+	}
+
+	public int getAdaptiveSchedulerFailCount() {
+		return adaptiveSchedulerFailCount;
+	}
+
+	public void setAdaptiveSchedulerFailCount(int adaptiveSchedulerFailCount) {
+		this.adaptiveSchedulerFailCount = adaptiveSchedulerFailCount;
+	}
+
+	public boolean isBluetoothEnabled() {
+		return bluetoothEnabled;
+	}
+
+	public void setBluetoothEnabled(boolean bluetoothEnabled) {
+		this.bluetoothEnabled = bluetoothEnabled;
+	}
+
+	public boolean isUsbEnabled() {
+		return usbEnabled;
+	}
+
+	public void setUsbEnabled(boolean usbEnabled) {
+		this.usbEnabled = usbEnabled;
+	}
+
+	public boolean isPrioritiseLongTermFlash() {
+		return prioritiseLongTermFlash;
+	}
+
+	public void setPrioritiseLongTermFlash(boolean prioritiseLongTermFlash) {
+		this.prioritiseLongTermFlash = prioritiseLongTermFlash;
+	}
+
+	public boolean isDeviceEnabled() {
+		return deviceEnabled;
+	}
+
+	public void setDeviceEnabled(boolean deviceEnabled) {
+		this.deviceEnabled = deviceEnabled;
+	}
+
+	public boolean isRecordingEnabled() {
+		return recordingEnabled;
+	}
+
+	public void setRecordingEnabled(boolean recordingEnabled) {
+		this.recordingEnabled = recordingEnabled;
 	}
 	
 }

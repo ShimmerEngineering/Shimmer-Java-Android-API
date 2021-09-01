@@ -152,10 +152,9 @@ public class VerisenseMessage {
 		mExpectedLengthBytes = ((rxBytes[2] << 8) | rxBytes[1]) & 0xFFFF;
 		payloadBytes = new byte[mExpectedLengthBytes];
 		
-		if (payloadBytes.length > 0) {
-			int numPayloadContentsBytes = rxBytes.length-3;
-			System.arraycopy(rxBytes, 3, payloadBytes, 0, numPayloadContentsBytes);
-			mCurrentLengthBytes += numPayloadContentsBytes;
+		if (mExpectedLengthBytes > 0) {
+			System.arraycopy(rxBytes, 3, payloadBytes, 0, mExpectedLengthBytes);
+			mCurrentLengthBytes += mExpectedLengthBytes;
 		}
 
 		if(commandAndProperty==VERISENSE_PROPERTY.DATA.responseByte()) {

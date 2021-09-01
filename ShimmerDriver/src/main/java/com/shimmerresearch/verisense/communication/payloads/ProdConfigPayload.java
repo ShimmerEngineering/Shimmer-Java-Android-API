@@ -5,6 +5,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 /**
  * @author Mark Nolan
@@ -44,7 +45,7 @@ public class ProdConfigPayload extends AbstractPayload {
 		int fwRevMinor = payloadContents[10];
 		int fwRevInternal = 0;
 		if (payloadContents.length >= 12) {
-			fwRevInternal = (int) parseByteArrayAtIndex(payloadContents, 11, 2);
+			fwRevInternal = (int) parseByteArrayAtIndex(payloadContents, 11, CHANNEL_DATA_TYPE.UINT16);
 		}
 		shimmerVerObject = new ShimmerVerObject(-1, fwRevMajor, fwRevMinor, fwRevInternal);
 		

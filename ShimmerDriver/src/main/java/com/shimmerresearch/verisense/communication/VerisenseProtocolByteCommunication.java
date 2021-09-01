@@ -413,11 +413,14 @@ public class VerisenseProtocolByteCommunication {
 		writeMessageNoPayload(VERISENSE_PROPERTY.DATA.nackByte());
 	}
 
-	public void readOpConfig() {
+	public void readProductionConfig() {
+		writeMessageNoPayload(VERISENSE_PROPERTY.CONFIG_PROD.readByte());
+	}
+
+	public void readOperationalConfig() {
 		writeMessageNoPayload(VERISENSE_PROPERTY.CONFIG_OPER.readByte());
 	}
 
-	
 	public void readRwcSchedule() {
 		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.RWC_SCHEDULE_READ});
 	}

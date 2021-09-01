@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
+
 /**
  * @author Mark Nolan
  *
@@ -50,8 +52,8 @@ public class MemoryLookupTablePayload extends AbstractPayload {
 		
 		int idx = 0;
 		if(payloadContents.length== 50692) {
-			this.tail = parseByteArrayAtIndex(payloadContents, 0, 2);
-			this.head = parseByteArrayAtIndex(payloadContents, 2, 2);
+			this.tail = parseByteArrayAtIndex(payloadContents, 0, CHANNEL_DATA_TYPE.UINT16);
+			this.head = parseByteArrayAtIndex(payloadContents, 2, CHANNEL_DATA_TYPE.UINT16);
 			idx = 4;
 			this.headTailReceived = true;
 		} else {
@@ -60,7 +62,7 @@ public class MemoryLookupTablePayload extends AbstractPayload {
 		
 		for(int i=idx;i<payloadContents.length;i+=3) {
 			byte statusByte = payloadContents[i];
-			long payloadIndex = parseByteArrayAtIndex(payloadContents, i+1, 2);
+			long payloadIndex = parseByteArrayAtIndex(payloadContents, i+1, CHANNEL_DATA_TYPE.UINT16);
 			MemoryBankDetails memoryBankDetails = new MemoryBankDetails(statusByte, payloadIndex);
 			listOfMemoryBankDetails.add(memoryBankDetails);
 		}
