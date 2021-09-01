@@ -61,6 +61,12 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 
 	protected void InitializeProcess() {
 		Runtime runTime = Runtime.getRuntime();
+		
+		runTime.addShutdownHook(new Thread() {
+			public void run() {
+				DestroyProcess();
+			}}
+		);
 
 		try {
 			p = runTime.exec(executablePath + " " + uuid);

@@ -4,7 +4,9 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.verisense.payloaddesign.CRC16CCITT;
+import com.shimmerresearch.verisense.communication.payloads.AbstractPayload;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.BYTE_COUNT;
 
 public class VerisenseMessage {
@@ -149,7 +151,7 @@ public class VerisenseMessage {
 		command = (byte) (commandAndProperty & 0xF0);
 		property = (byte) (commandAndProperty & 0x0F);
 
-		mExpectedLengthBytes = ((rxBytes[2] << 8) | rxBytes[1]) & 0xFFFF;
+		mExpectedLengthBytes = (int) AbstractPayload.parseByteArrayAtIndex(rxBytes, 1, CHANNEL_DATA_TYPE.UINT16);
 		payloadBytes = new byte[mExpectedLengthBytes];
 		
 		if (mExpectedLengthBytes > 0) {
@@ -158,7 +160,7 @@ public class VerisenseMessage {
 		}
 
 		if(commandAndProperty==VERISENSE_PROPERTY.DATA.responseByte()) {
-			payloadIndex = (rxBytes[4] << 8) | rxBytes[3];
+			payloadIndex = (int) AbstractPayload.parseByteArrayAtIndex(rxBytes, 3, CHANNEL_DATA_TYPE.UINT16);
 		}
 
 		if (isCurrentLengthGreaterThanOrEqualToExpectedLength()) {
