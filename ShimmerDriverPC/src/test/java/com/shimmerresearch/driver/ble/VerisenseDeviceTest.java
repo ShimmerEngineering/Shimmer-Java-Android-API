@@ -19,12 +19,12 @@ public class VerisenseDeviceTest {
 	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7", "bleconsoleapp\\BLEConsoleApp2.exe");
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
-	VerisenseDevice device1 = new VerisenseDevice(COMMUNICATION_TYPE.BLUETOOTH);
-	VerisenseDevice device2 = new VerisenseDevice(COMMUNICATION_TYPE.BLUETOOTH);
+	VerisenseDevice device1 = new VerisenseDevice();
+	VerisenseDevice device2 = new VerisenseDevice();
 
 	public void initialize() {
-		device1.setProtocol(protocol1);
-		device2.setProtocol(protocol2);
+		device1.setProtocol(COMMUNICATION_TYPE.BLUETOOTH, protocol1);
+		device2.setProtocol(COMMUNICATION_TYPE.BLUETOOTH, protocol2);
 		JFrame frame = new JFrame(this.getClass().getSimpleName());
 		frame.setSize(333, 369);
 		frame.getContentPane().setLayout(null);
