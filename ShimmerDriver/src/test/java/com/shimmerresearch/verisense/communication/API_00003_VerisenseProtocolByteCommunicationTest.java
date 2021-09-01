@@ -6,11 +6,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedHashMap;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor;
@@ -157,20 +159,39 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		
 		VerisenseDevice verisenseDevice = new VerisenseDevice();
 		verisenseDevice.setShimmerVersionObject(VerisenseDevice.FW_CHANGES.CCF21_010_3);
+		verisenseDevice.setExpansionBoardDetails(new ExpansionBoardDetails(HW_ID.VERISENSE_DEV_BRD, 1, 0));
 		verisenseDevice.setHardwareVersionAndCreateSensorMaps(HW_ID.VERISENSE_DEV_BRD);
 		verisenseDevice.configBytesParse(verisenseMessage.payloadBytes, COMMUNICATION_TYPE.BLUETOOTH);
 		
 		verisenseDevice.printSensorParserAndAlgoMaps();
-		
+
+		//Dev board v64-1 supports Clock, LIS2DW12, LSM6DS3, MAX86916, Battery
+		LinkedHashMap<SENSORS, AbstractSensor> mapOfSensorClasses = verisenseDevice.getMapOfSensorsClasses();
+		assertTrue(mapOfSensorClasses.size()==5);
+		assertTrue(mapOfSensorClasses.containsKey(SENSORS.CLOCK));
+		assertTrue(mapOfSensorClasses.containsKey(SENSORS.LIS2DW12));
+		assertTrue(mapOfSensorClasses.containsKey(SENSORS.LSM6DS3));
+		assertTrue(mapOfSensorClasses.containsKey(SENSORS.MAX86916));
+		assertTrue(mapOfSensorClasses.containsKey(SENSORS.Battery));
+
 		assertTrue(verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL));
 		assertTrue(verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.VBATT));
 		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.LSM6DS3_ACCEL));
-		
+		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.LSM6DS3_GYRO));
+		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.GSR));
+		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86150_ECG));
+		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86916_PPG_BLUE));
+		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86916_PPG_GREEN));
+		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_IR));
+		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_RED));
+
 		AbstractSensor abstractSensorLis2dw12 = verisenseDevice.getSensorClass(SENSORS.LIS2DW12);
 		assertTrue(abstractSensorLis2dw12!=null);
 		SensorLIS2DW12 sensorLIS2DW12 = (SensorLIS2DW12)abstractSensorLis2dw12;
 		assertTrue(sensorLIS2DW12.getAccelRateFreq()==25.0);
-		assertTrue(sensorLIS2DW12.getAccelRangeString().equals("+- 8 g"));
+		assertTrue(sensorLIS2DW12.getAccelRangeString().contains("8"));
+		assertTrue(sensorLIS2DW12.getAccelLpModeString().equals(SensorLIS2DW12.LIS2DW12_LP_MODE[0]));
+		assertTrue(sensorLIS2DW12.getAccelModeString().equals(SensorLIS2DW12.LIS2DW12_MODE[0]));
 
 		AbstractSensor abstractSensorGsr = verisenseDevice.getSensorClass(SENSORS.Battery);
 		assertTrue(abstractSensorGsr!=null);
@@ -182,25 +203,25 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 //		GEN_CFG_0
 //			ACCEL_1_EN=1 (TEST DONE ABOVE) 
 //			ACCEL_2_EN=0  (TEST DONE ABOVE)
-//			GYRO_EN=0 
+//			GYRO_EN=0 (TEST DONE ABOVE)
 //			BLUETOOTH_EN=1 
 //			USB_EN=0 
 //			PRIORITISE_LONG_TERM_FLASH=1 
 //			DEVICE_EN=1 
 //			RECORDING_EN=1 
 //		GEN_CFG_1 
-//			GSR_EN=0 
-//			PPG_GREEN_EN=0 
-//			PPG_RED_EN=0 
-//			PPG_IR_EN=0 
-//			ECG_EN=0 
-//			PPG_BLUE_EN=0 
+//			GSR_EN=0 (TEST DONE ABOVE)
+//			PPG_GREEN_EN=0 (TEST DONE ABOVE)
+//			PPG_RED_EN=0 (TEST DONE ABOVE)
+//			PPG_IR_EN=0 (TEST DONE ABOVE)
+//			ECG_EN=0 (TEST DONE ABOVE)
+//			PPG_BLUE_EN=0 (TEST DONE ABOVE)
 //		GEN_CFG_2 
 //			VBATT_EN=1  (TEST DONE ABOVE)
 //		ACCEL1_CFG_0 
-//			ODR=3,	'High-Performance / Low-Power mode 25 Hz' 
-//			MODE=0,	'Low-Power Mode (12/14-bit resolution)' 
-//			LP_MODE=0,	'Low-Power Mode 1 (12-bit resolution, Noise = 4.5mg(RMS)) 
+//			ODR=3,	'High-Performance / Low-Power mode 25 Hz' (TEST DONE ABOVE) 
+//			MODE=0,	'Low-Power Mode (12/14-bit resolution)' (TEST DONE ABOVE)
+//			LP_MODE=0,	'Low-Power Mode 1 (12-bit resolution, Noise = 4.5mg(RMS)) (TEST DONE ABOVE) 
 //		'ACCEL1_CFG_1 
 //			BW_FILT=0 
 //			FS=2	FS=2,	'+-8 g' (TEST DONE ABOVE)
