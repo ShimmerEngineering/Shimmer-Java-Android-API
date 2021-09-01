@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
@@ -326,7 +327,7 @@ public abstract class PayloadContentsDetails implements Serializable {
 		StringBuilder debugSb = new StringBuilder();
 		debugSb.append("Time gap between payloads is large, starting new files:");
 		debugSb.append(debugStr);
-		debugSb.append("\tFor sampling rate=" + verisenseDevice.getFastestSamplingRateOfSensors() + CHANNEL_UNITS.FREQUENCY);
+		debugSb.append("\tFor sampling rate=" + verisenseDevice.getFastestSamplingRateOfSensors(COMMUNICATION_TYPE.SD) + CHANNEL_UNITS.FREQUENCY);
 		System.out.println(debugSb.toString());
 	}
 

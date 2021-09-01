@@ -59,7 +59,7 @@ public class BleRadioTest {
 	
 	public void initialize() {
 
-		JFrame frame = new JFrame();
+		JFrame frame = new JFrame(this.getClass().getSimpleName());
 		frame.setSize(331, 268);
 		frame.getContentPane().setLayout(null);
 

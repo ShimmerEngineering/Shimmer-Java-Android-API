@@ -16,6 +16,7 @@ import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Verisense;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.verisense.gyroAutoCal.GyroOnTheFlyCalModuleVerisense;
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerCmd;
@@ -74,12 +75,6 @@ public class VerisenseDevice extends ShimmerDevice {
 	private ShimmerVerObject defaultSvo = new ShimmerVerObject(DEFAULT_HW_ID, FW_ID.UNKNOWN, FW_ID.UNKNOWN, FW_ID.UNKNOWN, FW_ID.UNKNOWN);
 	private ExpansionBoardDetails defaultEbd = new ExpansionBoardDetails(DEFAULT_HW_ID, 0, INVALID_VALUE);
 	
-	/** Using SD here because currently we are just processing binary files. In the
-	 * future we might want to add BLE connectivity/streaming support for the Java
-	 * code. */
-	public COMMUNICATION_TYPE defaultCommType = COMMUNICATION_TYPE.SD;
-	private static int ADC_BYTE_BUFFER_SIZE = 192;
-
 	private byte resetReason = RESET_REASON.CLEARED.bitMask;
 	public enum RESET_REASON {
 		POR_OR_BOD((byte) 0x00, "POR_OR_BOD", "Battery died or disconnected"),
@@ -228,6 +223,7 @@ public class VerisenseDevice extends ShimmerDevice {
 
 	public static List<SENSORS> LIST_OF_PPG_SENSORS = Arrays.asList(new SENSORS[] {SENSORS.MAX86150, SENSORS.MAX86916});
 	
+	private static int ADC_BYTE_BUFFER_SIZE = 192;
 	public static final double[][] ADC_SAMPLING_RATES = new double[][] {
 		{0, Double.NaN, Double.NaN},
 		{1, 32768.0, 1},
@@ -278,13 +274,17 @@ public class VerisenseDevice extends ShimmerDevice {
 	 */
 	public VerisenseDevice() {
 		super.setDefaultShimmerConfiguration();
-		addCommunicationRoute(defaultCommType);
 
 		setUniqueId(DEVICE_TYPE.VERISENSE.getLabel());
 		setShimmerUserAssignedName(mUniqueID);
 		setMacIdFromUart(mUniqueID);
 	}
 	
+	public VerisenseDevice(COMMUNICATION_TYPE commType) {
+		this();
+		addCommunicationRoute(commType);
+	}
+
 	@Override
 	public String getFirmwareVersionParsed() {
 		if(mShimmerVerObject.mFirmwareVersionMajor==FW_ID.UNKNOWN) {
@@ -678,10 +678,10 @@ public class VerisenseDevice extends ShimmerDevice {
 		return 0.0;
 	}
 
-	public double getFastestSamplingRateOfSensors() {
+	public double getFastestSamplingRateOfSensors(COMMUNICATION_TYPE commType) {
 		double fastestSamplingRate = 0.0;
 		if(mMapOfSensorClasses!=null){
-			for(Entry<SENSORS, AbstractSensor> entry:getMapOfEnabledAbstractSensors().entrySet()){
+			for(Entry<SENSORS, AbstractSensor> entry:getMapOfEnabledAbstractSensors(commType).entrySet()){
 				double sensorSamplingRate = getSamplingRateForSensor(entry.getKey());
 				fastestSamplingRate = Math.max(fastestSamplingRate, sensorSamplingRate);
 			}
@@ -689,11 +689,11 @@ public class VerisenseDevice extends ShimmerDevice {
 		return fastestSamplingRate;
 	}
 	
-	public LinkedHashMap<SENSORS, AbstractSensor> getMapOfEnabledAbstractSensors() {
+	public LinkedHashMap<SENSORS, AbstractSensor> getMapOfEnabledAbstractSensors(COMMUNICATION_TYPE commType) {
 		LinkedHashMap<SENSORS, AbstractSensor> mapOfEnabledAbstractSensors = new LinkedHashMap<SENSORS, AbstractSensor>();
 		if(mMapOfSensorClasses!=null){
 			for(Entry<SENSORS, AbstractSensor> entry:mMapOfSensorClasses.entrySet()){
-				if(entry.getValue().isAnySensorChannelEnabled(defaultCommType)) {
+				if(entry.getValue().isAnySensorChannelEnabled(commType)) {
 					mapOfEnabledAbstractSensors.put(entry.getKey(), entry.getValue());
 				}
 			}
@@ -1073,11 +1073,13 @@ public class VerisenseDevice extends ShimmerDevice {
 	}
 
 	public boolean isEitherLsm6ds3ChannelEnabled() {
-		AbstractSensor abstractSensor = getSensorClass(SENSORS.LSM6DS3);
-		if(abstractSensor!=null) {
-			return abstractSensor.isAnySensorChannelEnabled(defaultCommType);
-		}
-		return false;
+//		AbstractSensor abstractSensor = getSensorClass(SENSORS.LSM6DS3);
+//		if(abstractSensor!=null) {
+//			return abstractSensor.isAnySensorChannelEnabled(commType);
+//		}
+//		return false;
+		
+		return isSensorEnabled(Verisense.SENSOR_ID.LSM6DS3_ACCEL) || isSensorEnabled(Verisense.SENSOR_ID.LSM6DS3_GYRO);
 	}
 	
 	public CalibDetailsKinematic getCurrentCalibDetails(int sensorId) {
@@ -1233,12 +1235,11 @@ public class VerisenseDevice extends ShimmerDevice {
 	 * @param timeMsCurrentSample
 	 * @return
 	 */
-	public ObjectCluster buildMsgForSensor(byte[] newPacket, List<SENSORS> listOfSensorClassKeys, double timeMsCurrentSample) {
+	public ObjectCluster buildMsgForSensor(byte[] newPacket, COMMUNICATION_TYPE commType, List<SENSORS> listOfSensorClassKeys, double timeMsCurrentSample) {
 		// here so we can save the timestamp in float format to the OJC before the algorithms are processed in "processData"
 		this.timeMsCurrentSample = timeMsCurrentSample;
 
 		// Arguments normally passed into ShimmerDevice.buildMsg()
-		COMMUNICATION_TYPE commType = defaultCommType;
 		boolean isTimeSyncEnabled = false; 
 		long pcTimestamp = (long) timeMsCurrentSample;
 		
@@ -1539,7 +1540,7 @@ public class VerisenseDevice extends ShimmerDevice {
 				
 				try {
 					DataBlockDetails dataBlockDetails = parseDataBlockMetaData(packetByteArray);
-					parseDataBlockData(dataBlockDetails, packetByteArray, BYTE_COUNT.PAYLOAD_CONTENTS_GEN8_SENSOR_ID + BYTE_COUNT.PAYLOAD_CONTENTS_RTC_BYTES_TICKS);
+					parseDataBlockData(dataBlockDetails, packetByteArray, BYTE_COUNT.PAYLOAD_CONTENTS_GEN8_SENSOR_ID + BYTE_COUNT.PAYLOAD_CONTENTS_RTC_BYTES_TICKS, COMMUNICATION_TYPE.BLUETOOTH);
 					
 					System.out.println("Number of ObjectClusters generated: " + dataBlockDetails.getOjcArray().length);
 					
@@ -1648,14 +1649,14 @@ public class VerisenseDevice extends ShimmerDevice {
 		return listOfSensorClassKeys;
 	}
 
-	public void parseDataBlockData(DataBlockDetails dataBlockDetails, byte[] byteBuffer, int currentByteIndex) {
+	public void parseDataBlockData(DataBlockDetails dataBlockDetails, byte[] byteBuffer, int currentByteIndex, COMMUNICATION_TYPE commType) {
 		double timeMsCurrentSample = dataBlockDetails.getStartTimeRwcMs();
 		
 		for(int y=0;y<dataBlockDetails.getSampleCount();y++) {
 			byte[] byteBuf = new byte[dataBlockDetails.dataPacketSize];
 			System.arraycopy(byteBuffer, currentByteIndex, byteBuf, 0, byteBuf.length);
 			
-			ObjectCluster ojcCurrent = buildMsgForSensor(byteBuf, dataBlockDetails.listOfSensorClassKeys, timeMsCurrentSample);
+			ObjectCluster ojcCurrent = buildMsgForSensor(byteBuf, commType, dataBlockDetails.listOfSensorClassKeys, timeMsCurrentSample);
 			
 			dataBlockDetails.setOjcArrayAtIndex(y, ojcCurrent);
 

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
@@ -402,7 +403,7 @@ public class PayloadContentsDetailsV8orAbove extends PayloadContentsDetails {
 				currentByteIndex += BYTE_COUNT.PAYLOAD_CONTENTS_GEN8_SENSOR_ID + BYTE_COUNT.PAYLOAD_CONTENTS_RTC_BYTES_TICKS;
 
 				if(dataBlockDetails.listOfSensorClassKeys.contains(sensorClassKey)) {
-					verisenseDevice.parseDataBlockData(dataBlockDetails, byteBuffer, currentByteIndex);
+					verisenseDevice.parseDataBlockData(dataBlockDetails, byteBuffer, currentByteIndex, COMMUNICATION_TYPE.SD);
 				}
 				currentByteIndex += dataBlockDetails.qtySensorDataBytesInDatablock;
 				

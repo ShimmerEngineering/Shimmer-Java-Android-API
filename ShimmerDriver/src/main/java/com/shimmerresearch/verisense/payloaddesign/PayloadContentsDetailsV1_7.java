@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
-import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
@@ -34,7 +34,7 @@ public class PayloadContentsDetailsV1_7 extends PayloadContentsDetails {
 	@Override
 	public void parsePayloadContentsMetaData(int binFileByteIndex) throws IOException {
 		//consolePrintDebugLn(UtilShimmer.bytesToHexStringWithSpacesFormatted(byteBuffer));
-		int byteCountPerSet = verisenseDevice.getExpectedDataPacketSize(verisenseDevice.defaultCommType);
+		int byteCountPerSet = verisenseDevice.getExpectedDataPacketSize(COMMUNICATION_TYPE.SD);
 		
 		int fifoBlockSize = calculateFifoBlockSize();
 		int sampleSetsInFifo = 0;
@@ -122,7 +122,7 @@ public class PayloadContentsDetailsV1_7 extends PayloadContentsDetails {
 			for(int y=0;y<getSampleSetsInFifo();y++) {
 				byte[] byteBuf = new byte[getByteCountPerSet()];
 				System.arraycopy(byteBuffer, currentByteIndex, byteBuf, 0, byteBuf.length);
-				ObjectCluster ojcCurrent = verisenseDevice.buildMsg(byteBuf, verisenseDevice.defaultCommType, false, timeMsCurrentSample);
+				ObjectCluster ojcCurrent = verisenseDevice.buildMsg(byteBuf, COMMUNICATION_TYPE.SD, false, timeMsCurrentSample);
 				
 				setOjcArray(sampleIndex, ojcCurrent);
 	
@@ -227,7 +227,7 @@ public class PayloadContentsDetailsV1_7 extends PayloadContentsDetails {
 	}
 	
 	public int calculateNumberOfSampleSetsInFifo(int fifoSizeInChip) {
-		int defaultDataPacketSize = verisenseDevice.getExpectedDataPacketSize(verisenseDevice.defaultCommType);
+		int defaultDataPacketSize = verisenseDevice.getExpectedDataPacketSize(COMMUNICATION_TYPE.SD);
 		return calculateNumberOfSampleSetsInFifo(fifoSizeInChip, defaultDataPacketSize);
 	}
 	

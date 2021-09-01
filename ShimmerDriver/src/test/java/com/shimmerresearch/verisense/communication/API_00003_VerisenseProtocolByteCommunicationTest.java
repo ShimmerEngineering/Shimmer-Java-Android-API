@@ -160,7 +160,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 
 		//TODO improve below (sensor class access and running through VerisenseProtocolByteCommunication) and implement checks for more settings
 		
-		VerisenseDevice verisenseDevice = new VerisenseDevice();
+		VerisenseDevice verisenseDevice = new VerisenseDevice(COMMUNICATION_TYPE.BLUETOOTH);
 		verisenseDevice.setShimmerVersionObject(VerisenseDevice.FW_CHANGES.CCF21_010_3);
 		verisenseDevice.setExpansionBoardDetails(new ExpansionBoardDetails(HW_ID.VERISENSE_DEV_BRD, 1, 0));
 		verisenseDevice.setHardwareVersionAndCreateSensorMaps(HW_ID.VERISENSE_DEV_BRD);
@@ -286,7 +286,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 
 		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
 
-		VerisenseDevice verisenseDevice = new VerisenseDevice();
+		VerisenseDevice verisenseDevice = new VerisenseDevice(COMMUNICATION_TYPE.BLUETOOTH);
 		verisenseDevice.setShimmerVersionObject(VerisenseDevice.FW_CHANGES.CCF21_010_3);
 		verisenseDevice.setExpansionBoardDetails(new ExpansionBoardDetails(HW_ID.VERISENSE_DEV_BRD, 1, 0));
 		verisenseDevice.setHardwareVersionAndCreateSensorMaps(HW_ID.VERISENSE_DEV_BRD);

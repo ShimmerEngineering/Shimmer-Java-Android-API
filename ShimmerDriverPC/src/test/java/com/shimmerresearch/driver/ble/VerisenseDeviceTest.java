@@ -8,23 +8,24 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 
 public class VerisenseDeviceTest {
 
 //	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14", "bleconsoleapp\\BLEConsoleApp1.exe");
-	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00001800-0000-1000-8000-00805f9b34fb", "bleconsoleapp\\BLEConsoleApp1.exe");
+	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-ee391e885898", "bleconsoleapp\\BLEConsoleApp1.exe");
 	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7", "bleconsoleapp\\BLEConsoleApp2.exe");
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
-	VerisenseDevice device1 = new VerisenseDevice();
-	VerisenseDevice device2 = new VerisenseDevice();
+	VerisenseDevice device1 = new VerisenseDevice(COMMUNICATION_TYPE.BLUETOOTH);
+	VerisenseDevice device2 = new VerisenseDevice(COMMUNICATION_TYPE.BLUETOOTH);
 
 	public void initialize() {
 		device1.setProtocol(protocol1);
 		device2.setProtocol(protocol2);
-		JFrame frame = new JFrame();
+		JFrame frame = new JFrame(this.getClass().getSimpleName());
 		frame.setSize(333, 369);
 		frame.getContentPane().setLayout(null);
 

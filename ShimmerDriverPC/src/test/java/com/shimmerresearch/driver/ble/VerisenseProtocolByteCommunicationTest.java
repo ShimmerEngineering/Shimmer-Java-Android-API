@@ -14,14 +14,14 @@ import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunic
 
 public class VerisenseProtocolByteCommunicationTest {
 
-	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14", "bleconsoleapp\\BLEConsoleApp1.exe");
+	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-ee391e885898", "bleconsoleapp\\BLEConsoleApp1.exe");
 	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7", "bleconsoleapp\\BLEConsoleApp1.exe");
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
 
 	public void initialize() {
 
-		JFrame frame = new JFrame();
+		JFrame frame = new JFrame(this.getClass().getSimpleName());
 		frame.setSize(333, 369);
 		frame.getContentPane().setLayout(null);
 
