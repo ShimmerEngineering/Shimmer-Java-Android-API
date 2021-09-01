@@ -21,7 +21,7 @@ public class VerisenseMessage {
 		NACK_GENERIC((byte)0x70),
 		ACK_NEXT_STAGE((byte) 0x80);
 
-		byte commandMask;
+		private byte commandMask;
 		
 		private VERISENSE_COMMAND(byte mask) {
 			this.commandMask = mask;
@@ -30,7 +30,7 @@ public class VerisenseMessage {
 		private static final Map<Byte, VERISENSE_COMMAND> nameIndex = Maps.newHashMapWithExpectedSize(VERISENSE_COMMAND.values().length);
 		static {
 			for (VERISENSE_COMMAND suit : VERISENSE_COMMAND.values()) {
-				nameIndex.put(suit.mask(), suit);
+				nameIndex.put(suit.getCommandMask(), suit);
 			}
 		}
 
@@ -38,7 +38,7 @@ public class VerisenseMessage {
 			return nameIndex.get(mask);
 		}
 
-		public byte mask() {
+		public byte getCommandMask() {
 			return commandMask;
 		}
 	}
@@ -56,7 +56,7 @@ public class VerisenseMessage {
 		DEVICE_DISCONNECT((byte)0x0B),
 		STREAMING((byte)0x0A);
 		
-		byte propertyMask;
+		private byte propertyMask;
 		
 		private VERISENSE_PROPERTY(byte mask) {
 			this.propertyMask = mask;
@@ -65,7 +65,7 @@ public class VerisenseMessage {
 		private static final Map<Byte, VERISENSE_PROPERTY> nameIndex = Maps.newHashMapWithExpectedSize(VERISENSE_PROPERTY.values().length);
 		static {
 			for (VERISENSE_PROPERTY suit : VERISENSE_PROPERTY.values()) {
-				nameIndex.put(suit.mask(), suit);
+				nameIndex.put(suit.getPropertyMask(), suit);
 			}
 		}
 
@@ -73,31 +73,31 @@ public class VerisenseMessage {
 			return nameIndex.get(mask);
 		}
 
-		public byte mask() {
+		public byte getPropertyMask() {
 			return propertyMask;
 		}
 
 		public byte readByte() {
-			return (byte) (propertyMask | VERISENSE_COMMAND.READ.mask());
+			return (byte) (propertyMask | VERISENSE_COMMAND.READ.getCommandMask());
 		}
 		
 		public byte writeByte() {
-			return (byte) (propertyMask | VERISENSE_COMMAND.WRITE.mask());
+			return (byte) (propertyMask | VERISENSE_COMMAND.WRITE.getCommandMask());
 		}
 		
 		public byte ackByte() {
-			return (byte) (propertyMask | VERISENSE_COMMAND.ACK.mask());
+			return (byte) (propertyMask | VERISENSE_COMMAND.ACK.getCommandMask());
 		}
 		
 		public byte ackNextStageByte() {
-			return (byte) (propertyMask | VERISENSE_COMMAND.ACK_NEXT_STAGE.mask());
+			return (byte) (propertyMask | VERISENSE_COMMAND.ACK_NEXT_STAGE.getCommandMask());
 		}
 		public byte responseByte() {
-			return (byte) (propertyMask | VERISENSE_COMMAND.RESPONSE.mask());
+			return (byte) (propertyMask | VERISENSE_COMMAND.RESPONSE.getCommandMask());
 		}
 
 		public byte nackByte() {
-			return (byte) (propertyMask | VERISENSE_COMMAND.NACK_GENERIC.mask());
+			return (byte) (propertyMask | VERISENSE_COMMAND.NACK_GENERIC.getCommandMask());
 		}
 	}
 
@@ -128,8 +128,8 @@ public class VerisenseMessage {
 	}
 
 	byte commandAndProperty;
-	byte command;
-	byte property;
+	byte commandMask;
+	byte propertyMask;
 	
 	public byte[] payloadBytes;
 	public int mExpectedLengthBytes;
@@ -148,8 +148,8 @@ public class VerisenseMessage {
 		mUnixStartTimeinMS = unixTimeinMS;
 
 		commandAndProperty = rxBytes[0];
-		command = (byte) (commandAndProperty & 0xF0);
-		property = (byte) (commandAndProperty & 0x0F);
+		commandMask = (byte) (commandAndProperty & 0xF0);
+		propertyMask = (byte) (commandAndProperty & 0x0F);
 
 		mExpectedLengthBytes = (int) AbstractPayload.parseByteArrayAtIndex(rxBytes, 1, CHANNEL_DATA_TYPE.UINT16);
 		payloadBytes = new byte[mExpectedLengthBytes];
@@ -249,8 +249,8 @@ public class VerisenseMessage {
 	public String generateDebugString() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("Command=" + VERISENSE_COMMAND.lookupByMask(command).toString());
-		sb.append(", Property=" + VERISENSE_PROPERTY.lookupByMask(property).toString());
+		sb.append("Command=" + VERISENSE_COMMAND.lookupByMask(commandMask).toString());
+		sb.append(", Property=" + VERISENSE_PROPERTY.lookupByMask(propertyMask).toString());
 		sb.append(", Expected Length =" + mExpectedLengthBytes);
 		sb.append(", Current Length =" + mCurrentLengthBytes);
 		sb.append(", Payload Contents =" + UtilShimmer.bytesToHexStringWithSpacesFormatted(payloadBytes));

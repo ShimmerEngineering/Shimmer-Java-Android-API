@@ -22,11 +22,11 @@ public class PendingEventsPayload extends AbstractPayload {
 		pendingEventTimeSync = false;
 
 		for(byte b : payloadContents) {
-			if(b==VERISENSE_PROPERTY.STATUS.mask()) {
+			if(b==VERISENSE_PROPERTY.STATUS.getPropertyMask()) {
 				pendingEventStatus = true;
-			} else if(b==VERISENSE_PROPERTY.DATA.mask()) {
+			} else if(b==VERISENSE_PROPERTY.DATA.getPropertyMask()) {
 				pendingEventData = true;
-			} else if(b==VERISENSE_PROPERTY.TIME.mask()) {
+			} else if(b==VERISENSE_PROPERTY.TIME.getPropertyMask()) {
 				pendingEventTimeSync = true;
 			}
 		}

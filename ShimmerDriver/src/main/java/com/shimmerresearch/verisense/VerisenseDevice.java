@@ -1677,11 +1677,17 @@ public class VerisenseDevice extends ShimmerDevice {
 	}
 	
 	@Override
-	public void connect() throws ShimmerException{
+	public void connect() throws ShimmerException {
 		if(verisenseProtocolByteCommunication!=null) {
-			verisenseProtocolByteCommunication.connect();
-			verisenseProtocolByteCommunication.readProductionConfig();
-			verisenseProtocolByteCommunication.readOperationalConfig();
+			try {
+				verisenseProtocolByteCommunication.connect();
+				verisenseProtocolByteCommunication.readProductionConfig();
+				verisenseProtocolByteCommunication.readOperationalConfig();
+			} catch (Exception e) {
+				e.printStackTrace();
+				verisenseProtocolByteCommunication.disconnect();
+				throw(e);
+			}
 		} else {
 			throw new ShimmerException("VerisenseProtocolByteCommunication not set");
 		}
