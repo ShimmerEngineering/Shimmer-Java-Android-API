@@ -134,8 +134,9 @@ public class VerisenseMessage {
 	public byte[] payloadBytes;
 	public int mExpectedLengthBytes;
 	public int mCurrentLengthBytes;
-	public long mUnixStartTimeinMS;
-	public long mUnixFinishTimeinMS;
+	public long startTimeMs;
+	public long endTimeMs;
+	public long lastTransactionMs;
 	public double mTransferRateByes;
 	public final int mPacketMaxSize = 32767; // Considering we are using int16 to get the length the maximum value is 7F FF which is 32767
 	public boolean mCRCErrorPayload = false;
@@ -144,8 +145,9 @@ public class VerisenseMessage {
 
 	public static final int MAX_TIMEOUT_BETWEEN_MESSAGES_MS = 5000;
 
-	public VerisenseMessage(byte[] rxBytes, long unixTimeinMS) {
-		mUnixStartTimeinMS = unixTimeinMS;
+	public VerisenseMessage(byte[] rxBytes, long timeMs) {
+		startTimeMs = timeMs;
+		lastTransactionMs = timeMs;
 
 		commandAndProperty = rxBytes[0];
 		command = (byte) (commandAndProperty & 0xF0);
@@ -164,7 +166,7 @@ public class VerisenseMessage {
 		}
 
 		if (isCurrentLengthGreaterThanOrEqualToExpectedLength()) {
-			mUnixFinishTimeinMS = System.currentTimeMillis();
+			endTimeMs = System.currentTimeMillis();
 		}
 	}
 
@@ -175,12 +177,14 @@ public class VerisenseMessage {
 		mCurrentLengthBytes = mExpectedLengthBytes;
 	}
 
-	public void appendToDataChuck(byte[] rxBytes, long unixTimeinMS) {
+	public void appendToDataChuck(byte[] rxBytes, long timeMs) {
+		lastTransactionMs = timeMs;
+
 		System.arraycopy(rxBytes, 0, payloadBytes, mCurrentLengthBytes, rxBytes.length);
 		mCurrentLengthBytes += rxBytes.length;
 
 		if (isCurrentLengthGreaterThanOrEqualToExpectedLength()) {
-			mUnixFinishTimeinMS = System.currentTimeMillis();
+			endTimeMs = System.currentTimeMillis();
 		}
 	}
 	
@@ -197,10 +201,10 @@ public class VerisenseMessage {
 	}
 
 	public void consolePrintTransferTime() {
-		long duration = mUnixFinishTimeinMS - mUnixStartTimeinMS;
+		long duration = endTimeMs - startTimeMs;
 		System.out.println("Duration : " + duration);
 		if (duration != 0) {
-			mTransferRateByes = mCurrentLengthBytes / ((double) (mUnixFinishTimeinMS - mUnixStartTimeinMS) / 1000);
+			mTransferRateByes = mCurrentLengthBytes / ((double) (endTimeMs - startTimeMs) / 1000);
 			String syncProgress = String.format("%f KB/s", (mTransferRateByes / 1024.0)) + "(Payload Index : " + payloadIndex + ")";
 			System.out.println(syncProgress);
 		}
@@ -258,8 +262,8 @@ public class VerisenseMessage {
 		return sb.toString();
 	}
 
-	public boolean isExpired(long unixTimeinMS) {
-		return (unixTimeinMS - mUnixStartTimeinMS) > MAX_TIMEOUT_BETWEEN_MESSAGES_MS;
+	public boolean isExpired(long timeMs) {
+		return (timeMs - lastTransactionMs) > MAX_TIMEOUT_BETWEEN_MESSAGES_MS;
 	}
 
 }
