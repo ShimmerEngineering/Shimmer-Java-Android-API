@@ -1521,14 +1521,15 @@ public class VerisenseDevice extends ShimmerDevice {
 				} else if(parsedResponse instanceof ProdConfigPayload) {
 					prodConfigPayload = (ProdConfigPayload) parsedResponse;
 					setUniqueId(prodConfigPayload.verisenseId);
+					setShimmerVersionObject(prodConfigPayload.shimmerVerObject);
+					setHardwareVersion(prodConfigPayload.expansionBoardDetails.mExpansionBoardId);
 					setExpansionBoardDetails(prodConfigPayload.expansionBoardDetails);
-					setShimmerVersionObjectAndCreateSensorMap(prodConfigPayload.shimmerVerObject);
-					//TODO remove below when tested
-					printSensorParserAndAlgoMaps();
+					sensorAndConfigMapsCreate();
 					
 				} else if(parsedResponse instanceof OpConfigPayload) {
 					opConfig = (OpConfigPayload) parsedResponse;
 					configBytesParseAndInitialiseAlgorithms(opConfig.getPayloadContents(), COMMUNICATION_TYPE.BLUETOOTH);
+					printSensorParserAndAlgoMaps();
 					
 				} else if(parsedResponse instanceof TimePayload) {
 					//TODO needed?
@@ -1702,6 +1703,16 @@ public class VerisenseDevice extends ShimmerDevice {
 		if(verisenseProtocolByteCommunication!=null) {
 			try {
 				verisenseProtocolByteCommunication.connect();
+				
+				//TODO remove the following once connect is implemented as a blocking method
+				try {
+					System.out.println("Sleeping to allow for connection to be established");
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				verisenseProtocolByteCommunication.readProductionConfig();
 				verisenseProtocolByteCommunication.readOperationalConfig();
 			} catch (Exception e) {

@@ -91,10 +91,7 @@ public class StatusPayload extends AbstractPayload {
 		super.payloadContents = payloadContents;
 		isSuccess = false;
 
-		byte[] idBytes = new byte[6];
-		System.arraycopy(payloadContents, 0, idBytes, 0, idBytes.length);
-		ArrayUtils.reverse(idBytes);
-		verisenseId = Hex.toHexString(idBytes).replace("-", "");
+		verisenseId = parseVerisenseId(payloadContents, 0);
 
 		long statusTimestampMinutes = parseByteArrayAtIndex(payloadContents, 6, CHANNEL_DATA_TYPE.UINT32);
 		long statusTimestampTicks = 0;

@@ -25,7 +25,7 @@ public class ProdConfigPayload extends AbstractPayload {
 	}
 
 	public ProdConfigPayload(String macIdShort, String manufacturingOrderNumber, int hwRevMajor, int hwRevMinor, int fwRevMajor, int fwRevMinor, int fwRevInternal) {
-		this.macIdShort = macIdShort;
+		this.macIdShort = macIdShort.toUpperCase();
 		this.manufacturingOrderNumber = manufacturingOrderNumber;
 		expansionBoardDetails = new ExpansionBoardDetails(hwRevMajor, hwRevMinor, 0);
 		shimmerVerObject = new ShimmerVerObject(-1, fwRevMajor, fwRevMinor, fwRevInternal);
@@ -40,11 +40,7 @@ public class ProdConfigPayload extends AbstractPayload {
 			return false;
 		}
 
-		byte[] idBytes = new byte[6];
-		System.arraycopy(payloadContents, 1, idBytes, 0, idBytes.length);
-		ArrayUtils.reverse(idBytes);
-		verisenseId = Hex.toHexString(idBytes).replace("-", "");
-
+		verisenseId = parseVerisenseId(payloadContents, 1);
 		manufacturingOrderNumber = verisenseId.substring(0, 8);
 		macIdShort = verisenseId.substring(8, 12);
 		
@@ -72,8 +68,7 @@ public class ProdConfigPayload extends AbstractPayload {
 		payloadContents[0] = VALID_CONFIG_BYTE;
 		
 		verisenseId = manufacturingOrderNumber + macIdShort;
-		byte[] idBytes = Hex.decode(verisenseId);
-		ArrayUtils.reverse(idBytes);
+		byte[] idBytes = generateVerisenseIdBytes(verisenseId);
 		System.arraycopy(idBytes, 0, payloadContents, 1, idBytes.length);
 
 		payloadContents[7] = (byte) expansionBoardDetails.getExpansionBoardId();

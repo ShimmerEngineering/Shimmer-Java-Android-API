@@ -2,6 +2,9 @@ package com.shimmerresearch.verisense.communication.payloads;
 
 import java.util.TimeZone;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.bouncycastle.util.encoders.Hex;
+
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -53,6 +56,21 @@ public abstract class AbstractPayload {
 		return UtilVerisenseDriver.convertMilliSecondsToFormat((long) timeMs, 
 				"yyyy/MM/dd HH:mm:ss", 
 				TimeZone.getDefault().getID());
+	}
+
+	public static String parseVerisenseId(byte[] payloadContents, int startIndex) {
+		byte[] idBytes = new byte[6];
+		System.arraycopy(payloadContents, startIndex, idBytes, 0, idBytes.length);
+		ArrayUtils.reverse(idBytes);
+		String verisenseId = Hex.toHexString(idBytes).replace("-", "");
+		verisenseId = verisenseId.toUpperCase();
+		return verisenseId;
+	}
+	
+	public static byte[] generateVerisenseIdBytes(String verisenseId) {
+		byte[] idBytes = Hex.decode(verisenseId);
+		ArrayUtils.reverse(idBytes);
+		return idBytes;
 	}
 
 }
