@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
@@ -25,8 +26,8 @@ public class VerisenseUSBDeviceTest {
 	VerisenseDevice device2 = new VerisenseDevice();
 
 	public void initialize() {
-		device1.setProtocol(protocol1);
-		device2.setProtocol(protocol2);
+		device1.setProtocol(COMMUNICATION_TYPE.USB, protocol1);
+		device2.setProtocol(COMMUNICATION_TYPE.USB, protocol2);
 		JFrame frame = new JFrame();
 		frame.setSize(333, 369);
 		frame.getContentPane().setLayout(null);
@@ -143,7 +144,7 @@ public class VerisenseUSBDeviceTest {
 		JButton btnReadOp = new JButton("Read Op");
 		btnReadOp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.readOperationalConfig();
+				protocol1.readOperationalConfigAsync();
 			}
 		});
 		btnReadOp.setBounds(12, 89, 124, 25);
@@ -152,7 +153,7 @@ public class VerisenseUSBDeviceTest {
 		JButton btnReadOp_1 = new JButton("Read Op");
 		btnReadOp_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.readOperationalConfig();
+				protocol2.readOperationalConfigAsync();
 			}
 		});
 		btnReadOp_1.setBounds(162, 89, 124, 25);

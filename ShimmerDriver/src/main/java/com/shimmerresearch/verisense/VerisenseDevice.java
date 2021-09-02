@@ -170,7 +170,7 @@ public class VerisenseDevice extends ShimmerDevice {
 	}
 
 	// Verisense Communication
-	private VerisenseProtocolByteCommunication verisenseProtocolByteCommunication;
+	private HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
 	private transient StatusPayload status;
 	private transient OpConfigPayload opConfig;
 	private transient ProdConfigPayload prodConfigPayload;
@@ -1430,8 +1430,11 @@ public class VerisenseDevice extends ShimmerDevice {
 		return dataBlockSize;
 	}
 
-	public void setProtocol(VerisenseProtocolByteCommunication protocol) {
-		this.verisenseProtocolByteCommunication = protocol;
+	public void setProtocol(COMMUNICATION_TYPE commType, VerisenseProtocolByteCommunication protocol) {
+		addCommunicationRoute(commType);
+		
+		this.mapOfVerisenseProtocolByteCommunication.put(commType, protocol);
+		
 		protocol.addRadioListener(new RadioListener() {
 
 			@Override
@@ -1593,6 +1596,12 @@ public class VerisenseDevice extends ShimmerDevice {
 			}
 		});
 	}
+	
+	@Override
+	public void removeCommunicationRoute(COMMUNICATION_TYPE communicationType) {
+		super.removeCommunicationRoute(communicationType);
+		mapOfVerisenseProtocolByteCommunication.remove(communicationType);
+	}
 
 	public DataBlockDetails parseDataBlockMetaData(byte[] byteBuffer) throws IOException {
 		return parseDataBlockMetaData(byteBuffer, 0, 0, 0, 0);
@@ -1681,13 +1690,25 @@ public class VerisenseDevice extends ShimmerDevice {
 		// in the Verisense.
 		return rateHz;
 	}
-	
+
 	@Override
-	public void connect() throws ShimmerException{
+	public void connect() throws ShimmerException {
+		//TODO assume bluetooth for the moment
+		this.connect(COMMUNICATION_TYPE.BLUETOOTH);
+	}
+
+	public void connect(COMMUNICATION_TYPE commType) throws ShimmerException {
+		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(commType);
 		if(verisenseProtocolByteCommunication!=null) {
-			verisenseProtocolByteCommunication.connect();
-			verisenseProtocolByteCommunication.readProductionConfig();
-			verisenseProtocolByteCommunication.readOperationalConfig();
+			try {
+				verisenseProtocolByteCommunication.connect();
+				verisenseProtocolByteCommunication.readProductionConfig();
+				verisenseProtocolByteCommunication.readOperationalConfig();
+			} catch (Exception e) {
+				e.printStackTrace();
+				verisenseProtocolByteCommunication.disconnect();
+				throw(e);
+			}
 		} else {
 			throw new ShimmerException("VerisenseProtocolByteCommunication not set");
 		}
@@ -1803,6 +1824,14 @@ public class VerisenseDevice extends ShimmerDevice {
 
 	public void setRecordingEnabled(boolean recordingEnabled) {
 		this.recordingEnabled = recordingEnabled;
+	}
+
+	public HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> getMapOfVerisenseProtocolByteCommunication() {
+		return mapOfVerisenseProtocolByteCommunication;
+	}
+
+	public void setMapOfVerisenseProtocolByteCommunication(HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication) {
+		this.mapOfVerisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication;
 	}
 	
 }
