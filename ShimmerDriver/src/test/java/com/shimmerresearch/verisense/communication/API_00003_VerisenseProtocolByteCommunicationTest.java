@@ -114,8 +114,10 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		assertTrue(prodConfigPayload.shimmerVerObject.getFirmwareVersionMajor()==1);
 		assertTrue(prodConfigPayload.shimmerVerObject.getFirmwareVersionMinor()==2);
 		assertTrue(prodConfigPayload.shimmerVerObject.getFirmwareVersionInternal()==91);
+		
+		byte[] generatedBytes = prodConfigPayload.generatePayloadContents();
+		testByteArrays(verisenseMessage.payloadBytes, generatedBytes);
 	}
-
 
 	@Test
 	public void test003_time_payload() {
@@ -152,7 +154,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 	}
 
 	@Test
-	public void test005_read_op_config() {
+	public void test005_operational_config_payload() {
 		String messageStr = readVerisenseMessageBytesFromFile("OpConfigPayload_01.txt");
 		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
 
@@ -233,6 +235,10 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		assertTrue(verisenseDevice.getAdaptiveSchedulerInterval()==65535);
 		assertTrue(verisenseDevice.getAdaptiveSchedulerFailCount()==255);
 
+		// Byte generation test
+		byte[] generatedBytes = verisenseDevice.configBytesGenerate(true, COMMUNICATION_TYPE.BLUETOOTH);
+		testByteArrays(verisenseMessage.payloadBytes, generatedBytes);
+
 		//Settings above should look like the following (copied from the Python console output)
 //		Complete Response Received
 //		GEN_CFG_0
@@ -280,32 +286,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 	}
 
 	@Test
-	public void test006_generate_op_config() {
-		String messageStr = readVerisenseMessageBytesFromFile("OpConfigPayload_01.txt");
-		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
-
-		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
-
-		VerisenseDevice verisenseDevice = new VerisenseDevice(COMMUNICATION_TYPE.BLUETOOTH);
-		verisenseDevice.setShimmerVersionObject(VerisenseDevice.FW_CHANGES.CCF21_010_3);
-		verisenseDevice.setExpansionBoardDetails(new ExpansionBoardDetails(HW_ID.VERISENSE_DEV_BRD, 1, 0));
-		verisenseDevice.setHardwareVersionAndCreateSensorMaps(HW_ID.VERISENSE_DEV_BRD);
-		verisenseDevice.configBytesParse(verisenseMessage.payloadBytes, COMMUNICATION_TYPE.BLUETOOTH);
-		
-		// Byte generation test
-		byte[] generatedBytes = verisenseDevice.configBytesGenerate(true, COMMUNICATION_TYPE.BLUETOOTH);
-		assertTrue(verisenseMessage.payloadBytes.length == generatedBytes.length);
-		List<Integer> listOfByteIndexesWithDifferences = new ArrayList<Integer>();
-		for(int i=0;i<verisenseMessage.payloadBytes.length;i++) {
-			if(verisenseMessage.payloadBytes[i] != generatedBytes[i]) {
-				listOfByteIndexesWithDifferences.add(i);
-			}
-		}
-		assertTrue("byte comparison failed at indexes " + listOfByteIndexesWithDifferences, listOfByteIndexesWithDifferences.size()==0);
-	}
-	
-	@Test
-	public void test007_read_rwc_schedule() {
+	public void test006_read_rwc_schedule() {
 		byte[] messageBytes = new byte[] {0x39, 0x3F, 0x00, 0x0D, (byte) 0xA2, (byte) 0x9E, 0x01, 
 				(byte) 0xEF, (byte) 0x8B, 0x12, 0x00, (byte) 0x9C, (byte) 0xA5, (byte) 0x9E, 
 				0x01, 0x00, 0x00, 0x00, 0x00, (byte) 0x9C, (byte) 0xA5, (byte) 0x9E, 0x01, 
@@ -326,7 +307,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 	}
 	
 	@Test
-	public void test008_read_record_buffer_details() {
+	public void test007_read_record_buffer_details() {
 		byte[] messageBytes = new byte[] {0x39, 0x34, 0x00, 0x00, 0x01, (byte) 0xFF, (byte) 0xFF, 0x5C, 0x61, 
 				0x00, 0x00, 0x7E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 				0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, (byte) 0xFF, (byte) 0xFF, 0x20, 0x00, 0x00, 
@@ -345,7 +326,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 	}
 
 	@Test
-	public void test009_read_event_log() {
+	public void test008_read_event_log() {
 		String messageStr = readVerisenseMessageBytesFromFile("EventLogPayload_01.txt");
 		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
 		
@@ -361,7 +342,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 	}
 
 	@Test
-	public void test010_read_memory_lookup_table() {
+	public void test009_read_memory_lookup_table() {
 		String messageStr = readVerisenseMessageBytesFromFile("MemoryLookupTablePayload_01.txt");
 		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
 		
@@ -376,7 +357,17 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		//TODO add tests
 	}
 
-	
+	private void testByteArrays(byte[] payloadBytes, byte[] generatedBytes) {
+		assertTrue(payloadBytes.length == generatedBytes.length);
+		List<Integer> listOfByteIndexesWithDifferences = new ArrayList<Integer>();
+		for(int i=0;i<payloadBytes.length;i++) {
+			if(payloadBytes[i] != generatedBytes[i]) {
+				listOfByteIndexesWithDifferences.add(i);
+			}
+		}
+		assertTrue("byte comparison failed at indexes " + listOfByteIndexesWithDifferences, listOfByteIndexesWithDifferences.size()==0);
+	}
+
 	private String readVerisenseMessageBytesFromFile(String filePath) {
 		URL url = getClass().getResource(filePath);
 		StringBuilder contentBuilder = new StringBuilder();

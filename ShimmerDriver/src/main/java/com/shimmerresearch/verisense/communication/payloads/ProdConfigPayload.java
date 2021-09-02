@@ -24,8 +24,8 @@ public class ProdConfigPayload extends AbstractPayload {
 	public ProdConfigPayload() {
 	}
 
-	public ProdConfigPayload(String verisenseId, String manufacturingOrderNumber, int hwRevMajor, int hwRevMinor, int fwRevMajor, int fwRevMinor, int fwRevInternal) {
-		this.verisenseId = verisenseId;
+	public ProdConfigPayload(String macIdShort, String manufacturingOrderNumber, int hwRevMajor, int hwRevMinor, int fwRevMajor, int fwRevMinor, int fwRevInternal) {
+		this.macIdShort = macIdShort;
 		this.manufacturingOrderNumber = manufacturingOrderNumber;
 		expansionBoardDetails = new ExpansionBoardDetails(hwRevMajor, hwRevMinor, 0);
 		shimmerVerObject = new ShimmerVerObject(-1, fwRevMajor, fwRevMinor, fwRevInternal);
@@ -67,10 +67,25 @@ public class ProdConfigPayload extends AbstractPayload {
 	
 	@Override
 	public byte[] generatePayloadContents() {
-		byte[] payloadContents = new byte[14];
+		byte[] payloadContents = new byte[13];
 		
-		//TODO
+		payloadContents[0] = VALID_CONFIG_BYTE;
 		
+		verisenseId = manufacturingOrderNumber + macIdShort;
+		byte[] idBytes = Hex.decode(verisenseId);
+		ArrayUtils.reverse(idBytes);
+		System.arraycopy(idBytes, 0, payloadContents, 1, idBytes.length);
+
+		payloadContents[7] = (byte) expansionBoardDetails.getExpansionBoardId();
+		payloadContents[8] = (byte) expansionBoardDetails.getExpansionBoardRev();
+		//NOTE: Verisense FW won't allow it's own FW version to be overwritten but no harm in putting structure here
+		payloadContents[9] = (byte) shimmerVerObject.getFirmwareVersionMajor();
+		payloadContents[10] = (byte) shimmerVerObject.getFirmwareVersionMinor();
+
+		payloadContents[11] = (byte) (shimmerVerObject.getFirmwareVersionInternal() & 0xFF);
+		payloadContents[12] = (byte) ((shimmerVerObject.getFirmwareVersionInternal() >> 8) & 0xFF);
+
+		super.payloadContents = payloadContents;
 		return payloadContents;
 	}
 

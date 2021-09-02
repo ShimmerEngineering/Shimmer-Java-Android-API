@@ -15,8 +15,10 @@ import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunic
 
 public class VerisenseDeviceTest {
 
+//	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-d0927db7e40c", "bleconsoleapp\\BLEConsoleApp1.exe");
+//	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-ee391e885898", "bleconsoleapp\\BLEConsoleApp2.exe");
+
 	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14", "bleconsoleapp\\BLEConsoleApp1.exe");
-//	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-ee391e885898", "bleconsoleapp\\BLEConsoleApp1.exe");
 	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7", "bleconsoleapp\\BLEConsoleApp2.exe");
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
@@ -180,7 +182,12 @@ public class VerisenseDeviceTest {
 		JButton btnReadProd = new JButton("Read Prod");
 		btnReadProd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.readProductionConfig();
+				try {
+					protocol1.readProductionConfig();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnReadProd.setBounds(12, 127, 124, 25);
@@ -189,7 +196,12 @@ public class VerisenseDeviceTest {
 		JButton button_6 = new JButton("Read Prod");
 		button_6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.readProductionConfig();
+				try {
+					protocol2.readProductionConfig();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_6.setBounds(162, 127, 124, 25);
