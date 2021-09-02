@@ -9,13 +9,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 
 public class VerisenseDeviceTest {
 
-//	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14", "bleconsoleapp\\BLEConsoleApp1.exe");
-	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-ee391e885898", "bleconsoleapp\\BLEConsoleApp1.exe");
+	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14", "bleconsoleapp\\BLEConsoleApp1.exe");
+//	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-ee391e885898", "bleconsoleapp\\BLEConsoleApp1.exe");
 	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7", "bleconsoleapp\\BLEConsoleApp2.exe");
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
@@ -32,7 +33,12 @@ public class VerisenseDeviceTest {
 		JButton btnNewButton = new JButton("Connect");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.connect();
+				try {
+					device1.connect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnNewButton.setBounds(12, 13, 124, 25);
@@ -41,10 +47,15 @@ public class VerisenseDeviceTest {
 		JButton btnDisconnect = new JButton("Disconnect");
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.disconnect();
+				try {
+					device1.disconnect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
-		btnDisconnect.setBounds(12, 238, 124, 25);
+		btnDisconnect.setBounds(12, 276, 124, 25);
 		frame.getContentPane().add(btnDisconnect);
 
 		JButton btnNewButton_1 = new JButton("Read Status");
@@ -62,13 +73,18 @@ public class VerisenseDeviceTest {
 				protocol1.readLoggedData();
 			}
 		});
-		btnNewButton_2.setBounds(12, 127, 124, 25);
+		btnNewButton_2.setBounds(12, 165, 124, 25);
 		frame.getContentPane().add(btnNewButton_2);
 
 		JButton button = new JButton("Connect");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.connect();
+				try {
+					device2.connect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button.setBounds(162, 13, 124, 25);
@@ -89,16 +105,21 @@ public class VerisenseDeviceTest {
 				protocol2.readLoggedData();
 			}
 		});
-		button_2.setBounds(162, 127, 124, 25);
+		button_2.setBounds(162, 165, 124, 25);
 		frame.getContentPane().add(button_2);
 
 		JButton button_3 = new JButton("Disconnect");
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.disconnect();
+				try {
+					device2.disconnect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
-		button_3.setBounds(162, 238, 124, 25);
+		button_3.setBounds(162, 276, 124, 25);
 		frame.getContentPane().add(button_3);
 
 		JButton btnStartstreaming = new JButton("StartStreaming");
@@ -107,7 +128,7 @@ public class VerisenseDeviceTest {
 				protocol1.startStreaming();
 			}
 		});
-		btnStartstreaming.setBounds(12, 165, 124, 25);
+		btnStartstreaming.setBounds(12, 203, 124, 25);
 		frame.getContentPane().add(btnStartstreaming);
 
 		JButton btnStopstreaming = new JButton("StopStreaming");
@@ -117,7 +138,7 @@ public class VerisenseDeviceTest {
 			}
 		});
 
-		btnStopstreaming.setBounds(12, 200, 124, 25);
+		btnStopstreaming.setBounds(12, 238, 124, 25);
 		frame.getContentPane().add(btnStopstreaming);
 
 		JButton button_4 = new JButton("StartStreaming");
@@ -126,7 +147,7 @@ public class VerisenseDeviceTest {
 				protocol2.startStreaming();
 			}
 		});
-		button_4.setBounds(162, 165, 124, 25);
+		button_4.setBounds(162, 203, 124, 25);
 		frame.getContentPane().add(button_4);
 
 		JButton button_5 = new JButton("StopStreaming");
@@ -135,7 +156,7 @@ public class VerisenseDeviceTest {
 				protocol2.stopStreaming();
 			}
 		});
-		button_5.setBounds(162, 200, 124, 25);
+		button_5.setBounds(162, 238, 124, 25);
 		frame.getContentPane().add(button_5);
 
 		JButton btnReadOp = new JButton("Read Op");
@@ -155,6 +176,24 @@ public class VerisenseDeviceTest {
 		});
 		btnReadOp_1.setBounds(162, 89, 124, 25);
 		frame.getContentPane().add(btnReadOp_1);
+		
+		JButton btnReadProd = new JButton("Read Prod");
+		btnReadProd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				protocol1.readProductionConfig();
+			}
+		});
+		btnReadProd.setBounds(12, 127, 124, 25);
+		frame.getContentPane().add(btnReadProd);
+		
+		JButton button_6 = new JButton("Read Prod");
+		button_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				protocol2.readProductionConfig();
+			}
+		});
+		button_6.setBounds(162, 127, 124, 25);
+		frame.getContentPane().add(button_6);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.addWindowListener(new WindowAdapter() {
