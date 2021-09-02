@@ -21,6 +21,7 @@ public abstract class AbstractPayload {
 	protected static final String CONSOLE_DIVIDER_STRING = "********************************************************\n";
 
 	abstract public boolean parsePayloadContents(byte[] payloadContents);
+	abstract public byte[] generatePayloadContents();
 
 	abstract public String generateDebugString();
 

@@ -416,6 +416,10 @@ public class VerisenseProtocolByteCommunication {
 	public void readProductionConfig() {
 		writeMessageNoPayload(VERISENSE_PROPERTY.CONFIG_PROD.readByte());
 	}
+	
+	public void writeProductionConfig(byte[] txBuf) {
+		writeMessageWithPayload(VERISENSE_PROPERTY.CONFIG_PROD.writeByte(), txBuf);
+	}
 
 	public void readOperationalConfig() {
 		writeMessageNoPayload(VERISENSE_PROPERTY.CONFIG_OPER.readByte());

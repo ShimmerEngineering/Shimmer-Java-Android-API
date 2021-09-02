@@ -180,6 +180,12 @@ public class StatusPayload extends AbstractPayload {
 		return isSuccess;
 	}
 	
+	@Override
+	public byte[] generatePayloadContents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public void calculateStorageOther() {
 		storageOtherkB = STORAGE_CAPACITY_LTF_KB - storageFreekB + storageFullkB + storageToDelkB + storageBadkB;
 	}

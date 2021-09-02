@@ -29,6 +29,12 @@ public class TimePayload extends AbstractPayload {
 	}
 
 	@Override
+	public byte[] generatePayloadContents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public String generateDebugString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("ASM Time Parsed:\n");

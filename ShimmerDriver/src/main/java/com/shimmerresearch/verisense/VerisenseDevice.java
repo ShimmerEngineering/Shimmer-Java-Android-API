@@ -437,14 +437,7 @@ public class VerisenseDevice extends ShimmerDevice {
 				
 				if(isPayloadDesignV4orAbove()) {
 					int hwVerMajor = configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_HW_MAJOR];
-					
-					// Fix for a legacy HW ID assignment issue
-					if(hwVerMajor==0) {
-						hwVerMajor = HW_ID.VERISENSE_DEV_BRD;
-					} else if(hwVerMajor==1) {
-						hwVerMajor = HW_ID.VERISENSE_IMU;
-					}
-					
+					hwVerMajor = correctHwVersion(hwVerMajor);
 					int hwVerMinor = configBytes[PAYLOAD_CONFIG_BYTE_INDEX.REV_HW_MINOR];
 					setHardwareVersion(hwVerMajor);
 					eBD = new ExpansionBoardDetails(hwVerMajor, hwVerMinor, INVALID_VALUE);
@@ -501,6 +494,19 @@ public class VerisenseDevice extends ShimmerDevice {
 
 		// Useful for debugging during development
 //		printSensorParserAndAlgoMaps();
+	}
+	
+	/** Fix for a legacy HW ID assignment issue
+	 * @param hardwareVersion
+	 * @return
+	 */
+	public static int correctHwVersion(int hardwareVersion) {
+		if(hardwareVersion==0) {
+			hardwareVersion = HW_ID.VERISENSE_DEV_BRD;
+		} else if(hardwareVersion==1) {
+			hardwareVersion = HW_ID.VERISENSE_IMU;
+		}
+		return hardwareVersion;
 	}
 
 	@Override

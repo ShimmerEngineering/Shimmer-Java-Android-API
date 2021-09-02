@@ -34,6 +34,12 @@ public class PendingEventsPayload extends AbstractPayload {
 		isSuccess = true;
 		return isSuccess;
 	}
+	
+	@Override
+	public byte[] generatePayloadContents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public String generateDebugString() {

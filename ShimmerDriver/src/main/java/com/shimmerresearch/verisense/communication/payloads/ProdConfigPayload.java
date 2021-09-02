@@ -5,6 +5,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 
 /**
@@ -19,7 +20,17 @@ public class ProdConfigPayload extends AbstractPayload {
 	
 	public ShimmerVerObject shimmerVerObject;
 	public ExpansionBoardDetails expansionBoardDetails;
-	
+
+	public ProdConfigPayload() {
+	}
+
+	public ProdConfigPayload(String verisenseId, String manufacturingOrderNumber, int hwRevMajor, int hwRevMinor, int fwRevMajor, int fwRevMinor, int fwRevInternal) {
+		this.verisenseId = verisenseId;
+		this.manufacturingOrderNumber = manufacturingOrderNumber;
+		expansionBoardDetails = new ExpansionBoardDetails(hwRevMajor, hwRevMinor, 0);
+		shimmerVerObject = new ShimmerVerObject(-1, fwRevMajor, fwRevMinor, fwRevInternal);
+	}
+
 	@Override
 	public boolean parsePayloadContents(byte[] payloadContents) {
 		super.payloadContents = payloadContents;
@@ -38,6 +49,7 @@ public class ProdConfigPayload extends AbstractPayload {
 		macIdShort = verisenseId.substring(8, 12);
 		
 		int hwRevMajor = payloadContents[7];
+		hwRevMajor = VerisenseDevice.correctHwVersion(hwRevMajor);
 		int hwRevMinor = payloadContents[8];
 		expansionBoardDetails = new ExpansionBoardDetails(hwRevMajor, hwRevMinor, 0);
 		
@@ -51,6 +63,15 @@ public class ProdConfigPayload extends AbstractPayload {
 		
 		isSuccess = true;
 		return isSuccess;
+	}
+	
+	@Override
+	public byte[] generatePayloadContents() {
+		byte[] payloadContents = new byte[14];
+		
+		//TODO
+		
+		return payloadContents;
 	}
 
 	@Override
