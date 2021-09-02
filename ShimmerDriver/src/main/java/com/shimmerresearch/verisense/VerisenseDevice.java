@@ -1698,6 +1698,25 @@ public class VerisenseDevice extends ShimmerDevice {
 		this.connect(COMMUNICATION_TYPE.BLUETOOTH);
 	}
 
+	@Override
+	public void disconnect() throws ShimmerException {
+		this.disconnect(COMMUNICATION_TYPE.BLUETOOTH);
+	}
+	
+	public void disconnect(COMMUNICATION_TYPE commType) throws ShimmerException {
+		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(commType);
+		if(verisenseProtocolByteCommunication!=null) {
+			try {
+				verisenseProtocolByteCommunication.disconnect();
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw(e);
+			}
+		} else {
+			throw new ShimmerException("VerisenseProtocolByteCommunication not set");
+		}
+	}
+	
 	public void connect(COMMUNICATION_TYPE commType) throws ShimmerException {
 		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(commType);
 		if(verisenseProtocolByteCommunication!=null) {
