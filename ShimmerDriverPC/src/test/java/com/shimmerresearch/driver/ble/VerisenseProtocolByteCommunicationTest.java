@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 
 import org.bouncycastle.util.encoders.Hex;
 
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 
 public class VerisenseProtocolByteCommunicationTest {
@@ -46,7 +47,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton btnNewButton_1 = new JButton("Read Status");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.readStatus();
+				try {
+					protocol1.readStatus();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnNewButton_1.setBounds(12, 51, 124, 25);
@@ -73,7 +79,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton button_1 = new JButton("Read Status");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.readStatus();
+				try {
+					protocol2.readStatus();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_1.setBounds(162, 51, 124, 25);
@@ -100,7 +111,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton btnStartstreaming = new JButton("StartStreaming");
 		btnStartstreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.startStreaming();
+				try {
+					protocol1.startStreaming();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnStartstreaming.setBounds(12, 127, 124, 25);
@@ -109,7 +125,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton btnStopstreaming = new JButton("StopStreaming");
 		btnStopstreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.stopStreaming();
+				try {
+					protocol1.stopStreaming();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 

@@ -41,12 +41,12 @@ import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.verisense.communication.payloads.AbstractPayload;
-import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload;
-import com.shimmerresearch.verisense.communication.payloads.ProdConfigPayload;
+import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload;
+import com.shimmerresearch.verisense.communication.payloads.ProductionConfigPayload;
 import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
 import com.shimmerresearch.verisense.communication.payloads.TimePayload;
-import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload.OP_CONFIG_BIT_MASK;
-import com.shimmerresearch.verisense.communication.payloads.OpConfigPayload.OP_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BIT_MASK;
+import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
@@ -172,8 +172,8 @@ public class VerisenseDevice extends ShimmerDevice {
 	// Verisense Communication
 	private HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
 	private transient StatusPayload status;
-	private transient OpConfigPayload opConfig;
-	private transient ProdConfigPayload prodConfigPayload;
+	private transient OperationalConfigPayload opConfig;
+	private transient ProductionConfigPayload prodConfigPayload;
 	
 	public static class FW_CHANGES {
 		/** FW Version and Reset Reason */
@@ -339,7 +339,7 @@ public class VerisenseDevice extends ShimmerDevice {
 				}
 			}
 		} else {
-			int payloadConfigBytesSize = OpConfigPayload.calculatePayloadConfigBytesSize(mShimmerVerObject);
+			int payloadConfigBytesSize = OperationalConfigPayload.calculatePayloadConfigBytesSize(mShimmerVerObject);
 			configBytes = new byte[payloadConfigBytesSize];
 
 			configBytes[OP_CONFIG_BYTE_INDEX.HEADER_BYTE] = AbstractPayload.VALID_CONFIG_BYTE;
@@ -1048,8 +1048,7 @@ public class VerisenseDevice extends ShimmerDevice {
 	}
 	
 	public boolean isHwPpgAndAnyMaxChEnabled() {
-		int hwId = getHardwareVersion();
-		return ((hwId==HW_ID.VERISENSE_DEV_BRD || hwId==HW_ID.VERISENSE_PPG || hwId==HW_ID.VERISENSE_PULSE_PLUS) 
+		return (doesHwSupportMax86xxx() 
 				&& (isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_RED)
 				|| isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_IR)
 				|| isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86150_ECG)
@@ -1079,15 +1078,44 @@ public class VerisenseDevice extends ShimmerDevice {
 	}
 
 	public boolean isEitherLsm6ds3ChannelEnabled() {
-//		AbstractSensor abstractSensor = getSensorClass(SENSORS.LSM6DS3);
-//		if(abstractSensor!=null) {
-//			return abstractSensor.isAnySensorChannelEnabled(commType);
-//		}
-//		return false;
-		
 		return isSensorEnabled(Verisense.SENSOR_ID.LSM6DS3_ACCEL) || isSensorEnabled(Verisense.SENSOR_ID.LSM6DS3_GYRO);
 	}
 	
+	public boolean doesHwSupportMax86xxx() {
+		int hwId = getHardwareVersion();
+		return (hwId==HW_ID.VERISENSE_DEV_BRD || hwId==HW_ID.VERISENSE_PPG || hwId==HW_ID.VERISENSE_PULSE_PLUS);
+	}
+
+	public boolean doesHwSupportUsb() {
+		int hwId = getHardwareVersion();
+		return (hwId!=HW_ID.VERISENSE_GSR_PLUS);
+	}
+
+	public boolean doesHwSupportLsm6ds3() {
+		int hwId = getHardwareVersion();
+		return (hwId==HW_ID.VERISENSE_DEV_BRD 
+				|| hwId==HW_ID.VERISENSE_IMU 
+				|| hwId==HW_ID.VERISENSE_GSR_PLUS 
+				|| hwId==HW_ID.VERISENSE_PPG);
+	}
+
+	public boolean doesHwSupportShortTermFlash() {
+		int hwId = getHardwareVersion();
+		return (hwId==HW_ID.VERISENSE_DEV_BRD || hwId==HW_ID.VERISENSE_IMU || hwId==HW_ID.VERISENSE_GSR_PLUS);
+	}
+
+	public boolean doesHwSupportMax30002() {
+		int hwId = getHardwareVersion();
+		int hwRev = getExpansionBoardRev();
+		return (hwId==HW_ID.VERISENSE_DEV_BRD || (hwId==HW_ID.VERISENSE_PULSE_PLUS && hwRev >=1 && hwRev <=4));
+	}
+
+	public boolean doesHwSupportGsr() {
+		int hwId = getHardwareVersion();
+		int hwRev = getExpansionBoardRev();
+		return (hwId==HW_ID.VERISENSE_GSR_PLUS || (hwId==HW_ID.VERISENSE_PULSE_PLUS && hwRev >=5));
+	}
+
 	public CalibDetailsKinematic getCurrentCalibDetails(int sensorId) {
 		if (isSensorEnabled(sensorId)) {
 			CalibDetailsKinematic calibDetailsGyro = (CalibDetailsKinematic) getConfigValueUsingConfigLabel(sensorId, AbstractSensor.GuiLabelConfigCommon.CALIBRATION_CURRENT_PER_SENSOR);
@@ -1123,40 +1151,36 @@ public class VerisenseDevice extends ShimmerDevice {
 
 		// Time is set in the OJC using this sensor class. The algorithms need it set in the OJC before they can be processed.
 		addSensorClass(SENSORS.CLOCK, new SensorVerisenseClock(this));
+		addSensorClass(SENSORS.LIS2DW12, new SensorLIS2DW12(this));
+		
+		if(compareFwVersions(getShimmerVerObject(), VerisenseDevice.FW_CHANGES.CCF21_010_3)) {
+			addSensorClass(SENSORS.Battery, new SensorBattVoltageVerisense(this));
+		}
 
-		int hwId = getHardwareVersion();
-		if(hwId==HW_ID.VERISENSE_DEV_BRD 
-				|| hwId==HW_ID.VERISENSE_IMU 
-				|| hwId==HW_ID.VERISENSE_PPG 
-				|| hwId==HW_ID.VERISENSE_GSR_PLUS) {
-			addSensorClass(SENSORS.LIS2DW12, new SensorLIS2DW12(this));
+		if(doesHwSupportLsm6ds3()) {
 			addSensorClass(SENSORS.LSM6DS3, new SensorLSM6DS3(this));
-			addSensorClass(SENSORS.Battery, new SensorBattVoltageVerisense(this));
-			
-			if(hwId==HW_ID.VERISENSE_DEV_BRD || hwId==HW_ID.VERISENSE_PPG) {
-				int expansionBoardRev = getExpansionBoardRev();
-				if (expansionBoardRev == -1 || expansionBoardRev == 0) {
-					addSensorClass(SENSORS.MAX86150, new SensorMAX86150(this));
-				} else {
-					addSensorClass(SENSORS.MAX86916, new SensorMAX86916(this));
-				}
-			} else if(hwId==HW_ID.VERISENSE_GSR_PLUS) {
-//				addSensorClass(SENSORS.PPG, new SensorPPG(this));
-				addSensorClass(SENSORS.GSR, new SensorGSRVerisense(getShimmerVerObject()));
-			}
-		} else if(hwId==HW_ID.VERISENSE_PULSE_PLUS) {
-			addSensorClass(SENSORS.LIS2DW12, new SensorLIS2DW12(this));
-			addSensorClass(SENSORS.MAX86916, new SensorMAX86916(this));
-			addSensorClass(SENSORS.Battery, new SensorBattVoltageVerisense(this));
+		}
+		
+		if(doesHwSupportMax86xxx()) {
+			int hwId = getHardwareVersion();
 			int expansionBoardRev = getExpansionBoardRev();
-			if (expansionBoardRev <= 4) {
-				// TODO add BioZ support
+			if((hwId==HW_ID.VERISENSE_DEV_BRD || hwId==HW_ID.VERISENSE_PPG)
+					&& (expansionBoardRev == -1 || expansionBoardRev == 0)) {
+				addSensorClass(SENSORS.MAX86150, new SensorMAX86150(this));
 			} else {
-				addSensorClass(SENSORS.GSR, new SensorGSRVerisense(getShimmerVerObject()));
+				addSensorClass(SENSORS.MAX86916, new SensorMAX86916(this));
 			}
 		}
-		super.sensorAndConfigMapsCreateCommon();
 
+		if(doesHwSupportMax30002()) {
+			// TODO add BioZ support
+		}
+
+		if(doesHwSupportGsr()) {
+			addSensorClass(SENSORS.GSR, new SensorGSRVerisense(getShimmerVerObject()));
+		}
+		
+		super.sensorAndConfigMapsCreateCommon();
 		generateParserMap();
 	}
 
@@ -1518,16 +1542,16 @@ public class VerisenseDevice extends ShimmerDevice {
 				if(parsedResponse instanceof StatusPayload) {
 					status = (StatusPayload) parsedResponse;
 					
-				} else if(parsedResponse instanceof ProdConfigPayload) {
-					prodConfigPayload = (ProdConfigPayload) parsedResponse;
+				} else if(parsedResponse instanceof ProductionConfigPayload) {
+					prodConfigPayload = (ProductionConfigPayload) parsedResponse;
 					setUniqueId(prodConfigPayload.verisenseId);
 					setShimmerVersionObject(prodConfigPayload.shimmerVerObject);
 					setHardwareVersion(prodConfigPayload.expansionBoardDetails.mExpansionBoardId);
 					setExpansionBoardDetails(prodConfigPayload.expansionBoardDetails);
 					sensorAndConfigMapsCreate();
 					
-				} else if(parsedResponse instanceof OpConfigPayload) {
-					opConfig = (OpConfigPayload) parsedResponse;
+				} else if(parsedResponse instanceof OperationalConfigPayload) {
+					opConfig = (OperationalConfigPayload) parsedResponse;
 					configBytesParseAndInitialiseAlgorithms(opConfig.getPayloadContents(), COMMUNICATION_TYPE.BLUETOOTH);
 					printSensorParserAndAlgoMaps();
 					
@@ -1743,6 +1767,81 @@ public class VerisenseDevice extends ShimmerDevice {
 			throw new ShimmerException("VerisenseProtocolByteCommunication not set");
 		}
 	}
+	
+	public SensorLIS2DW12 getSensorAccel1() {
+		AbstractSensor abstractSensor = getSensorClass(SENSORS.LIS2DW12);
+		if(abstractSensor!=null && abstractSensor instanceof SensorLIS2DW12) {
+			return (SensorLIS2DW12) abstractSensor;
+		}
+		return null;
+	}
+	
+	public SensorLSM6DS3 getSensorAccel2AndGyro() {
+		AbstractSensor abstractSensor = getSensorClass(SENSORS.LSM6DS3);
+		if(abstractSensor!=null && abstractSensor instanceof SensorLSM6DS3) {
+			return (SensorLSM6DS3) abstractSensor;
+		}
+		return null;
+	}
+
+	public SensorGSRVerisense getSensorGsr() {
+		AbstractSensor abstractSensor = getSensorClass(SENSORS.GSR);
+		if(abstractSensor!=null && abstractSensor instanceof SensorGSRVerisense) {
+			return (SensorGSRVerisense) abstractSensor;
+		}
+		return null;
+	}
+
+	public SensorMAX86916 getSensorPpg() {
+		AbstractSensor abstractSensor = getSensorClass(SENSORS.PPG);
+		if(abstractSensor!=null && abstractSensor instanceof SensorMAX86916) {
+			return (SensorMAX86916) abstractSensor;
+		}
+		return null;
+	}
+
+	public SensorBattVoltageVerisense getSensorBatteryVoltage() {
+		AbstractSensor abstractSensor = getSensorClass(SENSORS.Battery);
+		if(abstractSensor!=null && abstractSensor instanceof SensorBattVoltageVerisense) {
+			return (SensorBattVoltageVerisense) abstractSensor;
+		}
+		return null;
+	}
+
+	public Integer[] setSensorsEnabled(int[] sensorIds) {
+		disableAllSensors();
+		List<Integer> listOfEnabledSensorIds = new ArrayList<Integer>();
+		for(int sensorId : sensorIds) {
+			if(setSensorEnabledState(sensorId, true)) {
+				listOfEnabledSensorIds.add(sensorId);
+			}
+		}
+		return listOfEnabledSensorIds.toArray(new Integer[listOfEnabledSensorIds.size()]);
+	}
+
+	public boolean setSensorEnabledStateAccel1(boolean isEnabled) {
+		return setSensorEnabledState(Verisense.SENSOR_ID.LIS2DW12_ACCEL, isEnabled);
+	}
+
+	public boolean setSensorEnabledStateAccel2(boolean isEnabled) {
+		return setSensorEnabledState(Verisense.SENSOR_ID.LSM6DS3_ACCEL, isEnabled);
+	}
+	
+	public boolean setSensorEnabledStateGyro(boolean isEnabled) {
+		return setSensorEnabledState(Verisense.SENSOR_ID.LSM6DS3_GYRO, isEnabled);
+	}
+	
+	public boolean setSensorEnabledStateGsr(boolean isEnabled) {
+		return setSensorEnabledState(Verisense.SENSOR_ID.GSR, isEnabled);
+	}
+
+	public boolean setSensorEnabledStatePpg(boolean isEnabled) {
+		return setSensorEnabledState(Verisense.SENSOR_ID.MAX86916_PPG_BLUE, isEnabled);
+	}
+
+	public boolean setSensorEnabledStateBatteryVoltage(boolean isEnabled) {
+		return setSensorEnabledState(Verisense.SENSOR_ID.VBATT, isEnabled);
+	}
 
 	public long getRecordingStartTimeMinutes() {
 		return recordingStartTimeMinutes;
@@ -1863,5 +1962,6 @@ public class VerisenseDevice extends ShimmerDevice {
 	public void setMapOfVerisenseProtocolByteCommunication(HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication) {
 		this.mapOfVerisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication;
 	}
+	
 	
 }
