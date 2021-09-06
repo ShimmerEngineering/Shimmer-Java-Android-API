@@ -357,7 +357,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public abstract void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType);
 	public abstract byte[] configBytesGenerate(boolean generateForWritingToShimmer, COMMUNICATION_TYPE commType);
 	public abstract void createConfigBytesLayout();
-
+	protected abstract void dataHandler(ObjectCluster ojc);
 
 	// --------------- Abstract Methods End --------------------------
 

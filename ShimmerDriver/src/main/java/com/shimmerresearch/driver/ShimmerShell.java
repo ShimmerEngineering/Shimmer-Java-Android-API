@@ -142,4 +142,10 @@ public class ShimmerShell extends ShimmerDevice {
 		//TODO
 	}
 
+	@Override
+	protected void dataHandler(ObjectCluster ojc) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

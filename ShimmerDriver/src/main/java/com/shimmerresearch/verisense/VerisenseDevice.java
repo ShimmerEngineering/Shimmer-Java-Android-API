@@ -25,6 +25,7 @@ import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.ShimmerDeviceCallbackAdapter;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
@@ -69,6 +70,7 @@ public class VerisenseDevice extends ShimmerDevice {
 
 	VerisenseProtocolByteCommunication mProtocol;
 
+	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
 	public int dataCompressionMode = DATA_COMPRESSION_MODE.NONE;
 
 	private static int DEFAULT_HW_ID = HW_ID.VERISENSE_IMU;
@@ -1673,7 +1675,7 @@ public class VerisenseDevice extends ShimmerDevice {
 			System.arraycopy(byteBuffer, currentByteIndex, byteBuf, 0, byteBuf.length);
 			
 			ObjectCluster ojcCurrent = buildMsgForSensor(byteBuf, commType, dataBlockDetails.listOfSensorClassKeys, timeMsCurrentSample);
-			
+			dataHandler(ojcCurrent);
 			dataBlockDetails.setOjcArrayAtIndex(y, ojcCurrent);
 
 			timeMsCurrentSample += (dataBlockDetails.getTimestampDiffInS() * 1000);
@@ -1682,6 +1684,11 @@ public class VerisenseDevice extends ShimmerDevice {
 		}
 	}
 
+	@Override
+	protected void dataHandler(ObjectCluster ojc) {
+		mDeviceCallbackAdapter.dataHandler(ojc);
+	}
+	
 	@Override
 	protected double correctSamplingRate(double rateHz) {
 		// As Verisense uses different sampling clocks for different sensors, it is not

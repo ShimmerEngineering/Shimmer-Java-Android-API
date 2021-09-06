@@ -193,7 +193,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	protected boolean mIamAlive = false;
 	protected abstract void connect(String address,String bluetoothLibrary);
-	protected abstract void dataHandler(ObjectCluster ojc);
+	
 	protected abstract boolean bytesAvailableToBeRead();
 	protected abstract int availableBytes();
 	
