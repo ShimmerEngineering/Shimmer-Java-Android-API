@@ -1728,9 +1728,15 @@ public class VerisenseDevice extends ShimmerDevice {
 		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(commType);
 		if(verisenseProtocolByteCommunication!=null) {
 			try {
+				if (commType.equals(COMMUNICATION_TYPE.BLUETOOTH)){
+					setBluetoothRadioState(BT_STATE.CONNECTING);
+				}
 				verisenseProtocolByteCommunication.connect();
 				verisenseProtocolByteCommunication.readProductionConfig();
 				verisenseProtocolByteCommunication.readOperationalConfig();
+				if (commType.equals(COMMUNICATION_TYPE.BLUETOOTH)){
+					setBluetoothRadioState(BT_STATE.CONNECTED);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				verisenseProtocolByteCommunication.disconnect();
@@ -1741,6 +1747,13 @@ public class VerisenseDevice extends ShimmerDevice {
 		}
 	}
 
+	@Override
+	public boolean setBluetoothRadioState(BT_STATE state) {
+		boolean isChanged = super.setBluetoothRadioState(state);
+		mDeviceCallbackAdapter.setBluetoothRadioState(state, isChanged);
+		return isChanged;
+	}
+	
 	public long getRecordingStartTimeMinutes() {
 		return recordingStartTimeMinutes;
 	}
