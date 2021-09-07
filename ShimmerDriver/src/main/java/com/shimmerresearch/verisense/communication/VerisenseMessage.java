@@ -188,9 +188,7 @@ public class VerisenseMessage {
 		startTimeMs = timeMs;
 		lastTransactionMs = timeMs;
 
-		commandAndProperty = rxBytes[0];
-		commandMask = (byte) (commandAndProperty & 0xF0);
-		propertyMask = (byte) (commandAndProperty & 0x0F);
+		setCommandAndProperty(rxBytes[0]);
 
 		mExpectedLengthBytes = (int) AbstractPayload.parseByteArrayAtIndex(rxBytes, 1, CHANNEL_DATA_TYPE.UINT16);
 		payloadBytes = new byte[mExpectedLengthBytes];
@@ -210,10 +208,16 @@ public class VerisenseMessage {
 	}
 
 	public VerisenseMessage(byte commandAndProperty, byte[] payloadBytes) {
-		this.commandAndProperty = commandAndProperty;
+		setCommandAndProperty(commandAndProperty);
 		this.payloadBytes = payloadBytes;
 		mExpectedLengthBytes = payloadBytes.length;
 		mCurrentLengthBytes = mExpectedLengthBytes;
+	}
+
+	private void setCommandAndProperty(byte commandAndProperty) {
+		this.commandAndProperty = commandAndProperty;
+		commandMask = (byte) (commandAndProperty & 0xF0);
+		propertyMask = (byte) (commandAndProperty & 0x0F);
 	}
 
 	public void appendToDataChuck(byte[] rxBytes, long timeMs) {
