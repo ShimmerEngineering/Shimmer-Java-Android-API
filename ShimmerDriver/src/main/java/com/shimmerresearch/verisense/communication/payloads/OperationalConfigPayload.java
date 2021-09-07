@@ -6,7 +6,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  * @author Mark Nolan
  *
  */
-public class OpConfigPayload extends AbstractPayload {
+public class OperationalConfigPayload extends AbstractPayload {
 
 	public class OP_CONFIG_BYTE_INDEX {
 		public static final int HEADER_BYTE = 0;

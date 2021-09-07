@@ -15,10 +15,10 @@ import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunic
 
 public class VerisenseDeviceTest {
 
-//	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-d0927db7e40c", "bleconsoleapp\\BLEConsoleApp1.exe");
+	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-d0927db7e40c", "bleconsoleapp\\BLEConsoleApp1.exe");
 //	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-ee391e885898", "bleconsoleapp\\BLEConsoleApp2.exe");
 
-	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14", "bleconsoleapp\\BLEConsoleApp1.exe");
+//	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14", "bleconsoleapp\\BLEConsoleApp1.exe");
 	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7", "bleconsoleapp\\BLEConsoleApp2.exe");
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
@@ -35,6 +35,7 @@ public class VerisenseDeviceTest {
 		JButton btnNewButton = new JButton("Connect");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+//				protocol1.connect();
 				try {
 					device1.connect();
 				} catch (ShimmerException e1) {
@@ -63,7 +64,12 @@ public class VerisenseDeviceTest {
 		JButton btnNewButton_1 = new JButton("Read Status");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.readStatus();
+				try {
+					protocol1.readStatus();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnNewButton_1.setBounds(12, 51, 124, 25);
@@ -95,7 +101,12 @@ public class VerisenseDeviceTest {
 		JButton button_1 = new JButton("Read Status");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.readStatus();
+				try {
+					protocol2.readStatus();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_1.setBounds(162, 51, 124, 25);
@@ -127,7 +138,12 @@ public class VerisenseDeviceTest {
 		JButton btnStartstreaming = new JButton("StartStreaming");
 		btnStartstreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.startStreaming();
+				try {
+					protocol1.startStreaming();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnStartstreaming.setBounds(12, 203, 124, 25);
@@ -136,7 +152,12 @@ public class VerisenseDeviceTest {
 		JButton btnStopstreaming = new JButton("StopStreaming");
 		btnStopstreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.stopStreaming();
+				try {
+					protocol1.stopStreaming();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -146,7 +167,12 @@ public class VerisenseDeviceTest {
 		JButton button_4 = new JButton("StartStreaming");
 		button_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.startStreaming();
+				try {
+					protocol2.startStreaming();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_4.setBounds(162, 203, 124, 25);
@@ -155,7 +181,12 @@ public class VerisenseDeviceTest {
 		JButton button_5 = new JButton("StopStreaming");
 		button_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.stopStreaming();
+				try {
+					protocol2.stopStreaming();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_5.setBounds(162, 238, 124, 25);
@@ -164,7 +195,12 @@ public class VerisenseDeviceTest {
 		JButton btnReadOp = new JButton("Read Op");
 		btnReadOp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.readOperationalConfigAsync();
+				try {
+					protocol1.readOperationalConfig();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnReadOp.setBounds(12, 89, 124, 25);
@@ -173,7 +209,12 @@ public class VerisenseDeviceTest {
 		JButton btnReadOp_1 = new JButton("Read Op");
 		btnReadOp_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.readOperationalConfigAsync();
+				try {
+					protocol2.readOperationalConfig();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnReadOp_1.setBounds(162, 89, 124, 25);

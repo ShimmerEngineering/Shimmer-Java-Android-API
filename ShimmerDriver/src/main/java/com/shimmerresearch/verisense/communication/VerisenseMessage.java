@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.verisense.payloaddesign.CRC16CCITT;
+import com.shimmerresearch.verisense.communication.VerisenseMessage.TIMEOUT_MS;
 import com.shimmerresearch.verisense.communication.payloads.AbstractPayload;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.BYTE_COUNT;
 
@@ -103,28 +104,68 @@ public class VerisenseMessage {
 
 	public class VERISENSE_DEBUG_MODE {
 		public static final byte FLASH_LOOKUP_TABLE_READ = 0x01;
-		public static final byte FLASH_LOOKUP_TABLE_ERASE = 0x02;
+//		public static final byte FLASH_LOOKUP_TABLE_ERASE = 0x02; // Recommend to use ERASE_FLASH_AND_LOOKUP instead
 		public static final byte RWC_SCHEDULE_READ = 0x03;
-		public static final byte ERASE_LONG_TERM_FLASH = 0x04;
-		public static final byte ERASE_SHORT_TERM_FLASH1 = 0x05;
-		public static final byte ERASE_SHORT_TERM_FLASH2 = 0x06;
+//		public static final byte ERASE_LONG_TERM_FLASH = 0x04; // Recommend to use ERASE_FLASH_AND_LOOKUP instead
+//		public static final byte ERASE_SHORT_TERM_FLASH1 = 0x05; // Recommend to use ERASE_FLASH_AND_LOOKUP instead
+//		public static final byte ERASE_SHORT_TERM_FLASH2 = 0x06; // Recommend to use ERASE_FLASH_AND_LOOKUP instead
 		public static final byte ERASE_OPERATIONAL_CONFIG = 0x07;
 		public static final byte ERASE_PRODUCTION_CONFIG = 0x08;
 		public static final byte CLEAR_PENDING_EVENTS = 0x09;
 		public static final byte ERASE_FLASH_AND_LOOKUP = 0x0A;
-		public static final byte TRANSFER_LOOP = 0x0B;
-		public static final byte LOAD_FAKE_LOOKUPTABLE = 0x0C;
-		public static final byte GSR_LED_TEST = 0x0D;
+		public static final byte TRANSFER_LOOP = 0x0B; // Internal FW testing only
+//		public static final byte LOAD_FAKE_LOOKUPTABLE = 0x0C; // Internal FW testing only
+//		public static final byte GSR_LED_TEST = 0x0D; //Unused
 		public static final byte MAX86XXX_LED_TEST = 0x0E;
 		public static final byte CHECK_PAYLOADS_FOR_CRC_ERRORS = 0x0F;
 		public static final byte EVENT_LOG = 0x10;
-		public static final byte START_POWER_PROFILER_SEQ = 0x11;
+//		public static final byte START_POWER_PROFILER_SEQ = 0x11; // Internal FW testing only
 		public static final byte RECORD_BUFFER_DETAILS = 0x12;
+	}
+	
+	public enum VERISENSE_TEST_MODE {
+//		EXIT(0x00), // Not in use
+		SHORT_TERM_FLASH1((byte) 0x01),
+		SHORT_TERM_FLASH2((byte) 0x02),
+		LONG_TERM_FLASH((byte) 0x03),
+		EEPROM((byte) 0x04),
+		ACCEL_1((byte) 0x05),
+		BATT_VOLTAGE((byte) 0x06),
+		USB_POWER_GOOD((byte) 0x07),
+		ACCEL2_AND_GYRO((byte) 0x08),
+		MAX86XXX((byte) 0x09),
+		// 0x0A Reserved for PPG LED Test
+		MAX30002((byte) 0x0B),
+		ALL((byte) 0xFF);
+		
+		private byte testId;
+
+		private VERISENSE_TEST_MODE(byte testId) {
+			this.testId = testId;
+		}
+
+		public Byte getTestId() {
+			return testId;
+		}
 	}
 
 	public class STREAMING_COMMAND {
 		public static final byte STREAMING_START = 0x01;
 		public static final byte STREAMING_STOP = 0x02;
+	}
+
+	public class TIMEOUT_MS {
+		public static final long STANDARD = 1 * 1000;
+		public static final long DATA_TRANSFER = 10 * 1000;
+		public static final long BETWEEN_PACKETS = 2 * 1000;
+		public static final long ERASE_FLASH_AND_LOOKUP_TABLE = 40 * 1000;
+		public static final long ERASE_LONG_TERM_FLASH = 40 * 1000;
+		public static final long ERASE_SHORT_TERM_FLASH = 2 * 1000;
+		public static final long ALL_TEST_TIMEOUT = 5 * 1000;
+		public static final long READ_LOOKUP_TABLE = 20 * 1000;
+		public static final long FLASH_AND_LOOKUP = ERASE_FLASH_AND_LOOKUP_TABLE + ERASE_LONG_TERM_FLASH;
+		public static final long FAKE_LOOKUPTABLE = FLASH_AND_LOOKUP + ERASE_FLASH_AND_LOOKUP_TABLE;
+		public static final long BETWEEN_NACK_AND_PAYLOAD = 1 * 1000;
 	}
 
 	byte commandAndProperty;
@@ -143,15 +184,11 @@ public class VerisenseMessage {
 	
 	public int payloadIndex;
 
-	public static final int MAX_TIMEOUT_BETWEEN_MESSAGES_MS = 5000;
-
 	public VerisenseMessage(byte[] rxBytes, long timeMs) {
 		startTimeMs = timeMs;
 		lastTransactionMs = timeMs;
 
-		commandAndProperty = rxBytes[0];
-		commandMask = (byte) (commandAndProperty & 0xF0);
-		propertyMask = (byte) (commandAndProperty & 0x0F);
+		setCommandAndProperty(rxBytes[0]);
 
 		mExpectedLengthBytes = (int) AbstractPayload.parseByteArrayAtIndex(rxBytes, 1, CHANNEL_DATA_TYPE.UINT16);
 		payloadBytes = new byte[mExpectedLengthBytes];
@@ -171,10 +208,16 @@ public class VerisenseMessage {
 	}
 
 	public VerisenseMessage(byte commandAndProperty, byte[] payloadBytes) {
-		this.commandAndProperty = commandAndProperty;
+		setCommandAndProperty(commandAndProperty);
 		this.payloadBytes = payloadBytes;
 		mExpectedLengthBytes = payloadBytes.length;
 		mCurrentLengthBytes = mExpectedLengthBytes;
+	}
+
+	private void setCommandAndProperty(byte commandAndProperty) {
+		this.commandAndProperty = commandAndProperty;
+		commandMask = (byte) (commandAndProperty & 0xF0);
+		propertyMask = (byte) (commandAndProperty & 0x0F);
 	}
 
 	public void appendToDataChuck(byte[] rxBytes, long timeMs) {
@@ -257,13 +300,16 @@ public class VerisenseMessage {
 		sb.append(", Property=" + VERISENSE_PROPERTY.lookupByMask(propertyMask).toString());
 		sb.append(", Expected Length =" + mExpectedLengthBytes);
 		sb.append(", Current Length =" + mCurrentLengthBytes);
-		sb.append(", Payload Contents =" + UtilShimmer.bytesToHexStringWithSpacesFormatted(payloadBytes));
 		
 		return sb.toString();
 	}
 
+	public String generatePayloadByteString() {
+		return UtilShimmer.bytesToHexStringWithSpacesFormatted(generatePacket());
+	}
+
 	public boolean isExpired(long timeMs) {
-		return (timeMs - lastTransactionMs) > MAX_TIMEOUT_BETWEEN_MESSAGES_MS;
+		return (timeMs - lastTransactionMs) > TIMEOUT_MS.BETWEEN_PACKETS;
 	}
 
 }

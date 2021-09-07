@@ -12,7 +12,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
  * @author Mark Nolan
  *
  */
-public class ProdConfigPayload extends AbstractPayload {
+public class ProductionConfigPayload extends AbstractPayload {
 
 	public String verisenseId;
 	public String manufacturingOrderNumber;
@@ -21,10 +21,10 @@ public class ProdConfigPayload extends AbstractPayload {
 	public ShimmerVerObject shimmerVerObject;
 	public ExpansionBoardDetails expansionBoardDetails;
 
-	public ProdConfigPayload() {
+	public ProductionConfigPayload() {
 	}
 
-	public ProdConfigPayload(String macIdShort, String manufacturingOrderNumber, int hwRevMajor, int hwRevMinor, int fwRevMajor, int fwRevMinor, int fwRevInternal) {
+	public ProductionConfigPayload(String macIdShort, String manufacturingOrderNumber, int hwRevMajor, int hwRevMinor, int fwRevMajor, int fwRevMinor, int fwRevInternal) {
 		this.macIdShort = macIdShort.toUpperCase();
 		this.manufacturingOrderNumber = manufacturingOrderNumber;
 		expansionBoardDetails = new ExpansionBoardDetails(hwRevMajor, hwRevMinor, 0);

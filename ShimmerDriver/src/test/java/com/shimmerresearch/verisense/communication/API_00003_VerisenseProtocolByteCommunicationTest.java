@@ -27,7 +27,7 @@ import com.shimmerresearch.verisense.VerisenseDevice.BLE_TX_POWER;
 import com.shimmerresearch.verisense.communication.payloads.EventLogPayload;
 import com.shimmerresearch.verisense.communication.payloads.MemoryLookupTablePayload;
 import com.shimmerresearch.verisense.communication.payloads.PendingEventsPayload;
-import com.shimmerresearch.verisense.communication.payloads.ProdConfigPayload;
+import com.shimmerresearch.verisense.communication.payloads.ProductionConfigPayload;
 import com.shimmerresearch.verisense.communication.payloads.RecordBufferDetailsPayload;
 import com.shimmerresearch.verisense.communication.payloads.RwcSchedulePayload;
 import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
@@ -100,7 +100,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 
 		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
 		
-		ProdConfigPayload prodConfigPayload = new ProdConfigPayload();
+		ProductionConfigPayload prodConfigPayload = new ProductionConfigPayload();
 		prodConfigPayload.parsePayloadContents(verisenseMessage.payloadBytes);
 		System.out.println(prodConfigPayload.generateDebugString());
 		

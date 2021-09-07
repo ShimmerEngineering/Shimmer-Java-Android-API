@@ -2,6 +2,7 @@ package com.shimmerresearch.driver.ble;
 
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
+import com.shimmerresearch.comms.serialPortInterface.SerialPortListener;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.verisense.communication.AbstractByteCommunication;
 
@@ -15,7 +16,6 @@ public class SerialPortByteCommunication extends AbstractByteCommunication {
 			
 			@Override
 			public void eventDisconnected() {
-				// TODO Auto-generated method stub
 				if (mByteCommunicationListener != null) {
 					mByteCommunicationListener.eventDisconnected();
 				}
@@ -23,10 +23,23 @@ public class SerialPortByteCommunication extends AbstractByteCommunication {
 			
 			@Override
 			public void eventConnected() {
-				// TODO Auto-generated method stub
 				if (mByteCommunicationListener != null) {
 					mByteCommunicationListener.eventConnected();
 				}
+			}
+		});
+		
+		abstractSerialPortHal.registerSerialPortRxEventCallback(new SerialPortListener() {
+			
+			@Override
+			public void serialPortRxEvent(int byteLength) {
+				try {
+					mByteCommunicationListener.eventNewBytesReceived(abstractSerialPortHal.rxBytes(byteLength));
+				} catch (ShimmerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 		});
 	}
@@ -44,7 +57,7 @@ public class SerialPortByteCommunication extends AbstractByteCommunication {
 	@Override
 	public void disconnect() {
 		try {
-			abstractSerialPortHal.disconnect();
+			abstractSerialPortHal.closeSafely();
 		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -63,8 +76,7 @@ public class SerialPortByteCommunication extends AbstractByteCommunication {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		
+		this.disconnect();
 	}
 	
 
