@@ -119,8 +119,6 @@ public class VerisenseDevice extends ShimmerDevice {
 	private Integer firstPayloadIndexAfterBoot = null;
 	public boolean isExtendedPayloadConfig = true;
 
-	private double timeMsCurrentSample;
-
 	// Saving in global map as we only need to do this once per datablock sensor ID per payload, not for each datablock
 	private HashMap<DATABLOCK_SENSOR_ID, List<SENSORS>> mapOfSensorIdsPerDataBlock = new HashMap<DATABLOCK_SENSOR_ID, List<SENSORS>>();
 	
@@ -1251,9 +1249,9 @@ public class VerisenseDevice extends ShimmerDevice {
 	 * @return
 	 */
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, double timeMsCurrentSample){
-		// here so we can save the timestamp in float format to the OJC before the algorithms are processed in "processData"
-		this.timeMsCurrentSample = timeMsCurrentSample;
 		ObjectCluster ojc = super.buildMsg(newPacket, commType, isTimeSyncEnabled, (long) timeMsCurrentSample);
+		//TODO check why this isn't done as part of the sensor map? just because a double isn't passed into sensor.processData?
+		processSensorVerisenseClock(ojc, timeMsCurrentSample, commType);
 		return ojc;
 	}
 	
@@ -1268,9 +1266,6 @@ public class VerisenseDevice extends ShimmerDevice {
 	 * @return
 	 */
 	public ObjectCluster buildMsgForSensor(byte[] newPacket, COMMUNICATION_TYPE commType, List<SENSORS> listOfSensorClassKeys, double timeMsCurrentSample) {
-		// here so we can save the timestamp in float format to the OJC before the algorithms are processed in "processData"
-		this.timeMsCurrentSample = timeMsCurrentSample;
-
 		// Arguments normally passed into ShimmerDevice.buildMsg()
 		boolean isTimeSyncEnabled = false; 
 		long pcTimestamp = (long) timeMsCurrentSample;
@@ -1312,9 +1307,11 @@ public class VerisenseDevice extends ShimmerDevice {
 			}
 		}
 
+		processSensorVerisenseClock(ojc, timeMsCurrentSample, commType);
+
 		//After sensor data has been processed, now process any filters or Algorithms 
 		ojc = processData(ojc);
-		
+
 //		if(sensorClassKey==SENSORS.MAX86916) {
 //			ojc.consolePrintChannelsAndDataSingleLine();
 //		}
@@ -1322,18 +1319,19 @@ public class VerisenseDevice extends ShimmerDevice {
 		return ojc;
 	}
 
-	@Override
-	protected ObjectCluster processData(ObjectCluster ojc) {
-		
+	private void processSensorVerisenseClock(ObjectCluster ojc, double timeMsCurrentSample, COMMUNICATION_TYPE commType) {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.CLOCK);
 		if(abstractSensor!=null && abstractSensor instanceof SensorVerisenseClock) {
 			SensorVerisenseClock sensorVerisenseClock = (SensorVerisenseClock)abstractSensor;
-			sensorVerisenseClock.processDataCustom(ojc, timeMsCurrentSample);
+			sensorVerisenseClock.processDataCustom(ojc, timeMsCurrentSample, commType);
 		}
-		
-		return super.processData(ojc);
 	}
 
+	@Override
+	protected ObjectCluster processData(ObjectCluster ojc) {
+		return super.processData(ojc);
+	}
+	
 	// TODO move to ShimmerVerObject
 	public boolean isFwMajorMinorInternalVerSet() {
 		ShimmerVerObject svo = getShimmerVerObject();
@@ -1571,11 +1569,10 @@ public class VerisenseDevice extends ShimmerDevice {
 
 			@Override
 			public void eventNewPacket(byte[] packetByteArray, long pcTimestamp) {
-				// TODO Auto-generated method stub
 				System.out.println("VerisenseDevice New Packet: " + pcTimestamp);
 				
 				try {
-					DataBlockDetails dataBlockDetails = parseDataBlockMetaData(packetByteArray);
+					DataBlockDetails dataBlockDetails = parseDataBlockMetaData(packetByteArray, pcTimestamp);
 					parseDataBlockData(dataBlockDetails, packetByteArray, BYTE_COUNT.PAYLOAD_CONTENTS_GEN8_SENSOR_ID + BYTE_COUNT.PAYLOAD_CONTENTS_RTC_BYTES_TICKS, COMMUNICATION_TYPE.BLUETOOTH);
 					
 					System.out.println("Number of ObjectClusters generated: " + dataBlockDetails.getOjcArray().length);
@@ -1630,8 +1627,34 @@ public class VerisenseDevice extends ShimmerDevice {
 		mapOfVerisenseProtocolByteCommunication.remove(communicationType);
 	}
 
-	public DataBlockDetails parseDataBlockMetaData(byte[] byteBuffer) throws IOException {
-		return parseDataBlockMetaData(byteBuffer, 0, 0, 0, 0);
+	public long endTimeMinutes = 0;
+	public long endTimeTicksLatest = -1;
+	
+	/** Used during real-time streaming
+	 * @param byteBuffer
+	 * @return
+	 * @throws IOException
+	 */
+	public DataBlockDetails parseDataBlockMetaData(byte[] byteBuffer, long pcTimestampMs) throws IOException {
+		DataBlockDetails dataBlockDetails = parseDataBlockMetaData(byteBuffer, 0, 0, 0, 0);
+		
+		// Streaming data block only contains microcontroller ticks value so we need to track the minutes in SW
+		long endTimeTicksCurrent = dataBlockDetails.getTimeDetailsUcClock().getEndTimeTicks();
+		if(endTimeTicksLatest!=-1) {
+			if (endTimeTicksCurrent<endTimeTicksLatest) {
+				endTimeMinutes++;
+			}
+		}
+		endTimeTicksLatest = endTimeTicksCurrent;
+		dataBlockDetails.setUcClockOrRwcClockEndTimeMinutesAndCalculateTimings(endTimeMinutes, true);
+		
+		//TODO temp here, setting the RWC in the datablock to be the same as the UC clock
+		VerisenseTimeDetails timeDetailsRwc = dataBlockDetails.getTimeDetailsRwc();
+		VerisenseTimeDetails timeDetailsUc = dataBlockDetails.getTimeDetailsUcClock();
+		timeDetailsRwc.setStartTimeMs(timeDetailsUc.getStartTimeMs());
+		timeDetailsRwc.setEndTimeMs(timeDetailsUc.getEndTimeMs());
+		
+		return dataBlockDetails;
 	}
 
 	public DataBlockDetails parseDataBlockMetaData(byte[] byteBuffer, int dataBlockStartByteIndexInPayload, int dataBlockStartByteIndexInFile, int dataBlockIndexInPayload, int payloadIndex) throws IOException {
@@ -1973,5 +1996,15 @@ public class VerisenseDevice extends ShimmerDevice {
 		this.mapOfVerisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication;
 	}
 	
-	
+	@Override
+	public void startStreaming() {
+		//TODO reset this as part of the sensor map
+		AbstractSensor abstractSensor = getSensorClass(SENSORS.CLOCK);
+		if(abstractSensor!=null && abstractSensor instanceof SensorVerisenseClock) {
+			SensorVerisenseClock sensorVerisenseClock = (SensorVerisenseClock)abstractSensor;
+			sensorVerisenseClock.getSystemTimestampPlot().reset();
+		}
+
+		super.startStreaming();
+	}
 }

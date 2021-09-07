@@ -219,10 +219,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract byte readByte();
 	protected abstract void dockedStateChange();
 	
-	private boolean mIsFirstSystemTimestampOffsetStored = false;
-	private double mOffsetFirstTime=-1;
-	private boolean mIsFirstSystemTimestampOffsetPlotStored = false;
-	private double mFirstSystemTimestampPlot = -1;
+	private SystemTimestampPlot systemTimestampPlot = new SystemTimestampPlot();
 
 	private List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
@@ -1070,7 +1067,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		ObjectCluster objectCluster = null;
 		try {
 			objectCluster = buildMsg(packet, fwType, timeSync, pcTimeStamp);
-			objectCluster = processSystemTimestampPlot(objectCluster);
+			objectCluster = systemTimestampPlot.processSystemTimestampPlot(objectCluster);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1078,36 +1075,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		dataHandler(objectCluster);
 	}
 
-	private ObjectCluster processSystemTimestampPlot(ObjectCluster objectCluster) {
-		if(!mIsFirstSystemTimestampOffsetStored) {
-			mIsFirstSystemTimestampOffsetStored = true;
-////			FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
-//			byte[] bSystemTS = objectCluster.mSystemTimeStampBytes;
-//			ByteBuffer bb = ByteBuffer.allocate(8);
-//	    	bb.put(bSystemTS);
-//	    	bb.flip();
-//	    	long systemTimeStamp = bb.getLong();
-	    	long systemTimeStamp = objectCluster.mSystemTimeStamp;
-			mOffsetFirstTime = systemTimeStamp-objectCluster.getTimestampMilliSecs();
-		}
-		
-		double calTimestamp = objectCluster.getTimestampMilliSecs();
-		double systemTimestampPlot = calTimestamp+mOffsetFirstTime;
-		
-		if(!mIsFirstSystemTimestampOffsetPlotStored) {
-			mIsFirstSystemTimestampOffsetPlotStored = true;
-			mFirstSystemTimestampPlot  = systemTimestampPlot;
-		}
-
-		objectCluster.addDataToMap(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, systemTimestampPlot);
-		
-		double systemTimestampPlotZeroed = 0;
-		if(mIsFirstSystemTimestampOffsetPlotStored) {
-			systemTimestampPlotZeroed = systemTimestampPlot - mFirstSystemTimestampPlot;
-		}
-		objectCluster.addCalData(SensorSystemTimeStamp.channelSystemTimestampPlotZeroed, systemTimestampPlotZeroed);
-		return objectCluster;
-	}
 	/**this is to clear the buffer
 	 * 
 	 */
@@ -2630,8 +2597,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		determineCalibrationParamsForIMU();
 		initaliseDataProcessing();
 		
-		mIsFirstSystemTimestampOffsetStored = false;
-		mIsFirstSystemTimestampOffsetPlotStored = false;
+		systemTimestampPlot.reset();
 		
 		resetCalibratedTimeStamp();
 //		resetPacketLossVariables();

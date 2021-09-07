@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.bluetooth.SystemTimestampPlot;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -19,6 +20,8 @@ public class SensorVerisenseClock extends AbstractSensor {
 
 	private static final long serialVersionUID = -2624896596566484434L;
 	
+	private SystemTimestampPlot systemTimestampPlot = new SystemTimestampPlot();
+
 	public static final String CHANNEL_UNITS_TIMESTAMP = "Unix_" + CHANNEL_UNITS.MILLISECONDS;
 	public static final String CHANNEL_UNITS_TIMESTAMP_LOCAL = CHANNEL_UNITS_TIMESTAMP + "_plus_local_time_zone_offset";
 	
@@ -58,9 +61,14 @@ public class SensorVerisenseClock extends AbstractSensor {
 		
 	}
 
-	public ObjectCluster processDataCustom(ObjectCluster objectCluster, double timeStampMs) {
+	public ObjectCluster processDataCustom(ObjectCluster objectCluster, double timeStampMs, COMMUNICATION_TYPE commType) {
 		objectCluster.addCalData(getChannelDetailsForFwVerVersion(mShimmerDevice), timeStampMs);
 		objectCluster.setTimeStampMilliSecs(timeStampMs);
+		
+		if(commType!=COMMUNICATION_TYPE.SD) {
+			objectCluster = systemTimestampPlot.processSystemTimestampPlot(objectCluster);
+		}
+
 		return objectCluster;
 	}
 	
@@ -165,6 +173,10 @@ public class SensorVerisenseClock extends AbstractSensor {
 		} else {
 			return SensorVerisenseClock.channelTimestampLocal;
 		}
+	}
+
+	public SystemTimestampPlot getSystemTimestampPlot() {
+		return systemTimestampPlot;
 	}
 
 }
