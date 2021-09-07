@@ -1,10 +1,12 @@
 package com.shimmerresearch.verisense.communication;
 
+import com.shimmerresearch.exceptions.ShimmerException;
+
 public abstract class AbstractByteCommunication {
 
 	protected ByteCommunicationListener mByteCommunicationListener;
 
-	public abstract void connect();
+	public abstract void connect() throws ShimmerException;
 
 	public abstract void disconnect();
 

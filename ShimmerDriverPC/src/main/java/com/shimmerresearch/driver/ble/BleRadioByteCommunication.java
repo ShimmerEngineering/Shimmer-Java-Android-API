@@ -1,12 +1,16 @@
 package com.shimmerresearch.driver.ble;
 
 import java.lang.Runtime;
+import java.util.concurrent.TimeUnit;
 import java.io.*;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.verisense.communication.AbstractByteCommunication;
 import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
+
+import bolts.TaskCompletionSource;
 
 public class BleRadioByteCommunication extends AbstractByteCommunication {
 
@@ -18,6 +22,8 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 	BleRadioByteCommunication radio1;
 	BleRadioByteCommunication radio2;
 	String uuid;
+	TaskCompletionSource<String> mTaskConnect = new TaskCompletionSource<>();
+	
 
 	public BleRadioByteCommunication(String uuid, String exePath, ByteCommunicationListener listener) {
 		this.uuid = uuid;
@@ -84,6 +90,7 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 						if ((line = reader.readLine()) != null) {
 //							System.out.println("BleRadioByteComm: " + line);
 							if (line.equals("Connected")) {
+								mTaskConnect.setResult("Connected");
 								if (mByteCommunicationListener != null) {
 									mByteCommunicationListener.eventConnected();
 								}
@@ -121,8 +128,21 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 	}
 
 	@Override
-	public void connect() {
+	public void connect() throws ShimmerException{
 		WriteDataToProcess("Connect");
+		mTaskConnect = new TaskCompletionSource<>();
+		try {
+			boolean result = mTaskConnect.getTask().waitForCompletion(2, TimeUnit.SECONDS);
+			if (result) {
+				
+			} else {
+				throw new ShimmerException("Connect Failed");
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new ShimmerException("InterruptedException");
+		}
 	}
 
 	@Override

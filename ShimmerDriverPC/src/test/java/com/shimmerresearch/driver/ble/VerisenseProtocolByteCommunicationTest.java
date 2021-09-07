@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 
 import org.bouncycastle.util.encoders.Hex;
 
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 
 public class VerisenseProtocolByteCommunicationTest {
@@ -28,7 +29,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton btnNewButton = new JButton("Connect");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.connect();
+				try {
+					protocol1.connect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnNewButton.setBounds(12, 13, 124, 25);
@@ -64,7 +70,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton button = new JButton("Connect");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.connect();
+				try {
+					protocol2.connect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button.setBounds(162, 13, 124, 25);

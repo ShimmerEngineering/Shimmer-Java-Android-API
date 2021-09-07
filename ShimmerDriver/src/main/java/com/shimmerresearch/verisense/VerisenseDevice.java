@@ -1729,16 +1729,6 @@ public class VerisenseDevice extends ShimmerDevice {
 		if(verisenseProtocolByteCommunication!=null) {
 			try {
 				verisenseProtocolByteCommunication.connect();
-				
-				//TODO remove the following once connect is implemented as a blocking method
-				try {
-					System.out.println("Sleeping to allow for connection to be established");
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
 				verisenseProtocolByteCommunication.readProductionConfig();
 				verisenseProtocolByteCommunication.readOperationalConfig();
 			} catch (Exception e) {

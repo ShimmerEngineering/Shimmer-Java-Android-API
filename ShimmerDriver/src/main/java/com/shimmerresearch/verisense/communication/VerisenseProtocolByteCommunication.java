@@ -381,7 +381,7 @@ public class VerisenseProtocolByteCommunication {
 
 	}
 
-	public void connect() {
+	public void connect() throws ShimmerException {
 		mByteCommunication.connect();
 	}
 
