@@ -34,7 +34,7 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 	private static JDialog dialog = new JDialog();
 	JPanel panel = new JPanel();
 	
-	public EnableSensorsDialog(ShimmerPC shimmerPC,BasicShimmerBluetoothManagerPc btManager) {
+	public EnableSensorsDialog(ShimmerDevice shimmerPC,BasicShimmerBluetoothManagerPc btManager) {
 		super(shimmerPC,btManager);
 	}
 	

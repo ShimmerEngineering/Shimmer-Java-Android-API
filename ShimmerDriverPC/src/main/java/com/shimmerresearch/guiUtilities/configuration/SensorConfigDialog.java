@@ -25,6 +25,7 @@ import javax.swing.ScrollPaneLayout;
 
 import com.shimmerresearch.bluetoothmanager.guiUtilities.AbstractSensorConfigDialog;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
@@ -41,7 +42,7 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 	JPanel panel;
 	Box box;
 	
-	public SensorConfigDialog(ShimmerPC shimmerDevice, BasicShimmerBluetoothManagerPc bluetoothManager) {
+	public SensorConfigDialog(ShimmerDevice shimmerDevice, BasicShimmerBluetoothManagerPc bluetoothManager) {
 		super(shimmerDevice, bluetoothManager);
 	}
 	

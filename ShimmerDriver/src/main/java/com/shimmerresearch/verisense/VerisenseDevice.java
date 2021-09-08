@@ -1728,7 +1728,18 @@ public class VerisenseDevice extends ShimmerDevice {
 		//TODO assume bluetooth for the moment
 		this.connect(COMMUNICATION_TYPE.BLUETOOTH);
 	}
-
+	
+	@Override
+	public void startStreaming() {
+		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH);
+		try {
+			verisenseProtocolByteCommunication.startStreaming();
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void disconnect() throws ShimmerException {
 		this.disconnect(COMMUNICATION_TYPE.BLUETOOTH);

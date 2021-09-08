@@ -6,6 +6,7 @@ import java.io.*;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
+import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.verisense.communication.AbstractByteCommunication;
 import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
@@ -38,6 +39,19 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 		InitializeProcess();
 	}
 
+	public BleRadioByteCommunication(BluetoothDeviceDetails btDevDetails, String exePath) {
+		this.uuid = convertMacIDtoUUID(btDevDetails.mShimmerMacId);
+		this.executablePath = exePath;
+		InitializeProcess();
+	}
+	
+	public String convertMacIDtoUUID(String MacID) {
+		//00000000-0000-0000-0000-e7452c6d6f14
+		String uuid = "00000000-0000-0000-0000-";
+		uuid = String.join("", uuid, MacID.replace(":", ""));
+		return uuid;
+	}
+	
 	public void DestroyProcess() {
 		if (p != null) {
 			p.destroyForcibly();

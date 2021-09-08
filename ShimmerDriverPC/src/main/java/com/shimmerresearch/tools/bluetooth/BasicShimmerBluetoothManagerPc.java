@@ -11,13 +11,17 @@ import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driver.ble.BleRadioByteCommunication;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.shimmer4sdk.Shimmer4sdk;
+import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.exceptions.ConnectionExceptionListener;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
+import com.shimmerresearch.verisense.VerisenseDevice;
+import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 
 import jssc.SerialPort;
 
@@ -114,6 +118,23 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
     	return shimmer4;
     }
 	
+	@Override
+	protected void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
+		BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
+		VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
+		VerisenseDevice verisenseDevice = new VerisenseDevice();
+		verisenseDevice.setMacIdFromUart(bdd.mShimmerMacId);
+		verisenseDevice.setProtocol(COMMUNICATION_TYPE.BLUETOOTH, protocol1);
+		initializeNewShimmerCommon(verisenseDevice);
+		try {
+			verisenseDevice.connect();
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
 	@Override
 	public void connectShimmerThroughCommPort(String comPort){
 		directConnectUnknownShimmer=true;
