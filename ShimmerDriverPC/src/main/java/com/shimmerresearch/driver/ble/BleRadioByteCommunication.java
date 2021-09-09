@@ -24,6 +24,7 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 	BleRadioByteCommunication radio2;
 	String uuid;
 	TaskCompletionSource<String> mTaskConnect = new TaskCompletionSource<>();
+	TaskCompletionSource<String> mTaskDisconnect = new TaskCompletionSource<>();
 	
 
 	public BleRadioByteCommunication(String uuid, String exePath, ByteCommunicationListener listener) {
@@ -109,6 +110,7 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 									mByteCommunicationListener.eventConnected();
 								}
 							} else if (line.equals("Disconnected")) {
+								mTaskDisconnect.setResult("Disconnected");
 								if (mByteCommunicationListener != null) {
 									mByteCommunicationListener.eventDisconnected();
 								}
@@ -160,8 +162,21 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 	}
 
 	@Override
-	public void disconnect() {
+	public void disconnect() throws ShimmerException {
 		WriteDataToProcess("Disconnect");
+		mTaskDisconnect = new TaskCompletionSource<>();
+		try {
+			boolean result = mTaskDisconnect.getTask().waitForCompletion(4, TimeUnit.SECONDS);
+			if (result) {
+				
+			} else {
+				throw new ShimmerException("Disconnect Failed");
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new ShimmerException("InterruptedException");
+		}
 	}
 
 	@Override

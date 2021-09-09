@@ -6,6 +6,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
@@ -18,6 +19,7 @@ import com.shimmerresearch.guiUtilities.configuration.SignalsToPlotDialog;
 import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
+import com.shimmerresearch.verisense.VerisenseDevice;
 
 import info.monitorenter.gui.chart.Chart2D;
 
@@ -210,7 +212,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		s.frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-
+				if (shimmer instanceof VerisenseDevice) {
+					((VerisenseDevice)shimmer).stopCommunicationProcess(COMMUNICATION_TYPE.BLUETOOTH);
+				}
 			}
 		});
 		//s.setWaitForData(shimmer);

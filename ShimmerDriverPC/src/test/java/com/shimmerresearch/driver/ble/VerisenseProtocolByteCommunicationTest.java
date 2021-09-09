@@ -43,7 +43,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton btnDisconnect = new JButton("Disconnect");
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.disconnect();
+				try {
+					protocol1.disconnect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnDisconnect.setBounds(12, 200, 124, 25);
@@ -112,7 +117,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton button_3 = new JButton("Disconnect");
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.disconnect();
+				try {
+					protocol2.disconnect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_3.setBounds(162, 200, 124, 25);

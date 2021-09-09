@@ -8,7 +8,7 @@ public abstract class AbstractByteCommunication {
 
 	public abstract void connect() throws ShimmerException;
 
-	public abstract void disconnect();
+	public abstract void disconnect() throws ShimmerException;
 
 	public abstract void writeBytes(byte[] bytes);
 

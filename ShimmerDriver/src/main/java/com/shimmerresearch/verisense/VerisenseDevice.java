@@ -1755,6 +1755,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	@Override
 	public void disconnect() throws ShimmerException {
 		this.disconnect(COMMUNICATION_TYPE.BLUETOOTH);
+		
 	}
 	
 	public void disconnect(COMMUNICATION_TYPE commType) throws ShimmerException {
@@ -1762,6 +1763,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		if(verisenseProtocolByteCommunication!=null) {
 			try {
 				verisenseProtocolByteCommunication.disconnect();
+				if (commType.equals(COMMUNICATION_TYPE.BLUETOOTH)){
+					setBluetoothRadioState(BT_STATE.DISCONNECTED);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw(e);
@@ -1996,5 +2000,13 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		this.mapOfVerisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication;
 	}
 	
+	/**
+	 * @param type Note not all communications types relies on a process that needs to be close, as of now only BLE requires it, this should be done when closing the app
+	 */
+	public void stopCommunicationProcess(COMMUNICATION_TYPE type) {
+		if (type.equals(COMMUNICATION_TYPE.BLUETOOTH)) {
+			mapOfVerisenseProtocolByteCommunication.get(type).stop();
+		}
+	}
 	
 }
