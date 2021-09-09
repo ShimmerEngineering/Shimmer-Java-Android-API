@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,13 +63,13 @@ import com.shimmerresearch.verisense.payloaddesign.DataBlockDetails.DATABLOCK_SE
  * @author Mark Nolan, Sriram Raju Dandu
  *
  */
-public class VerisenseDevice extends ShimmerDevice {
+public class VerisenseDevice extends ShimmerDevice implements Serializable{
 
 	private static final long serialVersionUID = -5496745972549472824L;
 
 	private static final Integer INVALID_VALUE = -1;
 
-	VerisenseProtocolByteCommunication mProtocol;
+	transient VerisenseProtocolByteCommunication mProtocol;
 
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
 	public int dataCompressionMode = DATA_COMPRESSION_MODE.NONE;
@@ -172,7 +173,7 @@ public class VerisenseDevice extends ShimmerDevice {
 	}
 
 	// Verisense Communication
-	private HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
+	transient private HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
 	private transient StatusPayload status;
 	private transient OperationalConfigPayload opConfig;
 	private transient ProductionConfigPayload prodConfigPayload;
@@ -1734,6 +1735,17 @@ public class VerisenseDevice extends ShimmerDevice {
 		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH);
 		try {
 			verisenseProtocolByteCommunication.startStreaming();
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void stopStreaming() {
+		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH);
+		try {
+			verisenseProtocolByteCommunication.stopStreaming();
 		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

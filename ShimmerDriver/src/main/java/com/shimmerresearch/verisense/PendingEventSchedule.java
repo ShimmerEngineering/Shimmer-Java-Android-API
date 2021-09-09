@@ -1,9 +1,11 @@
 package com.shimmerresearch.verisense;
 
+import java.io.Serializable;
+
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.verisense.communication.payloads.AbstractPayload;
 
-public class PendingEventSchedule {
+public class PendingEventSchedule implements Serializable{
 	
 	int intervalHours, wakeupTimeMinutes, wakeupDurationMinutes, retryIntervalMinutes;
 	
