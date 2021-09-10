@@ -2,11 +2,10 @@ package com.shimmerresearch.verisense;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -49,26 +48,106 @@ public class SensorLSM6DS3 extends AbstractSensor {
 
 	public static final String ACCEL_ID = "Accel2";
 	
-	protected int rangeAccel = LSM6DS3_ACCEL_RANGE_CONFIG_VALUES[1];
-	protected int rangeGyro = LSM6DS3_GYRO_RANGE_CONFIG_VALUES[1];
-	protected int rate = LSM6DS3_RATE_CONFIG_VALUES[3];
+	protected LSM6DS3_ACCEL_RANGE rangeAccel = LSM6DS3_ACCEL_RANGE.RANGE_4G;
+	protected LSM6DS3_GYRO_RANGE rangeGyro = LSM6DS3_GYRO_RANGE.RANGE_500DPS;
+	protected LSM6DS3_RATE rate = LSM6DS3_RATE.RATE_52_HZ;
 
-	public static final String[] LSM6DS3_RATE={"Power-down","12.5Hz","26.0Hz","52.0Hz","104.0Hz","208.0Hz","416.0Hz","833.0Hz","1666.0Hz"};
-	public static final Integer[] LSM6DS3_RATE_CONFIG_VALUES={0,1,2,3,4,5,6,7,8};
+	public static enum LSM6DS3_RATE {
+		POWER_DOWN("Power-down", 0, 0.0),
+		RATE_12_5_HZ("12.5Hz", 1, 12.5),
+		RATE_26_HZ("26.0Hz", 2, 26.0),
+		RATE_52_HZ("52.0Hz", 3, 52.0),
+		RATE_104_HZ("104.0Hz", 4, 104.0),
+		RATE_208_HZ("208.0Hz", 5, 208.0),
+		RATE_416_HZ("416.0Hz", 6, 416.0),
+		RATE_833_HZ("833.0Hz", 7, 833.0),
+		RATE_1666_HZ("1666.0Hz", 8, 1666.0);
+		
+		String label;
+		Integer configValue;
+		double freqHz;
 
-	public static final String[] LSM6DS3_ACCEL_RANGE={
-			UtilShimmer.UNICODE_PLUS_MINUS + " 2g",
-			UtilShimmer.UNICODE_PLUS_MINUS + " 4g",
-			UtilShimmer.UNICODE_PLUS_MINUS + " 8g",
-			UtilShimmer.UNICODE_PLUS_MINUS + " 16g"};  
-	public static final Integer[] LSM6DS3_ACCEL_RANGE_CONFIG_VALUES={0,2,3,1};  // Config values order might change
-	
-	public static final String[] LSM6DS3_GYRO_RANGE={
-			UtilShimmer.UNICODE_PLUS_MINUS + " 250dps",
-			UtilShimmer.UNICODE_PLUS_MINUS + " 500dps",
-			UtilShimmer.UNICODE_PLUS_MINUS + " 1000dps",
-			UtilShimmer.UNICODE_PLUS_MINUS + " 2000dps"};  
-	public static final Integer[] LSM6DS3_GYRO_RANGE_CONFIG_VALUES={0,1,2,3};  // Config values order might change
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (LSM6DS3_RATE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		private LSM6DS3_RATE(String label, Integer configValue, double freqHz) {
+			this.label = label;
+			this.configValue = configValue;
+			this.freqHz = freqHz;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	public static enum LSM6DS3_ACCEL_RANGE {
+		RANGE_2G(UtilShimmer.UNICODE_PLUS_MINUS + " 2g", 0),
+		RANGE_4G(UtilShimmer.UNICODE_PLUS_MINUS + " 4g", 2),
+		RANGE_8G(UtilShimmer.UNICODE_PLUS_MINUS + " 8g", 3),
+		RANGE_16G(UtilShimmer.UNICODE_PLUS_MINUS + " 16g", 1);
+		
+		String label;
+		Integer configValue;
+
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (LSM6DS3_ACCEL_RANGE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		private LSM6DS3_ACCEL_RANGE(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	public static enum LSM6DS3_GYRO_RANGE {
+		RANGE_250DPS(UtilShimmer.UNICODE_PLUS_MINUS + " 250dps", 0),
+		RANGE_500DPS(UtilShimmer.UNICODE_PLUS_MINUS + " 500dps", 1),
+		RANGE_1000DPS(UtilShimmer.UNICODE_PLUS_MINUS + " 1000dps", 2),
+		RANGE_2000DPS(UtilShimmer.UNICODE_PLUS_MINUS + " 2000dps", 3);
+		
+		String label;
+		Integer configValue;
+
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (LSM6DS3_GYRO_RANGE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		private LSM6DS3_GYRO_RANGE(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
 
 	// --------------- Configuration options start ----------------
 
@@ -109,8 +188,8 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_ACCEL_RANGE = new ConfigOptionDetailsSensor (
 			SensorLSM6DS3.GuiLabelConfig.LSM6DS3_ACCEL_RANGE,
 			SensorLSM6DS3.DatabaseConfigHandle.LSM6DS3_RANGE,
-			LSM6DS3_ACCEL_RANGE, 
-			LSM6DS3_ACCEL_RANGE_CONFIG_VALUES, 
+			LSM6DS3_ACCEL_RANGE.getLabels(), 
+			LSM6DS3_ACCEL_RANGE.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DS3);
 
@@ -118,16 +197,16 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_RATE = new ConfigOptionDetailsSensor (
 			SensorLSM6DS3.GuiLabelConfig.LSM6DS3_RATE,
 			SensorLSM6DS3.DatabaseConfigHandle.LSM6DS3_RATE,
-			LSM6DS3_RATE, 
-			LSM6DS3_RATE_CONFIG_VALUES, 
+			LSM6DS3_RATE.getLabels(), 
+			LSM6DS3_RATE.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DS3);
 	
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_GYRO_RANGE = new ConfigOptionDetailsSensor (
 			SensorLSM6DS3.GuiLabelConfig.LSM6DS3_GYRO_RANGE,
 			SensorLSM6DS3.DatabaseConfigHandle.LSM6DS3_RANGE,
-			LSM6DS3_GYRO_RANGE, 
-			LSM6DS3_GYRO_RANGE_CONFIG_VALUES, 
+			LSM6DS3_GYRO_RANGE.getLabels(), 
+			LSM6DS3_GYRO_RANGE.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DS3);
 
@@ -150,51 +229,51 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	public static final double[][] DEFAULT_SENSITIVITY_MATRIX_LSM6DS3_2000DPS = {{14.285714286,0,0},{0,14.285714286,0},{0,0,14.285714286}};
 
 	public CalibDetailsKinematic calibDetailsAccel2g = new CalibDetailsKinematic(
-			LSM6DS3_ACCEL_RANGE_CONFIG_VALUES[0],
-			LSM6DS3_ACCEL_RANGE[0],
+			LSM6DS3_ACCEL_RANGE.RANGE_2G.configValue,
+			LSM6DS3_ACCEL_RANGE.RANGE_2G.label,
 			DEFAULT_ALIGNMENT_MATRIX_LSM6DS3, 
 			DEFAULT_SENSITIVITY_MATRIX_LSM6DS3_2G, 
 			DEFAULT_OFFSET_VECTOR_LSM6DS3);
 	public CalibDetailsKinematic calibDetailsAccel4g = new CalibDetailsKinematic(
-			LSM6DS3_ACCEL_RANGE_CONFIG_VALUES[1], 
-			LSM6DS3_ACCEL_RANGE[1],
+			LSM6DS3_ACCEL_RANGE.RANGE_4G.configValue,
+			LSM6DS3_ACCEL_RANGE.RANGE_4G.label,
 			DEFAULT_ALIGNMENT_MATRIX_LSM6DS3,
 			DEFAULT_SENSITIVITY_MATRIX_LSM6DS3_4G, 
 			DEFAULT_OFFSET_VECTOR_LSM6DS3);
 	public CalibDetailsKinematic calibDetailsAccel8g = new CalibDetailsKinematic(
-			LSM6DS3_ACCEL_RANGE_CONFIG_VALUES[2], 
-			LSM6DS3_ACCEL_RANGE[2],
+			LSM6DS3_ACCEL_RANGE.RANGE_8G.configValue,
+			LSM6DS3_ACCEL_RANGE.RANGE_8G.label,
 			DEFAULT_ALIGNMENT_MATRIX_LSM6DS3, 
 			DEFAULT_SENSITIVITY_MATRIX_LSM6DS3_8G, 
 			DEFAULT_OFFSET_VECTOR_LSM6DS3);
 	public CalibDetailsKinematic calibDetailsAccel16g = new CalibDetailsKinematic(
-			LSM6DS3_ACCEL_RANGE_CONFIG_VALUES[3], 
-			LSM6DS3_ACCEL_RANGE[3],
+			LSM6DS3_ACCEL_RANGE.RANGE_16G.configValue,
+			LSM6DS3_ACCEL_RANGE.RANGE_16G.label,
 			DEFAULT_ALIGNMENT_MATRIX_LSM6DS3,
 			DEFAULT_SENSITIVITY_MATRIX_LSM6DS3_16G, 
 			DEFAULT_OFFSET_VECTOR_LSM6DS3);
 	
 	public CalibDetailsKinematic calibDetailsGyro250dps = new CalibDetailsKinematic(
-			LSM6DS3_GYRO_RANGE_CONFIG_VALUES[0], 
-			LSM6DS3_GYRO_RANGE[0],
+			LSM6DS3_GYRO_RANGE.RANGE_250DPS.configValue, 
+			LSM6DS3_GYRO_RANGE.RANGE_250DPS.label,
 			DEFAULT_ALIGNMENT_MATRIX_LSM6DS3,
 			DEFAULT_SENSITIVITY_MATRIX_LSM6DS3_250DPS, 
 			DEFAULT_OFFSET_VECTOR_LSM6DS3);
 	public CalibDetailsKinematic calibDetailsGyro500dps = new CalibDetailsKinematic(
-			LSM6DS3_GYRO_RANGE_CONFIG_VALUES[1], 
-			LSM6DS3_GYRO_RANGE[1],
+			LSM6DS3_GYRO_RANGE.RANGE_500DPS.configValue, 
+			LSM6DS3_GYRO_RANGE.RANGE_500DPS.label,
 			DEFAULT_ALIGNMENT_MATRIX_LSM6DS3, 
 			DEFAULT_SENSITIVITY_MATRIX_LSM6DS3_500DPS, 
 			DEFAULT_OFFSET_VECTOR_LSM6DS3);
 	public CalibDetailsKinematic calibDetailsGyro1000dps = new CalibDetailsKinematic(
-			LSM6DS3_GYRO_RANGE_CONFIG_VALUES[2], 
-			LSM6DS3_GYRO_RANGE[2],
+			LSM6DS3_GYRO_RANGE.RANGE_1000DPS.configValue, 
+			LSM6DS3_GYRO_RANGE.RANGE_1000DPS.label,
 			DEFAULT_ALIGNMENT_MATRIX_LSM6DS3,
 			DEFAULT_SENSITIVITY_MATRIX_LSM6DS3_1000DPS, 
 			DEFAULT_OFFSET_VECTOR_LSM6DS3);
 	public CalibDetailsKinematic calibDetailsGyro2000dps = new CalibDetailsKinematic(
-			LSM6DS3_GYRO_RANGE_CONFIG_VALUES[3], 
-			LSM6DS3_GYRO_RANGE[3],
+			LSM6DS3_GYRO_RANGE.RANGE_2000DPS.configValue, 
+			LSM6DS3_GYRO_RANGE.RANGE_2000DPS.label,
 			DEFAULT_ALIGNMENT_MATRIX_LSM6DS3,
 			DEFAULT_SENSITIVITY_MATRIX_LSM6DS3_2000DPS, 
 			DEFAULT_OFFSET_VECTOR_LSM6DS3);
@@ -524,28 +603,19 @@ public class SensorLSM6DS3 extends AbstractSensor {
 
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
-		int accelRate = 0;
-		
 		if (samplingRateHz==0){
-			accelRate = LSM6DS3_RATE_CONFIG_VALUES[0];
-		} else if (samplingRateHz<=12.5){
-			accelRate = LSM6DS3_RATE_CONFIG_VALUES[1]; // 12.5Hz
-		} else if (samplingRateHz<=26){
-			accelRate = LSM6DS3_RATE_CONFIG_VALUES[2]; // 25Hz
-		} else if (samplingRateHz<=52){
-			accelRate = LSM6DS3_RATE_CONFIG_VALUES[3]; // 50Hz
-		} else if (samplingRateHz<=104){
-			accelRate = LSM6DS3_RATE_CONFIG_VALUES[4]; // 100Hz
-		} else if (samplingRateHz<=208){
-			accelRate = LSM6DS3_RATE_CONFIG_VALUES[5]; // 200Hz
-		} else if (samplingRateHz<=416){
-			accelRate = LSM6DS3_RATE_CONFIG_VALUES[6]; // 400Hz
-		} else if (samplingRateHz<=832){
-			accelRate = LSM6DS3_RATE_CONFIG_VALUES[7]; // 800Hz
-		} else { //if (freq<=1600){ 
-			accelRate = LSM6DS3_RATE_CONFIG_VALUES[8]; // 1600Hz
+			setRate(LSM6DS3_RATE.POWER_DOWN);
+		} else {
+			for(LSM6DS3_RATE rate : LSM6DS3_RATE.values()) {
+				if(rate==LSM6DS3_RATE.POWER_DOWN) {
+					continue;
+				}
+				if(samplingRateHz<=rate.freqHz) {
+					setRate(rate);
+					break;
+				}
+			}
 		}
-		setRateConfigValue(accelRate);
 	}
 
 	@Override
@@ -626,29 +696,54 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		mCurrentCalibDetailsGyro = getCurrentCalibDetailsIfKinematic(Configuration.Verisense.SENSOR_ID.LSM6DS3_GYRO, getGyroRangeConfigValue());
 	}
 
-	public int getAccelRangeConfigValue() {
+	public LSM6DS3_ACCEL_RANGE getAccelRange() {
 		return rangeAccel;
 	}
+
+	public int getAccelRangeConfigValue() {
+		return rangeAccel.configValue;
+	}
 	
-	public int getGyroRangeConfigValue() {
-		return rangeGyro;
+	public void setAccelRangeConfigValue(int valueToSet){
+		for(LSM6DS3_ACCEL_RANGE accelRange:LSM6DS3_ACCEL_RANGE.values()) {
+			if(accelRange.configValue==valueToSet) {
+				setAccelRange(accelRange);
+			}
+		}
 	}
 
-	public void setAccelRangeConfigValue(int valueToSet){
-		if(ArrayUtils.contains(LSM6DS3_ACCEL_RANGE_CONFIG_VALUES, valueToSet)){
-			rangeAccel = valueToSet;
-		}
+	public void setAccelRange(LSM6DS3_ACCEL_RANGE valueToSet) {
+		rangeAccel = valueToSet;
 		updateCurrentAccelCalibInUse();
 	}
 
+	public int getGyroRangeConfigValue() {
+		return rangeGyro.configValue;
+	}
+
+	public LSM6DS3_GYRO_RANGE getGyroRange() {
+		return rangeGyro;
+	}
+
 	public void setGyroRangeConfigValue(int valueToSet){
-		if(ArrayUtils.contains(LSM6DS3_GYRO_RANGE_CONFIG_VALUES, valueToSet)){
-			rangeGyro = valueToSet;
+		for(LSM6DS3_GYRO_RANGE gyroRange : LSM6DS3_GYRO_RANGE.values()) {
+			if(gyroRange.configValue==valueToSet) {
+				setGyroRange(gyroRange);
+			}
 		}
 		updateCurrentGyroCalibInUse();
 	}
-	
+
+	public void setGyroRange(LSM6DS3_GYRO_RANGE valueToSet){
+		rangeGyro = valueToSet;
+		updateCurrentGyroCalibInUse();
+	}
+
 	public int getRateConfigValue() {
+		return rate.configValue;
+	}
+
+	public LSM6DS3_RATE getRate() {
 		return rate;
 	}
 
@@ -665,10 +760,15 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	}
 
 	public void setRateConfigValue(int valueToSet) {
-		Integer[] configValueToCheck = LSM6DS3_RATE_CONFIG_VALUES; 
-		if(ArrayUtils.contains(configValueToCheck, valueToSet)){
-			rate = valueToSet;
+		for(LSM6DS3_RATE rate : LSM6DS3_RATE.values()) {
+			if(valueToSet==rate.configValue) {
+				setRate(rate);
+			}
 		}
+	}
+
+	private void setRate(LSM6DS3_RATE valueToSet) {
+		rate = valueToSet;
 	}
 
 	public static double calibrateTemperature(long temperatureUncal) {
