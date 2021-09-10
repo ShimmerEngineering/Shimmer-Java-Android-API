@@ -2,11 +2,10 @@ package com.shimmerresearch.verisense;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -30,6 +29,13 @@ import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
+/** Sensor chip that contains an accelerometer. 
+ * 
+ * This sensor is typically refereed to as Accel1 in the Verisense hardware.
+ *  
+ * @author Mark Nolan
+ *
+ */
 public class SensorLIS2DW12 extends AbstractSensor {
 	
 	private static final long serialVersionUID = -3219602356151087121L;
@@ -39,37 +45,157 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	
 	public static final String ACCEL_ID = "Accel1";
 	
-	protected int range = LIS2DW12_ACCEL_RANGE_CONFIG_VALUES[1];
-	protected int rate = LIS2DW12_ACCEL_RATE_HP_CONFIG_VALUES[3];
-	protected int mode = LIS2DW12_MODE_CONFIG_VALUES[1];
-	protected int lpMode = LIS2DW12_LP_MODE_CONFIG_VALUES[0];
+	protected LIS2DW12_ACCEL_RANGE range = LIS2DW12_ACCEL_RANGE.RANGE_4G;
+	protected LIS2DW12_ACCEL_RATE rate = LIS2DW12_ACCEL_RATE.LOW_POWER_25_0_HZ;
+	protected LIS2DW12_MODE mode = LIS2DW12_MODE.HIGH_PERFORMANCE;
+	protected LIS2DW12_LP_MODE lpMode = LIS2DW12_LP_MODE.LOW_POWER1_12BIT_4_5_MG_NOISE;
 
-	public static final String[] LIS2DW12_ACCEL_RATE_HP={"Power-down","12.5Hz","12.5Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","400.0Hz","800.0Hz","1600.0Hz"};
-	public static final Integer[] LIS2DW12_ACCEL_RATE_HP_CONFIG_VALUES={0,1,2,3,4,5,6,7,8,9};
+	public enum LIS2DW12_MODE {
+		LOW_POWER("Low-Power Mode (12/14-bit resolution)", 0),
+		HIGH_PERFORMANCE("High-Performance Mode (14-bit resolution)", 1);
+		
+		String label;
+		Integer configValue;
+		
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (LIS2DW12_MODE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
 
-	public static final String[] LIS2DW12_ACCEL_RATE_LP={"Power-down","1.6Hz","12.5Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","200.0Hz","200.0Hz","200.0Hz"};
-	public static final Integer[] LIS2DW12_ACCEL_RATE_LP_CONFIG_VALUES={0,1,2,3,4,5,6,7,8,9};
+		private LIS2DW12_MODE(String label, int configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	public enum LIS2DW12_ACCEL_RATE {
+		POWER_DOWN("Power-down", 0, 0.0, LIS2DW12_MODE.LOW_POWER),
+		HIGH_PERFORMANCE_12_5_HZ("12.5Hz", 1, 12.5, LIS2DW12_MODE.HIGH_PERFORMANCE),
+		HIGH_PERFORMANCE_25_0_HZ("25.0Hz", 3, 25.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
+		HIGH_PERFORMANCE_50_0_HZ("50.0Hz", 4, 50.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
+		HIGH_PERFORMANCE_100_0_HZ("100.0Hz", 5, 100.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
+		HIGH_PERFORMANCE_200_0_HZ("200.0Hz", 6, 200.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
+		HIGH_PERFORMANCE_400_0_HZ("400.0Hz", 7, 400.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
+		HIGH_PERFORMANCE_800_0_HZ("800.0Hz", 8, 800.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
+		HIGH_PERFORMANCE_1600_0_HZ("1600.0Hz", 9, 16000., LIS2DW12_MODE.HIGH_PERFORMANCE),
+		LOW_POWER_1_6_HZ("1.6Hz", 1, 1.6, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_12_5_HZ("12.5Hz", 2, 12.5, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_25_0_HZ("25.0Hz", 3, 25.0, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_50_0_HZ("50.0Hz", 4, 50.0, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_100_0_HZ("100.0Hz", 5, 100.0, LIS2DW12_MODE.LOW_POWER);
+		
+		String label;
+		Integer configValue;
+		double freqHz;
+		LIS2DW12_MODE mode;
+
+		static Map<String, Integer> REF_MAP_HP = new HashMap<>();
+		static Map<String, Integer> REF_MAP_LP = new HashMap<>();
+		static {
+			for (LIS2DW12_ACCEL_RATE e : values()) {
+				if(e.mode==LIS2DW12_MODE.HIGH_PERFORMANCE || e==LIS2DW12_ACCEL_RATE.POWER_DOWN) {
+					REF_MAP_HP.put(e.label, e.configValue);
+				}
+				if(e.mode==LIS2DW12_MODE.LOW_POWER || e==LIS2DW12_ACCEL_RATE.POWER_DOWN) {
+					REF_MAP_LP.put(e.label, e.configValue);
+				}
+			}
+		}
+
+		private LIS2DW12_ACCEL_RATE(String label, int configValue, double freqHz, LIS2DW12_MODE mode) {
+			this.label = label;
+			this.configValue = configValue;
+			this.freqHz = freqHz;
+			this.mode = mode;
+		}
+
+		public static String[] getLabelsHp() {
+			return REF_MAP_HP.keySet().toArray(new String[REF_MAP_HP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValuesHp() {
+			return REF_MAP_HP.values().toArray(new Integer[REF_MAP_HP.values().size()]);
+		}
+
+		public static String[] getLabelsLp() {
+			return REF_MAP_LP.keySet().toArray(new String[REF_MAP_LP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValuesLp() {
+			return REF_MAP_LP.values().toArray(new Integer[REF_MAP_LP.values().size()]);
+		}
+	}
 	
-	public static final String[] LIS2DW12_ACCEL_RANGE={
-			UtilShimmer.UNICODE_PLUS_MINUS + " 2g",
-			UtilShimmer.UNICODE_PLUS_MINUS + " 4g",
-			UtilShimmer.UNICODE_PLUS_MINUS + " 8g",
-			UtilShimmer.UNICODE_PLUS_MINUS + " 16g"};  
-	public static final Integer[] LIS2DW12_ACCEL_RANGE_CONFIG_VALUES={0,1,2,3};  
+	public static enum LIS2DW12_ACCEL_RANGE {
+		RANGE_2G(UtilShimmer.UNICODE_PLUS_MINUS + " 2g", 0),
+		RANGE_4G(UtilShimmer.UNICODE_PLUS_MINUS + " 4g", 1),
+		RANGE_8G(UtilShimmer.UNICODE_PLUS_MINUS + " 8g", 2),
+		RANGE_16G(UtilShimmer.UNICODE_PLUS_MINUS + " 16g", 3);
+		
+		String label;
+		Integer configValue;
 
-	public static final String[] LIS2DW12_MODE={
-			"Low-Power Mode (12/14-bit resolution)",
-			"High-Performance Mode (14-bit resolution)"};
-	public static final Integer[] LIS2DW12_MODE_CONFIG_VALUES={0,1};
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (LIS2DW12_ACCEL_RANGE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
 
-	public static final String[] LIS2DW12_LP_MODE={
-			"LP1: 12-bit resolution, Noise=4.5mg(RMS)",
-			"LP2: 14-bit resolution, Noise=2.4mg(RMS)",
-			"LP3: 14-bit resolution, Noise=1.8mg(RMS)",
-			"LP4: 14-bit resolution, Noise=1.3mg(RMS)"};
-	public static final Integer[] LIS2DW12_LP_MODE_CONFIG_VALUES={0,1,2,3};
+		private LIS2DW12_ACCEL_RANGE(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
 
-	
+	public static enum LIS2DW12_LP_MODE {
+		LOW_POWER1_12BIT_4_5_MG_NOISE("LP1: 12-bit resolution, Noise=4.5mg(RMS)", 0),
+		LOW_POWER2_14BIT_2_4_MG_NOISE("LP2: 14-bit resolution, Noise=2.4mg(RMS)", 1),
+		LOW_POWER3_14BIT_1_8_MG_NOISE("LP3: 14-bit resolution, Noise=1.8mg(RMS)", 2),
+		LOW_POWER4_14BIT_1_3_MG_NOISE("LP4: 14-bit resolution, Noise=1.3mg(RMS)", 3);
+		
+		String label;
+		Integer configValue;
+
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (LIS2DW12_LP_MODE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		private LIS2DW12_LP_MODE(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
 	public static final String[] LIS2DW12_RESOLUTION={
 			"12-bit",
 			"14-bit"};
@@ -117,40 +243,40 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_ACCEL_RANGE = new ConfigOptionDetailsSensor (
 			SensorLIS2DW12.GuiLabelConfig.LIS2DW12_RANGE,
 			SensorLIS2DW12.DatabaseConfigHandle.LIS2DW12_RANGE,
-			LIS2DW12_ACCEL_RANGE, 
-			LIS2DW12_ACCEL_RANGE_CONFIG_VALUES, 
+			LIS2DW12_ACCEL_RANGE.getLabels(), 
+			LIS2DW12_ACCEL_RANGE.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12);
 
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_ACCEL_RATE_LP = new ConfigOptionDetailsSensor (
 			SensorLIS2DW12.GuiLabelConfig.LIS2DW12_RATE,
 			SensorLIS2DW12.DatabaseConfigHandle.LIS2DW12_RATE,
-			LIS2DW12_ACCEL_RATE_LP, 
-			LIS2DW12_ACCEL_RATE_LP_CONFIG_VALUES, 
+			LIS2DW12_ACCEL_RATE.getLabelsLp(), 
+			LIS2DW12_ACCEL_RATE.getConfigValuesLp(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12);
 
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_ACCEL_RATE_HP = new ConfigOptionDetailsSensor (
 			SensorLIS2DW12.GuiLabelConfig.LIS2DW12_RATE,
 			SensorLIS2DW12.DatabaseConfigHandle.LIS2DW12_RATE,
-			LIS2DW12_ACCEL_RATE_HP, 
-			LIS2DW12_ACCEL_RATE_HP_CONFIG_VALUES, 
+			LIS2DW12_ACCEL_RATE.getLabelsHp(), 
+			LIS2DW12_ACCEL_RATE.getConfigValuesLp(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12);
 
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_ACCEL_MODE = new ConfigOptionDetailsSensor (
 			SensorLIS2DW12.GuiLabelConfig.LIS2DW12_MODE,
 			SensorLIS2DW12.DatabaseConfigHandle.LIS2DW12_MODE,
-			LIS2DW12_MODE, 
-			LIS2DW12_MODE_CONFIG_VALUES, 
+			LIS2DW12_MODE.getLabels(), 
+			LIS2DW12_MODE.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12);
 	
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_ACCEL_LP_MODE = new ConfigOptionDetailsSensor (
 			SensorLIS2DW12.GuiLabelConfig.LIS2DW12_LP_MODE,
 			SensorLIS2DW12.DatabaseConfigHandle.LIS2DW12_LP_MODE,
-			LIS2DW12_LP_MODE, 
-			LIS2DW12_LP_MODE_CONFIG_VALUES, 
+			LIS2DW12_LP_MODE.getLabels(), 
+			LIS2DW12_LP_MODE.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12);
 
@@ -167,26 +293,26 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	public static final double[][] DEFAULT_SENSITIVITY_MATRIX_LIS2DW12_16G = {{208.958240364,0,0},{0,208.958240364,0},{0,0,208.958240364}};
 
 	public CalibDetailsKinematic calibDetailsAccel2g = new CalibDetailsKinematic(
-			LIS2DW12_ACCEL_RANGE_CONFIG_VALUES[0],
-			LIS2DW12_ACCEL_RANGE[0],
+			LIS2DW12_ACCEL_RANGE.RANGE_2G.configValue,
+			LIS2DW12_ACCEL_RANGE.RANGE_2G.label,
 			DEFAULT_ALIGNMENT_MATRIX_LIS2DW12, 
 			DEFAULT_SENSITIVITY_MATRIX_LIS2DW12_2G, 
 			DEFAULT_OFFSET_VECTOR_LIS2DW12);
 	public CalibDetailsKinematic calibDetailsAccel4g = new CalibDetailsKinematic(
-			LIS2DW12_ACCEL_RANGE_CONFIG_VALUES[1], 
-			LIS2DW12_ACCEL_RANGE[1],
+			LIS2DW12_ACCEL_RANGE.RANGE_4G.configValue,
+			LIS2DW12_ACCEL_RANGE.RANGE_4G.label,
 			DEFAULT_ALIGNMENT_MATRIX_LIS2DW12,
 			DEFAULT_SENSITIVITY_MATRIX_LIS2DW12_4G, 
 			DEFAULT_OFFSET_VECTOR_LIS2DW12);
 	public CalibDetailsKinematic calibDetailsAccel8g = new CalibDetailsKinematic(
-			LIS2DW12_ACCEL_RANGE_CONFIG_VALUES[2], 
-			LIS2DW12_ACCEL_RANGE[2],
+			LIS2DW12_ACCEL_RANGE.RANGE_8G.configValue,
+			LIS2DW12_ACCEL_RANGE.RANGE_8G.label,
 			DEFAULT_ALIGNMENT_MATRIX_LIS2DW12, 
 			DEFAULT_SENSITIVITY_MATRIX_LIS2DW12_8G, 
 			DEFAULT_OFFSET_VECTOR_LIS2DW12);
 	public CalibDetailsKinematic calibDetailsAccel16g = new CalibDetailsKinematic(
-			LIS2DW12_ACCEL_RANGE_CONFIG_VALUES[3], 
-			LIS2DW12_ACCEL_RANGE[3],
+			LIS2DW12_ACCEL_RANGE.RANGE_16G.configValue,
+			LIS2DW12_ACCEL_RANGE.RANGE_16G.label,
 			DEFAULT_ALIGNMENT_MATRIX_LIS2DW12,
 			DEFAULT_SENSITIVITY_MATRIX_LIS2DW12_16G, 
 			DEFAULT_OFFSET_VECTOR_LIS2DW12);
@@ -321,28 +447,30 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		if(isSensorEnabled(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL)) {
-			ConfigByteLayoutLis2dw12 configByteLayoutLis2dw12 = new ConfigByteLayoutLis2dw12(commType);
+			ConfigByteLayoutLis2dw12 configByteLayout = new ConfigByteLayoutLis2dw12(commType);
 			
-			configBytes[configByteLayoutLis2dw12.idxFsAccel1] |= (getAccelRangeConfigValue()&0x03)<<configByteLayoutLis2dw12.bitShiftFsAccel1;
+			configBytes[configByteLayout.idxFsAccel1] &= ~(configByteLayout.maskbitFsAccel1<<configByteLayout.bitShiftFsAccel1);
+			configBytes[configByteLayout.idxFsAccel1] |= (getAccelRangeConfigValue()&configByteLayout.maskbitFsAccel1)<<configByteLayout.bitShiftFsAccel1;
 			
-			configBytes[configByteLayoutLis2dw12.idxAccel1Cfg0] |= (getAccelRateConfigValue()&0x0F)<<4;
-			configBytes[configByteLayoutLis2dw12.idxAccel1Cfg0] |= (getAccelModeConfigValue()&0x03)<<2;
-			configBytes[configByteLayoutLis2dw12.idxAccel1Cfg0] |= (getAccelLpModeConfigValue()&0x03)<<0;
+			configBytes[configByteLayout.idxAccel1Cfg0] = 0x00;
+			configBytes[configByteLayout.idxAccel1Cfg0] |= (getAccelRateConfigValue()&configByteLayout.maskAccelRate)<<configByteLayout.bitShiftAccelRate;
+			configBytes[configByteLayout.idxAccel1Cfg0] |= (getAccelModeConfigValue()&configByteLayout.maskMode)<<configByteLayout.bitShiftMode;
+			configBytes[configByteLayout.idxAccel1Cfg0] |= (getAccelLpModeConfigValue()&configByteLayout.maskLpMode)<<configByteLayout.bitShiftLpMode;
 		}
 	}
 
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		if(isSensorEnabled(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL)) {
-			ConfigByteLayoutLis2dw12 configByteLayoutLis2dw12 = new ConfigByteLayoutLis2dw12(commType);
+			ConfigByteLayoutLis2dw12 configByteLayout = new ConfigByteLayoutLis2dw12(commType);
 			
-			setAccelRangeConfigValue((configBytes[configByteLayoutLis2dw12.idxFsAccel1]>>configByteLayoutLis2dw12.bitShiftFsAccel1)&0x03);
+			setAccelRangeConfigValue((configBytes[configByteLayout.idxFsAccel1]>>configByteLayout.bitShiftFsAccel1)&configByteLayout.maskbitFsAccel1);
 			
-			byte accel1Cfg0 = configBytes[configByteLayoutLis2dw12.idxAccel1Cfg0];
-			setAccelModeConfigValue((accel1Cfg0>>2)&0x03);
+			byte accel1Cfg0 = configBytes[configByteLayout.idxAccel1Cfg0];
+			setAccelModeConfigValue((accel1Cfg0>>configByteLayout.bitShiftMode)&configByteLayout.maskMode);
 			setAccelLpModeConfigValue((accel1Cfg0>>0)&0x03);
 			//Need to parse rate after mode
-			setAccelRateConfigValue((accel1Cfg0>>4)&0x0F);
+			setAccelRateConfigValue((accel1Cfg0>>configByteLayout.bitShiftAccelRate)&configByteLayout.maskAccelRate);
 		}
 	}
 
@@ -499,24 +627,44 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		mCurrentCalibDetailsAccel = getCurrentCalibDetailsIfKinematic(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL, getAccelRangeConfigValue());
 	}
 
+	public void setAccelRate(LIS2DW12_ACCEL_RATE lis2dw12AccelRate) {
+		rate = lis2dw12AccelRate;
+		setAccelMode(lis2dw12AccelRate.mode);
+	}
+	
+	public LIS2DW12_ACCEL_RATE getAccelRate() {
+		return rate;
+	}
+
 	public int getAccelRangeConfigValue() {
-		return range;
+		return range.configValue;
 	}
 
 	public void setAccelRangeConfigValue(int valueToSet){
-		if(ArrayUtils.contains(LIS2DW12_ACCEL_RANGE_CONFIG_VALUES, valueToSet)){
-			range = valueToSet;
+		for(LIS2DW12_ACCEL_RANGE lis2dw12AccelRange : LIS2DW12_ACCEL_RANGE.values()) {
+			if(lis2dw12AccelRange.configValue==valueToSet) {
+				setAccelRange(lis2dw12AccelRange);
+				break;
+			}
 		}
+	}
+
+	public void setAccelRange(LIS2DW12_ACCEL_RANGE lis2dw12AccelRange){
+		range = lis2dw12AccelRange;
 		updateCurrentAccelCalibInUse();
 	}
 
+	public LIS2DW12_ACCEL_RANGE getAccelRange(){
+		return range;
+	}
+
 	public int getAccelRateConfigValue() {
-		return rate;
+		return rate.configValue;
 	}
 
 	public double getAccelRateFreq() {
 		ConfigOptionDetailsSensor configOptionAccelRate = CONFIG_OPTION_ACCEL_RATE_HP; 
-		if(mode==0) {
+		if(mode==LIS2DW12_MODE.LOW_POWER) {
 			configOptionAccelRate = CONFIG_OPTION_ACCEL_RATE_LP;
 		}
 
@@ -531,33 +679,56 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 
 	public void setAccelRateConfigValue(int valueToSet) {
-		Integer[] configValueToCheck = LIS2DW12_ACCEL_RATE_HP_CONFIG_VALUES; 
-		if(mode==0) {
-			configValueToCheck = LIS2DW12_ACCEL_RATE_LP_CONFIG_VALUES;
+		if(valueToSet==LIS2DW12_ACCEL_RATE.POWER_DOWN.configValue) {
+			setAccelRate(LIS2DW12_ACCEL_RATE.POWER_DOWN);
+		} else {
+			for(LIS2DW12_ACCEL_RATE lis2dw12AccelRate : LIS2DW12_ACCEL_RATE.values()) {
+				if(mode==lis2dw12AccelRate.mode && lis2dw12AccelRate.configValue==valueToSet) {
+					setAccelRate(lis2dw12AccelRate);
+				}
+			}
 		}
-		if(ArrayUtils.contains(configValueToCheck, valueToSet)){
-			rate = valueToSet;
-		}
+		
 	}
 
 	public int getAccelModeConfigValue() {
-		return mode;
+		return mode.configValue;
 	}
 
 	public void setAccelModeConfigValue(int valueToSet) {
-		if(ArrayUtils.contains(LIS2DW12_MODE_CONFIG_VALUES, valueToSet)){
-			mode = valueToSet;
+		for(LIS2DW12_MODE lis2dw12Mode : LIS2DW12_MODE.values()) {
+			if(lis2dw12Mode.configValue==valueToSet) {
+				setAccelMode(lis2dw12Mode);
+			}
 		}
+	}
+
+	public void setAccelMode(LIS2DW12_MODE valueToSet) {
+		mode = valueToSet;
+	}
+	
+	public LIS2DW12_MODE getAccelMode() {
+		return mode;
 	}
 
 	public int getAccelLpModeConfigValue() {
-		return lpMode;
+		return lpMode.configValue;
 	}
 
 	public void setAccelLpModeConfigValue(int valueToSet) {
-		if(ArrayUtils.contains(LIS2DW12_LP_MODE_CONFIG_VALUES, valueToSet)){
-			lpMode = valueToSet;
+		for(LIS2DW12_LP_MODE lpMode: LIS2DW12_LP_MODE.values()) {
+			if(lpMode.configValue==valueToSet) {
+				setAccelLpMode(lpMode);
+			}
 		}
+	}
+
+	public void setAccelLpMode(LIS2DW12_LP_MODE valueToSet) {
+		lpMode = valueToSet;
+	}
+
+	public LIS2DW12_LP_MODE getAccelLpMode() {
+		return lpMode;
 	}
 
 	public static double calibrateTemperature(long temperatureUncal) {
@@ -566,7 +737,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 
 	public String getAccelLpModeString() {
-		if(mode==0) {
+		if(mode==LIS2DW12_MODE.LOW_POWER) {
 			String accelLpModeStr = SensorLIS2DW12.CONFIG_OPTION_ACCEL_LP_MODE.getConfigStringFromConfigValue(getAccelLpModeConfigValue());
 			return accelLpModeStr;
 		} else {
@@ -588,17 +759,17 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 
 	public String getAccelModeMergedString() {
-		if(mode==LIS2DW12_MODE_CONFIG_VALUES[1]) {
+		if(mode==LIS2DW12_MODE.HIGH_PERFORMANCE) {
 			// High-performance Mode
 			return LIS2DW12_MODE_MERGED[0];
 		} else {
 			// Low-Power Mode X
-			return LIS2DW12_MODE_MERGED[lpMode+1];
+			return LIS2DW12_MODE_MERGED[lpMode.configValue+1];
 		}
 	}
 
 	public String getAccelResolutionString() {
-		if(mode==LIS2DW12_MODE_CONFIG_VALUES[0] && lpMode==LIS2DW12_LP_MODE_CONFIG_VALUES[0]) {
+		if(mode==LIS2DW12_MODE.LOW_POWER && lpMode==LIS2DW12_LP_MODE.LOW_POWER1_12BIT_4_5_MG_NOISE) {
 			// 12-bit
 			return LIS2DW12_RESOLUTION[0];
 		} else {
@@ -608,7 +779,11 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 	
 	private class ConfigByteLayoutLis2dw12 {
-		public int idxAccel1Cfg0 = 0, idxFsAccel1 = 0, bitShiftFsAccel1 = 0;
+		public int idxAccel1Cfg0 = 0, idxFsAccel1 = 0; 
+		public int bitShiftFsAccel1 = 0, maskbitFsAccel1 = 0x03;
+		public int bitShiftAccelRate = 4, maskAccelRate = 0x0F;
+		public int bitShiftMode = 2, maskMode = 0x03;
+		public int bitShiftLpMode = 0, maskLpMode = 0x03;
 		
 		public ConfigByteLayoutLis2dw12(COMMUNICATION_TYPE commType) {
 			if(commType==COMMUNICATION_TYPE.SD) {

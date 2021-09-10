@@ -47,6 +47,7 @@ import com.shimmerresearch.verisense.communication.payloads.ProductionConfigPayl
 import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
 import com.shimmerresearch.verisense.communication.payloads.TimePayload;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BIT_MASK;
+import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BIT_SHIFT;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
@@ -71,8 +72,21 @@ public class VerisenseDevice extends ShimmerDevice {
 	VerisenseProtocolByteCommunication mProtocol;
 
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
-	public int dataCompressionMode = DATA_COMPRESSION_MODE.NONE;
+	public DATA_COMPRESSION_MODE dataCompressionMode = DATA_COMPRESSION_MODE.NONE;
+	public PASSKEY_MODE passkeyMode = PASSKEY_MODE.NONE;
+	public BATTERY_TYPE batteryType = BATTERY_TYPE.ZINC_AIR;
 
+	public enum PASSKEY_MODE {
+		SECURE,
+		NONE,
+		CUSTOM;
+	}
+
+	public enum BATTERY_TYPE {
+		ZINC_AIR,
+		NIMH;
+	}
+	
 	private static int DEFAULT_HW_ID = HW_ID.VERISENSE_IMU;
 	private ShimmerVerObject defaultSvo = new ShimmerVerObject(DEFAULT_HW_ID, FW_ID.UNKNOWN, FW_ID.UNKNOWN, FW_ID.UNKNOWN, FW_ID.UNKNOWN);
 	private ExpansionBoardDetails defaultEbd = new ExpansionBoardDetails(DEFAULT_HW_ID, 0, INVALID_VALUE);
@@ -132,6 +146,8 @@ public class VerisenseDevice extends ShimmerDevice {
 	private PendingEventSchedule pendingEventScheduleRwcSync = new PendingEventSchedule(24, 60, 10, 15);
 	private int adaptiveSchedulerInterval = 65535;
 	private int adaptiveSchedulerFailCount = 255;
+	private int ppgRecordingDurationSeconds;
+	private int ppgRecordingIntervalSeconds;
 
 	public enum BLE_TX_POWER {
 		PLUS8DBM((byte) 0x08),
@@ -174,7 +190,7 @@ public class VerisenseDevice extends ShimmerDevice {
 	private transient StatusPayload status;
 	private transient OperationalConfigPayload opConfig;
 	private transient ProductionConfigPayload prodConfigPayload;
-	
+
 	public static class FW_CHANGES {
 		/** FW Version and Reset Reason */
 		public static final ShimmerVerObject CCF19_027 = new ShimmerVerObject(FW_ID.UNKNOWN, 0, 34, 1); 
@@ -225,6 +241,7 @@ public class VerisenseDevice extends ShimmerDevice {
 	
 	private static int ADC_BYTE_BUFFER_SIZE = 192;
 	public static final double[][] ADC_SAMPLING_RATES = new double[][] {
+		//Index, Freq, Clock Ticks
 		{0, Double.NaN, Double.NaN},
 		{1, 32768.0, 1},
 		{2, 16384.0, 2},
@@ -309,7 +326,7 @@ public class VerisenseDevice extends ShimmerDevice {
 			}
 			
 			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= isExtendedPayloadConfig? (0x01<<4):0x00;
-			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= ((dataCompressionMode&0x03)<<0);
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= ((dataCompressionMode.ordinal()&0x03)<<0);
 			
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()) {
 				abstractSensor.configBytesGenerate(this, configBytes, commType);
@@ -339,8 +356,7 @@ public class VerisenseDevice extends ShimmerDevice {
 				}
 			}
 		} else {
-			int payloadConfigBytesSize = OperationalConfigPayload.calculatePayloadConfigBytesSize(mShimmerVerObject);
-			configBytes = new byte[payloadConfigBytesSize];
+			configBytes = OperationalConfigPayload.getDefaultPayloadConfigForFwVersion(mShimmerVerObject);
 
 			configBytes[OP_CONFIG_BYTE_INDEX.HEADER_BYTE] = AbstractPayload.VALID_CONFIG_BYTE;
 			
@@ -355,7 +371,10 @@ public class VerisenseDevice extends ShimmerDevice {
 			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] |= deviceEnabled? OP_CONFIG_BIT_MASK.DEVICE_ENABLED:0x00;
 			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] |= recordingEnabled? OP_CONFIG_BIT_MASK.RECORDING_ENABLED:0x00;
 
-			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] |= dataCompressionMode & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE;
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] |= dataCompressionMode.ordinal() & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE;
+
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] |= (passkeyMode.ordinal() & OP_CONFIG_BIT_MASK.PASSKEY_MODE) << OP_CONFIG_BIT_SHIFT.PASSKEY_MODE;
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] |= (batteryType.ordinal() & OP_CONFIG_BIT_MASK.BATTERY_TYPE) << OP_CONFIG_BIT_SHIFT.BATTERY_TYPE;
 
 			configBytes[OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_0] = (byte) (recordingStartTimeMinutes & 0xFF);
 			configBytes[OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_1] = (byte) ((recordingStartTimeMinutes >> 8) & 0xFF);
@@ -379,6 +398,11 @@ public class VerisenseDevice extends ShimmerDevice {
 			configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_INT_LSB] = (byte) (adaptiveSchedulerInterval & 0xFF);
 			configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_INT_MSB] = (byte) ((adaptiveSchedulerInterval >> 8) & 0xFF);
 			configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_FAILCOUNT_MAX] = (byte) adaptiveSchedulerFailCount;
+
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_DUR_SECS_LSB] = (byte) (ppgRecordingDurationSeconds & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_DUR_SECS_MSB] = (byte) ((ppgRecordingDurationSeconds >> 8) & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_LSB] = (byte) (ppgRecordingIntervalSeconds & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_MSB] = (byte) ((ppgRecordingIntervalSeconds >> 8) & 0xFF);
 
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()) {
 				abstractSensor.configBytesGenerate(this, configBytes, commType);
@@ -413,7 +437,7 @@ public class VerisenseDevice extends ShimmerDevice {
 				
 		if (commType == COMMUNICATION_TYPE.SD) {
 			isExtendedPayloadConfig = isExtendedPayloadConfig(configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]);
-			dataCompressionMode = (configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]>>0)&0x03;
+			dataCompressionMode = DATA_COMPRESSION_MODE.values()[(configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]>>0)&0x03];
 			
 			ShimmerVerObject svo = defaultSvo;
 			ExpansionBoardDetails eBD = defaultEbd;
@@ -470,7 +494,9 @@ public class VerisenseDevice extends ShimmerDevice {
 			deviceEnabled = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.DEVICE_ENABLED) == OP_CONFIG_BIT_MASK.DEVICE_ENABLED;
 			recordingEnabled = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.RECORDING_ENABLED) == OP_CONFIG_BIT_MASK.RECORDING_ENABLED; 
 
-			dataCompressionMode = configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE;
+			dataCompressionMode = DATA_COMPRESSION_MODE.values()[configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE];
+			passkeyMode = PASSKEY_MODE.values()[(configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] >> OP_CONFIG_BIT_SHIFT.PASSKEY_MODE) & OP_CONFIG_BIT_MASK.PASSKEY_MODE];
+			batteryType = BATTERY_TYPE.values()[(configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] >> OP_CONFIG_BIT_SHIFT.BATTERY_TYPE) & OP_CONFIG_BIT_MASK.BATTERY_TYPE];
 
 			recordingStartTimeMinutes = AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_0, CHANNEL_DATA_TYPE.UINT24);
 			recordingEndTimeMinutes = AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.END_TIME_BYTE_0, CHANNEL_DATA_TYPE.UINT24);
@@ -484,6 +510,10 @@ public class VerisenseDevice extends ShimmerDevice {
 			
 			adaptiveSchedulerInterval = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_INT_LSB, CHANNEL_DATA_TYPE.UINT16);
 			adaptiveSchedulerFailCount = configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_FAILCOUNT_MAX] & 0xFF;
+			
+			ppgRecordingDurationSeconds = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.PPG_REC_DUR_SECS_LSB, CHANNEL_DATA_TYPE.UINT16);
+			ppgRecordingIntervalSeconds = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_LSB, CHANNEL_DATA_TYPE.UINT16);
+
 		}
 
 		setEnabledAndDerivedSensorsAndUpdateMaps(enabledSensors, mDerivedSensors, commType);
@@ -798,7 +828,7 @@ public class VerisenseDevice extends ShimmerDevice {
 		
 		if((sensorClassKey==AbstractSensor.SENSORS.LIS2DW12) 
 				&& isSensorEnabled(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL)) {
-			SensorLIS2DW12 sensorLis2dw12 = (SensorLIS2DW12) getSensorClass(SENSORS.LIS2DW12);
+			SensorLIS2DW12 sensorLis2dw12 = getSensorLIS2DW12();
 			
 			// Accel1 section
 			if(isCsvHeaderDesignAzMarkingPoint()) {
@@ -832,7 +862,7 @@ public class VerisenseDevice extends ShimmerDevice {
 			}
 		} else if((sensorClassKey==AbstractSensor.SENSORS.LSM6DS3)
 				&& isEitherLsm6ds3ChannelEnabled()) {
-			SensorLSM6DS3 sensorLsm6ds3 = (SensorLSM6DS3) getSensorClass(SENSORS.LSM6DS3);
+			SensorLSM6DS3 sensorLsm6ds3 = getSensorLSM6DS3();
 			
 			// Accel2 section
 			if(isCsvHeaderDesignAzMarkingPoint()) {
@@ -1794,7 +1824,11 @@ public class VerisenseDevice extends ShimmerDevice {
 		}
 	}
 	
-	public SensorLIS2DW12 getSensorAccel1() {
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorLIS2DW12
+	 */
+	public SensorLIS2DW12 getSensorLIS2DW12() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.LIS2DW12);
 		if(abstractSensor!=null && abstractSensor instanceof SensorLIS2DW12) {
 			return (SensorLIS2DW12) abstractSensor;
@@ -1802,7 +1836,11 @@ public class VerisenseDevice extends ShimmerDevice {
 		return null;
 	}
 	
-	public SensorLSM6DS3 getSensorAccel2AndGyro() {
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorLSM6DS3
+	 */
+	public SensorLSM6DS3 getSensorLSM6DS3() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.LSM6DS3);
 		if(abstractSensor!=null && abstractSensor instanceof SensorLSM6DS3) {
 			return (SensorLSM6DS3) abstractSensor;
@@ -1810,6 +1848,10 @@ public class VerisenseDevice extends ShimmerDevice {
 		return null;
 	}
 
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorGSRVerisense
+	 */
 	public SensorGSRVerisense getSensorGsr() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.GSR);
 		if(abstractSensor!=null && abstractSensor instanceof SensorGSRVerisense) {
@@ -1818,6 +1860,10 @@ public class VerisenseDevice extends ShimmerDevice {
 		return null;
 	}
 
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorMAX86916
+	 */
 	public SensorMAX86916 getSensorPpg() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.PPG);
 		if(abstractSensor!=null && abstractSensor instanceof SensorMAX86916) {
@@ -1826,6 +1872,10 @@ public class VerisenseDevice extends ShimmerDevice {
 		return null;
 	}
 
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorBattVoltageVerisense
+	 */
 	public SensorBattVoltageVerisense getSensorBatteryVoltage() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.Battery);
 		if(abstractSensor!=null && abstractSensor instanceof SensorBattVoltageVerisense) {
@@ -2007,4 +2057,41 @@ public class VerisenseDevice extends ShimmerDevice {
 
 		super.startStreaming();
 	}
+
+	public PASSKEY_MODE getPasskeyMode() {
+		return passkeyMode;
+	}
+	
+	public void setPasskeyMode(PASSKEY_MODE passkeyMode) {
+		this.passkeyMode = passkeyMode;
+	}
+
+	public DATA_COMPRESSION_MODE getDataCompressopnMode() {
+		return dataCompressionMode;
+	}
+
+	public BATTERY_TYPE getBatteryType() {
+		return batteryType;
+	}
+
+	public void setBatteryType(BATTERY_TYPE batteryType) {
+		this.batteryType = batteryType;
+	}
+
+	public int getPpgRecordingDurationSeconds() {
+		return ppgRecordingDurationSeconds;
+	}
+
+	public void setPpgRecordingDurationSeconds(int ppgRecordingDurationSeconds) {
+		this.ppgRecordingDurationSeconds = UtilShimmer.nudgeInteger(ppgRecordingDurationSeconds, 0, (int) (Math.pow(2, 16)-1));
+	}
+
+	public int getPpgRecordingIntervalSeconds() {
+		return ppgRecordingIntervalSeconds;
+	}
+
+	public void setPpgRecordingIntervalSeconds(int ppgRecordingIntervalSeconds) {
+		this.ppgRecordingIntervalSeconds = UtilShimmer.nudgeInteger(ppgRecordingIntervalSeconds, 0, (int) (Math.pow(2, 16)-1));
+	}
+
 }

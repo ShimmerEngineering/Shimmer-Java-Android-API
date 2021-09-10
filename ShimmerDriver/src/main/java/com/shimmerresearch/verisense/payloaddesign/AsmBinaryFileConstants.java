@@ -63,10 +63,10 @@ public class AsmBinaryFileConstants {
 		public static final int PAYLOAD_FOOTER = PAYLOAD_CRC;
 	}
 
-	public class DATA_COMPRESSION_MODE {
-		public static final int NONE = 0x00;
-		public static final int ZLIB = 0x01;
-		public static final int XZ = 0x02;
+	public enum DATA_COMPRESSION_MODE {
+		NONE,
+		ZLIB,
+		XZ;
 	}
 
 }

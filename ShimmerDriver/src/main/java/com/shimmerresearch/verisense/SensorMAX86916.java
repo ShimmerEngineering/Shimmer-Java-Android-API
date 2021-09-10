@@ -35,6 +35,14 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 	protected int ppgLedAmplitudeRangeGreen = 0;
 	protected int ppgLedAmplitudeRangeBlue = 0;
 
+	protected PROX_DETECTION_MODE proximityDetectionMode = PROX_DETECTION_MODE.AUTO_GAIN_ON_PROX_DETECTION_ON_DRIVER;
+
+	public enum PROX_DETECTION_MODE {
+			AUTO_GAIN_OFF_PROX_DETECTION_OFF,
+			AUTO_GAIN_ON_PROX_DETECTION_ON_DRIVER,
+			AUTO_GAIN_ON_PROX_DETECTION_ON_HYBRID
+	}
+	
 	public class GuiLabelSensors {
 		public static final String PPG_GREEN = "PPG Green";
 		public static final String PPG_BLUE = "PPG Blue";
@@ -248,6 +256,9 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 					}
 				}
 				
+				if(configByteLayout.idxProxAgcMode>=0) {
+					configBytes[configByteLayout.idxProxAgcMode] = (byte) (proximityDetectionMode.ordinal()&0x03);
+				}
 			}
 		}
 	}
@@ -281,6 +292,9 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 					}
 				}
 				
+				if(configByteLayout.idxProxAgcMode>=0) {
+					proximityDetectionMode = PROX_DETECTION_MODE.values()[configBytes[configByteLayout.idxProxAgcMode]&0x03];
+				}
 			}
 		}
 	}
@@ -366,7 +380,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 	}
 
 	private class ConfigByteLayoutMax86916 {
-		public int idxPpgConfig1 = -1, idxPpgConfig2 = -1, idxLed1Pa = -1, idxLed2Pa = -1, idxLed3Pa = -1, idxLed4Pa = -1, idxLedRge = -1;
+		public int idxPpgConfig1 = -1, idxPpgConfig2 = -1, idxLed1Pa = -1, idxLed2Pa = -1, idxLed3Pa = -1, idxLed4Pa = -1, idxLedRge = -1, idxProxAgcMode = -1;
 		
 		public ConfigByteLayoutMax86916(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType) {
 			if(shimmerDevice instanceof VerisenseDevice) {
@@ -392,6 +406,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 				} else {
 					idxPpgConfig1 = OP_CONFIG_BYTE_INDEX.PPG_MODE_CONFIG2;
 					idxPpgConfig2 = OP_CONFIG_BYTE_INDEX.PPG_FIFO_CONFIG;
+					idxProxAgcMode = OP_CONFIG_BYTE_INDEX.PROX_AGC_MODE;
 				}
 			}
 		}

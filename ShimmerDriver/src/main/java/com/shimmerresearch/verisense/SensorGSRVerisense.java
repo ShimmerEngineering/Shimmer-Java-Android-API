@@ -23,11 +23,9 @@ public class SensorGSRVerisense extends SensorGSR {
 	private static final long serialVersionUID = -3937042079000714506L;
 
 	//--------- Sensor specific variables start --------------
-	int bitShiftGSRRange = 5;
-	int maskGSRRange = 0x07;
 	private double sensorSamplingRateHz = 0.0;
 	//--------- Sensor specific variables end --------------
-	
+
 	// Values appropriate to the Verisense Pulse+ (SR68). The Verisense GSR+ (SR62) uses Shimmer3 values.
 	public static final double[] VERISENSE_PULSE_PLUS_GSR_REF_RESISTORS_KOHMS = new double[] {
 			21., 		//Range 0
@@ -84,12 +82,12 @@ public class SensorGSRVerisense extends SensorGSR {
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		
-		ConfigByteLayoutGsr configByteLayoutGsr = new ConfigByteLayoutGsr(shimmerDevice, commType);
+		ConfigByteLayoutGsr cbl = new ConfigByteLayoutGsr(shimmerDevice, commType);
 		
-		if(configByteLayoutGsr.idxGsrRange>=0 && configByteLayoutGsr.idxAdcRate>=0) {
-			mGSRRange = (configBytes[configByteLayoutGsr.idxGsrRange] >> bitShiftGSRRange) & maskGSRRange;
+		if(cbl.idxGsrRange>=0 && cbl.idxAdcRate>=0) {
+			mGSRRange = (configBytes[cbl.idxGsrRange] >> cbl.bitShiftGSRRange) & cbl.maskGSRRange;
 			
-			int samplingRateSetting = (configBytes[configByteLayoutGsr.idxAdcRate] >> 0) & 0x3F;
+			int samplingRateSetting = (configBytes[cbl.idxAdcRate] >> 0) & cbl.maskAdcRate;
 			setSamplingRateFromShimmer(VerisenseDevice.ADC_SAMPLING_RATES[samplingRateSetting][1]);
 		}
 	}
@@ -97,20 +95,18 @@ public class SensorGSRVerisense extends SensorGSR {
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 
-		ConfigByteLayoutGsr configByteLayoutGsr = new ConfigByteLayoutGsr(shimmerDevice, commType);
+		ConfigByteLayoutGsr cbl = new ConfigByteLayoutGsr(shimmerDevice, commType);
 
-		if(configByteLayoutGsr.idxGsrRange>=0 && configByteLayoutGsr.idxAdcRate>=0) {
-			configBytes[configByteLayoutGsr.idxGsrRange] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
+		if(cbl.idxGsrRange>=0 && cbl.idxAdcRate>=0) {
+			configBytes[cbl.idxGsrRange] &= ~(cbl.maskGSRRange << cbl.bitShiftGSRRange);
+			configBytes[cbl.idxGsrRange] |= (byte) ((mGSRRange & cbl.maskGSRRange) << cbl.bitShiftGSRRange);
 	
-			//TODO fill in the sampling rate byte
-	//		for(double[] entry:VerisenseDevice.ADC_SAMPLING_RATES) {
-	//			if(getSamplingRateShimmer())
-	//		}
-	//		
-	//		configBytes[configByteLayoutGsr.idxAdcRate] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
-	//
-	//		int samplingRateSetting = (configBytes[configByteLayoutGsr.idxAdcRate] >> 0) & 0x3F;
-	//		setSamplingRateFromShimmer(VerisenseDevice.ADC_SAMPLING_RATES[samplingRateSetting][1]);
+			configBytes[cbl.idxAdcRate] &= ~cbl.maskAdcRate;
+			for(double[] entry:VerisenseDevice.ADC_SAMPLING_RATES) {
+				if(getSensorSamplingRate()==entry[1]) {
+					configBytes[cbl.idxAdcRate] |= (byte)entry[0] & cbl.maskAdcRate;
+				}
+			}
 		}
 	}
 	
@@ -159,7 +155,7 @@ public class SensorGSRVerisense extends SensorGSR {
 	//--------- Abstract methods implemented end --------------
 
 	private class ConfigByteLayoutGsr {
-		public int idxAdcRate = -1, idxGsrRange = -1;
+		public int idxAdcRate = -1, idxGsrRange = -1, maskAdcRate = 0x3F, maskGSRRange = 0x07, bitShiftGSRRange = 5;
 		
 		public ConfigByteLayoutGsr(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType) {
 			if(shimmerDevice instanceof VerisenseDevice) {

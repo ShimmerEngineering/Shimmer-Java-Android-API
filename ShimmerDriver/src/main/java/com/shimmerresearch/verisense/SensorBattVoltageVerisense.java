@@ -31,6 +31,7 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	//--------- Sensor specific variables start --------------
 	private MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties = null;
 	private double sensorSamplingRateHz = 0.0;
+
 	//--------- Sensor specific variables end --------------
 
 	
@@ -172,19 +173,23 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		ConfigByteLayoutVerisenseAdc configByteLayoutVerisenseAdc = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
-		if(configByteLayoutVerisenseAdc.idxAdcRate>=0) {
-			int samplingRateSetting = (configBytes[configByteLayoutVerisenseAdc.idxAdcRate] >> 0) & 0x3F;
+		ConfigByteLayoutVerisenseAdc cbl = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
+		if(cbl.idxAdcRate>=0) {
+			int samplingRateSetting = (configBytes[cbl.idxAdcRate] >> 0) & 0x3F;
 			setSamplingRateFromShimmer(VerisenseDevice.ADC_SAMPLING_RATES[samplingRateSetting][1]);
 		}
 	}
 
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
-		ConfigByteLayoutVerisenseAdc configByteLayoutVerisenseAdc = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
-		//TODO fill in the sampling rate byte
-		if(configByteLayoutVerisenseAdc.idxAdcRate>=0) {
-			
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
+		ConfigByteLayoutVerisenseAdc cbl = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
+		if(cbl.idxAdcRate>=0) {
+			configBytes[cbl.idxAdcRate] &= ~cbl.maskAdcRate;
+			for(double[] entry:VerisenseDevice.ADC_SAMPLING_RATES) {
+				if(getSensorSamplingRate()==entry[1]) {
+					configBytes[cbl.idxAdcRate] |= (byte)entry[0] & cbl.maskAdcRate;
+				}
+			}
 		}
 	}
 
@@ -224,7 +229,7 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	//--------- Abstract methods implemented end --------------
 	
 	private class ConfigByteLayoutVerisenseAdc {
-		public int idxAdcRate = -1;
+		public int idxAdcRate = -1, maskAdcRate = 0x3F;
 		
 		public ConfigByteLayoutVerisenseAdc(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType) {
 			if(shimmerDevice instanceof VerisenseDevice) {

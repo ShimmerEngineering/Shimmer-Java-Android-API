@@ -1,11 +1,12 @@
 package com.shimmerresearch.verisense;
 
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.verisense.communication.payloads.AbstractPayload;
 
 public class PendingEventSchedule {
 	
-	int intervalHours, wakeupTimeMinutes, wakeupDurationMinutes, retryIntervalMinutes;
+	private int intervalHours, wakeupTimeMinutes, wakeupDurationMinutes, retryIntervalMinutes;
 	
 	public PendingEventSchedule(byte[] buf, int startIndex) {
 		intervalHours = (int) AbstractPayload.parseByteArrayAtIndex(buf, startIndex+0, CHANNEL_DATA_TYPE.UINT8);
@@ -26,7 +27,7 @@ public class PendingEventSchedule {
 	}
 
 	public void setIntervalHours(int intervalHours) {
-		this.intervalHours = intervalHours;
+		this.intervalHours = UtilShimmer.nudgeInteger(intervalHours, 0, (int) (Math.pow(2, 8)-1));
 	}
 
 	public int getWakeupTimeMinutes() {
@@ -34,7 +35,7 @@ public class PendingEventSchedule {
 	}
 
 	public void setWakeupTimeMinutes(int wakeupTimeMinutes) {
-		this.wakeupTimeMinutes = wakeupTimeMinutes;
+		this.wakeupTimeMinutes = UtilShimmer.nudgeInteger(wakeupTimeMinutes, 0, (int) (Math.pow(2, 16)-1));
 	}
 
 	public int getWakeupDurationMinutes() {
@@ -42,7 +43,7 @@ public class PendingEventSchedule {
 	}
 
 	public void setWakeupDurationMinutes(int wakeupDurationMinutes) {
-		this.wakeupDurationMinutes = wakeupDurationMinutes;
+		this.wakeupDurationMinutes = UtilShimmer.nudgeInteger(wakeupDurationMinutes, 0, (int) (Math.pow(2, 8)-1));
 	}
 
 	public int getRetryIntervalMinutes() {
@@ -50,7 +51,7 @@ public class PendingEventSchedule {
 	}
 
 	public void setRetryIntervalMinutes(int retryIntervalMinutes) {
-		this.retryIntervalMinutes = retryIntervalMinutes;
+		this.retryIntervalMinutes = UtilShimmer.nudgeInteger(retryIntervalMinutes, 0, (int) (Math.pow(2, 16)-1));
 	}
 
 	public byte[] generateByteArray() {
