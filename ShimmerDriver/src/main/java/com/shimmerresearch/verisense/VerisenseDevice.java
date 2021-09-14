@@ -409,6 +409,18 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 	
 	@Override
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+		//Not current used in this class but can be overwritten in ShimmerDevice instances
+		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH);
+		try {
+			verisenseProtocolByteCommunication.writeOperationalConfig(shimmerDeviceClone.getShimmerConfigBytes());
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
 	public void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType) {
 		mConfigBytes = configBytes;
 		

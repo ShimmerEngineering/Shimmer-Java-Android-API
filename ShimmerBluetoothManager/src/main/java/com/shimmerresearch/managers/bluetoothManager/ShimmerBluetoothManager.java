@@ -91,7 +91,7 @@ public abstract class ShimmerBluetoothManager{
 	/** If true, all devices will auto-stream once a connection is established */
 	protected boolean mAutoStartStreaming = false;		
 
-	private static final List<Integer> HW_IDS_THAT_SUPPORT_CONFIG_VIA_BT = Arrays.asList(HW_ID.SHIMMER_3, HW_ID.SWEATCH, HW_ID.SHIMMER_4_SDK);
+	private static final List<Integer> HW_IDS_THAT_SUPPORT_CONFIG_VIA_BT = Arrays.asList(HW_ID.SHIMMER_3, HW_ID.SWEATCH, HW_ID.SHIMMER_4_SDK, HW_ID.VERISENSE_IMU);
 	
 	public ShimmerBluetoothManager() {
 		startTimerCalcReceptionRate();
