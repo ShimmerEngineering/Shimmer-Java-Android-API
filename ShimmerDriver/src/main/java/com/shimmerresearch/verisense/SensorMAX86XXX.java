@@ -299,10 +299,13 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
-		setPpgAdcResolution(MAX86XXX_ADC_RESOLUTION.RESOLUTION_15_BIT);
-		setPpgPulseWidth(MAX86XXX_PULSE_WIDTH.PW_400_US);
-		setPpgSampleAverage(MAX86XXX_SAMPLE_AVG.NO_AVERAGING);
-		return true;
+		if(mSensorMap.containsKey(sensorId)){
+			setPpgAdcResolution(MAX86XXX_ADC_RESOLUTION.RESOLUTION_15_BIT);
+			setPpgPulseWidth(MAX86XXX_PULSE_WIDTH.PW_400_US);
+			setPpgSampleAverage(MAX86XXX_SAMPLE_AVG.NO_AVERAGING);
+			return true;
+		}
+		return false;
 	}
 
 	@Override

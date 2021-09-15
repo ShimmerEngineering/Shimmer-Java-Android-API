@@ -845,19 +845,21 @@ public class SensorLIS2DW12 extends AbstractSensor {
 
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
+			setAccelRange(LIS2DW12_ACCEL_RANGE.RANGE_4G);
+			setAccelRate(LIS2DW12_ACCEL_RATE.LOW_POWER_25_0_HZ);
+			setAccelMode(LIS2DW12_MODE.HIGH_PERFORMANCE);
+			setAccelLpMode(LIS2DW12_LP_MODE.LOW_POWER1_12BIT_4_5_MG_NOISE);
+			setBwFilt(LIS2DW12_BW_FILT.ODR_DIVIDED_BY_2);
+			setFds(LIS2DW12_FILTERED_DATA_TYPE_SELECTION.LOW_PASS_FILTER_PATH_SELECTED);
+			setLowNoise(LIS2DW12_LOW_NOISE.DISABLED);
+			setHpFilterMode(LIS2DW12_HP_REF_MODE.DISABLED);
+			setFifoMode(LIS2DW12_FIFO_MODE.CONTINUOUS_TO_FIFO_MODE);
+			setFifoThreshold(LIS2DW12_FIFO_THRESHOLD.SAMPLE_31);
 
-		setAccelRange(LIS2DW12_ACCEL_RANGE.RANGE_4G);
-		setAccelRate(LIS2DW12_ACCEL_RATE.LOW_POWER_25_0_HZ);
-		setAccelMode(LIS2DW12_MODE.HIGH_PERFORMANCE);
-		setAccelLpMode(LIS2DW12_LP_MODE.LOW_POWER1_12BIT_4_5_MG_NOISE);
-		setBwFilt(LIS2DW12_BW_FILT.ODR_DIVIDED_BY_2);
-		setFds(LIS2DW12_FILTERED_DATA_TYPE_SELECTION.LOW_PASS_FILTER_PATH_SELECTED);
-		setLowNoise(LIS2DW12_LOW_NOISE.DISABLED);
-		setHpFilterMode(LIS2DW12_HP_REF_MODE.DISABLED);
-		setFifoMode(LIS2DW12_FIFO_MODE.CONTINUOUS_TO_FIFO_MODE);
-		setFifoThreshold(LIS2DW12_FIFO_THRESHOLD.SAMPLE_31);
-
-		return true;
+			return true;
+		}
+		return false;
 	}
 
 	@Override

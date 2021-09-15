@@ -414,21 +414,24 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 	
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
-		super.setDefaultConfigForSensor(sensorId, isSensorEnabled);
-		
-		setSampleRate(MAX86916_SAMPLE_RATE.SR_50_0_HZ);
-		setPpgDefaultCurrentAllLedsMilliamps(40);
-		setPpgMaxCurrentGreenBlueLedsMilliamps(MAX_LED_CURRENT_MILLIAMPS);
-		setPpgMaxCurrentRedIrLedsMilliamps(MAX_LED_CURRENT_MILLIAMPS);
-		setPpgAutoGainControlTargetPercentOfRange(30);
-		setPpgProximityDetectionCurrentIrLedMilliamps(10);
-		setPpgDac1CrossTalk(0);
-		setPpgDac2CrossTalk(0);
-		setPpgDac3CrossTalk(0);
-		setPpgDac4CrossTalk(0);
-		setProximityDetectionMode(PROX_DETECTION_MODE.AUTO_GAIN_ON_PROX_DETECTION_ON_DRIVER);
+		if(mSensorMap.containsKey(sensorId)){
+			super.setDefaultConfigForSensor(sensorId, isSensorEnabled);
+			
+			setSampleRate(MAX86916_SAMPLE_RATE.SR_50_0_HZ);
+			setPpgDefaultCurrentAllLedsMilliamps(40);
+			setPpgMaxCurrentGreenBlueLedsMilliamps(MAX_LED_CURRENT_MILLIAMPS);
+			setPpgMaxCurrentRedIrLedsMilliamps(MAX_LED_CURRENT_MILLIAMPS);
+			setPpgAutoGainControlTargetPercentOfRange(30);
+			setPpgProximityDetectionCurrentIrLedMilliamps(10);
+			setPpgDac1CrossTalk(0);
+			setPpgDac2CrossTalk(0);
+			setPpgDac3CrossTalk(0);
+			setPpgDac4CrossTalk(0);
+			setProximityDetectionMode(PROX_DETECTION_MODE.AUTO_GAIN_ON_PROX_DETECTION_ON_DRIVER);
+			return true;
+		}
 
-		return true;
+		return false;
 	}
 
 	@Override

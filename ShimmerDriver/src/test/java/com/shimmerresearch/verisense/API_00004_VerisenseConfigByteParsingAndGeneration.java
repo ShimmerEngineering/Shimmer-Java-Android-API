@@ -58,9 +58,9 @@ public class API_00004_VerisenseConfigByteParsingAndGeneration {
 	@Test
 	public void test003_sensorLsm6ds3() {
 		List<ISensorConfig> listOfSensorConfig = new ArrayList<ISensorConfig>();
-//		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_GYRO_RANGE.values()));
-//		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_RATE.values()));
-//		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_ACCEL_RANGE.values()));
+		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_GYRO_RANGE.values()));
+		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_RATE.values()));
+		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_ACCEL_RANGE.values()));
 		
 		ShimmerVerObject svo = FW_CHANGES.CCF21_010_3;
 		ExpansionBoardDetails ebd = new ExpansionBoardDetails(HW_ID.VERISENSE_IMU, 1, 0);
