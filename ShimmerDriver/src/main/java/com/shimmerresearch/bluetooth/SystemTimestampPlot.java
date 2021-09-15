@@ -15,7 +15,7 @@ public class SystemTimestampPlot {
 	public ObjectCluster processSystemTimestampPlot(ObjectCluster objectCluster) {
 		if(!mIsFirstSystemTimestampOffsetStored) {
 			mIsFirstSystemTimestampOffsetStored = true;
-			long systemTimeStamp = objectCluster.mSystemTimeStamp;
+			double systemTimeStamp = objectCluster.mSystemTimeStamp;
 			mOffsetFirstTime = systemTimeStamp-objectCluster.getTimestampMilliSecs();
 		}
 		

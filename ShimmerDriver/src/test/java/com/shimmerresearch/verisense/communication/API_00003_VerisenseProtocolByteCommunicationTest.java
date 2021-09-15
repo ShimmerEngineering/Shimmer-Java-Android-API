@@ -218,7 +218,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		assertTrue(verisenseDevice.getRecordingStartTimeMinutes()==0);
 		assertTrue(verisenseDevice.getRecordingEndTimeMinutes()==0);
 		assertTrue(verisenseDevice.getBleConnectionRetriesPerDay()==3);
-		assertTrue(verisenseDevice.getBleTxPower()==BLE_TX_POWER.MINUS12DBM);
+		assertTrue(verisenseDevice.getBleTxPower()==BLE_TX_POWER.MINUS_12_DBM);
 
 		PendingEventSchedule pendingEventScheduleDataTransfer = verisenseDevice.getPendingEventScheduleDataTransfer();
 		assertTrue(pendingEventScheduleDataTransfer.getIntervalHours()==24);

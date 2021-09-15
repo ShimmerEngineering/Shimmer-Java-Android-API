@@ -288,8 +288,8 @@ public class SensorSTC3100 extends AbstractSensor{
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails,byte[] rawData, COMMUNICATION_TYPE commType,ObjectCluster objectCluster, boolean isTimeSyncEnabled,
-			long pctimeStamp) {
-		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pctimeStamp);
+			double pctimeStampMs) {
+		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pctimeStampMs);
 		double unCalData = 0; double calData = 0;
 		
 		for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){

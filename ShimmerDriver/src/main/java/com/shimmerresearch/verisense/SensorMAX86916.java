@@ -2,10 +2,10 @@ package com.shimmerresearch.verisense;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -17,6 +17,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -27,20 +28,130 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 
 	private static final long serialVersionUID = 519272511737130670L;
 
-	public static final String[] MAX86916_RATES = {"50.0Hz","100.0Hz","200.0Hz","400.0Hz","800.0Hz","1000.0Hz","1600.0Hz","3200.0Hz"};
-	public static final Integer[] MAX86916_RATE_CONFIG_VALUES = {0,1,2,3,4,5,6,7};
+	public static final int MAX_DAC_VALUE = (int) (Math.pow(2, 5)-1); 
+	public static final int MAX_LED_CURRENT_MILLIAMPS = 204; 
+	
+	private MAX86916_SAMPLE_RATE sampleRate = MAX86916_SAMPLE_RATE.SR_50_0_HZ;
+	public static enum MAX86916_SAMPLE_RATE implements ISensorConfig {
+		SR_50_0_HZ("50.0Hz", 0, 50.0),
+		SR_100_0_HZ("100.0Hz", 1, 100.0),
+		SR_200_0_HZ("200.0Hz", 2, 200.0),
+		SR_400_0_HZ("400.0Hz", 3, 400.0),
+		SR_800_0_HZ("800.0Hz", 4, 800.0),
+		SR_1000_0_HZ("1000.0Hz", 5, 1000.0),
+		SR_1600_0_HZ("1600.0Hz", 6, 1600.0),
+		SR_3200_0_HZ("3200.0Hz", 7, 3200.0);
+		
+		String label;
+		Integer configValue;
+		double freqHz;
+		
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (MAX86916_SAMPLE_RATE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
 
+		static Map<Integer, MAX86916_SAMPLE_RATE> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (MAX86916_SAMPLE_RATE e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private MAX86916_SAMPLE_RATE(String label, int configValue, double freqHz) {
+			this.label = label;
+			this.configValue = configValue;
+			this.freqHz = freqHz;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	// Used during SD parsing
 	protected int ppgLedAmplitudeGreenConfigValue = 0;
 	protected int ppgLedAmplitudeBlueConfigValue = 0;
 	protected int ppgLedAmplitudeRangeGreen = 0;
 	protected int ppgLedAmplitudeRangeBlue = 0;
 
+	/**
+	 * Default LED pulse amplitude in mA
+	 */
+	protected int ppgDefaultCurrentAllLedsMilliamps = 40;
+	/**
+	 * Maximum LED Pulse Amplitude for Red and IR LEDs. If this value is lower than
+	 * the default PA value set in byte 61 - 'PPG_MA_DEFAULT', this value will be
+	 * used as the default. Units are in mA
+	 */
+	protected int ppgMaxCurrentRedIrLedsMilliamps = MAX_LED_CURRENT_MILLIAMPS;
+	/**
+	 * Maximum LED Pulse Amplitude for Green and Blue LEDs. If this value is lower
+	 * than the default PA value set in byte 61 - 'PPG_MA_DEFAULT', this value will
+	 * be used as the default. Units are in mA
+	 */
+	protected int ppgMaxCurrentGreenBlueLedsMilliamps = MAX_LED_CURRENT_MILLIAMPS;
+	/**
+	 * Used by the auto-gain driver to set the target average offset of the PPG
+	 * channels within the ADC range. Values of 30% and 70% are given as examples in
+	 * the Maxim driver code. Units are %.
+	 */
+	protected int ppgAutoGainControlTargetPercentOfRange = 30;
+
+	/**
+	 * LED pilot (i.e., the IR channel) Pulse Amplitude while in proximity detection mode. Units are in mA.
+	 */
+	protected int ppgProximityDetectionCurrentIrLedMilliamps = 10;
+
+	protected int ppgDac1CrossTalk = 0;
+	protected int ppgDac2CrossTalk = 0;
+	protected int ppgDac3CrossTalk = 0;
+	protected int ppgDac4CrossTalk = 0;
+
 	protected PROX_DETECTION_MODE proximityDetectionMode = PROX_DETECTION_MODE.AUTO_GAIN_ON_PROX_DETECTION_ON_DRIVER;
 
-	public enum PROX_DETECTION_MODE {
-			AUTO_GAIN_OFF_PROX_DETECTION_OFF,
-			AUTO_GAIN_ON_PROX_DETECTION_ON_DRIVER,
-			AUTO_GAIN_ON_PROX_DETECTION_ON_HYBRID
+	public enum PROX_DETECTION_MODE implements ISensorConfig {
+			AUTO_GAIN_OFF_PROX_DETECTION_OFF("Auto-gain Off, Proximity Detection Off", 0),
+			AUTO_GAIN_ON_PROX_DETECTION_ON_DRIVER("Auto-gain Off, Proximity Detection - Driver Mode", 1),
+			AUTO_GAIN_ON_PROX_DETECTION_ON_HYBRID("Auto-gain Off, Proximity detection - Hybrid Mode", 2),
+//			AUTO_GAIN_ON_PROX_DETECTION_OFF("Auto-gain On, Proximity detection Off", 3) //Not supported yet
+			;
+		
+		String label;
+		Integer configValue;
+		
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (PROX_DETECTION_MODE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, PROX_DETECTION_MODE> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (PROX_DETECTION_MODE e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private PROX_DETECTION_MODE(String label, int configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
 	}
 	
 	public class GuiLabelSensors {
@@ -164,15 +275,14 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_PPG_RATE = new ConfigOptionDetailsSensor (
 			SensorMAX86XXX.GuiLabelConfigCommonMax86.MAX86XXX_PPG_RATE,
 			SensorMAX86XXX.DatabaseConfigHandle.MAX86XXX_RATE,
-			MAX86916_RATES, 
-			MAX86916_RATE_CONFIG_VALUES, 
+			MAX86916_SAMPLE_RATE.getLabels(), 
+			MAX86916_SAMPLE_RATE.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMAX86916);
 
 	
 	public SensorMAX86916(VerisenseDevice verisenseDevice) {
 		super(SENSORS.MAX86916, verisenseDevice);
-		rate = MAX86916_RATE_CONFIG_VALUES[3];
 	}
 
 	@Override
@@ -188,7 +298,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
 		// get uncalibrated data for each (sub)sensor
 		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensorsCommon.PPG_RED)
@@ -198,7 +308,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 			rawData[0] = (byte) (rawData[0]&0x07);
 		}
 		
-		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensorsCommon.PPG_RED)){
 			double ppgUncal = objectCluster.getFormatClusterValue(SensorMAX86916.CHANNEL_MAX86916_PPG_RED, CHANNEL_TYPE.UNCAL);
 			if(Double.isFinite(ppgUncal)) {
@@ -239,25 +349,28 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 			if(shimmerDevice instanceof VerisenseDevice) {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
 				
+				configBytes[configByteLayout.idxPpgConfig1] &= ~(0x7F);
 				configBytes[configByteLayout.idxPpgConfig1] |= (getPpgPulseWidthConfigValue()&0x03)<<0;
-				configBytes[configByteLayout.idxPpgConfig1] |= (getRateConfigValue()&0x07)<<2;
+				configBytes[configByteLayout.idxPpgConfig1] |= (getSampleRate().configValue&0x07)<<2;
 				configBytes[configByteLayout.idxPpgConfig1] |= (getPpgAdcResolutionConfigValue()&0x03)<<5;
 				
-				configBytes[configByteLayout.idxPpgConfig2] |= (getPpgSmpAveConfigValue()&0x07)<<5;
+				configBytes[configByteLayout.idxPpgConfig2] &= ~(0x07<<5);
+				configBytes[configByteLayout.idxPpgConfig2] |= (getPpgSampleAverageConfigValue()&0x07)<<5;
 				
 				if(commType==COMMUNICATION_TYPE.SD) {
-					configBytes[configByteLayout.idxLed1Pa] |= (getPpgLedAmplitudeRedConfigValue()&0xFF);
-					configBytes[configByteLayout.idxLed2Pa] |= (getPpgLedAmplitudeIrConfigValue()&0xFF);
-					configBytes[configByteLayout.idxLed3Pa] |= (getPpgLedAmplitudeGreenConfigValue()&0xFF);
-					configBytes[configByteLayout.idxLed4Pa] |= (getPpgLedAmplitudeBlueConfigValue()&0xFF);
+					configBytes[configByteLayout.idxLed1Pa] = (byte) (getPpgLedAmplitudeRedConfigValue()&0xFF);
+					configBytes[configByteLayout.idxLed2Pa] = (byte) (getPpgLedAmplitudeIrConfigValue()&0xFF);
+					configBytes[configByteLayout.idxLed3Pa] = (byte) (getPpgLedAmplitudeGreenConfigValue()&0xFF);
+					configBytes[configByteLayout.idxLed4Pa] = (byte) (getPpgLedAmplitudeBlueConfigValue()&0xFF);
 					
 					if(verisenseDevice.isPayloadDesignV7orAbove()) {
-						configBytes[configByteLayout.idxLedRge] |= (getPpgLedAmplitudeRangeConfigValue()&0xFF);
+						configBytes[configByteLayout.idxLedRge] = (byte) (getPpgLedAmplitudeRangeConfigValue()&0xFF);
 					}
 				}
 				
 				if(configByteLayout.idxProxAgcMode>=0) {
-					configBytes[configByteLayout.idxProxAgcMode] = (byte) (proximityDetectionMode.ordinal()&0x03);
+					configBytes[configByteLayout.idxProxAgcMode] &= ~0x03;
+					configBytes[configByteLayout.idxProxAgcMode] |= (byte) (proximityDetectionMode.configValue&0x03);
 				}
 			}
 		}
@@ -279,7 +392,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 				setRateConfigValue((configBytes[configByteLayout.idxPpgConfig1]>>2)&0x07);
 				setPpgAdcResolutionConfigValue((configBytes[configByteLayout.idxPpgConfig1]>>5)&0x03);
 				
-				setPpgSmpAveConfigValue((configBytes[configByteLayout.idxPpgConfig2]>>5)&0x07);
+				setPpgSampleAverageConfigValue((configBytes[configByteLayout.idxPpgConfig2]>>5)&0x07);
 	
 				if(commType==COMMUNICATION_TYPE.SD) {
 					setPpgLedAmplitudeIrConfigValue(configBytes[configByteLayout.idxLed1Pa]&0xFF);
@@ -293,47 +406,77 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 				}
 				
 				if(configByteLayout.idxProxAgcMode>=0) {
-					proximityDetectionMode = PROX_DETECTION_MODE.values()[configBytes[configByteLayout.idxProxAgcMode]&0x03];
+					proximityDetectionMode = PROX_DETECTION_MODE.BY_CONFIG_VALUE.get(configBytes[configByteLayout.idxProxAgcMode]&0x03);
 				}
 			}
 		}
 	}
+	
+	@Override
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		super.setDefaultConfigForSensor(sensorId, isSensorEnabled);
+		
+		setSampleRate(MAX86916_SAMPLE_RATE.SR_50_0_HZ);
+		setPpgDefaultCurrentAllLedsMilliamps(40);
+		setPpgMaxCurrentGreenBlueLedsMilliamps(MAX_LED_CURRENT_MILLIAMPS);
+		setPpgMaxCurrentRedIrLedsMilliamps(MAX_LED_CURRENT_MILLIAMPS);
+		setPpgAutoGainControlTargetPercentOfRange(30);
+		setPpgProximityDetectionCurrentIrLedMilliamps(10);
+		setPpgDac1CrossTalk(0);
+		setPpgDac2CrossTalk(0);
+		setPpgDac3CrossTalk(0);
+		setPpgDac4CrossTalk(0);
+		setProximityDetectionMode(PROX_DETECTION_MODE.AUTO_GAIN_ON_PROX_DETECTION_ON_DRIVER);
+
+		return true;
+	}
 
 	@Override
-	public void setSensorSamplingRate(double samplingRateHz) {
-		int ppgRate = 0;
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
+		Object returnValue = null;
 		
-		if (samplingRateHz<=50){
-			ppgRate = MAX86916_RATE_CONFIG_VALUES[0]; // 50Hz
-		} else if (samplingRateHz<=100){
-			ppgRate = MAX86916_RATE_CONFIG_VALUES[1]; // 100Hz
-		} else if (samplingRateHz<=200){
-			ppgRate = MAX86916_RATE_CONFIG_VALUES[2]; // 200Hz
-		} else if (samplingRateHz<=400){
-			ppgRate = MAX86916_RATE_CONFIG_VALUES[3]; // 400Hz
-		} else if (samplingRateHz<=800){
-			ppgRate = MAX86916_RATE_CONFIG_VALUES[4]; // 800Hz
-		} else if (samplingRateHz<=1000){ 
-			ppgRate = MAX86916_RATE_CONFIG_VALUES[5]; // 1000Hz
-		} else if (samplingRateHz<=1600){ 
-			ppgRate = MAX86916_RATE_CONFIG_VALUES[6]; // 1600Hz
-		} else if (samplingRateHz<=3200){ 
-			ppgRate = MAX86916_RATE_CONFIG_VALUES[7]; // 3200Hz
-		}
-		setRateConfigValue(ppgRate);
+		switch(configLabel){
+			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_RATE):
+				setRateConfigValue((int)valueToSet);
+				break;
+			default:
+				returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
+				break;
+		}	
+		return returnValue;
 	}
 	
 	@Override
-	public void setRateConfigValue(int valueToSet) {
-		if(ArrayUtils.contains(MAX86916_RATE_CONFIG_VALUES, valueToSet)){
-			super.setRateConfigValue(valueToSet);
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
+		Object returnValue = null;
+
+		switch(configLabel){
+			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_RATE):
+				returnValue = getSampleRate().configValue;
+				break;
+			default:
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
+				break;
 		}
+		return returnValue;
+	}
+
+	@Override
+	public void setSensorSamplingRate(double samplingRateHz) {
+		for(MAX86916_SAMPLE_RATE sampleRate:MAX86916_SAMPLE_RATE.values()) {
+			if(samplingRateHz<=sampleRate.freqHz) {
+				setSampleRate(sampleRate);
+			}
+		}
+	}
+	
+	public void setRateConfigValue(int valueToSet) {
+		setSampleRate(MAX86916_SAMPLE_RATE.BY_CONFIG_VALUE.get(valueToSet));
 	}
 
 	@Override
 	public double getSamplingRateFreq() {
-		String ppgRateString = CONFIG_OPTION_PPG_RATE.getConfigStringFromConfigValue(getRateConfigValue());
-		return super.convertRateStringToDouble(ppgRateString);
+		return getSampleRate().freqHz;
 	}
 
 	public void setPpgLedAmplitudeGreenConfigValue(int valueToSet) {
@@ -364,6 +507,110 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 		return calculatePpgLedAmplitude(ppgLedAmplitudeBlueConfigValue, ppgLedAmplitudeRangeBlue);
 	}
 	
+	public MAX86916_SAMPLE_RATE getSampleRate() {
+		return sampleRate;
+	}
+
+	public void setSampleRate(MAX86916_SAMPLE_RATE sampleRate) {
+		this.sampleRate = sampleRate;
+	}
+
+	public int getPpgLedAmplitudeRangeGreen() {
+		return ppgLedAmplitudeRangeGreen;
+	}
+
+	public void setPpgLedAmplitudeRangeGreen(int ppgLedAmplitudeRangeGreen) {
+		this.ppgLedAmplitudeRangeGreen = UtilShimmer.nudgeInteger(ppgLedAmplitudeRangeGreen, 0, MAX_LED_CURRENT_MILLIAMPS);
+	}
+
+	public int getPpgLedAmplitudeRangeBlue() {
+		return ppgLedAmplitudeRangeBlue;
+	}
+
+	public void setPpgLedAmplitudeRangeBlue(int ppgLedAmplitudeRangeBlue) {
+		this.ppgLedAmplitudeRangeBlue = UtilShimmer.nudgeInteger(ppgLedAmplitudeRangeBlue, 0, MAX_LED_CURRENT_MILLIAMPS);
+	}
+
+	public int getPpgDefaultCurrentAllLedsMilliamps() {
+		return ppgDefaultCurrentAllLedsMilliamps;
+	}
+
+	public void setPpgDefaultCurrentAllLedsMilliamps(int ppgDefaultCurrentAllLedsMilliamps) {
+		this.ppgDefaultCurrentAllLedsMilliamps = UtilShimmer.nudgeInteger(ppgDefaultCurrentAllLedsMilliamps, 0, MAX_LED_CURRENT_MILLIAMPS);
+	}
+
+	public int getPpgMaxCurrentRedIrLedsMilliamps() {
+		return ppgMaxCurrentRedIrLedsMilliamps;
+	}
+
+	public void setPpgMaxCurrentRedIrLedsMilliamps(int ppgMaxCurrentRedIrLedsMilliamps) {
+		this.ppgMaxCurrentRedIrLedsMilliamps = UtilShimmer.nudgeInteger(ppgMaxCurrentRedIrLedsMilliamps, 0, MAX_LED_CURRENT_MILLIAMPS);
+	}
+
+	public int getPpgMaxCurrentGreenBlueLedsMilliamps() {
+		return ppgMaxCurrentGreenBlueLedsMilliamps;
+	}
+
+	public void setPpgMaxCurrentGreenBlueLedsMilliamps(int ppgMaxCurrentGreenBlueLedsMilliamps) {
+		this.ppgMaxCurrentGreenBlueLedsMilliamps = UtilShimmer.nudgeInteger(ppgMaxCurrentGreenBlueLedsMilliamps, 0, MAX_LED_CURRENT_MILLIAMPS);
+	}
+
+	public int getPpgAutoGainControlTargetPercentOfRange() {
+		return ppgAutoGainControlTargetPercentOfRange;
+	}
+
+	public void setPpgAutoGainControlTargetPercentOfRange(int ppgAutoGainControlTargetPercentOfRange) {
+		this.ppgAutoGainControlTargetPercentOfRange = UtilShimmer.nudgeInteger(ppgAutoGainControlTargetPercentOfRange, 0, 100);
+	}
+
+	public int getPpgProximityDetectionCurrentIrLedMilliamps() {
+		return ppgProximityDetectionCurrentIrLedMilliamps;
+	}
+
+	public void setPpgProximityDetectionCurrentIrLedMilliamps(int ppgProximityDetectionCurrentIrLedMilliamps) {
+		this.ppgProximityDetectionCurrentIrLedMilliamps = UtilShimmer.nudgeInteger(ppgProximityDetectionCurrentIrLedMilliamps, 0, MAX_LED_CURRENT_MILLIAMPS);
+	}
+
+	public int getPpgDac1CrossTalk() {
+		return ppgDac1CrossTalk;
+	}
+
+	public void setPpgDac1CrossTalk(int ppgDac1CrossTalk) {
+		this.ppgDac1CrossTalk = UtilShimmer.nudgeInteger(ppgDac1CrossTalk, 0, MAX_DAC_VALUE);
+	}
+
+	public int getPpgDac2CrossTalk() {
+		return ppgDac2CrossTalk;
+	}
+
+	public void setPpgDac2CrossTalk(int ppgDac2CrossTalk) {
+		this.ppgDac2CrossTalk = UtilShimmer.nudgeInteger(ppgDac2CrossTalk, 0, MAX_DAC_VALUE);
+	}
+
+	public int getPpgDac3CrossTalk() {
+		return ppgDac3CrossTalk;
+	}
+
+	public void setPpgDac3CrossTalk(int ppgDac3CrossTalk) {
+		this.ppgDac3CrossTalk = UtilShimmer.nudgeInteger(ppgDac3CrossTalk, 0, MAX_DAC_VALUE);
+	}
+
+	public int getPpgDac4CrossTalk() {
+		return ppgDac4CrossTalk;
+	}
+
+	public void setPpgDac4CrossTalk(int ppgDac4CrossTalk) {
+		this.ppgDac4CrossTalk = UtilShimmer.nudgeInteger(ppgDac4CrossTalk, 0, MAX_DAC_VALUE);
+	}
+
+	public PROX_DETECTION_MODE getProximityDetectionMode() {
+		return proximityDetectionMode;
+	}
+
+	public void setProximityDetectionMode(PROX_DETECTION_MODE proximityDetectionMode) {
+		this.proximityDetectionMode = proximityDetectionMode;
+	}
+
 	@Override
 	public byte getPpgLedAmplitudeRangeConfigValue() {
 		byte ledRge = super.getPpgLedAmplitudeRangeConfigValue();
@@ -377,6 +624,25 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 		ppgLedAmplitudeRangeGreen = (ledRge >> 4) & 0x03;
 		ppgLedAmplitudeRangeBlue = (ledRge >> 6) & 0x03;
 		super.setPpgLedAmplitudeRangeConfigValue(ledRge);
+	}
+
+	@Override
+	public void setSensorConfig(ISensorConfig sensorConfig) {
+		if(sensorConfig instanceof MAX86916_SAMPLE_RATE) {
+			setSampleRate((MAX86916_SAMPLE_RATE)sensorConfig);
+		} else if(sensorConfig instanceof PROX_DETECTION_MODE) {
+			setProximityDetectionMode((PROX_DETECTION_MODE)sensorConfig);
+		} else {
+			super.setSensorConfig(sensorConfig);
+		}
+	}
+
+	@Override
+	public List<ISensorConfig> getSensorConfig() {
+		List<ISensorConfig> listOfSensorConfig = super.getSensorConfig();
+		listOfSensorConfig.add(getSampleRate());
+		listOfSensorConfig.add(getProximityDetectionMode());
+		return listOfSensorConfig;
 	}
 
 	private class ConfigByteLayoutMax86916 {

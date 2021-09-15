@@ -712,11 +712,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param newPacket
 	 * @param fwType
 	 * @param isTimeSyncEnabled
-	 * @param pcTimestamp this is only used by shimmerbluetooth, set to -1 if not using
+	 * @param pcTimestampMs this is only used by shimmerbluetooth, set to -1 if not using
 	 * @return
 	 */
 	@Override
-	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE fwType, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE fwType, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
 		ObjectCluster objectCluster = new ObjectCluster();
 		
@@ -744,7 +744,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if (fwType == COMMUNICATION_TYPE.BLUETOOTH){
 //			objectCluster.mSystemTimeStampBytes=ByteBuffer.allocate(8).putLong(pcTimestamp).array();
-			objectCluster.setSystemTimeStamp(pcTimestamp);
+			objectCluster.setSystemTimeStamp(pcTimestampMs);
 			//plus 1 because of: timestamp
 			numAdditionalChannels += 1;
 			
@@ -2106,8 +2106,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				additionalChannelsOffset+=1;
 				
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,(double)pcTimestamp);
-				calibratedData[additionalChannelsOffset] = (double)pcTimestamp;
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,(double)pcTimestampMs);
+				calibratedData[additionalChannelsOffset] = (double)pcTimestampMs;
 				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.MILLISECONDS;
 				uncalibratedData[additionalChannelsOffset] = Double.NaN;
 				uncalibratedDataUnits[additionalChannelsOffset] = "";

@@ -74,7 +74,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType,
-			ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimeStamp) {
+			ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pctimeStampMs) {
 		// TODO Auto-generated method stub
 		return null;
 	}

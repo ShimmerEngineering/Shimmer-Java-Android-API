@@ -2,10 +2,11 @@ package com.shimmerresearch.verisense;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -33,6 +34,88 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	private double sensorSamplingRateHz = 0.0;
 
 	//--------- Sensor specific variables end --------------
+
+	public static int ADC_BYTE_BUFFER_SIZE = 192;
+	
+	public static enum ADC_SAMPLING_RATES implements ISensorConfig {
+		OFF("Off", 0, Double.NaN, Integer.MIN_VALUE),
+		FREQ_32768_0_HZ("32768.0 Hz", 1, 32768.0, 1),
+		FREQ_16384_0_HZ("16384.0 Hz", 2, 16384.0, 2),
+		FREQ_8192_0_HZ("8192.0 Hz", 3, 8192.0, 4),
+		FREQ_6553_6_HZ("6553.6 Hz", 4, 6553.6, 5),
+		FREQ_4096_0_HZ("4096.0 Hz", 5, 4096.0, 8),
+		FREQ_3276_8_HZ("3276.8 Hz", 6, 3276.8, 10),
+		FREQ_2048_0_HZ("2048.0 Hz", 7, 2048.0, 16),
+		FREQ_1638_4_HZ("1638.4 Hz", 8, 1638.4, 20),
+		FREQ_1310_72_HZ("1310.72 Hz", 9, 1310.72, 25),
+		FREQ_1024_0_HZ("1024.0 Hz", 10, 1024.0, 32),
+		FREQ_819_2_HZ("819.2 Hz", 11, 819.2, 40),
+		FREQ_655_36_HZ("655.36 Hz", 12, 655.36, 50),
+		FREQ_512_0_HZ("512.0 Hz", 13, 512.0, 64),
+		FREQ_409_6_HZ("409.6 Hz", 14, 409.6, 80),
+		FREQ_327_68_HZ("327.68 Hz", 15, 327.68, 100),
+		FREQ_256_0_HZ("256.0 Hz", 16, 256.0, 128),
+		FREQ_204_8_HZ("204.8 Hz", 17, 204.8, 160),
+		FREQ_163_84_HZ("163.84 Hz", 18, 163.84, 200),
+		FREQ_128_0_HZ("128.0 Hz", 19, 128.0, 256),
+		FREQ_102_4_HZ("102.4 Hz", 20, 102.4, 320),
+		FREQ_81_92_HZ("81.92 Hz", 21, 81.92, 400),
+		FREQ_64_0_HZ("64.0 Hz", 22, 64.0, 512),
+		FREQ_51_2_HZ("51.2 Hz", 23, 51.2, 640),
+		FREQ_40_96_HZ("40.96 Hz", 24, 40.96, 800),
+		FREQ_32_0_HZ("32.0 Hz", 25, 32.0, 1024),
+		FREQ_25_6_HZ("25.6 Hz", 26, 25.6, 1280),
+		FREQ_20_48_HZ("20.48 Hz", 27, 20.48, 1600),
+		FREQ_16_0_HZ("16.0 Hz", 28, 16.0, 2048),
+		FREQ_12_8_HZ("12.8 Hz", 29, 12.8, 2560),
+		FREQ_10_24_HZ("10.24 Hz", 30, 10.24, 3200),
+		FREQ_8_0_HZ("8.0 Hz", 31, 8.0, 4096),
+		FREQ_6_4_HZ("6.4 Hz", 32, 6.4, 5120),
+		FREQ_5_12_HZ("5.12 Hz", 33, 5.12, 6400),
+		FREQ_4_0_HZ("4.0 Hz", 34, 4.0, 8192),
+		FREQ_3_2_HZ("3.2 Hz", 35, 3.2, 10240),
+		FREQ_2_56_HZ("2.56 Hz", 36, 2.56, 12800),
+		FREQ_2_0_HZ("2.0 Hz", 37, 2.0, 16384),
+		FREQ_1_6_HZ("1.6 Hz", 38, 1.6, 20480),
+		FREQ_1_28_HZ("1.28 Hz", 39, 1.28, 25600),
+		FREQ_1_0_HZ("1.0 Hz", 40, 1.0, 32768),
+		FREQ_0_8_HZ("0.8 Hz", 41, 0.8, 40960),
+		FREQ_0_64_HZ("0.64 Hz", 42, 0.64, 51200);
+		
+		private String label;
+		public int configValue;
+		public double freqHz;
+		public int clockTicks;
+
+		static Map<Integer, ADC_SAMPLING_RATES> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (ADC_SAMPLING_RATES e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private ADC_SAMPLING_RATES(String label, int configValue, double freqHz, int clockTicks){
+			this.label = label;
+			this.configValue = configValue;
+			this.freqHz = freqHz;
+			this.clockTicks = clockTicks;
+		}
+		
+		public String getLabel() {
+			return label;
+		}
+		
+		public static ADC_SAMPLING_RATES getConfigValueForFreq(double freqHz) {
+			List<ADC_SAMPLING_RATES> listOfAdcSamplingRates = Arrays.asList(ADC_SAMPLING_RATES.values());
+			Collections.reverse(listOfAdcSamplingRates);
+			for(ADC_SAMPLING_RATES adcSamplingRate : listOfAdcSamplingRates) {
+				if(freqHz<=adcSamplingRate.freqHz) {
+					return adcSamplingRate;
+				}
+			}
+			return null;
+		}
+	}
 
 	
 	public static class ObjectClusterSensorNameVerisense {
@@ -111,9 +194,9 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	}
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
-		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 
 		for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BATTERY)){
@@ -176,7 +259,7 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 		ConfigByteLayoutVerisenseAdc cbl = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
 		if(cbl.idxAdcRate>=0) {
 			int samplingRateSetting = (configBytes[cbl.idxAdcRate] >> 0) & 0x3F;
-			setSamplingRateFromShimmer(VerisenseDevice.ADC_SAMPLING_RATES[samplingRateSetting][1]);
+			setSamplingRateFromShimmer(ADC_SAMPLING_RATES.BY_CONFIG_VALUE.get(samplingRateSetting).freqHz);
 		}
 	}
 
@@ -185,11 +268,8 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 		ConfigByteLayoutVerisenseAdc cbl = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
 		if(cbl.idxAdcRate>=0) {
 			configBytes[cbl.idxAdcRate] &= ~cbl.maskAdcRate;
-			for(double[] entry:VerisenseDevice.ADC_SAMPLING_RATES) {
-				if(getSensorSamplingRate()==entry[1]) {
-					configBytes[cbl.idxAdcRate] |= (byte)entry[0] & cbl.maskAdcRate;
-				}
-			}
+			ADC_SAMPLING_RATES adcSamplingRate = ADC_SAMPLING_RATES.getConfigValueForFreq(getSensorSamplingRate());
+			configBytes[cbl.idxAdcRate] |= (byte)adcSamplingRate.configValue & cbl.maskAdcRate;
 		}
 	}
 

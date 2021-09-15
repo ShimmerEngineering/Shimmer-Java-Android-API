@@ -63,11 +63,11 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		RATE_833_HZ("833.0Hz", 7, 833.0),
 		RATE_1666_HZ("1666.0Hz", 8, 1666.0);
 		
-		String label;
-		Integer configValue;
-		double freqHz;
+		public String label;
+		public Integer configValue;
+		public double freqHz;
 
-		static Map<String, Integer> REF_MAP = new HashMap<>();
+		public static Map<String, Integer> REF_MAP = new HashMap<>();
 		static {
 			for (LSM6DS3_RATE e : values()) {
 				REF_MAP.put(e.label, e.configValue);
@@ -409,12 +409,12 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
 		// get uncalibrated data for each (sub)sensor
 		if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL2) && mCurrentCalibDetailsAccel!=null){
 			// ADC values
-			objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+			objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 
 			double[] unCalibratedAccel = new double[3];
 			unCalibratedAccel[0] = objectCluster.getFormatClusterValue(SensorLSM6DS3.CHANNEL_LSM6DS3_ACCEL_X, CHANNEL_TYPE.UNCAL);
@@ -439,7 +439,7 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		}
 		else if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.GYRO) && mCurrentCalibDetailsGyro!=null){
 			// ADC values
-			objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+			objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 
 			double[] unCalibratedGyro = new double[3];
 			unCalibratedGyro[0] = objectCluster.getFormatClusterValue(SensorLSM6DS3.CHANNEL_LSM6DS3_GYRO_X, CHANNEL_TYPE.UNCAL);
