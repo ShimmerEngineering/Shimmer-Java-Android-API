@@ -55,7 +55,9 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 	
 	public void DestroyProcess() {
 		if (p != null) {
+			WriteDataToProcess("Stop");
 			p.destroyForcibly();
+			p=null;
 		}
 	}
 
