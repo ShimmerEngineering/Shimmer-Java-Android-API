@@ -1,8 +1,9 @@
 package com.shimmerresearch.verisense;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-
-import org.apache.commons.lang3.ArrayUtils;
+import java.util.List;
+import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -23,27 +24,132 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 
 	public static final double[] LED_RANGE_STEPS_MILLIAMPS = {0.2,0.4,0.6,0.8};
 
-	public static final String[] MAX86XXX_ADC_RESOLUTION = {"12-bit","13-bit","14-bit","15-bit"};
-	public static final Integer[] MAX86XXX_ADC_RESOLUTION_CONFIG_VALUES = {0,1,2,3};
-	public static final double[] MAX86XXX_ADC_LSB = {7.8125,15.625,31.25,62.5};
-	public static final double[] MAX86XXX_ADC_BIT_SHIFT = {Math.pow(2, 7),Math.pow(2, 6),Math.pow(2, 5),Math.pow(2, 4)};
+	protected MAX86XXX_ADC_RESOLUTION adcResolution = MAX86XXX_ADC_RESOLUTION.RESOLUTION_15_BIT;
+	protected MAX86XXX_PULSE_WIDTH pulseWidth = MAX86XXX_PULSE_WIDTH.PW_400_US;
+	protected MAX86XXX_SAMPLE_AVG sampleAverage = MAX86XXX_SAMPLE_AVG.NO_AVERAGING;
 	
-	public static final String[] MAX86XXX_PULSE_WIDTH = {"50us","100us","200us","400us"};
-	public static final Integer[] MAX86XXX_PULSE_WIDTH_CONFIG_VALUES = {0,1,2,3};
-	
-	public static final String[] MAX86XXX_SAMPLE_AVG = {"No averaging","2","4","8","16","32","32","32"};
-	public static final Integer[] MAX86XXX_SAMPLE_AVG_CONFIG_VALUES = {0,1,2,3,4,5,6,7};
-
-	protected int rate = 0;
-	protected int adcResolution = MAX86XXX_ADC_RESOLUTION_CONFIG_VALUES[3];
-	protected int pulseWidth = MAX86XXX_PULSE_WIDTH_CONFIG_VALUES[0];
-	protected int sampleAverage = MAX86XXX_SAMPLE_AVG_CONFIG_VALUES[0];
 	protected int ppgLedAmplitudeRedConfigValue = 0;
 	protected int ppgLedAmplitudeIrConfigValue = 0;
 	protected int ppgLedAmplitudeRangeRed = 0;
 	protected int ppgLedAmplitudeRangeIr = 0;
 
 	// --------------- Configuration options start ----------------
+
+	public static enum MAX86XXX_ADC_RESOLUTION implements ISensorConfig {
+		RESOLUTION_12_BIT("12-bit", 0, Math.pow(2, 7), 7.8125),
+		RESOLUTION_13_BIT("13-bit", 1, Math.pow(2, 6), 15.625),
+		RESOLUTION_14_BIT("14-bit", 2, Math.pow(2, 5), 31.25),
+		RESOLUTION_15_BIT("15-bit", 3, Math.pow(2, 4), 62.5);
+		
+		String label;
+		Integer configValue;
+		double bitShift, lsb;
+		
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (MAX86XXX_ADC_RESOLUTION e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, MAX86XXX_ADC_RESOLUTION> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (MAX86XXX_ADC_RESOLUTION e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private MAX86XXX_ADC_RESOLUTION(String label, int configValue, double bitShift, double lsb) {
+			this.label = label;
+			this.configValue = configValue;
+			this.bitShift = bitShift;
+			this.lsb = lsb;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	public static enum MAX86XXX_PULSE_WIDTH implements ISensorConfig {
+		PW_50_US("50us", 0),
+		PW_100_US("100us", 1),
+		PW_200_US("200us", 2),
+		PW_400_US("400us", 3),;
+		
+		String label;
+		Integer configValue;
+		
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (MAX86XXX_PULSE_WIDTH e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, MAX86XXX_PULSE_WIDTH> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (MAX86XXX_PULSE_WIDTH e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private MAX86XXX_PULSE_WIDTH(String label, int configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	public static enum MAX86XXX_SAMPLE_AVG implements ISensorConfig {
+		NO_AVERAGING("No averaging", 0),
+		SAMPLES_2("2", 1),
+		SAMPLES_4("4", 2),
+		SAMPLES_8("8", 3),
+		SAMPLES_16("16", 4),
+		SAMPLES_32("32", 5);
+		
+		String label;
+		Integer configValue;
+		
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (MAX86XXX_SAMPLE_AVG e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, MAX86XXX_SAMPLE_AVG> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (MAX86XXX_SAMPLE_AVG e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private MAX86XXX_SAMPLE_AVG(String label, int configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
 
 	public class GuiLabelSensorsCommon {
 		public static final String PPG_RED = "PPG Red"; 
@@ -75,24 +181,24 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_PPG_PULSE_WIDTH = new ConfigOptionDetailsSensor (
 			SensorMAX86XXX.GuiLabelConfigCommonMax86.MAX86XXX_PPG_PULSE_WIDTH,
 			SensorMAX86XXX.DatabaseConfigHandle.MAX86XXX_PPG_PULSE_WIDTH,
-			MAX86XXX_PULSE_WIDTH, 
-			MAX86XXX_PULSE_WIDTH_CONFIG_VALUES, 
+			MAX86XXX_PULSE_WIDTH.getLabels(), 
+			MAX86XXX_PULSE_WIDTH.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMAX86150);
 	
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_PPG_ADC_RESOLUTION = new ConfigOptionDetailsSensor (
 			SensorMAX86XXX.GuiLabelConfigCommonMax86.MAX86XXX_PPG_ADC_RESOLUTION,
 			SensorMAX86XXX.DatabaseConfigHandle.MAX86XXX_PPG_ADC_RESOLUTION,
-			MAX86XXX_ADC_RESOLUTION, 
-			MAX86XXX_ADC_RESOLUTION_CONFIG_VALUES, 
+			MAX86XXX_ADC_RESOLUTION.getLabels(), 
+			MAX86XXX_ADC_RESOLUTION.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMAX86150);
 	
 	public static final ConfigOptionDetailsSensor CONFIG_OPTION_PPG_SAMPLE_AVG = new ConfigOptionDetailsSensor (
 			SensorMAX86XXX.GuiLabelConfigCommonMax86.MAX86XXX_PPG_SMPAVE,
 			SensorMAX86XXX.DatabaseConfigHandle.MAX86XXX_PPG_SMPAVE,
-			MAX86XXX_SAMPLE_AVG, 
-			MAX86XXX_SAMPLE_AVG_CONFIG_VALUES, 
+			MAX86XXX_SAMPLE_AVG.getLabels(), 
+			MAX86XXX_SAMPLE_AVG.getConfigValues(), 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMAX86150);
 
@@ -121,8 +227,8 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 
 	protected double calibratePpg(double ppgUncal) {
 		// Bit shit the channel by the appropriate value
-		double ppgCal = ppgUncal / MAX86XXX_ADC_BIT_SHIFT[adcResolution];
-		ppgCal = (ppgCal*MAX86XXX_ADC_LSB[adcResolution]);
+		double ppgCal = ppgUncal / adcResolution.bitShift;
+		ppgCal = (ppgCal*adcResolution.lsb);
 		//To convert from pA to nA
 		ppgCal = ppgCal / 1000;
 		return ppgCal;
@@ -139,14 +245,11 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 		Object returnValue = null;
 		
 		switch(configLabel){
-			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_RATE):
-				setRateConfigValue((int)valueToSet);
-				break;
 			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_ADC_RESOLUTION):
 				setPpgAdcResolutionConfigValue((int)valueToSet);
 				break;
 			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_SMPAVE):
-				setPpgSmpAveConfigValue((int)valueToSet);
+				setPpgSampleAverageConfigValue((int)valueToSet);
 				break;
 			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_PULSE_WIDTH):
 				setPpgPulseWidthConfigValue((int)valueToSet);
@@ -169,14 +272,11 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 		Object returnValue = null;
 
 		switch(configLabel){
-			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_RATE):
-				returnValue = getRateConfigValue();
-				break;
 			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_ADC_RESOLUTION):
 				returnValue = getPpgAdcResolutionConfigValue();
 				break;
 			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_SMPAVE):
-				returnValue = getPpgSmpAveConfigValue();
+				returnValue = getPpgSampleAverageConfigValue();
 				break;
 			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_PULSE_WIDTH):
 				returnValue = getPpgPulseWidthConfigValue();
@@ -199,7 +299,12 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
-		// TODO Auto-generated method stub
+		if(mSensorMap.containsKey(sensorId)){
+			setPpgAdcResolution(MAX86XXX_ADC_RESOLUTION.RESOLUTION_15_BIT);
+			setPpgPulseWidth(MAX86XXX_PULSE_WIDTH.PW_400_US);
+			setPpgSampleAverage(MAX86XXX_SAMPLE_AVG.NO_AVERAGING);
+			return true;
+		}
 		return false;
 	}
 
@@ -256,14 +361,6 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 		// TODO add method to update calib values
 	}
 	
-	public int getRateConfigValue() {
-		return rate;
-	}
-
-	public void setRateConfigValue(int valueToSet) {
-		rate = valueToSet;
-	}
-
 	public void setPpgLedAmplitudeRedConfigValue(int valueToSet) {
 		if(valueToSet >= 0 && valueToSet < 256) {
 			ppgLedAmplitudeRedConfigValue = valueToSet;
@@ -285,36 +382,53 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 	}
 
 	public void setPpgPulseWidthConfigValue(int valueToSet) {
-		if(ArrayUtils.contains(MAX86XXX_PULSE_WIDTH_CONFIG_VALUES, valueToSet)){
-			pulseWidth = valueToSet;
-		}
+		setPpgPulseWidth(MAX86XXX_PULSE_WIDTH.BY_CONFIG_VALUE.get(valueToSet));
 	}
 
-	public void setPpgSmpAveConfigValue(int valueToSet) {
-		if(ArrayUtils.contains(MAX86XXX_SAMPLE_AVG_CONFIG_VALUES, valueToSet)){
-			sampleAverage = valueToSet;
-		}
-		
+	public void setPpgPulseWidth(MAX86XXX_PULSE_WIDTH pulseWidth) {
+		this.pulseWidth = pulseWidth;
+	}
+
+	public void setPpgSampleAverageConfigValue(int valueToSet) {
+		setPpgSampleAverage(MAX86XXX_SAMPLE_AVG.BY_CONFIG_VALUE.get(valueToSet));
+	}
+
+	public void setPpgSampleAverage(MAX86XXX_SAMPLE_AVG sampleAverage) {
+		this.sampleAverage = sampleAverage;
 	}
 
 	public void setPpgAdcResolutionConfigValue(int valueToSet) {
-		if(ArrayUtils.contains(MAX86XXX_ADC_RESOLUTION_CONFIG_VALUES, valueToSet)){
-			adcResolution = valueToSet;
-		}
+		setPpgAdcResolution(MAX86XXX_ADC_RESOLUTION.BY_CONFIG_VALUE.get(valueToSet));
 	}
 	
 	public int getPpgPulseWidthConfigValue() {
+		return getPpgPulseWidth().configValue;
+	}
+	
+	public MAX86XXX_PULSE_WIDTH getPpgPulseWidth() {
 		return pulseWidth;
 	}
 
-	public int getPpgSmpAveConfigValue() {
+	public int getPpgSampleAverageConfigValue() {
+		return getPpgSampleAverage().configValue;
+	}
+
+	public MAX86XXX_SAMPLE_AVG getPpgSampleAverage() {
 		return sampleAverage;
 	}
 
 	public int getPpgAdcResolutionConfigValue() {
+		return getPpgAdcResolution().configValue;
+	}
+
+	public void setPpgAdcResolution(MAX86XXX_ADC_RESOLUTION valueToSet) {
+		adcResolution = valueToSet;
+	}
+
+	public MAX86XXX_ADC_RESOLUTION getPpgAdcResolution() {
 		return adcResolution;
 	}
-	
+
 	public String getPpgLedAmplitudeRedString() {
 		return calculatePpgLedAmplitude(ppgLedAmplitudeRedConfigValue, ppgLedAmplitudeRangeRed);
 	}
@@ -345,6 +459,28 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 	public void setPpgLedAmplitudeRangeConfigValue(byte ledRge) {
 		ppgLedAmplitudeRangeIr = (ledRge >> 0) & 0x03;
 		ppgLedAmplitudeRangeRed = (ledRge >> 2) & 0x03;
+	}
+	
+	@Override
+	public void setSensorConfig(ISensorConfig sensorConfig) {
+		if(sensorConfig instanceof MAX86XXX_ADC_RESOLUTION) {
+			setPpgAdcResolution((MAX86XXX_ADC_RESOLUTION)sensorConfig);
+		} else if(sensorConfig instanceof MAX86XXX_PULSE_WIDTH) {
+			setPpgPulseWidth((MAX86XXX_PULSE_WIDTH)sensorConfig);
+		} else if(sensorConfig instanceof MAX86XXX_SAMPLE_AVG) {
+			setPpgSampleAverage((MAX86XXX_SAMPLE_AVG)sensorConfig);
+		} else {
+			super.setSensorConfig(sensorConfig);
+		}
+	}
+
+	@Override
+	public List<ISensorConfig> getSensorConfig() {
+		List<ISensorConfig> listOfSensorConfig = super.getSensorConfig();
+		listOfSensorConfig.add(getPpgAdcResolution());
+		listOfSensorConfig.add(getPpgPulseWidth());
+		listOfSensorConfig.add(getPpgSampleAverage());
+		return listOfSensorConfig;
 	}
 
 }

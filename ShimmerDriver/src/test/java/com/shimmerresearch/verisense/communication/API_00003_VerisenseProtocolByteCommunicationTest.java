@@ -23,7 +23,10 @@ import com.shimmerresearch.verisense.PendingEventSchedule;
 import com.shimmerresearch.verisense.SensorBattVoltageVerisense;
 import com.shimmerresearch.verisense.SensorLIS2DW12;
 import com.shimmerresearch.verisense.VerisenseDevice;
+import com.shimmerresearch.verisense.SensorLIS2DW12.LIS2DW12_ACCEL_RATE;
+import com.shimmerresearch.verisense.VerisenseDevice.BATTERY_TYPE;
 import com.shimmerresearch.verisense.VerisenseDevice.BLE_TX_POWER;
+import com.shimmerresearch.verisense.VerisenseDevice.PASSKEY_MODE;
 import com.shimmerresearch.verisense.communication.payloads.EventLogPayload;
 import com.shimmerresearch.verisense.communication.payloads.MemoryLookupTablePayload;
 import com.shimmerresearch.verisense.communication.payloads.PendingEventsPayload;
@@ -32,6 +35,7 @@ import com.shimmerresearch.verisense.communication.payloads.RecordBufferDetailsP
 import com.shimmerresearch.verisense.communication.payloads.RwcSchedulePayload;
 import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
 import com.shimmerresearch.verisense.communication.payloads.TimePayload;
+import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.DATA_COMPRESSION_MODE;
 
 /**
  * @author Mark Nolan
@@ -190,17 +194,15 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_IR));
 		assertTrue(!verisenseDevice.isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_RED));
 
-		AbstractSensor abstractSensorLis2dw12 = verisenseDevice.getSensorClass(SENSORS.LIS2DW12);
-		assertTrue(abstractSensorLis2dw12!=null);
-		SensorLIS2DW12 sensorLIS2DW12 = (SensorLIS2DW12)abstractSensorLis2dw12;
-		assertTrue(sensorLIS2DW12.getAccelRateFreq()==25.0);
-		assertTrue(sensorLIS2DW12.getAccelRangeString().contains("8"));
-		assertTrue(sensorLIS2DW12.getAccelLpModeString().equals(SensorLIS2DW12.LIS2DW12_LP_MODE[0]));
-		assertTrue(sensorLIS2DW12.getAccelModeString().equals(SensorLIS2DW12.LIS2DW12_MODE[0]));
+		SensorLIS2DW12 sensorLIS2DW12 = verisenseDevice.getSensorLIS2DW12();
+		assertTrue(sensorLIS2DW12!=null);
+		assertTrue(sensorLIS2DW12.getAccelRate()==LIS2DW12_ACCEL_RATE.LOW_POWER_25_0_HZ);
+		assertTrue(sensorLIS2DW12.getAccelRange()==SensorLIS2DW12.LIS2DW12_ACCEL_RANGE.RANGE_8G);
+		assertTrue(sensorLIS2DW12.getAccelLpMode()==SensorLIS2DW12.LIS2DW12_LP_MODE.LOW_POWER1_12BIT_4_5_MG_NOISE);
+		assertTrue(sensorLIS2DW12.getAccelMode()==SensorLIS2DW12.LIS2DW12_MODE.LOW_POWER);
 
-		AbstractSensor abstractSensorGsr = verisenseDevice.getSensorClass(SENSORS.Battery);
-		assertTrue(abstractSensorGsr!=null);
-		SensorBattVoltageVerisense sensorBattVoltageVerisense = (SensorBattVoltageVerisense)abstractSensorGsr;
+		SensorBattVoltageVerisense sensorBattVoltageVerisense = verisenseDevice.getSensorBatteryVoltage();
+		assertTrue(sensorBattVoltageVerisense!=null);
 		assertTrue(sensorBattVoltageVerisense.getSensorSamplingRate()==51.2);
 		
 		assertTrue(verisenseDevice.isBluetoothEnabled());
@@ -209,10 +211,14 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		assertTrue(verisenseDevice.isDeviceEnabled());
 		assertTrue(verisenseDevice.isRecordingEnabled());
 
+		assertTrue(verisenseDevice.getDataCompressopnMode()==DATA_COMPRESSION_MODE.NONE);
+		assertTrue(verisenseDevice.getPasskeyMode()==PASSKEY_MODE.SECURE);
+		assertTrue(verisenseDevice.getBatteryType()==BATTERY_TYPE.ZINC_AIR);
+
 		assertTrue(verisenseDevice.getRecordingStartTimeMinutes()==0);
 		assertTrue(verisenseDevice.getRecordingEndTimeMinutes()==0);
 		assertTrue(verisenseDevice.getBleConnectionRetriesPerDay()==3);
-		assertTrue(verisenseDevice.getBleTxPower()==BLE_TX_POWER.MINUS12DBM);
+		assertTrue(verisenseDevice.getBleTxPower()==BLE_TX_POWER.MINUS_12_DBM);
 
 		PendingEventSchedule pendingEventScheduleDataTransfer = verisenseDevice.getPendingEventScheduleDataTransfer();
 		assertTrue(pendingEventScheduleDataTransfer.getIntervalHours()==24);
@@ -365,7 +371,11 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 				listOfByteIndexesWithDifferences.add(i);
 			}
 		}
-		assertTrue("byte comparison failed at indexes " + listOfByteIndexesWithDifferences, listOfByteIndexesWithDifferences.size()==0);
+		if(listOfByteIndexesWithDifferences.size()>0) {
+			String result = "byte comparison failed at indexes " + listOfByteIndexesWithDifferences;
+			System.out.println(result);
+			assertTrue(result, false);
+		}
 	}
 
 	private String readVerisenseMessageBytesFromFile(String filePath) {

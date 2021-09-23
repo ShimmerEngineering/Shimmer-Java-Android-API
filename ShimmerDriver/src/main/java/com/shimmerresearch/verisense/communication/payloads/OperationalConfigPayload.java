@@ -1,6 +1,7 @@
 package com.shimmerresearch.verisense.communication.payloads;
 
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
 
 /**
  * @author Mark Nolan
@@ -8,6 +9,13 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
  */
 public class OperationalConfigPayload extends AbstractPayload {
 
+	public static final byte[] DEFAULT_OP_CONFIG_BYTES_FW_1_02_70 = new byte[] {0x5A, 0x00, 0x00, 0x00, 0x00, 0x00,
+			0x20, 0x00, 0x7F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, (byte) 0xF4, 0x18, 0x3C, 0x00, 0x0A, 0x0F, 0x00, 0x18, 0x3C,
+			0x00, 0x0A, 0x0F, 0x00, 0x18, 0x3C, 0x00, 0x0A, 0x0F, 0x00, 0x00, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+			(byte) 0xFF, 0x3C, 0x00, 0x0E, 0x00, 0x00, 0x63, 0x28, (byte) 0xCC, (byte) 0xCC, 0x1E, 0x00, 0x0A, 0x00,
+			0x00, 0x00, 0x00, 0x01};
+	
 	public class OP_CONFIG_BYTE_INDEX {
 		public static final int HEADER_BYTE = 0;
 		
@@ -115,7 +123,15 @@ public class OperationalConfigPayload extends AbstractPayload {
 
 		// GEN_CFG_2
 		public static final int ENABLED_SENSORS_GEN_CFG_2	= 0x02;
-}
+		public static final int PASSKEY_MODE	= 0x03;
+		public static final int BATTERY_TYPE	= 0x01;
+	}
+
+	public class OP_CONFIG_BIT_SHIFT {
+		// GEN_CFG_2
+		public static final int BATTERY_TYPE	= 0;
+		public static final int PASSKEY_MODE	= 2;
+	}
 
 	@Override
 	public boolean parsePayloadContents(byte[] payloadContents) {
@@ -135,8 +151,11 @@ public class OperationalConfigPayload extends AbstractPayload {
 		return "";
 	}
 
-	public static int calculatePayloadConfigBytesSize(ShimmerVerObject mShimmerVerObject) {
-		//TODO add FW checks if supporting multiple versions of FW
-		return 72;
+	public static byte[] getDefaultPayloadConfigForFwVersion(ShimmerVerObject mShimmerVerObject) {
+		if(PayloadContentsDetails.isPayloadDesignV7orAbove(mShimmerVerObject)) {
+			return DEFAULT_OP_CONFIG_BYTES_FW_1_02_70;
+		} else {
+			return null;
+		}
 	}
 }

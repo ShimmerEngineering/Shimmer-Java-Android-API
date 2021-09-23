@@ -1,6 +1,5 @@
 package com.shimmerresearch.sensors;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -44,7 +43,7 @@ public class SensorShimmerClock extends AbstractSensor {
 
 	protected boolean mFirstTime = true;
 	double mFirstTsOffsetFromInitialTsTicks = 0;
-	long mSystemTimeStamp = 0;
+	double mSystemTimeStamp = 0;
 	public int OFFSET_LENGTH = 9;
 	protected long mRTCOffset = 0; //this is in ticks
 	
@@ -325,7 +324,7 @@ public class SensorShimmerClock extends AbstractSensor {
 	}
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
 		//Debugging
 //		if(sensorDetails.getExpectedDataPacketSize()>0){
@@ -520,7 +519,7 @@ public class SensorShimmerClock extends AbstractSensor {
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 
 					if(channelDetails.mObjectClusterName.equals(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
-						long systemTime = pcTimestamp;
+						double systemTime = pcTimestampMs;
 						if(commType==COMMUNICATION_TYPE.SD){
 							systemTime = System.currentTimeMillis();
 						}

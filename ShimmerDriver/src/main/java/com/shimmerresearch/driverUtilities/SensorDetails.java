@@ -42,11 +42,11 @@ public class SensorDetails implements Serializable{
 		mSensorDetailsRef = sensorDetailsRef;
 	}
 
-	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
-		return processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+	public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
+		return processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 	}
 	
-	public ObjectCluster processDataCommon(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCommon(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		if(rawData!=null && rawData.length>0){
 			int index = 0;
 			for (ChannelDetails channelDetails:mListOfChannels){

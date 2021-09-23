@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -48,7 +49,9 @@ import com.shimmerresearch.verisense.communication.payloads.ProductionConfigPayl
 import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
 import com.shimmerresearch.verisense.communication.payloads.TimePayload;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BIT_MASK;
+import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BIT_SHIFT;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.SensorLIS2DW12.LIS2DW12_LP_MODE;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
@@ -72,8 +75,21 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	transient VerisenseProtocolByteCommunication mProtocol;
 
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
-	public int dataCompressionMode = DATA_COMPRESSION_MODE.NONE;
+	public DATA_COMPRESSION_MODE dataCompressionMode = DATA_COMPRESSION_MODE.NONE;
+	public PASSKEY_MODE passkeyMode = PASSKEY_MODE.NONE;
+	public BATTERY_TYPE batteryType = BATTERY_TYPE.ZINC_AIR;
 
+	public enum PASSKEY_MODE {
+		SECURE,
+		NONE,
+		CUSTOM;
+	}
+
+	public enum BATTERY_TYPE {
+		ZINC_AIR,
+		NIMH;
+	}
+	
 	private static int DEFAULT_HW_ID = HW_ID.VERISENSE_IMU;
 	private ShimmerVerObject defaultSvo = new ShimmerVerObject(DEFAULT_HW_ID, FW_ID.UNKNOWN, FW_ID.UNKNOWN, FW_ID.UNKNOWN, FW_ID.UNKNOWN);
 	private ExpansionBoardDetails defaultEbd = new ExpansionBoardDetails(DEFAULT_HW_ID, 0, INVALID_VALUE);
@@ -120,8 +136,6 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	private Integer firstPayloadIndexAfterBoot = null;
 	public boolean isExtendedPayloadConfig = true;
 
-	private double timeMsCurrentSample;
-
 	// Saving in global map as we only need to do this once per datablock sensor ID per payload, not for each datablock
 	private HashMap<DATABLOCK_SENSOR_ID, List<SENSORS>> mapOfSensorIdsPerDataBlock = new HashMap<DATABLOCK_SENSOR_ID, List<SENSORS>>();
 	
@@ -129,35 +143,43 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	private boolean bluetoothEnabled = true, usbEnabled = false, prioritiseLongTermFlash = true, deviceEnabled = true, recordingEnabled = true; 
 	private long recordingStartTimeMinutes = 0, recordingEndTimeMinutes = 0;
 	private int bleConnectionRetriesPerDay = 3;
-	private BLE_TX_POWER bleTxPower = BLE_TX_POWER.MINUS12DBM;
+	private BLE_TX_POWER bleTxPower = BLE_TX_POWER.MINUS_12_DBM;
 	private PendingEventSchedule pendingEventScheduleDataTransfer = new PendingEventSchedule(24, 60, 10, 15);
 	private PendingEventSchedule pendingEventScheduleStatusSync = new PendingEventSchedule(24, 60, 10, 15);
 	private PendingEventSchedule pendingEventScheduleRwcSync = new PendingEventSchedule(24, 60, 10, 15);
 	private int adaptiveSchedulerInterval = 65535;
 	private int adaptiveSchedulerFailCount = 255;
+	private int ppgRecordingDurationSeconds;
+	private int ppgRecordingIntervalSeconds;
 
-	public enum BLE_TX_POWER {
-		PLUS8DBM((byte) 0x08),
-		PLUS7DBM((byte) 0x07),
-		PLUS6DBM((byte) 0x06),
-		PLUS5DBM((byte) 0x05),
-		PLUS4DBM((byte) 0x04),
-		PLUS3DBM((byte) 0x03),
-		PLUS2DBM((byte) 0x02),
-		PLUS0DBM((byte) 0x00),
-		MINUS4DBM((byte) 0xFC),
-		MINUS8DBM((byte) 0xF8),
-		MINUS12DBM((byte) 0xF4),
-		MINUS16DBM((byte) 0xF0),
-		MINUS20DBM((byte) 0xEC),
-		MINUS40DBM((byte) 0xFF);
+	public static enum BLE_TX_POWER implements ISensorConfig {
+		PLUS_8_DBM("+8 dBm", (byte) 0x08),
+		PLUS_7_DBM("+7 dBm", (byte) 0x07),
+		PLUS_6_DBM("+6 dBm", (byte) 0x06),
+		PLUS_5_DBM("+5 dBm", (byte) 0x05),
+		PLUS_4_DBM("+4 dBm", (byte) 0x04),
+		PLUS_3_DBM("+3 dBm", (byte) 0x03),
+		PLUS_2_DBM("+2 dBm", (byte) 0x02),
+		PLUS_0_DBM("0 dBm", (byte) 0x00),
+		MINUS_4_DBM("-4 dBm", (byte) 0xFC),
+		MINUS_8_DBM("-8 dBm", (byte) 0xF8),
+		MINUS_12_DBM("-12 dBm", (byte) 0xF4),
+		MINUS_16_DBM("-16 dBm", (byte) 0xF0),
+		MINUS_20_DBM("-20 dBm", (byte) 0xEC),
+		MINUS_40_DBM("-40 dBm", (byte) 0xFF);
 		
+		private String label;
 		private byte byteMask;
 
-		private BLE_TX_POWER(byte byteMask) {
+		private BLE_TX_POWER(String label, byte byteMask) {
+			this.label = label;
 			this.byteMask = byteMask;
 		}
-		
+
+		public String getLabel() {
+			return label;
+		}
+
 		public byte getByteMask() {
 			return byteMask;
 		}
@@ -177,7 +199,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	private transient StatusPayload status;
 	private transient OperationalConfigPayload opConfig;
 	private transient ProductionConfigPayload prodConfigPayload;
-	
+
 	public static class FW_CHANGES {
 		/** FW Version and Reset Reason */
 		public static final ShimmerVerObject CCF19_027 = new ShimmerVerObject(FW_ID.UNKNOWN, 0, 34, 1); 
@@ -226,52 +248,6 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 
 	public static List<SENSORS> LIST_OF_PPG_SENSORS = Arrays.asList(new SENSORS[] {SENSORS.MAX86150, SENSORS.MAX86916});
 	
-	private static int ADC_BYTE_BUFFER_SIZE = 192;
-	public static final double[][] ADC_SAMPLING_RATES = new double[][] {
-		{0, Double.NaN, Double.NaN},
-		{1, 32768.0, 1},
-		{2, 16384.0, 2},
-		{3, 8192.0, 4},
-		{4, 6553.6, 5},
-		{5, 4096.0, 8},
-		{6, 3276.8, 10},
-		{7, 2048.0, 16},
-		{8, 1638.4, 20},
-		{9, 1310.72, 25},
-		{10, 1024.0, 32},
-		{11, 819.2, 40},
-		{12, 655.36, 50},
-		{13, 512.0, 64},
-		{14, 409.6, 80},
-		{15, 327.68, 100},
-		{16, 256.0, 128},
-		{17, 204.8, 160},
-		{18, 163.84, 200},
-		{19, 128.0, 256},
-		{20, 102.4, 320},
-		{21, 81.92, 400},
-		{22, 64.0, 512},
-		{23, 51.2, 640},
-		{24, 40.96, 800},
-		{25, 32.0, 1024},
-		{26, 25.6, 1280},
-		{27, 20.48, 1600},
-		{28, 16.0, 2048},
-		{29, 12.8, 2560},
-		{30, 10.24, 3200},
-		{31, 8.0, 4096},
-		{32, 6.4, 5120},
-		{33, 5.12, 6400},
-		{34, 4.0, 8192},
-		{35, 3.2, 10240},
-		{36, 2.56, 12800},
-		{37, 2.0, 16384},
-		{38, 1.6, 20480},
-		{39, 1.28, 25600},
-		{40, 1.0, 32768},
-		{41, 0.8, 40960},
-		{42, 0.64, 51200}};
-	
 	/**
 	 * 
 	 */
@@ -312,7 +288,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			}
 			
 			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= isExtendedPayloadConfig? (0x01<<4):0x00;
-			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= ((dataCompressionMode&0x03)<<0);
+			configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0] |= ((dataCompressionMode.ordinal()&0x03)<<0);
 			
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()) {
 				abstractSensor.configBytesGenerate(this, configBytes, commType);
@@ -342,8 +318,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 				}
 			}
 		} else {
-			int payloadConfigBytesSize = OperationalConfigPayload.calculatePayloadConfigBytesSize(mShimmerVerObject);
-			configBytes = new byte[payloadConfigBytesSize];
+			configBytes = OperationalConfigPayload.getDefaultPayloadConfigForFwVersion(mShimmerVerObject);
 
 			configBytes[OP_CONFIG_BYTE_INDEX.HEADER_BYTE] = AbstractPayload.VALID_CONFIG_BYTE;
 			
@@ -358,7 +333,10 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] |= deviceEnabled? OP_CONFIG_BIT_MASK.DEVICE_ENABLED:0x00;
 			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] |= recordingEnabled? OP_CONFIG_BIT_MASK.RECORDING_ENABLED:0x00;
 
-			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] |= dataCompressionMode & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE;
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] |= dataCompressionMode.ordinal() & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE;
+
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] |= (passkeyMode.ordinal() & OP_CONFIG_BIT_MASK.PASSKEY_MODE) << OP_CONFIG_BIT_SHIFT.PASSKEY_MODE;
+			configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] |= (batteryType.ordinal() & OP_CONFIG_BIT_MASK.BATTERY_TYPE) << OP_CONFIG_BIT_SHIFT.BATTERY_TYPE;
 
 			configBytes[OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_0] = (byte) (recordingStartTimeMinutes & 0xFF);
 			configBytes[OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_1] = (byte) ((recordingStartTimeMinutes >> 8) & 0xFF);
@@ -382,6 +360,11 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_INT_LSB] = (byte) (adaptiveSchedulerInterval & 0xFF);
 			configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_INT_MSB] = (byte) ((adaptiveSchedulerInterval >> 8) & 0xFF);
 			configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_FAILCOUNT_MAX] = (byte) adaptiveSchedulerFailCount;
+
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_DUR_SECS_LSB] = (byte) (ppgRecordingDurationSeconds & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_DUR_SECS_MSB] = (byte) ((ppgRecordingDurationSeconds >> 8) & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_LSB] = (byte) (ppgRecordingIntervalSeconds & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_MSB] = (byte) ((ppgRecordingIntervalSeconds >> 8) & 0xFF);
 
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()) {
 				abstractSensor.configBytesGenerate(this, configBytes, commType);
@@ -428,7 +411,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 				
 		if (commType == COMMUNICATION_TYPE.SD) {
 			isExtendedPayloadConfig = isExtendedPayloadConfig(configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]);
-			dataCompressionMode = (configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]>>0)&0x03;
+			dataCompressionMode = DATA_COMPRESSION_MODE.values()[(configBytes[PAYLOAD_CONFIG_BYTE_INDEX.PAYLOAD_CONFIG0]>>0)&0x03];
 			
 			ShimmerVerObject svo = defaultSvo;
 			ExpansionBoardDetails eBD = defaultEbd;
@@ -485,7 +468,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			deviceEnabled = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.DEVICE_ENABLED) == OP_CONFIG_BIT_MASK.DEVICE_ENABLED;
 			recordingEnabled = (configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_0] & OP_CONFIG_BIT_MASK.RECORDING_ENABLED) == OP_CONFIG_BIT_MASK.RECORDING_ENABLED; 
 
-			dataCompressionMode = configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE;
+			dataCompressionMode = DATA_COMPRESSION_MODE.values()[configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_1] & OP_CONFIG_BIT_MASK.DATA_COMPRESSION_MODE];
+			passkeyMode = PASSKEY_MODE.values()[(configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] >> OP_CONFIG_BIT_SHIFT.PASSKEY_MODE) & OP_CONFIG_BIT_MASK.PASSKEY_MODE];
+			batteryType = BATTERY_TYPE.values()[(configBytes[OP_CONFIG_BYTE_INDEX.GEN_CFG_2] >> OP_CONFIG_BIT_SHIFT.BATTERY_TYPE) & OP_CONFIG_BIT_MASK.BATTERY_TYPE];
 
 			recordingStartTimeMinutes = AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.START_TIME_BYTE_0, CHANNEL_DATA_TYPE.UINT24);
 			recordingEndTimeMinutes = AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.END_TIME_BYTE_0, CHANNEL_DATA_TYPE.UINT24);
@@ -499,6 +484,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			
 			adaptiveSchedulerInterval = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_INT_LSB, CHANNEL_DATA_TYPE.UINT16);
 			adaptiveSchedulerFailCount = configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_FAILCOUNT_MAX] & 0xFF;
+			
+			ppgRecordingDurationSeconds = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.PPG_REC_DUR_SECS_LSB, CHANNEL_DATA_TYPE.UINT16);
+			ppgRecordingIntervalSeconds = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_LSB, CHANNEL_DATA_TYPE.UINT16);
 		}
 
 		setEnabledAndDerivedSensorsAndUpdateMaps(enabledSensors, mDerivedSensors, commType);
@@ -813,7 +801,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		
 		if((sensorClassKey==AbstractSensor.SENSORS.LIS2DW12) 
 				&& isSensorEnabled(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL)) {
-			SensorLIS2DW12 sensorLis2dw12 = (SensorLIS2DW12) getSensorClass(SENSORS.LIS2DW12);
+			SensorLIS2DW12 sensorLis2dw12 = getSensorLIS2DW12();
 			
 			// Accel1 section
 			if(isCsvHeaderDesignAzMarkingPoint()) {
@@ -847,7 +835,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			}
 		} else if((sensorClassKey==AbstractSensor.SENSORS.LSM6DS3)
 				&& isEitherLsm6ds3ChannelEnabled()) {
-			SensorLSM6DS3 sensorLsm6ds3 = (SensorLSM6DS3) getSensorClass(SENSORS.LSM6DS3);
+			SensorLSM6DS3 sensorLsm6ds3 = getSensorLSM6DS3();
 			
 			// Accel2 section
 			if(isCsvHeaderDesignAzMarkingPoint()) {
@@ -962,7 +950,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 				
 				// Sample average
 				sb.append("; Sample Average = ");
-				int ppgSampleAverageConfigValue = sensorMAX86XXX.getPpgSmpAveConfigValue();
+				int ppgSampleAverageConfigValue = sensorMAX86XXX.getPpgSampleAverageConfigValue();
 				String ppgSampleAverage = SensorMAX86XXX.CONFIG_OPTION_PPG_SAMPLE_AVG.getConfigStringFromConfigValue(ppgSampleAverageConfigValue);
 				sb.append(ppgSampleAverage);
 				
@@ -1264,9 +1252,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	 * @return
 	 */
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, double timeMsCurrentSample){
-		// here so we can save the timestamp in float format to the OJC before the algorithms are processed in "processData"
-		this.timeMsCurrentSample = timeMsCurrentSample;
 		ObjectCluster ojc = super.buildMsg(newPacket, commType, isTimeSyncEnabled, (long) timeMsCurrentSample);
+		//TODO check why this isn't done as part of the sensor map? just because a double isn't passed into sensor.processData?
+		processSensorVerisenseClock(ojc, timeMsCurrentSample, commType);
 		return ojc;
 	}
 	
@@ -1281,12 +1269,8 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	 * @return
 	 */
 	public ObjectCluster buildMsgForSensor(byte[] newPacket, COMMUNICATION_TYPE commType, List<SENSORS> listOfSensorClassKeys, double timeMsCurrentSample) {
-		// here so we can save the timestamp in float format to the OJC before the algorithms are processed in "processData"
-		this.timeMsCurrentSample = timeMsCurrentSample;
-
 		// Arguments normally passed into ShimmerDevice.buildMsg()
 		boolean isTimeSyncEnabled = false; 
-		long pcTimestamp = (long) timeMsCurrentSample;
 		
 		ObjectCluster ojc = new ObjectCluster(mShimmerUserAssignedName, getMacId());
 		ojc.mRawData = newPacket;
@@ -1311,7 +1295,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 								consolePrintLn(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetailsRef.mGuiFriendlyLabel);
 							}
 						}
-						sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, pcTimestamp);
+						sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, timeMsCurrentSample);
 
 //						if(debug)
 //							System.out.println(sensor.mSensorDetailsRef.mGuiFriendlyLabel + "\texpectedPacketArraySize:" + length + "\tcurrentIndex:" + index);
@@ -1325,9 +1309,11 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			}
 		}
 
+		processSensorVerisenseClock(ojc, timeMsCurrentSample, commType);
+
 		//After sensor data has been processed, now process any filters or Algorithms 
 		ojc = processData(ojc);
-		
+
 //		if(sensorClassKey==SENSORS.MAX86916) {
 //			ojc.consolePrintChannelsAndDataSingleLine();
 //		}
@@ -1335,18 +1321,19 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return ojc;
 	}
 
-	@Override
-	protected ObjectCluster processData(ObjectCluster ojc) {
-		
+	private void processSensorVerisenseClock(ObjectCluster ojc, double timeMsCurrentSample, COMMUNICATION_TYPE commType) {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.CLOCK);
 		if(abstractSensor!=null && abstractSensor instanceof SensorVerisenseClock) {
 			SensorVerisenseClock sensorVerisenseClock = (SensorVerisenseClock)abstractSensor;
-			sensorVerisenseClock.processDataCustom(ojc, timeMsCurrentSample);
+			sensorVerisenseClock.processDataCustom(ojc, timeMsCurrentSample, commType);
 		}
-		
-		return super.processData(ojc);
 	}
 
+	@Override
+	protected ObjectCluster processData(ObjectCluster ojc) {
+		return super.processData(ojc);
+	}
+	
 	// TODO move to ShimmerVerObject
 	public boolean isFwMajorMinorInternalVerSet() {
 		ShimmerVerObject svo = getShimmerVerObject();
@@ -1458,7 +1445,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			case Battery:
 			case GSR:
 				// There is a single buffer of a fixed size for all ADC channels (e.g., battery, GSR) no matter how many are enabled
-				dataBlockSize = ADC_BYTE_BUFFER_SIZE;
+				dataBlockSize = SensorBattVoltageVerisense.ADC_BYTE_BUFFER_SIZE;
 				break;
 			case BIOZ:
 				// TODO add support in future if needed
@@ -1584,11 +1571,10 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 
 			@Override
 			public void eventNewPacket(byte[] packetByteArray, long pcTimestamp) {
-				// TODO Auto-generated method stub
 				System.out.println("VerisenseDevice New Packet: " + pcTimestamp);
 				
 				try {
-					DataBlockDetails dataBlockDetails = parseDataBlockMetaData(packetByteArray);
+					DataBlockDetails dataBlockDetails = parseDataBlockMetaData(packetByteArray, pcTimestamp);
 					parseDataBlockData(dataBlockDetails, packetByteArray, BYTE_COUNT.PAYLOAD_CONTENTS_GEN8_SENSOR_ID + BYTE_COUNT.PAYLOAD_CONTENTS_RTC_BYTES_TICKS, COMMUNICATION_TYPE.BLUETOOTH);
 					
 					System.out.println("Number of ObjectClusters generated: " + dataBlockDetails.getOjcArray().length);
@@ -1643,8 +1629,34 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		mapOfVerisenseProtocolByteCommunication.remove(communicationType);
 	}
 
-	public DataBlockDetails parseDataBlockMetaData(byte[] byteBuffer) throws IOException {
-		return parseDataBlockMetaData(byteBuffer, 0, 0, 0, 0);
+	public long endTimeMinutes = 0;
+	public long endTimeTicksLatest = -1;
+	
+	/** Used during real-time streaming
+	 * @param byteBuffer
+	 * @return
+	 * @throws IOException
+	 */
+	public DataBlockDetails parseDataBlockMetaData(byte[] byteBuffer, long pcTimestampMs) throws IOException {
+		DataBlockDetails dataBlockDetails = parseDataBlockMetaData(byteBuffer, 0, 0, 0, 0);
+		
+		// Streaming data block only contains microcontroller ticks value so we need to track the minutes in SW
+		long endTimeTicksCurrent = dataBlockDetails.getTimeDetailsUcClock().getEndTimeTicks();
+		if(endTimeTicksLatest!=-1) {
+			if (endTimeTicksCurrent<endTimeTicksLatest) {
+				endTimeMinutes++;
+			}
+		}
+		endTimeTicksLatest = endTimeTicksCurrent;
+		dataBlockDetails.setUcClockOrRwcClockEndTimeMinutesAndCalculateTimings(endTimeMinutes, true);
+		
+		//TODO temp here, setting the RWC in the datablock to be the same as the UC clock
+		VerisenseTimeDetails timeDetailsRwc = dataBlockDetails.getTimeDetailsRwc();
+		VerisenseTimeDetails timeDetailsUc = dataBlockDetails.getTimeDetailsUcClock();
+		timeDetailsRwc.setStartTimeMs(timeDetailsUc.getStartTimeMs());
+		timeDetailsRwc.setEndTimeMs(timeDetailsUc.getEndTimeMs());
+		
+		return dataBlockDetails;
 	}
 
 	public DataBlockDetails parseDataBlockMetaData(byte[] byteBuffer, int dataBlockStartByteIndexInPayload, int dataBlockStartByteIndexInFile, int dataBlockIndexInPayload, int payloadIndex) throws IOException {
@@ -1743,17 +1755,6 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 	
 	@Override
-	public void startStreaming() {
-		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH);
-		try {
-			verisenseProtocolByteCommunication.startStreaming();
-		} catch (ShimmerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
 	public void stopStreaming() {
 		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH);
 		try {
@@ -1810,7 +1811,11 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		}
 	}
 	
-	public SensorLIS2DW12 getSensorAccel1() {
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorLIS2DW12
+	 */
+	public SensorLIS2DW12 getSensorLIS2DW12() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.LIS2DW12);
 		if(abstractSensor!=null && abstractSensor instanceof SensorLIS2DW12) {
 			return (SensorLIS2DW12) abstractSensor;
@@ -1818,7 +1823,11 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return null;
 	}
 	
-	public SensorLSM6DS3 getSensorAccel2AndGyro() {
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorLSM6DS3
+	 */
+	public SensorLSM6DS3 getSensorLSM6DS3() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.LSM6DS3);
 		if(abstractSensor!=null && abstractSensor instanceof SensorLSM6DS3) {
 			return (SensorLSM6DS3) abstractSensor;
@@ -1826,6 +1835,10 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return null;
 	}
 
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorGSRVerisense
+	 */
 	public SensorGSRVerisense getSensorGsr() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.GSR);
 		if(abstractSensor!=null && abstractSensor instanceof SensorGSRVerisense) {
@@ -1834,6 +1847,10 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return null;
 	}
 
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorMAX86916
+	 */
 	public SensorMAX86916 getSensorPpg() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.PPG);
 		if(abstractSensor!=null && abstractSensor instanceof SensorMAX86916) {
@@ -1842,6 +1859,10 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return null;
 	}
 
+	/**
+	 * @return Null if sensor not supported by current hardware
+	 * @see SensorBattVoltageVerisense
+	 */
 	public SensorBattVoltageVerisense getSensorBatteryVoltage() {
 		AbstractSensor abstractSensor = getSensorClass(SENSORS.Battery);
 		if(abstractSensor!=null && abstractSensor instanceof SensorBattVoltageVerisense) {
@@ -1897,7 +1918,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	public void setRecordingStartTimeMinutes(long recordingStartTimeMinutes) {
-		this.recordingStartTimeMinutes = recordingStartTimeMinutes;
+		this.recordingStartTimeMinutes = UtilShimmer.nudgeLong(recordingStartTimeMinutes, 0, (long) (Math.pow(2, 4*8)-1));
 	}
 
 	public long getRecordingEndTimeMinutes() {
@@ -1905,7 +1926,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	public void setRecordingEndTimeMinutes(long recordingEndTimeMinutes) {
-		this.recordingEndTimeMinutes = recordingEndTimeMinutes;
+		this.recordingEndTimeMinutes = UtilShimmer.nudgeLong(recordingEndTimeMinutes, 0, (long) (Math.pow(2, 4*8)-1));
 	}
 
 	public int getBleConnectionRetriesPerDay() {
@@ -1913,7 +1934,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	public void setBleConnectionRetriesPerDay(int bleConnectionTriesPerDay) {
-		this.bleConnectionRetriesPerDay = bleConnectionTriesPerDay;
+		this.bleConnectionRetriesPerDay = UtilShimmer.nudgeInteger(bleConnectionTriesPerDay, 0, (int) (Math.pow(2, 8)-1));
 	}
 
 	public BLE_TX_POWER getBleTxPower() {
@@ -1953,7 +1974,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	public void setAdaptiveSchedulerInterval(int adaptiveSchedulerInterval) {
-		this.adaptiveSchedulerInterval = adaptiveSchedulerInterval;
+		this.adaptiveSchedulerInterval = UtilShimmer.nudgeInteger(adaptiveSchedulerInterval, 0, (int) (Math.pow(2, 16)-1));
 	}
 
 	public int getAdaptiveSchedulerFailCount() {
@@ -1961,7 +1982,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	public void setAdaptiveSchedulerFailCount(int adaptiveSchedulerFailCount) {
-		this.adaptiveSchedulerFailCount = adaptiveSchedulerFailCount;
+		this.adaptiveSchedulerFailCount = UtilShimmer.nudgeInteger(adaptiveSchedulerFailCount, 0, (int) (Math.pow(2, 8)-1));
 	}
 
 	public boolean isBluetoothEnabled() {
@@ -2020,5 +2041,70 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			mapOfVerisenseProtocolByteCommunication.get(type).stop();
 		}
 	}
+
+	@Override
+	public void startStreaming() {
+		//TODO reset this as part of the sensor map
+		AbstractSensor abstractSensor = getSensorClass(SENSORS.CLOCK);
+		if(abstractSensor!=null && abstractSensor instanceof SensorVerisenseClock) {
+			SensorVerisenseClock sensorVerisenseClock = (SensorVerisenseClock)abstractSensor;
+			sensorVerisenseClock.getSystemTimestampPlot().reset();
+		}
+
+		super.startStreaming();
+	}
+
+	public PASSKEY_MODE getPasskeyMode() {
+		return passkeyMode;
+	}
 	
+	public void setPasskeyMode(PASSKEY_MODE passkeyMode) {
+		this.passkeyMode = passkeyMode;
+	}
+
+	public DATA_COMPRESSION_MODE getDataCompressopnMode() {
+		return dataCompressionMode;
+	}
+
+	public BATTERY_TYPE getBatteryType() {
+		return batteryType;
+	}
+
+	public void setBatteryType(BATTERY_TYPE batteryType) {
+		this.batteryType = batteryType;
+	}
+
+	public int getPpgRecordingDurationSeconds() {
+		return ppgRecordingDurationSeconds;
+	}
+
+	public void setPpgRecordingDurationSeconds(int ppgRecordingDurationSeconds) {
+		this.ppgRecordingDurationSeconds = UtilShimmer.nudgeInteger(ppgRecordingDurationSeconds, 0, (int) (Math.pow(2, 16)-1));
+	}
+
+	public int getPpgRecordingIntervalSeconds() {
+		return ppgRecordingIntervalSeconds;
+	}
+
+	public void setPpgRecordingIntervalSeconds(int ppgRecordingIntervalSeconds) {
+		this.ppgRecordingIntervalSeconds = UtilShimmer.nudgeInteger(ppgRecordingIntervalSeconds, 0, (int) (Math.pow(2, 16)-1));
+	}
+
+	@Override
+	public void setSensorConfig(ISensorConfig sensorConfig) {
+		if(sensorConfig instanceof BLE_TX_POWER) {
+			setBleTxPower((BLE_TX_POWER)sensorConfig);
+		} else {
+			super.setSensorConfig(sensorConfig);
+		}
+	}
+
+	@Override
+	public List<ISensorConfig> getSensorConfig() {
+		List<ISensorConfig> listOfConfig = new ArrayList<>();
+		listOfConfig.addAll(super.getSensorConfig());
+		listOfConfig.add(bleTxPower);
+		return listOfConfig;
+	}
+
 }

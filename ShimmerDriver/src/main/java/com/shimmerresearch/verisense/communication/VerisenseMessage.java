@@ -182,7 +182,7 @@ public class VerisenseMessage {
 	public final int mPacketMaxSize = 32767; // Considering we are using int16 to get the length the maximum value is 7F FF which is 32767
 	public boolean mCRCErrorPayload = false;
 	
-	public int payloadIndex;
+	public int payloadIndex = -1;
 
 	public VerisenseMessage(byte[] rxBytes, long timeMs) {
 		startTimeMs = timeMs;
@@ -193,17 +193,13 @@ public class VerisenseMessage {
 		mExpectedLengthBytes = (int) AbstractPayload.parseByteArrayAtIndex(rxBytes, 1, CHANNEL_DATA_TYPE.UINT16);
 		payloadBytes = new byte[mExpectedLengthBytes];
 		
-		if (mExpectedLengthBytes > 0) {
-			System.arraycopy(rxBytes, 3, payloadBytes, 0, mExpectedLengthBytes);
-			mCurrentLengthBytes += mExpectedLengthBytes;
+		// if message is greater then the 3 bytes for command|property and length bytes, append the remaining bytes to the payload byte buffer
+		if (rxBytes.length > 3) {
+			appendToDataChuck(rxBytes, 3, timeMs);
 		}
-
-		if(commandAndProperty==VERISENSE_PROPERTY.DATA.responseByte()) {
-			payloadIndex = (int) AbstractPayload.parseByteArrayAtIndex(rxBytes, 3, CHANNEL_DATA_TYPE.UINT16);
-		}
-
+		
 		if (isCurrentLengthGreaterThanOrEqualToExpectedLength()) {
-			endTimeMs = System.currentTimeMillis();
+			endTimeMs = timeMs;
 		}
 	}
 
@@ -222,12 +218,20 @@ public class VerisenseMessage {
 
 	public void appendToDataChuck(byte[] rxBytes, long timeMs) {
 		lastTransactionMs = timeMs;
-
-		System.arraycopy(rxBytes, 0, payloadBytes, mCurrentLengthBytes, rxBytes.length);
-		mCurrentLengthBytes += rxBytes.length;
-
+		appendToDataChuck(rxBytes, 0, timeMs);
+		
 		if (isCurrentLengthGreaterThanOrEqualToExpectedLength()) {
-			endTimeMs = System.currentTimeMillis();
+			endTimeMs = timeMs;
+		}
+	}
+
+	public void appendToDataChuck(byte[] rxBytes, int startByteIndex, long timeMs) {
+		int numBytesToAppend = rxBytes.length-startByteIndex;
+		System.arraycopy(rxBytes, startByteIndex, payloadBytes, mCurrentLengthBytes, numBytesToAppend);
+		mCurrentLengthBytes += numBytesToAppend;
+
+		if(commandAndProperty==VERISENSE_PROPERTY.DATA.responseByte() && payloadIndex==-1 && mCurrentLengthBytes>=2) {
+			payloadIndex = (int) AbstractPayload.parseByteArrayAtIndex(payloadBytes, 0, CHANNEL_DATA_TYPE.UINT16);
 		}
 	}
 	
@@ -298,8 +302,8 @@ public class VerisenseMessage {
 		
 		sb.append("Command=" + VERISENSE_COMMAND.lookupByMask(commandMask).toString());
 		sb.append(", Property=" + VERISENSE_PROPERTY.lookupByMask(propertyMask).toString());
-		sb.append(", Expected Length =" + mExpectedLengthBytes);
-		sb.append(", Current Length =" + mCurrentLengthBytes);
+		sb.append(", Expected Length = " + mExpectedLengthBytes);
+		sb.append(", Current Length = " + mCurrentLengthBytes);
 		
 		return sb.toString();
 	}

@@ -678,8 +678,8 @@ public class Shimmer4sdk extends ShimmerDevice {
 	}
 	
 	@Override
-	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp) {
-		ObjectCluster objectCluster = super.buildMsg(newPacket, commType, isTimeSyncEnabled, pcTimestamp);
+	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, double pcTimestampMs) {
+		ObjectCluster objectCluster = super.buildMsg(newPacket, commType, isTimeSyncEnabled, pcTimestampMs);
 		
 //		if(commType==COMMUNICATION_TYPE.BLUETOOTH){
 //			processEventMarkerCh(objectCluster);

@@ -150,7 +150,7 @@ public class SensorNonin extends AbstractSensor{
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pctimestampMs) {
 		// TODO Auto-generated method stub
 		return null;
 	}

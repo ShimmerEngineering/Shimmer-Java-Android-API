@@ -3,7 +3,9 @@ package com.shimmerresearch.verisense;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration;
@@ -14,7 +16,9 @@ import com.shimmerresearch.driver.Configuration.Verisense.CompatibilityInfoForMa
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.SensorGSR;
+import com.shimmerresearch.verisense.SensorBattVoltageVerisense.ADC_SAMPLING_RATES;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
@@ -23,22 +27,58 @@ public class SensorGSRVerisense extends SensorGSR {
 	private static final long serialVersionUID = -3937042079000714506L;
 
 	//--------- Sensor specific variables start --------------
-	int bitShiftGSRRange = 5;
-	int maskGSRRange = 0x07;
 	private double sensorSamplingRateHz = 0.0;
 	//--------- Sensor specific variables end --------------
+
+	private GSR_RANGE gsrRange = GSR_RANGE.AUTO_RANGE;
 	
+	public static enum GSR_RANGE implements ISensorConfig {
+		RANGE_0("8k" + UtilShimmer.UNICODE_OHMS + " to 63k" + UtilShimmer.UNICODE_OHMS, 0, 8.0, 63.0),
+		RANGE_1("63k" + UtilShimmer.UNICODE_OHMS + " to 220k" + UtilShimmer.UNICODE_OHMS, 1, 63.0, 220.0),
+		RANGE_2("220k" + UtilShimmer.UNICODE_OHMS + " to 680k" + UtilShimmer.UNICODE_OHMS, 2, 220.0, 680.0),
+		RANGE_3("680k" + UtilShimmer.UNICODE_OHMS + " to 4.7M" + UtilShimmer.UNICODE_OHMS, 3, 680.0, 4700.0),
+		AUTO_RANGE("Auto-Range", 4, 8.0, 4700.0);
+		
+		String label;
+		Integer configValue;
+		double minInputKohms, maxInputKohms;
+		
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (GSR_RANGE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, GSR_RANGE> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (GSR_RANGE e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private GSR_RANGE(String label, int configValue, double minInputKohms, double maxInputKohms) {
+			this.label = label;
+			this.configValue = configValue;
+			this.minInputKohms = minInputKohms;
+			this.maxInputKohms = maxInputKohms;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
 	// Values appropriate to the Verisense Pulse+ (SR68). The Verisense GSR+ (SR62) uses Shimmer3 values.
 	public static final double[] VERISENSE_PULSE_PLUS_GSR_REF_RESISTORS_KOHMS = new double[] {
-			21., 		//Range 0
+			21.0, 		//Range 0
 			150.0, 		//Range 1
 			562.0, 		//Range 2
 			1740.0}; 	//Range 3
-	public static final double[][] VERISENSE_PULSE_PLUS_GSR_RESISTANCE_MIN_MAX_KOHMS = new double[][] {
-			{8.0, 63.0}, 		//Range 0
-			{63.0, 220.0}, 		//Range 1
-			{220.0, 680.0}, 	//Range 2
-			{680.0, 4700.0}}; 	//Range 3
 	public static final int VERISENSE_PULSE_PLUS_GSR_UNCAL_LIMIT_RANGE3 = 1134;
 
 	//--------- Sensor info start --------------
@@ -69,7 +109,6 @@ public class SensorGSRVerisense extends SensorGSR {
 		
 		if (svo.getHardwareVersion() == HW_ID.VERISENSE_PULSE_PLUS) {
 			setCurrentGsrRefResistorsKohms(VERISENSE_PULSE_PLUS_GSR_REF_RESISTORS_KOHMS);
-			setCurrentGsrResistanceKohmsMinMax(VERISENSE_PULSE_PLUS_GSR_RESISTANCE_MIN_MAX_KOHMS);
 			setCurrentGsrUncalLimitRange3(VERISENSE_PULSE_PLUS_GSR_UNCAL_LIMIT_RANGE3);
 		}
 	}
@@ -84,33 +123,28 @@ public class SensorGSRVerisense extends SensorGSR {
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		
-		ConfigByteLayoutGsr configByteLayoutGsr = new ConfigByteLayoutGsr(shimmerDevice, commType);
+		ConfigByteLayoutGsr cbl = new ConfigByteLayoutGsr(shimmerDevice, commType);
 		
-		if(configByteLayoutGsr.idxGsrRange>=0 && configByteLayoutGsr.idxAdcRate>=0) {
-			mGSRRange = (configBytes[configByteLayoutGsr.idxGsrRange] >> bitShiftGSRRange) & maskGSRRange;
+		if(cbl.idxGsrRange>=0 && cbl.idxAdcRate>=0) {
+			setGsrRange(GSR_RANGE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGsrRange] >> cbl.bitShiftGSRRange) & cbl.maskGSRRange));
 			
-			int samplingRateSetting = (configBytes[configByteLayoutGsr.idxAdcRate] >> 0) & 0x3F;
-			setSamplingRateFromShimmer(VerisenseDevice.ADC_SAMPLING_RATES[samplingRateSetting][1]);
+			int samplingRateSetting = (configBytes[cbl.idxAdcRate] >> 0) & cbl.maskAdcRate;
+			setSamplingRateFromShimmer(ADC_SAMPLING_RATES.BY_CONFIG_VALUE.get(samplingRateSetting).freqHz);
 		}
 	}
 	
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 
-		ConfigByteLayoutGsr configByteLayoutGsr = new ConfigByteLayoutGsr(shimmerDevice, commType);
+		ConfigByteLayoutGsr cbl = new ConfigByteLayoutGsr(shimmerDevice, commType);
 
-		if(configByteLayoutGsr.idxGsrRange>=0 && configByteLayoutGsr.idxAdcRate>=0) {
-			configBytes[configByteLayoutGsr.idxGsrRange] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
+		if(cbl.idxGsrRange>=0 && cbl.idxAdcRate>=0) {
+			configBytes[cbl.idxGsrRange] &= ~(cbl.maskGSRRange << cbl.bitShiftGSRRange);
+			configBytes[cbl.idxGsrRange] |= (byte) ((getGsrRange().configValue & cbl.maskGSRRange) << cbl.bitShiftGSRRange);
 	
-			//TODO fill in the sampling rate byte
-	//		for(double[] entry:VerisenseDevice.ADC_SAMPLING_RATES) {
-	//			if(getSamplingRateShimmer())
-	//		}
-	//		
-	//		configBytes[configByteLayoutGsr.idxAdcRate] |= (byte) ((mGSRRange & maskGSRRange) << bitShiftGSRRange);
-	//
-	//		int samplingRateSetting = (configBytes[configByteLayoutGsr.idxAdcRate] >> 0) & 0x3F;
-	//		setSamplingRateFromShimmer(VerisenseDevice.ADC_SAMPLING_RATES[samplingRateSetting][1]);
+			configBytes[cbl.idxAdcRate] &= ~cbl.maskAdcRate;
+			ADC_SAMPLING_RATES adcSamplingRate = ADC_SAMPLING_RATES.getConfigValueForFreq(getSensorSamplingRate());
+			configBytes[cbl.idxAdcRate] |= (byte)adcSamplingRate.configValue & cbl.maskAdcRate;
 		}
 	}
 	
@@ -156,10 +190,35 @@ public class SensorGSRVerisense extends SensorGSR {
 		return returnValue;
 	}
 
+	@Override
+	public void setSensorConfig(ISensorConfig sensorConfig) {
+		if(sensorConfig instanceof GSR_RANGE) {
+			setGsrRange((GSR_RANGE)sensorConfig);
+		} else {
+			super.setSensorConfig(sensorConfig);
+		}
+	}
+
+	@Override
+	public List<ISensorConfig> getSensorConfig() {
+		List<ISensorConfig> listOfSensorConfig = super.getSensorConfig();
+		listOfSensorConfig.add(getGsrRange());
+		return listOfSensorConfig;
+	}
+		
 	//--------- Abstract methods implemented end --------------
 
+	public GSR_RANGE getGsrRange() {
+		return gsrRange;
+	}
+
+	public void setGsrRange(GSR_RANGE gsrRange) {
+		this.gsrRange = gsrRange;
+		super.setGSRRange(gsrRange.configValue);
+	}
+
 	private class ConfigByteLayoutGsr {
-		public int idxAdcRate = -1, idxGsrRange = -1;
+		public int idxAdcRate = -1, idxGsrRange = -1, maskAdcRate = 0x3F, maskGSRRange = 0x07, bitShiftGSRRange = 5;
 		
 		public ConfigByteLayoutGsr(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType) {
 			if(shimmerDevice instanceof VerisenseDevice) {
@@ -176,6 +235,5 @@ public class SensorGSRVerisense extends SensorGSR {
 			}
 		}
 	}
-	
 
 }

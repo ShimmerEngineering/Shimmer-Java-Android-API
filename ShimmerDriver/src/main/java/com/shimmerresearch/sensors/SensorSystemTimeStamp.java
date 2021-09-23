@@ -160,20 +160,20 @@ public class SensorSystemTimeStamp extends AbstractSensor {
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
 //				objectCluster.mSystemTimeStampBytes = UtilShimmer.convertLongToByteArray(pcTimestamp);
-				objectCluster.setSystemTimeStamp(pcTimestamp);
-				objectCluster.addCalData(channelDetails, pcTimestamp);
+				objectCluster.setSystemTimeStamp(pcTimestampMs);
+				objectCluster.addCalData(channelDetails, pcTimestampMs);
 				objectCluster.incrementIndexKeeper();
 			}
 			else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT)){
 				if(doesDeviceSendATimestamp) {
 					//TODO move from ShimmerClock
 				} else {
-					objectCluster.addCalData(channelDetails, pcTimestamp);
+					objectCluster.addCalData(channelDetails, pcTimestampMs);
 					objectCluster.incrementIndexKeeper();
 				}
 			}
