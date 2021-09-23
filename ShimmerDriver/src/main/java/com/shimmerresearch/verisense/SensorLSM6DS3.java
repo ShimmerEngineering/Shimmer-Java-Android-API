@@ -894,5 +894,47 @@ public class SensorLSM6DS3 extends AbstractSensor {
 
 		return gyroRange;
 	}
+	
+	/**
+	 * This function calculates the appropriate FIFO size based on the number of channels enabled and the sampling rate. The size of the FIFO needs to be reduced at higher sampling rates so that the microcontroller reads from the chip more often and in shorter bursts so that we don't miss any samples that might be recorded during an SPI read operation. Values of FTH have been decided upon experiementally by measuring the time it takes to read the FIFO and the restriction that imposes on the max sampling rate. 
+	 * @return
+	 */
+	public int calculateFifoThreshold() {
+		if (!isEitherLsm6ds3ChannelEnabled()) {
+			return 0;
+		}
+
+		int fth = 0;
+		// 0001	ODR is set to 12.5Hz
+		// 0010	ODR is set to 26 Hz
+		// 0011	ODR is set to 52 Hz
+		LSM6DS3_RATE rate = getRate();
+		if (rate==LSM6DS3_RATE.RATE_12_5_HZ || rate==LSM6DS3_RATE.RATE_26_HZ || rate==LSM6DS3_RATE.RATE_52_HZ) {
+			fth = 4056;
+		// 0100	ODR is set to 104 Hz
+		} else if (rate==LSM6DS3_RATE.RATE_104_HZ) {
+			fth = 2028;
+		// 0101	ODR is set to 208 Hz
+		} else if (rate==LSM6DS3_RATE.RATE_208_HZ) {
+			fth = 1014;
+		// 0110	ODR is set to 416 Hz
+		} else if (rate==LSM6DS3_RATE.RATE_416_HZ) {
+			fth = 540;
+		// 0111	ODR is set to 833 Hz
+		} else if (rate==LSM6DS3_RATE.RATE_833_HZ) {
+			fth = 288;
+		// 1000	ODR is set to 1.66 kHz
+		} else if (rate==LSM6DS3_RATE.RATE_1666_HZ) {
+			fth = 150;
+		}
+
+		if ((isSensorEnabled(Configuration.Verisense.SENSOR_ID.LSM6DS3_ACCEL) && isSensorEnabled(Configuration.Verisense.SENSOR_ID.LSM6DS3_GYRO)) 
+			|| (rate==LSM6DS3_RATE.RATE_12_5_HZ || rate==LSM6DS3_RATE.RATE_26_HZ || rate==LSM6DS3_RATE.RATE_52_HZ)) {
+		} else {
+			fth = fth*2;
+		}
+
+		return fth;
+	}
 
 }
