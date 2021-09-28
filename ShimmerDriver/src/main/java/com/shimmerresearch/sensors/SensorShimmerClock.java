@@ -288,7 +288,6 @@ public class SensorShimmerClock extends AbstractSensor {
 		if(mShimmerVerObject.isShimmerGenGq()){
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.RSSI, ShimmerStreamingProperties.channelRssi);
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.SENSOR_DISTANCE, ShimmerStreamingProperties.channelSensorDistance);
-			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER, SensorShimmerClock.channelEventMarker);
 		}
 		else {// if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			if(mShimmerVerObject.getFirmwareVersionCode()>=6 || mShimmerVerObject.mHardwareVersion==HW_ID.ARDUINO){
@@ -307,8 +306,9 @@ public class SensorShimmerClock extends AbstractSensor {
 			
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, SensorShimmerClock.channelReceptionRateCurrent);
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, SensorShimmerClock.channelReceptionRateTrial);
-			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER, SensorShimmerClock.channelEventMarker);
 		}
+		
+		channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER, SensorShimmerClock.channelEventMarker);
 		
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 	}

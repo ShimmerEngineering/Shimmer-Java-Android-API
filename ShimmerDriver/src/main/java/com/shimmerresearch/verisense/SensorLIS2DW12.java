@@ -206,7 +206,11 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		LOW_POWER_12_5_HZ("12.5Hz", 2, 12.5, LIS2DW12_MODE.LOW_POWER),
 		LOW_POWER_25_0_HZ("25.0Hz", 3, 25.0, LIS2DW12_MODE.LOW_POWER),
 		LOW_POWER_50_0_HZ("50.0Hz", 4, 50.0, LIS2DW12_MODE.LOW_POWER),
-		LOW_POWER_100_0_HZ("100.0Hz", 5, 100.0, LIS2DW12_MODE.LOW_POWER);
+		LOW_POWER_100_0_HZ("100.0Hz", 5, 100.0, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_200_0_HZ("200.0Hz", 6, 100.0, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_200_0_HZ_ALT1("200.0Hz", 7, 100.0, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_200_0_HZ_ALT2("200.0Hz", 8, 100.0, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_200_0_HZ_ALT3("200.0Hz", 9, 100.0, LIS2DW12_MODE.LOW_POWER);
 		
 		public String label;
 		public Integer configValue;
@@ -578,11 +582,14 @@ public class SensorLIS2DW12 extends AbstractSensor {
 			Configuration.Verisense.SensorBitmap.LIS2DW12_ACCEL,
 			GuiLabelSensors.ACCEL1,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12,
+			Arrays.asList(Configuration.Verisense.SENSOR_ID.LSM6DS3_ACCEL,
+					Configuration.Verisense.SENSOR_ID.LSM6DS3_GYRO),
 			Arrays.asList(GuiLabelConfig.LIS2DW12_RANGE,
 					GuiLabelConfig.LIS2DW12_RATE),
 			Arrays.asList(ObjectClusterSensorName.LIS2DW12_ACC_X,
 					ObjectClusterSensorName.LIS2DW12_ACC_Y,
-					ObjectClusterSensorName.LIS2DW12_ACC_Z));
+					ObjectClusterSensorName.LIS2DW12_ACC_Z),
+			false);
 
   	public static final Map<Integer, SensorDetailsRef> SENSOR_MAP_REF;
 	static {
@@ -846,6 +853,8 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorId)){
+			//TODO handle isSensorEnabled = true and false
+
 			setAccelRange(LIS2DW12_ACCEL_RANGE.RANGE_4G);
 			setAccelRate(LIS2DW12_ACCEL_RATE.LOW_POWER_25_0_HZ);
 			setAccelMode(LIS2DW12_MODE.HIGH_PERFORMANCE);

@@ -17,6 +17,7 @@ import com.shimmerresearch.driver.Configuration.Verisense;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.SensorADC;
@@ -31,7 +32,7 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 
 	//--------- Sensor specific variables start --------------
 	private MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties = null;
-	private double sensorSamplingRateHz = 0.0;
+	private ADC_SAMPLING_RATES sensorSamplingRate = ADC_SAMPLING_RATES.OFF;
 
 	//--------- Sensor specific variables end --------------
 
@@ -114,6 +115,10 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 				}
 			}
 			return null;
+		}
+
+		public static ADC_SAMPLING_RATES getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, OFF.configValue, FREQ_0_64_HZ.configValue));
 		}
 	}
 
@@ -245,21 +250,11 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 		return objectCluster;
 	}
 
-	public double getSensorSamplingRate() {
-		return sensorSamplingRateHz;
-	}
-
-	@Override
-	public void setSensorSamplingRate(double samplingRateHz) {
-		sensorSamplingRateHz = samplingRateHz;
-	}
-
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		ConfigByteLayoutVerisenseAdc cbl = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
 		if(cbl.idxAdcRate>=0) {
-			int samplingRateSetting = (configBytes[cbl.idxAdcRate] >> 0) & 0x3F;
-			setSamplingRateFromShimmer(ADC_SAMPLING_RATES.BY_CONFIG_VALUE.get(samplingRateSetting).freqHz);
+			setSensorSamplingRate(ADC_SAMPLING_RATES.getForConfigValue((configBytes[cbl.idxAdcRate] >> 0) & cbl.maskAdcRate));
 		}
 	}
 
@@ -268,8 +263,7 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 		ConfigByteLayoutVerisenseAdc cbl = new ConfigByteLayoutVerisenseAdc(shimmerDevice, commType);
 		if(cbl.idxAdcRate>=0) {
 			configBytes[cbl.idxAdcRate] &= ~cbl.maskAdcRate;
-			ADC_SAMPLING_RATES adcSamplingRate = ADC_SAMPLING_RATES.getConfigValueForFreq(getSensorSamplingRate());
-			configBytes[cbl.idxAdcRate] |= (byte)adcSamplingRate.configValue & cbl.maskAdcRate;
+			configBytes[cbl.idxAdcRate] |= (byte)getSensorSamplingRate().configValue & cbl.maskAdcRate;
 		}
 	}
 
@@ -296,7 +290,7 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 		Object returnValue = null;
 		switch (configLabel) {
 		case (GuiLabelConfigCommon.RATE):
-			returnValue = getSensorSamplingRate();
+			returnValue = getSensorSamplingRateHz();
 			break;
 		default:
 			returnValue = super.getConfigValueUsingConfigLabel(sensorId, configLabel);
@@ -304,6 +298,46 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 		}
 
 		return returnValue;
+	}
+
+	@Override
+	public void setSensorSamplingRate(double samplingRateHz) {
+		setSensorSamplingRate(ADC_SAMPLING_RATES.getConfigValueForFreq(samplingRateHz));
+		super.setSensorSamplingRate(sensorSamplingRate.freqHz);
+	}
+	
+	@Override
+	public void setSamplingRateFromShimmer(double maxSetRate) {
+		if(Double.isFinite(maxSetRate)) {
+			setSensorSamplingRate(ADC_SAMPLING_RATES.getConfigValueForFreq(maxSetRate));
+			super.setSamplingRateFromShimmer(sensorSamplingRate.freqHz);
+		}
+	}
+	
+	public void setSensorSamplingRate(ADC_SAMPLING_RATES adcSamplingRate){
+		this.sensorSamplingRate = adcSamplingRate;
+	}
+	
+	public double getSensorSamplingRateHz() {
+		return sensorSamplingRate.freqHz;
+	}
+
+	public ADC_SAMPLING_RATES getSensorSamplingRate() {
+		return sensorSamplingRate;
+	}
+
+	@Override
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
+			if(isSensorEnabled) {
+				setSensorSamplingRate(ADC_SAMPLING_RATES.FREQ_51_2_HZ);
+			} else {
+				setSensorSamplingRate(ADC_SAMPLING_RATES.OFF);
+			}
+
+			return true;
+		}
+		return false;
 	}
 
 	//--------- Abstract methods implemented end --------------

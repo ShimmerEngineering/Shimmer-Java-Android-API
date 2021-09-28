@@ -338,7 +338,6 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 	
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		// TODO Add bit operations for payload config details
 		if(isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_RED)
 				|| isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_IR)
 				|| isSensorEnabled(Configuration.Verisense.SENSOR_ID.MAX86916_PPG_GREEN)
@@ -417,10 +416,12 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 		if(mSensorMap.containsKey(sensorId)){
 			super.setDefaultConfigForSensor(sensorId, isSensorEnabled);
 			
+			//TODO handle isSensorEnabled = true and false
+			
 			setSampleRate(MAX86916_SAMPLE_RATE.SR_50_0_HZ);
 			setPpgDefaultCurrentAllLedsMilliamps(40);
-			setPpgMaxCurrentGreenBlueLedsMilliamps(MAX_LED_CURRENT_MILLIAMPS);
-			setPpgMaxCurrentRedIrLedsMilliamps(MAX_LED_CURRENT_MILLIAMPS);
+			setPpgMaxCurrentGreenBlueLedsMilliamps(SensorMAX86916.MAX_LED_CURRENT_MILLIAMPS);
+			setPpgMaxCurrentRedIrLedsMilliamps(SensorMAX86916.MAX_LED_CURRENT_MILLIAMPS);
 			setPpgAutoGainControlTargetPercentOfRange(30);
 			setPpgProximityDetectionCurrentIrLedMilliamps(10);
 			setPpgDac1CrossTalk(0);
@@ -443,7 +444,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 				setRateConfigValue((int)valueToSet);
 				break;
 			default:
-				returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
+				returnValue = super.setConfigValueUsingConfigLabel(sensorId, configLabel, valueToSet);
 				break;
 		}	
 		return returnValue;
@@ -454,11 +455,14 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 		Object returnValue = null;
 
 		switch(configLabel){
+//			case(GuiLabelConfigCommon.RATE):
+//				returnValue = getSampleRate().freqHz;
+//				break;
 			case(GuiLabelConfigCommonMax86.MAX86XXX_PPG_RATE):
 				returnValue = getSampleRate().configValue;
 				break;
 			default:
-				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
+				returnValue = super.getConfigValueUsingConfigLabel(sensorId, configLabel);
 				break;
 		}
 		return returnValue;

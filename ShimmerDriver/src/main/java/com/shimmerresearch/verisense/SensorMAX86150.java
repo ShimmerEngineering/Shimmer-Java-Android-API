@@ -87,7 +87,7 @@ public class SensorMAX86150 extends SensorMAX86XXX {
 	}
 
   	//--------- Sensor info start --------------
-	public static final SensorDetailsRef sensorMAX86150PpgRed = new SensorDetailsRef(
+	public static final SensorDetailsRef SENSOR_MAX86150_PPG_RED = new SensorDetailsRef(
 			Configuration.Verisense.SensorBitmap.MAX86XXX_PPG_RED,
 			Configuration.Verisense.SensorBitmap.MAX86XXX_PPG_RED,
 			GuiLabelSensorsCommon.PPG_RED,
@@ -96,7 +96,7 @@ public class SensorMAX86150 extends SensorMAX86XXX {
 					GuiLabelConfigCommonMax86.MAX86XXX_PPG_LED_RED_AMPLITUDE),
 			Arrays.asList(ObjectClusterSensorNameCommon.MAX86XXX_PPG_RED));
 
-	public static final SensorDetailsRef sensorMAX86150PpgIR = new SensorDetailsRef(
+	public static final SensorDetailsRef SENSOR_MAX86150_PPG_IR = new SensorDetailsRef(
 			Configuration.Verisense.SensorBitmap.MAX86XXX_PPG_IR,
 			Configuration.Verisense.SensorBitmap.MAX86XXX_PPG_IR,
 			GuiLabelSensorsCommon.PPG_IR,
@@ -116,8 +116,8 @@ public class SensorMAX86150 extends SensorMAX86XXX {
   	public static final Map<Integer, SensorDetailsRef> SENSOR_MAP_REF;
 	static {
 		Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_RED, SensorMAX86150.sensorMAX86150PpgRed);  
-		aMap.put(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_IR, SensorMAX86150.sensorMAX86150PpgIR);  
+		aMap.put(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_RED, SensorMAX86150.SENSOR_MAX86150_PPG_RED);  
+		aMap.put(Configuration.Verisense.SENSOR_ID.MAX86XXX_PPG_IR, SensorMAX86150.SENSOR_MAX86150_PPG_IR);  
 		aMap.put(Configuration.Verisense.SENSOR_ID.MAX86150_ECG, SensorMAX86150.sensorMAX86150Ecg);  
 		SENSOR_MAP_REF = Collections.unmodifiableMap(aMap);
 	}

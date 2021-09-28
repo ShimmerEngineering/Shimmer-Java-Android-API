@@ -2168,7 +2168,7 @@ public class Configuration {
 	
 	public static final class Verisense {
 		
-		public class SensorBitmap{
+		public class SensorBitmap {
 			// LSB byte 0
 			public static final int LIS2DW12_ACCEL			= 1 << (7 + (8*0));
 			public static final int LSM6DS3_ACCEL			= 1 << (6 + (8*0));
@@ -2198,6 +2198,7 @@ public class Configuration {
 		}
 
 		public class SENSOR_ID {
+			public static final int VERISENSE_TIMESTAMP		= 2000;
 			//TODO not sure if there is a need for an offset here -> it was just copied from Sweatch implementation above
 			public static final int LIS2DW12_ACCEL 			= 2005;
 			public static final int LSM6DS3_GYRO 			= 2006;

@@ -1,19 +1,27 @@
 package com.shimmerresearch.verisense;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Verisense;
 import com.shimmerresearch.bluetooth.SystemTimestampPlot;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.SensorShimmerClock;
+import com.shimmerresearch.sensors.SensorSystemTimeStamp;
+import com.shimmerresearch.sensors.ShimmerStreamingProperties;
+import com.shimmerresearch.sensors.SensorShimmerClock.GuiLabelSensors;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants;
 
 public class SensorVerisenseClock extends AbstractSensor {
@@ -39,14 +47,52 @@ public class SensorVerisenseClock extends AbstractSensor {
 			CHANNEL_UNITS_TIMESTAMP_LOCAL,
 			Arrays.asList(CHANNEL_TYPE.CAL), false, true);
 
+	public static final SensorDetailsRef sensorVerisenseClock = new SensorDetailsRef (
+			GuiLabelSensors.TIMESTAMP,
+			Verisense.CompatibilityInfoForMaps.listOfCompatibleVersionInfoVbatt,
+			Arrays.asList(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP));
+	{
+		sensorVerisenseClock.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
+	}
+	
+	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
+	static {
+		Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+		//TODO move to SensorSystemTimeStamp class
+//		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SYSTEM_TIMESTAMP, SensorSystemTimeStamp.sensorSystemTimeStampRef);
+		aMap.put(Configuration.Verisense.SENSOR_ID.VERISENSE_TIMESTAMP, SensorVerisenseClock.sensorVerisenseClock);
+//		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SHIMMER_STREAMING_PROPERTIES, SensorShimmerClock.sensorShimmerStreamingProperties);
+		mSensorMapRef = Collections.unmodifiableMap(aMap);
+	}
+
 	public SensorVerisenseClock(VerisenseDevice verisenseDevice) {
 		super(SENSORS.CLOCK, verisenseDevice);
+		initialise();
 	}
 
 	@Override
 	public void generateSensorMap() {
-		// TODO Auto-generated method stub
+		Map<String, ChannelDetails> channelMapRef = new LinkedHashMap<String, ChannelDetails>();
 		
+//		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP, SensorShimmerClock.channelSystemTimestamp);
+//		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorShimmerClock.channelSystemTimestampPlot);
+//		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_DIFFERENCE, SensorShimmerClock.channelSystemTimestampDiff);
+//		channelMapRef.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT_ZEROED, SensorSystemTimeStamp.channelSystemTimestampPlotZeroed);
+
+		channelMapRef.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP, getChannelDetailsForFwVerVersion(mShimmerDevice));
+		
+//		channelMapRef.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE, SensorShimmerClock.channelShimmerTsDiffernce);
+//		channelMapRef.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, SensorShimmerClock.channelShimmerClockOffset);
+//		channelMapRef.put(SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, SensorShimmerClock.channelRealTimeClock);
+//		
+//		channelMapRef.put(SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE, SensorShimmerClock.channelBattPercentage);
+//		
+//		channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, SensorShimmerClock.channelReceptionRateCurrent);
+//		channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, SensorShimmerClock.channelReceptionRateTrial);
+		
+//		channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER, SensorShimmerClock.channelEventMarker);
+
+		super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 	}
 
 	@Override
@@ -61,21 +107,21 @@ public class SensorVerisenseClock extends AbstractSensor {
 		
 	}
 
-	public ObjectCluster processDataCustom(ObjectCluster objectCluster, double timeStampMs, COMMUNICATION_TYPE commType) {
-		objectCluster.addCalData(getChannelDetailsForFwVerVersion(mShimmerDevice), timeStampMs);
-		objectCluster.setTimeStampMilliSecs(timeStampMs);
-		
-		if(commType!=COMMUNICATION_TYPE.SD) {
-			objectCluster = systemTimestampPlot.processSystemTimestampPlot(objectCluster);
-		}
-
-		return objectCluster;
-	}
-	
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pctimeStampMs) {
-		// TODO Auto-generated method stub
-		return null;
+		if(sensorDetails.isEnabled(commType)){
+			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.TIMESTAMP)){
+				
+				objectCluster.addCalData(getChannelDetailsForFwVerVersion(mShimmerDevice), pctimeStampMs);
+				objectCluster.setTimeStampMilliSecs(pctimeStampMs);
+				
+				if(commType!=COMMUNICATION_TYPE.SD) {
+					objectCluster = systemTimestampPlot.processSystemTimestampPlot(objectCluster);
+				}
+				
+			}
+		}
+		return objectCluster;
 	}
 
 	@Override

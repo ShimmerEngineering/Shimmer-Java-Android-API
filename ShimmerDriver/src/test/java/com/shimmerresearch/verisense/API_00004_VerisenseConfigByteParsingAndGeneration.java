@@ -58,9 +58,14 @@ public class API_00004_VerisenseConfigByteParsingAndGeneration {
 	@Test
 	public void test003_sensorLsm6ds3() {
 		List<ISensorConfig> listOfSensorConfig = new ArrayList<ISensorConfig>();
+		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_ACCEL_RANGE.values()));
 		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_GYRO_RANGE.values()));
 		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_RATE.values()));
-		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.LSM6DS3_ACCEL_RANGE.values()));
+		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.FIFO_DECIMATION_GYRO.values()));
+		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.FIFO_DECIMATION_ACCEL.values()));
+		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.FIFO_MODE.values()));
+		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER.values()));
+		listOfSensorConfig.addAll(Arrays.asList(SensorLSM6DS3.HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO.values()));
 		
 		ShimmerVerObject svo = FW_CHANGES.CCF21_010_3;
 		ExpansionBoardDetails ebd = new ExpansionBoardDetails(HW_ID.VERISENSE_IMU, 1, 0);

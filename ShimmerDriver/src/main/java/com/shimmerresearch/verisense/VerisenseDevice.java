@@ -149,8 +149,8 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	private PendingEventSchedule pendingEventScheduleRwcSync = new PendingEventSchedule(24, 60, 10, 15);
 	private int adaptiveSchedulerInterval = 65535;
 	private int adaptiveSchedulerFailCount = 255;
-	private int ppgRecordingDurationSeconds;
-	private int ppgRecordingIntervalSeconds;
+	private int ppgRecordingDurationSeconds = 0;
+	private int ppgRecordingIntervalSeconds = 0;
 
 	public static enum BLE_TX_POWER implements ISensorConfig {
 		PLUS_8_DBM("+8 dBm", (byte) 0x08),
@@ -318,7 +318,11 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 				}
 			}
 		} else {
-			configBytes = OperationalConfigPayload.getDefaultPayloadConfigForFwVersion(mShimmerVerObject);
+			if(generateForWritingToShimmer) {
+				configBytes = OperationalConfigPayload.getDefaultPayloadConfigForFwVersion(mShimmerVerObject);
+			} else {
+				configBytes = new byte[OperationalConfigPayload.getPayloadConfigSizeForFwVersion(mShimmerVerObject)];
+			}
 
 			configBytes[OP_CONFIG_BYTE_INDEX.HEADER_BYTE] = AbstractPayload.VALID_CONFIG_BYTE;
 			
@@ -1186,6 +1190,15 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		super.sensorAndConfigMapsCreateCommon();
 		generateParserMap();
 	}
+	
+	@Override
+	public void handleSpecCasesAfterSensorMapUpdateFromEnabledSensors() {
+		// The clock sensor/channels are inherently enabled and not controlled by enabled sensor bits so we need to force it on here
+		SensorDetails sensorDetailTimestamp = getSensorDetails(Configuration.Verisense.SENSOR_ID.VERISENSE_TIMESTAMP);
+		if(sensorDetailTimestamp!=null){
+			sensorDetailTimestamp.setIsEnabled(true);
+		}
+	}
 
 	@Override
 	protected void interpretDataPacketFormat(Object object, COMMUNICATION_TYPE commType) {
@@ -1241,24 +1254,6 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	/**
-	 * Needed to implement a custom buildMsg for the Verisense payload structure as
-	 * the timestamp isn't part of newPacket as it is for Shimmer3. Additionally,
-	 * super.buildMsg only accepts a long for the timestamp argument.
-	 * 
-	 * @param newPacket
-	 * @param commType
-	 * @param isTimeSyncEnabled
-	 * @param timeMsCurrentSample
-	 * @return
-	 */
-	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, double timeMsCurrentSample){
-		ObjectCluster ojc = super.buildMsg(newPacket, commType, isTimeSyncEnabled, (long) timeMsCurrentSample);
-		//TODO check why this isn't done as part of the sensor map? just because a double isn't passed into sensor.processData?
-		processSensorVerisenseClock(ojc, timeMsCurrentSample, commType);
-		return ojc;
-	}
-	
-	/**
 	 * Created based on ShimmerDevice.buildMsg(). Whereas that function expects all
 	 * sensor bytes to be in the same packet and have the same sampling rate, this
 	 * method parses each sensor separately.
@@ -1268,7 +1263,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	 * @param timeMsCurrentSample
 	 * @return
 	 */
-	public ObjectCluster buildMsgForSensor(byte[] newPacket, COMMUNICATION_TYPE commType, List<SENSORS> listOfSensorClassKeys, double timeMsCurrentSample) {
+	public ObjectCluster buildMsgForSensorList(byte[] newPacket, COMMUNICATION_TYPE commType, List<SENSORS> listOfSensorClassKeys, double timeMsCurrentSample) {
 		// Arguments normally passed into ShimmerDevice.buildMsg()
 		boolean isTimeSyncEnabled = false; 
 		
@@ -1309,8 +1304,6 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			}
 		}
 
-		processSensorVerisenseClock(ojc, timeMsCurrentSample, commType);
-
 		//After sensor data has been processed, now process any filters or Algorithms 
 		ojc = processData(ojc);
 
@@ -1319,14 +1312,6 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 //		}
 		
 		return ojc;
-	}
-
-	private void processSensorVerisenseClock(ObjectCluster ojc, double timeMsCurrentSample, COMMUNICATION_TYPE commType) {
-		AbstractSensor abstractSensor = getSensorClass(SENSORS.CLOCK);
-		if(abstractSensor!=null && abstractSensor instanceof SensorVerisenseClock) {
-			SensorVerisenseClock sensorVerisenseClock = (SensorVerisenseClock)abstractSensor;
-			sensorVerisenseClock.processDataCustom(ojc, timeMsCurrentSample, commType);
-		}
 	}
 
 	@Override
@@ -1711,6 +1696,14 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		List<SENSORS> listOfSensorClassKeys = mapOfSensorIdsPerDataBlock.get(datablockSensorId);
 		if(listOfSensorClassKeys==null) {
 			listOfSensorClassKeys = getSensorKeysForDatablockId(datablockSensorId);
+			
+			// Additional channels that are calculated by the API go at the end of the list
+			// or else the flow in parseDataBlockMetaData will break (i.e., it relies on
+			// having the sensor(s) be the first entry in the list)
+			if(isPayloadDesignV8orAbove()) {
+				listOfSensorClassKeys.add(SENSORS.CLOCK);
+			}
+			
 			mapOfSensorIdsPerDataBlock.put(datablockSensorId, listOfSensorClassKeys);
 		}
 		return listOfSensorClassKeys;
@@ -1723,7 +1716,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			byte[] byteBuf = new byte[dataBlockDetails.dataPacketSize];
 			System.arraycopy(byteBuffer, currentByteIndex, byteBuf, 0, byteBuf.length);
 			
-			ObjectCluster ojcCurrent = buildMsgForSensor(byteBuf, commType, dataBlockDetails.listOfSensorClassKeys, timeMsCurrentSample);
+			ObjectCluster ojcCurrent = buildMsgForSensorList(byteBuf, commType, dataBlockDetails.listOfSensorClassKeys, timeMsCurrentSample);
 			dataHandler(ojcCurrent);
 			dataBlockDetails.setOjcArrayAtIndex(y, ojcCurrent);
 
@@ -1851,8 +1844,8 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	 * @return Null if sensor not supported by current hardware
 	 * @see SensorMAX86916
 	 */
-	public SensorMAX86916 getSensorPpg() {
-		AbstractSensor abstractSensor = getSensorClass(SENSORS.PPG);
+	public SensorMAX86916 getSensorMax86916() {
+		AbstractSensor abstractSensor = getSensorClass(SENSORS.MAX86916);
 		if(abstractSensor!=null && abstractSensor instanceof SensorMAX86916) {
 			return (SensorMAX86916) abstractSensor;
 		}
@@ -2062,8 +2055,12 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		this.passkeyMode = passkeyMode;
 	}
 
-	public DATA_COMPRESSION_MODE getDataCompressopnMode() {
+	public DATA_COMPRESSION_MODE getDataCompressionMode() {
 		return dataCompressionMode;
+	}
+
+	public void setDataCompressionMode(DATA_COMPRESSION_MODE dataCompressionMode) {
+		this.dataCompressionMode = dataCompressionMode;
 	}
 
 	public BATTERY_TYPE getBatteryType() {
@@ -2077,7 +2074,15 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	public int getPpgRecordingDurationSeconds() {
 		return ppgRecordingDurationSeconds;
 	}
+	
+	public void setPpgContinuousRecording() {
+		setPpgRecordingDurationSeconds(0);
+		setPpgRecordingIntervalSeconds(0);
+	}
 
+	/** 0 represents always on
+	 * @param ppgRecordingDurationSeconds
+	 */
 	public void setPpgRecordingDurationSeconds(int ppgRecordingDurationSeconds) {
 		this.ppgRecordingDurationSeconds = UtilShimmer.nudgeInteger(ppgRecordingDurationSeconds, 0, (int) (Math.pow(2, 16)-1));
 	}
@@ -2086,6 +2091,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return ppgRecordingIntervalSeconds;
 	}
 
+	/** 0 represents always on
+	 * @param ppgRecordingIntervalSeconds
+	 */
 	public void setPpgRecordingIntervalSeconds(int ppgRecordingIntervalSeconds) {
 		this.ppgRecordingIntervalSeconds = UtilShimmer.nudgeInteger(ppgRecordingIntervalSeconds, 0, (int) (Math.pow(2, 16)-1));
 	}

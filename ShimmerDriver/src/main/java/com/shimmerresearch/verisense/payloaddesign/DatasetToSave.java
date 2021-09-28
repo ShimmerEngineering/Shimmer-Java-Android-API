@@ -89,7 +89,7 @@ public class DatasetToSave implements Serializable {
 		List<DataSegmentDetails> listOfDataSegmentsExisting = mapOfDataSegmentsPerSensor.get(sensorClassKey);
 		if(listOfDataSegmentsExisting==null) {
 			listOfDataSegmentsExisting = new ArrayList<DataSegmentDetails>();
-			mapOfDataSegmentsPerSensor.put(sensorClassKey, listOfDataSegmentsExisting);
+			putInMapOfDataSegmentsPerSensor(sensorClassKey, listOfDataSegmentsExisting);
 		}
 		
 		int offset = 0;
@@ -129,6 +129,8 @@ public class DatasetToSave implements Serializable {
 	}
 
 	public void printReportOfDataSegments() {
+		TreeMap<SENSORS, List<DataSegmentDetails>> mapOfDataSegmentsPerSensor = getMapOfDataSegmentsPerSensor();
+		
 		System.out.println(" |_ Contents:");
 		for(SENSORS sensorClassKey:mapOfDataSegmentsPerSensor.keySet()) {
 			System.out.println("   |_ Sensor=" + sensorClassKey + ":");
@@ -140,7 +142,7 @@ public class DatasetToSave implements Serializable {
 		}
 		
 		// Warn about time-gaps 
-		for(Entry<SENSORS, List<DataSegmentDetails>> entry:getMapOfDataSegmentsPerSensor().entrySet()) {
+		for(Entry<SENSORS, List<DataSegmentDetails>> entry:mapOfDataSegmentsPerSensor.entrySet()) {
 			List<DataSegmentDetails> listOfDataSegmentDetails = entry.getValue();
 			if(listOfDataSegmentDetails.size()>1) {
 				for(int i=1;i<listOfDataSegmentDetails.size();i++) {
@@ -163,6 +165,10 @@ public class DatasetToSave implements Serializable {
 
 	public TreeMap<SENSORS, List<DataSegmentDetails>> getMapOfDataSegmentsPerSensor() {
 		return mapOfDataSegmentsPerSensor;
+	}
+
+	public void putInMapOfDataSegmentsPerSensor(SENSORS sensorClassKey, List<DataSegmentDetails> listOfDataSegments) {
+		mapOfDataSegmentsPerSensor.put(sensorClassKey, listOfDataSegments);;
 	}
 
 	public void updateSampleCountForEachDataSegmentDetails() {
@@ -229,7 +235,7 @@ public class DatasetToSave implements Serializable {
 		List<DataSegmentDetails> listOfDataSegmentsExisting = mapOfDataSegmentsPerSensor.get(sensorClassKey);
 		if(listOfDataSegmentsExisting==null) {
 			listOfDataSegmentsExisting = new ArrayList<DataSegmentDetails>();
-			mapOfDataSegmentsPerSensor.put(sensorClassKey, listOfDataSegmentsExisting);
+			putInMapOfDataSegmentsPerSensor(sensorClassKey, listOfDataSegmentsExisting);
 		}
 		return listOfDataSegmentsExisting;
 	}

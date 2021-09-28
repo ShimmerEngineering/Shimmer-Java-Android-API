@@ -11,7 +11,6 @@ import java.util.TreeMap;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Verisense.CompatibilityInfoForMaps;
-import com.shimmerresearch.driver.Configuration.Verisense.SENSOR_ID;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -42,28 +41,64 @@ import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOA
 public class SensorLSM6DS3 extends AbstractSensor {
 	
 	private static final long serialVersionUID = -8572264157525359641L;
-	
-	private static final int DEFAULT_FIFO_BYTE_SIZE_IN_CHIP = 8112;
-	private static final int DEFAULT_MAX_FIFOS_IN_PAYLOAD = 4;
-	private int fifoByteSizeInChip = DEFAULT_FIFO_BYTE_SIZE_IN_CHIP;
-	private int fifoSizeInChip = DEFAULT_FIFO_BYTE_SIZE_IN_CHIP/2;
 
 	public static final String ACCEL_ID = "Accel2";
+
+	private static final int DEFAULT_FIFO_BYTE_SIZE_IN_CHIP = 8112;
+	@Deprecated
+	private static final int DEFAULT_MAX_FIFOS_IN_PAYLOAD = 4;
+	private int fifoSizeInChip = DEFAULT_FIFO_BYTE_SIZE_IN_CHIP/2;
 	
-	protected LSM6DS3_ACCEL_RANGE rangeAccel = LSM6DS3_ACCEL_RANGE.RANGE_4G;
-	protected LSM6DS3_GYRO_RANGE rangeGyro = LSM6DS3_GYRO_RANGE.RANGE_500DPS;
+	/** using the same rate setting for the gyro, accel and fifo */
 	protected LSM6DS3_RATE rate = LSM6DS3_RATE.RATE_52_HZ;
+	/** 0 Disable/1 Enable step counter and timestamp data as 4th FIFO dataset */
+	protected boolean timerPedoFifodEnable = false;
+	/** 0 = Enable write in FIFO based on XL/Gyro data-ready
+	 *  1 = Disable write in FIFO at every step detected by step counter */
+	protected boolean timerPedoFifodDrdy = false;
+	/** Gyro FIFO Decimation Settings */
+	protected FIFO_DECIMATION_GYRO decimationFifoGyro = FIFO_DECIMATION_GYRO.SENSOR_NOT_IN_FIFO;
+	/** Accel FIFO Decimation Settings */
+	protected FIFO_DECIMATION_ACCEL decimationFifoAccel = FIFO_DECIMATION_ACCEL.SENSOR_NOT_IN_FIFO;
+	/** FIFO Mode Selection */
+	protected FIFO_MODE fifoMode = FIFO_MODE.CONTINUOUS_MODE;
+	/** Accel Full scale Selection */
+	protected LSM6DS3_ACCEL_RANGE rangeAccel = LSM6DS3_ACCEL_RANGE.RANGE_4G;
+	/** Anti- aliasing Filter bandwidth selection */
+	protected ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER accelAntiAliasingBandwidthFilter = ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER.AT_400HZ;
+	/** Gyro full scale selection */
+	protected LSM6DS3_GYRO_RANGE rangeGyro = LSM6DS3_GYRO_RANGE.RANGE_500DPS;
+	/** Gyro full scale at 12 dps */
+	protected boolean gyroFullScaleAt12dps = false;
+	/** Gyro High Performance Operating Mode (0 = Enabled, 1 = Disabled) */
+	protected boolean gyroHighPerFormanceModeDisable = true;
+	/** Gyro Digital High Pass Filter Enable */
+	protected boolean gyroDigitalHighPassFilterEnable = false;
+	/** Gyro High Pass Filter Cut off Frequency Selection */
+	protected HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO gyroHighPassFilterCutOffFreq = HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO.AT_0_0081_HZ;
+	/** Gyro Digital HP Filter reset */
+	protected boolean gyroDigitalHighPassFilterReset = false;
+	/** Source register rounding function */
+	protected boolean roundingStatus = false;
+	/** Low Pass Filter LPF2 selection (Figure 7  in LSM6DS3US datasheet) */
+	protected boolean accelLowPassFilterLpf2Selection = false;
+	/** Slope filter and High pass filter configuration and cut off Settings (Table 68 in LSM6DS3US datasheet) */
+	protected HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL accelHighPassFilterCutOffFreq = HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.SLOPE;
+	/** Accel2 Slope filter and High pass filter Selection (Figure 7  in LSM6DS3US datasheet) */
+	protected boolean accelHighPassOrSlopeFilterSelectionEnable = false;
+	/** Low Pass Filter on 6D function Selection */
+	protected boolean lowPassFilterOn6D = false;
 
 	public static enum LSM6DS3_RATE implements ISensorConfig {
-		POWER_DOWN("Power-down", 0, 0.0),
-		RATE_12_5_HZ("12.5Hz", 1, 12.5),
-		RATE_26_HZ("26.0Hz", 2, 26.0),
-		RATE_52_HZ("52.0Hz", 3, 52.0),
-		RATE_104_HZ("104.0Hz", 4, 104.0),
-		RATE_208_HZ("208.0Hz", 5, 208.0),
-		RATE_416_HZ("416.0Hz", 6, 416.0),
-		RATE_833_HZ("833.0Hz", 7, 833.0),
-		RATE_1666_HZ("1666.0Hz", 8, 1666.0);
+		POWER_DOWN("Power-down", 0b0000, 0.0),
+		RATE_12_5_HZ("12.5Hz", 0b0001, 12.5),
+		RATE_26_HZ("26.0Hz", 0b0010, 26.0),
+		RATE_52_HZ("52.0Hz", 0b0011, 52.0),
+		RATE_104_HZ("104.0Hz", 0b0100, 104.0),
+		RATE_208_HZ("208.0Hz", 0b0101, 208.0),
+		RATE_416_HZ("416.0Hz", 0b0110, 416.0),
+		RATE_833_HZ("833.0Hz", 0b0111, 833.0),
+		RATE_1666_HZ("1666.0Hz", 0b1000, 1666.0);
 		
 		public String label;
 		public Integer configValue;
@@ -159,6 +194,249 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		}
 
 		private LSM6DS3_GYRO_RANGE(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	public static enum FIFO_DECIMATION_GYRO implements ISensorConfig {
+		SENSOR_NOT_IN_FIFO("Sensor not in FIFO", 0b000),
+		NO_DECIMATION("No decimation", 0b001),
+		DECIMATION_WITH_FACTOR_2("Decimation with factor 2", 0b010),
+		DECIMATION_WITH_FACTOR_3("Decimation with factor 3", 0b011),
+		DECIMATION_WITH_FACTOR_4("Decimation with factor 4", 0b100),
+		DECIMATION_WITH_FACTOR_8("Decimation with factor 8", 0b101),
+		DECIMATION_WITH_FACTOR_16("Decimation with factor 16", 0b110),
+		DECIMATION_WITH_FACTOR_32("Decimation with factor 32", 0b111);
+		
+		String label;
+		Integer configValue;
+
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (FIFO_DECIMATION_GYRO e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, FIFO_DECIMATION_GYRO> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (FIFO_DECIMATION_GYRO e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private FIFO_DECIMATION_GYRO(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+	
+	public static enum FIFO_DECIMATION_ACCEL implements ISensorConfig {
+		SENSOR_NOT_IN_FIFO("Sensor not in FIFO", 0b000),
+		NO_DECIMATION("No decimation", 0b001),
+		DECIMATION_WITH_FACTOR_2("Decimation with factor 2", 0b010),
+		DECIMATION_WITH_FACTOR_3("Decimation with factor 3", 0b011),
+		DECIMATION_WITH_FACTOR_4("Decimation with factor 4", 0b100),
+		DECIMATION_WITH_FACTOR_8("Decimation with factor 8", 0b101),
+		DECIMATION_WITH_FACTOR_16("Decimation with factor 16", 0b110),
+		DECIMATION_WITH_FACTOR_32("Decimation with factor 32", 0b111);
+		
+		String label;
+		Integer configValue;
+
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (FIFO_DECIMATION_ACCEL e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, FIFO_DECIMATION_ACCEL> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (FIFO_DECIMATION_ACCEL e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private FIFO_DECIMATION_ACCEL(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	public static enum FIFO_MODE implements ISensorConfig {
+		BYPASS_MODE_FIFO_OFF("Bypass mode: FIFO turned off", 0b000),
+		FIFO_MODE("FIFO mode: Stops collecting data when FIFO is full2", 0b001), 
+		CONTINUOUS_MODE_THEN_FIFO_MODE("Continuous mode until trigger is deasserted, then FIFO mode", 0b011),
+		BYPASS_MODE_THEN_CONTINOUS_MODE("Bypass mode until trigger is deasserted, then continuous mode", 0b100),
+		CONTINUOUS_MODE("Continuous mode: If the FIFO is full, the new sample overwrites the older sample", 0b110);
+		
+		String label;
+		Integer configValue;
+
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (FIFO_MODE e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, FIFO_MODE> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (FIFO_MODE e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private FIFO_MODE(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+	
+	public static enum ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER implements ISensorConfig {
+		AT_400HZ("400 Hz", 0b00),
+		AT_200HZ("200 Hz", 0b01),
+		AT_100HZ("100 Hz", 0b10),
+		AT_50HZ("50 Hz", 0b11);
+		
+		String label;
+		Integer configValue;
+
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	public static enum HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO implements ISensorConfig {
+		AT_0_0081_HZ("0.0081 Hz", 0b00),
+		AT_0_0324_HZ("0.0324 Hz", 0b01),
+		AT_2_07_HZ("2.07 Hz", 0b10),
+		AT_16_32_HZ("16.32 Hz", 0b11);
+		
+		String label;
+		Integer configValue;
+
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO(String label, Integer configValue) {
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public static String[] getLabels() {
+			return REF_MAP.keySet().toArray(new String[REF_MAP.keySet().size()]);
+		}
+		
+		public static Integer[] getConfigValues() {
+			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+	}
+
+	public static enum HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL implements ISensorConfig {
+		SLOPE("Rate/4", 0b00),
+		HIGH_PASS_RATE_DIVIDED_BY_100("Rate/100", 0b01),
+		HIGH_PASS_RATE_DIVIDED_BY_9("Rate/9", 0b10),
+		HIGH_PASS_RATE_DIVIDED_BY_400("Rate/400", 0b11),
+		LOW_PASS_RATE_DIVIDED_BY_50("Rate/50", 0b00),
+		LOW_PASS_RATE_DIVIDED_BY_100("Rate/100", 0b01),
+		LOW_PASS_RATE_DIVIDED_BY_9("Rate/9", 0b10),
+		LOW_PASS_RATE_DIVIDED_BY_400("Rate/400", 0b11);
+		
+		String label;
+		Integer configValue;
+
+		static Map<String, Integer> REF_MAP = new HashMap<>();
+		static {
+			for (HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL e : values()) {
+				REF_MAP.put(e.label, e.configValue);
+			}
+		}
+
+		static Map<Integer, HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL> BY_CONFIG_VALUE_LOW_PASS_FILTER = new HashMap<>();
+		static Map<Integer, HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL> BY_CONFIG_VALUE_SLOPE_OR_HIGH_PASS_FILTER = new HashMap<>();
+		static {
+			for (HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL e : values()) {
+				if (e == LOW_PASS_RATE_DIVIDED_BY_50 
+						|| e == LOW_PASS_RATE_DIVIDED_BY_100
+						|| e == LOW_PASS_RATE_DIVIDED_BY_9 
+						|| e == LOW_PASS_RATE_DIVIDED_BY_400) {
+					BY_CONFIG_VALUE_LOW_PASS_FILTER.put(e.configValue, e);
+				} else {
+					BY_CONFIG_VALUE_SLOPE_OR_HIGH_PASS_FILTER.put(e.configValue, e);
+				}
+			}
+		}
+
+		private HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL(String label, Integer configValue) {
 			this.label = label;
 			this.configValue = configValue;
 		}
@@ -312,26 +590,30 @@ public class SensorLSM6DS3 extends AbstractSensor {
 			Configuration.Verisense.SensorBitmap.LSM6DS3_ACCEL,
 			GuiLabelSensors.ACCEL2,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DS3,
+			Arrays.asList(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL),
 			Arrays.asList(GuiLabelConfig.LSM6DS3_ACCEL_RANGE,
 					GuiLabelConfig.LSM6DS3_GYRO_RANGE,
 					GuiLabelConfig.LSM6DS3_RATE),
 			Arrays.asList(ObjectClusterSensorName.LSM6DS3_ACC_X,
 					ObjectClusterSensorName.LSM6DS3_ACC_Y,
-					ObjectClusterSensorName.LSM6DS3_ACC_Z));
+					ObjectClusterSensorName.LSM6DS3_ACC_Z),
+			false);
 
 	public static final SensorDetailsRef SENSOR_LSM6DS3_GYRO = new SensorDetailsRef(
 			Configuration.Verisense.SensorBitmap.LSM6DS3_GYRO,
 			Configuration.Verisense.SensorBitmap.LSM6DS3_GYRO,
 			GuiLabelSensors.GYRO,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DS3,
+			Arrays.asList(Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL),
 			Arrays.asList(GuiLabelConfig.LSM6DS3_ACCEL_RANGE,
 					GuiLabelConfig.LSM6DS3_GYRO_RANGE,
 					GuiLabelConfig.LSM6DS3_RATE),
 			Arrays.asList(ObjectClusterSensorName.LSM6DS3_GYRO_X,
 					ObjectClusterSensorName.LSM6DS3_GYRO_Y,
-					ObjectClusterSensorName.LSM6DS3_GYRO_Z));
+					ObjectClusterSensorName.LSM6DS3_GYRO_Z),
+			false);
 	
-  	public static final Map<Integer, SensorDetailsRef> SENSOR_MAP_REF;
+	public static final Map<Integer, SensorDetailsRef> SENSOR_MAP_REF;
 	static {
 		Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
 		aMap.put(Configuration.Verisense.SENSOR_ID.LSM6DS3_ACCEL, SensorLSM6DS3.SENSOR_LSM6DS3_ACCEL);  
@@ -339,7 +621,7 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		SENSOR_MAP_REF = Collections.unmodifiableMap(aMap);
 	}
 
-  	//--------- Sensor info end --------------
+	//--------- Sensor info end --------------
 	
 	//--------- Channel info start --------------
 	
@@ -499,32 +781,59 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		if(isEitherLsm6ds3ChannelEnabled()) {
 			ConfigByteLayoutLsm6ds3 cbl = new ConfigByteLayoutLsm6ds3(shimmerDevice, commType);
 
-			configBytes[cbl.idxFsAccel2] &= ~(cbl.maskFs<<cbl.bitShiftFsAccel2);
-			configBytes[cbl.idxFsAccel2] |= (getAccelRangeConfigValue()&cbl.maskFs)<<cbl.bitShiftFsAccel2;
+			//TODO decide where best to put this (i.e., when sampling rate & enabled sensors are changed?)
+			updateFifoSizeInChip();
 
+			int fifoSizeInChip = getFifoSizeInChip();
 			configBytes[cbl.idxGyroAccel2Cfg0] = (byte) (fifoSizeInChip & cbl.maskFifoThresholdLsb);
-			
-			configBytes[cbl.idxGyroAccel2Cfg1] &= ~cbl.maskFifoThresholdMsb;
-			configBytes[cbl.idxGyroAccel2Cfg1] |= (byte) (((byte) (fifoSizeInChip >> 8)) & cbl.maskFifoThresholdMsb);
 
-			configBytes[cbl.idxGyroAccel2Cfg5] = 0x00;
-			configBytes[cbl.idxGyroAccel2Cfg5] |= (getRateConfigValue()&cbl.maskOdrAccelGyro)<<cbl.bitShiftOdrAccelGyro;
-			configBytes[cbl.idxGyroAccel2Cfg5] |= (getGyroRangeConfigValue()&cbl.maskFs)<<cbl.bitShiftGyroFs;
+			if (commType == COMMUNICATION_TYPE.SD) {
+				configBytes[cbl.idxFsAccel2] &= ~(cbl.maskFs<<cbl.bitShiftFsAccel2);
+				configBytes[cbl.idxFsAccel2] |= (getAccelRangeConfigValue()&cbl.maskFs)<<cbl.bitShiftFsAccel2;
+				
+				configBytes[cbl.idxGyroAccel2Cfg1] &= ~cbl.maskFifoThresholdMsb;
+				configBytes[cbl.idxGyroAccel2Cfg1] |= (byte) (((byte) (fifoSizeInChip >> 8)) & cbl.maskFifoThresholdMsb);
 
-			if(commType!=COMMUNICATION_TYPE.SD) {
-				//TODO fill in all
+				configBytes[cbl.idxGyroAccel2Cfg5] = 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg5] |= (getRateConfigValue()&cbl.maskOdr)<<cbl.bitShiftOdrAccelGyro;
+				configBytes[cbl.idxGyroAccel2Cfg5] |= (getGyroRangeConfigValue()&cbl.maskFs)<<cbl.bitShiftGyroFs;
+			} else {
+				configBytes[cbl.idxGyroAccel2Cfg1] = 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg1] |= ((isTimerPedoFifodEnable()? 0x01:0x00) & cbl.maskTimerPedoFifD0Enable) << cbl.bitShiftTimerPedoFifD0Enable; 
+				configBytes[cbl.idxGyroAccel2Cfg1] |= ((isTimerPedoFifodDrdy()? 0x01:0x00) & cbl.maskTimerPedoFifoDrdy) << cbl.bitShiftTimerPedoFifoDrdy; 
+				configBytes[cbl.idxGyroAccel2Cfg1] |= (byte) (((byte) (fifoSizeInChip >> 8)) & cbl.maskFifoThresholdMsb);
+
+				configBytes[cbl.idxGyroAccel2Cfg2] = 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg2] |= (getDecimationFifoAccel().configValue & cbl.maskDecimationFifoAccel) << cbl.bitShiftDecimationFifoAccel; 
+				configBytes[cbl.idxGyroAccel2Cfg2] |= (getDecimationFifoGyro().configValue & cbl.maskDecimationFifoGyro) << cbl.bitShiftDecimationFifoGyro; 
+
+				configBytes[cbl.idxGyroAccel2Cfg3] = 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg3] |= (getRateConfigValue()&cbl.maskOdr)<<cbl.bitShiftOdrFifo;
+				configBytes[cbl.idxGyroAccel2Cfg3] |= (getFifoMode().configValue&cbl.maskFifoMode)<<cbl.bitShiftFifoMode;
 				
-				configBytes[cbl.idxGyroAccel2Cfg2] |= 0x00;
-				configBytes[cbl.idxGyroAccel2Cfg3] |= 0x00;
-				configBytes[cbl.idxGyroAccel2Cfg4] |= 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg4] = 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg4] |= (getRateConfigValue()&cbl.maskOdr)<<cbl.bitShiftOdrAccelGyro;
+				configBytes[cbl.idxGyroAccel2Cfg4] |= (getAccelRangeConfigValue()&cbl.maskFs)<<cbl.bitShiftFsAccel2;
+				configBytes[cbl.idxGyroAccel2Cfg4] |= (getAccelAntiAliasingBandwidthFilter().configValue&cbl.maskBwAccel)<<cbl.bitShiftBwAccel;
+
+				configBytes[cbl.idxGyroAccel2Cfg5] = 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg5] |= (getRateConfigValue()&cbl.maskOdr)<<cbl.bitShiftOdrAccelGyro;
+				configBytes[cbl.idxGyroAccel2Cfg5] |= (getGyroRangeConfigValue()&cbl.maskFs)<<cbl.bitShiftGyroFs;
+				configBytes[cbl.idxGyroAccel2Cfg5] |= ((isGyroFullScaleAt12dps() ? 0x01 : 0x00) & cbl.maskFs125) << cbl.bitShiftFs125;
+
+				configBytes[cbl.idxGyroAccel2Cfg6] = 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg6] |= ((isGyroHighPerformanceMode() ? 0x01 : 0x00) & cbl.maskGHmMode) << cbl.bitShiftGHmMode;
+				configBytes[cbl.idxGyroAccel2Cfg6] |= ((isGyroDigitalHighPassFilterEnable() ? 0x01 : 0x00) & cbl.maskHpGEnable) << cbl.bitShiftHpGEnable;
+				configBytes[cbl.idxGyroAccel2Cfg6] |= (getGyroHighPassFilterCutOffFreq().configValue & cbl.maskHpcfG) << cbl.bitShiftHpcfG;
+				configBytes[cbl.idxGyroAccel2Cfg6] |= ((isGyroDigitalHpFilterReset() ? 0x01 : 0x00) & cbl.maskHpGRst) << cbl.bitShiftHpGRst;
+				configBytes[cbl.idxGyroAccel2Cfg6] |= ((isRoundingStatus() ? 0x01 : 0x00) & cbl.maskRoundingStatus) << cbl.bitShiftRoundingStatus;
 				
-				//TODO BW
-//				configBytes[cbl.idxGyroAccel2Cfg5] |= ;
-				
-				configBytes[cbl.idxGyroAccel2Cfg6] |= 0x00;
-				configBytes[cbl.idxGyroAccel2Cfg7] |= 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg7] = 0x00;
+				configBytes[cbl.idxGyroAccel2Cfg7] |= ((isAccelLowPassFilterLpf2Selection() ? 0x01 : 0x00) & cbl.maskLpf2AccelEnable) << cbl.bitShiftLpf2AccelEnable;
+				configBytes[cbl.idxGyroAccel2Cfg7] |= (getAccelHighPassFilterCutOffFreq().configValue & cbl.maskHpcfAccel) << cbl.bitShiftHpcfAccel;
+				configBytes[cbl.idxGyroAccel2Cfg7] |= ((isAccelHighPassOrSlopeFilterSelectionEnable() ? 0x01 : 0x00) & cbl.maskHpSlopeAccelEnable) << cbl.bitShiftHpSlopeAccelEnable;
+				configBytes[cbl.idxGyroAccel2Cfg7] |= ((isLowPassOn6D() ? 0x01 : 0x00) & cbl.maskLowPassOn6D) << cbl.bitShiftLowPassOn6D;
 			}
-
 		}
 	}
 
@@ -534,14 +843,42 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		if(isEitherLsm6ds3ChannelEnabled()) {
 			ConfigByteLayoutLsm6ds3 cbl = new ConfigByteLayoutLsm6ds3(shimmerDevice, commType);
 
-			setAccelRangeConfigValue((configBytes[cbl.idxFsAccel2]>>cbl.bitShiftFsAccel2)&cbl.maskFs);
-
-			setRateConfigValue((configBytes[cbl.idxGyroAccel2Cfg5]>>cbl.bitShiftOdrAccelGyro)&cbl.maskOdrAccelGyro);
-			setGyroRangeConfigValue((configBytes[cbl.idxGyroAccel2Cfg5]>>cbl.bitShiftGyroFs)&cbl.maskFs);
-
 			int fifoSizeInChip = (configBytes[cbl.idxGyroAccel2Cfg0]&cbl.maskFifoThresholdLsb) 
 					| ((configBytes[cbl.idxGyroAccel2Cfg1]&cbl.maskFifoThresholdMsb)<<8);
 			setFifoSizeInChip(fifoSizeInChip);
+
+			if (commType == COMMUNICATION_TYPE.SD) {
+				setAccelRangeConfigValue((configBytes[cbl.idxFsAccel2]>>cbl.bitShiftFsAccel2)&cbl.maskFs);
+	
+				setRateConfigValue((configBytes[cbl.idxGyroAccel2Cfg5]>>cbl.bitShiftOdrAccelGyro)&cbl.maskOdr);
+				setGyroRangeConfigValue((configBytes[cbl.idxGyroAccel2Cfg5]>>cbl.bitShiftGyroFs)&cbl.maskFs);
+			} else {
+				setTimerPedoFifodEnable(((configBytes[cbl.idxGyroAccel2Cfg1] >> cbl.bitShiftTimerPedoFifD0Enable) & cbl.maskTimerPedoFifD0Enable) == cbl.maskTimerPedoFifD0Enable);
+				setTimerPedoFifodDrdy(((configBytes[cbl.idxGyroAccel2Cfg1] >> cbl.bitShiftTimerPedoFifoDrdy) & cbl.maskTimerPedoFifoDrdy) == cbl.maskTimerPedoFifoDrdy);
+
+				setDecimationFifoAccel(FIFO_DECIMATION_ACCEL.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg2] >> cbl.bitShiftDecimationFifoAccel) & cbl.maskDecimationFifoAccel));
+				setDecimationFifoGyro(FIFO_DECIMATION_GYRO.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg2] >> cbl.bitShiftDecimationFifoGyro) & cbl.maskDecimationFifoGyro));
+
+				setRate(LSM6DS3_RATE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg3] >> cbl.bitShiftOdrFifo) & cbl.maskOdr));
+				setFifoMode(FIFO_MODE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg3] >> cbl.bitShiftFifoMode) & cbl.maskFifoMode));
+
+				setAccelRange(LSM6DS3_ACCEL_RANGE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg4]>>cbl.bitShiftFsAccel2)&cbl.maskFs));
+				setAccelAntiAliasingBandwidthFilter(ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg4]>>cbl.bitShiftBwAccel)&cbl.maskBwAccel));
+
+				setGyroRange(LSM6DS3_GYRO_RANGE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg5]>>cbl.bitShiftGyroFs)&cbl.maskFs));
+				setGyroFullScaleAt12dps(((configBytes[cbl.idxGyroAccel2Cfg5] >> cbl.bitShiftFs125) & cbl.maskFs125) == cbl.maskFs125);
+
+				setGyroHighPerformanceMode(((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftGHmMode) & cbl.maskGHmMode) == cbl.maskGHmMode);
+				setGyroDigitalHighPassFilterEnable(((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftHpGEnable) & cbl.maskHpGEnable) == cbl.maskHpGEnable);
+				setGyroHighPassFilterCutOffFreq(HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftHpcfG) & cbl.maskHpcfG));
+				setGyroDigitalHighPassFilterReset(((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftHpGRst) & cbl.maskHpGRst) == cbl.maskHpGRst);
+				setRoundingStatus(((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftRoundingStatus) & cbl.maskRoundingStatus) == cbl.maskRoundingStatus);
+				
+				setAccelLowPassFilterLpf2Selection(((configBytes[cbl.idxGyroAccel2Cfg7] >> cbl.bitShiftLpf2AccelEnable) & cbl.maskLpf2AccelEnable) == cbl.maskLpf2AccelEnable);
+				setAccelHighPassFilterCutOffFreqFromConfigValue((configBytes[cbl.idxGyroAccel2Cfg7] >> cbl.bitShiftHpcfAccel) & cbl.maskHpcfAccel);
+				setAccelHighPassOrSlopeFilterSelectionEnable(((configBytes[cbl.idxGyroAccel2Cfg7] >> cbl.bitShiftHpSlopeAccelEnable) & cbl.maskHpSlopeAccelEnable) == cbl.maskHpSlopeAccelEnable);
+				setLowPassOn6D(((configBytes[cbl.idxGyroAccel2Cfg7] >> cbl.bitShiftLowPassOn6D) & cbl.maskLowPassOn6D) == cbl.maskLowPassOn6D);
+			}
 		}
 	}
 
@@ -549,15 +886,17 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		// FIFO size was added to the payload config midway through development (FW v1.02.005?) so need to check for 0 
 		if(fifoSizeInChip==0) {
 			this.fifoSizeInChip = DEFAULT_FIFO_BYTE_SIZE_IN_CHIP/2;
-			this.fifoByteSizeInChip = DEFAULT_FIFO_BYTE_SIZE_IN_CHIP;
 		} else {
 			this.fifoSizeInChip = fifoSizeInChip;
-			this.fifoByteSizeInChip = fifoSizeInChip*2;
 		}
 	}
 
+	public int getFifoSizeInChip() {
+		return fifoSizeInChip;
+	}
+
 	public int getFifoByteSizeInChip() {
-		return fifoByteSizeInChip;
+		return getFifoSizeInChip()*2;
 	}
 
 	/** 
@@ -569,7 +908,7 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	public int calculateMaxPayloadsInFifo(int memAvailable) {
 		int maxFifosInPayload = DEFAULT_MAX_FIFOS_IN_PAYLOAD;
 		if(mShimmerDevice instanceof VerisenseDevice) {
-			maxFifosInPayload = (int) Math.floor(memAvailable/(AsmBinaryFileConstants.ACCEL_SPI_BUS_HEADER_BYTES+fifoByteSizeInChip));
+			maxFifosInPayload = (int) Math.floor(memAvailable/(AsmBinaryFileConstants.ACCEL_SPI_BUS_HEADER_BYTES+getFifoByteSizeInChip()));
 		}
 		return maxFifosInPayload;
 	}
@@ -646,14 +985,31 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorId)){
-			if(sensorId==SENSOR_ID.LSM6DS3_GYRO) {
-				setGyroRange(LSM6DS3_GYRO_RANGE.RANGE_500DPS);
-			}
-			if(sensorId==SENSOR_ID.LSM6DS3_ACCEL) {
-				setAccelRange(LSM6DS3_ACCEL_RANGE.RANGE_4G);
-			}
-			
+			//TODO handle isSensorEnabled = true and false
+
+			setGyroRange(LSM6DS3_GYRO_RANGE.RANGE_500DPS);
+			setAccelRange(LSM6DS3_ACCEL_RANGE.RANGE_4G);
 			setRate(LSM6DS3_RATE.RATE_52_HZ);
+			
+			setTimerPedoFifodEnable(false);
+			setTimerPedoFifodDrdy(false);
+			setDecimationFifoAccel(FIFO_DECIMATION_ACCEL.NO_DECIMATION);
+			setDecimationFifoGyro(FIFO_DECIMATION_GYRO.NO_DECIMATION);
+			setFifoMode(FIFO_MODE.CONTINUOUS_MODE);
+			setAccelAntiAliasingBandwidthFilter(ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER.AT_400HZ);
+			setGyroFullScaleAt12dps(false);
+			setGyroHighPerformanceMode(false);
+			setGyroDigitalHighPassFilterEnable(false);
+			setGyroHighPassFilterCutOffFreq(HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO.AT_0_0081_HZ);
+			setGyroDigitalHighPassFilterReset(false);
+			setRoundingStatus(false);
+			setAccelLowPassFilterLpf2Selection(false);
+			setAccelHighPassFilterCutOffFreq(HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.SLOPE);
+			setAccelHighPassOrSlopeFilterSelectionEnable(false);
+			setLowPassOn6D(false);
+
+			updateFifoSizeInChip();
+			
 			return true;
 		}
 		return false;
@@ -731,6 +1087,16 @@ public class SensorLSM6DS3 extends AbstractSensor {
 			setAccelRange((LSM6DS3_ACCEL_RANGE)sensorConfig);
 		} else if (sensorConfig instanceof LSM6DS3_GYRO_RANGE) {
 			setGyroRange((LSM6DS3_GYRO_RANGE)sensorConfig);
+		} else if (sensorConfig instanceof FIFO_DECIMATION_GYRO) {
+			setDecimationFifoGyro((FIFO_DECIMATION_GYRO)sensorConfig);
+		} else if (sensorConfig instanceof FIFO_DECIMATION_ACCEL) {
+			setDecimationFifoAccel((FIFO_DECIMATION_ACCEL)sensorConfig);
+		} else if (sensorConfig instanceof FIFO_MODE) {
+			setFifoMode((FIFO_MODE)sensorConfig);
+		} else if (sensorConfig instanceof ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER) {
+			setAccelAntiAliasingBandwidthFilter((ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER)sensorConfig);
+		} else if (sensorConfig instanceof HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO) {
+			setGyroHighPassFilterCutOffFreq((HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO)sensorConfig);
 		} else {
 			super.setSensorConfig(sensorConfig);
 		}
@@ -742,9 +1108,13 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		listOfSensorConfig.add(getRate());
 		listOfSensorConfig.add(getAccelRange());
 		listOfSensorConfig.add(getGyroRange());
+		listOfSensorConfig.add(getDecimationFifoAccel());
+		listOfSensorConfig.add(getDecimationFifoGyro());
+		listOfSensorConfig.add(getFifoMode());
+		listOfSensorConfig.add(getAccelAntiAliasingBandwidthFilter());
+		listOfSensorConfig.add(getGyroHighPassFilterCutOffFreq());
 		return listOfSensorConfig;
 	}
-
 
 	public void updateCurrentAccelCalibInUse(){
 		mCurrentCalibDetailsAccel = getCurrentCalibDetailsIfKinematic(Configuration.Verisense.SENSOR_ID.LSM6DS3_ACCEL, getAccelRangeConfigValue());
@@ -804,8 +1174,191 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		setRate(LSM6DS3_RATE.BY_CONFIG_VALUE.get(valueToSet));
 	}
 
-	private void setRate(LSM6DS3_RATE valueToSet) {
+	public void setRate(LSM6DS3_RATE valueToSet) {
 		rate = valueToSet;
+	}
+
+	public boolean isTimerPedoFifodEnable() {
+		return timerPedoFifodEnable;
+	}
+
+	public void setTimerPedoFifodEnable(boolean timerPedoFifodEnable) {
+		this.timerPedoFifodEnable = timerPedoFifodEnable;
+	}
+
+	public boolean isTimerPedoFifodDrdy() {
+		return timerPedoFifodDrdy;
+	}
+
+	public void setTimerPedoFifodDrdy(boolean timerPedoFifodDrdy) {
+		this.timerPedoFifodDrdy = timerPedoFifodDrdy;
+	}
+
+	public FIFO_DECIMATION_GYRO getDecimationFifoGyro() {
+		return decimationFifoGyro;
+	}
+
+	public void setDecimationFifoGyro(FIFO_DECIMATION_GYRO decimationFifoGyro) {
+		this.decimationFifoGyro = decimationFifoGyro;
+	}
+
+	public FIFO_DECIMATION_ACCEL getDecimationFifoAccel() {
+		return decimationFifoAccel;
+	}
+
+	public void setDecimationFifoAccel(FIFO_DECIMATION_ACCEL decimationFifoAccel) {
+		this.decimationFifoAccel = decimationFifoAccel;
+	}
+
+	public FIFO_MODE getFifoMode() {
+		return fifoMode;
+	}
+
+	public void setFifoMode(FIFO_MODE fifoMode) {
+		this.fifoMode = fifoMode;
+	}
+
+	public LSM6DS3_ACCEL_RANGE getRangeAccel() {
+		return rangeAccel;
+	}
+
+	public void setRangeAccel(LSM6DS3_ACCEL_RANGE rangeAccel) {
+		this.rangeAccel = rangeAccel;
+	}
+
+	public ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER getAccelAntiAliasingBandwidthFilter() {
+		return accelAntiAliasingBandwidthFilter;
+	}
+
+	public void setAccelAntiAliasingBandwidthFilter(ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER accelAntiAliasingBandwidthFilter) {
+		this.accelAntiAliasingBandwidthFilter = accelAntiAliasingBandwidthFilter;
+	}
+
+	public LSM6DS3_GYRO_RANGE getRangeGyro() {
+		return rangeGyro;
+	}
+
+	public void setRangeGyro(LSM6DS3_GYRO_RANGE rangeGyro) {
+		this.rangeGyro = rangeGyro;
+	}
+
+	public boolean isGyroFullScaleAt12dps() {
+		return gyroFullScaleAt12dps;
+	}
+
+	public void setGyroFullScaleAt12dps(boolean gyroFullScaleAt12dps) {
+		this.gyroFullScaleAt12dps = gyroFullScaleAt12dps;
+	}
+
+	public boolean isGyroHighPerformanceMode() {
+		return gyroHighPerFormanceModeDisable;
+	}
+
+	public void setGyroHighPerformanceMode(boolean gyroHighPerFormanceModeDisable) {
+		this.gyroHighPerFormanceModeDisable = gyroHighPerFormanceModeDisable;
+	}
+
+	public boolean isGyroDigitalHighPassFilterEnable() {
+		return gyroDigitalHighPassFilterEnable;
+	}
+
+	public void setGyroDigitalHighPassFilterEnable(boolean gyroDigitalHighPassFilterEnable) {
+		this.gyroDigitalHighPassFilterEnable = gyroDigitalHighPassFilterEnable;
+	}
+
+	public HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO getGyroHighPassFilterCutOffFreq() {
+		return gyroHighPassFilterCutOffFreq;
+	}
+
+	public void setGyroHighPassFilterCutOffFreq(HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO gyroHighPassFilterCutOffFreq) {
+		this.gyroHighPassFilterCutOffFreq = gyroHighPassFilterCutOffFreq;
+	}
+
+	public boolean isGyroDigitalHpFilterReset() {
+		return gyroDigitalHighPassFilterReset;
+	}
+
+	public void setGyroDigitalHighPassFilterReset(boolean gyroDigitalHighPassFilterReset) {
+		this.gyroDigitalHighPassFilterReset = gyroDigitalHighPassFilterReset;
+	}
+
+	public boolean isRoundingStatus() {
+		return roundingStatus;
+	}
+
+	public void setRoundingStatus(boolean roundingStatus) {
+		this.roundingStatus = roundingStatus;
+	}
+
+	public boolean isAccelLowPassFilterLpf2Selection() {
+		return accelLowPassFilterLpf2Selection;
+	}
+
+	public void setAccelLowPassFilterLpf2Selection(boolean accelLowPassFilterLpf2Selection) {
+		this.accelLowPassFilterLpf2Selection = accelLowPassFilterLpf2Selection;
+		updateAccelHighPassFilterCutOffFreq();
+	}
+
+	public HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL getAccelHighPassFilterCutOffFreq() {
+		return accelHighPassFilterCutOffFreq;
+	}
+
+	public void setAccelHighPassFilterCutOffFreq(HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL accelHighPassFilterCutOffFreq) {
+		this.accelHighPassFilterCutOffFreq = accelHighPassFilterCutOffFreq;
+		updateLowPassFilterLpf2Selection();
+	}
+
+	private void setAccelHighPassFilterCutOffFreqFromConfigValue(int configValue) {
+		Map<Integer, HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL> refMap;
+		if(isAccelLowPassFilterLpf2Selection()) {
+			refMap = HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.BY_CONFIG_VALUE_LOW_PASS_FILTER;
+		} else {
+			refMap = HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.BY_CONFIG_VALUE_SLOPE_OR_HIGH_PASS_FILTER;
+		}
+		this.accelHighPassFilterCutOffFreq = refMap.get(configValue);
+	}
+
+	private void updateLowPassFilterLpf2Selection() {
+		this.accelLowPassFilterLpf2Selection = (accelHighPassFilterCutOffFreq==HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.LOW_PASS_RATE_DIVIDED_BY_50
+				|| accelHighPassFilterCutOffFreq==HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.LOW_PASS_RATE_DIVIDED_BY_100
+				|| accelHighPassFilterCutOffFreq==HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.LOW_PASS_RATE_DIVIDED_BY_9
+				|| accelHighPassFilterCutOffFreq==HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.LOW_PASS_RATE_DIVIDED_BY_400)? true:false;
+	}
+
+	private void updateAccelHighPassFilterCutOffFreq() {
+		setAccelHighPassFilterCutOffFreqFromConfigValue(getAccelHighPassFilterCutOffFreq().configValue);
+	}
+
+	public boolean isAccelHighPassOrSlopeFilterSelectionEnable() {
+		return accelHighPassOrSlopeFilterSelectionEnable;
+	}
+
+	public void setAccelHighPassOrSlopeFilterSelectionEnable(boolean hpSlopeAccelEnable) {
+		this.accelHighPassOrSlopeFilterSelectionEnable = hpSlopeAccelEnable;
+	}
+
+	public boolean isLowPassOn6D() {
+		return lowPassFilterOn6D;
+	}
+
+	public void setLowPassOn6D(boolean lowPassOn6D) {
+		this.lowPassFilterOn6D = lowPassOn6D;
+	}
+
+	public CalibDetailsKinematic getmCurrentCalibDetailsAccel() {
+		return mCurrentCalibDetailsAccel;
+	}
+
+	public void setmCurrentCalibDetailsAccel(CalibDetailsKinematic mCurrentCalibDetailsAccel) {
+		this.mCurrentCalibDetailsAccel = mCurrentCalibDetailsAccel;
+	}
+
+	public CalibDetailsKinematic getmCurrentCalibDetailsGyro() {
+		return mCurrentCalibDetailsGyro;
+	}
+
+	public void setmCurrentCalibDetailsGyro(CalibDetailsKinematic mCurrentCalibDetailsGyro) {
+		this.mCurrentCalibDetailsGyro = mCurrentCalibDetailsGyro;
 	}
 
 	public static double calibrateTemperature(long temperatureUncal) {
@@ -825,9 +1378,29 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		public int idxGyroAccel2Cfg0 = -1, idxGyroAccel2Cfg1 = -1, idxGyroAccel2Cfg2 = -1, idxGyroAccel2Cfg3 = -1, idxGyroAccel2Cfg4 = -1, idxGyroAccel2Cfg5 = -1, idxGyroAccel2Cfg6 = -1, idxGyroAccel2Cfg7 = -1;
 		public int idxFsAccel2 = -1, bitShiftFsAccel2 = -1;
 		public int maskFs = 0x03, bitShiftGyroFs = 2;
-		public int maskOdrAccelGyro = 0x0F, bitShiftOdrAccelGyro = 4;
+		public int maskOdr = 0x0F, bitShiftOdrAccelGyro = 4;
 		public int maskFifoThresholdLsb = 0xFF, maskFifoThresholdMsb = 0x0F;
 		
+		public int maskTimerPedoFifD0Enable = 0x01, bitShiftTimerPedoFifD0Enable = 7;
+		public int maskTimerPedoFifoDrdy = 0x01, bitShiftTimerPedoFifoDrdy = 6;
+		public int maskDecimationFifoGyro = 0x07, bitShiftDecimationFifoGyro = 3;
+		public int maskDecimationFifoAccel = 0x07, bitShiftDecimationFifoAccel = 0;
+		public int bitShiftOdrFifo = 3;
+		public int maskFifoMode = 0x07, bitShiftFifoMode = 0;
+		public int maskBwAccel = 0x03, bitShiftBwAccel = 0;
+		public int maskFs125 = 0x01, bitShiftFs125 = 1;
+
+		public int maskGHmMode = 0x01, bitShiftGHmMode = 7;
+		public int maskHpGEnable = 0x01, bitShiftHpGEnable = 6;
+		public int maskHpcfG = 0x03, bitShiftHpcfG = 4;
+		public int maskHpGRst = 0x01, bitShiftHpGRst = 3;
+		public int maskRoundingStatus = 0x01, bitShiftRoundingStatus = 2;
+
+		public int maskLpf2AccelEnable = 0x01, bitShiftLpf2AccelEnable = 7;
+		public int maskHpcfAccel = 0x03, bitShiftHpcfAccel = 5;
+		public int maskHpSlopeAccelEnable = 0x01, bitShiftHpSlopeAccelEnable = 2;
+		public int maskLowPassOn6D = 0x01, bitShiftLowPassOn6D = 0;
+
 		public ConfigByteLayoutLsm6ds3(ShimmerDevice shimmerDevice, COMMUNICATION_TYPE commType) {
 			if(shimmerDevice instanceof VerisenseDevice) {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
@@ -895,6 +1468,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		return gyroRange;
 	}
 	
+	public void updateFifoSizeInChip() {
+		setFifoSizeInChip(calculateFifoThreshold());
+	}
+
 	/**
 	 * This function calculates the appropriate FIFO size based on the number of channels enabled and the sampling rate. The size of the FIFO needs to be reduced at higher sampling rates so that the microcontroller reads from the chip more often and in shorter bursts so that we don't miss any samples that might be recorded during an SPI read operation. Values of FTH have been decided upon experiementally by measuring the time it takes to read the FIFO and the restriction that imposes on the max sampling rate. 
 	 * @return

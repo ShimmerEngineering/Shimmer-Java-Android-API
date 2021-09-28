@@ -13,7 +13,7 @@ public class RecordBufferDetailsPayload extends AbstractPayload {
 
 	private static int NUM_MEMORY_BANKS = 2;
 	
-	List<RecordBufferDetails> listOfRecordBufferDetails = new ArrayList<RecordBufferDetails>();
+	private List<RecordBufferDetails> listOfRecordBufferDetails = new ArrayList<RecordBufferDetails>();
 	
 	@Override
 	public boolean parsePayloadContents(byte[] payloadContents) {
@@ -105,5 +105,9 @@ public class RecordBufferDetailsPayload extends AbstractPayload {
 		
 		
 		
+	}
+
+	public List<RecordBufferDetails> getListOfRecordBufferDetails() {
+		return listOfRecordBufferDetails;
 	}
 }

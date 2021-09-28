@@ -1373,7 +1373,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, double pcTimestampMs){
 		boolean debug = false;
-//		printSensorParserAndAlgoMaps();
 		
 		if(debug)
 			consolePrintLn("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(newPacket));

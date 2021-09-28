@@ -1,12 +1,16 @@
 package com.shimmerresearch.bluetooth;
 
+import java.io.Serializable;
+
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 
-public class SystemTimestampPlot {
+public class SystemTimestampPlot implements Serializable {
 
+	private static final long serialVersionUID = -5726844230890469880L;
+	
 	private boolean mIsFirstSystemTimestampOffsetStored = false;
 	private double mOffsetFirstTime=-1;
 	private boolean mIsFirstSystemTimestampOffsetPlotStored = false;

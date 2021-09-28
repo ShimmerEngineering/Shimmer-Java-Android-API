@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +30,9 @@ public abstract class PayloadContentsDetails implements Serializable {
 	
 	private static final long serialVersionUID = -7481013763683220629L;
 	
+	public static final List<SENSORS> SENSORS_TO_EXCLUDE_FROM_SENSOR_CSV_GENERATION = Arrays.asList(new SENSORS[] {
+			SENSORS.CLOCK});
+
 	public static boolean DEBUG_ACCEL_ARRAYS = false;
 	private static boolean DEBUG_DATA_BLOCKS = false;
 
@@ -340,12 +343,17 @@ public abstract class PayloadContentsDetails implements Serializable {
 			
 			List<SENSORS> listOfSensorClassKeys = verisenseDevice.getMapOfSensorIdsPerDataBlock().get(datablockSensorId);
 			for(SENSORS sensorClassKey:listOfSensorClassKeys) {
+				
+				if(SENSORS_TO_EXCLUDE_FROM_SENSOR_CSV_GENERATION.contains(sensorClassKey)) {
+					continue;
+				}
+				
 				DataSegmentDetails dataSegmentToAddTo = null;
 				List<DataSegmentDetails> listOfDataSegmentDetails = datasetToSave.getMapOfDataSegmentsPerSensor().get(sensorClassKey);
 				if (listOfDataSegmentDetails == null) {
 					// If sensor ID is not present, create a new list and DataSegmentDetails.
 					listOfDataSegmentDetails = new ArrayList<DataSegmentDetails>();
-					datasetToSave.getMapOfDataSegmentsPerSensor().put(sensorClassKey, listOfDataSegmentDetails);
+					datasetToSave.putInMapOfDataSegmentsPerSensor(sensorClassKey, listOfDataSegmentDetails);
 				} else if(dataBlockDetails.isResultOfSplitAtMiddayOrMidnight()){
 					// Midnight/midday transition detected it in the middle of a data block (for
 					// PayloadContentsDetailsV8orAbove), allow it to create a new DataSegment

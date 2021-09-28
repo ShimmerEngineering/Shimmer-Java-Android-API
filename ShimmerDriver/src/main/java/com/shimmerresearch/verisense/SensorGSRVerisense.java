@@ -27,10 +27,9 @@ public class SensorGSRVerisense extends SensorGSR {
 	private static final long serialVersionUID = -3937042079000714506L;
 
 	//--------- Sensor specific variables start --------------
-	private double sensorSamplingRateHz = 0.0;
-	//--------- Sensor specific variables end --------------
-
+	private ADC_SAMPLING_RATES sensorSamplingRate = ADC_SAMPLING_RATES.OFF;
 	private GSR_RANGE gsrRange = GSR_RANGE.AUTO_RANGE;
+	//--------- Sensor specific variables end --------------
 	
 	public static enum GSR_RANGE implements ISensorConfig {
 		RANGE_0("8k" + UtilShimmer.UNICODE_OHMS + " to 63k" + UtilShimmer.UNICODE_OHMS, 0, 8.0, 63.0),
@@ -70,6 +69,10 @@ public class SensorGSRVerisense extends SensorGSR {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+
+		public static GSR_RANGE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, RANGE_0.configValue, RANGE_3.configValue));
 		}
 	}
 
@@ -126,10 +129,9 @@ public class SensorGSRVerisense extends SensorGSR {
 		ConfigByteLayoutGsr cbl = new ConfigByteLayoutGsr(shimmerDevice, commType);
 		
 		if(cbl.idxGsrRange>=0 && cbl.idxAdcRate>=0) {
-			setGsrRange(GSR_RANGE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGsrRange] >> cbl.bitShiftGSRRange) & cbl.maskGSRRange));
+			setGsrRange(GSR_RANGE.getForConfigValue((configBytes[cbl.idxGsrRange] >> cbl.bitShiftGSRRange) & cbl.maskGSRRange));
 			
-			int samplingRateSetting = (configBytes[cbl.idxAdcRate] >> 0) & cbl.maskAdcRate;
-			setSamplingRateFromShimmer(ADC_SAMPLING_RATES.BY_CONFIG_VALUE.get(samplingRateSetting).freqHz);
+			setSensorSamplingRate(ADC_SAMPLING_RATES.getForConfigValue((configBytes[cbl.idxAdcRate] >> 0) & cbl.maskAdcRate));
 		}
 	}
 	
@@ -143,20 +145,10 @@ public class SensorGSRVerisense extends SensorGSR {
 			configBytes[cbl.idxGsrRange] |= (byte) ((getGsrRange().configValue & cbl.maskGSRRange) << cbl.bitShiftGSRRange);
 	
 			configBytes[cbl.idxAdcRate] &= ~cbl.maskAdcRate;
-			ADC_SAMPLING_RATES adcSamplingRate = ADC_SAMPLING_RATES.getConfigValueForFreq(getSensorSamplingRate());
-			configBytes[cbl.idxAdcRate] |= (byte)adcSamplingRate.configValue & cbl.maskAdcRate;
+			configBytes[cbl.idxAdcRate] |= (byte)getSensorSamplingRate().configValue & cbl.maskAdcRate;
 		}
 	}
 	
-	public double getSensorSamplingRate() {
-		return sensorSamplingRateHz;
-	}
-
-	@Override
-	public void setSensorSamplingRate(double samplingRateHz) {
-		sensorSamplingRateHz = samplingRateHz;
-	}
-
 	@Override
 	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
 		Object returnValue = null;
@@ -180,7 +172,7 @@ public class SensorGSRVerisense extends SensorGSR {
 		Object returnValue = null;
 		switch (configLabel) {
 		case (GuiLabelConfigCommon.RATE):
-			returnValue = getSensorSamplingRate();
+			returnValue = getSensorSamplingRateHz();
 			break;
 		default:
 			returnValue = super.getConfigValueUsingConfigLabel(sensorId, configLabel);
@@ -205,7 +197,48 @@ public class SensorGSRVerisense extends SensorGSR {
 		listOfSensorConfig.add(getGsrRange());
 		return listOfSensorConfig;
 	}
-		
+
+	@Override
+	public void setSensorSamplingRate(double samplingRateHz) {
+		setSensorSamplingRate(ADC_SAMPLING_RATES.getConfigValueForFreq(samplingRateHz));
+		super.setSensorSamplingRate(sensorSamplingRate.freqHz);
+	}
+	
+	@Override
+	public void setSamplingRateFromShimmer(double maxSetRate) {
+		if(Double.isFinite(maxSetRate)) {
+			setSensorSamplingRate(ADC_SAMPLING_RATES.getConfigValueForFreq(maxSetRate));
+			super.setSamplingRateFromShimmer(sensorSamplingRate.freqHz);
+		}
+	}
+	
+	public void setSensorSamplingRate(ADC_SAMPLING_RATES adcSamplingRate){
+		this.sensorSamplingRate = adcSamplingRate;
+	}
+	
+	public double getSensorSamplingRateHz() {
+		return sensorSamplingRate.freqHz;
+	}
+
+	public ADC_SAMPLING_RATES getSensorSamplingRate() {
+		return sensorSamplingRate;
+	}
+	
+	@Override
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
+			if(isSensorEnabled) {
+				setSensorSamplingRate(ADC_SAMPLING_RATES.FREQ_51_2_HZ);
+			} else {
+				setSensorSamplingRate(ADC_SAMPLING_RATES.OFF);
+			}
+			setGsrRange(GSR_RANGE.AUTO_RANGE);
+
+			return true;
+		}
+		return false;
+	}
+
 	//--------- Abstract methods implemented end --------------
 
 	public GSR_RANGE getGsrRange() {
