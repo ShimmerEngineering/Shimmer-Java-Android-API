@@ -72,7 +72,7 @@ public class SensorGSRVerisense extends SensorGSR {
 		}
 
 		public static GSR_RANGE getForConfigValue(int configValue) {
-			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, RANGE_0.configValue, RANGE_3.configValue));
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, RANGE_0.configValue, AUTO_RANGE.configValue));
 		}
 	}
 
