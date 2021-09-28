@@ -964,23 +964,11 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 
 	public int getAccelRateConfigValue() {
-		return rate.configValue;
+		return getAccelRate().configValue;
 	}
 
 	public double getAccelRateFreq() {
-		ConfigOptionDetailsSensor configOptionAccelRate = CONFIG_OPTION_ACCEL_RATE_HP; 
-		if(mode==LIS2DW12_MODE.LOW_POWER) {
-			configOptionAccelRate = CONFIG_OPTION_ACCEL_RATE_LP;
-		}
-
-		String accelRateString = configOptionAccelRate.getConfigStringFromConfigValue(getAccelRateConfigValue());
-		
-		double accelRate = 0;
-		if(accelRateString.contains(CHANNEL_UNITS.FREQUENCY)){
-			accelRate = Double.parseDouble(accelRateString.replace(CHANNEL_UNITS.FREQUENCY, ""));
-		}
-		
-		return accelRate;
+		return getAccelRate().freqHz;
 	}
 
 	public void setAccelRateConfigValue(int valueToSet) {
@@ -990,6 +978,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 			for(LIS2DW12_ACCEL_RATE lis2dw12AccelRate : LIS2DW12_ACCEL_RATE.values()) {
 				if(mode==lis2dw12AccelRate.mode && lis2dw12AccelRate.configValue==valueToSet) {
 					setAccelRate(lis2dw12AccelRate);
+					break;
 				}
 			}
 		}
