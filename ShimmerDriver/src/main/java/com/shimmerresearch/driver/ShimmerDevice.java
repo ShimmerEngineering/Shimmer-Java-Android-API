@@ -66,7 +66,7 @@ import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
-import com.shimmerresearch.verisense.ISensorConfig;
+import com.shimmerresearch.verisense.sensors.ISensorConfig;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 

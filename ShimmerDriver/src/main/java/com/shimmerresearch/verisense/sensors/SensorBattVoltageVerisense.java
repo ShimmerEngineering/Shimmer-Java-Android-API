@@ -1,4 +1,4 @@
-package com.shimmerresearch.verisense;
+package com.shimmerresearch.verisense.sensors;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +23,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.sensors.SensorADC;
 import com.shimmerresearch.sensors.SensorBattVoltage;
 import com.shimmerresearch.sensors.SensorADC.MICROCONTROLLER_ADC_PROPERTIES;
+import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 

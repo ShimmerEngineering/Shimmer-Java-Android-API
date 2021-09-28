@@ -13,11 +13,11 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.verisense.SensorVerisenseClock;
 import com.shimmerresearch.verisense.UtilVerisenseDriver;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.BYTE_COUNT;
 import com.shimmerresearch.verisense.payloaddesign.DataBlockDetails.DATABLOCK_SENSOR_ID;
+import com.shimmerresearch.verisense.sensors.SensorVerisenseClock;
 
 public class PayloadContentsDetailsV8orAbove extends PayloadContentsDetails {
 	

@@ -9,12 +9,12 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.verisense.SensorLIS2DW12;
-import com.shimmerresearch.verisense.SensorLSM6DS3;
-import com.shimmerresearch.verisense.SensorMAX86XXX;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.BYTE_COUNT;
 import com.shimmerresearch.verisense.payloaddesign.DataBlockDetails.DATABLOCK_SENSOR_ID;
+import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
+import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
+import com.shimmerresearch.verisense.sensors.SensorMAX86XXX;
 
 public class PayloadContentsDetailsV1_7 extends PayloadContentsDetails {
 	

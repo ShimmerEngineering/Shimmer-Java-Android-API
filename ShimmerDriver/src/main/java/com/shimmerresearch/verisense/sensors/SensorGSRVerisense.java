@@ -1,4 +1,4 @@
-package com.shimmerresearch.verisense;
+package com.shimmerresearch.verisense.sensors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,9 +18,10 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.SensorGSR;
-import com.shimmerresearch.verisense.SensorBattVoltageVerisense.ADC_SAMPLING_RATES;
+import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense.ADC_SAMPLING_RATES;
 
 public class SensorGSRVerisense extends SensorGSR {
 

@@ -1,4 +1,4 @@
-package com.shimmerresearch.verisense;
+package com.shimmerresearch.verisense.sensors;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,6 +11,7 @@ import com.shimmerresearch.driver.Configuration.Verisense.CompatibilityInfoForMa
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.verisense.VerisenseDevice;
 
 public abstract class SensorMAX86XXX extends AbstractSensor {
 

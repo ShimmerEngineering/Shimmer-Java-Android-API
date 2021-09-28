@@ -19,11 +19,7 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.verisense.PendingEventSchedule;
-import com.shimmerresearch.verisense.SensorBattVoltageVerisense;
-import com.shimmerresearch.verisense.SensorLIS2DW12;
 import com.shimmerresearch.verisense.VerisenseDevice;
-import com.shimmerresearch.verisense.SensorBattVoltageVerisense.ADC_SAMPLING_RATES;
-import com.shimmerresearch.verisense.SensorLIS2DW12.LIS2DW12_ACCEL_RATE;
 import com.shimmerresearch.verisense.VerisenseDevice.BATTERY_TYPE;
 import com.shimmerresearch.verisense.VerisenseDevice.BLE_TX_POWER;
 import com.shimmerresearch.verisense.VerisenseDevice.PASSKEY_MODE;
@@ -37,6 +33,10 @@ import com.shimmerresearch.verisense.communication.payloads.RwcSchedulePayload;
 import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
 import com.shimmerresearch.verisense.communication.payloads.TimePayload;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.DATA_COMPRESSION_MODE;
+import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense;
+import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
+import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense.ADC_SAMPLING_RATES;
+import com.shimmerresearch.verisense.sensors.SensorLIS2DW12.LIS2DW12_ACCEL_RATE;
 
 /**
  * @author Mark Nolan

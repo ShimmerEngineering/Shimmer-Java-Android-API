@@ -12,7 +12,7 @@ import com.shimmerresearch.algorithms.gyroOnTheFlyCal.GyroOnTheFlyCalModule;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
-import com.shimmerresearch.verisense.SensorLSM6DS3;
+import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
 
 public class GyroOnTheFlyCalModuleVerisense extends GyroOnTheFlyCalModule {
 

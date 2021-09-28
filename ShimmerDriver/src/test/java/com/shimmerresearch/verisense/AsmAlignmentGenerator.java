@@ -1,7 +1,7 @@
 package com.shimmerresearch.verisense;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.verisense.SensorLIS2DW12;
+import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
 
 /** A class created to help determining the correct alignment value for calibrating the ASM sensor's IMU
  * 

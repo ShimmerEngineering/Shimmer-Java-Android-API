@@ -1,4 +1,4 @@
-package com.shimmerresearch.verisense;
+package com.shimmerresearch.verisense.sensors;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +27,8 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.verisense.UtilVerisenseDriver;
+import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
 
@@ -201,16 +203,16 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		HIGH_PERFORMANCE_200_0_HZ("200.0Hz", 6, 200.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
 		HIGH_PERFORMANCE_400_0_HZ("400.0Hz", 7, 400.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
 		HIGH_PERFORMANCE_800_0_HZ("800.0Hz", 8, 800.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
-		HIGH_PERFORMANCE_1600_0_HZ("1600.0Hz", 9, 16000., LIS2DW12_MODE.HIGH_PERFORMANCE),
+		HIGH_PERFORMANCE_1600_0_HZ("1600.0Hz", 9, 1600.0, LIS2DW12_MODE.HIGH_PERFORMANCE),
 		LOW_POWER_1_6_HZ("1.6Hz", 1, 1.6, LIS2DW12_MODE.LOW_POWER),
 		LOW_POWER_12_5_HZ("12.5Hz", 2, 12.5, LIS2DW12_MODE.LOW_POWER),
 		LOW_POWER_25_0_HZ("25.0Hz", 3, 25.0, LIS2DW12_MODE.LOW_POWER),
 		LOW_POWER_50_0_HZ("50.0Hz", 4, 50.0, LIS2DW12_MODE.LOW_POWER),
 		LOW_POWER_100_0_HZ("100.0Hz", 5, 100.0, LIS2DW12_MODE.LOW_POWER),
-		LOW_POWER_200_0_HZ("200.0Hz", 6, 100.0, LIS2DW12_MODE.LOW_POWER),
-		LOW_POWER_200_0_HZ_ALT1("200.0Hz", 7, 100.0, LIS2DW12_MODE.LOW_POWER),
-		LOW_POWER_200_0_HZ_ALT2("200.0Hz", 8, 100.0, LIS2DW12_MODE.LOW_POWER),
-		LOW_POWER_200_0_HZ_ALT3("200.0Hz", 9, 100.0, LIS2DW12_MODE.LOW_POWER);
+		LOW_POWER_200_0_HZ("200.0Hz", 6, 200.0, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_200_0_HZ_ALT1("200.0Hz", 7, 200.0, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_200_0_HZ_ALT2("200.0Hz", 8, 200.0, LIS2DW12_MODE.LOW_POWER),
+		LOW_POWER_200_0_HZ_ALT3("200.0Hz", 9, 200.0, LIS2DW12_MODE.LOW_POWER);
 		
 		public String label;
 		public Integer configValue;

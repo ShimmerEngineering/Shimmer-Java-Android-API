@@ -1,9 +1,9 @@
 package com.shimmerresearch.verisense.communication.payloads;
 
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
-import com.shimmerresearch.verisense.SensorVerisenseClock;
 import com.shimmerresearch.verisense.UtilVerisenseDriver;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
+import com.shimmerresearch.verisense.sensors.SensorVerisenseClock;
 
 /**
  * @author Mark Nolan

@@ -15,6 +15,12 @@ import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.verisense.VerisenseDevice.FW_CHANGES;
+import com.shimmerresearch.verisense.sensors.ISensorConfig;
+import com.shimmerresearch.verisense.sensors.SensorGSRVerisense;
+import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
+import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
+import com.shimmerresearch.verisense.sensors.SensorMAX86916;
+import com.shimmerresearch.verisense.sensors.SensorMAX86XXX;
 
 /**
  * Tests Verisense config byte parsing and generation

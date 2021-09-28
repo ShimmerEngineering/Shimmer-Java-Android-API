@@ -51,7 +51,6 @@ import com.shimmerresearch.verisense.communication.payloads.TimePayload;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BIT_MASK;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BIT_SHIFT;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
-import com.shimmerresearch.verisense.SensorLIS2DW12.LIS2DW12_LP_MODE;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
@@ -60,6 +59,16 @@ import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.BYTE_C
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.DATA_COMPRESSION_MODE;
 import com.shimmerresearch.verisense.payloaddesign.DataBlockDetails;
 import com.shimmerresearch.verisense.payloaddesign.DataBlockDetails.DATABLOCK_SENSOR_ID;
+import com.shimmerresearch.verisense.sensors.ISensorConfig;
+import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense;
+import com.shimmerresearch.verisense.sensors.SensorGSRVerisense;
+import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
+import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
+import com.shimmerresearch.verisense.sensors.SensorMAX86150;
+import com.shimmerresearch.verisense.sensors.SensorMAX86916;
+import com.shimmerresearch.verisense.sensors.SensorMAX86XXX;
+import com.shimmerresearch.verisense.sensors.SensorVerisenseClock;
+import com.shimmerresearch.verisense.sensors.SensorLIS2DW12.LIS2DW12_LP_MODE;
 
 /** 
  * 

@@ -23,7 +23,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.verisense.ISensorConfig;
+import com.shimmerresearch.verisense.sensors.ISensorConfig;
 
 public abstract class AbstractSensor implements Serializable{
 	

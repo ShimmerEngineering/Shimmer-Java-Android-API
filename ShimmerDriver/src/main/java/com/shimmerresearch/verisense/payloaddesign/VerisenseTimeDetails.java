@@ -2,9 +2,9 @@ package com.shimmerresearch.verisense.payloaddesign;
 
 import java.io.Serializable;
 
-import com.shimmerresearch.verisense.SensorVerisenseClock;
 import com.shimmerresearch.verisense.UtilVerisenseDriver;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.BYTE_COUNT;
+import com.shimmerresearch.verisense.sensors.SensorVerisenseClock;
 
 public class VerisenseTimeDetails implements Serializable {
 	

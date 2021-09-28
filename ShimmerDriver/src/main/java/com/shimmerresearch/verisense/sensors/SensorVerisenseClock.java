@@ -1,4 +1,4 @@
-package com.shimmerresearch.verisense;
+package com.shimmerresearch.verisense.sensors;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +22,7 @@ import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.SensorShimmerClock.GuiLabelSensors;
+import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants;
 
 public class SensorVerisenseClock extends AbstractSensor {
