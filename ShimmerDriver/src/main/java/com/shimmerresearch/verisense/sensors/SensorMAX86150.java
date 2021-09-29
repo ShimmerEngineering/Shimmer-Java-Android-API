@@ -16,6 +16,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -70,6 +71,10 @@ public class SensorMAX86150 extends SensorMAX86XXX {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static MAX86150_SAMPLE_RATE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, SR_10_0_HZ.configValue, SR_3200_0_HZ.configValue));
 		}
 	}
 
@@ -279,7 +284,7 @@ public class SensorMAX86150 extends SensorMAX86XXX {
 	}
 	
 	public void setRateConfigValue(int valueToSet) {
-		setSampleRate(MAX86150_SAMPLE_RATE.BY_CONFIG_VALUE.get(valueToSet));
+		setSampleRate(MAX86150_SAMPLE_RATE.getForConfigValue(valueToSet));
 	}
 
 	@Override

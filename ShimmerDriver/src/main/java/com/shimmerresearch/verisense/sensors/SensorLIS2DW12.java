@@ -92,6 +92,10 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static LIS2DW12_FILTERED_DATA_TYPE_SELECTION getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, LOW_PASS_FILTER_PATH_SELECTED.configValue, HIGH_PASS_FILTER_PATH_SELECTED.configValue));
+		}
 	}
 	
 	public static enum LIS2DW12_LOW_NOISE implements ISensorConfig {
@@ -126,6 +130,10 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static LIS2DW12_LOW_NOISE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, DISABLED.configValue, ENABLED.configValue));
 		}
 	}
 	
@@ -164,6 +172,10 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static LIS2DW12_BW_FILT getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, ODR_DIVIDED_BY_2.configValue, ODR_DIVIDED_BY_20.configValue));
+		}
 	}
 
 	public static enum LIS2DW12_MODE implements ISensorConfig {
@@ -179,6 +191,13 @@ public class SensorLIS2DW12 extends AbstractSensor {
 				REF_MAP.put(e.label, e.configValue);
 			}
 		}
+		
+		static Map<Integer, LIS2DW12_MODE> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (LIS2DW12_MODE e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
 
 		private LIS2DW12_MODE(String label, int configValue) {
 			this.label = label;
@@ -191,6 +210,10 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static LIS2DW12_MODE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, LOW_POWER.configValue, HIGH_PERFORMANCE.configValue));
 		}
 	}
 
@@ -254,6 +277,20 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		public static Integer[] getConfigValuesLp() {
 			return REF_MAP_LP.values().toArray(new Integer[REF_MAP_LP.values().size()]);
 		}
+		
+		public static LIS2DW12_ACCEL_RATE getForConfigValue(int configValue, LIS2DW12_MODE list2dw12Mode) {
+			int valueToSet = UtilShimmer.nudgeInteger(configValue, POWER_DOWN.configValue, HIGH_PERFORMANCE_1600_0_HZ.configValue);
+			if(valueToSet==LIS2DW12_ACCEL_RATE.POWER_DOWN.configValue) {
+				return LIS2DW12_ACCEL_RATE.POWER_DOWN;
+			} else {
+				for(LIS2DW12_ACCEL_RATE lis2dw12AccelRate : LIS2DW12_ACCEL_RATE.values()) {
+					if(list2dw12Mode==lis2dw12AccelRate.mode && lis2dw12AccelRate.configValue==valueToSet) {
+						return lis2dw12AccelRate;
+					}
+				}
+			}
+			return LIS2DW12_ACCEL_RATE.POWER_DOWN;
+		}
 	}
 	
 	public static enum LIS2DW12_ACCEL_RANGE implements ISensorConfig {
@@ -271,6 +308,13 @@ public class SensorLIS2DW12 extends AbstractSensor {
 				REF_MAP.put(e.label, e.configValue);
 			}
 		}
+		
+		static Map<Integer, LIS2DW12_ACCEL_RANGE> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (LIS2DW12_ACCEL_RANGE e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
 
 		private LIS2DW12_ACCEL_RANGE(String label, Integer configValue) {
 			this.label = label;
@@ -283,6 +327,10 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static LIS2DW12_ACCEL_RANGE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, RANGE_2G.configValue, RANGE_16G.configValue));
 		}
 	}
 
@@ -302,6 +350,13 @@ public class SensorLIS2DW12 extends AbstractSensor {
 			}
 		}
 
+		static Map<Integer, LIS2DW12_LP_MODE> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (LIS2DW12_LP_MODE e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
 		private LIS2DW12_LP_MODE(String label, Integer configValue) {
 			this.label = label;
 			this.configValue = configValue;
@@ -313,6 +368,10 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static LIS2DW12_LP_MODE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, LOW_POWER1_12BIT_4_5_MG_NOISE.configValue, LOW_POWER4_14BIT_1_3_MG_NOISE.configValue));
 		}
 	}
 
@@ -348,6 +407,10 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static LIS2DW12_HP_REF_MODE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, DISABLED.configValue, ENABLED.configValue));
 		}
 	}
 
@@ -386,6 +449,16 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static LIS2DW12_FIFO_MODE getForConfigValue(int configValue) {
+			//Different approach here as supported config values are not a continuous range
+			for(LIS2DW12_FIFO_MODE fifoMode:LIS2DW12_FIFO_MODE.values()) {
+				if(configValue==fifoMode.configValue) {
+					return fifoMode;
+				}
+			}
+			return LIS2DW12_FIFO_MODE.CONTINUOUS_TO_FIFO_MODE;
 		}
 	}
 
@@ -451,6 +524,10 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static LIS2DW12_FIFO_THRESHOLD getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, SAMPLE_0.configValue, SAMPLE_31.configValue));
 		}
 	}
 
@@ -752,16 +829,16 @@ public class SensorLIS2DW12 extends AbstractSensor {
 			setAccelRateConfigValue((accel1Cfg0>>configByteLayout.bitShiftAccelRate)&configByteLayout.maskAccelRate);
 			
 			if(configByteLayout.idxAccel1Cfg1>=0) {
-				setBwFilt(LIS2DW12_BW_FILT.BY_CONFIG_VALUE.get((configBytes[configByteLayout.idxAccel1Cfg1]>>configByteLayout.bitShiftBwFilt) & configByteLayout.maskBwFilt));
-				setFds(LIS2DW12_FILTERED_DATA_TYPE_SELECTION.BY_CONFIG_VALUE.get((configBytes[configByteLayout.idxAccel1Cfg1]>>configByteLayout.bitShiftFds) & configByteLayout.maskFds));
-				setLowNoise(LIS2DW12_LOW_NOISE.BY_CONFIG_VALUE.get((configBytes[configByteLayout.idxAccel1Cfg1]>>configByteLayout.bitShiftLowNoise) & configByteLayout.maskLowNoise));
+				setBwFilt(LIS2DW12_BW_FILT.getForConfigValue((configBytes[configByteLayout.idxAccel1Cfg1]>>configByteLayout.bitShiftBwFilt) & configByteLayout.maskBwFilt));
+				setFds(LIS2DW12_FILTERED_DATA_TYPE_SELECTION.getForConfigValue((configBytes[configByteLayout.idxAccel1Cfg1]>>configByteLayout.bitShiftFds) & configByteLayout.maskFds));
+				setLowNoise(LIS2DW12_LOW_NOISE.getForConfigValue((configBytes[configByteLayout.idxAccel1Cfg1]>>configByteLayout.bitShiftLowNoise) & configByteLayout.maskLowNoise));
 			}
 			if(configByteLayout.idxAccel1Cfg2>=0) {
-				setHpFilterMode(LIS2DW12_HP_REF_MODE.BY_CONFIG_VALUE.get((configBytes[configByteLayout.idxAccel1Cfg2]>>configByteLayout.bitShiftHpRefMode) & configByteLayout.maskHpRefMode));
+				setHpFilterMode(LIS2DW12_HP_REF_MODE.getForConfigValue((configBytes[configByteLayout.idxAccel1Cfg2]>>configByteLayout.bitShiftHpRefMode) & configByteLayout.maskHpRefMode));
 			}
 			if(configByteLayout.idxAccel1Cfg3>=0) {
-				setFifoMode(LIS2DW12_FIFO_MODE.BY_CONFIG_VALUE.get((configBytes[configByteLayout.idxAccel1Cfg3]>>configByteLayout.bitShiftFifoMode) & configByteLayout.maskFifoMode));
-				setFifoThreshold(LIS2DW12_FIFO_THRESHOLD.BY_CONFIG_VALUE.get((configBytes[configByteLayout.idxAccel1Cfg3]>>configByteLayout.bitShiftFifoThreshold) & configByteLayout.maskFifoThreshold));
+				setFifoMode(LIS2DW12_FIFO_MODE.getForConfigValue((configBytes[configByteLayout.idxAccel1Cfg3]>>configByteLayout.bitShiftFifoMode) & configByteLayout.maskFifoMode));
+				setFifoThreshold(LIS2DW12_FIFO_THRESHOLD.getForConfigValue((configBytes[configByteLayout.idxAccel1Cfg3]>>configByteLayout.bitShiftFifoThreshold) & configByteLayout.maskFifoThreshold));
 			}
 		}
 	}
@@ -948,12 +1025,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 
 	public void setAccelRangeConfigValue(int valueToSet){
-		for(LIS2DW12_ACCEL_RANGE lis2dw12AccelRange : LIS2DW12_ACCEL_RANGE.values()) {
-			if(lis2dw12AccelRange.configValue==valueToSet) {
-				setAccelRange(lis2dw12AccelRange);
-				break;
-			}
-		}
+		setAccelRange(LIS2DW12_ACCEL_RANGE.getForConfigValue(valueToSet));
 	}
 
 	public void setAccelRange(LIS2DW12_ACCEL_RANGE lis2dw12AccelRange){
@@ -974,17 +1046,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 
 	public void setAccelRateConfigValue(int valueToSet) {
-		if(valueToSet==LIS2DW12_ACCEL_RATE.POWER_DOWN.configValue) {
-			setAccelRate(LIS2DW12_ACCEL_RATE.POWER_DOWN);
-		} else {
-			for(LIS2DW12_ACCEL_RATE lis2dw12AccelRate : LIS2DW12_ACCEL_RATE.values()) {
-				if(mode==lis2dw12AccelRate.mode && lis2dw12AccelRate.configValue==valueToSet) {
-					setAccelRate(lis2dw12AccelRate);
-					break;
-				}
-			}
-		}
-		
+		setAccelRate(LIS2DW12_ACCEL_RATE.getForConfigValue(valueToSet, mode));
 	}
 
 	public int getAccelModeConfigValue() {
@@ -992,11 +1054,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 
 	public void setAccelModeConfigValue(int valueToSet) {
-		for(LIS2DW12_MODE lis2dw12Mode : LIS2DW12_MODE.values()) {
-			if(lis2dw12Mode.configValue==valueToSet) {
-				setAccelMode(lis2dw12Mode);
-			}
-		}
+		setAccelMode(LIS2DW12_MODE.getForConfigValue(valueToSet));
 	}
 
 	public void setAccelMode(LIS2DW12_MODE valueToSet) {
@@ -1012,11 +1070,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	}
 
 	public void setAccelLpModeConfigValue(int valueToSet) {
-		for(LIS2DW12_LP_MODE lpMode: LIS2DW12_LP_MODE.values()) {
-			if(lpMode.configValue==valueToSet) {
-				setAccelLpMode(lpMode);
-			}
-		}
+		setAccelLpMode(LIS2DW12_LP_MODE.getForConfigValue(valueToSet));
 	}
 
 	public void setAccelLpMode(LIS2DW12_LP_MODE valueToSet) {
