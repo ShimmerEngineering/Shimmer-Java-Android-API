@@ -383,7 +383,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 				abstractSensor.configBytesGenerate(this, configBytes, commType);
 			}
 		}
-		
+		mConfigBytes = configBytes;
 		return configBytes;
 	}
 	
