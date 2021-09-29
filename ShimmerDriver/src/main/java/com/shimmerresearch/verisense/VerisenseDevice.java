@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -68,7 +67,6 @@ import com.shimmerresearch.verisense.sensors.SensorMAX86150;
 import com.shimmerresearch.verisense.sensors.SensorMAX86916;
 import com.shimmerresearch.verisense.sensors.SensorMAX86XXX;
 import com.shimmerresearch.verisense.sensors.SensorVerisenseClock;
-import com.shimmerresearch.verisense.sensors.SensorLIS2DW12.LIS2DW12_LP_MODE;
 
 /** 
  * 
@@ -1143,7 +1141,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	@Override
-	public ShimmerDevice deepClone() {
+	public VerisenseDevice deepClone() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
