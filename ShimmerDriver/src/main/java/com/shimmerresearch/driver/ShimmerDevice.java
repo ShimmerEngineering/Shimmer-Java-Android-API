@@ -66,6 +66,7 @@ import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
+import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.verisense.sensors.ISensorConfig;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
@@ -202,6 +203,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected String mComPort = "";
 	public transient CommsProtocolRadio mCommsProtocolRadio = null;
+	transient protected HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
 	public DOCK_STATE mDockState = DOCK_STATE.UNDOCKED;
 	
@@ -4371,6 +4373,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		initializeAlgorithms();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.startStreaming();
+		} else {
+			//for now default to bluetooth but need a better implementation
+			try {
+				if (mapOfVerisenseProtocolByteCommunication.containsKey(COMMUNICATION_TYPE.BLUETOOTH)) {
+					mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH).startStreaming();
+				}
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -4378,6 +4390,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		resetPacketLossVariables();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.stopStreaming();
+		} else {
+			//for now default to bluetooth but need a better implementation
+			try {
+				if (mapOfVerisenseProtocolByteCommunication.containsKey(COMMUNICATION_TYPE.BLUETOOTH)) {
+					mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH).stopStreaming();
+				}
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	

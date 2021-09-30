@@ -204,7 +204,6 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	// Verisense Communication
-	transient private HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
 	private transient StatusPayload status;
 	private transient OperationalConfigPayload opConfig;
 	private transient ProductionConfigPayload prodConfigPayload;
