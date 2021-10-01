@@ -248,8 +248,15 @@ public class VerisenseProtocolByteCommunication {
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.STREAMING.ackByte()) {
 				if (mState.equals(VerisenseProtocolState.Streaming)) {
 					stateChange(VerisenseProtocolState.Connected);
+					for (RadioListener rl : mRadioListenerList) {
+						rl.hasStopStreamingCallback();
+					}
+					
 				} else {
 					stateChange(VerisenseProtocolState.Streaming);
+					for (RadioListener rl : mRadioListenerList) {
+						rl.isNowStreamingCallback();
+					}
 				}
 
 			} else if(verisenseMessage.commandMask == VERISENSE_COMMAND.ACK.getCommandMask()) {
@@ -374,11 +381,11 @@ public class VerisenseProtocolByteCommunication {
 		mByteCommunication.stop();
 	}
 
-	private void writeMessageWithoutPayload(byte commandAndProperty) {
+	protected void writeMessageWithoutPayload(byte commandAndProperty) {
 		writeMessageWithPayload(commandAndProperty, new byte[] {});
 	}
 	
-	private void writeMessageWithPayload(byte commandAndProperty, byte[] payloadContents) {
+	protected void writeMessageWithPayload(byte commandAndProperty, byte[] payloadContents) {
 		VerisenseMessage txVerisenseMessage = new VerisenseMessage(commandAndProperty, payloadContents);
 		byte[] txBuf = txVerisenseMessage.generatePacket();
 		

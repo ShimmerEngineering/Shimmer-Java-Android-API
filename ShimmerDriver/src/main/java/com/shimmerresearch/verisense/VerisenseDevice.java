@@ -1471,7 +1471,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			@Override
 			public void isNowStreamingCallback() {
 				// TODO Auto-generated method stub
-
+				setBluetoothRadioState(BT_STATE.STREAMING);
 			}
 
 			@Override
@@ -1483,7 +1483,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			@Override
 			public void hasStopStreamingCallback() {
 				// TODO Auto-generated method stub
-
+				setBluetoothRadioState(BT_STATE.CONNECTED);
 			}
 
 			@Override
