@@ -9,6 +9,7 @@ import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Verisense.CompatibilityInfoForMaps;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.verisense.VerisenseDevice;
@@ -74,6 +75,10 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static MAX86XXX_ADC_RESOLUTION getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, RESOLUTION_12_BIT.configValue, RESOLUTION_15_BIT.configValue));
+		}
 	}
 
 	public static enum MAX86XXX_PULSE_WIDTH implements ISensorConfig {
@@ -110,6 +115,10 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static MAX86XXX_PULSE_WIDTH getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, PW_50_US.configValue, PW_400_US.configValue));
 		}
 	}
 
@@ -149,6 +158,10 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static MAX86XXX_SAMPLE_AVG getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, NO_AVERAGING.configValue, SAMPLES_32.configValue));
 		}
 	}
 
@@ -383,7 +396,7 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 	}
 
 	public void setPpgPulseWidthConfigValue(int valueToSet) {
-		setPpgPulseWidth(MAX86XXX_PULSE_WIDTH.BY_CONFIG_VALUE.get(valueToSet));
+		setPpgPulseWidth(MAX86XXX_PULSE_WIDTH.getForConfigValue(valueToSet));
 	}
 
 	public void setPpgPulseWidth(MAX86XXX_PULSE_WIDTH pulseWidth) {
@@ -391,7 +404,7 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 	}
 
 	public void setPpgSampleAverageConfigValue(int valueToSet) {
-		setPpgSampleAverage(MAX86XXX_SAMPLE_AVG.BY_CONFIG_VALUE.get(valueToSet));
+		setPpgSampleAverage(MAX86XXX_SAMPLE_AVG.getForConfigValue(valueToSet));
 	}
 
 	public void setPpgSampleAverage(MAX86XXX_SAMPLE_AVG sampleAverage) {
@@ -399,7 +412,7 @@ public abstract class SensorMAX86XXX extends AbstractSensor {
 	}
 
 	public void setPpgAdcResolutionConfigValue(int valueToSet) {
-		setPpgAdcResolution(MAX86XXX_ADC_RESOLUTION.BY_CONFIG_VALUE.get(valueToSet));
+		setPpgAdcResolution(MAX86XXX_ADC_RESOLUTION.getForConfigValue(valueToSet));
 	}
 	
 	public int getPpgPulseWidthConfigValue() {

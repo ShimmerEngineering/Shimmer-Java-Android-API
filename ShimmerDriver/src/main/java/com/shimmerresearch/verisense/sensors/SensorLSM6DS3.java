@@ -132,6 +132,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static LSM6DS3_RATE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, POWER_DOWN.configValue, RATE_1666_HZ.configValue));
+		}
 	}
 
 	public static enum LSM6DS3_ACCEL_RANGE implements ISensorConfig {
@@ -169,6 +173,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static LSM6DS3_ACCEL_RANGE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, RANGE_2G.configValue, RANGE_8G.configValue));
+		}
 	}
 
 	public static enum LSM6DS3_GYRO_RANGE implements ISensorConfig {
@@ -205,6 +213,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static LSM6DS3_GYRO_RANGE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, RANGE_250DPS.configValue, RANGE_2000DPS.configValue));
 		}
 	}
 
@@ -247,6 +259,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static FIFO_DECIMATION_GYRO getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, SENSOR_NOT_IN_FIFO.configValue, DECIMATION_WITH_FACTOR_32.configValue));
+		}
 	}
 	
 	public static enum FIFO_DECIMATION_ACCEL implements ISensorConfig {
@@ -288,6 +304,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static FIFO_DECIMATION_ACCEL getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, SENSOR_NOT_IN_FIFO.configValue, DECIMATION_WITH_FACTOR_32.configValue));
+		}
 	}
 
 	public static enum FIFO_MODE implements ISensorConfig {
@@ -326,6 +346,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static FIFO_MODE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, BYPASS_MODE_FIFO_OFF.configValue, CONTINUOUS_MODE.configValue));
+		}
 	}
 	
 	public static enum ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER implements ISensorConfig {
@@ -363,6 +387,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, AT_400HZ.configValue, AT_50HZ.configValue));
+		}
 	}
 
 	public static enum HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO implements ISensorConfig {
@@ -399,6 +427,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, AT_0_0081_HZ.configValue, AT_16_32_HZ.configValue));
 		}
 	}
 
@@ -448,6 +480,16 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL getForConfigValue(int configValue, boolean isAccelLowPassFilterLpf2Selection) {
+			Map<Integer, HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL> refMap;
+			if(isAccelLowPassFilterLpf2Selection) {
+				refMap = HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.BY_CONFIG_VALUE_LOW_PASS_FILTER;
+			} else {
+				refMap = HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.BY_CONFIG_VALUE_SLOPE_OR_HIGH_PASS_FILTER;
+			}
+			return refMap.get(UtilShimmer.nudgeInteger(configValue, 0b00, 0b11));
 		}
 	}
 
@@ -857,21 +899,21 @@ public class SensorLSM6DS3 extends AbstractSensor {
 				setTimerPedoFifodEnable(((configBytes[cbl.idxGyroAccel2Cfg1] >> cbl.bitShiftTimerPedoFifD0Enable) & cbl.maskTimerPedoFifD0Enable) == cbl.maskTimerPedoFifD0Enable);
 				setTimerPedoFifodDrdy(((configBytes[cbl.idxGyroAccel2Cfg1] >> cbl.bitShiftTimerPedoFifoDrdy) & cbl.maskTimerPedoFifoDrdy) == cbl.maskTimerPedoFifoDrdy);
 
-				setDecimationFifoAccel(FIFO_DECIMATION_ACCEL.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg2] >> cbl.bitShiftDecimationFifoAccel) & cbl.maskDecimationFifoAccel));
-				setDecimationFifoGyro(FIFO_DECIMATION_GYRO.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg2] >> cbl.bitShiftDecimationFifoGyro) & cbl.maskDecimationFifoGyro));
+				setDecimationFifoAccel(FIFO_DECIMATION_ACCEL.getForConfigValue((configBytes[cbl.idxGyroAccel2Cfg2] >> cbl.bitShiftDecimationFifoAccel) & cbl.maskDecimationFifoAccel));
+				setDecimationFifoGyro(FIFO_DECIMATION_GYRO.getForConfigValue((configBytes[cbl.idxGyroAccel2Cfg2] >> cbl.bitShiftDecimationFifoGyro) & cbl.maskDecimationFifoGyro));
 
-				setRate(LSM6DS3_RATE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg3] >> cbl.bitShiftOdrFifo) & cbl.maskOdr));
-				setFifoMode(FIFO_MODE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg3] >> cbl.bitShiftFifoMode) & cbl.maskFifoMode));
+				setRate(LSM6DS3_RATE.getForConfigValue((configBytes[cbl.idxGyroAccel2Cfg3] >> cbl.bitShiftOdrFifo) & cbl.maskOdr));
+				setFifoMode(FIFO_MODE.getForConfigValue((configBytes[cbl.idxGyroAccel2Cfg3] >> cbl.bitShiftFifoMode) & cbl.maskFifoMode));
 
-				setAccelRange(LSM6DS3_ACCEL_RANGE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg4]>>cbl.bitShiftFsAccel2)&cbl.maskFs));
-				setAccelAntiAliasingBandwidthFilter(ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg4]>>cbl.bitShiftBwAccel)&cbl.maskBwAccel));
+				setAccelRange(LSM6DS3_ACCEL_RANGE.getForConfigValue((configBytes[cbl.idxGyroAccel2Cfg4]>>cbl.bitShiftFsAccel2)&cbl.maskFs));
+				setAccelAntiAliasingBandwidthFilter(ACCEL_ANTI_ALIASING_BANDWIDTH_FILTER.getForConfigValue((configBytes[cbl.idxGyroAccel2Cfg4]>>cbl.bitShiftBwAccel)&cbl.maskBwAccel));
 
-				setGyroRange(LSM6DS3_GYRO_RANGE.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg5]>>cbl.bitShiftGyroFs)&cbl.maskFs));
+				setGyroRange(LSM6DS3_GYRO_RANGE.getForConfigValue((configBytes[cbl.idxGyroAccel2Cfg5]>>cbl.bitShiftGyroFs)&cbl.maskFs));
 				setGyroFullScaleAt12dps(((configBytes[cbl.idxGyroAccel2Cfg5] >> cbl.bitShiftFs125) & cbl.maskFs125) == cbl.maskFs125);
 
 				setGyroHighPerformanceMode(((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftGHmMode) & cbl.maskGHmMode) == cbl.maskGHmMode);
 				setGyroDigitalHighPassFilterEnable(((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftHpGEnable) & cbl.maskHpGEnable) == cbl.maskHpGEnable);
-				setGyroHighPassFilterCutOffFreq(HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO.BY_CONFIG_VALUE.get((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftHpcfG) & cbl.maskHpcfG));
+				setGyroHighPassFilterCutOffFreq(HIGH_PASS_FILTER_CUT_OFF_FREQ_GYRO.getForConfigValue((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftHpcfG) & cbl.maskHpcfG));
 				setGyroDigitalHighPassFilterReset(((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftHpGRst) & cbl.maskHpGRst) == cbl.maskHpGRst);
 				setRoundingStatus(((configBytes[cbl.idxGyroAccel2Cfg6] >> cbl.bitShiftRoundingStatus) & cbl.maskRoundingStatus) == cbl.maskRoundingStatus);
 				
@@ -1134,7 +1176,7 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	}
 	
 	public void setAccelRangeConfigValue(int valueToSet){
-		setAccelRange(LSM6DS3_ACCEL_RANGE.BY_CONFIG_VALUE.get(valueToSet));
+		setAccelRange(LSM6DS3_ACCEL_RANGE.getForConfigValue(valueToSet));
 	}
 
 	public void setAccelRange(LSM6DS3_ACCEL_RANGE valueToSet) {
@@ -1151,7 +1193,7 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	}
 
 	public void setGyroRangeConfigValue(int valueToSet){
-		setGyroRange(LSM6DS3_GYRO_RANGE.BY_CONFIG_VALUE.get(valueToSet));
+		setGyroRange(LSM6DS3_GYRO_RANGE.getForConfigValue(valueToSet));
 	}
 
 	public void setGyroRange(LSM6DS3_GYRO_RANGE valueToSet){
@@ -1172,7 +1214,7 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	}
 
 	public void setRateConfigValue(int valueToSet) {
-		setRate(LSM6DS3_RATE.BY_CONFIG_VALUE.get(valueToSet));
+		setRate(LSM6DS3_RATE.getForConfigValue(valueToSet));
 	}
 
 	public void setRate(LSM6DS3_RATE valueToSet) {
@@ -1310,13 +1352,7 @@ public class SensorLSM6DS3 extends AbstractSensor {
 	}
 
 	private void setAccelHighPassFilterCutOffFreqFromConfigValue(int configValue) {
-		Map<Integer, HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL> refMap;
-		if(isAccelLowPassFilterLpf2Selection()) {
-			refMap = HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.BY_CONFIG_VALUE_LOW_PASS_FILTER;
-		} else {
-			refMap = HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.BY_CONFIG_VALUE_SLOPE_OR_HIGH_PASS_FILTER;
-		}
-		this.accelHighPassFilterCutOffFreq = refMap.get(configValue);
+		this.accelHighPassFilterCutOffFreq = HIGH_PASS_FILTER_CUT_OFF_FREQ_ACCEL.getForConfigValue(configValue, isAccelLowPassFilterLpf2Selection());
 	}
 
 	private void updateLowPassFilterLpf2Selection() {

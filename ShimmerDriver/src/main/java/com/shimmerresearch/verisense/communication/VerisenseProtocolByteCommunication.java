@@ -457,6 +457,11 @@ public class VerisenseProtocolByteCommunication {
 		return latestOperationalConfigPayload;
 	}
 
+	public void writeAndReadOperationalConfig(byte[] operationalConfig) throws ShimmerException {
+		writeOperationalConfig(operationalConfig);
+		readOperationalConfig();
+	}
+
 	public void writeOperationalConfig(byte[] operationalConfig) throws ShimmerException {
 		writeMessageWithPayload(VERISENSE_PROPERTY.CONFIG_OPER.writeByte(), operationalConfig);
 		waitForAck(VERISENSE_PROPERTY.CONFIG_OPER, TIMEOUT_MS.STANDARD);

@@ -322,7 +322,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		assertTrue(buf0.dataTsUcClockTicks==0);
 		
 		RecordBufferDetails buf1 = recordBufferDetailsPayload.getListOfRecordBufferDetails().get(1);
-		assertTrue(buf1.bufferIndex==0);
+		assertTrue(buf1.bufferIndex==1);
 		assertTrue(buf1.bufferState==0);
 		assertTrue(buf1.packagedPayloadIndex==65535);
 		assertTrue(buf1.currentByteIndexForSensorData==32);

@@ -74,6 +74,10 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
 		}
+		
+		public static MAX86916_SAMPLE_RATE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, SR_50_0_HZ.configValue, SR_3200_0_HZ.configValue));
+		}
 	}
 
 	// Used during SD parsing
@@ -152,6 +156,10 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 		
 		public static Integer[] getConfigValues() {
 			return REF_MAP.values().toArray(new Integer[REF_MAP.values().size()]);
+		}
+		
+		public static PROX_DETECTION_MODE getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, AUTO_GAIN_OFF_PROX_DETECTION_OFF.configValue, AUTO_GAIN_ON_PROX_DETECTION_ON_HYBRID.configValue));
 		}
 	}
 	
@@ -406,7 +414,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 				}
 				
 				if(configByteLayout.idxProxAgcMode>=0) {
-					proximityDetectionMode = PROX_DETECTION_MODE.BY_CONFIG_VALUE.get(configBytes[configByteLayout.idxProxAgcMode]&0x03);
+					proximityDetectionMode = PROX_DETECTION_MODE.getForConfigValue(configBytes[configByteLayout.idxProxAgcMode]&0x03);
 				}
 			}
 		}
@@ -479,7 +487,7 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 	}
 	
 	public void setRateConfigValue(int valueToSet) {
-		setSampleRate(MAX86916_SAMPLE_RATE.BY_CONFIG_VALUE.get(valueToSet));
+		setSampleRate(MAX86916_SAMPLE_RATE.getForConfigValue(valueToSet));
 	}
 
 	@Override
