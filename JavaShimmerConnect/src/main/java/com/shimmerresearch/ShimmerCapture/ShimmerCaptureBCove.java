@@ -85,6 +85,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
@@ -408,7 +409,12 @@ public class ShimmerCaptureBCove extends BasicProcessWithCallBack{
 				heartRateCalculation = new PPGtoHRAlgorithm(mShimmer.getSamplingRateShimmer(), (Integer)spinnerNumberOfBeatsToAve.getValue(),10); //10 second training period
 				heartRateCalculationECG = new ECGtoHRAdaptive(mShimmer.getSamplingRateShimmer());
 				
-				mShimmer.startStreaming();
+				try {
+					mShimmer.startStreaming();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnStartStreaming.setBounds(10, 95, 98, 25);

@@ -109,6 +109,7 @@ import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -2565,7 +2566,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//region  --------- START/STOP STREAMING FUNCTIONS --------- 
 	@Override
-	public void startStreaming() {
+	public void startStreaming() throws ShimmerException {
 		//mCurrentLEDStatus=-1;	
 		super.startStreaming();
 		
@@ -5299,7 +5300,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	
 	@Override
-	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) throws ShimmerException {
 		super.configureFromClone(shimmerDeviceClone);
 		
 		ShimmerBluetooth cloneShimmerCast = (ShimmerBluetooth) shimmerDeviceClone;

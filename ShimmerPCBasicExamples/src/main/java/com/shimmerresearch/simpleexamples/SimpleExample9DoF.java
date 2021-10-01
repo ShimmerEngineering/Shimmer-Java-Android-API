@@ -13,6 +13,7 @@ import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ShimmerObject;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 
 import javax.swing.JButton;
@@ -101,8 +102,18 @@ public class SimpleExample9DoF extends BasicProcessWithCallBack {
 		JButton btnNewButton = new JButton("Start Streaming");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				mShimmer.startStreaming();
-				mShimmer2.startStreaming();
+				try {
+					mShimmer.startStreaming();
+				} catch (ShimmerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					mShimmer2.startStreaming();
+				} catch (ShimmerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		btnNewButton.setBounds(10, 11, 107, 23);

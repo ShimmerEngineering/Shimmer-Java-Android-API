@@ -1180,7 +1180,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 	}
 	
 	@Override
-	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) throws ShimmerException {
 		super.configureFromClone(shimmerDeviceClone);
 		
 		writeConfigBytes(shimmerDeviceClone.getShimmerConfigBytes());

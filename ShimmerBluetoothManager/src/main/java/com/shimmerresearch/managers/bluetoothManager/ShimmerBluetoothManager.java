@@ -151,7 +151,7 @@ public abstract class ShimmerBluetoothManager{
 		}
 	}
 	
-	public void startStreaming(String bluetoothAddress) {
+	public void startStreaming(String bluetoothAddress) throws ShimmerException {
 		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnectedFromMac(bluetoothAddress);
 		if(shimmerDevice!=null){
 			startStreaming(shimmerDevice);
@@ -162,12 +162,17 @@ public abstract class ShimmerBluetoothManager{
 		Iterator<ShimmerDevice> iterator = mMapOfBtConnectedShimmers.values().iterator();
 		while (iterator.hasNext()) {
 			ShimmerDevice shimmerDevice = iterator.next();
-			startStreaming(shimmerDevice);
+			try {
+				startStreaming(shimmerDevice);
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			threadSleep(SLEEP_BETWEEN_GROUP_ACTIONS_MS);
 		}
 	}
 
-	public void startStreaming(ShimmerDevice shimmerDevice){
+	public void startStreaming(ShimmerDevice shimmerDevice) throws ShimmerException{
 		if (shimmerDevice.isConnected()){
 			shimmerDevice.startStreaming();
 		}
@@ -177,19 +182,24 @@ public abstract class ShimmerBluetoothManager{
 		Iterator<ShimmerDevice> iterator = mMapOfBtConnectedShimmers.values().iterator();
 		while (iterator.hasNext()) {
 			ShimmerDevice shimmerDevice = iterator.next();
-			stopStreaming(shimmerDevice);
+			try {
+				stopStreaming(shimmerDevice);
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			threadSleep(SLEEP_BETWEEN_GROUP_ACTIONS_MS);
 		}
 	}
 	
-	public void stopStreaming(String bluetoothAddress) {
+	public void stopStreaming(String bluetoothAddress) throws ShimmerException {
 		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnectedFromMac(bluetoothAddress);
 		if(shimmerDevice!=null){
 			stopStreaming(shimmerDevice);
 		}
 	}
 
-	public void stopStreaming(ShimmerDevice shimmerDevice) {
+	public void stopStreaming(ShimmerDevice shimmerDevice) throws ShimmerException {
 		if (shimmerDevice.isConnected() && shimmerDevice.isStreaming()) {
 			shimmerDevice.stopStreaming();
 		}
@@ -347,8 +357,13 @@ public abstract class ShimmerBluetoothManager{
 					&& HW_IDS_THAT_SUPPORT_CONFIG_VIA_BT.contains(cloneHwId)
 					&& originalShimmerDevice.getClass().isInstance(cloneShimmer)){
 				originalShimmerDevice.operationPrepare();
-				originalShimmerDevice.configureFromClone(cloneShimmer);
-				originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
+				try {
+					originalShimmerDevice.configureFromClone(cloneShimmer);
+					originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
+				} catch (ShimmerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else {
 				printMessage("Hardware ID not supported currently: " + cloneHwId);
 			}

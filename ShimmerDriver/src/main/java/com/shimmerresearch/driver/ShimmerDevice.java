@@ -203,7 +203,6 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	protected String mComPort = "";
 	public transient CommsProtocolRadio mCommsProtocolRadio = null;
-	transient protected HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
 	public BT_STATE mBluetoothRadioState = BT_STATE.DISCONNECTED;
 	public DOCK_STATE mDockState = DOCK_STATE.UNDOCKED;
 	
@@ -4366,40 +4365,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	public void startStreaming() {
+	public void startStreaming() throws ShimmerException {
 		resetPacketLossVariables();
 		generateParserMap();
 //		resetAlgorithmBuffers();
 		initializeAlgorithms();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.startStreaming();
-		} else {
-			//for now default to bluetooth but need a better implementation
-			try {
-				if (mapOfVerisenseProtocolByteCommunication.containsKey(COMMUNICATION_TYPE.BLUETOOTH)) {
-					mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH).startStreaming();
-				}
-			} catch (ShimmerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
 
-	public void stopStreaming() {
+	public void stopStreaming() throws ShimmerException {
 		resetPacketLossVariables();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.stopStreaming();
-		} else {
-			//for now default to bluetooth but need a better implementation
-			try {
-				if (mapOfVerisenseProtocolByteCommunication.containsKey(COMMUNICATION_TYPE.BLUETOOTH)) {
-					mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH).stopStreaming();
-				}
-			} catch (ShimmerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
 	
@@ -4642,7 +4621,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mIsEnabledAlgorithmModulesDuringPlayback = enableAlgorithmModulesDuringPlayback;
 	}
 
-	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) throws ShimmerException {
 		//Not current used in this class but can be overwritten in ShimmerDevice instances
 	}
 

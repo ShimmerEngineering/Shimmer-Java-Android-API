@@ -202,6 +202,8 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	// Verisense Communication
+	transient protected HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
+	private COMMUNICATION_TYPE currentStreamingCommsRoute = COMMUNICATION_TYPE.BLUETOOTH;
 	private transient StatusPayload status;
 	private transient OperationalConfigPayload opConfig;
 	private transient ProductionConfigPayload prodConfigPayload;
@@ -402,15 +404,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 	
 	@Override
-	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
-		//Not current used in this class but can be overwritten in ShimmerDevice instances
-		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH);
-		try {
-			verisenseProtocolByteCommunication.writeOperationalConfig(shimmerDeviceClone.getShimmerConfigBytes());
-		} catch (ShimmerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) throws ShimmerException {
+		super.configureFromClone(shimmerDeviceClone);
+		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).writeAndReadOperationalConfig(shimmerDeviceClone.getShimmerConfigBytes());
 	}
 	
 	@Override
@@ -1545,7 +1541,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 					
 				} else if(parsedResponse instanceof OperationalConfigPayload) {
 					opConfig = (OperationalConfigPayload) parsedResponse;
-					configBytesParseAndInitialiseAlgorithms(opConfig.getPayloadContents(), COMMUNICATION_TYPE.BLUETOOTH);
+					configBytesParseAndInitialiseAlgorithms(opConfig.getPayloadContents(), currentStreamingCommsRoute);
 					printSensorParserAndAlgoMaps();
 					
 				} else if(parsedResponse instanceof TimePayload) {
@@ -1566,7 +1562,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 				
 				try {
 					DataBlockDetails dataBlockDetails = parseDataBlockMetaData(packetByteArray, pcTimestamp);
-					parseDataBlockData(dataBlockDetails, packetByteArray, BYTE_COUNT.PAYLOAD_CONTENTS_GEN8_SENSOR_ID + BYTE_COUNT.PAYLOAD_CONTENTS_RTC_BYTES_TICKS, COMMUNICATION_TYPE.BLUETOOTH);
+					parseDataBlockData(dataBlockDetails, packetByteArray, BYTE_COUNT.PAYLOAD_CONTENTS_GEN8_SENSOR_ID + BYTE_COUNT.PAYLOAD_CONTENTS_RTC_BYTES_TICKS, currentStreamingCommsRoute);
 					
 					System.out.println("Number of ObjectClusters generated: " + dataBlockDetails.getOjcArray().length);
 					
@@ -1749,38 +1745,21 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 
 	@Override
 	public void connect() throws ShimmerException {
-		//TODO assume bluetooth for the moment
-		this.connect(COMMUNICATION_TYPE.BLUETOOTH);
-	}
-	
-	@Override
-	public void stopStreaming() {
-		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(COMMUNICATION_TYPE.BLUETOOTH);
-		try {
-			verisenseProtocolByteCommunication.stopStreaming();
-		} catch (ShimmerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.connect(currentStreamingCommsRoute);
 	}
 	
 	@Override
 	public void disconnect() throws ShimmerException {
-		this.disconnect(COMMUNICATION_TYPE.BLUETOOTH);
+		this.disconnect(currentStreamingCommsRoute);
 		
 	}
 	
 	public void disconnect(COMMUNICATION_TYPE commType) throws ShimmerException {
 		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(commType);
 		if(verisenseProtocolByteCommunication!=null) {
-			try {
-				verisenseProtocolByteCommunication.disconnect();
-				if (commType.equals(COMMUNICATION_TYPE.BLUETOOTH)){
-					setBluetoothRadioState(BT_STATE.DISCONNECTED);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw(e);
+			verisenseProtocolByteCommunication.disconnect();
+			if (commType.equals(COMMUNICATION_TYPE.BLUETOOTH)){
+				setBluetoothRadioState(BT_STATE.DISCONNECTED);
 			}
 		} else {
 			throw new ShimmerException("VerisenseProtocolByteCommunication not set");
@@ -1800,15 +1779,39 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 				if (commType.equals(COMMUNICATION_TYPE.BLUETOOTH)){
 					setBluetoothRadioState(BT_STATE.CONNECTED);
 				}
-			} catch (Exception e) {
+			} catch (ShimmerException e) {
 				e.printStackTrace();
-				verisenseProtocolByteCommunication.disconnect();
+				try {
+					disconnect(commType);
+				} catch (ShimmerException e2) {
+					e.printStackTrace();
+				}
 				throw(e);
 			}
 		} else {
 			throw new ShimmerException("VerisenseProtocolByteCommunication not set");
 		}
 	}
+	
+	@Override
+	public void startStreaming() throws ShimmerException {
+		super.startStreaming();
+		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).startStreaming();
+		
+		//TODO reset this as part of the sensor map
+		AbstractSensor abstractSensor = getSensorClass(SENSORS.CLOCK);
+		if(abstractSensor!=null && abstractSensor instanceof SensorVerisenseClock) {
+			SensorVerisenseClock sensorVerisenseClock = (SensorVerisenseClock)abstractSensor;
+			sensorVerisenseClock.getSystemTimestampPlot().reset();
+		}
+	}
+
+	@Override
+	public void stopStreaming() throws ShimmerException {
+		super.stopStreaming();
+		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).stopStreaming();
+	}
+
 	
 	/**
 	 * @return Null if sensor not supported by current hardware
@@ -2036,21 +2039,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	 * @param type Note not all communications types relies on a process that needs to be close, as of now only BLE requires it, this should be done when closing the app
 	 */
 	public void stopCommunicationProcess(COMMUNICATION_TYPE type) {
-		if (type.equals(COMMUNICATION_TYPE.BLUETOOTH)) {
-			mapOfVerisenseProtocolByteCommunication.get(type).stop();
-		}
-	}
-
-	@Override
-	public void startStreaming() {
-		//TODO reset this as part of the sensor map
-		AbstractSensor abstractSensor = getSensorClass(SENSORS.CLOCK);
-		if(abstractSensor!=null && abstractSensor instanceof SensorVerisenseClock) {
-			SensorVerisenseClock sensorVerisenseClock = (SensorVerisenseClock)abstractSensor;
-			sensorVerisenseClock.getSystemTimestampPlot().reset();
-		}
-
-		super.startStreaming();
+		mapOfVerisenseProtocolByteCommunication.get(type).stop();
 	}
 
 	public PASSKEY_MODE getPasskeyMode() {
@@ -2119,6 +2108,14 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		listOfConfig.addAll(super.getSensorConfig());
 		listOfConfig.add(bleTxPower);
 		return listOfConfig;
+	}
+
+	public COMMUNICATION_TYPE getCurrentStreamingCommsRoute() {
+		return currentStreamingCommsRoute;
+	}
+
+	public void setCurrentStreamingCommsRoute(COMMUNICATION_TYPE currentStreamingCommsRoute) {
+		this.currentStreamingCommsRoute = currentStreamingCommsRoute;
 	}
 
 }
