@@ -1812,6 +1812,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).stopStreaming();
 	}
 
+	public void readLoggedData() {
+		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).readLoggedData();
+	}
 	
 	/**
 	 * @return Null if sensor not supported by current hardware

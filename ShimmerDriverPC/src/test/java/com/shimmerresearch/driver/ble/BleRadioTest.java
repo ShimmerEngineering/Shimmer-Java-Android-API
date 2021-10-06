@@ -14,7 +14,7 @@ import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
 
 public class BleRadioTest {
 	
-	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp2.exe", new ByteCommunicationListener() {
+	BleRadioByteCommunication radio1 = new BleRadioByteCommunication("00000000-0000-0000-0000-e7452c6d6f14","bleconsoleapp\\BLEConsoleApp2.exe", new ByteCommunicationListener() {
 		
 		@Override
 		public void eventNewBytesReceived(byte[] rxBytes) {
@@ -35,7 +35,7 @@ public class BleRadioTest {
 		}
 	});
 	
-	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7","C:\\repos\\ShimmerCSharpBLEAPI_Example\\Source\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\ConsoleApp3.exe", new ByteCommunicationListener() {
+	BleRadioByteCommunication radio2 = new BleRadioByteCommunication("00000000-0000-0000-0000-daa619f04ad7","bleconsoleapp\\BLEConsoleApp1.exe", new ByteCommunicationListener() {
 		
 		@Override
 		public void eventNewBytesReceived(byte[] rxBytes) {

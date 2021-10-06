@@ -27,6 +27,12 @@ import jssc.SerialPort;
 
 public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 
+	String mPathToVeriBLEApp = "bleconsoleapp\\BLEConsoleApp1.exe";
+	
+	public void setPathToVeriBLEApp(String path) {
+		mPathToVeriBLEApp = path;
+	}
+	
 	@Override
 	protected void loadBtShimmers(Object... params) {
 		// TODO Auto-generated method stub
