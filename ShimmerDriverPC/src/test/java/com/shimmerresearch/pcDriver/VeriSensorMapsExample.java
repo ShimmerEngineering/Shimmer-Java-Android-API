@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.Canvas;
 
-public class SensorMapsExample extends BasicProcessWithCallBack {
+public class VeriSensorMapsExample extends BasicProcessWithCallBack {
 	
 	private JFrame frame;
 	private JTextField textField;
@@ -58,6 +58,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	 * @wbp.parser.entryPoint
 	 */
 	public void initialize() {
+		btManager.setPathToVeriBLEApp("bleconsoleapp\\BLEConsoleApp1.exe");
 		frame = new JFrame("Shimmer SensorMaps Example");
 		frame.setBounds(100, 100, 662, 591);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -214,7 +215,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	}
 
 	public static void main(String args[]) {
-		SensorMapsExample s = new SensorMapsExample();
+		VeriSensorMapsExample s = new VeriSensorMapsExample();
 		s.initialize();
 		s.frame.setVisible(true);
 		s.setWaitForData(btManager.callBackObject);		
