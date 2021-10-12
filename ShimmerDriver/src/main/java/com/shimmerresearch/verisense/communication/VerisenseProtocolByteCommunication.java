@@ -50,6 +50,8 @@ public class VerisenseProtocolByteCommunication {
 	String dataFileName = "";
 	String dataFilePath = "";
 	String binFileFolderDir = "";
+	public String trialName = "DefaultTrial";
+	public String participantID = "DefaultParticipant";
 	protected final String BadCRC = "BadCRC";
 	int mNACKcounter;
 	int mNACKCRCcounter;
@@ -143,11 +145,19 @@ public class VerisenseProtocolByteCommunication {
 				}
 
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.DATA.ackByte()) {
-				stateChange(VerisenseProtocolState.Connected);
+				if (mState.equals(VerisenseProtocolState.StreamingLoggedData)) {
+					stateChange(VerisenseProtocolState.Connected);
+					for (RadioListener rl : mRadioListenerList) {
+						rl.hasStopStreamLoggedDataCallback();
+					}
+				}
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.DATA.responseByte()) {
 				stateChange(VerisenseProtocolState.StreamingLoggedData);
 
+				for (RadioListener rl : mRadioListenerList) {
+					rl.isNowStreamLoggedDataCallback();
+				}
 				verisenseMessage.consolePrintTransferTime();
 
 				if (!verisenseMessage.CRCCheck()) {
@@ -302,7 +312,8 @@ public class VerisenseProtocolByteCommunication {
 			// var trialSettings = RealmService.LoadTrialSettings();
 
 			// var participantID = asm.ParticipantID;
-			binFileFolderDir = String.format("%s/%s/%s/BinaryFiles", "trialname", "participantID", "uuid");
+			
+			binFileFolderDir = String.format("%s/%s/%s/BinaryFiles", getTrialName(), getParticipantID(), mByteCommunication.getUuid());
 			Path path = Paths.get(binFileFolderDir);
 
 			// java.nio.file.Files;
@@ -603,6 +614,22 @@ public class VerisenseProtocolByteCommunication {
 		}
 
 		throw new ShimmerException("TIMEOUT for Property = " + verisenseProperty.toString() + ", expected = " + expectedCommand.toString());
+	}
+	
+	public void setTrialName(String trial) {
+		trialName = trial;
+	}
+	
+	public String getTrialName() {
+		return trialName;
+	}
+	
+	public void setParticipantID(String participant) {
+		participantID = participant;
+	}
+	
+	public String getParticipantID() {
+		return participantID;
 	}
 
 }

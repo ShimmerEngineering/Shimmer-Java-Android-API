@@ -25,6 +25,8 @@ public interface RadioListener {
 	public void eventDockedStateChange();
 	public void isNowStreamingCallback();
 	public void hasStopStreamingCallback();
+	public void isNowStreamLoggedDataCallback();
+	public void hasStopStreamLoggedDataCallback();
 	public void initialiseStreamingCallback();
 	
 //	public void eventSyncStates(boolean isDocked, boolean isInitialised, boolean isSdLogging, boolean isSensing, boolean isStreaming, boolean haveAttemptedToRead);

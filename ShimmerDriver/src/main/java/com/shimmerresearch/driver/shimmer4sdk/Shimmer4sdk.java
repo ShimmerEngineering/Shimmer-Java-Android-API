@@ -672,6 +672,18 @@ public class Shimmer4sdk extends ShimmerDevice {
 					}
 				}
 
+				@Override
+				public void isNowStreamLoggedDataCallback() {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void hasStopStreamLoggedDataCallback() {
+					// TODO Auto-generated method stub
+					
+				}
+
 			});
 			
 		}

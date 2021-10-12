@@ -1607,6 +1607,18 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 				// TODO Auto-generated method stub
 
 			}
+
+			@Override
+			public void isNowStreamLoggedDataCallback() {
+				// TODO Auto-generated method stub
+				setBluetoothRadioState(BT_STATE.STREAMING_LOGGED_DATA);
+			}
+
+			@Override
+			public void hasStopStreamLoggedDataCallback() {
+				// TODO Auto-generated method stub
+				setBluetoothRadioState(BT_STATE.CONNECTED);
+			}
 		});
 	}
 	
@@ -2119,6 +2131,22 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 
 	public void setCurrentStreamingCommsRoute(COMMUNICATION_TYPE currentStreamingCommsRoute) {
 		this.currentStreamingCommsRoute = currentStreamingCommsRoute;
+	}
+	
+	public void setTrialName(String trial) {
+		mProtocol.trialName = trial;
+	}
+	
+	public String getTrialName() {
+		return mProtocol.trialName;
+	}
+	
+	public void setParticipantID(String participant) {
+		mProtocol.participantID = participant;
+	}
+	
+	public String getParticipantID() {
+		return mProtocol.participantID;
 	}
 
 }

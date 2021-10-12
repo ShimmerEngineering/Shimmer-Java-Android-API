@@ -145,6 +145,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		CONNECTED("Ready"),  // The class is now connected to a remote device
 		STREAMING("Streaming"),  // The class is now connected to a remote device
 		STREAMING_AND_SDLOGGING("Streaming and SD Logging"),
+		STREAMING_LOGGED_DATA("Streaming Logged Data"),
 		SDLOGGING("SD Logging"),
 		CONFIGURING("Configuring"), // The class is now initiating an outgoing connection 
 		CONNECTION_LOST("Lost connection"),

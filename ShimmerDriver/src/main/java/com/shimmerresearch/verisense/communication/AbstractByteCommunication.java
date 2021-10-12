@@ -13,6 +13,8 @@ public abstract class AbstractByteCommunication {
 	public abstract void writeBytes(byte[] bytes);
 
 	public abstract void stop();
+	
+	public abstract String getUuid();
 
 	public void setByteCommunicationListener(ByteCommunicationListener byteCommListener) {
 		mByteCommunicationListener = byteCommListener;

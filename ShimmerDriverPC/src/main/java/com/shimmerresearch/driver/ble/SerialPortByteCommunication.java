@@ -78,6 +78,12 @@ public class SerialPortByteCommunication extends AbstractByteCommunication {
 	public void stop() {
 		this.disconnect();
 	}
+
+	@Override
+	public String getUuid() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }
