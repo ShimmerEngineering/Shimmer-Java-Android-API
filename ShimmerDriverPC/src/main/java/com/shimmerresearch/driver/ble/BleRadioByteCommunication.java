@@ -192,4 +192,10 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 		DestroyProcess();
 	}
 
+	@Override
+	public String getUuid() {
+		// TODO Auto-generated method stub
+		return this.uuid;
+	}
+
 }
