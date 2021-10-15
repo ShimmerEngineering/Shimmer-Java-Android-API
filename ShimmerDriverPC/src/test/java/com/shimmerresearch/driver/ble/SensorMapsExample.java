@@ -50,6 +50,11 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	private JFrame frame;
 	private JTextField textField;
 	private JTextField btFriendlyNameTextField;
+	private JTextField ParticipantNameTextField;
+	private JTextField TrialNameTextField;
+	private JLabel lblParticipantName;
+	private JLabel lblTrialName;
+	private JButton btnSync;
 	JTextPane textPaneStatus;
 	static ShimmerDevice shimmerDevice;
 	static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
@@ -69,22 +74,22 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().setLayout(null);
 		
 		JLabel lblSetComPort = new JLabel("Set COM Port or Mac Id");
-		lblSetComPort.setBounds(10, 100, 154, 23);
+		lblSetComPort.setBounds(10, 85, 154, 23);
 		frame.getContentPane().add(lblSetComPort);
 		
 		textField = new JTextField();
 		textField.setToolTipText("for example COM1, COM2, d0:2b:46:3d:a2:bb, etc");
-		textField.setBounds(10, 121, 154, 29);
+		textField.setBounds(10, 106, 154, 29);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
 		JLabel lblSetFriendlyName = new JLabel("Set Friendly Name");
-		lblSetFriendlyName.setBounds(10, 40, 154, 23);
+		lblSetFriendlyName.setBounds(10, 30, 154, 23);
 		frame.getContentPane().add(lblSetFriendlyName);
 		
 		btFriendlyNameTextField = new JTextField();
 		btFriendlyNameTextField.setToolTipText("for example Verisense-19092501A2BB, Shimmer3-1E59, etc");
-		btFriendlyNameTextField.setBounds(10, 61, 154, 29);
+		btFriendlyNameTextField.setBounds(10, 51, 154, 29);
 		frame.getContentPane().add(btFriendlyNameTextField);
 		btFriendlyNameTextField.setColumns(10);
 		
@@ -112,8 +117,45 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(210, 90, 175, 31);
+		btnConnect.setBounds(210, 35, 175, 31);
 		frame.getContentPane().add(btnConnect);
+		
+		lblParticipantName = new JLabel("Participant Name");
+		lblParticipantName.setBounds(415, 70, 175, 23);
+		frame.getContentPane().add(lblParticipantName);
+		
+		ParticipantNameTextField = new JTextField();
+		ParticipantNameTextField.setToolTipText("enter your participant name");
+		ParticipantNameTextField.setBounds(415, 91, 175, 29);
+		frame.getContentPane().add(ParticipantNameTextField);
+		ParticipantNameTextField.setColumns(10);
+		
+		lblTrialName = new JLabel("Trial Name");
+		lblTrialName.setBounds(415, 130, 175, 23);
+		frame.getContentPane().add(lblTrialName);
+		
+		TrialNameTextField = new JTextField();
+		TrialNameTextField.setToolTipText("enter the trial name");
+		TrialNameTextField.setBounds(415, 151, 175, 29);
+		frame.getContentPane().add(TrialNameTextField);
+		TrialNameTextField.setColumns(10);
+		
+		btnSync = new JButton("DATA SYNC");
+		btnSync.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				VerisenseDevice verisenseDevice = (VerisenseDevice)shimmerDevice;
+				verisenseDevice.readLoggedData();
+			}
+		});
+		btnSync.setToolTipText("Data Sync");
+		btnSync.setBounds(210, 199, 175, 31);
+		frame.getContentPane().add(btnSync);
+		
+		ParticipantNameTextField.setVisible(false);
+		lblParticipantName.setVisible(false);
+		TrialNameTextField.setVisible(false);
+		lblTrialName.setVisible(false);
+		btnSync.setVisible(false);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
 		btnDisconnect.addActionListener(new ActionListener() {
@@ -122,15 +164,15 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(415, 90, 175, 31);
+		btnDisconnect.setBounds(210, 76, 175, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
-		lblShimmerStatus.setBounds(10, 160, 154, 23);
+		lblShimmerStatus.setBounds(10, 145, 154, 23);
 		frame.getContentPane().add(lblShimmerStatus);
 		
 		textPaneStatus = new JTextPane();
-		textPaneStatus.setBounds(10, 181, 154, 29);
+		textPaneStatus.setBounds(10, 166, 154, 29);
 		frame.getContentPane().add(textPaneStatus);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -225,7 +267,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 			}
 		});
-		btnStartStreaming.setBounds(210, 181, 175, 31);
+		btnStartStreaming.setBounds(210, 117, 175, 31);
 		frame.getContentPane().add(btnStartStreaming);
 		
 		JButton btnStopStreaming = new JButton("STOP STREAMING");
@@ -239,7 +281,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				}
 			}
 		});
-		btnStopStreaming.setBounds(415, 181, 175, 31);
+		btnStopStreaming.setBounds(210, 158, 175, 31);
 		frame.getContentPane().add(btnStopStreaming);
 		
 		plotManager.setTitle("Plot");		
@@ -281,14 +323,30 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				textPaneStatus.setText("connected");
 				
-				String btComportOrMacAddress = btFriendlyName.contains("Verisense") ? macAddress.toUpperCase() : btComport;
-				shimmerDevice = btManager.getShimmerDeviceBtConnected(btComportOrMacAddress);
+				if(btFriendlyName.contains("Verisense")){
+					ParticipantNameTextField.setVisible(true);
+					lblParticipantName.setVisible(true);
+					TrialNameTextField.setVisible(true);
+					lblTrialName.setVisible(true);
+					btnSync.setVisible(true);
+					
+					shimmerDevice = btManager.getShimmerDeviceBtConnected(macAddress.toUpperCase());
+				}
+				else {
+					shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
+				}
 				
 				//shimmer.startStreaming();
 			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
 //					|| callbackObject.mState == BT_STATE.NONE
 					|| callbackObject.mState == BT_STATE.CONNECTION_LOST){
-				textPaneStatus.setText("disconnected");				
+				textPaneStatus.setText("disconnected");
+				
+				ParticipantNameTextField.setVisible(false);
+				lblParticipantName.setVisible(false);
+				TrialNameTextField.setVisible(false);
+				lblTrialName.setVisible(false);
+				btnSync.setVisible(false);
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject)object;
