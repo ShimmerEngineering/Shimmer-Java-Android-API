@@ -121,22 +121,22 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(btnConnect);
 		
 		lblParticipantName = new JLabel("Participant Name");
-		lblParticipantName.setBounds(415, 70, 175, 23);
+		lblParticipantName.setBounds(415, 30, 175, 23);
 		frame.getContentPane().add(lblParticipantName);
 		
 		ParticipantNameTextField = new JTextField();
 		ParticipantNameTextField.setToolTipText("enter your participant name");
-		ParticipantNameTextField.setBounds(415, 91, 175, 29);
+		ParticipantNameTextField.setBounds(415, 51, 175, 29);
 		frame.getContentPane().add(ParticipantNameTextField);
 		ParticipantNameTextField.setColumns(10);
 		
 		lblTrialName = new JLabel("Trial Name");
-		lblTrialName.setBounds(415, 130, 175, 23);
+		lblTrialName.setBounds(415, 85, 175, 23);
 		frame.getContentPane().add(lblTrialName);
 		
 		TrialNameTextField = new JTextField();
 		TrialNameTextField.setToolTipText("enter the trial name");
-		TrialNameTextField.setBounds(415, 151, 175, 29);
+		TrialNameTextField.setBounds(415, 106, 175, 29);
 		frame.getContentPane().add(TrialNameTextField);
 		TrialNameTextField.setColumns(10);
 		
@@ -144,6 +144,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnSync.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				VerisenseDevice verisenseDevice = (VerisenseDevice)shimmerDevice;
+				verisenseDevice.setTrialName(TrialNameTextField.getText());
+				verisenseDevice.setParticipantID(ParticipantNameTextField.getText());
 				verisenseDevice.readLoggedData();
 			}
 		});
