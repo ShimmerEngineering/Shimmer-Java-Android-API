@@ -2148,5 +2148,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	public String getParticipantID() {
 		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).participantID;
 	}
+	
+	public int getPayloadIndex() {
+		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).rxVerisenseMessageInProgress.payloadIndex;
+	}
 
 }

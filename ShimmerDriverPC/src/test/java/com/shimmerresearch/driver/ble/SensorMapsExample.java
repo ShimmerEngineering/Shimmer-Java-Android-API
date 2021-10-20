@@ -55,6 +55,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	private JLabel lblParticipantName;
 	private JLabel lblTrialName;
 	private JButton btnSync;
+	private JLabel lblPayloadIndex;
 	JTextPane textPaneStatus;
 	static ShimmerDevice shimmerDevice;
 	static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
@@ -94,8 +95,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btFriendlyNameTextField.setColumns(10);
 		
 		//textField.setText("e7:45:2c:6d:6f:14");
-		//textField.setText("d0:2b:46:3d:a2:bb");
-		textField.setText("e7:ec:37:a0:d2:34");
+		textField.setText("d0:2b:46:3d:a2:bb");
+		//textField.setText("e7:ec:37:a0:d2:34");
 		//textField.setText("Com5");
 		//textField2.setText("Shimmer-E6C8");
 		btFriendlyNameTextField.setText("Verisense-19092501A2BB");
@@ -140,6 +141,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(TrialNameTextField);
 		TrialNameTextField.setColumns(10);
 		
+		lblPayloadIndex = new JLabel("Current payload index :");
+		lblPayloadIndex.setBounds(415, 150, 175, 23);
+		frame.getContentPane().add(lblPayloadIndex);
+		
 		btnSync = new JButton("DATA SYNC");
 		btnSync.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -158,6 +163,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		TrialNameTextField.setVisible(false);
 		lblTrialName.setVisible(false);
 		btnSync.setVisible(false);
+		lblPayloadIndex.setVisible(false);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
 		btnDisconnect.addActionListener(new ActionListener() {
@@ -331,6 +337,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					TrialNameTextField.setVisible(true);
 					lblTrialName.setVisible(true);
 					btnSync.setVisible(true);
+					lblPayloadIndex.setVisible(true);
 					
 					shimmerDevice = btManager.getShimmerDeviceBtConnected(macAddress.toUpperCase());
 				}
@@ -349,6 +356,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				TrialNameTextField.setVisible(false);
 				lblTrialName.setVisible(false);
 				btnSync.setVisible(false);
+				lblPayloadIndex.setVisible(false);
+			} else if (callbackObject.mState == BT_STATE.STREAMING_LOGGED_DATA) {
+				textPaneStatus.setText("synchronizing data");
+				
+				VerisenseDevice verisenseDevice = (VerisenseDevice)shimmerDevice;
+				lblPayloadIndex.setText("Current Payload Index : " + verisenseDevice.getPayloadIndex());
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject)object;
