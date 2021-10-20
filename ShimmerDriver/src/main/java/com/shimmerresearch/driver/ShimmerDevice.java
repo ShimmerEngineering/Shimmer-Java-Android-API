@@ -4366,19 +4366,29 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void startStreaming() throws ShimmerException {
-		resetPacketLossVariables();
-		generateParserMap();
-//		resetAlgorithmBuffers();
-		initializeAlgorithms();
-		if(mCommsProtocolRadio!=null){
-			mCommsProtocolRadio.startStreaming();
+		if (this.mBluetoothRadioState.equals(BT_STATE.CONNECTED)) {
+			resetPacketLossVariables();
+			generateParserMap();
+//			resetAlgorithmBuffers();
+			initializeAlgorithms();
+			if(mCommsProtocolRadio!=null){
+				mCommsProtocolRadio.startStreaming();
+			}
+        }
+		else {
+			throw new ShimmerException("Device is already streaming");
 		}
 	}
 
 	public void stopStreaming() throws ShimmerException {
-		resetPacketLossVariables();
-		if(mCommsProtocolRadio!=null){
-			mCommsProtocolRadio.stopStreaming();
+		if (this.mBluetoothRadioState.equals(BT_STATE.STREAMING)) {
+			resetPacketLossVariables();
+			if(mCommsProtocolRadio!=null){
+				mCommsProtocolRadio.stopStreaming();
+			}
+        }
+		else {
+			throw new ShimmerException("Device is not streaming");
 		}
 	}
 	
