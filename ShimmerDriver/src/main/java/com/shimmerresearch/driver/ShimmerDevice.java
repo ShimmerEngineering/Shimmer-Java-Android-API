@@ -4375,7 +4375,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				mCommsProtocolRadio.startStreaming();
 			}
         }
-		else {
+		else if (this.mBluetoothRadioState.equals(BT_STATE.STREAMING)) {
 			throw new ShimmerException("Device is already streaming");
 		}
 	}
