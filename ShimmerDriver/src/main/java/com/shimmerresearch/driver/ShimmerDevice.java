@@ -4366,20 +4366,20 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 
 	public void startStreaming() throws ShimmerException {
-			resetPacketLossVariables();
-			generateParserMap();
-//			resetAlgorithmBuffers();
-			initializeAlgorithms();
-			if(mCommsProtocolRadio!=null){
-				mCommsProtocolRadio.startStreaming();
-			}
+		resetPacketLossVariables();
+		generateParserMap();
+//		resetAlgorithmBuffers();
+		initializeAlgorithms();
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.startStreaming();
+		}
 	}
 
 	public void stopStreaming() throws ShimmerException {
-			resetPacketLossVariables();
-			if(mCommsProtocolRadio!=null){
-				mCommsProtocolRadio.stopStreaming();
-			}
+		resetPacketLossVariables();
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.stopStreaming();
+		}
 	}
 	
 	public void startSDLogging() {
