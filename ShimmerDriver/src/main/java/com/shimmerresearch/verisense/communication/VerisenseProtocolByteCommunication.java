@@ -421,13 +421,21 @@ public class VerisenseProtocolByteCommunication {
 	}
 
 	public void startStreaming() throws ShimmerException {
-		writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {STREAMING_COMMAND.STREAMING_START});
-		waitForAck(VERISENSE_PROPERTY.STREAMING, TIMEOUT_MS.STANDARD);
+		if(!mState.equals(VerisenseProtocolState.Streaming)) {
+			writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {STREAMING_COMMAND.STREAMING_START});
+			waitForAck(VERISENSE_PROPERTY.STREAMING, TIMEOUT_MS.STANDARD);
+		} else {
+			throw new ShimmerException("Device is already streaming");
+		}
 	}
 
 	public void stopStreaming() throws ShimmerException {
-		writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {STREAMING_COMMAND.STREAMING_STOP});
-		waitForAck(VERISENSE_PROPERTY.STREAMING, TIMEOUT_MS.STANDARD);
+		if(mState.equals(VerisenseProtocolState.Streaming)) {
+			writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {STREAMING_COMMAND.STREAMING_STOP});
+			waitForAck(VERISENSE_PROPERTY.STREAMING, TIMEOUT_MS.STANDARD);
+		} else {
+			throw new ShimmerException("Device is not streaming");
+		}
 	}
 
 	public void writeTime() throws ShimmerException {
