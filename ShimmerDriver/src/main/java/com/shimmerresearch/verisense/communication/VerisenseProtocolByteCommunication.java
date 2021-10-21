@@ -55,7 +55,7 @@ public class VerisenseProtocolByteCommunication {
 	protected final String BadCRC = "BadCRC";
 	int mNACKcounter;
 	int mNACKCRCcounter;
-
+    private String mRootPathForBinFile=""; 
 	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit (actually 95 MB because 100MB = 102,400KB = 104,857,600 bytes, not 100,000,000 bytes)
 
 	//TODO this might be doubling up on setBluetoothRadioState inside ShimmerDevice, could we reuse that instead?
@@ -313,7 +313,11 @@ public class VerisenseProtocolByteCommunication {
 
 			// var participantID = asm.ParticipantID;
 			
-			binFileFolderDir = String.format("%s/%s/%s/BinaryFiles", getTrialName(), getParticipantID(), mByteCommunication.getUuid());
+			if (mRootPathForBinFile.isEmpty()) {
+				binFileFolderDir = String.format("%s/%s/%s/BinaryFiles", getTrialName(), getParticipantID(), mByteCommunication.getUuid());
+			} else {
+				binFileFolderDir = String.format("%s/%s/%s/%s/BinaryFiles",mRootPathForBinFile, getTrialName(), getParticipantID(), mByteCommunication.getUuid());
+			}
 			Path path = Paths.get(binFileFolderDir);
 
 			// java.nio.file.Files;
@@ -417,13 +421,21 @@ public class VerisenseProtocolByteCommunication {
 	}
 
 	public void startStreaming() throws ShimmerException {
-		writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {STREAMING_COMMAND.STREAMING_START});
-		waitForAck(VERISENSE_PROPERTY.STREAMING, TIMEOUT_MS.STANDARD);
+		if(!mState.equals(VerisenseProtocolState.Streaming)) {
+			writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {STREAMING_COMMAND.STREAMING_START});
+			waitForAck(VERISENSE_PROPERTY.STREAMING, TIMEOUT_MS.STANDARD);
+		} else {
+			throw new ShimmerException("Device is already streaming");
+		}
 	}
 
 	public void stopStreaming() throws ShimmerException {
-		writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {STREAMING_COMMAND.STREAMING_STOP});
-		waitForAck(VERISENSE_PROPERTY.STREAMING, TIMEOUT_MS.STANDARD);
+		if(mState.equals(VerisenseProtocolState.Streaming)) {
+			writeMessageWithPayload(VERISENSE_PROPERTY.STREAMING.writeByte(), new byte[] {STREAMING_COMMAND.STREAMING_STOP});
+			waitForAck(VERISENSE_PROPERTY.STREAMING, TIMEOUT_MS.STANDARD);
+		} else {
+			throw new ShimmerException("Device is not streaming");
+		}
 	}
 
 	public void writeTime() throws ShimmerException {
@@ -630,6 +642,10 @@ public class VerisenseProtocolByteCommunication {
 	
 	public String getParticipantID() {
 		return participantID;
+	}
+	
+	public void setRootPathForBinFile(String rootPath) {
+		mRootPathForBinFile = rootPath;
 	}
 
 }
