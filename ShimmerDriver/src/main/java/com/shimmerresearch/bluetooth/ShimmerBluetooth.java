@@ -459,6 +459,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
 	public static final int MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE = 7;
+	public static final int MSG_IDENTIFIER_SYNC_PROGRESS = 10;
 	
 	//Temp here for Bluetooth discovery, pairing and unpairing operations
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_PAIR_UNPAIR_ALL = 11;

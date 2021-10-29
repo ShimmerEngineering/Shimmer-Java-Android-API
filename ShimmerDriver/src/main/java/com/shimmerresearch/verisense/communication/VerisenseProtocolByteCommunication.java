@@ -129,7 +129,14 @@ public class VerisenseProtocolByteCommunication {
 
 	protected void stateChange(VerisenseProtocolState state) {
 		System.out.println("State Change: " + state.toString());
-		mState = state;
+		if (!mState.equals(state)) {
+			mState = state;
+			if (mState.equals(VerisenseProtocolState.StreamingLoggedData)) {
+				for (RadioListener rl : mRadioListenerList) {
+					rl.isNowStreamLoggedDataCallback();
+				}
+			}
+		}
 	}
 
 	public void removeRadioListenerList() {
@@ -154,12 +161,7 @@ public class VerisenseProtocolByteCommunication {
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.DATA.responseByte()) {
 				stateChange(VerisenseProtocolState.StreamingLoggedData);
-
-				for (RadioListener rl : mRadioListenerList) {
-					rl.isNowStreamLoggedDataCallback();
-				}
 				verisenseMessage.consolePrintTransferTime();
-
 				if (!verisenseMessage.CRCCheck()) {
 					writeLoggedDataNack();
 					return;
@@ -177,7 +179,6 @@ public class VerisenseProtocolByteCommunication {
 						createBinFile(verisenseMessage, false);
 					}
 				}
-
 				FinishPayload(verisenseMessage, false);
 
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.CONFIG_PROD.responseByte()) {
@@ -287,6 +288,7 @@ public class VerisenseProtocolByteCommunication {
 	
 	private void sendObjectToRadioListenerList(byte commandAndProperty, Object object) {
 		for (RadioListener rl : mRadioListenerList) {
+			//clone here because if the message is sent to a different thread there is a risk it could be set to null in the origal thread
 			rl.eventResponseReceived(commandAndProperty, object);
 		}
 	}
@@ -295,6 +297,11 @@ public class VerisenseProtocolByteCommunication {
 		if (CRCError) {
 			verisenseMessage.mCRCErrorPayload = true;
 		}
+		
+		for (RadioListener rl : mRadioListenerList) {
+			rl.eventNewSyncPayloadReceived(verisenseMessage.payloadIndex, CRCError);
+		}
+		
 		try {
 			WritePayloadToBinFile(verisenseMessage);
 		} catch (Exception ex) {

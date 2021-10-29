@@ -7,6 +7,7 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.exceptions.ShimmerException;
+import com.shimmerresearch.verisense.communication.SyncProgressDetails;
 
 /**
  * Still in development. Trying to figure out the best way to share common code
@@ -99,6 +100,11 @@ public class ShimmerDeviceCallbackAdapter implements Serializable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void newSyncPayloadReceived(int payloadIndex, boolean crcError) {
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(),new SyncProgressDetails(payloadIndex,crcError));
+		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_SYNC_PROGRESS, callBackObject);
 	}
 	
 	public void hasStopStreaming() {

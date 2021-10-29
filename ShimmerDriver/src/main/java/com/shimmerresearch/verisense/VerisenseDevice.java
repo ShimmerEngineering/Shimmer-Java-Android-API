@@ -1619,6 +1619,12 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 				// TODO Auto-generated method stub
 				setBluetoothRadioState(BT_STATE.CONNECTED);
 			}
+
+			@Override
+			public void eventNewSyncPayloadReceived(int payloadIndex, boolean crcError) {
+				// TODO Auto-generated method stub
+				mDeviceCallbackAdapter.newSyncPayloadReceived(payloadIndex, crcError);
+			}
 		});
 	}
 	

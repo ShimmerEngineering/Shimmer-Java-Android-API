@@ -2,6 +2,7 @@ package com.shimmerresearch.driver.ble;
 
 import javax.swing.JFrame;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
@@ -20,6 +21,7 @@ import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 import com.shimmerresearch.verisense.VerisenseDevice;
+import com.shimmerresearch.verisense.communication.SyncProgressDetails;
 
 import info.monitorenter.gui.chart.Chart2D;
 
@@ -362,9 +364,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}else if (callbackObject.mState == BT_STATE.STREAMING_LOGGED_DATA) {
 				textPaneStatus.setText("synchronizing data");
 				lblPayloadIndex.setVisible(true);
-
-				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
-				lblPayloadIndex.setText("Current Payload Index : " + verisenseDevice.getPayloadIndex());
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject) object;
@@ -390,6 +389,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL) {
 
+		} else if (ind == ShimmerBluetooth.MSG_IDENTIFIER_SYNC_PROGRESS) {
+			CallbackObject callbackObject = (CallbackObject) object;
+			lblPayloadIndex.setText("Current Payload Index : " + ((SyncProgressDetails)callbackObject.mMyObject).mPayloadIndex);
 		}
 	}
 }
