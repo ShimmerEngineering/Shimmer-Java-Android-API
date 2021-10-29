@@ -44,6 +44,8 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Canvas;
+import javax.swing.SwingConstants;
+import javax.swing.JTextArea;
 
 public class SensorMapsExample extends BasicProcessWithCallBack {
 
@@ -71,7 +73,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	 */
 	public void initialize() {
 		frame = new JFrame("Shimmer SensorMaps Example");
-		frame.setBounds(100, 100, 662, 591);
+		frame.setBounds(100, 100, 868, 596);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -141,8 +143,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(TrialNameTextField);
 		TrialNameTextField.setColumns(10);
 
-		lblPayloadIndex = new JLabel("Current payload index :");
-		lblPayloadIndex.setBounds(415, 150, 175, 23);
+		lblPayloadIndex = new JLabel("Current payload index : ");
+		lblPayloadIndex.setVerticalAlignment(SwingConstants.TOP);
+		lblPayloadIndex.setBounds(415, 150, 408, 35);
 		frame.getContentPane().add(lblPayloadIndex);
 
 		btnSync = new JButton("DATA SYNC");
@@ -238,13 +241,13 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mnTools.add(mntmDeviceConfiguration);
 
 		JPanel plotPanel = new JPanel();
-		plotPanel.setBounds(10, 236, 611, 272);
+		plotPanel.setBounds(10, 236, 828, 272);
 		frame.getContentPane().add(plotPanel);
 		plotPanel.setLayout(null);
 
 		final Chart2D mChart = new Chart2D();
 		mChart.setLocation(12, 13);
-		mChart.setSize(587, 246);
+		mChart.setSize(801, 246);
 		plotPanel.add(mChart);
 		plotManager.addChart(mChart);
 
@@ -391,7 +394,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 
 		} else if (ind == ShimmerBluetooth.MSG_IDENTIFIER_SYNC_PROGRESS) {
 			CallbackObject callbackObject = (CallbackObject) object;
-			lblPayloadIndex.setText("Current Payload Index : " + ((SyncProgressDetails)callbackObject.mMyObject).mPayloadIndex);
+			lblPayloadIndex.setText("Current Payload Index : " + ((SyncProgressDetails)callbackObject.mMyObject).mPayloadIndex + " ; Speed(KBps) : " + ((SyncProgressDetails)callbackObject.mMyObject).mTransferRateBytes/1000 );
 		}
 	}
 }

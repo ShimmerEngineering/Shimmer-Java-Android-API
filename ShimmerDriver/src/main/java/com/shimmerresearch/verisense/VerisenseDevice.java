@@ -1621,9 +1621,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			}
 
 			@Override
-			public void eventNewSyncPayloadReceived(int payloadIndex, boolean crcError) {
+			public void eventNewSyncPayloadReceived(int payloadIndex, boolean crcError, double transferRateBytes) {
 				// TODO Auto-generated method stub
-				mDeviceCallbackAdapter.newSyncPayloadReceived(payloadIndex, crcError);
+				mDeviceCallbackAdapter.newSyncPayloadReceived(payloadIndex, crcError, transferRateBytes);
 			}
 		});
 	}

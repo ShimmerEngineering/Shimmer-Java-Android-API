@@ -4,8 +4,10 @@ public class SyncProgressDetails {
 
 	public int mPayloadIndex;
 	public boolean mCRCError;
-	public SyncProgressDetails(int payloadIndex, boolean crcError) {
+	public double mTransferRateBytes;
+	public SyncProgressDetails(int payloadIndex, boolean crcError, double transferRateBytes) {
 		mPayloadIndex = payloadIndex;
 		mCRCError = crcError;
+		mTransferRateBytes = transferRateBytes;
 	}
 }

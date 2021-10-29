@@ -37,6 +37,6 @@ public interface RadioListener {
 	public void eventSetIsInitialised(boolean isInitialised);
 	public void eventSetHaveAttemptedToRead(boolean haveAttemptedToRead);
 	public void eventError(ShimmerException dE);
-	public void eventNewSyncPayloadReceived(int payloadIndex, boolean crcError);
+	public void eventNewSyncPayloadReceived(int payloadIndex, boolean crcError, double transferRateBytes);
 
 }

@@ -685,7 +685,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 				}
 
 				@Override
-				public void eventNewSyncPayloadReceived(int payloadIndex, boolean crcError) {
+				public void eventNewSyncPayloadReceived(int payloadIndex, boolean crcError, double transferRateBytes) {
 					// TODO Auto-generated method stub
 					
 				}

@@ -102,8 +102,8 @@ public class ShimmerDeviceCallbackAdapter implements Serializable {
 		}
 	}
 	
-	public void newSyncPayloadReceived(int payloadIndex, boolean crcError) {
-		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(),new SyncProgressDetails(payloadIndex,crcError));
+	public void newSyncPayloadReceived(int payloadIndex, boolean crcError, double transferRateBytes) {
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(),new SyncProgressDetails(payloadIndex,crcError, transferRateBytes));
 		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_SYNC_PROGRESS, callBackObject);
 	}
 	
