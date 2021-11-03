@@ -48,7 +48,7 @@ public class VerisenseProtocolByteCommunication {
 
 	public int PreviouslyWrittenPayloadIndex;
 	String dataFileName = "";
-	public String dataFilePath = "";
+	String dataFilePath = "";
 	String binFileFolderDir = "";
 	public String trialName = "DefaultTrial";
 	public String participantID = "DefaultParticipant";
@@ -653,6 +653,10 @@ public class VerisenseProtocolByteCommunication {
 	
 	public void setRootPathForBinFile(String rootPath) {
 		mRootPathForBinFile = rootPath;
+	}
+	
+	public String getDataFilePath() {
+		return dataFilePath;
 	}
 
 }

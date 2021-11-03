@@ -2156,7 +2156,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 	
 	public String getDataFilePath() {
-		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).dataFilePath;
+		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).getDataFilePath();
 	}
 	
 	@Deprecated // not sure if this is used for the file parser if its not we can delete this method. the proper way to get the payload index will be through MSG_IDENTIFIER_SYNC_PROGRESS as this method will fail on Android 
