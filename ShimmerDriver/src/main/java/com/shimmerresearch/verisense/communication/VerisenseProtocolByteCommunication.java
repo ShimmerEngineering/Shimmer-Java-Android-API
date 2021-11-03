@@ -48,7 +48,7 @@ public class VerisenseProtocolByteCommunication {
 
 	public int PreviouslyWrittenPayloadIndex;
 	String dataFileName = "";
-	String dataFilePath = "";
+	public String dataFilePath = "";
 	String binFileFolderDir = "";
 	public String trialName = "DefaultTrial";
 	public String participantID = "DefaultParticipant";

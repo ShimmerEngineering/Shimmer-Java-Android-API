@@ -41,6 +41,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Canvas;
@@ -56,6 +57,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	private JTextField TrialNameTextField;
 	private JLabel lblParticipantName;
 	private JLabel lblTrialName;
+	private JTextArea lblBinFileDirectory;
 	private JButton btnSync;
 	private JLabel lblPayloadIndex;
 	JTextPane textPaneStatus;
@@ -99,7 +101,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 
 		// textField.setText("e7:45:2c:6d:6f:14");
 		textField.setText("d0:2b:46:3d:a2:bb");
-		// textField.setText("e7:ec:37:a0:d2:34");
+		//textField.setText("e7:ec:37:a0:d2:34");
 		// textField.setText("Com5");
 		// textField2.setText("Shimmer-E6C8");
 		btFriendlyNameTextField.setText("Verisense-19092501A2BB");
@@ -147,6 +149,15 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		lblPayloadIndex.setVerticalAlignment(SwingConstants.TOP);
 		lblPayloadIndex.setBounds(415, 150, 408, 35);
 		frame.getContentPane().add(lblPayloadIndex);
+		
+		lblBinFileDirectory = new JTextArea("");
+		lblBinFileDirectory.setBounds(415, 150, 408, 70);
+		frame.getContentPane().add(lblBinFileDirectory);
+		lblBinFileDirectory.setEditable(false);
+		lblBinFileDirectory.setOpaque(false);    
+		lblBinFileDirectory.setWrapStyleWord(true);
+		lblBinFileDirectory.setLineWrap(true);
+		lblBinFileDirectory.setText("");
 
 		btnSync = new JButton("DATA SYNC");
 		btnSync.addActionListener(new ActionListener() {
@@ -343,6 +354,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					TrialNameTextField.setVisible(true);
 					lblTrialName.setVisible(true);
 					btnSync.setVisible(true);
+					lblBinFileDirectory.setVisible(true);
 					lblPayloadIndex.setVisible(false);
 
 					shimmerDevice = btManager.getShimmerDeviceBtConnected(macAddress.toUpperCase());
@@ -361,12 +373,14 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				TrialNameTextField.setVisible(false);
 				lblTrialName.setVisible(false);
 				btnSync.setVisible(false);
+				lblBinFileDirectory.setVisible(false);
 				lblPayloadIndex.setVisible(false);
 			} else if (callbackObject.mState == BT_STATE.STREAMING) {
 				textPaneStatus.setText("device streaming");
 			}else if (callbackObject.mState == BT_STATE.STREAMING_LOGGED_DATA) {
 				textPaneStatus.setText("synchronizing data");
 				lblPayloadIndex.setVisible(true);
+				lblBinFileDirectory.setVisible(false);
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject) object;
@@ -395,6 +409,11 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		} else if (ind == ShimmerBluetooth.MSG_IDENTIFIER_SYNC_PROGRESS) {
 			CallbackObject callbackObject = (CallbackObject) object;
 			lblPayloadIndex.setText("Current Payload Index : " + ((SyncProgressDetails)callbackObject.mMyObject).mPayloadIndex + " ; Speed(KBps) : " + ((SyncProgressDetails)callbackObject.mMyObject).mTransferRateBytes/1000 );
+		
+			VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
+			if(!verisenseDevice.getDataFilePath().equals("")) {
+				lblBinFileDirectory.setText(Paths.get(verisenseDevice.getDataFilePath()).toAbsolutePath().toString());
+			}
 		}
 	}
 }
