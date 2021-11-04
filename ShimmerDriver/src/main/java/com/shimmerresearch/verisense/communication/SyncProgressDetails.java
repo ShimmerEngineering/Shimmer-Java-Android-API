@@ -5,9 +5,11 @@ public class SyncProgressDetails {
 	public int mPayloadIndex;
 	public boolean mCRCError;
 	public double mTransferRateBytes;
-	public SyncProgressDetails(int payloadIndex, boolean crcError, double transferRateBytes) {
+	public String mBinFilePath;
+	public SyncProgressDetails(int payloadIndex, boolean crcError, double transferRateBytes, String binFilePath) {
 		mPayloadIndex = payloadIndex;
 		mCRCError = crcError;
 		mTransferRateBytes = transferRateBytes;
+		mBinFilePath = binFilePath;
 	}
 }

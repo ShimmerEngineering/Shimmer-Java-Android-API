@@ -47,6 +47,7 @@ import java.util.List;
 import java.awt.Canvas;
 import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
+import java.awt.Font;
 
 public class SensorMapsExample extends BasicProcessWithCallBack {
 
@@ -147,17 +148,18 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 
 		lblPayloadIndex = new JLabel("Current payload index : ");
 		lblPayloadIndex.setVerticalAlignment(SwingConstants.TOP);
-		lblPayloadIndex.setBounds(415, 150, 408, 35);
+		lblPayloadIndex.setBounds(415, 166, 408, 35);
 		frame.getContentPane().add(lblPayloadIndex);
 		
 		lblBinFileDirectory = new JTextArea("");
-		lblBinFileDirectory.setBounds(415, 150, 408, 70);
+		lblBinFileDirectory.setFont(lblPayloadIndex.getFont());
+		lblBinFileDirectory.setBounds(415, 203, 408, 61);
 		frame.getContentPane().add(lblBinFileDirectory);
 		lblBinFileDirectory.setEditable(false);
 		lblBinFileDirectory.setOpaque(false);    
 		lblBinFileDirectory.setWrapStyleWord(true);
 		lblBinFileDirectory.setLineWrap(true);
-		lblBinFileDirectory.setText("");
+		lblBinFileDirectory.setText("Bin file path :");
 
 		btnSync = new JButton("DATA SYNC");
 		btnSync.addActionListener(new ActionListener() {
@@ -178,7 +180,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		lblTrialName.setVisible(false);
 		btnSync.setVisible(false);
 		lblPayloadIndex.setVisible(false);
-
+		lblBinFileDirectory.setVisible(false);
 		JButton btnDisconnect = new JButton("DISCONNECT");
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -252,7 +254,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mnTools.add(mntmDeviceConfiguration);
 
 		JPanel plotPanel = new JPanel();
-		plotPanel.setBounds(10, 236, 828, 272);
+		plotPanel.setBounds(12, 264, 828, 272);
 		frame.getContentPane().add(plotPanel);
 		plotPanel.setLayout(null);
 
@@ -354,9 +356,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					TrialNameTextField.setVisible(true);
 					lblTrialName.setVisible(true);
 					btnSync.setVisible(true);
+					lblPayloadIndex.setVisible(true);
 					lblBinFileDirectory.setVisible(true);
-					lblPayloadIndex.setVisible(false);
-
 					shimmerDevice = btManager.getShimmerDeviceBtConnected(macAddress.toUpperCase());
 				} else {
 					shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
@@ -373,14 +374,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				TrialNameTextField.setVisible(false);
 				lblTrialName.setVisible(false);
 				btnSync.setVisible(false);
-				lblBinFileDirectory.setVisible(false);
 				lblPayloadIndex.setVisible(false);
+				lblBinFileDirectory.setVisible(false);
 			} else if (callbackObject.mState == BT_STATE.STREAMING) {
 				textPaneStatus.setText("device streaming");
 			}else if (callbackObject.mState == BT_STATE.STREAMING_LOGGED_DATA) {
 				textPaneStatus.setText("synchronizing data");
-				lblPayloadIndex.setVisible(true);
-				lblBinFileDirectory.setVisible(false);
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject) object;
@@ -409,11 +408,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		} else if (ind == ShimmerBluetooth.MSG_IDENTIFIER_SYNC_PROGRESS) {
 			CallbackObject callbackObject = (CallbackObject) object;
 			lblPayloadIndex.setText("Current Payload Index : " + ((SyncProgressDetails)callbackObject.mMyObject).mPayloadIndex + " ; Speed(KBps) : " + ((SyncProgressDetails)callbackObject.mMyObject).mTransferRateBytes/1000 );
-		
-			VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
-			if(!verisenseDevice.getDataFilePath().equals("")) {
-				lblBinFileDirectory.setText(Paths.get(verisenseDevice.getDataFilePath()).toAbsolutePath().toString());
-			}
+			String path = Paths.get(((SyncProgressDetails)callbackObject.mMyObject).mBinFilePath).toAbsolutePath().toString();
+			lblBinFileDirectory.setText("Bin file path : " + path);
 		}
 	}
 }

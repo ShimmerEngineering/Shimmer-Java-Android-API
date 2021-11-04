@@ -299,7 +299,7 @@ public class VerisenseProtocolByteCommunication {
 		}
 		
 		for (RadioListener rl : mRadioListenerList) {
-			rl.eventNewSyncPayloadReceived(verisenseMessage.payloadIndex, CRCError, verisenseMessage.mTransferRateByes);
+			rl.eventNewSyncPayloadReceived(verisenseMessage.payloadIndex, CRCError, verisenseMessage.mTransferRateByes, getDataFilePath());
 		}
 		
 		try {
