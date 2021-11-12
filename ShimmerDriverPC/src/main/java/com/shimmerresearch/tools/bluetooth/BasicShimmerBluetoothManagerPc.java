@@ -28,6 +28,8 @@ import jssc.SerialPort;
 public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 
 	String mPathToVeriBLEApp = "bleconsoleapp\\BLEConsoleApp1.exe";
+	BleRadioByteCommunication radio1;
+	VerisenseProtocolByteCommunication protocol1;
 	
 	public void setPathToVeriBLEApp(String path) {
 		mPathToVeriBLEApp = path;
@@ -126,8 +128,15 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	
 	@Override
 	protected void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
-		BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
-		VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
+		if(radio1 == null) {
+			radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
+			protocol1 = new VerisenseProtocolByteCommunication(radio1);
+		}
+		else if (!radio1.getUuid().equals(radio1.convertMacIDtoUUID(bdd.mShimmerMacId))) {
+			radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
+			protocol1 = new VerisenseProtocolByteCommunication(radio1);
+		}
+		
 		VerisenseDevice verisenseDevice = new VerisenseDevice();
 		verisenseDevice.setMacIdFromUart(bdd.mShimmerMacId);
 		verisenseDevice.setProtocol(COMMUNICATION_TYPE.BLUETOOTH, protocol1);
@@ -136,6 +145,10 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 			verisenseDevice.connect();
 		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
+			if(e.getMessage() == "Connect Failed")
+			{
+				verisenseDevice.setBluetoothRadioState(BT_STATE.DISCONNECTED);
+			}
 			e.printStackTrace();
 		}
 		
