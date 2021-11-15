@@ -1,5 +1,8 @@
 package com.shimmerresearch.tools.bluetooth;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerRadioInitializer;
@@ -28,8 +31,8 @@ import jssc.SerialPort;
 public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 
 	String mPathToVeriBLEApp = "bleconsoleapp\\BLEConsoleApp1.exe";
-	BleRadioByteCommunication radio1;
-	VerisenseProtocolByteCommunication protocol1;
+	List<String> macIdList = new ArrayList<String>();
+	List<VerisenseProtocolByteCommunication> protocolList = new ArrayList<VerisenseProtocolByteCommunication>();
 	
 	public void setPathToVeriBLEApp(String path) {
 		mPathToVeriBLEApp = path;
@@ -128,13 +131,16 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	
 	@Override
 	protected void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
-		if(radio1 == null) {
-			radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
+		VerisenseProtocolByteCommunication protocol1;
+		
+		if(!macIdList.contains(bdd.mShimmerMacId)) {
+			BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
 			protocol1 = new VerisenseProtocolByteCommunication(radio1);
-		}
-		else if (!radio1.getUuid().equals(radio1.convertMacIDtoUUID(bdd.mShimmerMacId))) {
-			radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
-			protocol1 = new VerisenseProtocolByteCommunication(radio1);
+			macIdList.add(bdd.mShimmerMacId);
+			protocolList.add(protocol1);
+	    }
+		else {
+			protocol1 = protocolList.get(macIdList.indexOf(bdd.mShimmerMacId));
 		}
 		
 		VerisenseDevice verisenseDevice = new VerisenseDevice();
