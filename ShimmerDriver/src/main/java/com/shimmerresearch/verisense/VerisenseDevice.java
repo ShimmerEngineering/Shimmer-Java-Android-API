@@ -1792,6 +1792,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 					setBluetoothRadioState(BT_STATE.CONNECTING);
 				}
 				verisenseProtocolByteCommunication.connect();
+				verisenseProtocolByteCommunication.readStatus();
 				verisenseProtocolByteCommunication.readProductionConfig();
 				verisenseProtocolByteCommunication.readOperationalConfig();
 				if (commType.equals(COMMUNICATION_TYPE.BLUETOOTH)){

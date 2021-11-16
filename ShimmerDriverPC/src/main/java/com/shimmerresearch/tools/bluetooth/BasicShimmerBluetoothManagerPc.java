@@ -147,6 +147,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		verisenseDevice.setMacIdFromUart(bdd.mShimmerMacId);
 		verisenseDevice.setProtocol(COMMUNICATION_TYPE.BLUETOOTH, protocol1);
 		initializeNewShimmerCommon(verisenseDevice);
+		
 		try {
 			verisenseDevice.connect();
 		} catch (ShimmerException e) {
@@ -157,9 +158,8 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 			}
 			e.printStackTrace();
 		}
-		
-		
 	}
+	
 	@Override
 	public void connectShimmerThroughCommPort(String comPort){
 		directConnectUnknownShimmer=true;
