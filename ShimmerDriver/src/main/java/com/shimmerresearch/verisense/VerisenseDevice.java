@@ -1599,6 +1599,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			@Override
 			public void disconnected() {
 				// TODO Auto-generated method stub
+				setBluetoothRadioState(BT_STATE.DISCONNECTED);
 
 			}
 
@@ -2164,5 +2165,4 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	public int getPayloadIndex() {
 		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).rxVerisenseMessageInProgress.payloadIndex;
 	}
-
 }

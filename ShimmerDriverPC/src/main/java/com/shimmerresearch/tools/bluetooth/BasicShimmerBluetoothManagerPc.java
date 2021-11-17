@@ -32,7 +32,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 
 	String mPathToVeriBLEApp = "bleconsoleapp\\BLEConsoleApp1.exe";
 	List<String> macIdList = new ArrayList<String>();
-	List<VerisenseProtocolByteCommunication> protocolList = new ArrayList<VerisenseProtocolByteCommunication>();
+	List<VerisenseDevice> verisenseDeviceList = new ArrayList<VerisenseDevice>();
 	
 	public void setPathToVeriBLEApp(String path) {
 		mPathToVeriBLEApp = path;
@@ -131,31 +131,28 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	
 	@Override
 	protected void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
-		VerisenseProtocolByteCommunication protocol1;
+		VerisenseDevice verisenseDevice;
 		
 		if(!macIdList.contains(bdd.mShimmerMacId)) {
 			BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
-			protocol1 = new VerisenseProtocolByteCommunication(radio1);
+			VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
+			verisenseDevice = new VerisenseDevice();
+			verisenseDevice.setMacIdFromUart(bdd.mShimmerMacId);
+			verisenseDevice.setProtocol(COMMUNICATION_TYPE.BLUETOOTH, protocol1);
+			initializeNewShimmerCommon(verisenseDevice);
+			
+			verisenseDeviceList.add(verisenseDevice);
 			macIdList.add(bdd.mShimmerMacId);
-			protocolList.add(protocol1);
 	    }
 		else {
-			protocol1 = protocolList.get(macIdList.indexOf(bdd.mShimmerMacId));
+			verisenseDevice = verisenseDeviceList.get(macIdList.indexOf(bdd.mShimmerMacId));
 		}
-		
-		VerisenseDevice verisenseDevice = new VerisenseDevice();
-		verisenseDevice.setMacIdFromUart(bdd.mShimmerMacId);
-		verisenseDevice.setProtocol(COMMUNICATION_TYPE.BLUETOOTH, protocol1);
-		initializeNewShimmerCommon(verisenseDevice);
 		
 		try {
 			verisenseDevice.connect();
 		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
-			if(e.getMessage() == "Connect Failed")
-			{
-				verisenseDevice.setBluetoothRadioState(BT_STATE.DISCONNECTED);
-			}
+			
 			e.printStackTrace();
 		}
 	}
