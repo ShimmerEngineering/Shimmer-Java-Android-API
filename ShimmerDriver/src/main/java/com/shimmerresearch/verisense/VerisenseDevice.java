@@ -1767,7 +1767,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		try {
 			this.connect(currentStreamingCommsRoute);
 		} catch (Exception ex) {
-			setBluetoothRadioState(BT_STATE.DISCONNECTED);
+			if (currentStreamingCommsRoute.equals(COMMUNICATION_TYPE.BLUETOOTH)) {
+				setBluetoothRadioState(BT_STATE.DISCONNECTED);
+			}
 			throw ex;
 		}
 	}
