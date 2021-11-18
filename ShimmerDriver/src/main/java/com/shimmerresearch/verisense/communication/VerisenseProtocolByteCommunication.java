@@ -136,6 +136,11 @@ public class VerisenseProtocolByteCommunication {
 					rl.isNowStreamLoggedDataCallback();
 				}
 			}
+			if (mState.equals(VerisenseProtocolState.Disconnected)) {
+				for (RadioListener rl : mRadioListenerList) {
+					rl.disconnected();
+				}
+			}
 		}
 	}
 

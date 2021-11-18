@@ -1,5 +1,8 @@
 package com.shimmerresearch.tools.bluetooth;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerRadioInitializer;
@@ -28,6 +31,8 @@ import jssc.SerialPort;
 public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 
 	String mPathToVeriBLEApp = "bleconsoleapp\\BLEConsoleApp1.exe";
+	List<String> macIdList = new ArrayList<String>();
+	List<VerisenseDevice> verisenseDeviceList = new ArrayList<VerisenseDevice>();
 	
 	public void setPathToVeriBLEApp(String path) {
 		mPathToVeriBLEApp = path;
@@ -126,21 +131,32 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	
 	@Override
 	protected void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
-		BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
-		VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
-		VerisenseDevice verisenseDevice = new VerisenseDevice();
-		verisenseDevice.setMacIdFromUart(bdd.mShimmerMacId);
-		verisenseDevice.setProtocol(COMMUNICATION_TYPE.BLUETOOTH, protocol1);
-		initializeNewShimmerCommon(verisenseDevice);
+		VerisenseDevice verisenseDevice;
+		
+		if(!macIdList.contains(bdd.mShimmerMacId)) {
+			BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
+			VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
+			verisenseDevice = new VerisenseDevice();
+			verisenseDevice.setMacIdFromUart(bdd.mShimmerMacId);
+			verisenseDevice.setProtocol(COMMUNICATION_TYPE.BLUETOOTH, protocol1);
+			initializeNewShimmerCommon(verisenseDevice);
+			
+			verisenseDeviceList.add(verisenseDevice);
+			macIdList.add(bdd.mShimmerMacId);
+	    }
+		else {
+			verisenseDevice = verisenseDeviceList.get(macIdList.indexOf(bdd.mShimmerMacId));
+		}
+		
 		try {
 			verisenseDevice.connect();
 		} catch (ShimmerException e) {
 			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-		
-		
 	}
+	
 	@Override
 	public void connectShimmerThroughCommPort(String comPort){
 		directConnectUnknownShimmer=true;

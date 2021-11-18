@@ -120,6 +120,10 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 								if (mByteCommunicationListener != null) {
 									mByteCommunicationListener.eventDisconnected();
 								}
+							} else if (line.equals("Connection Lost. Please reconnect.")) {
+								if (mByteCommunicationListener != null) {
+									mByteCommunicationListener.eventDisconnected();
+								}
 							} else if (line.substring(0, 4).equals(("RXB:"))) {
 								String bytes = line.substring(4, line.length());
 								try {
