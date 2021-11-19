@@ -147,12 +147,13 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		else {
 			verisenseDevice = verisenseDeviceList.get(macIdList.indexOf(bdd.mShimmerMacId));
 		}
-		
+
 		try {
+			if(verisenseDevice.getBluetoothRadioState() == BT_STATE.CONNECTED || verisenseDevice.getBluetoothRadioState() == BT_STATE.STREAMING || verisenseDevice.getBluetoothRadioState() == BT_STATE.STREAMING_LOGGED_DATA) {
+				throw new ShimmerException("Device is already connected");
+			}
 			verisenseDevice.connect();
 		} catch (ShimmerException e) {
-			// TODO Auto-generated catch block
-			
 			e.printStackTrace();
 		}
 	}
