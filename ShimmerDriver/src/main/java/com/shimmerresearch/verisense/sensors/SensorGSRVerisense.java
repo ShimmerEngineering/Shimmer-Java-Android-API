@@ -21,6 +21,7 @@ import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
+import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense.ADC_OVERSAMPLING_RATES;
 import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense.ADC_SAMPLING_RATES;
 
 public class SensorGSRVerisense extends SensorGSR {
@@ -28,8 +29,9 @@ public class SensorGSRVerisense extends SensorGSR {
 	private static final long serialVersionUID = -3937042079000714506L;
 
 	//--------- Sensor specific variables start --------------
-	private ADC_SAMPLING_RATES sensorSamplingRate = ADC_SAMPLING_RATES.OFF;
 	private GSR_RANGE gsrRange = GSR_RANGE.AUTO_RANGE;
+	private ADC_SAMPLING_RATES sensorSamplingRate = ADC_SAMPLING_RATES.OFF;
+	private ADC_OVERSAMPLING_RATES adcOversamplingRate = ADC_OVERSAMPLING_RATES.DISABLED;
 	//--------- Sensor specific variables end --------------
 	
 	public static enum GSR_RANGE implements ISensorConfig {
@@ -187,6 +189,10 @@ public class SensorGSRVerisense extends SensorGSR {
 	public void setSensorConfig(ISensorConfig sensorConfig) {
 		if(sensorConfig instanceof GSR_RANGE) {
 			setGsrRange((GSR_RANGE)sensorConfig);
+		} else if(sensorConfig instanceof ADC_SAMPLING_RATES) {
+			setSensorSamplingRate((ADC_SAMPLING_RATES)sensorConfig);
+		} else if(sensorConfig instanceof ADC_OVERSAMPLING_RATES) {
+			setAdcOversamplingRate((ADC_OVERSAMPLING_RATES)sensorConfig);
 		} else {
 			super.setSensorConfig(sensorConfig);
 		}
@@ -196,6 +202,8 @@ public class SensorGSRVerisense extends SensorGSR {
 	public List<ISensorConfig> getSensorConfig() {
 		List<ISensorConfig> listOfSensorConfig = super.getSensorConfig();
 		listOfSensorConfig.add(getGsrRange());
+		listOfSensorConfig.add(getAdcOversamplingRate());
+		listOfSensorConfig.add(getSensorSamplingRate());
 		return listOfSensorConfig;
 	}
 
@@ -225,6 +233,14 @@ public class SensorGSRVerisense extends SensorGSR {
 		return sensorSamplingRate;
 	}
 	
+	public void setAdcOversamplingRate(ADC_OVERSAMPLING_RATES adcOversamplingRate){
+		this.adcOversamplingRate = adcOversamplingRate;
+	}
+
+	public ADC_OVERSAMPLING_RATES getAdcOversamplingRate() {
+		return adcOversamplingRate;
+	}
+
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorId)){
@@ -234,6 +250,7 @@ public class SensorGSRVerisense extends SensorGSR {
 				setSensorSamplingRate(ADC_SAMPLING_RATES.OFF);
 			}
 			setGsrRange(GSR_RANGE.AUTO_RANGE);
+			setAdcOversamplingRate(ADC_OVERSAMPLING_RATES.X64);
 
 			return true;
 		}
