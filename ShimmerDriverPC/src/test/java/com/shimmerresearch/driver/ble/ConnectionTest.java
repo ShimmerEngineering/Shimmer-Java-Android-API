@@ -319,6 +319,9 @@ public class ConnectionTest extends BasicProcessWithCallBack {
                 ResultMap.put(currentIteration,1);
                 textFieldSuccessCount.setText(String.valueOf(successCount));
                 btManager.disconnectShimmer(shimmerDevice);
+                if(shimmerDevice != null) {
+                	btManager.removeShimmerDeviceBtConnected(shimmerDevice.getBtConnectionHandle());
+	            }
 	            if (isTestStarted) {
 	                timer = new Timer();
 	                timer.schedule(new ConnectTask(), Integer.parseInt(textFieldInterval.getText().toString()) * 1000);
