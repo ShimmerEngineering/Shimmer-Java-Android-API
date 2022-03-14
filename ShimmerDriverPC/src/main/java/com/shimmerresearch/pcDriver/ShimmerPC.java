@@ -89,7 +89,8 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
-
+import java.util.Timer;
+import java.util.TimerTask;
 public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	/** * */
@@ -333,6 +334,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setBluetoothRadioState(BT_STATE.CONNECTING);
 				
 //				mMyBluetoothAddress = address;
+				mTimerConnecting = new Timer();
+				mTimerConnecting.schedule(new connectionTimeOutTask(), 20000);
+				
 				setIamAlive(false);
 				getListofInstructions().clear();
 				mFirstTime=true;
@@ -365,7 +369,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 								  
 							}
 							setIsConnected(true);
-
+							
 							mIOThread = new IOThread();
 							mIOThread.setName(getClass().getSimpleName()+"-"+mMyBluetoothAddress+"-"+getComPort());
 							mIOThread.start();
@@ -409,6 +413,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	    }
 	}
 	
+	private class connectionTimeOutTask extends TimerTask {
+	    public void run() {
+        	if(mBluetoothRadioState == BT_STATE.CONNECTING)
+        	{
+        		System.out.println("Connection lost");
+	        	connectionLost();
+	        	stopTimerConnecting();
+        	}
+	    }
+	}
 	
 	@Override
 	public boolean bytesAvailableToBeRead() {
