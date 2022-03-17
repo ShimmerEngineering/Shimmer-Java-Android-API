@@ -258,6 +258,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public boolean mIsRedLedOn = false;
 	public boolean mIsRtcSet = false;
+	
+	protected Timer mTimerConnecting;
 
 	protected boolean mUseProcessingThread = false;
 	protected boolean mEnablePCTimeStamps = true;
@@ -1056,6 +1058,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			initializeShimmer3();
 		}
 		
+		stopTimerConnecting();
 		startTimerCheckIfAlive();
 	}
 
@@ -2690,6 +2693,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		stopTimerCheckAlive();
 		stopTimerCheckForAckOrResp();
 		stopTimerReadBattStatus();
+		stopTimerConnecting();
+	}
+	
+	public void stopTimerConnecting() {
+		if(mTimerConnecting != null) {
+			mTimerConnecting.cancel();
+			mTimerConnecting.purge();
+			mTimerConnecting = null;
+		}
 	}
 	
 	public void stopTimerCheckForAckOrResp(){
