@@ -1058,6 +1058,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			initializeShimmer3();
 		}
 		
+		stopTimerConnecting();
 		startTimerCheckIfAlive();
 	}
 
@@ -2426,8 +2427,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			operationPrepare();
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
-		
-		stopTimerConnecting();
 		
 		//readExpansionBoardID();
 		
