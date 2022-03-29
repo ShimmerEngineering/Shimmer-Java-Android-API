@@ -73,6 +73,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.sensors.SensorEXG;
@@ -102,6 +103,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 //	double mLastSavedCalibratedTimeStamp = -1;
 	public BluetoothProgressReportPerDevice progressReportPerDevice;
+	public static boolean mVerboseMode = true;
+	static UtilShimmer utilShimmer = new UtilShimmer("ShimmerPC", mVerboseMode);
 	
 	//TODO switch to using rather then using JSSC directly in this class 
 //	private SerialPortCommJssc SerialPortCommJssc = new SerialPortCommJssc(comPort, uniqueId, baudToUse);
@@ -336,6 +339,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //				mMyBluetoothAddress = address;
 				mTimerConnecting = new Timer();
 				mTimerConnecting.schedule(new connectionTimeOutTask(), 20000);
+				utilShimmer.consolePrintLn("Started connecting timer...");
 				
 				setIamAlive(false);
 				getListofInstructions().clear();
@@ -417,9 +421,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	    public void run() {
         	if(mBluetoothRadioState == BT_STATE.CONNECTING)
         	{
-        		System.out.println("Connection lost");
 	        	connectionLost();
 	        	stopTimerConnecting();
+	        	utilShimmer.consolePrintLn("Connecting timer timed out, connection lost");
         	}
 	    }
 	}

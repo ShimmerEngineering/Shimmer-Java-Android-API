@@ -133,7 +133,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- CLASS VARIABLES AND ABSTRACT METHODS ---------
 	
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();
-	
+	public static boolean mVerboseMode = true;
+	static UtilShimmer utilShimmer = new UtilShimmer("ShimmerPC", mVerboseMode);
 	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	private boolean mWriteCalibrationDumpWhenConfiguringForClone = true; // true by default, this is for AA-246
@@ -2698,6 +2699,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public void stopTimerConnecting() {
 		if(mTimerConnecting != null) {
+			utilShimmer.consolePrintLn("Stopped connecting timer...");
 			mTimerConnecting.cancel();
 			mTimerConnecting.purge();
 			mTimerConnecting = null;
