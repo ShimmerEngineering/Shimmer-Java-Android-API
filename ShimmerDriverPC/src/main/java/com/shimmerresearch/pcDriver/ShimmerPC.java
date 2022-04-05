@@ -108,7 +108,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
 	
-	public boolean CONSOLE_PRINT_TX_RX_BYTES = false;
+	public static boolean CONSOLE_PRINT_TX_RX_BYTES = false;
 
 	//--------------- Constructors start ----------------------------
 
