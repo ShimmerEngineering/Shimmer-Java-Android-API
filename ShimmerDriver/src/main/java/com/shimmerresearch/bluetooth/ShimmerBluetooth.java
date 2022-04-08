@@ -139,7 +139,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private class DUMMY_READ_WAIT_TIME_MS {
 		private final static int START = 50;
 		// TODO test to see how low we can set this. Experimentally it was found 200ms is the lowest it can go.
-		private final static int INITIAL_AFTER_WRITE = 500; 
+		private final static int INITIAL_AFTER_WRITE = 250; 
 		private final static int CHECK_INTERVAL = 100;
 		private final static int TIMEOUT = 5000;
 	}
@@ -3078,7 +3078,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(isSupportedInStreamCmds()){ 
 		//if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
 			writeInstruction(GET_STATUS_COMMAND);
-			consolePrintLn("Instruction added to the list");
+			consolePrintLn("GET_STATUS_COMMAND Instruction added to the list");
 		}
 	}
 
