@@ -36,6 +36,9 @@ import com.shimmerresearch.verisense.communication.payloads.RwcSchedulePayload;
 import com.shimmerresearch.verisense.communication.payloads.StatusPayload;
 import com.shimmerresearch.verisense.communication.payloads.TimePayload;
 
+import bolts.Task;
+import bolts.TaskCompletionSource;
+
 public class VerisenseProtocolByteCommunication {
 
 	private static final boolean DEBUG_TX_RX_MESSAGES = true;
@@ -58,6 +61,10 @@ public class VerisenseProtocolByteCommunication {
     private String mRootPathForBinFile=""; 
 	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit (actually 95 MB because 100MB = 102,400KB = 104,857,600 bytes, not 100,000,000 bytes)
 
+	TaskCompletionSource<Boolean> mTaskEraseData;
+	TaskCompletionSource<Boolean> mTaskWriteOpConfig;
+	TaskCompletionSource<OperationalConfigPayload> mTaskReadOpConfig;
+	
 	//TODO this might be doubling up on setBluetoothRadioState inside ShimmerDevice, could we reuse that instead?
 	public enum VerisenseProtocolState {
 		None, Disconnected, Connecting, Connected, Streaming, StreamingLoggedData, Limited
@@ -195,9 +202,16 @@ public class VerisenseProtocolByteCommunication {
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.responseByte()) {
 				latestOperationalConfigPayload = new OperationalConfigPayload();
 				if (latestOperationalConfigPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+					mTaskReadOpConfig.setResult(latestOperationalConfigPayload);
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestOperationalConfigPayload);
 				}
-
+				
+			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.ackByte()) {
+				mTaskWriteOpConfig.setResult(true);
+				for (RadioListener rl : mRadioListenerList) {
+					rl.eventAckReceived(verisenseMessage.commandAndProperty);
+				}
+			
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.TIME.responseByte()) {
 				latestTimePayload = new TimePayload();
 				if(latestTimePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
@@ -255,6 +269,12 @@ public class VerisenseProtocolByteCommunication {
 					break;
 				}
 
+			} else if (verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.ackByte()) {
+				mTaskEraseData.setResult(true);
+				for (RadioListener rl : mRadioListenerList) {
+					rl.eventAckReceived(verisenseMessage.commandAndProperty);
+				}
+				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.STREAMING.responseByte()) {
 				System.out.println("New Streaming Payload: " + System.currentTimeMillis());
 				for (RadioListener rl : mRadioListenerList) {
@@ -539,7 +559,26 @@ public class VerisenseProtocolByteCommunication {
 		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.CLEAR_PENDING_EVENTS});
 		waitForAck(VERISENSE_PROPERTY.FW_DEBUG, TIMEOUT_MS.STANDARD);
 	}
-
+	
+	public Task<Boolean> writeOpConfig(byte[] operationalConfig) throws ShimmerException {
+		mTaskWriteOpConfig = new TaskCompletionSource<>();
+		writeMessageWithPayload(VERISENSE_PROPERTY.CONFIG_OPER.writeByte(), operationalConfig);
+		return mTaskWriteOpConfig.getTask();
+	}
+	
+	public Task<Boolean> eraseData() throws ShimmerException{
+		mTaskEraseData = new TaskCompletionSource<>();
+		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP});
+		return mTaskEraseData.getTask();
+	}
+	
+	public Task<OperationalConfigPayload> readOpConfig() throws ShimmerException{
+		mTaskReadOpConfig = new TaskCompletionSource<>();
+		writeMessageWithoutPayload(VERISENSE_PROPERTY.CONFIG_OPER.readByte());
+		//waitForResponse(VERISENSE_PROPERTY.CONFIG_OPER, TIMEOUT_MS.STANDARD);
+		return mTaskReadOpConfig.getTask();
+	}
+	
 	public void writeEraseLoggedData() throws ShimmerException {
 		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP});
 		waitForAck(VERISENSE_PROPERTY.FW_DEBUG, TIMEOUT_MS.ERASE_FLASH_AND_LOOKUP_TABLE);

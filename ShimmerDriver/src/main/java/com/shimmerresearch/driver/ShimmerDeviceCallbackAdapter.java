@@ -107,6 +107,16 @@ public class ShimmerDeviceCallbackAdapter implements Serializable {
 		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_SYNC_PROGRESS, callBackObject);
 	}
 	
+	public void eraseDataCompleted() {
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), 14);
+		mShimmerDevice.sendCallBackMsg(14, callBackObject);
+	}
+	
+	public void writeOpConfigCompleted() {
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), 15);
+		mShimmerDevice.sendCallBackMsg(15, callBackObject);
+	}
+	
 	public void hasStopStreaming() {
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STOP_STREAMING, getMacId(), getComPort());

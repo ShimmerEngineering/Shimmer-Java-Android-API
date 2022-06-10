@@ -51,6 +51,7 @@ import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPay
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BIT_SHIFT;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
+import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_PROPERTY;
 import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
@@ -1591,9 +1592,16 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			}
 
 			@Override
-			public void eventAckReceived(int lastSentInstruction) {
+			public void eventAckReceived(int commandAndProperty) {
 				// TODO Auto-generated method stub
-
+				if(commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.ackByte())
+				{
+					mDeviceCallbackAdapter.writeOpConfigCompleted();
+				}
+				else if (commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.ackByte()) {
+					mDeviceCallbackAdapter.eraseDataCompleted();
+				}
+				
 			}
 
 			@Override
