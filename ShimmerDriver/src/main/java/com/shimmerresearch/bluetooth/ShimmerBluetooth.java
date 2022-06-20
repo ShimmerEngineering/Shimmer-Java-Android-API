@@ -465,6 +465,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_PAIR_UNPAIR_ALL = 11;
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_PAIR_UNPAIR_PER_DEVICE = 12;
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_DISCOVERY_RESULTS = 13;
+	
+	public static final int MSG_IDENTIFIER_VERISENSE_ERASE_DATA_COMPLETED = 14;
+	public static final int MSG_IDENTIFIER_VERISENSE_WRITE_OPCONFIG_COMPLETED = 15;
 
 	//	private boolean mVerboseMode = true;
 	//	private String mParentClassName = "ShimmerPC";

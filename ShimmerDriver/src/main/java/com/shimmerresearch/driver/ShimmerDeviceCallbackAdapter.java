@@ -108,13 +108,13 @@ public class ShimmerDeviceCallbackAdapter implements Serializable {
 	}
 	
 	public void eraseDataCompleted() {
-		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), 14);
-		mShimmerDevice.sendCallBackMsg(14, callBackObject);
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), true);
+		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_VERISENSE_ERASE_DATA_COMPLETED, callBackObject);
 	}
 	
 	public void writeOpConfigCompleted() {
-		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), 15);
-		mShimmerDevice.sendCallBackMsg(15, callBackObject);
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), true);
+		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_VERISENSE_WRITE_OPCONFIG_COMPLETED, callBackObject);
 	}
 	
 	public void hasStopStreaming() {
