@@ -47,6 +47,7 @@ public class VerisenseProtocolByteCommunication {
 	public transient List<RadioListener> mRadioListenerList = new ArrayList<RadioListener>();
 	
 	public VerisenseMessage rxVerisenseMessageInProgress;
+	public VerisenseMessage txVerisenseMessageInProgress;
 	public CircularFifoBuffer rxVerisenseMessageBuffer = new CircularFifoBuffer(5);
 
 	public int PreviouslyWrittenPayloadIndex;
@@ -270,9 +271,15 @@ public class VerisenseProtocolByteCommunication {
 				}
 
 			} else if (verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.ackByte()) {
-				mTaskEraseData.setResult(true);
-				for (RadioListener rl : mRadioListenerList) {
-					rl.eventAckReceived(verisenseMessage.commandAndProperty);
+				if(txVerisenseMessageInProgress != null) {
+					byte[] txBuf = txVerisenseMessageInProgress.generatePacket();
+					if(txBuf[3] == VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP) {
+						mTaskEraseData.setResult(true);
+						for (RadioListener rl : mRadioListenerList) {
+							rl.eventAckReceived(verisenseMessage.commandAndProperty);
+						}
+						txVerisenseMessageInProgress = null;
+					}
 				}
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.STREAMING.responseByte()) {
@@ -433,11 +440,11 @@ public class VerisenseProtocolByteCommunication {
 	}
 	
 	protected void writeMessageWithPayload(byte commandAndProperty, byte[] payloadContents) {
-		VerisenseMessage txVerisenseMessage = new VerisenseMessage(commandAndProperty, payloadContents);
-		byte[] txBuf = txVerisenseMessage.generatePacket();
+		txVerisenseMessageInProgress = new VerisenseMessage(commandAndProperty, payloadContents);
+		byte[] txBuf = txVerisenseMessageInProgress.generatePacket();
 		
 		if(DEBUG_TX_RX_MESSAGES) {
-			System.out.println("TX:" + txVerisenseMessage.generateDebugString());
+			System.out.println("TX:" + txVerisenseMessageInProgress.generateDebugString());
 		}
 		if(DEBUG_TX_RX_BYTES) {
 			System.out.println("TX:" + UtilShimmer.bytesToHexStringWithSpacesFormatted(txBuf));
