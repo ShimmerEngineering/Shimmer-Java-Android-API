@@ -134,7 +134,8 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		VerisenseDevice verisenseDevice;
 		
 		if(!macIdList.contains(bdd.mShimmerMacId)) {
-			BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
+			//BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
+			BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "C:\\Users\\WeiWentan\\git\\Shimmer-Java-Android-API\\ShimmerDriverPC\\bleconsoleapp\\BLEConsoleApp1.exe");
 			VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 			verisenseDevice = new VerisenseDevice();
 			verisenseDevice.setMacIdFromUart(bdd.mShimmerMacId);

@@ -45,7 +45,9 @@ public abstract class ShimmerBluetoothManager{
 	public static ConcurrentHashMap<String, ShimmerDevice> mMapOfBtConnectedShimmers = new ConcurrentHashMap<String, ShimmerDevice>(7);
 	
 	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBtComPorts = new TreeMap<String, BluetoothDeviceDetails>();
+	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBLEDevices = new TreeMap<String, BluetoothDeviceDetails>();
 	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBtComPortsDeepCopy  = new TreeMap<String, BluetoothDeviceDetails>();
+	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBLEDevicesDeepCopy  = new TreeMap<String, BluetoothDeviceDetails>();
 	
 	private ConnectionExceptionListener connectionExceptionListener;
 	
@@ -104,10 +106,18 @@ public abstract class ShimmerBluetoothManager{
 	}
 	
 	public void connectShimmer(String comPort, ShimmerVerObject shimmerVerObject, ExpansionBoardDetails expansionBoardDetails) {
-		BluetoothDeviceDetails portDetails = getBluetoothDeviceDetails(comPort);
+		BluetoothDeviceDetails portDetails;
+		String newComPort = comPort;
+		if(comPort.contains("COM")) {
+			portDetails = getBluetoothDeviceDetails(comPort);
+		}
+		else {
+			//newComPort = comPort.split("_")[1].toUpperCase();
+			portDetails = getBLEDeviceDetails(newComPort);
+		}
 		//No need to start the thread if the device isn't available
 		if(portDetails!=null){
-			ConnectThread connectThread = new ConnectThread(comPort, shimmerVerObject, expansionBoardDetails);
+			ConnectThread connectThread = new ConnectThread(newComPort, shimmerVerObject, expansionBoardDetails);
 			connectThread.start();
 		} else {
 			sendFeedbackOnConnectStartException(comPort);
@@ -488,6 +498,10 @@ public abstract class ShimmerBluetoothManager{
 	protected BluetoothDeviceDetails getBluetoothDeviceDetails(String connectionHandle){
     	return mMapOfParsedBtComPorts.get(connectionHandle);
     }
+	
+	protected BluetoothDeviceDetails getBLEDeviceDetails(String connectionHandle){
+    	return mMapOfParsedBLEDevices.get(connectionHandle);
+    }
 
 	public ConcurrentHashMap<String, ShimmerDevice> getMapOfBtConnectedShimmers() {
 		return mMapOfBtConnectedShimmers;
@@ -745,7 +759,14 @@ public abstract class ShimmerBluetoothManager{
 				}
 			}else{
 				try {
-					BluetoothDeviceDetails portDetails = getBluetoothDeviceDetails(connectionHandle);
+					BluetoothDeviceDetails portDetails;
+					if(connectionHandle.contains("COM")) {
+						portDetails = getBluetoothDeviceDetails(connectionHandle);
+					}
+					else {
+						portDetails = getBLEDeviceDetails(connectionHandle);
+					}
+					
 					if (mDeviceDetails!=null) {
 						portDetails=mDeviceDetails;
 					}
@@ -764,7 +785,12 @@ public abstract class ShimmerBluetoothManager{
 						connectNoninOnyxII(comPort, bluetoothAddress);
 					}
 					if(deviceTypeDetected==DEVICE_TYPE.VERISENSE){
-						connectVerisenseDevice(mDeviceDetails);
+						if(mDeviceDetails == null) {
+							connectVerisenseDevice(portDetails);
+						}
+						else {
+							connectVerisenseDevice(mDeviceDetails);
+						}
 					}
 					else if(deviceTypeDetected==DEVICE_TYPE.LUMAFIT){
 						//TODO
