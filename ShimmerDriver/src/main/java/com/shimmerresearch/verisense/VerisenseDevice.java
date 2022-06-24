@@ -28,6 +28,7 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerDeviceCallbackAdapter;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -278,6 +279,31 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			return UtilVerisenseDriver.FEATURE_NOT_AVAILABLE;
 		} else {
 			return mShimmerVerObject.getFirmwareVersionParsedVersionNumberFilled();
+		}
+	}
+	
+	@Override
+	public void setShimmerUserAssignedName(String shimmerUserAssignedName) {
+		if(!shimmerUserAssignedName.isEmpty()){
+			//Remove any invalid characters
+			shimmerUserAssignedName = shimmerUserAssignedName.replace("-", "_");
+			shimmerUserAssignedName = shimmerUserAssignedName.replaceAll(INVALID_TRIAL_NAME_CHAR, "");
+
+			//Don't allow the first char to be numeric - causes problems with MATLAB variable names
+			if(UtilShimmer.isNumeric("" + shimmerUserAssignedName.charAt(0))){
+				shimmerUserAssignedName = "S" + shimmerUserAssignedName; 
+			}
+		}
+		else{
+			shimmerUserAssignedName = ShimmerObject.DEFAULT_SHIMMER_NAME + "_" + this.getMacIdFromUartParsed();
+		}
+
+		//Limit the name to 12 Char
+		if(shimmerUserAssignedName.length()>20) {
+			setShimmerUserAssignedNameNoLengthCheck(shimmerUserAssignedName.substring(0, 22));
+		}
+		else { 
+			setShimmerUserAssignedNameNoLengthCheck(shimmerUserAssignedName);
 		}
 	}
 
