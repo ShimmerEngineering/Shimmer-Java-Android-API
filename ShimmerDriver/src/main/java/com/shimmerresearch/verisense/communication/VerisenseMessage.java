@@ -101,6 +101,11 @@ public class VerisenseMessage {
 			return (byte) (propertyMask | VERISENSE_COMMAND.NACK_GENERIC.getCommandMask());
 		}
 	}
+	
+	public class VERISENSE_DEBUG_MODE_AND_PROPERTY {
+		public static final int VERISENSE_ERASE_FLASH_AND_LOOKUP_ACK = 0xA09;
+		public static final int VERISENSE_CLEAR_PENDING_EVENTS_ACK = 0x909;
+	}
 
 	public class VERISENSE_DEBUG_MODE {
 		public static final byte FLASH_LOOKUP_TABLE_READ = 0x01;

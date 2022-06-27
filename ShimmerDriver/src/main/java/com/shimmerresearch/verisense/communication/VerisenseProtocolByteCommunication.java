@@ -23,6 +23,7 @@ import com.shimmerresearch.verisense.communication.VerisenseMessage.STREAMING_CO
 import com.shimmerresearch.verisense.communication.VerisenseMessage.TIMEOUT_MS;
 import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_COMMAND;
 import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_DEBUG_MODE;
+import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_DEBUG_MODE_AND_PROPERTY;
 import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_PROPERTY;
 import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_TEST_MODE;
 import com.shimmerresearch.verisense.communication.payloads.AbstractPayload;
@@ -203,12 +204,16 @@ public class VerisenseProtocolByteCommunication {
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.responseByte()) {
 				latestOperationalConfigPayload = new OperationalConfigPayload();
 				if (latestOperationalConfigPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
-					mTaskReadOpConfig.setResult(latestOperationalConfigPayload);
+					if(mTaskReadOpConfig != null) {
+						mTaskReadOpConfig.setResult(latestOperationalConfigPayload);
+					}
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestOperationalConfigPayload);
 				}
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.ackByte()) {
-				mTaskWriteOpConfig.setResult(true);
+				if(mTaskWriteOpConfig != null) {
+					mTaskWriteOpConfig.setResult(true);
+				}
 				for (RadioListener rl : mRadioListenerList) {
 					rl.eventAckReceived(verisenseMessage.commandAndProperty);
 				}
@@ -274,9 +279,11 @@ public class VerisenseProtocolByteCommunication {
 				if(txVerisenseMessageInProgress != null) {
 					byte[] txBuf = txVerisenseMessageInProgress.generatePacket();
 					if(txBuf[3] == VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP) {
-						mTaskEraseData.setResult(true);
+						if (mTaskEraseData != null) {
+							mTaskEraseData.setResult(true);
+						}
 						for (RadioListener rl : mRadioListenerList) {
-							rl.eventAckReceived(verisenseMessage.commandAndProperty);
+							rl.eventAckReceived(VERISENSE_DEBUG_MODE_AND_PROPERTY.VERISENSE_ERASE_FLASH_AND_LOOKUP_ACK);
 						}
 						txVerisenseMessageInProgress = null;
 					}
