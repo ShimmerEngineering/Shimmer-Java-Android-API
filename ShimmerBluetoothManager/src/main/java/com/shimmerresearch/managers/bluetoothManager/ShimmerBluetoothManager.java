@@ -107,17 +107,15 @@ public abstract class ShimmerBluetoothManager{
 	
 	public void connectShimmer(String comPort, ShimmerVerObject shimmerVerObject, ExpansionBoardDetails expansionBoardDetails) {
 		BluetoothDeviceDetails portDetails;
-		String newComPort = comPort;
 		if(comPort.contains("COM")) {
 			portDetails = getBluetoothDeviceDetails(comPort);
 		}
 		else {
-			//newComPort = comPort.split("_")[1].toUpperCase();
-			portDetails = getBLEDeviceDetails(newComPort);
+			portDetails = getBLEDeviceDetails(comPort);
 		}
 		//No need to start the thread if the device isn't available
 		if(portDetails!=null){
-			ConnectThread connectThread = new ConnectThread(newComPort, shimmerVerObject, expansionBoardDetails);
+			ConnectThread connectThread = new ConnectThread(comPort, shimmerVerObject, expansionBoardDetails);
 			connectThread.start();
 		} else {
 			sendFeedbackOnConnectStartException(comPort);
