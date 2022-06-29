@@ -432,7 +432,11 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	@Override
 	public void configureFromClone(ShimmerDevice shimmerDeviceClone) throws ShimmerException {
 		super.configureFromClone(shimmerDeviceClone);
-		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).writeAndReadOperationalConfig(shimmerDeviceClone.getShimmerConfigBytes());
+		configBytesParse(shimmerDeviceClone.configBytesGenerate(true));
+	}
+	
+	private void writeAndReadOperationalConfig() throws ShimmerException {
+		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).writeAndReadOperationalConfig(getShimmerConfigBytes());
 	}
 	
 	@Override
@@ -1478,14 +1482,17 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 
 			@Override
 			public void startOperationCallback(BT_STATE currentOperation, int totalNumOfCmds) {
-				// TODO Auto-generated method stub
-
+				startOperation(currentOperation, totalNumOfCmds);
+			}
+			
+			@Override
+			public void finishOperationCallback(BT_STATE currentOperation) {
+				finishOperation(currentOperation);
 			}
 
 			@Override
 			public void sendProgressReportCallback(BluetoothProgressReportPerCmd progressReportPerCmd) {
-				// TODO Auto-generated method stub
-
+				sendProgressReport(progressReportPerCmd);
 			}
 
 			@Override
@@ -1504,12 +1511,6 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			public void hasStopStreamingCallback() {
 				// TODO Auto-generated method stub
 				setBluetoothRadioState(BT_STATE.CONNECTED);
-			}
-
-			@Override
-			public void finishOperationCallback(BT_STATE currentOperation) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -2199,4 +2200,27 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	public int getPayloadIndex() {
 		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).rxVerisenseMessageInProgress.payloadIndex;
 	}
+	
+	protected void sendProgressReport(BluetoothProgressReportPerCmd pRPC) {
+		mDeviceCallbackAdapter.sendProgressReport(pRPC);
+	}
+	
+	public void startOperation(BT_STATE currentOperation, int totalNumOfCmds){
+		mDeviceCallbackAdapter.startOperation(currentOperation, totalNumOfCmds);
+	}
+	
+	public void finishOperation(BT_STATE btState){
+		mDeviceCallbackAdapter.finishOperation(btState);
+	}
+	
+	@Override
+	public void operationStart(BT_STATE btState){
+		startOperation(btState, 1);
+		try {
+			writeAndReadOperationalConfig();
+		} catch (ShimmerException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
