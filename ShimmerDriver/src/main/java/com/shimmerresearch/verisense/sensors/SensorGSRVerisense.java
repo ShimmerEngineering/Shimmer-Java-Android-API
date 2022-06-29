@@ -14,6 +14,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Verisense;
 import com.shimmerresearch.driver.Configuration.Verisense.CompatibilityInfoForMaps;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
@@ -238,6 +239,21 @@ public class SensorGSRVerisense extends SensorGSR {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void generateSensorGroupMapping() {
+		
+		int groupIndex = Configuration.Verisense.LABEL_SENSOR_TILE.GSR.ordinal();
+		
+		if(mShimmerVerObject.isShimmerGenVerisense()){
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					LABEL_SENSOR_TILE.GSR,
+					Arrays.asList(
+							Configuration.Verisense.SENSOR_ID.GSR),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+		}
+		super.updateSensorGroupingMap();
 	}
 
 	//--------- Abstract methods implemented end --------------

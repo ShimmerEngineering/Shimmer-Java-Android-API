@@ -14,9 +14,11 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Verisense;
+import com.shimmerresearch.driver.Configuration.Verisense.CompatibilityInfoForMaps;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -339,6 +341,21 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void generateSensorGroupMapping() {
+		
+		int groupIndex = Configuration.Verisense.LABEL_SENSOR_TILE.VBATT.ordinal();
+		
+		if(mShimmerVerObject.isShimmerGenVerisense()){
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					LABEL_SENSOR_TILE.BATTERY_MONITORING,
+					Arrays.asList(
+							Configuration.Verisense.SENSOR_ID.VBATT),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoVbatt));
+		}
+		super.updateSensorGroupingMap();
 	}
 
 	//--------- Abstract methods implemented end --------------

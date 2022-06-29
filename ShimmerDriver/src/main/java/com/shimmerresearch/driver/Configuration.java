@@ -87,6 +87,11 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
+import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
+import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense;
+import com.shimmerresearch.verisense.sensors.SensorGSRVerisense;
+import com.shimmerresearch.verisense.sensors.SensorMAX86916;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a
@@ -2210,6 +2215,23 @@ public class Configuration {
 			public static final int MAX86916_PPG_BLUE 		= 2012;
 			public static final int VBATT			 		= 2013;
 			public static final int GSR				 		= 2014;
+		}
+		
+		public enum LABEL_SENSOR_TILE{
+			ACCEL(SensorLIS2DW12.LABEL_SENSOR_TILE.ACCEL),
+			GSR(SensorGSRVerisense.LABEL_SENSOR_TILE.GSR),
+			PPG(SensorMAX86916.LABEL_SENSOR_TILE.PPG),
+			VBATT(SensorBattVoltageVerisense.LABEL_SENSOR_TILE.BATTERY_MONITORING),
+			ACCEL2_GYRO(SensorLSM6DS3.LABEL_SENSOR_TILE.ACCEL2_GYRO);
+			
+			private String tileText = "";
+			LABEL_SENSOR_TILE(String text){
+				this.tileText = text;
+			}
+			
+			public String getTileText(){
+				return tileText;
+			}
 		}
 		
 		public static class CompatibilityInfoForMaps{
