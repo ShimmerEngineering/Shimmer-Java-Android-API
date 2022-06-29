@@ -38,12 +38,8 @@ public class BluetoothDeviceDetails {
 
 		if(mac.length()>=12) {
 			mShimmerMacId = mac.toUpperCase();
-			if(mac.contains(":")){
-				mac = mac.replace(":", "");
-				mShimmerMacIdParsed = mac.substring(8).toUpperCase();
-				return;
-			}
-			mShimmerMacIdParsed = mShimmerMacId.substring(8).toUpperCase();
+			mac = mac.replace(":", "").toUpperCase();
+			mShimmerMacIdParsed = mac.substring(8);
 		}
 	}
 
