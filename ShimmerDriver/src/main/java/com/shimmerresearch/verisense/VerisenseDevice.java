@@ -52,7 +52,7 @@ import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPay
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_PROPERTY;
-import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication.VERISENSE_ACK_PROPERTY;
+import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication.VERISENSE_EVENT_ACK_RECEIVED;
 import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOAD_CONFIG_BYTE_INDEX;
@@ -1595,11 +1595,11 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			@Override
 			public void eventAckReceived(int commandAndProperty) {
 				// TODO Auto-generated method stub
-				if(commandAndProperty == VERISENSE_ACK_PROPERTY.VERISENSE_WRITE_OP_ACK)
+				if(commandAndProperty == VERISENSE_EVENT_ACK_RECEIVED.VERISENSE_WRITE_OP_ACK)
 				{
 					mDeviceCallbackAdapter.writeOpConfigCompleted();
 				}
-				else if (commandAndProperty == VERISENSE_ACK_PROPERTY.VERISENSE_ERASE_FLASH_AND_LOOKUP_ACK) {
+				else if (commandAndProperty == VERISENSE_EVENT_ACK_RECEIVED.VERISENSE_ERASE_FLASH_AND_LOOKUP_ACK) {
 					mDeviceCallbackAdapter.eraseDataCompleted();
 				}
 				

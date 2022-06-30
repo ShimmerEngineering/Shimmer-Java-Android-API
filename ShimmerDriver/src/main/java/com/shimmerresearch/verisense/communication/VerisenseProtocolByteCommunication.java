@@ -49,7 +49,7 @@ public class VerisenseProtocolByteCommunication {
 	 * @author JC
 	 * This are the list of ACKs a user can expect from the verisense protocol class when using the radio listener
 	 */
-	public class VERISENSE_ACK_PROPERTY {
+	public class VERISENSE_EVENT_ACK_RECEIVED {
 		
 		public static final int VERISENSE_ERASE_FLASH_AND_LOOKUP_ACK = 0xA09;
 		public static final int VERISENSE_CLEAR_PENDING_EVENTS_ACK = 0x909;
@@ -226,7 +226,7 @@ public class VerisenseProtocolByteCommunication {
 					mTaskWriteOpConfig.setResult(true);
 				}
 				for (RadioListener rl : mRadioListenerList) {
-					rl.eventAckReceived(VERISENSE_ACK_PROPERTY.VERISENSE_WRITE_OP_ACK);
+					rl.eventAckReceived(VERISENSE_EVENT_ACK_RECEIVED.VERISENSE_WRITE_OP_ACK);
 				}
 			
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.TIME.responseByte()) {
@@ -294,7 +294,7 @@ public class VerisenseProtocolByteCommunication {
 							mTaskEraseData.setResult(true);
 						}
 						for (RadioListener rl : mRadioListenerList) {
-							rl.eventAckReceived(VERISENSE_ACK_PROPERTY.VERISENSE_ERASE_FLASH_AND_LOOKUP_ACK);
+							rl.eventAckReceived(VERISENSE_EVENT_ACK_RECEIVED.VERISENSE_ERASE_FLASH_AND_LOOKUP_ACK);
 						}
 						txVerisenseMessageInProgress = null;
 					}
