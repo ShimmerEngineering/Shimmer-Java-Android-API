@@ -21,6 +21,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -499,6 +500,10 @@ public class SensorLSM6DS3 extends AbstractSensor {
 		public static final String ACCEL2 = "Accelerometer2"; 
 		public static final String GYRO = "Gyroscope"; 
 	}
+	
+	public static class LABEL_SENSOR_TILE{
+		public static final String ACCEL2_GYRO = "ACCEL2 GYRO";
+	}
 
 	public static class DatabaseChannelHandles{
 		public static final String LSM6DS3_ACC_X = "LSM6DS3_ACC_X";
@@ -752,8 +757,18 @@ public class SensorLSM6DS3 extends AbstractSensor {
 
 	@Override
 	public void generateSensorGroupMapping() {
-		// TODO Auto-generated method stub
 		
+		int groupIndex = Configuration.Verisense.LABEL_SENSOR_TILE.ACCEL2_GYRO.ordinal();
+	
+		if(mShimmerVerObject.isShimmerGenVerisense()){
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					LABEL_SENSOR_TILE.ACCEL2_GYRO,
+					Arrays.asList(
+							Configuration.Verisense.SENSOR_ID.LSM6DS3_GYRO,
+							Configuration.Verisense.SENSOR_ID.LSM6DS3_ACCEL),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DS3));
+		}
+		super.updateSensorGroupingMap();
 	}
 
 	@Override

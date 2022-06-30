@@ -21,6 +21,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -553,6 +554,10 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		public static  String LIS2DW12_ACC_Y = ACCEL_ID + "_Y";
 		public static  String LIS2DW12_ACC_Z= ACCEL_ID + "_Z";
 	}
+	
+	public static class LABEL_SENSOR_TILE{
+		public static final String ACCEL = "ACCEL";
+	}
 
 	public static class DatabaseChannelHandles{
 		public static final String LIS2DW12_ACC_X = "LIS2DW12_ACC_X";
@@ -739,11 +744,20 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		addConfigOption(CONFIG_OPTION_ACCEL_RATE_LP);
 	}
 
-	@Override
+	@Override 
 	public void generateSensorGroupMapping() {
-		// TODO Auto-generated method stub
 		
-	}
+		int groupIndex = Configuration.Shimmer3.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER.ordinal();
+		
+		if(mShimmerVerObject.isShimmerGenVerisense()){
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					LABEL_SENSOR_TILE.ACCEL,
+					Arrays.asList(
+							Configuration.Verisense.SENSOR_ID.LIS2DW12_ACCEL),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12));
+		}
+		super.updateSensorGroupingMap();
+	}	
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {

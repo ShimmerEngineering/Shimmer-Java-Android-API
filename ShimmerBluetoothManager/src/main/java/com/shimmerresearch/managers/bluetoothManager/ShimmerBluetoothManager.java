@@ -45,12 +45,15 @@ public abstract class ShimmerBluetoothManager{
 	public static ConcurrentHashMap<String, ShimmerDevice> mMapOfBtConnectedShimmers = new ConcurrentHashMap<String, ShimmerDevice>(7);
 	
 	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBtComPorts = new TreeMap<String, BluetoothDeviceDetails>();
+	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBLEDevices = new TreeMap<String, BluetoothDeviceDetails>();
 	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBtComPortsDeepCopy  = new TreeMap<String, BluetoothDeviceDetails>();
+	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBLEDevicesDeepCopy  = new TreeMap<String, BluetoothDeviceDetails>();
 	
 	private ConnectionExceptionListener connectionExceptionListener;
 	
 	protected static final boolean USE_INFOMEM_CONFIG_METHOD = true;
 	public static final long SLEEP_BETWEEN_GROUP_ACTIONS_MS = 50;
+	public static final String COMPORT_PREFIX = "COM";
 	protected int mSyncTrainingIntervalInSeconds = 15;
 	protected int msDelayBetweenSetCommands = 0;
 	protected BluetoothProgressReportAll mProgressReportAll;
@@ -103,14 +106,21 @@ public abstract class ShimmerBluetoothManager{
 		connectShimmer(comPort, null, null);
 	}
 	
-	public void connectShimmer(String comPort, ShimmerVerObject shimmerVerObject, ExpansionBoardDetails expansionBoardDetails) {
-		BluetoothDeviceDetails portDetails = getBluetoothDeviceDetails(comPort);
+	/**This is called to connect to a shimmer device
+	 * 
+	 * @param connectionHandle can either be COM port or MAC address e.g. COM3, D0:2B:46:3D:A2:BB
+	 * @param shimmerVerObject
+	 * @param expansionBoardDetails
+	 */
+	public void connectShimmer(String connectionHandle, ShimmerVerObject shimmerVerObject, ExpansionBoardDetails expansionBoardDetails) {
+		BluetoothDeviceDetails bluetoothDetails = getBluetoothDeviceDetails(connectionHandle);
+
 		//No need to start the thread if the device isn't available
-		if(portDetails!=null){
-			ConnectThread connectThread = new ConnectThread(comPort, shimmerVerObject, expansionBoardDetails);
+		if(bluetoothDetails!=null){
+			ConnectThread connectThread = new ConnectThread(connectionHandle, shimmerVerObject, expansionBoardDetails);
 			connectThread.start();
 		} else {
-			sendFeedbackOnConnectStartException(comPort);
+			sendFeedbackOnConnectStartException(connectionHandle);
 		}
 	}
 	
@@ -486,7 +496,14 @@ public abstract class ShimmerBluetoothManager{
 	}
 
 	protected BluetoothDeviceDetails getBluetoothDeviceDetails(String connectionHandle){
+		if (!connectionHandle.contains(COMPORT_PREFIX)) {
+			return getBLEDeviceDetails(connectionHandle);
+		}
     	return mMapOfParsedBtComPorts.get(connectionHandle);
+    }
+	
+	protected BluetoothDeviceDetails getBLEDeviceDetails(String connectionHandle){
+    	return mMapOfParsedBLEDevices.get(connectionHandle);
     }
 
 	public ConcurrentHashMap<String, ShimmerDevice> getMapOfBtConnectedShimmers() {
@@ -745,17 +762,18 @@ public abstract class ShimmerBluetoothManager{
 				}
 			}else{
 				try {
-					BluetoothDeviceDetails portDetails = getBluetoothDeviceDetails(connectionHandle);
+					BluetoothDeviceDetails bluetoothDetails = getBluetoothDeviceDetails(connectionHandle);
+					
 					if (mDeviceDetails!=null) {
-						portDetails=mDeviceDetails;
+						bluetoothDetails=mDeviceDetails;
 					}
-					if(portDetails==null){
+					if(bluetoothDetails==null){
 						printMessage("NULL BluetoothDeviceDetails for ConnectionHandle: " + connectionHandle + ", returning...");
 						sendFeedbackOnConnectStartException(connectionHandle);
 						return;
 					}
 
-					setBluetoothDeviceDetails(portDetails);
+					setBluetoothDeviceDetails(bluetoothDetails);
 
 					sendFeedbackOnConnectionStart(connectionHandle);
 
@@ -764,7 +782,7 @@ public abstract class ShimmerBluetoothManager{
 						connectNoninOnyxII(comPort, bluetoothAddress);
 					}
 					if(deviceTypeDetected==DEVICE_TYPE.VERISENSE){
-						connectVerisenseDevice(mDeviceDetails);
+						connectVerisenseDevice(bluetoothDetails);
 					}
 					else if(deviceTypeDetected==DEVICE_TYPE.LUMAFIT){
 						//TODO

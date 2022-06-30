@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.RadioListener;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -196,6 +197,9 @@ public class VerisenseProtocolByteCommunication {
 				latestOperationalConfigPayload = new OperationalConfigPayload();
 				if (latestOperationalConfigPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestOperationalConfigPayload);
+					for (RadioListener rl : mRadioListenerList) {
+						rl.finishOperationCallback(BT_STATE.CONFIGURING);
+					}
 				}
 
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.TIME.responseByte()) {

@@ -247,7 +247,8 @@ public class ShimmerVerObject implements Serializable {
 				|| mHardwareVersion==HW_ID.SPAN
 				|| mHardwareVersion==HW_ID.SHIMMER_4_SDK
 				|| mHardwareVersion==HW_ID.SWEATCH
-				|| mFirmwareIdentifier==FW_ID.STROKARE) {
+				|| mFirmwareIdentifier==FW_ID.STROKARE
+				|| mFirmwareIdentifier==FW_ID.VERISENSE) {
 				if(FW_ID.mMapOfFirmwareLabels.containsKey(mFirmwareIdentifier)){
 					mFirmwareIdentifierParsed = FW_ID.mMapOfFirmwareLabels.get(mFirmwareIdentifier);
 				}
