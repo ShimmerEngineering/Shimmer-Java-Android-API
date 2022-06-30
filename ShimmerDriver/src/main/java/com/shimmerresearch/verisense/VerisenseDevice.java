@@ -2176,12 +2176,10 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		this.currentStreamingCommsRoute = currentStreamingCommsRoute;
 	}
 	
-	public void setTrialName(String trial) {
-		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).trialName = trial;
-	}
-	
-	public String getTrialName() {
-		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).trialName;
+	@Override
+	public void setTrialName(String trialName) {
+		super.setTrialName(trialName);
+		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).setTrialName(trialName);
 	}
 	
 	public void setParticipantID(String participant) {
