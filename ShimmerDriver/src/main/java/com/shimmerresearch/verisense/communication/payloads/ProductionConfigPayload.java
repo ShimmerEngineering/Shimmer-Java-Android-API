@@ -55,7 +55,7 @@ public class ProductionConfigPayload extends AbstractPayload {
 		if (payloadContents.length >= 12) {
 			fwRevInternal = (int) parseByteArrayAtIndex(payloadContents, 11, CHANNEL_DATA_TYPE.UINT16);
 		}
-		shimmerVerObject = new ShimmerVerObject(-1, fwRevMajor, fwRevMinor, fwRevInternal);
+		shimmerVerObject = new ShimmerVerObject(17, fwRevMajor, fwRevMinor, fwRevInternal);
 		
 		isSuccess = true;
 		return isSuccess;
