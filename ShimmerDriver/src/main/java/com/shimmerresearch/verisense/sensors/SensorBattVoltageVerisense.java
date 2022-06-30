@@ -34,6 +34,7 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	//--------- Sensor specific variables start --------------
 	private MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties = null;
 	private ADC_SAMPLING_RATES sensorSamplingRate = ADC_SAMPLING_RATES.OFF;
+	private ADC_OVERSAMPLING_RATES adcOversamplingRate = ADC_OVERSAMPLING_RATES.DISABLED;
 
 	//--------- Sensor specific variables end --------------
 
@@ -124,6 +125,43 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	}
 
 	
+	public static enum ADC_OVERSAMPLING_RATES implements ISensorConfig {
+		DISABLED("Disabled", 0),
+		X2("2x", 1),
+		X4("4x", 2),
+		X8("8x", 3),
+		X16("16x", 4),
+		X32("32x", 5),
+		X64("64x", 6),
+		X128("128x", 7),
+		X256("256x", 8);
+		
+		private String label;
+		public int configValue;
+		public double freqHz;
+		public int clockTicks;
+
+		static Map<Integer, ADC_OVERSAMPLING_RATES> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (ADC_OVERSAMPLING_RATES e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private ADC_OVERSAMPLING_RATES(String label, int configValue){
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public String getLabel() {
+			return label;
+		}
+		
+		public static ADC_OVERSAMPLING_RATES getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, DISABLED.configValue, X256.configValue));
+		}
+	}
+
 	public static class ObjectClusterSensorNameVerisense {
 		public static final String USB_CONNECTION_STATE = "USB_Connection_State";
 		public static final String CHARGER_STATE = "Charger_State";
@@ -325,6 +363,14 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 
 	public ADC_SAMPLING_RATES getSensorSamplingRate() {
 		return sensorSamplingRate;
+	}
+
+	public void setAdcOversamplingRate(ADC_OVERSAMPLING_RATES adcOversamplingRate){
+		this.adcOversamplingRate = adcOversamplingRate;
+	}
+
+	public ADC_OVERSAMPLING_RATES getAdcOversamplingRate() {
+		return adcOversamplingRate;
 	}
 
 	@Override
