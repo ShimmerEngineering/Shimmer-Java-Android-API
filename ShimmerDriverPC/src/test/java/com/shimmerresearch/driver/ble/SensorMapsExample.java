@@ -186,7 +186,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
 					verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseData().continueWith(new Continuation<Boolean, Void>() {
 						@Override
-						public Void then(Task<Boolean> eraseData) throws Exception {
+						public Void then(Task<Boolean> completed) throws Exception {
 							System.out.println("erased data completed");
 							return null;
 						}
@@ -206,12 +206,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					textPaneStatus.setText("writing op config...");
-					VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
+					VerisenseDevice verisenseDevice = ((VerisenseDevice)shimmerDevice).deepClone();
 					verisenseDevice.setRecordingEnabled(false);
 					byte[] opConfig = verisenseDevice.configBytesGenerate(true, COMMUNICATION_TYPE.BLUETOOTH);
-					verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).writeOpConfig(opConfig).continueWith(new Continuation<Boolean, Void>() {
+					((VerisenseDevice)shimmerDevice).getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).writeOpConfig(opConfig).continueWith(new Continuation<Boolean, Void>() {
 						@Override
-						public Void then(Task<Boolean> eraseData) throws Exception {
+						public Void then(Task<Boolean> completed) throws Exception {
 							textPaneStatus.setText("connected");
 							return null;
 						}
@@ -221,7 +221,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				}
 			}
 		});
-		btnDisableLogging.setToolTipText("erase logged data");
+		btnDisableLogging.setToolTipText("disable logging");
 		btnDisableLogging.setBounds(210, 251, 175, 25);
 		frame.getContentPane().add(btnDisableLogging);
 		

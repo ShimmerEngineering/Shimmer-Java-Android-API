@@ -74,9 +74,7 @@ public class VerisenseProtocolByteCommunication {
     private String mRootPathForBinFile=""; 
 	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit (actually 95 MB because 100MB = 102,400KB = 104,857,600 bytes, not 100,000,000 bytes)
 
-	TaskCompletionSource<Boolean> mTaskEraseData;
-	TaskCompletionSource<Boolean> mTaskWriteOpConfig;
-	TaskCompletionSource<OperationalConfigPayload> mTaskReadOpConfig;
+	TaskCompletionSource<Boolean> mTaskWriteBytes;
 	
 	//TODO this might be doubling up on setBluetoothRadioState inside ShimmerDevice, could we reuse that instead?
 	public enum VerisenseProtocolState {
@@ -215,15 +213,15 @@ public class VerisenseProtocolByteCommunication {
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.responseByte()) {
 				latestOperationalConfigPayload = new OperationalConfigPayload();
 				if (latestOperationalConfigPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
-					if(mTaskReadOpConfig != null) {
-						mTaskReadOpConfig.setResult(latestOperationalConfigPayload);
+					if(mTaskWriteBytes != null) {
+						mTaskWriteBytes.setResult(true);
 					}
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestOperationalConfigPayload);
 				}
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.ackByte()) {
-				if(mTaskWriteOpConfig != null) {
-					mTaskWriteOpConfig.setResult(true);
+				if(mTaskWriteBytes != null) {
+					mTaskWriteBytes.setResult(true);
 				}
 				for (RadioListener rl : mRadioListenerList) {
 					rl.eventAckReceived(VERISENSE_EVENT_ACK_RECEIVED.VERISENSE_WRITE_OP_ACK);
@@ -290,8 +288,8 @@ public class VerisenseProtocolByteCommunication {
 				if(txVerisenseMessageInProgress != null) {
 					byte[] txBuf = txVerisenseMessageInProgress.generatePacket();
 					if(txBuf[3] == VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP) {
-						if (mTaskEraseData != null) {
-							mTaskEraseData.setResult(true);
+						if (mTaskWriteBytes != null) {
+							mTaskWriteBytes.setResult(true);
 						}
 						for (RadioListener rl : mRadioListenerList) {
 							rl.eventAckReceived(VERISENSE_EVENT_ACK_RECEIVED.VERISENSE_ERASE_FLASH_AND_LOOKUP_ACK);
@@ -454,12 +452,21 @@ public class VerisenseProtocolByteCommunication {
 	}
 
 	protected void writeMessageWithoutPayload(byte commandAndProperty) {
+		if(commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.readByte()) {
+			mTaskWriteBytes = new TaskCompletionSource<>();
+		}
 		writeMessageWithPayload(commandAndProperty, new byte[] {});
 	}
 	
 	protected void writeMessageWithPayload(byte commandAndProperty, byte[] payloadContents) {
 		txVerisenseMessageInProgress = new VerisenseMessage(commandAndProperty, payloadContents);
 		byte[] txBuf = txVerisenseMessageInProgress.generatePacket();
+		
+		if(commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.writeByte() || 
+			(commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.writeByte() && 
+			payloadContents[0] == VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP)) {
+			mTaskWriteBytes = new TaskCompletionSource<>();
+		}
 		
 		if(DEBUG_TX_RX_MESSAGES) {
 			System.out.println("TX:" + txVerisenseMessageInProgress.generateDebugString());
@@ -586,22 +593,18 @@ public class VerisenseProtocolByteCommunication {
 	}
 	
 	public Task<Boolean> writeOpConfig(byte[] operationalConfig) throws ShimmerException {
-		mTaskWriteOpConfig = new TaskCompletionSource<>();
 		writeMessageWithPayload(VERISENSE_PROPERTY.CONFIG_OPER.writeByte(), operationalConfig);
-		return mTaskWriteOpConfig.getTask();
+		return mTaskWriteBytes.getTask();
 	}
 	
 	public Task<Boolean> eraseData() throws ShimmerException{
-		mTaskEraseData = new TaskCompletionSource<>();
 		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP});
-		return mTaskEraseData.getTask();
+		return mTaskWriteBytes.getTask();
 	}
 	
-	public Task<OperationalConfigPayload> readOpConfig() throws ShimmerException{
-		mTaskReadOpConfig = new TaskCompletionSource<>();
+	public Task<Boolean> readOpConfig() throws ShimmerException{
 		writeMessageWithoutPayload(VERISENSE_PROPERTY.CONFIG_OPER.readByte());
-		//waitForResponse(VERISENSE_PROPERTY.CONFIG_OPER, TIMEOUT_MS.STANDARD);
-		return mTaskReadOpConfig.getTask();
+		return mTaskWriteBytes.getTask();
 	}
 	
 	public void writeEraseLoggedData() throws ShimmerException {
