@@ -73,6 +73,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.sensors.SensorEXG;
@@ -106,6 +107,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	private SerialPortCommJssc SerialPortCommJssc = new SerialPortCommJssc(comPort, uniqueId, baudToUse);
 	
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
+	
+	public static boolean CONSOLE_PRINT_TX_RX_BYTES = false;
 
 	//--------------- Constructors start ----------------------------
 
@@ -335,7 +338,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //				mMyBluetoothAddress = address;
 				setIamAlive(false);
 				getListofInstructions().clear();
-				mFirstTime=true;
 				
 				if (mSerialPort==null){
 					setComPort(address);
@@ -437,6 +439,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public void writeBytes(byte[] data) {
 		try {
 			if(mSerialPort != null){
+				if(CONSOLE_PRINT_TX_RX_BYTES) {
+					consolePrintLn("TX: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(data));
+				}
 				mSerialPort.writeBytes(data);
 			}
 		} catch (SerialPortException | NullPointerException ex) {
@@ -456,7 +461,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		try {
 			if(mSerialPort != null){
 				if (mSerialPort.isOpened()){
-					return(mSerialPort.readBytes(numberOfBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_2000));
+					byte[] data = mSerialPort.readBytes(numberOfBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_2000);
+					if(CONSOLE_PRINT_TX_RX_BYTES) {
+						consolePrintLn("RX: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(data));
+					}
+					return(data);
 				} else {
 					consolePrintLn("Tried to readBytes but port is closed");
 				}
@@ -578,6 +587,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		try {
 			if (mIOThread != null) {
 				mIOThread.stop = true;
+				
+				// Closing serial port before before thread is finished stopping throws an error so waiting here
+				while(mIOThread.isAlive());
+
 				mIOThread = null;
 				
 				if(mUseProcessingThread){

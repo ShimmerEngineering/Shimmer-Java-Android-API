@@ -14,9 +14,11 @@ import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Verisense;
+import com.shimmerresearch.driver.Configuration.Verisense.CompatibilityInfoForMaps;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -34,6 +36,7 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	//--------- Sensor specific variables start --------------
 	private MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties = null;
 	private ADC_SAMPLING_RATES sensorSamplingRate = ADC_SAMPLING_RATES.OFF;
+	private ADC_OVERSAMPLING_RATES adcOversamplingRate = ADC_OVERSAMPLING_RATES.DISABLED;
 
 	//--------- Sensor specific variables end --------------
 
@@ -124,6 +127,43 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 	}
 
 	
+	public static enum ADC_OVERSAMPLING_RATES implements ISensorConfig {
+		DISABLED("Disabled", 0),
+		X2("2x", 1),
+		X4("4x", 2),
+		X8("8x", 3),
+		X16("16x", 4),
+		X32("32x", 5),
+		X64("64x", 6),
+		X128("128x", 7),
+		X256("256x", 8);
+		
+		private String label;
+		public int configValue;
+		public double freqHz;
+		public int clockTicks;
+
+		static Map<Integer, ADC_OVERSAMPLING_RATES> BY_CONFIG_VALUE = new HashMap<>();
+		static {
+			for (ADC_OVERSAMPLING_RATES e : values()) {
+				BY_CONFIG_VALUE.put(e.configValue, e);
+			}
+		}
+
+		private ADC_OVERSAMPLING_RATES(String label, int configValue){
+			this.label = label;
+			this.configValue = configValue;
+		}
+		
+		public String getLabel() {
+			return label;
+		}
+		
+		public static ADC_OVERSAMPLING_RATES getForConfigValue(int configValue) {
+			return BY_CONFIG_VALUE.get(UtilShimmer.nudgeInteger(configValue, DISABLED.configValue, X256.configValue));
+		}
+	}
+
 	public static class ObjectClusterSensorNameVerisense {
 		public static final String USB_CONNECTION_STATE = "USB_Connection_State";
 		public static final String CHARGER_STATE = "Charger_State";
@@ -327,6 +367,14 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 		return sensorSamplingRate;
 	}
 
+	public void setAdcOversamplingRate(ADC_OVERSAMPLING_RATES adcOversamplingRate){
+		this.adcOversamplingRate = adcOversamplingRate;
+	}
+
+	public ADC_OVERSAMPLING_RATES getAdcOversamplingRate() {
+		return adcOversamplingRate;
+	}
+
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorId)){
@@ -339,6 +387,21 @@ public class SensorBattVoltageVerisense extends SensorBattVoltage {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void generateSensorGroupMapping() {
+		
+		int groupIndex = Configuration.Verisense.LABEL_SENSOR_TILE.VBATT.ordinal();
+		
+		if(mShimmerVerObject.isShimmerGenVerisense()){
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					LABEL_SENSOR_TILE.BATTERY_MONITORING,
+					Arrays.asList(
+							Configuration.Verisense.SENSOR_ID.VBATT),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoVbatt));
+		}
+		super.updateSensorGroupingMap();
 	}
 
 	//--------- Abstract methods implemented end --------------

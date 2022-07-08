@@ -17,6 +17,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -177,6 +178,10 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 		public static final String MAX86916_PPG_GREEN = "PPG_Green";
 		public static final String MAX86916_PPG_BLUE = "PPG_Blue";
 	}
+	
+	public static class LABEL_SENSOR_TILE{
+		public static final String PPG = "PPG";
+	}
 
 	public static class DatabaseChannelHandles{
 		public static final String MAX86916_PPG_RED = "MAX86916_PPG_Red";
@@ -304,6 +309,22 @@ public class SensorMAX86916 extends SensorMAX86XXX {
 		mConfigOptionsMap.clear();
 		addConfigOption(CONFIG_OPTION_PPG_RATE);
 		super.generateConfigOptionsMap();
+	}
+	
+	@Override
+	public void generateSensorGroupMapping() {
+		
+		int groupIndex = Configuration.Shimmer3.LABEL_SENSOR_TILE.MPU_OTHER.ordinal();
+		
+		if(mShimmerVerObject.isShimmerGenVerisense()){
+			mSensorGroupingMap.put(groupIndex, new SensorGroupingDetails(
+					LABEL_SENSOR_TILE.PPG,
+					Arrays.asList(
+							Configuration.Verisense.SENSOR_ID.MAX86916_PPG_GREEN,
+							Configuration.Verisense.SENSOR_ID.MAX86916_PPG_BLUE),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoMAX86916));
+		}
+		super.updateSensorGroupingMap();
 	}
 
 	@Override

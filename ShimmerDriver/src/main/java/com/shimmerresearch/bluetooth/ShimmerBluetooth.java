@@ -137,6 +137,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
+	private class DUMMY_READ_WAIT_TIME_MS {
+		private final static int START = 50;
+		// TODO test to see how low we can set this. Experimentally it was found 200ms is the lowest it can go.
+		private final static int INITIAL_AFTER_WRITE = 250; 
+		private final static int CHECK_INTERVAL = 100;
+		private final static int TIMEOUT = 5000;
+	}
 	private boolean mWriteCalibrationDumpWhenConfiguringForClone = true; // true by default, this is for AA-246
 	//TODO Refactor to CONNECTION_STATE (or similar) and move to a generic class as this is used by devices other than BT
 	public enum BT_STATE{
@@ -225,8 +232,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	private List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
-	protected boolean mDummy=false;
-	protected boolean mFirstTime=true;
+	protected boolean mDummyRead = false, mDummyReadStarted = false;
+	@Deprecated
+	protected boolean mFirstTime = true;
 	private byte mTempByteValue;												// A temporary variable used to store Byte value	
 	protected int mTempIntValue;												// A temporary variable used to store Integer value, used mainly to store a value while waiting for an acknowledge packet (e.g. when writeGRange() is called, the range is stored temporarily and used to update GSRRange when the acknowledge packet is received.
 	protected long tempEnabledSensors;											// This stores the enabled sensors
@@ -557,7 +565,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		public void run() {
 			while(!stop) {
-				
+
+				if (mDummyRead) {
+					performDummyRead();
+				}
+
 				// Process Instruction on stack. is an instruction running? if not proceed
 				if(!isInstructionStackLock()){
 					processNextInstruction();
@@ -578,6 +590,34 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 				}
 			}
+		}
+		
+		private void performDummyRead() {
+			mDummyReadStarted = true;
+
+			byte dummyReadCommand = GET_SAMPLING_RATE_COMMAND;
+			printLogDataForDebugging("Writing command to help clear serial port buffer:\t" + btCommandToString(dummyReadCommand));
+			writeBytes(new byte[] { (byte) (dummyReadCommand & 0xFF) });
+
+			int totalWaitTimeMs = DUMMY_READ_WAIT_TIME_MS.INITIAL_AFTER_WRITE;
+			// Allow some time for bytes to come in
+			threadSleep(DUMMY_READ_WAIT_TIME_MS.INITIAL_AFTER_WRITE);
+			while (bytesAvailableToBeRead()) {
+				if (totalWaitTimeMs >= DUMMY_READ_WAIT_TIME_MS.TIMEOUT) {
+					// TODO trigger a disconnect or just allow the first instruction in the instruction stack to trigger it
+					printLogDataForDebugging("Dummy read timeout");
+					break;
+				}
+
+				clearSerialBuffer();
+				// Sleep for more bytes to come in. If no more bytes come in within this time,
+				// the while loop will exit
+				threadSleep(DUMMY_READ_WAIT_TIME_MS.CHECK_INTERVAL);
+				totalWaitTimeMs += DUMMY_READ_WAIT_TIME_MS.CHECK_INTERVAL;
+			}
+
+			mDummyRead = false;
+			mDummyReadStarted = false;
 		}
 		
 		private void processNextInstruction() {
@@ -878,31 +918,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		/** Process RESPONSE while not streaming */ 
 		private void processNotStreamingWaitForResp() {
-			//Discard first read
-			if(mFirstTime){
-//				printLogDataForDebugging("First Time read");
-				clearSerialBuffer();
-				
-//				while (availableBytes()!=0){
-//					int available = availableBytes();
-//					if (bytesAvailableToBeRead()){
-//						byteBuffer=readBytes(1);
-//						String msg = "First Time : " + UtilShimmer.bytesToHexStringWithSpacesFormatted(byteBuffer);
-//						printLogDataForDebugging(msg);
-//					}
-//				}
-				
-				//TODO: Check with JC on the below!!! Or just clear seriable buffer and remove need for mFirstTime
-				//Below added from original implementation -> doesn't wait for timeout on first command
-				//TODO: if keeping the below, remove "mFirstTime = false" from the TimerCheckForAckOrResp
-				stopTimerCheckForAckOrResp(); //cancel the ack timer
-				mWaitForResponse=false;
-				mTransactionCompleted=true;
-				setInstructionStackLock(false);
-				mFirstTime = false;
-			} 
-			
-			else if(bytesAvailableToBeRead()){
+			if(bytesAvailableToBeRead()){
 				byteBuffer=readBytes(1);
 				if(byteBuffer!=null){
 					setIamAlive(true);
@@ -1214,11 +1230,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
             // read each channel type for the num channels
 			int lengthChannels = (int)buffer.get(idxLengthChannels);
-			byte[] channels = readBytes(lengthChannels, responseCommand);
-			if(channels!=null){
-				for(byte b:channels){
-	                buffer.add(b);
-	            }
+			// it's possible no channels are enabled so need to check
+			if (lengthChannels > 0) {
+				byte[] channels = readBytes(lengthChannels, responseCommand);
+				if(channels!=null){
+					for(byte b:channels){
+		                buffer.add(b);
+		            }
+				}
 			}
 
 			byte[] bufferInquiry = new byte[buffer.size()];
@@ -2319,7 +2338,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		stopTimerCheckForAckOrResp();
 		setInstructionStackLock(false);
 		
-		dummyreadSamplingRate(); // it actually acts to clear the write buffer
+		dummyReadSamplingRate(); // it actually acts to clear the write buffer
 		
 		readShimmerVersionNew();
 		//readFWVersion();
@@ -2693,8 +2712,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		@Override
 		public void run() {
 			{
-				int storedFirstTime = (mFirstTime? 1:0);
-				
 				//Timeout triggered 
 				consolePrintLn("Command:\t" + btCommandToString(mCurrentCommand) +" timeout");
 				if(mWaitForAck){
@@ -2753,19 +2770,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //						//mHandler.sendMessage(msg);
 //					}
 					
-					mFirstTime=false;
-					
 					initializeBoilerPlate();
 				}
-				else if(mCurrentCommand==GET_SAMPLING_RATE_COMMAND && !mIsInitialised){
-					mFirstTime=false;
-				} 
 				else if(mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW){ //in case the new command doesn't work, try the old command
-					mFirstTime=false;
 					clearAllInstructions();
 					readShimmerVersionDeprecated();
 				}
-
 				
 				
 				if(mIsStreaming){
@@ -2775,7 +2785,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					setInstructionStackLock(false);
 					clearAllInstructions();
 				}
-				else if(storedFirstTime==0){
+				else {
 					// If the command fails to get a response, the API should
 					// assume that the connection has been lost and close the
 					// serial port cleanly.
@@ -2965,7 +2975,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- READ ONLY FUNCTIONS (NO WRITE EQUIVALENT - implemented anyway) --------- 
 	
 	public void readFWVersion() {
-		mDummy=false;//false
 		writeInstruction(GET_FW_VERSION_COMMAND);
 	}
 
@@ -2975,7 +2984,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	public void readShimmerVersionNew() {
-		mDummy=false;//false
 //		if(mFirmwareVersionParsed.equals(boilerPlateString)){
 //			mShimmerVersion = HW_ID.SHIMMER_2R; // on Shimmer2r has 
 			
@@ -3042,7 +3050,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(isSupportedInStreamCmds()){ 
 		//if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
 			writeInstruction(GET_STATUS_COMMAND);
-			consolePrintLn("Instruction added to the list");
+			consolePrintLn("GET_STATUS_COMMAND Instruction added to the list");
 		}
 	}
 
@@ -3506,9 +3514,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * The reason for this is because sometimes the 1st response is not received by the phone
 	 */
-	protected void dummyreadSamplingRate() {
-		mDummy=true;
-		writeInstruction(GET_SAMPLING_RATE_COMMAND);
+	protected void dummyReadSamplingRate() {
+		mDummyRead=true;
+		mDummyReadStarted=false;
+		
+		// Sleep just until the dummy read has started so that new instructions aren't
+		// added to the list and we don't hang the application thread too long.
+		while(!mDummyReadStarted) {
+			threadSleep(DUMMY_READ_WAIT_TIME_MS.START);
+		}
 	}
 
 	/**
@@ -5189,7 +5203,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private synchronized void removeInstruction(int index){
 		synchronized(mListofInstructions){
 		try {
-			getListofInstructions().remove(index);
+			mListofInstructions.remove(index);
 		} catch (IndexOutOfBoundsException e){
 			consolePrintLn("Tried to remove BT instruction but it was already gone.");
 			consolePrintException(e.getMessage(), e.getStackTrace());

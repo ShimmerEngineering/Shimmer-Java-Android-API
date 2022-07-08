@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.encoders.Hex;
 
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
@@ -55,7 +56,7 @@ public class ProductionConfigPayload extends AbstractPayload {
 		if (payloadContents.length >= 12) {
 			fwRevInternal = (int) parseByteArrayAtIndex(payloadContents, 11, CHANNEL_DATA_TYPE.UINT16);
 		}
-		shimmerVerObject = new ShimmerVerObject(-1, fwRevMajor, fwRevMinor, fwRevInternal);
+		shimmerVerObject = new ShimmerVerObject(FW_ID.VERISENSE, fwRevMajor, fwRevMinor, fwRevInternal);
 		
 		isSuccess = true;
 		return isSuccess;
