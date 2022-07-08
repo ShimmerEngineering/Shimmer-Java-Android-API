@@ -72,6 +72,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	String btComport;
 	String macAddress;
 	String btFriendlyName;
+	String previousStatus;
 
 	/**
 	 * Initialize the contents of the frame
@@ -104,11 +105,11 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(btFriendlyNameTextField);
 		btFriendlyNameTextField.setColumns(10);
 
-		// textField.setText("e7:45:2c:6d:6f:14");
+//		textField.setText("e7:45:2c:6d:6f:14");
 		textField.setText("d0:2b:46:3d:a2:bb");
-		//textField.setText("e7:ec:37:a0:d2:34");
-		// textField.setText("Com5");
-		// textField2.setText("Shimmer-E6C8");
+//		textField.setText("e7:ec:37:a0:d2:34");
+//		textField.setText("Com5");
+//		btFriendlyNameTextField.setText("Shimmer-E6C8");
 		btFriendlyNameTextField.setText("Verisense-19092501A2BB");
 
 		JButton btnConnect = new JButton("CONNECT");
@@ -168,10 +169,22 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnSync = new JButton("DATA SYNC");
 		btnSync.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				previousStatus = textPaneStatus.getText();
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
 				verisenseDevice.setTrialName(TrialNameTextField.getText());
 				verisenseDevice.setParticipantID(ParticipantNameTextField.getText());
-				verisenseDevice.readLoggedData();
+				try {
+					verisenseDevice.readLoggedData();
+				} catch (ShimmerException e) {
+					if(e.getMessage() == "A task is still ongoing") {
+						textPaneStatus.setText(previousStatus);
+						JOptionPane.showMessageDialog(frame,
+								"Please wait until current task is finished", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+					e.printStackTrace();
+				}
 			}
 		});
 		btnSync.setToolTipText("Data Sync");
@@ -182,9 +195,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnEraseData.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					previousStatus = textPaneStatus.getText();
 					textPaneStatus.setText("erasing data...");
 					VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
-					verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseData().continueWith(new Continuation<Boolean, Void>() {
+					verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseDataTask().continueWith(new Continuation<Boolean, Void>() {
 						@Override
 						public Void then(Task<Boolean> completed) throws Exception {
 							System.out.println("erased data completed");
@@ -193,6 +207,13 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					});
 					//verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseData().waitForCompletion(60, TimeUnit.SECONDS);
 				} catch (ShimmerException e) {
+					if(e.getMessage() == "A task is still ongoing") {
+						textPaneStatus.setText(previousStatus);
+						JOptionPane.showMessageDialog(frame,
+								"Please wait until current task is finished", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
 					e.printStackTrace();
 				}
 			}
@@ -205,18 +226,20 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnDisableLogging.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					previousStatus = textPaneStatus.getText();
 					textPaneStatus.setText("writing op config...");
 					VerisenseDevice verisenseDevice = ((VerisenseDevice)shimmerDevice).deepClone();
 					verisenseDevice.setRecordingEnabled(false);
 					byte[] opConfig = verisenseDevice.configBytesGenerate(true, COMMUNICATION_TYPE.BLUETOOTH);
-					((VerisenseDevice)shimmerDevice).getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).writeOpConfig(opConfig).continueWith(new Continuation<Boolean, Void>() {
-						@Override
-						public Void then(Task<Boolean> completed) throws Exception {
-							textPaneStatus.setText("connected");
-							return null;
-						}
-					});
+					((VerisenseDevice)shimmerDevice).getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).writeOperationalConfig(opConfig);
 				} catch (ShimmerException e) {
+					if(e.getMessage() == "A task is still ongoing") {
+						textPaneStatus.setText(previousStatus);
+						JOptionPane.showMessageDialog(frame,
+								"Please wait until current task is finished", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
 					e.printStackTrace();
 				}
 			}
@@ -336,13 +359,18 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JButton btnStartStreaming = new JButton("START STREAMING");
 		btnStartStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				
 				try {
 					shimmerDevice.startStreaming();
 				} catch (ShimmerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					if(e.getMessage() == "A task is still ongoing") {
+						JOptionPane.showMessageDialog(frame,
+								"Please wait until current task is finished", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
 					textPaneStatus.setText(e.getMessage());
+					e.printStackTrace();
 				}
 
 			}
@@ -467,7 +495,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			lblPayloadIndex.setText("Current Payload Index : " + ((SyncProgressDetails)callbackObject.mMyObject).mPayloadIndex + " ; Speed(KBps) : " + ((SyncProgressDetails)callbackObject.mMyObject).mTransferRateBytes/1000 );
 			String path = Paths.get(((SyncProgressDetails)callbackObject.mMyObject).mBinFilePath).toAbsolutePath().toString();
 			lblBinFileDirectory.setText("Bin file path : " + path);
-		} else if (ind == 14) {
+		} else if (ind == ShimmerBluetooth.MSG_IDENTIFIER_VERISENSE_ERASE_DATA_COMPLETED) {
+			textPaneStatus.setText("connected");
+		} else if (ind == ShimmerBluetooth.MSG_IDENTIFIER_VERISENSE_WRITE_OPCONFIG_COMPLETED) {
 			textPaneStatus.setText("connected");
 		}
 	}

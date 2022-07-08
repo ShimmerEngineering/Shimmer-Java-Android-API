@@ -1848,7 +1848,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).stopStreaming();
 	}
 
-	public void readLoggedData() {
+	public void readLoggedData() throws ShimmerException {
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).readLoggedData();
 	}
 	

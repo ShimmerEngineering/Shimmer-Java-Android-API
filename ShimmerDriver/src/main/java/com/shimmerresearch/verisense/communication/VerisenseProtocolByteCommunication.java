@@ -155,6 +155,9 @@ public class VerisenseProtocolByteCommunication {
 				}
 			}
 			if (mState.equals(VerisenseProtocolState.Disconnected)) {
+				if(mTaskWriteBytes != null && !mTaskWriteBytes.getTask().isCompleted()) {
+					mTaskWriteBytes.setCancelled();
+				}
 				for (RadioListener rl : mRadioListenerList) {
 					rl.disconnected();
 				}
@@ -175,6 +178,9 @@ public class VerisenseProtocolByteCommunication {
 				}
 
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.DATA.ackByte()) {
+				if(mTaskWriteBytes != null) {
+					mTaskWriteBytes.setResult(true);
+				}
 				if (mState.equals(VerisenseProtocolState.StreamingLoggedData)) {
 					stateChange(VerisenseProtocolState.Connected);
 					for (RadioListener rl : mRadioListenerList) {
@@ -307,6 +313,9 @@ public class VerisenseProtocolByteCommunication {
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.STREAMING.ackByte()) {
 				if (mState.equals(VerisenseProtocolState.Streaming)) {
 					stateChange(VerisenseProtocolState.Connected);
+					if (mTaskWriteBytes != null) {
+						mTaskWriteBytes.setResult(true);
+					}
 					for (RadioListener rl : mRadioListenerList) {
 						rl.hasStopStreamingCallback();
 					}
@@ -341,7 +350,7 @@ public class VerisenseProtocolByteCommunication {
 		}
 	}
 
-	void FinishPayload(VerisenseMessage verisenseMessage, boolean CRCError) {
+	void FinishPayload(VerisenseMessage verisenseMessage, boolean CRCError) throws ShimmerException {
 		if (CRCError) {
 			verisenseMessage.mCRCErrorPayload = true;
 		}
@@ -451,22 +460,25 @@ public class VerisenseProtocolByteCommunication {
 		mByteCommunication.stop();
 	}
 
-	protected void writeMessageWithoutPayload(byte commandAndProperty) {
-		if(commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.readByte()) {
-			mTaskWriteBytes = new TaskCompletionSource<>();
-		}
+	protected void writeMessageWithoutPayload(byte commandAndProperty) throws ShimmerException {
 		writeMessageWithPayload(commandAndProperty, new byte[] {});
 	}
 	
-	protected void writeMessageWithPayload(byte commandAndProperty, byte[] payloadContents) {
-		txVerisenseMessageInProgress = new VerisenseMessage(commandAndProperty, payloadContents);
-		byte[] txBuf = txVerisenseMessageInProgress.generatePacket();
-		
+	protected void writeMessageWithPayload(byte commandAndProperty, byte[] payloadContents) throws ShimmerException {
 		if(commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.writeByte() || 
-			(commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.writeByte() && 
-			payloadContents[0] == VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP)) {
+		   commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.readByte() ||
+		   commandAndProperty == VERISENSE_PROPERTY.DATA.readByte() ||
+		  (commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.writeByte() && payloadContents[0] == VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP) ||
+		  (commandAndProperty == VERISENSE_PROPERTY.STREAMING.writeByte() && payloadContents[0] == STREAMING_COMMAND.STREAMING_START)) {
+			
+			if (mTaskWriteBytes != null && !mTaskWriteBytes.getTask().isCompleted()) {
+				throw new ShimmerException("A task is still ongoing");
+			}
 			mTaskWriteBytes = new TaskCompletionSource<>();
 		}
+		
+		txVerisenseMessageInProgress = new VerisenseMessage(commandAndProperty, payloadContents);
+		byte[] txBuf = txVerisenseMessageInProgress.generatePacket();
 		
 		if(DEBUG_TX_RX_MESSAGES) {
 			System.out.println("TX:" + txVerisenseMessageInProgress.generateDebugString());
@@ -515,15 +527,15 @@ public class VerisenseProtocolByteCommunication {
 		return latestTimePayload;
 	}
 
-	public void readLoggedData() {
+	public void readLoggedData() throws ShimmerException {
 		writeMessageWithoutPayload(VERISENSE_PROPERTY.DATA.readByte());
 	}
 
-	public void writeLoggedDataAck() {
+	public void writeLoggedDataAck() throws ShimmerException {
 		writeMessageWithoutPayload(VERISENSE_PROPERTY.DATA.ackNextStageByte());
 	}
 
-	public void writeLoggedDataNack() {
+	public void writeLoggedDataNack() throws ShimmerException {
 		writeMessageWithoutPayload(VERISENSE_PROPERTY.DATA.nackByte());
 	}
 
@@ -592,18 +604,8 @@ public class VerisenseProtocolByteCommunication {
 		waitForAck(VERISENSE_PROPERTY.FW_DEBUG, TIMEOUT_MS.STANDARD);
 	}
 	
-	public Task<Boolean> writeOpConfig(byte[] operationalConfig) throws ShimmerException {
-		writeMessageWithPayload(VERISENSE_PROPERTY.CONFIG_OPER.writeByte(), operationalConfig);
-		return mTaskWriteBytes.getTask();
-	}
-	
-	public Task<Boolean> eraseData() throws ShimmerException{
+	public Task<Boolean> eraseDataTask() throws ShimmerException{
 		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP});
-		return mTaskWriteBytes.getTask();
-	}
-	
-	public Task<Boolean> readOpConfig() throws ShimmerException{
-		writeMessageWithoutPayload(VERISENSE_PROPERTY.CONFIG_OPER.readByte());
 		return mTaskWriteBytes.getTask();
 	}
 	
