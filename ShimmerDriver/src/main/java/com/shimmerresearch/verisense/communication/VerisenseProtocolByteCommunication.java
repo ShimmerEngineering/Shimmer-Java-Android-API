@@ -709,7 +709,9 @@ public class VerisenseProtocolByteCommunication {
 				}
 			}
 		}
-
+		if(mTaskWriteBytes != null && !mTaskWriteBytes.getTask().isCompleted()) {
+			mTaskWriteBytes.setCancelled();
+		}
 		throw new ShimmerException("TIMEOUT for Property = " + verisenseProperty.toString() + ", expected = " + expectedCommand.toString());
 	}
 	
