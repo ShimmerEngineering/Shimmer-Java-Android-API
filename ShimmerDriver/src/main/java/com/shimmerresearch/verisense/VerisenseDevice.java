@@ -1776,7 +1776,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			ObjectCluster ojcCurrent = buildMsgForSensorList(byteBuf, commType, dataBlockDetails.listOfSensorClassKeys, timeMsCurrentSample);
 			dataHandler(ojcCurrent);
 			dataBlockDetails.setOjcArrayAtIndex(y, ojcCurrent);
-
+			
 			timeMsCurrentSample += (dataBlockDetails.getTimestampDiffInS() * 1000);
 
 			currentByteIndex += dataBlockDetails.dataPacketSize;
@@ -1982,74 +1982,160 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return isChanged;
 	}
 	
+	/**
+	 * The date and time (in minutes since 1 January 1970) the ASM sensor will start collecting data.
+	 * The clock system on a Verisense sensor is in local time (e.g. Unix time expressed in your time zone, e.g. for Kuala Lumpur Unix time + 08:00).
+	 * @return the recording start time.
+	 */
 	public long getRecordingStartTimeMinutes() {
 		return recordingStartTimeMinutes;
 	}
 
+	/**
+	 * The date and time (in minutes since 1 January 1970) the ASM sensor will start collecting data.
+	 * The clock system on a Verisense sensor is in local time (e.g. Unix time expressed in your time zone, e.g. for Kuala Lumpur Unix time + 08:00).
+	 * @param recordingStartTimeMinutes  the recording start time.
+	 */
 	public void setRecordingStartTimeMinutes(long recordingStartTimeMinutes) {
 		this.recordingStartTimeMinutes = UtilShimmer.nudgeLong(recordingStartTimeMinutes, 0, (long) (Math.pow(2, 4*8)-1));
 	}
 
+	/**
+	 * The date and time (in minutes since 1 January 1970) the ASM sensor will stop collecting data.
+	 * The clock system on a Verisense sensor is in local time (e.g. Unix time expressed in your time zone, e.g. for Kuala Lumpur Unix time + 08:00).
+	 * @return the recording stop time.
+	 */
 	public long getRecordingEndTimeMinutes() {
 		return recordingEndTimeMinutes;
 	}
 
+	/**
+	 * The date and time (in minutes since 1 January 1970) the ASM sensor will stop collecting data.
+	 * The clock system on a Verisense sensor is in local time (e.g. Unix time expressed in your time zone, e.g. for Kuala Lumpur Unix time + 08:00).
+	 * @param recordingStopTimeMinutes  the recording stop time.
+	 */
 	public void setRecordingEndTimeMinutes(long recordingEndTimeMinutes) {
 		this.recordingEndTimeMinutes = UtilShimmer.nudgeLong(recordingEndTimeMinutes, 0, (long) (Math.pow(2, 4*8)-1));
 	}
 
+	/**
+	 * The number of BLE wake-up retries to carry out if there is any pending events
+	 * @return the retry count.
+	 */
 	public int getBleConnectionRetriesPerDay() {
 		return bleConnectionRetriesPerDay;
 	}
 
+	/**
+	 * The number of BLE wake-up retries to carry out if there is any pending events
+	 * @param bleConnectionTriesPerDay  the retry count.
+	 */
 	public void setBleConnectionRetriesPerDay(int bleConnectionTriesPerDay) {
 		this.bleConnectionRetriesPerDay = UtilShimmer.nudgeInteger(bleConnectionTriesPerDay, 0, (int) (Math.pow(2, 8)-1));
 	}
 
+	/**
+	 * @see BLE_TX_POWER
+	 * @return bluetooth power setting.
+	 */
 	public BLE_TX_POWER getBleTxPower() {
 		return bleTxPower;
 	}
 
+	/**
+	 * @see BLE_TX_POWER
+	 * @param bleTxPower  bluetooth power setting.
+	 */
 	public void setBleTxPower(BLE_TX_POWER bleTxPower) {
 		this.bleTxPower = bleTxPower;
 	}
 
+	/**
+	 * Data transfer schedule
+	 * @return data transfer schedule.
+	 * @see PendingEventSchedule
+	 */
 	public PendingEventSchedule getPendingEventScheduleDataTransfer() {
 		return pendingEventScheduleDataTransfer;
 	}
 
+	/**
+	 * Data transfer schedule
+	 * @param pendingEventScheduleDataTransfer data transfer schedule.
+	 * @see PendingEventSchedule
+	 */
 	public void setPendingEventScheduleDataTransfer(PendingEventSchedule pendingEventScheduleDataTransfer) {
 		this.pendingEventScheduleDataTransfer = pendingEventScheduleDataTransfer;
 	}
 
+	/**
+	 * Status transfer schedule
+	 * @return status transfer schedule.
+	 * @see PendingEventSchedule
+	 */
 	public PendingEventSchedule getPendingEventScheduleStatusSync() {
 		return pendingEventScheduleStatusSync;
 	}
 
+	/**
+	 * Status transfer schedule
+	 * @param pendingEventScheduleStatusSync status transfer schedule.
+	 * @see PendingEventSchedule
+	 */
 	public void setPendingEventScheduleStatusSync(PendingEventSchedule pendingEventScheduleStatusSync) {
 		this.pendingEventScheduleStatusSync = pendingEventScheduleStatusSync;
 	}
 
+	/**
+	 * RTC sync schedule
+	 * @return RTC sync schedule.
+	 * @see PendingEventSchedule
+	 */
 	public PendingEventSchedule getPendingEventScheduleRwcSync() {
 		return pendingEventScheduleRwcSync;
 	}
 
+	/**
+	 * RTC sync schedule
+	 * @param pendingEventScheduleRwcSync RTC sync schedule.
+	 * @see PendingEventSchedule
+	 */
 	public void setPendingEventScheduleRwcSync(PendingEventSchedule pendingEventScheduleRwcSync) {
 		this.pendingEventScheduleRwcSync = pendingEventScheduleRwcSync;
 	}
 
+	/**
+	 * The number of minute’s interval the ASM sensor will wait after a failed connection attempt before turning on the scheduler again
+	 * @return interval in minutes, if this value is set to either 0 or 65535 then the adaptive scheduler will never be turned on.
+	 */
 	public int getAdaptiveSchedulerInterval() {
 		return adaptiveSchedulerInterval;
 	}
 
+	/**
+	 * The number of minute’s interval the ASM sensor will wait after a failed connection attempt before turning on the scheduler again
+	 * @param adaptiveSchedulerInterval interval in minutes, if this value is set to either 0 or 65535 then the adaptive scheduler will never be turned on.
+	 */
 	public void setAdaptiveSchedulerInterval(int adaptiveSchedulerInterval) {
 		this.adaptiveSchedulerInterval = UtilShimmer.nudgeInteger(adaptiveSchedulerInterval, 0, (int) (Math.pow(2, 16)-1));
 	}
 
+	/**
+	 * Each time the sensor fails to clear all pending events during a scheduled wake-up event, a fail counter is incremented. 
+     * When the fail counter reaches the adaptive scheduler maximum fail count, the sensor will turn on the adaptive scheduler 
+     * and the scheduler will be set to wake-up based on the interval
+	 * @return adaptive scheduler maximum fail count.
+	 */
 	public int getAdaptiveSchedulerFailCount() {
 		return adaptiveSchedulerFailCount;
 	}
 
+	/**
+	 * Each time the sensor fails to clear all pending events during a scheduled wake-up event, a fail counter is incremented. 
+     * When the fail counter reaches the adaptive scheduler maximum fail count, the sensor will turn on the adaptive scheduler 
+     * and the scheduler will be set to wake-up based on the interval
+	 * @param adaptiveSchedulerFailCount  adaptive scheduler maximum fail count.
+	 */
 	public void setAdaptiveSchedulerFailCount(int adaptiveSchedulerFailCount) {
 		this.adaptiveSchedulerFailCount = UtilShimmer.nudgeInteger(adaptiveSchedulerFailCount, 0, (int) (Math.pow(2, 8)-1));
 	}
@@ -2078,18 +2164,34 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		this.prioritiseLongTermFlash = prioritiseLongTermFlash;
 	}
 
+	/**
+	 * Is the device enabled
+	 * @return deviceEnabled.
+	 */
 	public boolean isDeviceEnabled() {
 		return deviceEnabled;
 	}
 
+	/**
+	 * Disable/Enable the Verisense Device
+	 * @param deviceEnabled  deviceEnabled.
+	 */
 	public void setDeviceEnabled(boolean deviceEnabled) {
 		this.deviceEnabled = deviceEnabled;
 	}
 
+	/**
+	 * Is logging enabled
+	 * @return recordingEnabled.
+	 */
 	public boolean isRecordingEnabled() {
 		return recordingEnabled;
 	}
 
+	/**
+	 * Disable/Enable the logging of data
+	 * @param recordingEnabled  recordingEnabled.
+	 */
 	public void setRecordingEnabled(boolean recordingEnabled) {
 		this.recordingEnabled = recordingEnabled;
 	}
