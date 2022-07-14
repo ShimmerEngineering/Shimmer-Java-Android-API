@@ -160,7 +160,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	private int adaptiveSchedulerInterval = 65535;
 	private int adaptiveSchedulerFailCount = 255;
 	private int ppgRecordingDurationSeconds = 0;
-	private int ppgRecordingIntervalSeconds = 0;
+	private int ppgRecordingIntervalMinutes = 0;
 
 	public static enum BLE_TX_POWER implements ISensorConfig {
 		PLUS_8_DBM("+8 dBm", (byte) 0x08),
@@ -403,8 +403,8 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 
 			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_DUR_SECS_LSB] = (byte) (ppgRecordingDurationSeconds & 0xFF);
 			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_DUR_SECS_MSB] = (byte) ((ppgRecordingDurationSeconds >> 8) & 0xFF);
-			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_LSB] = (byte) (ppgRecordingIntervalSeconds & 0xFF);
-			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_MSB] = (byte) ((ppgRecordingIntervalSeconds >> 8) & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_LSB] = (byte) (ppgRecordingIntervalMinutes & 0xFF);
+			configBytes[OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_MSB] = (byte) ((ppgRecordingIntervalMinutes >> 8) & 0xFF);
 
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()) {
 				abstractSensor.configBytesGenerate(this, configBytes, commType);
@@ -524,7 +524,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			adaptiveSchedulerFailCount = configBytes[OP_CONFIG_BYTE_INDEX.ADAPTIVE_SCHEDULER_FAILCOUNT_MAX] & 0xFF;
 			
 			ppgRecordingDurationSeconds = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.PPG_REC_DUR_SECS_LSB, CHANNEL_DATA_TYPE.UINT16);
-			ppgRecordingIntervalSeconds = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_LSB, CHANNEL_DATA_TYPE.UINT16);
+			ppgRecordingIntervalMinutes = (int) AbstractPayload.parseByteArrayAtIndex(configBytes, OP_CONFIG_BYTE_INDEX.PPG_REC_INT_MINS_LSB, CHANNEL_DATA_TYPE.UINT16);
 		}
 
 		setEnabledAndDerivedSensorsAndUpdateMaps(enabledSensors, mDerivedSensors, commType);
@@ -2334,7 +2334,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	 */
 	public void setPpgContinuousRecording() {
 		setPpgRecordingDurationSeconds(0);
-		setPpgRecordingIntervalSeconds(0);
+		setPpgRecordingIntervalMinutes(0);
 	}
 
 	/** 0 represents always on
@@ -2345,17 +2345,17 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	/** 0 represents always on
-	 * @return ppgRecordingIntervalSeconds
+	 * @return ppgRecordingIntervalMinutes
 	 */
-	public int getPpgRecordingIntervalSeconds() {
-		return ppgRecordingIntervalSeconds;
+	public int getPpgRecordingIntervalMinutes() {
+		return ppgRecordingIntervalMinutes;
 	}
 
 	/** 0 represents always on
-	 * @param ppgRecordingIntervalSeconds
+	 * @param ppgRecordingIntervalMinutes
 	 */
-	public void setPpgRecordingIntervalSeconds(int ppgRecordingIntervalSeconds) {
-		this.ppgRecordingIntervalSeconds = UtilShimmer.nudgeInteger(ppgRecordingIntervalSeconds, 0, (int) (Math.pow(2, 16)-1));
+	public void setPpgRecordingIntervalMinutes(int ppgRecordingIntervalMinutes) {
+		this.ppgRecordingIntervalMinutes = UtilShimmer.nudgeInteger(ppgRecordingIntervalMinutes, 0, (int) (Math.pow(2, 16)-1));
 	}
 
 	/** Update sensor configuration

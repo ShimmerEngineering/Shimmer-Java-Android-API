@@ -258,7 +258,7 @@ public class OperationalConfigPayload extends AbstractPayload {
 		verisenseDevice.setAdaptiveSchedulerFailCount((int) (Math.pow(2, 8)-1));
 		
 		verisenseDevice.setPpgRecordingDurationSeconds(60);
-		verisenseDevice.setPpgRecordingIntervalSeconds(14);
+		verisenseDevice.setPpgRecordingIntervalMinutes(14);
 		
 		//TODO the following won't make any changes to the config bytes as the sensor classes currently check whether each sensor is enabled before parsing/generating config bytes. Need to consider changing this but also keep in mind that this will cause issues for bin file parsing (as bits/bytes are reused for Accel1/Accel2) 
 		
