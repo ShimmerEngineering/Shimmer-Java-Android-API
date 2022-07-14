@@ -1798,6 +1798,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return rateHz;
 	}
 
+	/**
+	 * @see VerisenseDevice#connect(COMMUNICATION_TYPE)
+	 */
 	@Override
 	public void connect() throws ShimmerException {
 		try {
@@ -1810,12 +1813,19 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		}
 	}
 	
+	/**
+	 * @see VerisenseDevice#disconnect(COMMUNICATION_TYPE)
+	 */
 	@Override
 	public void disconnect() throws ShimmerException {
 		this.disconnect(currentStreamingCommsRoute);
 		
 	}
 	
+	/** 
+	 * Disconnect from the verisense device
+	 * @throws ShimmerException  if verisenseProtocolByteCommunication is not being set
+	 */
 	public void disconnect(COMMUNICATION_TYPE commType) throws ShimmerException {
 		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(commType);
 		if(verisenseProtocolByteCommunication!=null) {
@@ -1828,6 +1838,11 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		}
 	}
 	
+	/** 
+	 * To initialize a BLE connection with the verisense device and
+	 * read the status, production configuration, operation configuration
+	 * @throws ShimmerException  if verisenseProtocolByteCommunication is not being set
+	 */
 	public void connect(COMMUNICATION_TYPE commType) throws ShimmerException {
 		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(commType);
 		if(verisenseProtocolByteCommunication!=null) {
@@ -1857,6 +1872,10 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		}
 	}
 	
+	/** 
+	 * Start streaming
+	 * @throws ShimmerException  if the device is already streaming
+	 */
 	@Override
 	public void startStreaming() throws ShimmerException {
 		super.startStreaming();
@@ -1870,12 +1889,19 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		}
 	}
 
+	/** 
+	 * Stop streaming
+	 * @throws ShimmerException  if the device is not already streaming
+	 */
 	@Override
 	public void stopStreaming() throws ShimmerException {
 		super.stopStreaming();
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).stopStreaming();
 	}
 
+	/** 
+	 * Start data sync
+	 */
 	public void readLoggedData() throws ShimmerException {
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).readLoggedData();
 	}
@@ -1940,6 +1966,11 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return null;
 	}
 
+	/** 
+	 * @param array of sensor Id to be enabled
+	 * @return enabled sensor Id
+	 * @see setSensorEnabledState
+	 */
 	public Integer[] setSensorsEnabled(int[] sensorIds) {
 		disableAllSensors();
 		List<Integer> listOfEnabledSensorIds = new ArrayList<Integer>();
@@ -1951,30 +1982,47 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return listOfEnabledSensorIds.toArray(new Integer[listOfEnabledSensorIds.size()]);
 	}
 
+	/** @see setSensorEnabledState
+	 */
 	public boolean setSensorEnabledStateAccel1(boolean isEnabled) {
 		return setSensorEnabledState(Verisense.SENSOR_ID.LIS2DW12_ACCEL, isEnabled);
 	}
 
+	/** @see setSensorEnabledState
+	 */
 	public boolean setSensorEnabledStateAccel2(boolean isEnabled) {
 		return setSensorEnabledState(Verisense.SENSOR_ID.LSM6DS3_ACCEL, isEnabled);
 	}
 	
+	/** @see setSensorEnabledState
+	 */
 	public boolean setSensorEnabledStateGyro(boolean isEnabled) {
 		return setSensorEnabledState(Verisense.SENSOR_ID.LSM6DS3_GYRO, isEnabled);
 	}
 	
+	/** @see setSensorEnabledState
+	 */
 	public boolean setSensorEnabledStateGsr(boolean isEnabled) {
 		return setSensorEnabledState(Verisense.SENSOR_ID.GSR, isEnabled);
 	}
 
+	/** @see setSensorEnabledState
+	 */
 	public boolean setSensorEnabledStatePpg(boolean isEnabled) {
 		return setSensorEnabledState(Verisense.SENSOR_ID.MAX86916_PPG_BLUE, isEnabled);
 	}
 
+	/** @see setSensorEnabledState
+	 */
 	public boolean setSensorEnabledStateBatteryVoltage(boolean isEnabled) {
 		return setSensorEnabledState(Verisense.SENSOR_ID.VBATT, isEnabled);
 	}
 
+	/**
+	 * Set the current bluetooth state.
+	 * @param BT_STATE
+	 * @return true if state is changed
+	 */
 	@Override
 	public boolean setBluetoothRadioState(BT_STATE state) {
 		boolean isChanged = super.setBluetoothRadioState(state);
@@ -2140,26 +2188,52 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		this.adaptiveSchedulerFailCount = UtilShimmer.nudgeInteger(adaptiveSchedulerFailCount, 0, (int) (Math.pow(2, 8)-1));
 	}
 
+	/**
+	 * Is bluetooth enabled (bluetooth will always be enabled when USB powered)
+	 * @return bluetoothEnabled.
+	 */
 	public boolean isBluetoothEnabled() {
 		return bluetoothEnabled;
 	}
 
+	/**
+	 * Disable/Enable bluetooth (bluetooth will always be enabled when USB powered)
+	 * @return bluetoothEnabled.
+	 */
 	public void setBluetoothEnabled(boolean bluetoothEnabled) {
 		this.bluetoothEnabled = bluetoothEnabled;
 	}
 
+	/**
+	 * Is USB enabled
+	 * @return usbEnabled.
+	 */
 	public boolean isUsbEnabled() {
 		return usbEnabled;
 	}
 
+	/**
+	 * Disable/Enable USB
+	 * @param usbEnabled.
+	 */
 	public void setUsbEnabled(boolean usbEnabled) {
 		this.usbEnabled = usbEnabled;
 	}
 
+	/**
+	 * If the recording is only to use the long-term flash and bypass the usage of the short-term flash then the value is set to 1, otherwise 0.
+	 * If expected data upload interval from ASM is longer then the short-term flash is capable of storing, it is more energy efficient to write directly to long-term flash.
+	 * @return prioritiseLongTermFlash.
+	 */
 	public boolean isPrioritiseLongTermFlash() {
 		return prioritiseLongTermFlash;
 	}
 
+	/**
+	 * If the recording is only to use the long-term flash and bypass the usage of the short-term flash then the value is set to 1, otherwise 0.
+	 * If expected data upload interval from ASM is longer then the short-term flash is capable of storing, it is more energy efficient to write directly to long-term flash.
+	 * @param prioritiseLongTermFlash.
+	 */
 	public void setPrioritiseLongTermFlash(boolean prioritiseLongTermFlash) {
 		this.prioritiseLongTermFlash = prioritiseLongTermFlash;
 	}
@@ -2219,26 +2293,45 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		this.passkeyMode = passkeyMode;
 	}
 
+	/** 
+	 * @return dataCompressionMode
+	 */
 	public DATA_COMPRESSION_MODE getDataCompressionMode() {
 		return dataCompressionMode;
 	}
 
+	/** 
+	 * @param dataCompressionMode
+	 */
 	public void setDataCompressionMode(DATA_COMPRESSION_MODE dataCompressionMode) {
 		this.dataCompressionMode = dataCompressionMode;
 	}
 
+	/** Used to set the battery type that is currently connected to the sensor. 
+	 * This is used internally in the firmware to manage how the sensor utilizes the battery in order to ensure optimum battery life.
+	 * @param BATTERY_TYPE
+	 */
 	public BATTERY_TYPE getBatteryType() {
 		return batteryType;
 	}
 
+	/** Used to set the battery type that is currently connected to the sensor. 
+	 * This is used internally in the firmware to manage how the sensor utilizes the battery in order to ensure optimum battery life.
+	 * @return BATTERY_TYPE
+	 */
 	public void setBatteryType(BATTERY_TYPE batteryType) {
 		this.batteryType = batteryType;
 	}
 
+	/** 0 represents always on
+	 * @return ppgRecordingDurationSeconds
+	 */
 	public int getPpgRecordingDurationSeconds() {
 		return ppgRecordingDurationSeconds;
 	}
 	
+	/** Enable continuous PPG recording
+	 */
 	public void setPpgContinuousRecording() {
 		setPpgRecordingDurationSeconds(0);
 		setPpgRecordingIntervalSeconds(0);
@@ -2251,6 +2344,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		this.ppgRecordingDurationSeconds = UtilShimmer.nudgeInteger(ppgRecordingDurationSeconds, 0, (int) (Math.pow(2, 16)-1));
 	}
 
+	/** 0 represents always on
+	 * @return ppgRecordingIntervalSeconds
+	 */
 	public int getPpgRecordingIntervalSeconds() {
 		return ppgRecordingIntervalSeconds;
 	}
@@ -2262,6 +2358,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		this.ppgRecordingIntervalSeconds = UtilShimmer.nudgeInteger(ppgRecordingIntervalSeconds, 0, (int) (Math.pow(2, 16)-1));
 	}
 
+	/** Update sensor configuration
+	 * @param sensorConfig
+	 */
 	@Override
 	public void setSensorConfig(ISensorConfig sensorConfig) {
 		if(sensorConfig instanceof BLE_TX_POWER) {
@@ -2271,6 +2370,9 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		}
 	}
 
+	/** Get all sensor config
+	 * @return List of sensor config
+	 */
 	@Override
 	public List<ISensorConfig> getSensorConfig() {
 		List<ISensorConfig> listOfConfig = new ArrayList<>();
@@ -2279,30 +2381,51 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		return listOfConfig;
 	}
 
+	/**
+	 * @return currentStreamingCommsRoute
+	 */
 	public COMMUNICATION_TYPE getCurrentStreamingCommsRoute() {
 		return currentStreamingCommsRoute;
 	}
 
+	/**
+	 * @param currentStreamingCommsRoute
+	 */
 	public void setCurrentStreamingCommsRoute(COMMUNICATION_TYPE currentStreamingCommsRoute) {
 		this.currentStreamingCommsRoute = currentStreamingCommsRoute;
 	}
 	
+	/**
+	 * @param trialName
+	 */
 	public void setTrialName(String trial) {
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).trialName = trial;
 	}
 	
+	/**
+	 * @return trialName
+	 */
 	public String getTrialName() {
 		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).trialName;
 	}
 	
+	/**
+	 * @param participantID
+	 */
 	public void setParticipantID(String participant) {
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).participantID = participant;
 	}
 	
+	/**
+	 * @return participantID
+	 */
 	public String getParticipantID() {
 		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).participantID;
 	}
 	
+	/**
+	 * @return The binary file path
+	 */
 	public String getDataFilePath() {
 		return mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).getDataFilePath();
 	}
