@@ -23,6 +23,8 @@ import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.SyncProgressDetails;
 
+import bolts.Continuation;
+import bolts.Task;
 import info.monitorenter.gui.chart.Chart2D;
 
 import javax.swing.JLabel;
@@ -60,6 +62,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	private JLabel lblTrialName;
 	private JTextArea lblBinFileDirectory;
 	private JButton btnSync;
+	private JButton btnEraseData;
+	private JButton btnDisableLogging;
 	private JLabel lblPayloadIndex;
 	JTextPane textPaneStatus;
 	static ShimmerDevice shimmerDevice;
@@ -68,6 +72,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	String btComport;
 	String macAddress;
 	String btFriendlyName;
+	String previousStatus;
 
 	/**
 	 * Initialize the contents of the frame
@@ -100,11 +105,11 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(btFriendlyNameTextField);
 		btFriendlyNameTextField.setColumns(10);
 
-		// textField.setText("e7:45:2c:6d:6f:14");
+//		textField.setText("e7:45:2c:6d:6f:14");
 		textField.setText("d0:2b:46:3d:a2:bb");
-		//textField.setText("e7:ec:37:a0:d2:34");
-		// textField.setText("Com5");
-		// textField2.setText("Shimmer-E6C8");
+//		textField.setText("e7:ec:37:a0:d2:34");
+//		textField.setText("Com5");
+//		btFriendlyNameTextField.setText("Shimmer-E6C8");
 		btFriendlyNameTextField.setText("Verisense-19092501A2BB");
 
 		JButton btnConnect = new JButton("CONNECT");
@@ -123,7 +128,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(210, 35, 175, 31);
+		btnConnect.setBounds(210, 35, 175, 25);
 		frame.getContentPane().add(btnConnect);
 
 		lblParticipantName = new JLabel("Participant Name");
@@ -164,21 +169,92 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnSync = new JButton("DATA SYNC");
 		btnSync.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				previousStatus = textPaneStatus.getText();
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
 				verisenseDevice.setTrialName(TrialNameTextField.getText());
 				verisenseDevice.setParticipantID(ParticipantNameTextField.getText());
-				verisenseDevice.readLoggedData();
+				try {
+					verisenseDevice.readLoggedData();
+				} catch (ShimmerException e) {
+					if(e.getMessage() == "A task is still ongoing") {
+						textPaneStatus.setText(previousStatus);
+						JOptionPane.showMessageDialog(frame,
+								"Please wait until current task is finished", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+					e.printStackTrace();
+				}
 			}
 		});
 		btnSync.setToolTipText("Data Sync");
-		btnSync.setBounds(210, 199, 175, 31);
+		btnSync.setBounds(210, 179, 175, 25);
 		frame.getContentPane().add(btnSync);
 
+		btnEraseData = new JButton("ERASE DATA");
+		btnEraseData.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					previousStatus = textPaneStatus.getText();
+					textPaneStatus.setText("erasing data...");
+					VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
+					verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseDataTask().continueWith(new Continuation<Boolean, Void>() {
+						@Override
+						public Void then(Task<Boolean> completed) throws Exception {
+							System.out.println("erased data completed");
+							return null;
+						}
+					});
+					//verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseData().waitForCompletion(60, TimeUnit.SECONDS);
+				} catch (ShimmerException e) {
+					if(e.getMessage() == "A task is still ongoing") {
+						textPaneStatus.setText(previousStatus);
+						JOptionPane.showMessageDialog(frame,
+								"Please wait until current task is finished", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+					e.printStackTrace();
+				}
+			}
+		});
+		btnEraseData.setToolTipText("erase logged data");
+		btnEraseData.setBounds(210, 215, 175, 25);
+		frame.getContentPane().add(btnEraseData);
+		
+		btnDisableLogging = new JButton("DISABLE LOGGING");
+		btnDisableLogging.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					previousStatus = textPaneStatus.getText();
+					textPaneStatus.setText("writing op config...");
+					VerisenseDevice verisenseDevice = ((VerisenseDevice)shimmerDevice).deepClone();
+					verisenseDevice.setRecordingEnabled(false);
+					byte[] opConfig = verisenseDevice.configBytesGenerate(true, COMMUNICATION_TYPE.BLUETOOTH);
+					((VerisenseDevice)shimmerDevice).getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).writeOperationalConfig(opConfig);
+				} catch (ShimmerException e) {
+					if(e.getMessage() == "A task is still ongoing") {
+						textPaneStatus.setText(previousStatus);
+						JOptionPane.showMessageDialog(frame,
+								"Please wait until current task is finished", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+					e.printStackTrace();
+				}
+			}
+		});
+		btnDisableLogging.setToolTipText("disable logging");
+		btnDisableLogging.setBounds(210, 251, 175, 25);
+		frame.getContentPane().add(btnDisableLogging);
+		
 		ParticipantNameTextField.setVisible(false);
 		lblParticipantName.setVisible(false);
 		TrialNameTextField.setVisible(false);
 		lblTrialName.setVisible(false);
 		btnSync.setVisible(false);
+		btnEraseData.setVisible(false);
+		btnDisableLogging.setVisible(false);
 		lblPayloadIndex.setVisible(false);
 		lblBinFileDirectory.setVisible(false);
 		JButton btnDisconnect = new JButton("DISCONNECT");
@@ -188,7 +264,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(210, 76, 175, 31);
+		btnDisconnect.setBounds(210, 71, 175, 25);
 		frame.getContentPane().add(btnDisconnect);
 
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
@@ -254,7 +330,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mnTools.add(mntmDeviceConfiguration);
 
 		JPanel plotPanel = new JPanel();
-		plotPanel.setBounds(12, 264, 828, 272);
+		plotPanel.setBounds(12, 274, 828, 272);
 		frame.getContentPane().add(plotPanel);
 		plotPanel.setLayout(null);
 
@@ -283,18 +359,23 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JButton btnStartStreaming = new JButton("START STREAMING");
 		btnStartStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				
 				try {
 					shimmerDevice.startStreaming();
 				} catch (ShimmerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					if(e.getMessage() == "A task is still ongoing") {
+						JOptionPane.showMessageDialog(frame,
+								"Please wait until current task is finished", "Warning",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
 					textPaneStatus.setText(e.getMessage());
+					e.printStackTrace();
 				}
 
 			}
 		});
-		btnStartStreaming.setBounds(210, 117, 175, 31);
+		btnStartStreaming.setBounds(210, 107, 175, 25);
 		frame.getContentPane().add(btnStartStreaming);
 
 		JButton btnStopStreaming = new JButton("STOP STREAMING");
@@ -308,9 +389,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				}
 			}
 		});
-		btnStopStreaming.setBounds(210, 158, 175, 31);
+		btnStopStreaming.setBounds(210, 143, 175, 25);
 		frame.getContentPane().add(btnStopStreaming);
-
+		
 		plotManager.setTitle("Plot");
 	}
 
@@ -356,6 +437,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					TrialNameTextField.setVisible(true);
 					lblTrialName.setVisible(true);
 					btnSync.setVisible(true);
+					btnEraseData.setVisible(true);
+					btnDisableLogging.setVisible(true);
 					lblPayloadIndex.setVisible(true);
 					lblBinFileDirectory.setVisible(true);
 					shimmerDevice = btManager.getShimmerDeviceBtConnected(macAddress.toUpperCase());
@@ -374,6 +457,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				TrialNameTextField.setVisible(false);
 				lblTrialName.setVisible(false);
 				btnSync.setVisible(false);
+				btnEraseData.setVisible(false);
+				btnDisableLogging.setVisible(false);
 				lblPayloadIndex.setVisible(false);
 				lblBinFileDirectory.setVisible(false);
 			} else if (callbackObject.mState == BT_STATE.STREAMING) {
@@ -410,6 +495,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			lblPayloadIndex.setText("Current Payload Index : " + ((SyncProgressDetails)callbackObject.mMyObject).mPayloadIndex + " ; Speed(KBps) : " + ((SyncProgressDetails)callbackObject.mMyObject).mTransferRateBytes/1000 );
 			String path = Paths.get(((SyncProgressDetails)callbackObject.mMyObject).mBinFilePath).toAbsolutePath().toString();
 			lblBinFileDirectory.setText("Bin file path : " + path);
+		} else if (ind == ShimmerBluetooth.MSG_IDENTIFIER_VERISENSE_ERASE_DATA_COMPLETED) {
+			textPaneStatus.setText("connected");
+		} else if (ind == ShimmerBluetooth.MSG_IDENTIFIER_VERISENSE_WRITE_OPCONFIG_COMPLETED) {
+			textPaneStatus.setText("connected");
 		}
 	}
 }
