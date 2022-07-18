@@ -52,7 +52,6 @@ import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPay
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BIT_SHIFT;
 import com.shimmerresearch.verisense.communication.payloads.OperationalConfigPayload.OP_CONFIG_BYTE_INDEX;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
-import com.shimmerresearch.verisense.communication.VerisenseMessage.VERISENSE_PROPERTY;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication.VERISENSE_EVENT_ACK_RECEIVED;
 import com.shimmerresearch.verisense.payloaddesign.PayloadContentsDetails;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
@@ -1824,7 +1823,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	
 	/** 
 	 * Disconnect from the verisense device
-	 * @throws ShimmerException  if verisenseProtocolByteCommunication is not being set
+	 * @throws ShimmerException  if verisenseProtocolByteCommunication is not set
 	 */
 	public void disconnect(COMMUNICATION_TYPE commType) throws ShimmerException {
 		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(commType);
@@ -1841,7 +1840,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	/** 
 	 * To initialize a BLE connection with the verisense device and
 	 * read the status, production configuration, operation configuration
-	 * @throws ShimmerException  if verisenseProtocolByteCommunication is not being set
+	 * @throws ShimmerException  if verisenseProtocolByteCommunication is not set
 	 */
 	public void connect(COMMUNICATION_TYPE commType) throws ShimmerException {
 		VerisenseProtocolByteCommunication verisenseProtocolByteCommunication = mapOfVerisenseProtocolByteCommunication.get(commType);
@@ -2067,7 +2066,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	/**
-	 * The number of BLE wake-up retries to carry out if there is any pending events
+	 * The number of BLE wake-up retries to carry out if there are any pending events
 	 * @return the retry count.
 	 */
 	public int getBleConnectionRetriesPerDay() {
@@ -2075,7 +2074,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	/**
-	 * The number of BLE wake-up retries to carry out if there is any pending events
+	 * The number of BLE wake-up retries to carry out if there are any pending events
 	 * @param bleConnectionTriesPerDay  the retry count.
 	 */
 	public void setBleConnectionRetriesPerDay(int bleConnectionTriesPerDay) {
