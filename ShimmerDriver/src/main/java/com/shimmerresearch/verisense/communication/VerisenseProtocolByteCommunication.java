@@ -51,7 +51,7 @@ public class VerisenseProtocolByteCommunication {
 	String dataFileName = "";
 	String dataFilePath = "";
 	String binFileFolderDir = "";
-	public String trialName = "DefaultTrial";
+	private String trialName = "DefaultTrial";
 	public String participantID = "DefaultParticipant";
 	protected final String BadCRC = "BadCRC";
 	int mNACKcounter;
