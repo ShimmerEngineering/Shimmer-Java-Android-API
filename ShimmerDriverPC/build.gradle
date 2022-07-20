@@ -20,7 +20,7 @@ Rev0.2
 */
 
 //This version should match the git release tag
-version = '0.9.5alpha'
+version = '0.9.6alpha'
 
 buildscript {
     repositories {
@@ -87,7 +87,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
            groupId = 'com.shimmersensing'
-           artifactId = 'ShimmerDriverPC'
+           artifactId = 'ShimmerDriverPCDev'
            version = project.version
            from components.java
         }
