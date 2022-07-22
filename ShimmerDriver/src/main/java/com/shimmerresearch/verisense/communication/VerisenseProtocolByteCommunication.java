@@ -315,22 +315,20 @@ public class VerisenseProtocolByteCommunication {
 				}
 
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.STREAMING.ackByte()) {
+				if (mTaskWriteBytes != null) {
+					mTaskWriteBytes.setResult(true);
+				}
 				if (mState.equals(VerisenseProtocolState.Streaming)) {
 					stateChange(VerisenseProtocolState.Connected);
-					if (mTaskWriteBytes != null) {
-						mTaskWriteBytes.setResult(true);
-					}
 					for (RadioListener rl : mRadioListenerList) {
 						rl.hasStopStreamingCallback();
 					}
-					
 				} else {
 					stateChange(VerisenseProtocolState.Streaming);
 					for (RadioListener rl : mRadioListenerList) {
 						rl.isNowStreamingCallback();
 					}
 				}
-
 			} else if(verisenseMessage.commandMask == VERISENSE_COMMAND.ACK.getCommandMask()) {
 				//TODO handle general ACKs
 				
@@ -482,8 +480,8 @@ public class VerisenseProtocolByteCommunication {
 		   commandAndProperty == VERISENSE_PROPERTY.CONFIG_OPER.readByte() ||
 		   commandAndProperty == VERISENSE_PROPERTY.DATA.readByte() ||
 		  (commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.writeByte() && payloadContents[0] == VERISENSE_DEBUG_MODE.ERASE_FLASH_AND_LOOKUP) ||
-		  (commandAndProperty == VERISENSE_PROPERTY.STREAMING.writeByte() && payloadContents[0] == STREAMING_COMMAND.STREAMING_START)) {
-			
+		  (commandAndProperty == VERISENSE_PROPERTY.STREAMING.writeByte() && payloadContents[0] == STREAMING_COMMAND.STREAMING_START) ||
+		  (commandAndProperty == VERISENSE_PROPERTY.STREAMING.writeByte() && payloadContents[0] == STREAMING_COMMAND.STREAMING_STOP)) {
 			if (mTaskWriteBytes != null && !mTaskWriteBytes.getTask().isCompleted()) {
 				throw new ShimmerException("A task is still ongoing");
 			}
@@ -775,6 +773,7 @@ public class VerisenseProtocolByteCommunication {
 		}
 		if(mTaskWriteBytes != null && !mTaskWriteBytes.getTask().isCompleted()) {
 			mTaskWriteBytes.setCancelled();
+			mTaskWriteBytes = null;
 		}
 		throw new ShimmerException("TIMEOUT for Property = " + verisenseProperty.toString() + ", expected = " + expectedCommand.toString());
 	}
