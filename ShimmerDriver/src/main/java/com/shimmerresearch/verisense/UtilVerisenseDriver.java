@@ -221,44 +221,44 @@ public class UtilVerisenseDriver implements Serializable {
 		
 		String simpleDateFormat = showMillis ? "//yyyy HH:mm:ss.SSS" : "//yyyy HH:mm:ss";
 		
-    	DateFormat dfLocal = new SimpleDateFormat(simpleDateFormat);
+		DateFormat dfLocal = new SimpleDateFormat(simpleDateFormat);
 		dfLocal.setTimeZone(TimeZone.getTimeZone(timezone));
-    	String timeString = dfLocal.format(new Date(milliSeconds));
-    	timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
+		String timeString = dfLocal.format(new Date(milliSeconds));
+		timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
 		return timeString;
 	}
 
-    public static LocalDate toLocalDate(long timeInMilliseconds) {
-    	return toLocalDate(timeInMilliseconds, DATE_FORMAT_IN_DB, UtilVerisenseDriver.TIME_ZONE_STR);
-    }
+	public static LocalDate toLocalDate(long timeInMilliseconds) {
+		return toLocalDate(timeInMilliseconds, DATE_FORMAT_IN_DB, UtilVerisenseDriver.TIME_ZONE_STR);
+	}
 
-    public static LocalDate toLocalDate(long timeInMilliseconds, String format, String timezone) {
-    	LocalDate localDate = null;
-    	try {
-    		Date date = new Date(timeInMilliseconds);
-    		DateFormat formatter = new SimpleDateFormat(format);
-    		formatter.setTimeZone(TimeZone.getTimeZone(timezone));
-    		String dateFormatted = formatter.format(date);
-        	
-        	DateTimeFormatter dateTimeformatter = DateTimeFormatter.ofPattern(format);
-        	
-        	localDate = LocalDate.parse(dateFormatted, dateTimeformatter); 
-    	} catch (Exception e) {
-    		System.out.println("Exception in toLocalDate()");
-    		e.printStackTrace();
-    	}
-    	
-    	return localDate;
-    }
+	public static LocalDate toLocalDate(long timeInMilliseconds, String format, String timezone) {
+		LocalDate localDate = null;
+		try {
+			Date date = new Date(timeInMilliseconds);
+			DateFormat formatter = new SimpleDateFormat(format);
+			formatter.setTimeZone(TimeZone.getTimeZone(timezone));
+			String dateFormatted = formatter.format(date);
+			
+			DateTimeFormatter dateTimeformatter = DateTimeFormatter.ofPattern(format);
+			
+			localDate = LocalDate.parse(dateFormatted, dateTimeformatter); 
+		} catch (Exception e) {
+			System.out.println("Exception in toLocalDate()");
+			e.printStackTrace();
+		}
+		
+		return localDate;
+	}
 	
-    public static long getSystemTimeNowUTC() {
-    	return Instant.now().toEpochMilli();
-    }
+	public static long getSystemTimeNowUTC() {
+		return Instant.now().toEpochMilli();
+	}
 
-    public static LocalDate getLocalDateNowUTC() {
-    	return Instant.now().atZone(TIME_ZONE_ID).toLocalDate();
-    }
-    
+	public static LocalDate getLocalDateNowUTC() {
+		return Instant.now().atZone(TIME_ZONE_ID).toLocalDate();
+	}
+	
 	/** In the form "yyyy/MM/dd HH:mm:ss:SSS"
 	 * @param timeString
 	 * @return
@@ -280,20 +280,20 @@ public class UtilVerisenseDriver implements Serializable {
 
 	//TODO replace with UtilShimmer.getDayOfMonthSuffix by making it public
 	private static String getDayOfMonthSuffix(final int n) {
-	    if (n >= 11 && n <= 13) {
-	        return "th";
-	    }
-	    switch (n % 10) {
-	        case 1:  return "st";
-	        case 2:  return "nd";
-	        case 3:  return "rd";
-	        default: return "th";
-	    }
+		if (n >= 11 && n <= 13) {
+			return "th";
+		}
+		switch (n % 10) {
+			case 1:  return "st";
+			case 2:  return "nd";
+			case 3:  return "rd";
+			default: return "th";
+		}
 	}
 
 	//TODO replace with UtilShimmer.getMonthString by making it public
 	private static String getMonthString(int monthIndex) {
-    	switch(monthIndex){
+		switch(monthIndex){
 			case(Calendar.JANUARY):
 				return "Jan";
 			case(Calendar.FEBRUARY):
@@ -318,9 +318,9 @@ public class UtilVerisenseDriver implements Serializable {
 				return "Nov";
 			case(Calendar.DECEMBER):
 				return "Dec";
-            default:
-            	return "";
-    	}
+			default:
+				return "";
+		}
 	}
 	
 	/**
@@ -352,7 +352,7 @@ public class UtilVerisenseDriver implements Serializable {
 
 	public static String convertSecondsToHHmmssSSS(double secsOfDataFound) {
 		long milliseconds = Math.abs((long)((secsOfDataFound*1000) % 1000));
-	    return convertSecondsToHHmmss(secsOfDataFound) + String.format(".%03d", milliseconds);
+		return convertSecondsToHHmmss(secsOfDataFound) + String.format(".%03d", milliseconds);
 	}
 
 	public static String convertSecondsToHHmmss(double secsOfDataFound) {
@@ -518,7 +518,7 @@ public class UtilVerisenseDriver implements Serializable {
 		}
 		return filterFileArrayForAllAndRemoveDuplicates(fileArray, newArray, null, fileNameSuffix);
 	}
-	
+
 	/** This method is particularly used when searching for a matching strings in a set. All strings within any of the 1D arrays must be contained within the name or path. 
 	 * 
 	 * @param fileArray -> input file array to filter
@@ -528,6 +528,18 @@ public class UtilVerisenseDriver implements Serializable {
 	 * @return a new fileArray[] containing matches with nameContains, pathContains and fileSuffice
 	 */
 	public static File[] filterFileArrayForAllAndRemoveDuplicates(File[] fileArray, String[][] nameContains, String[][] pathContains, String fileNameSuffix) {
+		return filterFileArrayForAllAndRemoveDuplicates(fileArray, nameContains, pathContains, (fileNameSuffix==null? null:(new String[] {fileNameSuffix})));
+	}
+
+	/** This method is particularly used when searching for a matching strings in a set. All strings within any of the 1D arrays must be contained within the name or path. 
+	 * 
+	 * @param fileArray -> input file array to filter
+	 * @param nameContains -> substrings of files names to keep. If NULL, this parameter is not used.
+	 * @param pathContains -> substrings of paths to keep. If NULL, this parameter is not used.
+	 * @param fileNameSuffix[] -> suffixes (including file extension) of files to keep. If NULL, this parameter is not used.
+	 * @return a new fileArray[] containing matches with nameContains, pathContains and fileSuffice
+	 */
+	public static File[] filterFileArrayForAllAndRemoveDuplicates(File[] fileArray, String[][] nameContains, String[][] pathContains, String[] fileNameSuffixes) {
 		List<File> listOfFiles = new ArrayList<File>();
 		fileLoop:
 		for(File file:fileArray) {
@@ -546,8 +558,17 @@ public class UtilVerisenseDriver implements Serializable {
 				continue fileLoop;
 			}
 
-			if(fileNameSuffix!=null && !fileName.endsWith(fileNameSuffix)) {
-				continue fileLoop;
+			if(fileNameSuffixes!=null) {
+				for(int i=0;i<fileNameSuffixes.length;i++) {
+					if(fileName.endsWith(fileNameSuffixes[i])) {
+						break;
+					}
+					
+					// If last entry and still no match, continue to next file
+					if(i==fileNameSuffixes.length-1) {
+						continue fileLoop;
+					}
+				}
 			}
 			
 			listOfFiles.add(file);
@@ -718,7 +739,7 @@ public class UtilVerisenseDriver implements Serializable {
 		}
 	}
 	public static String leftPad(String str, int num, String fillChar) {
-	    return String.format("%1$" + num + "s", str).replace(" ", fillChar);
+		return String.format("%1$" + num + "s", str).replace(" ", fillChar);
 	}
 	
 	public static String getDateFormatForVerisenseHeader(boolean isLegacyHeaderDesgin) {
@@ -824,20 +845,20 @@ public class UtilVerisenseDriver implements Serializable {
 	}
 	
 	public static class FileComparator implements Comparator<File> {
-        @Override
-        public int compare(File f1, File f2) {
-            String fileName1 = extractDateAndTimeInFileName(f1.getName());
-            String fileName2 = extractDateAndTimeInFileName(f2.getName());
-            return fileName1.compareTo(fileName2);
-        }
+		@Override
+		public int compare(File f1, File f2) {
+			String fileName1 = extractDateAndTimeInFileName(f1.getName());
+			String fileName2 = extractDateAndTimeInFileName(f2.getName());
+			return fileName1.compareTo(fileName2);
+		}
 
-        private String extractDateAndTimeInFileName(String name) {
-        	if(name.length() > 13) {
-        		String dateAndTime = name.substring(0, 13);
-        		return dateAndTime;
-        	}
-            return name;
-        }
+		private String extractDateAndTimeInFileName(String name) {
+			if(name.length() > 13) {
+				String dateAndTime = name.substring(0, 13);
+				return dateAndTime;
+			}
+			return name;
+		}
 	}
 
 }
