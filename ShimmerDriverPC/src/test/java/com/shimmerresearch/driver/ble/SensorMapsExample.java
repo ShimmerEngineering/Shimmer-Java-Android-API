@@ -22,6 +22,7 @@ import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.SyncProgressDetails;
+import com.shimmerresearch.verisense.communication.VerisenseMessage;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -105,8 +106,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(btFriendlyNameTextField);
 		btFriendlyNameTextField.setColumns(10);
 
-//		textField.setText("e7:45:2c:6d:6f:14");
-		textField.setText("d0:2b:46:3d:a2:bb");
+		textField.setText("e7:45:2c:6d:6f:14");
+//		textField.setText("d0:2b:46:3d:a2:bb");
 //		textField.setText("e7:ec:37:a0:d2:34");
 //		textField.setText("Com5");
 //		btFriendlyNameTextField.setText("Shimmer-E6C8");
@@ -198,9 +199,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					previousStatus = textPaneStatus.getText();
 					textPaneStatus.setText("erasing data...");
 					VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
-					verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseDataTask().continueWith(new Continuation<Boolean, Void>() {
+					verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseDataTask().continueWith(new Continuation<VerisenseMessage, Void>() {
 						@Override
-						public Void then(Task<Boolean> completed) throws Exception {
+						public Void then(Task<VerisenseMessage> completed) throws Exception {
 							System.out.println("erased data completed");
 							return null;
 						}
