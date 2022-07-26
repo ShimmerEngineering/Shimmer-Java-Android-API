@@ -138,6 +138,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 
 		ParticipantNameTextField = new JTextField();
 		ParticipantNameTextField.setToolTipText("enter your participant name");
+		ParticipantNameTextField.setText("ExampleParticipant");
 		ParticipantNameTextField.setBounds(415, 51, 175, 29);
 		frame.getContentPane().add(ParticipantNameTextField);
 		ParticipantNameTextField.setColumns(10);
@@ -148,6 +149,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 
 		TrialNameTextField = new JTextField();
 		TrialNameTextField.setToolTipText("enter the trial name");
+		TrialNameTextField.setText("ExampleTrial");
 		TrialNameTextField.setBounds(415, 106, 175, 29);
 		frame.getContentPane().add(TrialNameTextField);
 		TrialNameTextField.setColumns(10);

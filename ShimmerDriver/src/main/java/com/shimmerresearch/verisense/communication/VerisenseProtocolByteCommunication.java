@@ -464,7 +464,8 @@ public class VerisenseProtocolByteCommunication {
 	
 	protected void writeMessageWithPayload(byte commandAndProperty, byte[] payloadContents) throws ShimmerException {
 		if (mTaskWriteBytes != null && !mTaskWriteBytes.getTask().isCompleted()) {
-				throw new ShimmerException(ERROR_MSG_TASK_ONGOING);
+			System.out.println(ERROR_MSG_TASK_ONGOING);
+			throw new ShimmerException(ERROR_MSG_TASK_ONGOING);
 		}
 		
 		txVerisenseMessageInProgress = new VerisenseMessage(commandAndProperty, payloadContents);
