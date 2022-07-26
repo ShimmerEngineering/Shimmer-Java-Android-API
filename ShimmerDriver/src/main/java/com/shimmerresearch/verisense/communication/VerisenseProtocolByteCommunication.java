@@ -765,7 +765,7 @@ public class VerisenseProtocolByteCommunication {
 		}
 		mTaskWriteBytes = new TaskCompletionSource<>();
 		Thread t = new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
@@ -773,7 +773,9 @@ public class VerisenseProtocolByteCommunication {
 				int loopCount = 0;
 				int waitIntervalMs = 100;
 				int loopCountTotal = (int) (timeoutMs / waitIntervalMs);
-
+				boolean taskCompleted = false;
+				boolean taskError = false;
+				VerisenseMessage vm=null;
 				while (true) {
 					try {
 						Thread.sleep(waitIntervalMs);
@@ -785,41 +787,48 @@ public class VerisenseProtocolByteCommunication {
 					if(loopCount >= loopCountTotal) {
 						break;
 					}
-					
+
 					Iterator<VerisenseMessage> iterator = rxVerisenseMessageBuffer.iterator();
 					while(iterator.hasNext()) {
 						VerisenseMessage verisenseMessage = iterator.next();
 						if(verisenseMessage.propertyMask==verisenseProperty.getPropertyMask()) {
 							if(expectedCommand==null || verisenseMessage.commandMask==expectedCommand.getCommandMask()) {
-								if (!mTaskWriteBytes.getTask().isCompleted()) { //need to check why rx has duplicates
-									System.out.println("TCS Set Result: " + verisenseMessage.generateDebugString());
-									mTaskWriteBytes.setResult(verisenseMessage);
-								}
+								vm = verisenseMessage;
+								taskCompleted = true;
+								break;
 							} else {
-								VERISENSE_COMMAND commandReceived = VERISENSE_COMMAND.lookupByMask(verisenseMessage.commandMask);
-								String errorMsg = commandReceived==null? "UNKNOWN":commandReceived.toString() 
-										+ " received for Property = " + verisenseProperty.toString() 
-										+ ", expected = " + expectedCommand.toString();
-								if (!mTaskWriteBytes.getTask().isCompleted()) { //need to check why rx has duplicates
-									System.out.println("TCS ERROR: " + errorMsg);
-									mTaskWriteBytes.setError(new ShimmerException(errorMsg));
-								}
+								vm = verisenseMessage;
+								taskError = true;
+								break;
 							}
 						}
 					}
-				}
-				/*
+					if (taskCompleted||taskError) {
+						break;
+					}
+					/*
 				if(mTaskWriteBytes != null && !mTaskWriteBytes.getTask().isCompleted()) {
 					mTaskWriteBytes.setCancelled();
 					mTaskWriteBytes = null;
 				}*/
-				
-				if (!mTaskWriteBytes.getTask().isCompleted()) {
+
+
+				}
+				if (taskCompleted) {
+					System.out.println("TCS Set Result: " + vm.generateDebugString());
+					mTaskWriteBytes.setResult(vm);
+				} else if (taskError) {
+					VERISENSE_COMMAND commandReceived = VERISENSE_COMMAND.lookupByMask(vm.commandMask);
+					String errorMsg = commandReceived==null? "UNKNOWN":commandReceived.toString() 
+							+ " received for Property = " + verisenseProperty.toString() 
+							+ ", expected = " + expectedCommand.toString();
+					System.out.println("TCS ERROR: " + errorMsg);
+					mTaskWriteBytes.setError(new ShimmerException(errorMsg));
+				} else if (!mTaskWriteBytes.getTask().isCompleted()) {
 					String errorMsg = "TIMEOUT for Property = " + verisenseProperty.toString() + ", expected = " + expectedCommand.toString();
 					System.out.println("TCS TIMEOUT: " + errorMsg);
 					mTaskWriteBytes.setError(new ShimmerException(errorMsg));
 				}
-			
 			}
 		});
 		t.start();
