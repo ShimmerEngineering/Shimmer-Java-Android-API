@@ -232,9 +232,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					previousStatus = textPaneStatus.getText();
 					textPaneStatus.setText("writing op config...");
 					VerisenseDevice verisenseDevice = ((VerisenseDevice)shimmerDevice).deepClone();
-					verisenseDevice.setRecordingEnabled(false);
+					verisenseDevice.setRecordingEnabled(!verisenseDevice.isRecordingEnabled());
 					byte[] opConfig = verisenseDevice.configBytesGenerate(true, COMMUNICATION_TYPE.BLUETOOTH);
 					((VerisenseDevice)shimmerDevice).getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).writeOperationalConfig(opConfig);
+					btnDisableLogging.setText(verisenseDevice.isRecordingEnabled()?"DISABLE LOGGING":"ENABLE LOGGING");
 				} catch (ShimmerException e) {
 					if(e.getMessage() == "A task is still ongoing") {
 						textPaneStatus.setText(previousStatus);
@@ -445,6 +446,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					lblPayloadIndex.setVisible(true);
 					lblBinFileDirectory.setVisible(true);
 					shimmerDevice = btManager.getShimmerDeviceBtConnected(macAddress.toUpperCase());
+					if(((VerisenseDevice)shimmerDevice).isRecordingEnabled()) {
+						btnDisableLogging.setText("DISABLE LOGGING");
+					}
+					else {
+						btnDisableLogging.setText("ENABLE LOGGING");
+					}
 				} else {
 					shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
 				}
