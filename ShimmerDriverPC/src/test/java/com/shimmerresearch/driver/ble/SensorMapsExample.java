@@ -22,6 +22,7 @@ import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.SyncProgressDetails;
+import com.shimmerresearch.verisense.communication.VerisenseMessage;
 
 import bolts.Continuation;
 import bolts.Task;
@@ -105,8 +106,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(btFriendlyNameTextField);
 		btFriendlyNameTextField.setColumns(10);
 
-//		textField.setText("e7:45:2c:6d:6f:14");
-		textField.setText("d0:2b:46:3d:a2:bb");
+		textField.setText("e7:45:2c:6d:6f:14");
+//		textField.setText("d0:2b:46:3d:a2:bb");
 //		textField.setText("e7:ec:37:a0:d2:34");
 //		textField.setText("Com5");
 //		btFriendlyNameTextField.setText("Shimmer-E6C8");
@@ -137,6 +138,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 
 		ParticipantNameTextField = new JTextField();
 		ParticipantNameTextField.setToolTipText("enter your participant name");
+		ParticipantNameTextField.setText("ExampleParticipant");
 		ParticipantNameTextField.setBounds(415, 51, 175, 29);
 		frame.getContentPane().add(ParticipantNameTextField);
 		ParticipantNameTextField.setColumns(10);
@@ -147,6 +149,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 
 		TrialNameTextField = new JTextField();
 		TrialNameTextField.setToolTipText("enter the trial name");
+		TrialNameTextField.setText("ExampleTrial");
 		TrialNameTextField.setBounds(415, 106, 175, 29);
 		frame.getContentPane().add(TrialNameTextField);
 		TrialNameTextField.setColumns(10);
@@ -198,9 +201,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					previousStatus = textPaneStatus.getText();
 					textPaneStatus.setText("erasing data...");
 					VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice;
-					verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseDataTask().continueWith(new Continuation<Boolean, Void>() {
+					verisenseDevice.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).eraseDataTask().continueWith(new Continuation<VerisenseMessage, Void>() {
 						@Override
-						public Void then(Task<Boolean> completed) throws Exception {
+						public Void then(Task<VerisenseMessage> completed) throws Exception {
 							System.out.println("erased data completed");
 							return null;
 						}
@@ -229,9 +232,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					previousStatus = textPaneStatus.getText();
 					textPaneStatus.setText("writing op config...");
 					VerisenseDevice verisenseDevice = ((VerisenseDevice)shimmerDevice).deepClone();
-					verisenseDevice.setRecordingEnabled(false);
+					verisenseDevice.setRecordingEnabled(!verisenseDevice.isRecordingEnabled());
 					byte[] opConfig = verisenseDevice.configBytesGenerate(true, COMMUNICATION_TYPE.BLUETOOTH);
 					((VerisenseDevice)shimmerDevice).getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH).writeOperationalConfig(opConfig);
+					btnDisableLogging.setText(verisenseDevice.isRecordingEnabled()?"DISABLE LOGGING":"ENABLE LOGGING");
 				} catch (ShimmerException e) {
 					if(e.getMessage() == "A task is still ongoing") {
 						textPaneStatus.setText(previousStatus);
@@ -442,6 +446,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 					lblPayloadIndex.setVisible(true);
 					lblBinFileDirectory.setVisible(true);
 					shimmerDevice = btManager.getShimmerDeviceBtConnected(macAddress.toUpperCase());
+					if(((VerisenseDevice)shimmerDevice).isRecordingEnabled()) {
+						btnDisableLogging.setText("DISABLE LOGGING");
+					}
+					else {
+						btnDisableLogging.setText("ENABLE LOGGING");
+					}
 				} else {
 					shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
 				}
