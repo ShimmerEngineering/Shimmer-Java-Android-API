@@ -197,7 +197,12 @@ public class SensorMapsExample2 extends BasicProcessWithCallBack {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice[0];
 				verisenseDevice.setTrialName(TrialNameTextField[0].getText());
 				verisenseDevice.setParticipantID(ParticipantNameTextField[0].getText());
-				verisenseDevice.readLoggedData();
+				try {
+					verisenseDevice.readLoggedData();
+				} catch (ShimmerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		btnSync.setToolTipText("Data Sync");
@@ -316,7 +321,12 @@ public class SensorMapsExample2 extends BasicProcessWithCallBack {
 				VerisenseDevice verisenseDevice = (VerisenseDevice) shimmerDevice[1];
 				verisenseDevice.setTrialName(TrialNameTextField[1].getText());
 				verisenseDevice.setParticipantID(ParticipantNameTextField[1].getText());
-				verisenseDevice.readLoggedData();
+				try {
+					verisenseDevice.readLoggedData();
+				} catch (ShimmerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		btnSync2.setToolTipText("Data Sync");

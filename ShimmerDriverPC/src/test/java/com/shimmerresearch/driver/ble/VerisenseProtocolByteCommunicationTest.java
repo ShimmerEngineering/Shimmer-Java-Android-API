@@ -71,7 +71,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton btnNewButton_2 = new JButton("Read Data");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol1.readLoggedData();
+				try {
+					protocol1.readLoggedData();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnNewButton_2.setBounds(12, 89, 124, 25);
@@ -108,7 +113,12 @@ public class VerisenseProtocolByteCommunicationTest {
 		JButton button_2 = new JButton("Read Data");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				protocol2.readLoggedData();
+				try {
+					protocol2.readLoggedData();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_2.setBounds(162, 89, 124, 25);
