@@ -1122,7 +1122,10 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 	
 	public boolean doesHwSupportMax86xxx() {
-		int hwId = getHardwareVersion();
+		return doesHwSupportMax86xxx(getHardwareVersion());
+	}
+
+	public static boolean doesHwSupportMax86xxx(int hwId) {
 		return (hwId==HW_ID.VERISENSE_DEV_BRD || hwId==HW_ID.VERISENSE_PPG || hwId==HW_ID.VERISENSE_PULSE_PLUS);
 	}
 
