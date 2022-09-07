@@ -36,25 +36,25 @@ public class BluetoothModuleVersionDetails implements Serializable {
 		}
 	}
 
-	public BT_MODULE_VERSION mBtModelVersionParsed = BT_MODULE_VERSION.NOT_READ;
-	public String mBtModelVersionReceived = mBtModelVersionParsed.btModuleVerStrFull;
+	public BT_MODULE_VERSION mBtModuleVersionParsed = BT_MODULE_VERSION.NOT_READ;
+	public String mBtModuleVersionReceived = mBtModuleVersionParsed.btModuleVerStrFull;
 
 	public void parseBtModuleVerBytes(byte[] responseData) {
-		mBtModelVersionReceived = new String(responseData, StandardCharsets.UTF_8);
+		mBtModuleVersionReceived = new String(responseData, StandardCharsets.UTF_8);
 		
-		mBtModelVersionParsed = BT_MODULE_VERSION.UNKNOWN;
+		mBtModuleVersionParsed = BT_MODULE_VERSION.UNKNOWN;
 		for (BT_MODULE_VERSION btModuleVersion : BT_MODULE_VERSION.values()) {
-			if(mBtModelVersionReceived.contains(btModuleVersion.btModuleVerStrComparison)) {
-				mBtModelVersionParsed = btModuleVersion;
+			if(mBtModuleVersionReceived.contains(btModuleVersion.btModuleVerStrComparison)) {
+				mBtModuleVersionParsed = btModuleVersion;
 			}
 		}
 	}
 
 	public String getUserFriendlyName() {
-		if (mBtModelVersionParsed == BT_MODULE_VERSION.UNKNOWN) {
-			return mBtModelVersionReceived;
+		if (mBtModuleVersionParsed == BT_MODULE_VERSION.UNKNOWN) {
+			return mBtModuleVersionReceived;
 		} else {
-			return mBtModelVersionParsed.btModuleVerStrUserFriendly;
+			return mBtModuleVersionParsed.btModuleVerStrUserFriendly;
 		}
 	}
 
