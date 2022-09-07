@@ -674,7 +674,7 @@ public class ShimmerVerObject implements Serializable {
 	}
 
 	public boolean isSupportedBtFwVerRequest() {
-		return (compareVersions(FW_ID.LOGANDSTREAM, 0, 13, 6)
+		return (compareVersions(FW_ID.LOGANDSTREAM, 0, 13, 7)
 				|| compareVersions(FW_ID.SDLOG, 0, 20, 1));
 	}
 

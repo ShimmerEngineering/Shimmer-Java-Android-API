@@ -254,7 +254,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 			throw new DockException(mUniqueId, mComPort,errorCode,ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS);
 		}
 		BluetoothModuleVersionDetails bluetoothModuleVersionDetails = new BluetoothModuleVersionDetails();
-		bluetoothModuleVersionDetails.parseBtFwVerBytes(rxBuf);
+		bluetoothModuleVersionDetails.parseBtModuleVerBytes(rxBuf);
 
 		return bluetoothModuleVersionDetails;
 	}

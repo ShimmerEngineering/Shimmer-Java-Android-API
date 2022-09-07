@@ -9869,4 +9869,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		return bluetoothModuleVersionDetails;
 	}
 	
+	@Override
+	public String getRadioModel() {
+		return getBtFwVerDetails().getUserFriendlyName();
+	}
 }

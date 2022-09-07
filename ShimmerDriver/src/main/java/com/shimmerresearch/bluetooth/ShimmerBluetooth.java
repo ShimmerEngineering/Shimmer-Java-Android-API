@@ -1735,7 +1735,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				int lengthToRead = (int)(length[0]&0xFF);
 				byte[] responseData = readBytes(lengthToRead, responseCommand);
 				if(responseData!=null) {
-					super.getBtFwVerDetails().parseBtFwVerBytes(responseData);
+					super.getBtFwVerDetails().parseBtModuleVerBytes(responseData);
 				}
 			}
 		}
