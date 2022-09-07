@@ -14,6 +14,8 @@ public class BluetoothModuleVersionDetails implements Serializable {
 	public static enum BT_MODULE_VERSION {
 		NOT_READ("", "", ""),
 
+		RN41_VERSION_RESPONSE_V4_77("Ver 4.77 05/12/09 \r\n(c) Roving Networks", "Ver 4.77 05", "RN41 v4.77"),
+		
 		RN42_VERSION_RESPONSE_V4_77("Ver 4.77 RN-42 01/05/10 \r\n(c) Roving Networks", "Ver 4.77 RN-42", "RN42 v4.77"),
 		RN42_VERSION_RESPONSE_V6_15("Ver 6.15 04/26/2013\r\n(c) Roving Networks", "Ver 6.15 04", "RN42 v6.15"),
 
