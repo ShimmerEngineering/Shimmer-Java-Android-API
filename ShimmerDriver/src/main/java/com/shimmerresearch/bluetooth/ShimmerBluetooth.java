@@ -333,6 +333,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(GET_CALIB_DUMP_COMMAND, 		new BtCommandDetails(GET_CALIB_DUMP_COMMAND, "GET_CALIB_DUMP_COMMAND", RSP_CALIB_DUMP_COMMAND));
         aMap.put(GET_RWC_COMMAND, 				new BtCommandDetails(GET_RWC_COMMAND, "GET_RWC_COMMAND", RWC_RESPONSE));
         aMap.put(GET_VBATT_COMMAND, 			new BtCommandDetails(GET_VBATT_COMMAND, "GET_VBATT_COMMAND", VBATT_RESPONSE));
+        aMap.put(GET_BT_FW_VERSION_STR_COMMAND,	new BtCommandDetails(GET_BT_FW_VERSION_STR_COMMAND, "GET_BT_FW_VERSION_STR_COMMAND", BT_FW_VERSION_STR_RESPONSE));
         
         mBtGetCommandMap = Collections.unmodifiableMap(aMap);
     }
@@ -451,6 +452,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(RSP_CALIB_DUMP_COMMAND, 		new BtCommandDetails(RSP_CALIB_DUMP_COMMAND, "RSP_CALIB_DUMP_COMMAND", -1));							// first+second bytes indicate length to subsequently read
         aMap.put(RWC_RESPONSE, 					new BtCommandDetails(RWC_RESPONSE, "RWC_RESPONSE", 8));
         aMap.put(VBATT_RESPONSE, 				new BtCommandDetails(VBATT_RESPONSE, "VBATT_RESPONSE", 3));
+        aMap.put(BT_FW_VERSION_STR_RESPONSE,		new BtCommandDetails(BT_FW_VERSION_STR_RESPONSE, "BT_FW_VERSION_STR_RESPONSE", -1));
         
         mBtResponseMap = Collections.unmodifiableMap(aMap);
     }
@@ -1724,8 +1726,20 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 				}
 			}
-
 		}
+		
+		else if(responseCommand==BT_FW_VERSION_STR_RESPONSE) {
+			byte[] length = readBytes(1, responseCommand); 
+			
+			if(length!=null && length.length>0) {
+				int lengthToRead = (int)(length[0]&0xFF);
+				byte[] responseData = readBytes(lengthToRead, responseCommand);
+				if(responseData!=null) {
+					super.getBtFwVerDetails().parseBtFwVerBytes(responseData);
+				}
+			}
+		}
+		
 		else {
 			consolePrintLn("Unhandled BT response: " + responseCommand);
 		}
@@ -2513,6 +2527,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readBattery();
 		}
 		
+		if(getShimmerVerObject().isSupportedBtFwVerRequest()) {
+			readBtFwVersion();
+		}
+		
 		// Only read calibration dump over bluetooth if the Shimmer is not
 		// docked as the Shimmer won't have access to the SD card
 		if(!isDocked()){
@@ -3082,6 +3100,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 
+	public void readBtFwVersion() {
+		if (getShimmerVerObject().isSupportedBtFwVerRequest()) {
+			writeInstruction(GET_BT_FW_VERSION_STR_COMMAND);
+			consolePrintLn("GET_BT_FW_VERSION_STR_COMMAND Instruction added to the list");
+		}
+	}
 	
 	//endregion --------- READ ONLY FUNCTIONS (NO WRITE EQUIVALENT - implemented anyway) --------- 
 	

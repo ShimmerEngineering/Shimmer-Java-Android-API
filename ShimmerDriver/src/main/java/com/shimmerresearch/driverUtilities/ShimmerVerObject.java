@@ -673,6 +673,11 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 
+	public boolean isSupportedBtFwVerRequest() {
+		return (compareVersions(FW_ID.LOGANDSTREAM, 0, 13, 6)
+				|| compareVersions(FW_ID.SDLOG, 0, 20, 1));
+	}
+
 	public String generateDebugString() {
 		return "HW_ID: " + getHardwareVersion() + "\tHardwareVersionParsed: " + getHardwareVersionParsed() 
 		+ "\tFW_ID: " + getFirmwareIdentifier() + "\tFirmwareVersionParsed: " + getFirmwareVersionParsed();
