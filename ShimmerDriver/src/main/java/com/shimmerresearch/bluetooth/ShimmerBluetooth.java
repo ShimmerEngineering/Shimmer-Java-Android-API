@@ -270,7 +270,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	protected boolean mUseProcessingThread = false;
 	protected boolean mEnablePCTimeStamps = true;
-	protected BT_CRC_MODE mBtCommsCrcMode = BT_CRC_MODE.OFF;
+	protected BT_CRC_MODE mBtCommsCrcMode = BT_CRC_MODE.ONE_BYTE_CRC;
 	
 	public enum BT_CRC_MODE {
 		OFF(0),
@@ -4606,11 +4606,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return false;
 	}
 	
-	public void setBtCommsMode(BT_CRC_MODE btCommsCrcMode) {
+	public void setBtCommsCrcMode(BT_CRC_MODE btCommsCrcMode) {
 		mBtCommsCrcMode = btCommsCrcMode;
 	}
 	
-	public BT_CRC_MODE getBtCommsMode() {
+	public BT_CRC_MODE getBtCommsCrcMode() {
 		return mBtCommsCrcMode;
 	}
 	
@@ -5491,4 +5491,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public boolean getWriteCalibrationDumpWhenConfiguringForClone() {
 		return mWriteCalibrationDumpWhenConfiguringForClone;
 	}
+	
+	//TODO not sure if this will mess up something else
+//	@Override
+//	public int getExpectedDataPacketSize(COMMUNICATION_TYPE commsType) {
+//		return super.getExpectedDataPacketSize(commsType) + mBtCommsCrcMode.numCrcBytes;
+//	}
+
 }
