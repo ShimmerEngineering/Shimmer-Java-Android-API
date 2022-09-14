@@ -336,6 +336,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //				mMyBluetoothAddress = address;
 				mTimerConnecting = new Timer();
 				mTimerConnecting.schedule(new connectionTimeOutTask(), 20000);
+				consolePrintLn("Started connecting timer...");
 				
 				setIamAlive(false);
 				getListofInstructions().clear();
@@ -417,9 +418,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	    public void run() {
         	if(mBluetoothRadioState == BT_STATE.CONNECTING)
         	{
-        		System.out.println("Connection lost");
 	        	connectionLost();
 	        	stopTimerConnecting();
+	        	consolePrintLn("Connecting timer timed out, connection lost");
         	}
 	    }
 	}
