@@ -2490,7 +2490,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		//readExpansionBoardID();
 		
-		writeBtCommsCrcMode(mBtCommsCrcMode);
+		if (getFirmwareVersionCode() >= 8) {
+			writeBtCommsCrcMode(mBtCommsCrcMode);
+		} else {
+			mBtCommsCrcMode = BT_CRC_MODE.OFF;
+		}
 		
 		if (isSetupDeviceWhileConnecting()){
 			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
