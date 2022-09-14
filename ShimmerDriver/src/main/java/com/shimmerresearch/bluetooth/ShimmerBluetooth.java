@@ -1814,7 +1814,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mConfigByte0=mTempByteValue;
 				}
 				else if(currentCommand==SET_BLINK_LED) {
-					if(((byte[])getListofInstructions().get(0)).length>2){
+					if(((byte[])getListofInstructions().get(0)).length == 2){
 						mCurrentLEDStatus=(int)((byte[])getListofInstructions().get(0))[1];
 					}
 				}
