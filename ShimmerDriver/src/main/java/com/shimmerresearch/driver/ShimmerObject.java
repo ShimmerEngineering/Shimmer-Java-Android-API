@@ -35,6 +35,7 @@ import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driver.shimmer2r3.BluetoothModuleVersionDetails;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.shimmerGq.ConfigByteLayoutShimmerGq802154;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -464,7 +465,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte UPD_CALIB_DUMP_COMMAND					= (byte) 0x9B;	
 	//new BT + SD command to Write config file after all of InfoMem is written.
 	public static final byte UPD_SDLOG_CFG_COMMAND					= (byte) 0x9C;
-	
+
+	public static final byte GET_BT_FW_VERSION_STR_COMMAND			= (byte) 0xA1;
+	public static final byte BT_FW_VERSION_STR_RESPONSE				= (byte) 0xA2;
+
 	public static final int MAX_NUMBER_OF_SIGNALS = 77;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
@@ -503,6 +507,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //	protected String mMacIdFromUart = "";
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
+
+	protected BluetoothModuleVersionDetails bluetoothModuleVersionDetails = new BluetoothModuleVersionDetails();
 	
 //	protected String mShimmerUserAssignedName=""; // This stores the user assigned name
 	
@@ -9855,6 +9861,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mUseArraysDataStructureInObjectCluster = enable;
 	}
 
+	public void setBtFwVerDetails(BluetoothModuleVersionDetails bluetoothModuleVersionDetails) {
+		this.bluetoothModuleVersionDetails = bluetoothModuleVersionDetails;
+	}
+
+	public BluetoothModuleVersionDetails getBtFwVerDetails() {
+		return bluetoothModuleVersionDetails;
+	}
+	
+	@Override
+	public String getRadioModel() {
+		return getBtFwVerDetails().getUserFriendlyName();
+	}
 }
-
-

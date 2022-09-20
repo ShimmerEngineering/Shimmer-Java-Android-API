@@ -4663,4 +4663,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return listOfSensorConfig;
 	}
 
+	public String getRadioModel() {
+		return "";
+	}
+
 }
