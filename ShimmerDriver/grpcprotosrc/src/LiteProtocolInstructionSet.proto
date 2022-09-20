@@ -120,6 +120,7 @@ message LiteProtocolInstructionSet {
 		GET_CALIB_DUMP_COMMAND					= 0x9A;
 		GET_I2C_BATT_STATUS_COMMAND		 		= 0x9E;
 		GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = 0xA0;
+		GET_BT_FW_VERSION_STR_COMMAND 			= 0xA1;
 	}
   
   	enum InstructionsResponse {
@@ -173,5 +174,6 @@ message LiteProtocolInstructionSet {
 		RSP_CALIB_DUMP_COMMAND					= 0x99 [(response_size) = -1];
 		RSP_I2C_BATT_STATUS_COMMAND				= 0x9D [(response_size) = 10];
 		BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = 0x9F [(response_size) = 24];
+		BT_FW_VERSION_STR_RESPONSE				= 0xA2 [(response_size) = -1];
   	}
 }

@@ -4621,4 +4621,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mIsPlaybackDevice;
 	}
 
+	public String getRadioModel() {
+		return "";
+	}
+
 }
