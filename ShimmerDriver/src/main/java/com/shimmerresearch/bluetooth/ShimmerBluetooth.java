@@ -2507,7 +2507,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if (getFirmwareVersionCode() >= 8) {
 			writeBtCommsCrcMode(mBtCommsCrcMode);
 		} else {
-			mBtCommsCrcMode = BT_CRC_MODE.OFF;
+			setBtCommsCrcMode(BT_CRC_MODE.OFF);
 		}
 		
 		if (isSetupDeviceWhileConnecting()){
@@ -4639,7 +4639,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	public BT_CRC_MODE getBtCommsCrcMode() {
-		return mBtCommsCrcMode;
+		return (getFirmwareVersionCode() >= 8)? mBtCommsCrcMode:BT_CRC_MODE.OFF;
 	}
 	
 	/**** DISABLE FUNCTIONS *****/
