@@ -94,9 +94,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.MemReadDetails;
-import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet;
-import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
-import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsResponse;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
 import com.shimmerresearch.comms.wiredProtocol.ShimmerCrc;
 import com.shimmerresearch.driver.Configuration;
@@ -116,7 +113,6 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.exgConfig.ExGConfigOptionDetails.EXG_CHIP_INDEX;
-import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.bmpX80.SensorBMPX80;
@@ -124,7 +120,6 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.sensors.shimmer2.SensorMMA736x;
 import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Mag;
-import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
@@ -270,7 +265,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	protected boolean mUseProcessingThread = false;
 	protected boolean mEnablePCTimeStamps = true;
-	protected BT_CRC_MODE mBtCommsCrcMode = BT_CRC_MODE.ONE_BYTE_CRC;
+	protected BT_CRC_MODE mBtCommsCrcMode = BT_CRC_MODE.OFF;
 	
 	public enum BT_CRC_MODE {
 		OFF(0),
@@ -518,7 +513,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	public ShimmerBluetooth(String userAssignedName, double samplingRate, Integer[] sensorIdsToEnable, int accelRange, int gsrRange, int magRange, int pressureResolution) {
-		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+		this();
 
 		setShimmerUserAssignedName(userAssignedName);
 		
@@ -543,7 +538,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param magRange
 	 */
 	public ShimmerBluetooth(String userAssignedName, double samplingRate, int enabledSensors, int accelRange, int gsrRange, int magRange) {
-		addCommunicationRoute(COMMUNICATION_TYPE.BLUETOOTH);
+		this();
+
 		setShimmerUserAssignedName(userAssignedName);
 		setFixedShimmerConfig(FIXED_SHIMMER_CONFIG_MODE.USER);
 		addFixedShimmerConfig(Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, samplingRate);
@@ -4634,14 +4630,49 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return false;
 	}
 	
+	/**
+	 * Sets the default mode that should be used when establishing a connection to
+	 * the Shimmer if the current firmware version supports the CRC feature.
+	 * 
+	 * @param btCommsCrcMode
+	 */
 	public void setBtCommsCrcMode(BT_CRC_MODE btCommsCrcMode) {
 		mBtCommsCrcMode = btCommsCrcMode;
 	}
-	
-	public BT_CRC_MODE getBtCommsCrcMode() {
-		return (getFirmwareVersionCode() >= 8)? mBtCommsCrcMode:BT_CRC_MODE.OFF;
+
+	/**
+	 * Gets the default CRC mode that will attempted to be used when establishing a
+	 * connection to the Shimmer. If a connection has already been established and
+	 * the firmware version has been read, this function will return the actual CRC
+	 * mode that's in use.
+	 * 
+	 * @return
+	 */
+	public BT_CRC_MODE getBtCommsCrcModeIfFwSupported() {
+		return mBtCommsCrcMode;
 	}
-	
+
+	/**
+	 * Gets the actual CRC mode that is use after the firmware version has been
+	 * checked. If the firmware version hasn't been read yet, this function will
+	 * return that CRC is off.
+	 * 
+	 * @return
+	 */
+	public BT_CRC_MODE getCurrentBtCommsCrcMode() {
+		return isBtCrcModeSupported()? mBtCommsCrcMode:BT_CRC_MODE.OFF;
+	}
+
+	/**
+	 * Response only valid if a connection has been established and the firmware
+	 * version has been read from the sensor.
+	 * 
+	 * @return
+	 */
+	public boolean isBtCrcModeSupported() {
+		return getFirmwareVersionCode() >= 8;
+	}
+
 	/**** DISABLE FUNCTIONS *****/
 	
 	private long disableBit(long number,long disablebitvalue){
