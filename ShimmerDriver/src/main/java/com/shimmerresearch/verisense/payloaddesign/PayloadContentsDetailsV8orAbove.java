@@ -131,7 +131,7 @@ public class PayloadContentsDetailsV8orAbove extends PayloadContentsDetails {
 		}
 
 		// If midday/midnight transition detected within a payload, dive down deeper to find out where it is
-		if(UtilVerisenseDriver.isTransitionMidDayOrMidnight(getStartTimeRwcMs(), getEndTimeRwcMs())) {
+		if(SPLIT_CSVS_AT_MIDDAY_AND_MIDNIGHT && UtilVerisenseDriver.isTransitionMidDayOrMidnight(getStartTimeRwcMs(), getEndTimeRwcMs())) {
 			splitDataBlocksAtMiddayMidnight(listOfDataBlocksInOrder, verisenseDevice.getMapOfSensorIdsPerDataBlock().keySet());
 		}
 
@@ -398,9 +398,11 @@ public class PayloadContentsDetailsV8orAbove extends PayloadContentsDetails {
 						verisenseDevice.resetAlgorithmBuffersAssociatedWithSensor(sensorClassKey);
 					}
 				}
-
-				// Added offset for sensor ID byte and 3 bytes RTC ticks 
-				currentByteIndex += BYTE_COUNT.PAYLOAD_CONTENTS_GEN8_SENSOR_ID + BYTE_COUNT.PAYLOAD_CONTENTS_RTC_BYTES_TICKS;
+				
+				// Added offset for sensor ID byte and 3 bytes RTC ticks (as long as it's not the second half of a split datablock)
+				if(!dataBlockDetails.isSecondPartOfSplitDataBlock()) {
+					currentByteIndex += BYTE_COUNT.PAYLOAD_CONTENTS_GEN8_SENSOR_ID + BYTE_COUNT.PAYLOAD_CONTENTS_RTC_BYTES_TICKS;
+				}
 
 				if(dataBlockDetails.listOfSensorClassKeys.contains(sensorClassKey)) {
 					verisenseDevice.parseDataBlockData(dataBlockDetails, byteBuffer, currentByteIndex, COMMUNICATION_TYPE.SD);

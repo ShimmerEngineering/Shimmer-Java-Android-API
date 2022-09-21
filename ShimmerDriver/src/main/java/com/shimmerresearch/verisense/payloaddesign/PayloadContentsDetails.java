@@ -35,6 +35,7 @@ public abstract class PayloadContentsDetails implements Serializable {
 
 	public static boolean DEBUG_ACCEL_ARRAYS = false;
 	private static boolean DEBUG_DATA_BLOCKS = false;
+	public static boolean SPLIT_CSVS_AT_MIDDAY_AND_MIDNIGHT = true;
 
 	protected transient List<DataBlockDetails> listOfDataBlocksInOrder = new ArrayList<DataBlockDetails>();
 	public transient DatasetToSave datasetToSave = new DatasetToSave();
