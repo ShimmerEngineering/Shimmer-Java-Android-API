@@ -5519,11 +5519,5 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public boolean getWriteCalibrationDumpWhenConfiguringForClone() {
 		return mWriteCalibrationDumpWhenConfiguringForClone;
 	}
-	
-	//TODO not sure if this will mess up something else
-//	@Override
-//	public int getExpectedDataPacketSize(COMMUNICATION_TYPE commsType) {
-//		return super.getExpectedDataPacketSize(commsType) + mBtCommsCrcMode.numCrcBytes;
-//	}
 
 }
