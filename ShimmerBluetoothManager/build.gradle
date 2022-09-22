@@ -10,7 +10,7 @@ Rev0.2
 */
 
 //This version should match the git release tag
-version = '0.9.44alpha'
+version = '0.9.46alpha'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
