@@ -262,7 +262,11 @@ public class ShimmerVerObject implements Serializable {
 			// Handle FW version code.
 			mFirmwareVersionCode = -1;
 			
-			if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,6,5)
+			if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,13,7)
+					|| UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SDLOG,0,20,1)) {
+				mFirmwareVersionCode = 8;
+			}
+			else if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,6,5)
 					|| mHardwareVersion==HW_ID.SHIMMER_4_SDK
 					|| mHardwareVersion==HW_ID.ARDUINO
 					|| mFirmwareIdentifier==FW_ID.STROKARE
@@ -674,8 +678,7 @@ public class ShimmerVerObject implements Serializable {
 	}
 
 	public boolean isSupportedBtFwVerRequest() {
-		return (compareVersions(FW_ID.LOGANDSTREAM, 0, 13, 7)
-				|| compareVersions(FW_ID.SDLOG, 0, 20, 1));
+		return (mFirmwareVersionCode >= 8);
 	}
 
 	public String generateDebugString() {
