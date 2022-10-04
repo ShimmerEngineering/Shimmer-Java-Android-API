@@ -99,6 +99,20 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnDisconnect.setBounds(415, 90, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
+		JButton btnSetBlinkLED = new JButton("Set Blink LED");
+		btnSetBlinkLED.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			    try {
+			    	shimmer.writeLEDCommand(0);
+			    } catch (Exception e) {
+			   
+			    }
+			}
+		});
+		btnSetBlinkLED.setBounds(625, 90, 187, 31);
+		frame.getContentPane().add(btnSetBlinkLED);
+		
+		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
 		lblShimmerStatus.setBounds(10, 139, 144, 23);
 		frame.getContentPane().add(lblShimmerStatus);
