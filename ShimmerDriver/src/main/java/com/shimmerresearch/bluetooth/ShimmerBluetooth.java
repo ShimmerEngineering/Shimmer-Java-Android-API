@@ -2450,6 +2450,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			operationPrepare();
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
+		setBtCommsCrcMode(BT_CRC_MODE.OFF);
 		readSamplingRate();
 		readGSRRange();
 		readMagSamplingRate();
