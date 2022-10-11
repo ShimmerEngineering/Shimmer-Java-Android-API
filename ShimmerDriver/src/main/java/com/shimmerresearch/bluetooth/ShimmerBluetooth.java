@@ -265,7 +265,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	protected boolean mUseProcessingThread = false;
 	protected boolean mEnablePCTimeStamps = true;
-	protected BT_CRC_MODE mBtCommsCrcMode = BT_CRC_MODE.OFF;
+	protected BT_CRC_MODE mBtCommsCrcModeCurrent = BT_CRC_MODE.OFF;
+	protected BT_CRC_MODE mBtCommsCrcModeIfFwSupported = BT_CRC_MODE.OFF;
 	
 	public enum BT_CRC_MODE {
 		OFF(0),
@@ -748,7 +749,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if(bufferTemp[0]==DATA_PACKET 
 					&& bufferTemp[getPacketSizeWithCrc()+1]==DATA_PACKET){
 				
-				if (mBtCommsCrcMode != BT_CRC_MODE.OFF && !checkCrc(bufferTemp, getPacketSize() + 1)) {
+				if (mBtCommsCrcModeCurrent != BT_CRC_MODE.OFF && !checkCrc(bufferTemp, getPacketSize() + 1)) {
 					discardFirstBufferByte();
 					return;
 				}
@@ -1008,14 +1009,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public boolean checkCrc(byte[] bufferTemp, int length) {
 		byte[] crcCalc = ShimmerCrc.shimmerUartCrcCalc(bufferTemp, length);
 
-		if (mBtCommsCrcMode == BT_CRC_MODE.ONE_BYTE_CRC || mBtCommsCrcMode == BT_CRC_MODE.TWO_BYTE_CRC) {
+		if (mBtCommsCrcModeCurrent == BT_CRC_MODE.ONE_BYTE_CRC || mBtCommsCrcModeCurrent == BT_CRC_MODE.TWO_BYTE_CRC) {
 			// + 1 as this is the location of the CRC's LSB
 			if (bufferTemp[getPacketSize() + 1] != crcCalc[0]) {
 				return false;
 			}
 		}
 
-		if (mBtCommsCrcMode == BT_CRC_MODE.TWO_BYTE_CRC) {
+		if (mBtCommsCrcModeCurrent == BT_CRC_MODE.TWO_BYTE_CRC) {
 			// + 2 as this is the location of the CRC's MSB
 			if (bufferTemp[getPacketSize() + 2] != crcCalc[1]) {
 				discardFirstBufferByte();
@@ -1023,6 +1024,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		return true;
+	}
+	
+	private void clearCrcBytesFromBuffer(byte responseCommand) {
+		byte[] crcBytes = readBytes(mBtCommsCrcModeCurrent.numCrcBytes);
+		consolePrintLn("Clearing CRC bytes:\t\t\t" + btCommandToString(responseCommand) + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(crcBytes));
 	}
 	
 	private static boolean isKnownGetCommand(byte getCmd) {
@@ -1263,6 +1269,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param responseCommand
 	 */
 	private void processResponseCommand(byte responseCommand) {
+		boolean responseWasParsed = true;
+		
 		if(responseCommand==INQUIRY_RESPONSE) {
 			delayForBtResponse(500); // Wait to ensure the packet has been fully received
 			List<Byte> buffer = new  ArrayList<Byte>();
@@ -1775,13 +1783,23 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				int lengthToRead = (int)(length[0]&0xFF);
 				byte[] responseData = readBytes(lengthToRead, responseCommand);
 				if(responseData!=null) {
+					printLogDataForDebugging("BT_FW_VERSION_STR_RESPONSE Received:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(responseData));
 					super.getBtFwVerDetails().parseBtModuleVerBytes(responseData);
+					printLogDataForDebugging(super.getBtFwVerDetails().mBtModuleVersionParsed.btModuleVerStrFull);
 				}
 			}
 		}
 		
 		else {
 			consolePrintLn("Unhandled BT response: " + responseCommand);
+			responseWasParsed = false;
+		}
+		
+		if (mBtCommsCrcModeCurrent != BT_CRC_MODE.OFF && responseWasParsed) {
+			// The driver doesn't currently support checking of CRC bytes on any response
+			// other then data packets but we still need to clear them from the buffer if
+			// CRC is enabled.
+			clearCrcBytesFromBuffer(responseCommand);
 		}
 	}
 	
@@ -2188,7 +2206,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 				}
 				else if(currentCommand==SET_CRC_COMMAND){
-					mBtCommsCrcMode = BT_CRC_MODE.values()[(int)((byte [])getListofInstructions().get(0))[1]];
+					setCurrentBtCommsCrcMode(BT_CRC_MODE.values()[(int)((byte [])getListofInstructions().get(0))[1]]);
 				}
 				else {
 					//unhandled set command
@@ -2414,6 +2432,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		//InstructionsThread instructionsThread = new InstructionsThread();
 		//instructionsThread.start();
 		clearShimmerVersionObjectAndCreateSensorMaps();
+		resetCurrentCrcMode();
 		
 		stopTimerReadStatus();
 		stopTimerCheckForAckOrResp();
@@ -2500,11 +2519,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		//readExpansionBoardID();
 		
-		if (getFirmwareVersionCode() >= 8) {
-			writeBtCommsCrcMode(mBtCommsCrcMode);
-		} else {
-			setBtCommsCrcMode(BT_CRC_MODE.OFF);
-		}
+		setupCrcMode();
 		
 		if (isSetupDeviceWhileConnecting()){
 			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
@@ -4347,7 +4362,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	public int getPacketSizeWithCrc(){
-		return getPacketSize() + mBtCommsCrcMode.getNumCrcBytes();
+		return getPacketSize() + mBtCommsCrcModeCurrent.getNumCrcBytes();
 	}
 
 	public String getDirectoryName(){
@@ -4636,8 +4651,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 * @param btCommsCrcMode
 	 */
-	public void setBtCommsCrcMode(BT_CRC_MODE btCommsCrcMode) {
-		mBtCommsCrcMode = btCommsCrcMode;
+	public void setBtCommsCrcModeToUseIfFwSupported(BT_CRC_MODE btCommsCrcMode) {
+		mBtCommsCrcModeIfFwSupported = btCommsCrcMode;
 	}
 
 	/**
@@ -4649,7 +4664,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @return
 	 */
 	public BT_CRC_MODE getBtCommsCrcModeIfFwSupported() {
-		return mBtCommsCrcMode;
+		return mBtCommsCrcModeIfFwSupported;
 	}
 
 	/**
@@ -4660,7 +4675,28 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @return
 	 */
 	public BT_CRC_MODE getCurrentBtCommsCrcMode() {
-		return isBtCrcModeSupported()? mBtCommsCrcMode:BT_CRC_MODE.OFF;
+		return mBtCommsCrcModeCurrent;
+	}
+
+	/**
+	 * Sets the actual CRC mode that is use.
+	 * 
+	 * @return
+	 */
+	public void setCurrentBtCommsCrcMode(BT_CRC_MODE btCommsCrcMode) {
+		mBtCommsCrcModeCurrent = btCommsCrcMode;
+	}
+
+	private void resetCurrentCrcMode() {
+		setCurrentBtCommsCrcMode(BT_CRC_MODE.OFF);
+	}
+
+	private void setupCrcMode() {
+		if (isBtCrcModeSupported()) {
+			writeBtCommsCrcMode(mBtCommsCrcModeIfFwSupported);
+		} else {
+			setBtCommsCrcModeToUseIfFwSupported(BT_CRC_MODE.OFF);
+		}
 	}
 
 	/**
