@@ -115,7 +115,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	public ShimmerPC() {
 		super();
-		setBtCommsCrcMode(DEFAULT_CRC_MODE);
+		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		
 		//TODO New approach - end
 		
-		setBtCommsCrcMode(DEFAULT_CRC_MODE);
+		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	/**Shimmer 3 Constructor
@@ -227,7 +227,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, Integer[] sensorIdsToEnable, int gyroRange, int magRange, int orientation, int pressureResolution) {
 		super(userAssignedName, samplingRate, sensorIdsToEnable, accelRange, gsrRange, gyroRange, magRange, pressureResolution);
 		setupOrientation(orientation, samplingRate);
-		setBtCommsCrcMode(DEFAULT_CRC_MODE);
+		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	/**
@@ -267,7 +267,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		//TODO New approach - end
 		
-		setBtCommsCrcMode(DEFAULT_CRC_MODE);
+		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	/**
@@ -283,7 +283,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		super(myName,samplingRate, setEnabledSensors, accelRange, gsrRange, magGain);
 		setupOrientation(orientation, samplingRate);
 		
-		setBtCommsCrcMode(DEFAULT_CRC_MODE);
+		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	// Javadoc comment follows
@@ -323,7 +323,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		addCommunicationRoute(communicationType);
     	setSamplingRateShimmer(128);
     	
-		setBtCommsCrcMode(DEFAULT_CRC_MODE);
+		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	/** Replaces ShimmerDocked
