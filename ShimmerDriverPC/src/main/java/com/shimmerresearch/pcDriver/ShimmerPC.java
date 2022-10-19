@@ -74,7 +74,6 @@ import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.exceptions.ShimmerException;
-import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
@@ -89,8 +88,6 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
-import java.util.Timer;
-import java.util.TimerTask;
 public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	/** * */
@@ -334,9 +331,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setBluetoothRadioState(BT_STATE.CONNECTING);
 				
 //				mMyBluetoothAddress = address;
-				mTimerConnecting = new Timer();
-				mTimerConnecting.schedule(new connectionTimeOutTask(), 20000);
-				consolePrintLn("Started connecting timer...");
+				startConnectingTimeoutTimer();
 				
 				setIamAlive(false);
 				getListofInstructions().clear();
@@ -360,17 +355,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 						if (mSerialPort.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
 //						if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
 //							setState(BT_STATE.CONNECTED);
-							if(mSerialPort.isOpened()) {
-								  mSerialPort.purgePort(1);
-								  mSerialPort.purgePort(2);
-								  byte[] bytes = mSerialPort.readBytes(); //to be sure
-								  if (bytes!=null) {
-									  consolePrintLn("Connected, Throwing Bytes = Length " + Integer.toString(bytes.length));
-								  }
-								  
+							if (mSerialPort.isOpened()) {
+								mSerialPort.purgePort(1);
+								mSerialPort.purgePort(2);
+								byte[] bytes = mSerialPort.readBytes(); // to be sure
+								if (bytes != null) {
+									consolePrintLn("Connected, Throwing Bytes = Length " + Integer.toString(bytes.length));
+								}
 							}
 							setIsConnected(true);
-							
+
 							mIOThread = new IOThread();
 							mIOThread.setName(getClass().getSimpleName()+"-"+mMyBluetoothAddress+"-"+getComPort());
 							mIOThread.start();
@@ -412,17 +406,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	    		|| getState()==STATE.DISCONNECTED){
 //	    	thread.start();
 //	    }
-	}
-	
-	private class connectionTimeOutTask extends TimerTask {
-	    public void run() {
-        	if(mBluetoothRadioState == BT_STATE.CONNECTING)
-        	{
-	        	connectionLost();
-	        	stopTimerConnecting();
-	        	consolePrintLn("Connecting timer timed out, connection lost");
-        	}
-	    }
 	}
 	
 	@Override
@@ -613,14 +596,13 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			mIsInitialised = false;
 
 			setBluetoothRadioState(BT_STATE.DISCONNECTED);
-			if (mSerialPort != null){
-				
-				if(mSerialPort.isOpened()) {
-				  mSerialPort.purgePort(1);
-				  mSerialPort.purgePort(2);
-				  mSerialPort.closePort();
+			if (mSerialPort != null) {
+				if (mSerialPort.isOpened()) {
+					mSerialPort.purgePort(1);
+					mSerialPort.purgePort(2);
+					mSerialPort.closePort();
 				}
-				
+
 			}
 			 mSerialPort = null;
 		} catch (SerialPortException ex) {
@@ -923,4 +905,3 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 }
-

@@ -133,6 +133,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- CLASS VARIABLES AND ABSTRACT METHODS ---------
 	
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();
+
 	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	private boolean mWriteCalibrationDumpWhenConfiguringForClone = true; // true by default, this is for AA-246
@@ -245,6 +246,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	transient protected Timer mTimerCheckAlive;
 	transient protected Timer mTimerReadStatus;
 	transient protected Timer mTimerReadBattStatus;								// 
+	transient protected Timer mTimerConnecting;
 	
 	private int mCountDeadConnection = 0;
 	private boolean mCheckIfConnectionisAlive = false;
@@ -257,8 +259,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public boolean mIsRedLedOn = false;
 	public boolean mIsRtcSet = false;
-	
-	protected Timer mTimerConnecting;
 
 	protected boolean mUseProcessingThread = false;
 	protected boolean mEnablePCTimeStamps = true;
@@ -1057,7 +1057,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			initializeShimmer3();
 		}
 		
-		stopTimerConnecting();
+		stopConnectingTimeoutTimer();
 		startTimerCheckIfAlive();
 	}
 
@@ -2692,16 +2692,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		stopTimerCheckAlive();
 		stopTimerCheckForAckOrResp();
 		stopTimerReadBattStatus();
-		stopTimerConnecting();
-	}
-	
-	public void stopTimerConnecting() {
-		if(mTimerConnecting != null) {
-			consolePrintLn("Stopped connecting timer...");
-			mTimerConnecting.cancel();
-			mTimerConnecting.purge();
-			mTimerConnecting = null;
-		}
+		stopConnectingTimeoutTimer();
 	}
 	
 	public void stopTimerCheckForAckOrResp(){
@@ -2995,8 +2986,38 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			startTimerCheckIfAlive();
 			startTimerReadStatus();
 			startTimerReadBattStatus();
-			
         }
+	}
+	
+	public void startConnectingTimeoutTimer() {
+		mTimerConnecting = new Timer();
+		mTimerConnecting.schedule(new connectingTimeoutTask(), LiteProtocol.TIMER_CONNECTING_TIMEOUT);
+		consolePrintLn("Started connecting timer...");
+	}
+	
+	public void stopConnectingTimeoutTimer() {
+		if(mTimerConnecting != null) {
+			consolePrintLn("Stopped connecting timer...");
+			try {
+				mTimerConnecting.cancel();
+				mTimerConnecting.purge();
+			} catch (NullPointerException npe) {
+				npe.printStackTrace();
+			}
+			mTimerConnecting = null;
+		}
+	}
+
+	private class connectingTimeoutTask extends TimerTask {
+		@Override
+	    public void run() {
+        	if(mBluetoothRadioState == BT_STATE.CONNECTING)
+        	{
+            	connectionLost();
+            	stopConnectingTimeoutTimer();
+        		consolePrintLn("Connecting timer timed out, connection lost");
+        	}
+	    }
 	}
 	
 	//endregion --------- TIMERS ---------
