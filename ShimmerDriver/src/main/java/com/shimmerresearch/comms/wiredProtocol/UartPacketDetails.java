@@ -60,7 +60,8 @@ public class UartPacketDetails {
 		LSM303DLHC_ACCEL	((byte)0x06),
 		MPU9X50_ACCEL		((byte)0x07),
 		BEACON				((byte)0x08),
-		RADIO_802154		((byte)0x09);
+		RADIO_802154		((byte)0x09),
+		RADIO_BLUETOOTH		((byte)0x0A);
 		
 	    private final byte command;
 
@@ -136,6 +137,10 @@ public class UartPacketDetails {
 			public static final UartComponentPropertyDetails TX_TO_SHIMMER		= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x05, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "TX_TO_SHIMMER");
 			public static final UartComponentPropertyDetails RX_FROM_SHIMMER	= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x06, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "RX_FROM_SHIMMER");
 			public static final UartComponentPropertyDetails SPECTRUM_SCAN		= new UartComponentPropertyDetails(UART_COMPONENT.RADIO_802154, 0x07, PERMISSION.READ_ONLY, listOfCompatibleVersionInfoGq802154, "SPECTRUM_SCAN");
+		}
+
+		public static class BLUETOOTH {
+			public static final UartComponentPropertyDetails VER          = new UartComponentPropertyDetails(UART_COMPONENT.RADIO_BLUETOOTH, 0x03, PERMISSION.READ_ONLY, null, "BT_FW_VER");
 		}
 
 	}
