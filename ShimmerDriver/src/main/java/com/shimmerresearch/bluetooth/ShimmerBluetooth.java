@@ -134,8 +134,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	private class DUMMY_READ_WAIT_TIME_MS {
 		private final static int START = 50;
-		// TODO test to see how low we can set this. Experimentally it was found 200ms is the lowest it can go.
-		private final static int INITIAL_AFTER_WRITE = 250; 
+		private final static int INITIAL_AFTER_WRITE = 200; 
 		private final static int CHECK_INTERVAL = 100;
 		private final static int TIMEOUT = 5000;
 	}
@@ -250,6 +249,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	transient protected Timer mTimerCheckAlive;
 	transient protected Timer mTimerReadStatus;
 	transient protected Timer mTimerReadBattStatus;								// 
+	transient protected Timer mTimerCheckSerialPortClear;
 	
 	private int mCountDeadConnection = 0;
 	private boolean mCheckIfConnectionisAlive = false;
@@ -474,7 +474,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//endregion
 	
 	private int mNumOfMemSetCmds = 0;
-
+	
+	private boolean mSerialPortReadTimeout;
+	
 	public static final int MSG_IDENTIFIER_DATA_PACKET = 2;
 	public static final int MSG_IDENTIFIER_DEVICE_PAIRED = 8;
 	public static final int MSG_IDENTIFIER_DEVICE_UNPAIRED = 9;
@@ -616,10 +618,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			int totalWaitTimeMs = DUMMY_READ_WAIT_TIME_MS.INITIAL_AFTER_WRITE;
 			// Allow some time for bytes to come in
 			threadSleep(DUMMY_READ_WAIT_TIME_MS.INITIAL_AFTER_WRITE);
-			while (bytesAvailableToBeRead()) {
+			while (!stop &&bytesAvailableToBeRead()) {
 				if (totalWaitTimeMs >= DUMMY_READ_WAIT_TIME_MS.TIMEOUT) {
 					// TODO trigger a disconnect or just allow the first instruction in the instruction stack to trigger it
 					printLogDataForDebugging("Dummy read timeout");
+					//TODO send message to app layer to tell it to trigger a disconnect?
 					break;
 				}
 
@@ -1176,24 +1179,32 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 */
 	private void clearSerialBuffer() {
+		startTimerCheckForSerialPortClear();
+
 		List<Byte> buffer = new ArrayList<Byte>();
-		while (availableBytes()!=0){
+		while (availableBytes() != 0) {
 //			int available = availableBytes();
-			if (bytesAvailableToBeRead()){
-				//JC: not working well on android
-				//byte[] buffer = readBytes(availableBytes());
+			if (bytesAvailableToBeRead()) {
+				// JC: not working well on android
+				// byte[] buffer = readBytes(availableBytes());
 				byte[] tb = readBytes(1);
-				if(tb!=null){
+				if (tb != null) {
 					buffer.add(tb[0]);
 				}
+
+				if (mSerialPortReadTimeout) {
+					break;
+				}
 			}
-		}		  		
-		
-		if(buffer.size()>0){
+		}
+
+		if (buffer.size() > 0) {
 			byte[] newBuf = ArrayUtils.toPrimitive(buffer.toArray(new Byte[buffer.size()]));
 			String msg = "Clearing Buffer:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(newBuf);
 			printLogDataForDebugging(msg);
 		}
+
+		stopTimerCheckForSerialPortClear();
 	}
 	
 	/**
@@ -1239,7 +1250,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 //		consolePrintLn(Integer.toString(bufferTemp[mPacketSize+2]));
 		if(mEnablePCTimeStamps) {
 			for (int i=0;i<packetSize;i++){
-				mListofPCTimeStamps.remove(0);
+				try {
+					mListofPCTimeStamps.remove(0);
+				} catch (Exception e) {
+					/* Catch random IndexOutOfBoundsException that occur */
+					consolePrintException(e.getMessage(), e.getStackTrace());
+				}
 			}
 		}
 	}
@@ -2791,8 +2807,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void stopTimerCheckForAckOrResp(){
 		//Terminate the timer thread
 		if(mTimerCheckForAckOrResp!=null){
-			mTimerCheckForAckOrResp.cancel();
-			mTimerCheckForAckOrResp.purge();
+			try {
+				mTimerCheckForAckOrResp.cancel();
+				mTimerCheckForAckOrResp.purge();
+			} catch (NullPointerException npe) {
+				npe.printStackTrace();
+			}
 			mTimerCheckForAckOrResp = null;
 		}
 	}
@@ -2800,8 +2820,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public synchronized void startTimerCheckForAckOrResp(int seconds) {
 	//public synchronized void responseTimer(int seconds) {
 		if(mTimerCheckForAckOrResp!=null) {
-			mTimerCheckForAckOrResp.cancel();
-			mTimerCheckForAckOrResp.purge();
+			try {
+				mTimerCheckForAckOrResp.cancel();
+				mTimerCheckForAckOrResp.purge();
+			} catch (NullPointerException npe) {
+				npe.printStackTrace();
+			}
 			mTimerCheckForAckOrResp = null;
 		}
 		printLogDataForDebugging("Waiting for ack/response for command:\t" + btCommandToString(mCurrentCommand));
@@ -2948,8 +2972,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public void stopTimerReadStatus(){
 		if(mTimerReadStatus!=null){
-			mTimerReadStatus.cancel();
-			mTimerReadStatus.purge();
+			try {
+				mTimerReadStatus.cancel();
+				mTimerReadStatus.purge();
+			} catch (NullPointerException npe) {
+				npe.printStackTrace();
+			}
 			mTimerReadStatus = null;
 		}
 	}
@@ -2984,8 +3012,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public void stopTimerCheckAlive(){
 		if(mTimerCheckAlive!=null){
-			mTimerCheckAlive.cancel();
-			mTimerCheckAlive.purge();
+			try {
+				mTimerCheckAlive.cancel();
+				mTimerCheckAlive.purge();
+			} catch (NullPointerException npe) {
+				npe.printStackTrace();
+			}
 			mTimerCheckAlive = null;
 		}
 	}
@@ -3070,8 +3102,49 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			startTimerCheckIfAlive();
 			startTimerReadStatus();
 			startTimerReadBattStatus();
-			
         }
+	}
+	
+	public void stopTimerCheckForSerialPortClear(){
+		//Terminate the timer thread
+		if(mTimerCheckSerialPortClear!=null){
+			try {
+				mTimerCheckSerialPortClear.cancel();
+				mTimerCheckSerialPortClear.purge();
+			} catch (NullPointerException npe) {
+				npe.printStackTrace();
+			}
+
+			mTimerCheckSerialPortClear = null;
+		}
+	}
+
+	public synchronized void startTimerCheckForSerialPortClear() {
+		if(mTimerCheckSerialPortClear!=null) {
+			try {
+				mTimerCheckSerialPortClear.cancel();
+				mTimerCheckSerialPortClear.purge();
+			} catch (NullPointerException npe) {
+				npe.printStackTrace();
+			}
+			mTimerCheckSerialPortClear = null;
+		}
+		mSerialPortReadTimeout = false;
+		printLogDataForDebugging("Waiting for serial port to clear");
+		mTimerCheckSerialPortClear = new Timer("Shimmer_" + getMacIdParsed() + "_TimerCheckForSerialPortClear");
+		mTimerCheckSerialPortClear.schedule(new checkForSerialPortClear(), 5000);
+	}
+
+	/** Handles command response timeout
+	 *
+	 */
+	class checkForSerialPortClear extends TimerTask {
+		@Override
+		public void run() {
+			System.out.println("Timeout while trying to clear buffer");
+			mSerialPortReadTimeout = true;
+			connectionLost();
+		}
 	}
 	
 	//endregion --------- TIMERS ---------
