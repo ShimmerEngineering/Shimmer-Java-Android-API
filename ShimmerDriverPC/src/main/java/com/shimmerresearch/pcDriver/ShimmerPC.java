@@ -603,7 +603,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				mIOThread.stop = true;
 				
 				// Closing serial port before before thread is finished stopping throws an error so waiting here
-				while(mIOThread.isAlive());
+				while(mIOThread != null && mIOThread.isAlive());
 
 				mIOThread = null;
 				
@@ -618,15 +618,15 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			setBluetoothRadioState(BT_STATE.DISCONNECTED);
 			if (mSerialPort != null){
 				
-				if(mSerialPort.isOpened()) {
-				  mSerialPort.purgePort(1);
-				  mSerialPort.purgePort(2);
-				  mSerialPort.closePort();
+				if (mSerialPort.isOpened()) {
+					mSerialPort.purgePort(1);
+					mSerialPort.purgePort(2);
+					mSerialPort.closePort();
 				}
 				
 			}
 			 mSerialPort = null;
-		} catch (SerialPortException ex) {
+		} catch (Exception ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			setBluetoothRadioState(BT_STATE.DISCONNECTED);
 		}			
