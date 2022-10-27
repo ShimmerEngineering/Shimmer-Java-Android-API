@@ -89,7 +89,6 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
-
 public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	/** * */
@@ -350,6 +349,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setBluetoothRadioState(BT_STATE.CONNECTING);
 				
 //				mMyBluetoothAddress = address;
+				startTimerConnectingTimeout();
+				
 				setIamAlive(false);
 				getListofInstructions().clear();
 				
@@ -415,7 +416,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	    	thread.start();
 //	    }
 	}
-	
 	
 	@Override
 	public boolean bytesAvailableToBeRead() {
@@ -616,14 +616,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			mIsInitialised = false;
 
 			setBluetoothRadioState(BT_STATE.DISCONNECTED);
-			if (mSerialPort != null){
-				
+			if (mSerialPort != null) {
 				if (mSerialPort.isOpened()) {
 					mSerialPort.purgePort(1);
 					mSerialPort.purgePort(2);
 					mSerialPort.closePort();
 				}
-				
 			}
 			 mSerialPort = null;
 		} catch (Exception ex) {
@@ -934,4 +932,3 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 
 }
-

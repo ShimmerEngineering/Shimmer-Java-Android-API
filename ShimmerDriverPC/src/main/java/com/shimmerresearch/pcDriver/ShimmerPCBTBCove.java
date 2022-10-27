@@ -595,7 +595,5 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		return null;
 	}
 	
-	
-	
 }
 
