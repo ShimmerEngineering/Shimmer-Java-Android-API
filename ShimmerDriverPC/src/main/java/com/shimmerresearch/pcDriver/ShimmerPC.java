@@ -372,14 +372,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 						if (mSerialPort.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
 //						if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
 //							setState(BT_STATE.CONNECTED);
-							if (mSerialPort.isOpened()) {
-								mSerialPort.purgePort(1);
-								mSerialPort.purgePort(2);
-								byte[] bytes = mSerialPort.readBytes(); // to be sure
-								if (bytes != null) {
-									consolePrintLn("Connected, Throwing Bytes = Length " + Integer.toString(bytes.length));
-								}
-							}
 							setIsConnected(true);
 
 							mIOThread = new IOThread();
