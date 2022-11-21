@@ -854,7 +854,9 @@ public abstract class ShimmerBluetoothManager{
 		private ShimmerDevice createShimmerIfKnown() {
 			ShimmerDevice shimmerDevice = null;
 			deviceTypeDetected = useMockHWID(deviceTypeDetected);
-			if(deviceTypeDetected==DEVICE_TYPE.SHIMMER3 || deviceTypeDetected==DEVICE_TYPE.SHIMMER_ECG_MD){
+			if(deviceTypeDetected==DEVICE_TYPE.SHIMMER3
+					|| deviceTypeDetected==DEVICE_TYPE.SHIMMER3_OUTPUT
+					|| deviceTypeDetected==DEVICE_TYPE.SHIMMER_ECG_MD){
 				shimmerDevice = createNewShimmer3(comPort, bluetoothAddress);
 			}
 			else if(deviceTypeDetected==DEVICE_TYPE.SHIMMER4){

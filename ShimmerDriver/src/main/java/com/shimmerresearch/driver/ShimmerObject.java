@@ -531,7 +531,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mEnableCalibration = true;	
 	protected boolean mConfigFileCreationFlag = true;
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
-	protected boolean mIsCrcEnabled = false;
 	protected boolean mUseInfoMemConfigMethod = true;
 	
 	protected boolean mUseArraysDataStructureInObjectCluster = false;

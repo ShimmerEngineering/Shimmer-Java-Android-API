@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.awt.Canvas;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -98,6 +99,26 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
 		btnDisconnect.setBounds(415, 90, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
+		
+		JButton btnSetBlinkLED = new JButton("Set Blink LED (Random)");
+		btnSetBlinkLED.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			    try {
+			    	Random random = new Random();
+			    	int ledvalue = random.nextInt(3-0)+0;
+			    	System.out.println("LED Value to Write: " + ledvalue);
+			    	shimmer.writeLEDCommand(ledvalue);
+			    	Thread.sleep(400);//make sure to wait for the cmd to be written.
+			    	int currentledvalue = shimmer.getCurrentLEDStatus();
+			    	System.out.println("Current ED Value: " + currentledvalue);
+			    } catch (Exception e) {
+			   
+			    }
+			}
+		});
+		btnSetBlinkLED.setBounds(625, 90, 187, 31);
+		frame.getContentPane().add(btnSetBlinkLED);
+		
 		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
 		lblShimmerStatus.setBounds(10, 139, 144, 23);
