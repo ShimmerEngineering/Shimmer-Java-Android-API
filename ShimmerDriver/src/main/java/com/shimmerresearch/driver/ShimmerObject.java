@@ -2028,8 +2028,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//Additional Channels Offset
-			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels+1;//+1; //+1 because timestamp channel appears at the start
-			
+			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels; 
+			if(fwType == COMMUNICATION_TYPE.BLUETOOTH) {
+				additionalChannelsOffset += 1;	//BT need +1 because timestamp added as additional channel
+			}
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				if(isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultRespirationConfiguration()){
 					if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
@@ -2050,7 +2052,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 								calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
 								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]);
 							}
-							//additionalChannelsOffset += 1;
+							additionalChannelsOffset += 1;
 						}
 					}
 					else if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.EXG1_24BIT) > 0) 
@@ -2071,7 +2073,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 								calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
 								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]);
 							}
-							//additionalChannelsOffset += 1;
+							additionalChannelsOffset += 1;
 						}
 					}
 				}

@@ -89,7 +89,6 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
-
 public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	/** * */
@@ -109,13 +108,10 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	public static boolean CONSOLE_PRINT_TX_RX_BYTES = false;
 
-	public static BT_CRC_MODE DEFAULT_CRC_MODE = BT_CRC_MODE.ONE_BYTE_CRC;
-
 	//--------------- Constructors start ----------------------------
 
 	public ShimmerPC() {
 		super();
-		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 
 	/**
@@ -211,8 +207,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		addFixedShimmerConfig(SensorEXG.GuiLabelConfig.EXG_BYTES, Arrays.asList(exg1, exg2));
 		
 		//TODO New approach - end
-		
-		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	/**Shimmer 3 Constructor
@@ -227,7 +221,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String userAssignedName, double samplingRate, int accelRange, int gsrRange, Integer[] sensorIdsToEnable, int gyroRange, int magRange, int orientation, int pressureResolution) {
 		super(userAssignedName, samplingRate, sensorIdsToEnable, accelRange, gsrRange, gyroRange, magRange, pressureResolution);
 		setupOrientation(orientation, samplingRate);
-		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	/**
@@ -266,8 +259,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //		addFixedShimmerConfig(SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE, magGain);
 //		addFixedShimmerConfig(SensorGSR.GuiLabelConfig.GSR_RANGE, gsrRange);
 		//TODO New approach - end
-		
-		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	/**
@@ -282,8 +273,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	public ShimmerPC(String myName, double samplingRate, int accelRange, int gsrRange, int setEnabledSensors, int magGain, int orientation) {
 		super(myName,samplingRate, setEnabledSensors, accelRange, gsrRange, magGain);
 		setupOrientation(orientation, samplingRate);
-		
-		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	// Javadoc comment follows
@@ -322,8 +311,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		setDockInfo(dockId, slotNumber);
 		addCommunicationRoute(communicationType);
     	setSamplingRateShimmer(128);
-    	
-		setBtCommsCrcModeToUseIfFwSupported(DEFAULT_CRC_MODE);
 	}
 	
 	/** Replaces ShimmerDocked
@@ -350,6 +337,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setBluetoothRadioState(BT_STATE.CONNECTING);
 				
 //				mMyBluetoothAddress = address;
+				startTimerConnectingTimeout();
+				
 				setIamAlive(false);
 				getListofInstructions().clear();
 				
@@ -415,7 +404,6 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 //	    	thread.start();
 //	    }
 	}
-	
 	
 	@Override
 	public boolean bytesAvailableToBeRead() {
@@ -616,14 +604,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			mIsInitialised = false;
 
 			setBluetoothRadioState(BT_STATE.DISCONNECTED);
-			if (mSerialPort != null){
-				
+			if (mSerialPort != null) {
 				if (mSerialPort.isOpened()) {
 					mSerialPort.purgePort(1);
 					mSerialPort.purgePort(2);
 					mSerialPort.closePort();
 				}
-				
 			}
 			 mSerialPort = null;
 		} catch (Exception ex) {
@@ -925,13 +911,4 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		return null;
 	}
 
-	public static BT_CRC_MODE getDefaultCrcMode() {
-		return DEFAULT_CRC_MODE;
-	}
-
-	public static void setDefaultCrcMode(BT_CRC_MODE defaultCrcMode) {
-		DEFAULT_CRC_MODE = defaultCrcMode;
-	}
-
 }
-
