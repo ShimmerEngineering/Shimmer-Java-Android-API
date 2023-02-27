@@ -184,7 +184,7 @@ public class StatusPayload extends AbstractPayload {
 	}
 	
 	public void calculateStorageOther() {
-		storageOtherkB = STORAGE_CAPACITY_LTF_KB - storageFreekB + storageFullkB + storageToDelkB + storageBadkB;
+		storageOtherkB = STORAGE_CAPACITY_LTF_KB - (storageFreekB + storageFullkB + storageToDelkB + storageBadkB);
 	}
 
 	public double getStorageFreePercent() {
