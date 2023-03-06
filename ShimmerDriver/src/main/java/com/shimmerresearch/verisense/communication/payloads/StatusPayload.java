@@ -50,7 +50,7 @@ public class StatusPayload extends AbstractPayload {
 	public int storageCapacitykB = -1;
 
 	public long failedBleConnectionAttemptCount = 0;
-	public int failCounterFlashWrite;
+	public int flashWriteFailCounter;
 	public long timestampNextSyncAttempt;
 	public int flashWriteRetryCounterShortTry = -1;
 	public int flashWriteRetryCounterLongTry = -1;
@@ -195,7 +195,7 @@ public class StatusPayload extends AbstractPayload {
 				flashWriteRetryCounterLongTry = (int) parseByteArrayAtIndex(payloadContents, 29, CHANNEL_DATA_TYPE.UINT16);
 
 				// FW v1.02.084 onwards
-				failCounterFlashWrite = (int) parseByteArrayAtIndex(payloadContents, 31, CHANNEL_DATA_TYPE.UINT16);
+				flashWriteFailCounter = (int) parseByteArrayAtIndex(payloadContents, 31, CHANNEL_DATA_TYPE.UINT16);
 
 				// FW v1.02.063 onwards
 				failedBleConnectionAttemptCount = (int) parseByteArrayAtIndex(payloadContents, 33, CHANNEL_DATA_TYPE.UINT8);
@@ -327,7 +327,7 @@ public class StatusPayload extends AbstractPayload {
 			sb.append("\t\tLTF WRITE FAIL COUNTER:\t\t" + failedBleConnectionAttemptCount + "\n");
 
 			// Last byte - Bits 0-7
-			sb.append("\t\tFAIL SYNC COUNTER:\t\t" + failCounterFlashWrite + "\n");
+			sb.append("\t\tFAIL SYNC COUNTER:\t\t" + flashWriteFailCounter + "\n");
 		}
 
 		// Parse the Next Sync Attempt time
