@@ -61,9 +61,6 @@ public class StatusPayload extends AbstractPayload {
 
 	public static final double MAX_FOUR_BTE_UNSIGNED_VALUE = Math.pow(2, 32) - 1;
 	
-	private int fwVerMajor = -1;
-	private int fwVerMinor = -1;
-	private int fwVerInternal = -1;
 	private int hwVerMajor = -1;
 	private int hwVerMinor = -1;
 	private int hwVerInternal = -1;
@@ -344,12 +341,6 @@ public class StatusPayload extends AbstractPayload {
 		this.hwVerInternal = hwVerInternal;
 	}
 
-	public void setShimmerFwVer(int fwVerMajor, int fwVerMinor, int fwVerInternal) {
-		this.fwVerMajor = fwVerMajor;
-		this.fwVerMinor = fwVerMinor;
-		this.fwVerInternal = fwVerInternal;
-	}
-
 	public boolean isStatusFromFwV1_02_055_onwards() {
 		return payloadContents.length >= 56;
 	}
@@ -366,15 +357,15 @@ public class StatusPayload extends AbstractPayload {
 	}
 
 	public void updateStorageCapacitykBBasedOnHw() {
-		if(fwVerMajor!=-1) {
-			updateStorageCapacitykBBasedOnHw(fwVerMajor, fwVerMinor, fwVerInternal);
+		if(hwVerMajor!=-1) {
+			updateStorageCapacitykBBasedOnHw(hwVerMajor, hwVerMinor, hwVerInternal);
 		} else {
 			updateStorageCapacitykBBasedOnHw(HW_ID.VERISENSE_IMU, 1, 0);
 		}
 	}
 
-	public void updateStorageCapacitykBBasedOnHw(int fwVerMajor, int fwVerMinor, int fwVerInternal) {
-		if (fwVerMajor == HW_ID.VERISENSE_PULSE_PLUS && fwVerMinor == 8 && fwVerInternal == 1) {
+	public void updateStorageCapacitykBBasedOnHw(int hwVerMajor, int hwVerMinor, int hwVerInternal) {
+		if (hwVerMajor == HW_ID.VERISENSE_PULSE_PLUS && hwVerMinor == 8 && hwVerInternal == 1) {
 			storageCapacitykB = 1 * 1024; // LTF is 126MB
 		} else {
 			storageCapacitykB = 512 * 1024; // LTF is 512MB

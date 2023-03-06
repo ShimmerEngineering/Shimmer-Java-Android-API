@@ -181,8 +181,6 @@ public class VerisenseProtocolByteCommunication {
 				if (latestProductionConfigPayload != null) {
 					ExpansionBoardDetails ebd = latestProductionConfigPayload.expansionBoardDetails;
 					latestStatusPayload.setShimmerHwVer(ebd.mExpansionBoardId, ebd.mExpansionBoardRev, ebd.mExpansionBoardRevSpecial);
-					ShimmerVerObject svo = latestProductionConfigPayload.shimmerVerObject;
-					latestStatusPayload.setShimmerFwVer(svo.mFirmwareVersionMajor, svo.mFirmwareVersionMinor, svo.mFirmwareVersionInternal);
 				}
 				if (latestStatusPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
 					sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestStatusPayload);
