@@ -365,8 +365,8 @@ public class StatusPayload extends AbstractPayload {
 	}
 
 	public void updateStorageCapacitykBBasedOnHw(int hwVerMajor, int hwVerMinor, int hwVerInternal) {
-		if (hwVerMajor == HW_ID.VERISENSE_PULSE_PLUS && hwVerMinor == 8 && hwVerInternal == 1) {
-			storageCapacitykB = 1 * 1024; // LTF is 126MB
+		if (hwVerMajor == HW_ID.VERISENSE_PULSE_PLUS && hwVerMinor == 8) {
+			storageCapacitykB = 128 * 1024; // LTF is 126MB
 		} else {
 			storageCapacitykB = 512 * 1024; // LTF is 512MB
 		}
