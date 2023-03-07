@@ -210,15 +210,8 @@ public class StatusPayload extends AbstractPayload {
 
 		if (isStatusFromFwV1_02_102_onwards()) {
 			isChargerChipPresent = ((payloadContents[64] & 0x01) > 0) ? true : false;
-			
 			batteryChargerStatusValue = (payloadContents[64] >> 1) & 0x03;
-			if(hwVerMajor!=-1 && VerisenseDevice.isChargerLm3658dPresent(hwVerMajor, hwVerMinor, hwVerInternal)) {
-				batteryChargerStatus = VerisenseDevice.CHARGER_STATUS_LM3658D.values()[batteryChargerStatusValue];
-			} else if(hwVerMajor!=-1 && VerisenseDevice.isChargerLm3658dPresent(hwVerMajor, hwVerMinor, hwVerInternal)) {
-				batteryChargerStatus = VerisenseDevice.CHARGER_STATUS_LTC4123.values()[batteryChargerStatusValue];
-			} else {
-				batteryChargerStatus = null;
-			}
+			parseBatteryChargerStatusValue();
 		}
 
 		// SyncMode = (int)syncMode;
@@ -228,6 +221,16 @@ public class StatusPayload extends AbstractPayload {
 		return isSuccess;
 	}
 	
+	public void parseBatteryChargerStatusValue() {
+		if(hwVerMajor!=-1 && VerisenseDevice.isChargerLm3658dPresent(hwVerMajor, hwVerMinor, hwVerInternal)) {
+			batteryChargerStatus = VerisenseDevice.CHARGER_STATUS_LM3658D.values()[batteryChargerStatusValue];
+		} else if(hwVerMajor!=-1 && VerisenseDevice.isChargerLm3658dPresent(hwVerMajor, hwVerMinor, hwVerInternal)) {
+			batteryChargerStatus = VerisenseDevice.CHARGER_STATUS_LTC4123.values()[batteryChargerStatusValue];
+		} else {
+			batteryChargerStatus = null;
+		}
+	}
+
 	@Override
 	public byte[] generatePayloadContents() {
 		// TODO Auto-generated method stub
