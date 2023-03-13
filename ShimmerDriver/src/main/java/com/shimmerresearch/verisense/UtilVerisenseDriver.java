@@ -583,7 +583,7 @@ public class UtilVerisenseDriver implements Serializable {
 	 * @return filtered array
 	 */
 	public static File[] filterOutOfFileArrayDuplicatesAnd69And70Files(File[] fileArray) {
-		return filterOutOfFileArray(fileArray, new String[] {FILE_FILTER_DUPLICATE}, new String[] {FILE_FILTER_PREFIX_69, FILE_FILTER_PREFIX_70});
+		return filterOutOfFileArray(fileArray, new String[] {FILE_FILTER_DUPLICATE}, new String[] {FILE_FILTER_PREFIX_69, FILE_FILTER_PREFIX_70}, "[0-9]+_[0-9]+_");
 	}
 	
 	/**
@@ -595,6 +595,18 @@ public class UtilVerisenseDriver implements Serializable {
 	 * @return a new fileArray[] containing files that do no not match nameContains or pathContains
 	 */
 	public static File[] filterOutOfFileArray(File[] fileArray, String[] nameContains, String[] pathContains) {
+		return filterOutOfFileArray(fileArray, nameContains, pathContains, null); 
+	}
+	
+	/**
+	 * Remove any files with path or naming containing contents of nameContains[] or pathContains[]
+	 * 
+	 * @param fileArray -> input file array to filter
+	 * @param nameContains -> substrings of file names to remove
+	 * @param pathContains -> substrings of paths to remove
+	 * @return a new fileArray[] containing files that do no not match nameContains or pathContains
+	 */
+	private static File[] filterOutOfFileArray(File[] fileArray, String[] nameContains, String[] pathContains, String regexPathContains) {
 		List<File> listOfFiles = new ArrayList<File>();
 		fileLoop:
 		for(File file:fileArray) {
@@ -604,8 +616,16 @@ public class UtilVerisenseDriver implements Serializable {
 				continue fileLoop;
 			}
 
-			if(pathContains!=null && doesStringContainAny(file.getPath(), pathContains)) {
-				continue fileLoop;
+			if(regexPathContains != null) {
+				String[] split = file.getPath().split(regexPathContains);
+				//Look for the parsed filename's date-time string
+				if(pathContains!=null && doesStringContainAny(split[split.length-1], pathContains)) {
+					continue fileLoop;
+				}
+			} else {
+				if(pathContains!=null && doesStringContainAny(file.getPath(), pathContains)) {
+					continue fileLoop;
+				}
 			}
 
 			listOfFiles.add(file);
@@ -614,7 +634,7 @@ public class UtilVerisenseDriver implements Serializable {
 		File[] selectedFileArray = listOfFiles.toArray(new File[listOfFiles.size()]);
 		return selectedFileArray;
 	}
-
+	
 	public static boolean doesStringContainAllOfAnySet(String strToScan, String[][] setsOfStrToSearch){
 		for(String[] setOfStrToSearch:setsOfStrToSearch) {
 			if(doesStringContainAll(strToScan, setOfStrToSearch))
