@@ -583,7 +583,7 @@ public class UtilVerisenseDriver implements Serializable {
 	 * @return filtered array
 	 */
 	public static File[] filterOutOfFileArrayDuplicatesAnd69And70Files(File[] fileArray) {
-		return filterOutOfFileArray(fileArray, new String[] {FILE_FILTER_DUPLICATE}, new String[] {FILE_FILTER_PREFIX_69, FILE_FILTER_PREFIX_70});
+		return filterOutOfFileArray(fileArray, new String[] {FILE_FILTER_DUPLICATE, FILE_FILTER_PREFIX_69, FILE_FILTER_PREFIX_70}, null);
 	}
 	
 	/**
