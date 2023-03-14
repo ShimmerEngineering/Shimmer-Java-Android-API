@@ -141,7 +141,7 @@ public class EventLogPayload extends AbstractPayload {
 					return logEvent.toString();
 				}
 			}
-			return "Unknown";
+			return Integer.toString(event);
 		}
 
 		public String getTimeString() {
