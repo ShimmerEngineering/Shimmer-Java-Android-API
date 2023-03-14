@@ -588,7 +588,7 @@ public class UtilVerisenseDriver implements Serializable {
 		//1) Filter out duplicates
 		File[] files = filterOutOfFileArray(fileArray, new String[] {FILE_FILTER_DUPLICATE}, null);
 		//2) Filter out filenames which start with "69" or "70"
-		return filterFilenamePrefixesOutOfFileArray(files, new String[] {FILE_FILTER_PREFIX_69, FILE_FILTER_PREFIX_70}, 2);
+		return filterFilenamePrefixesOutOfFileArray(files, new String[] {FILE_FILTER_69, FILE_FILTER_70}, 2);
 	}
 	
 	/**
