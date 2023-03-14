@@ -3056,8 +3056,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public void stopTimerReadBattStatus(){
 		if(mTimerReadBattStatus!=null){
-			mTimerReadBattStatus.cancel();
-			mTimerReadBattStatus.purge();
+			try {
+				mTimerReadBattStatus.cancel();
+				mTimerReadBattStatus.purge();
+			} catch (NullPointerException npe) {
+				npe.printStackTrace();
+			}
 			mTimerReadBattStatus = null;
 		}
 	}
