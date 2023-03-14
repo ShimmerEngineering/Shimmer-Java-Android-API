@@ -413,11 +413,13 @@ public class SensorGSR extends AbstractSensor {
 	}
 
 	public static double nudgeGsrResistance(double gsrResistanceKOhms, int gsrRangeSetting, double[][] gsrResistanceKohmsMinMax) {
-		if(gsrRangeSetting!=4) {
+		if (gsrRangeSetting == 4) {
+			/* If auto-range is enabled, limit the lower range of the resistance due to circuit design */
+			return Math.max(gsrResistanceKohmsMinMax[0][0], gsrResistanceKOhms);
+		} else {
 			double[] minMax = gsrResistanceKohmsMinMax[gsrRangeSetting];
 			return UtilShimmer.nudgeDouble(gsrResistanceKOhms, minMax[0], minMax[1]);
 		}
-		return gsrResistanceKOhms;
 	}
 
 //	public static int nudgeGsrADC(int gsrAdcValueUnCal, int gsrRangeSetting) {
