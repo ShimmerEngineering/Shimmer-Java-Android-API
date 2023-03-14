@@ -68,18 +68,22 @@ public class EventLogPayload extends AbstractPayload {
 		
 		listOfEventLogEntries.clear();
 		
-		for(int i=0;i<payloadContents.length;i+=8) {
-			int event = payloadContents[i+7] & 0xFF;
-			
-			if(event==LOG_EVENT.BATTERY_VOLTAGE.ordinal()) {
-				long batteryVoltage = parseByteArrayAtIndex(payloadContents, i, CHANNEL_DATA_TYPE.UINT24);
-				listOfEventLogEntries.add(new EventLogEntry(event, batteryVoltage));
-			} else {
-				double timeMs = VerisenseTimeDetails.parseTimeMsFromMinutesAndTicksAtIndex(payloadContents, i);
-				listOfEventLogEntries.add(new EventLogEntry(event, timeMs));
+		if (payloadContents.length > 0) {
+			for(int i=0;i<payloadContents.length;i+=8) {
+				int event = payloadContents[i+7] & 0xFF;
+				
+				if(event==LOG_EVENT.NONE.ordinal()) {
+					/* Skip */
+				} else if(event==LOG_EVENT.BATTERY_VOLTAGE.ordinal()) {
+					long batteryVoltage = parseByteArrayAtIndex(payloadContents, i, CHANNEL_DATA_TYPE.UINT24);
+					listOfEventLogEntries.add(new EventLogEntry(event, batteryVoltage));
+				} else {
+					double timeMs = VerisenseTimeDetails.parseTimeMsFromMinutesAndTicksAtIndex(payloadContents, i);
+					listOfEventLogEntries.add(new EventLogEntry(event, timeMs));
+				}
 			}
 		}
-		
+
 		isSuccess = true;
 		return false;
 	}
