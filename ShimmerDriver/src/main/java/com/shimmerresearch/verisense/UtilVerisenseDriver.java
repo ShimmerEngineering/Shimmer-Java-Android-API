@@ -588,7 +588,7 @@ public class UtilVerisenseDriver implements Serializable {
 		//1) Filter out duplicates
 		File[] files = filterOutOfFileArray(fileArray, new String[] {FILE_FILTER_DUPLICATE}, null);
 		//2) Filter out filenames which start with "69" or "70"
-		return filterFilenamePrefixesOutOfFileArray(files, new String[] {FILE_FILTER_69, FILE_FILTER_70}, 2);
+		return filterFilenamePrefixesOutOfFileArray(files, new String[] {FILE_FILTER_69, FILE_FILTER_70});
 	}
 	
 	/**
@@ -625,17 +625,16 @@ public class UtilVerisenseDriver implements Serializable {
 	 * 
 	 * @param fileArray -> input file array to filter
 	 * @param prefixContains -> substrings of file name prefixes to remove
-	 * @param prefixLength -> max length of prefixes to search for
 	 * @return a new fileArray[] containing files that do no not match prefixContains
 	 */
-	public static File[] filterFilenamePrefixesOutOfFileArray(File[] fileArray, String[] prefixContains, int prefixLength) {
+	public static File[] filterFilenamePrefixesOutOfFileArray(File[] fileArray, String[] prefixContains) {
 		List<File> listOfFiles = new ArrayList<File>();
 		
 		fileLoop:
 		for(File file:fileArray) {
 			String fileName = file.getName();
 						
-			if(prefixContains!=null && doesStringContainAny(fileName.substring(0, prefixLength), prefixContains)) {
+			if(prefixContains!=null && doesStringStartWithAny(fileName, prefixContains)) {
 				continue fileLoop;
 			}
 			listOfFiles.add(file);
@@ -662,6 +661,15 @@ public class UtilVerisenseDriver implements Serializable {
 			}
 		}
 		return true;
+	}
+	
+	public static boolean doesStringStartWithAny(String strToScan, String[] setOfStrToSearch) {
+		for(String strToSearch:setOfStrToSearch) {
+			if(strToScan.startsWith(strToSearch)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static boolean doesStringEndWithAny(String strToScan, String[] setOfStrToSearch){
