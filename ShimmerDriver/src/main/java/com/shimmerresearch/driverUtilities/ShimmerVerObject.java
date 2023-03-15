@@ -667,6 +667,10 @@ public class ShimmerVerObject implements Serializable {
 		return mExpansionBoardDetails.mExpansionBoardRev;
 	}
 
+	public int getShimmerExpansionBoardRevSpecial() {
+		return mExpansionBoardDetails.mExpansionBoardRevSpecial;
+	}
+
 	public static final boolean isSupportedExgChipClocksJoined(ShimmerVerObject svo, ExpansionBoardDetails ebd) {
 		if(svo.getHardwareVersion()==HW_ID.SHIMMER_4_SDK || 
 				(svo.getHardwareVersion()==HW_ID.SHIMMER_3 

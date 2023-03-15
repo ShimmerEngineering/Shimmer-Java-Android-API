@@ -257,7 +257,37 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	public static List<SENSORS> LIST_OF_PPG_SENSORS = Arrays.asList(new SENSORS[] {SENSORS.MAX86150, SENSORS.MAX86916});
-	
+
+	public enum CHARGER_STATUS_LTC4123 {
+		ERROR("Error", "Zinc-Air battery/reverse polarity detection/ battery temperature out of range/UVCL at the beginning of the charge cycle"),
+		CHARGING("Charging", "Powered on/charging"),
+		COMPLETE("Charging complete", "Charging complete"),
+		NOT_CHARGING("Not Charging", "No power /not charging");
+		
+		public String descriptionShort;
+		public String descriptionLong;
+		
+		private CHARGER_STATUS_LTC4123(String descriptionShort, String descriptionLong) {
+			this.descriptionShort = descriptionShort;
+			this.descriptionLong = descriptionLong;
+		}
+	}
+
+	public enum CHARGER_STATUS_LM3658D {
+		POWER_DOWN("Power-down", "Power-Down, charging is suspended or interrupted"),
+		CHARGING("Charging", "Pre-qualification mode, CC and CV charging, Top-off mode"),
+		COMPLETE("Complete", "Charge is completed"),
+		NOT_CHARGING("Bad Battery", "Bad battery (Safety timer expired), or LDO mode");
+		
+		public String descriptionShort;
+		public String descriptionLong;
+		
+		private CHARGER_STATUS_LM3658D(String descriptionShort, String descriptionLong) {
+			this.descriptionShort = descriptionShort;
+			this.descriptionLong = descriptionLong;
+		}
+	}
+
 	/**
 	 * 
 	 */
@@ -2460,6 +2490,31 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		} catch (ShimmerException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isChargerLtc4123Present() {
+		return isChargerLtc4123Present(getShimmerVerObject());
+	}
+
+	public static boolean isChargerLtc4123Present(ShimmerVerObject svo) {
+		return isChargerLtc4123Present(svo.getShimmerExpansionBoardId(), svo.getShimmerExpansionBoardRev(), svo.getShimmerExpansionBoardRevSpecial());
+	}
+	
+	public static boolean isChargerLtc4123Present(int hwVerMajor, int hwVerMinor, int hwVerInternal) {
+		return ((hwVerMajor == HW_ID.VERISENSE_PULSE_PLUS && hwVerMinor == 7 && hwVerInternal ==1)
+				|| (hwVerMajor == HW_ID.VERISENSE_PULSE_PLUS && hwVerMinor >= 8));
+	}
+
+	public boolean isChargerLm3658dPresent() {
+		return isChargerLm3658dPresent(getShimmerVerObject());
+	}
+
+	public static boolean isChargerLm3658dPresent(ShimmerVerObject svo) {
+		return isChargerLm3658dPresent(svo.getShimmerExpansionBoardId(), svo.getShimmerExpansionBoardRev(), svo.getShimmerExpansionBoardRevSpecial());
+	}
+
+	public static boolean isChargerLm3658dPresent(int hwVerMajor, int hwVerMinor, int hwVerInternal) {
+		return hwVerMajor == HW_ID.VERISENSE_GSR_PLUS;
 	}
 
 }
