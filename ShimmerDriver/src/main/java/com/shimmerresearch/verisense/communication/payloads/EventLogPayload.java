@@ -43,10 +43,20 @@ public class EventLogPayload extends AbstractPayload {
 		BLE_DISCONNECTED,
 		TSK_WRITE_FLASH,
 		PPG_TIMER_START,
-		ENUM_30,
-		PAYLOAD_OVERSHOT;
-		
-		
+		PAYLOAD_OVERSHOT,
+		ADVERTISING_START,
+		ADVERTISING_STOP,
+		NIMH_BATT_PPG_BLOCKED_BLE_RETRY,
+		NIMH_BATT_PPG_BLOCKED_BLE_ADAPT_SCH,
+		NIMH_BATT_PPG_BLOCKED_BLE_PENDING_EVENTS,
+		NIMH_BATT_BLE_BLOCKED_PPG,
+		USB_PORT_OPEN,
+		USB_PORT_CLOSED,
+		FIFO_INT_SAFETY_CHECK_EVENT_ACCEL1,
+		FIFO_INT_SAFETY_CHECK_EVENT_ACCEL2GYRO,
+		FIFO_INT_SAFETY_CHECK_EVENT_MAX86XXX,
+		FIFO_INT_SAFETY_CHECK_EVENT_MAX3000X,
+		FIFO_INT_SAFETY_CHECK_EVENT_ADC
 	}
 	
 	List<EventLogEntry> listOfEventLogEntries = new ArrayList<EventLogEntry>();
@@ -58,18 +68,22 @@ public class EventLogPayload extends AbstractPayload {
 		
 		listOfEventLogEntries.clear();
 		
-		for(int i=0;i<payloadContents.length;i+=8) {
-			int event = payloadContents[i+7] & 0xFF;
-			
-			if(event==LOG_EVENT.BATTERY_VOLTAGE.ordinal()) {
-				long batteryVoltage = parseByteArrayAtIndex(payloadContents, i, CHANNEL_DATA_TYPE.UINT24);
-				listOfEventLogEntries.add(new EventLogEntry(event, batteryVoltage));
-			} else {
-				double timeMs = VerisenseTimeDetails.parseTimeMsFromMinutesAndTicksAtIndex(payloadContents, i);
-				listOfEventLogEntries.add(new EventLogEntry(event, timeMs));
+		if (payloadContents.length > 0) {
+			for(int i=0;i<payloadContents.length;i+=8) {
+				int event = payloadContents[i+7] & 0xFF;
+				
+				if(event==LOG_EVENT.NONE.ordinal()) {
+					/* Skip */
+				} else if(event==LOG_EVENT.BATTERY_VOLTAGE.ordinal()) {
+					long batteryVoltage = parseByteArrayAtIndex(payloadContents, i, CHANNEL_DATA_TYPE.UINT24);
+					listOfEventLogEntries.add(new EventLogEntry(event, batteryVoltage));
+				} else {
+					double timeMs = VerisenseTimeDetails.parseTimeMsFromMinutesAndTicksAtIndex(payloadContents, i);
+					listOfEventLogEntries.add(new EventLogEntry(event, timeMs));
+				}
 			}
 		}
-		
+
 		isSuccess = true;
 		return false;
 	}
@@ -127,7 +141,7 @@ public class EventLogPayload extends AbstractPayload {
 					return logEvent.toString();
 				}
 			}
-			return "Unknown";
+			return Integer.toString(event);
 		}
 
 		public String getTimeString() {
