@@ -97,8 +97,13 @@ public class EventLogPayload extends AbstractPayload {
 	@Override
 	public String generateDebugString() {
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append("Received Response, length= " + payloadContents.length + " bytes:\n");
+		sb.append(generateDebugStringNoHeader());
+		return sb.toString();
+	}
+
+	public String generateDebugStringNoHeader() {
+		StringBuilder sb = new StringBuilder();
 		
 		if(listOfEventLogEntries.size()==0) {
 			sb.append("No events logged.\n");
@@ -118,7 +123,7 @@ public class EventLogPayload extends AbstractPayload {
 		
 		return sb.toString();
 	}
-	
+
 	public class EventLogEntry {
 
 		public int event;

@@ -81,6 +81,7 @@ public class UtilVerisenseDriver implements Serializable {
 		public static final String BIN = ".bin";
 		public static final String ZIP = ".zip";
 		public static final String CSV = ".csv";
+		public static final String VLOG = ".vlog";
 	}
 
 	public class ASM_DIRECTORY_NAMES {
