@@ -626,7 +626,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		svo.mHardwareVersion = DEFAULT_HW_ID;
 		svo.mFirmwareVersionMajor = payloadConfigFwVer[0]&0xFF;
 		svo.mFirmwareVersionMinor = payloadConfigFwVer[1]&0xFF;
-		svo.mFirmwareVersionInternal = ((payloadConfigFwVer[2]) | (payloadConfigFwVer[3]<<8))&0xFFFF;
+		svo.mFirmwareVersionInternal = ((payloadConfigFwVer[2]&0xFF) | (payloadConfigFwVer[3]<<8))&0xFFFF;
 		return svo;
 	}
 
