@@ -4,7 +4,13 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.encoders.Hex;
 
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.verisense.UtilVerisenseDriver;
+import com.shimmerresearch.verisense.VerisenseDevice;
+import com.shimmerresearch.verisense.sensors.SensorVerisenseClock;
+import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.UtilParseData;
 
 /**
  * @author Mark Nolan
@@ -36,18 +42,28 @@ public class StatusPayload extends AbstractPayload {
 	
 	public int syncType = -1;
 	
-	public static final int STORAGE_CAPACITY_LTF_KB = 512*1024; //LTF is 512MB
 	public int storageFreekB = -1;
 	public int storageFullkB = -1;
 	public int storageToDelkB = -1;
 	public int storageBadkB = -1;
 	public int storageOtherkB = -1;
+	public int storageCapacitykB = -1;
 
 	public long failedBleConnectionAttemptCount = 0;
-	public int failCounterFlashWrite;
+	public int flashWriteFailCounter;
 	public long timestampNextSyncAttempt;
+	public int flashWriteRetryCounterShortTry = -1;
+	public int flashWriteRetryCounterLongTry = -1;
+
+	public boolean isChargerChipPresent = false;
+	public int batteryChargerStatusValue = -1;
+	public Object batteryChargerStatus = null;
 
 	public static final double MAX_FOUR_BTE_UNSIGNED_VALUE = Math.pow(2, 32) - 1;
+	
+	private int hwVerMajor = -1;
+	private int hwVerMinor = -1;
+	private int hwVerInternal = -1;
 	
 	public enum SyncType {
 		READ_AND_CLEAR_PENDING_EVENTS ("PendingEvent"),
@@ -65,7 +81,7 @@ public class StatusPayload extends AbstractPayload {
 			return name;
 		}
 	}
-	
+
 	public class STATUS_FLAGS {
 		/* Byte 0 */
 		public static final int BIT_MASK_USB_PLUGGED_IN = (1 << 0);
@@ -75,12 +91,12 @@ public class StatusPayload extends AbstractPayload {
 		public static final int BIT_MASK_ADAPTIVE_SCHEDULER_ON = (1 << 4);
 		public static final int BIT_MASK_DFU_SERVICE_ON = (1 << 5);
 		public static final int BIT_MASK_FIRST_BOOT = (1 << 6);
+//		public static final int BIT_MASK_UNUSED = (1 << 7);
 
-		public static final int BIT_SHIFT_BYTE_1 = (8 * 1);
-		public static final int BIT_SHIFT_BYTE_2 = (8 * 2);
-		public static final int BIT_SHIFT_BYTE_3 = (8 * 3);
-		public static final int BIT_SHIFT_BYTE_4 = (8 * 4);
-
+		public static final int BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_SHORT_TRY_LSB = (8 * 1);
+		public static final int BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_SHORT_TRY_MSB = (8 * 2);
+		public static final int BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_LONG_TRY_LSB = (8 * 3);
+		public static final int BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_LONG_TRY_MSB = (8 * 4);
 		public static final int BIT_SHIFT_FAIL_COUNT_FLASH_WRITE_LSB = (8 * 5);
 		public static final int BIT_SHIFT_FAIL_COUNT_FLASH_WRITE_MSB = (8 * 6);
 		public static final int BIT_SHIFT_FAIL_COUNT_BLE_SYNC = (8 * 7);
@@ -98,7 +114,7 @@ public class StatusPayload extends AbstractPayload {
 		if (payloadContents.length > 34) { // supported fw for ASM-1329
 			statusTimestampTicks = parseByteArrayAtIndex(payloadContents, 34, CHANNEL_DATA_TYPE.UINT24);
 		}
-		verisenseStatusTimestampMs = convertRtcMinutesAndTicksToMs(statusTimestampMinutes, statusTimestampTicks);
+		verisenseStatusTimestampMs = SensorVerisenseClock.convertRtcMinutesAndTicksToMs(statusTimestampMinutes, statusTimestampTicks);
 		
 		batteryLevelMillivolts = parseByteArrayAtIndex(payloadContents, 10, CHANNEL_DATA_TYPE.UINT16);
 		batteryPercentage = payloadContents[12];
@@ -112,14 +128,31 @@ public class StatusPayload extends AbstractPayload {
 			lastFailedDataTransferTicks = parseByteArrayAtIndex(payloadContents, 40, CHANNEL_DATA_TYPE.UINT24);
 		}
 		// special condition where the sensor/fw returns all FF values
-		lastTransferSuccessTimestampMs = (lastSuccessfulDataTransferMinutes == MAX_FOUR_BTE_UNSIGNED_VALUE)? -1 : convertRtcMinutesAndTicksToMs(lastSuccessfulDataTransferMinutes, lastSuccessfulDataTransferTicks);
-		lastTransferFailTimestampMs = (lastFailedDataTransferMinutes == MAX_FOUR_BTE_UNSIGNED_VALUE)? -1 : convertRtcMinutesAndTicksToMs(lastFailedDataTransferMinutes, lastFailedDataTransferTicks);
+		lastTransferSuccessTimestampMs = (lastSuccessfulDataTransferMinutes == MAX_FOUR_BTE_UNSIGNED_VALUE)? -1 : SensorVerisenseClock.convertRtcMinutesAndTicksToMs(lastSuccessfulDataTransferMinutes, lastSuccessfulDataTransferTicks);
+		lastTransferFailTimestampMs = (lastFailedDataTransferMinutes == MAX_FOUR_BTE_UNSIGNED_VALUE)? -1 : SensorVerisenseClock.convertRtcMinutesAndTicksToMs(lastFailedDataTransferMinutes, lastFailedDataTransferTicks);
 
-		storageFreekB = (int) parseByteArrayAtIndex(payloadContents, 21, CHANNEL_DATA_TYPE.UINT24);
-		if (payloadContents.length >= 56) {
-			storageFullkB = (int) parseByteArrayAtIndex(payloadContents, 47, CHANNEL_DATA_TYPE.UINT24);
-			storageToDelkB = (int) parseByteArrayAtIndex(payloadContents, 50, CHANNEL_DATA_TYPE.UINT24);
-			storageBadkB = (int) parseByteArrayAtIndex(payloadContents, 53, CHANNEL_DATA_TYPE.UINT24);
+		if (isStatusFromFwV1_02_102_onwards()) {
+			storageCapacitykB = (int) parseByteArrayAtIndex(payloadContents, 60, CHANNEL_DATA_TYPE.UINT32);
+		} else {
+			updateStorageCapacitykBBasedOnHw();
+		}
+
+		if (isStatusFromFwV1_02_102_onwards()) {
+			storageFreekB = parseStorageValueSplitFwV1_02_102(payloadContents, 21, 57);
+		} else {
+			storageFreekB = (int) parseByteArrayAtIndex(payloadContents, 21, CHANNEL_DATA_TYPE.UINT24);
+		}
+		
+		if (isStatusFromFwV1_02_055_onwards()) {
+			if (isStatusFromFwV1_02_102_onwards()) {
+				storageFullkB = parseStorageValueSplitFwV1_02_102(payloadContents, 47, 58);
+				storageToDelkB = parseStorageValueSplitFwV1_02_102(payloadContents, 50, 59);
+				storageBadkB = (int) parseByteArrayAtIndex(payloadContents, 53, CHANNEL_DATA_TYPE.UINT32);
+			} else {
+				storageFullkB = (int) parseByteArrayAtIndex(payloadContents, 47, CHANNEL_DATA_TYPE.UINT24);
+				storageToDelkB = (int) parseByteArrayAtIndex(payloadContents, 50, CHANNEL_DATA_TYPE.UINT24);
+				storageBadkB = (int) parseByteArrayAtIndex(payloadContents, 53, CHANNEL_DATA_TYPE.UINT24);
+			}
 			calculateStorageOther();
 		}
 		
@@ -154,20 +187,31 @@ public class StatusPayload extends AbstractPayload {
 			// can be parsed correctly but that information isn't available at this point in
 			// the code.
 			if(isStatusFlagValid()) {
-				// FW v1.02.063 onwards
-				failedBleConnectionAttemptCount = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FAIL_COUNT_BLE_SYNC) & 0xFF);
+				// FW v1.02.123 onwards
+				flashWriteRetryCounterShortTry = (int) parseByteArrayAtIndex(payloadContents, 27, CHANNEL_DATA_TYPE.UINT16);
+				flashWriteRetryCounterLongTry = (int) parseByteArrayAtIndex(payloadContents, 29, CHANNEL_DATA_TYPE.UINT16);
+
 				// FW v1.02.084 onwards
-				failCounterFlashWrite = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FAIL_COUNT_FLASH_WRITE_LSB) & 0xFFFF);
+				flashWriteFailCounter = (int) parseByteArrayAtIndex(payloadContents, 31, CHANNEL_DATA_TYPE.UINT16);
+
+				// FW v1.02.063 onwards
+				failedBleConnectionAttemptCount = (int) parseByteArrayAtIndex(payloadContents, 33, CHANNEL_DATA_TYPE.UINT8);
 			}
 		}
 
 		if (payloadContents.length > 34) { // supported fw for ASM-1329
 			long nextSyncAttemptTimestampMinutes = parseByteArrayAtIndex(payloadContents, 43, CHANNEL_DATA_TYPE.UINT32);
-			nextSyncAttemptTimestampMs = nextSyncAttemptTimestampMinutes == MAX_FOUR_BTE_UNSIGNED_VALUE ? -1 : convertRtcMinutesAndTicksToMs(nextSyncAttemptTimestampMinutes, 0);
+			nextSyncAttemptTimestampMs = nextSyncAttemptTimestampMinutes == MAX_FOUR_BTE_UNSIGNED_VALUE ? -1 : SensorVerisenseClock.convertRtcMinutesAndTicksToMs(nextSyncAttemptTimestampMinutes, 0);
 		}
 		
-		if (payloadContents.length >= 56) {
+		if (isStatusFromFwV1_02_055_onwards()) {
 			timestampNextSyncAttempt = parseByteArrayAtIndex(payloadContents, 43, CHANNEL_DATA_TYPE.UINT32);
+		}
+
+		if (isStatusFromFwV1_02_102_onwards()) {
+			isChargerChipPresent = ((payloadContents[64] & 0x01) > 0) ? true : false;
+			batteryChargerStatusValue = (payloadContents[64] >> 1) & 0x03;
+			parseBatteryChargerStatusValue();
 		}
 
 		// SyncMode = (int)syncMode;
@@ -177,6 +221,16 @@ public class StatusPayload extends AbstractPayload {
 		return isSuccess;
 	}
 	
+	public void parseBatteryChargerStatusValue() {
+		if(hwVerMajor!=-1 && VerisenseDevice.isChargerLm3658dPresent(hwVerMajor, hwVerMinor, hwVerInternal)) {
+			batteryChargerStatus = VerisenseDevice.CHARGER_STATUS_LM3658D.values()[batteryChargerStatusValue];
+		} else if(hwVerMajor!=-1 && VerisenseDevice.isChargerLm3658dPresent(hwVerMajor, hwVerMinor, hwVerInternal)) {
+			batteryChargerStatus = VerisenseDevice.CHARGER_STATUS_LTC4123.values()[batteryChargerStatusValue];
+		} else {
+			batteryChargerStatus = null;
+		}
+	}
+
 	@Override
 	public byte[] generatePayloadContents() {
 		// TODO Auto-generated method stub
@@ -184,31 +238,31 @@ public class StatusPayload extends AbstractPayload {
 	}
 	
 	public void calculateStorageOther() {
-		storageOtherkB = STORAGE_CAPACITY_LTF_KB - storageFreekB + storageFullkB + storageToDelkB + storageBadkB;
+		storageOtherkB = storageCapacitykB - (storageFreekB + storageFullkB + storageToDelkB + storageBadkB);
 	}
 
 	public double getStorageFreePercent() {
-		double memoryFreePercent = (storageFreekB*100.0/STORAGE_CAPACITY_LTF_KB);
+		double memoryFreePercent = (storageFreekB*100.0/storageCapacitykB);
 		return memoryFreePercent;
 	}
 
 	public double getStorageFullPercent() {
-		double memoryFullPercent = (storageFullkB*100.0/STORAGE_CAPACITY_LTF_KB);
+		double memoryFullPercent = (storageFullkB*100.0/storageCapacitykB);
 		return memoryFullPercent;
 	}
 
 	public double getStorageToDeletePercent() {
-		double memory2DelPercent = (storageToDelkB*100.0/STORAGE_CAPACITY_LTF_KB);
+		double memory2DelPercent = (storageToDelkB*100.0/storageCapacitykB);
 		return memory2DelPercent;
 	}
 	
 	public double getStorageBadPercent() {
-		double memoryBadPercent = (storageBadkB*100.0/STORAGE_CAPACITY_LTF_KB);
+		double memoryBadPercent = (storageBadkB*100.0/storageCapacitykB);
 		return memoryBadPercent;
 	}
 
 	public double getStorageOtherPercent() {
-		double memoryOtherPercent = (storageOtherkB * 100.0 / STORAGE_CAPACITY_LTF_KB);
+		double memoryOtherPercent = (storageOtherkB * 100.0 / storageCapacitykB);
 		return memoryOtherPercent;
 	}
 
@@ -235,20 +289,20 @@ public class StatusPayload extends AbstractPayload {
 		sb.append("\tLast Ok Data Transfer:\t\t" + (lastTransferSuccessTimestampMs==-1? "Not valid":UtilShimmer.convertMilliSecondsToDateString((long) lastTransferSuccessTimestampMs, false)) + "\n");
 		sb.append("\tLast Fail Data Transfer:\t" + (lastTransferFailTimestampMs==-1? "Not valid":UtilShimmer.convertMilliSecondsToDateString((long) lastTransferFailTimestampMs, false)) + "\n");
 		
-		int memoryUsedkB = STORAGE_CAPACITY_LTF_KB-storageFreekB;
+		int memoryUsedkB = storageCapacitykB-storageFreekB;
 
-		sb.append("\tMemory free:\t\t\t" + storageFreekB + " kBytes / " + STORAGE_CAPACITY_LTF_KB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageFreePercent(), 2)  +" %\n");
+		sb.append("\tMemory free:\t\t\t" + storageFreekB + " kBytes / " + storageCapacitykB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageFreePercent(), 2)  +" %\n");
 		sb.append("\tMemory Used:\t\t\t" + memoryUsedkB + " kBytes\n");
 		if (payloadContents.length >= 38) {
-			sb.append("\t\tFULL Banks:\t\t" + storageFullkB + " kBytes / " + STORAGE_CAPACITY_LTF_KB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageFullPercent(), 2)  +" %\n");
-			sb.append("\t\t2DEL Banks:\t\t" + storageToDelkB + " kBytes / " + STORAGE_CAPACITY_LTF_KB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageToDeletePercent(), 2)  +" %\n");
-			sb.append("\t\tBAD Banks:\t\t" + storageBadkB + " kBytes / " + STORAGE_CAPACITY_LTF_KB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageBadPercent(), 2)  +" %\n");
+			sb.append("\t\tFULL Banks:\t\t" + storageFullkB + " kBytes / " + storageCapacitykB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageFullPercent(), 2)  +" %\n");
+			sb.append("\t\t2DEL Banks:\t\t" + storageToDelkB + " kBytes / " + storageCapacitykB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageToDeletePercent(), 2)  +" %\n");
+			sb.append("\t\tBAD Banks:\t\t" + storageBadkB + " kBytes / " + storageCapacitykB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageBadPercent(), 2)  +" %\n");
 			
 			//TODO
 			// Update the memory used for the progress bar to be based on 'FULL' banks only instead;
 			memoryUsedkB = storageFullkB;
 			
-			sb.append("\t\tOther:\t\t\t" + storageOtherkB + " kBytes / " + STORAGE_CAPACITY_LTF_KB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageOtherPercent(), 2)  +" %\n");
+			sb.append("\t\tOther:\t\t\t" + storageOtherkB + " kBytes / " + storageCapacitykB + " kBytes => " + UtilShimmer.formatDoubleToNdecimalPlaces(getStorageOtherPercent(), 2)  +" %\n");
 		}
 
 		// Parse the battery fall counter info
@@ -273,21 +327,65 @@ public class StatusPayload extends AbstractPayload {
 			sb.append("\t\tLTF WRITE FAIL COUNTER:\t\t" + failedBleConnectionAttemptCount + "\n");
 
 			// Last byte - Bits 0-7
-			sb.append("\t\tFAIL SYNC COUNTER:\t\t" + failCounterFlashWrite + "\n");
+			sb.append("\t\tFAIL SYNC COUNTER:\t\t" + flashWriteFailCounter + "\n");
 		}
 
 		// Parse the Next Sync Attempt time
-		if (payloadContents.length >= 56) {
+		if (isStatusFromFwV1_02_055_onwards()) {
 			sb.append("\tNext Sync Attempt:\t\t" + (timestampNextSyncAttempt==0? "Not Set":("Will Happen At:" + timestampNextSyncAttempt)) + "\n");
 		}
 				
 		return sb.toString();
 	}
-	
-	//TODO temp here, should reference SensorVerisenseClock
-	public static double convertRtcMinutesAndTicksToMs(long rtcEndTimeMinutes, long rtcEndTimeTicks) {
-		double rtcEndTimeMs = ((rtcEndTimeMinutes*60)+((double)rtcEndTimeTicks/32768))*1000;
-		return rtcEndTimeMs;
+
+	public void setShimmerHwVer(int hwVerMajor, int hwVerMinor, int hwVerInternal) {
+		this.hwVerMajor = hwVerMajor;
+		this.hwVerMinor = hwVerMinor;
+		this.hwVerInternal = hwVerInternal;
 	}
 
+	public boolean isStatusFromFwV1_02_055_onwards() {
+		return payloadContents.length >= 56;
+	}
+
+	public boolean isStatusFromFwV1_02_102_onwards() {
+		return payloadContents.length >= 64;
+	}
+	
+	private int parseStorageValueSplitFwV1_02_102(byte[] payloadContents, int idxOf3LSB, int idxOfMSB) {
+		byte[] buf = new byte[3];
+		System.arraycopy(payloadContents, idxOf3LSB, buf, 0, 3);
+		System.arraycopy(payloadContents, idxOfMSB, buf, 3, 1);
+		return (int) UtilParseData.parseData(buf, CHANNEL_DATA_TYPE.UINT32, CHANNEL_DATA_ENDIAN.LSB);
+	}
+
+	public void updateStorageCapacitykBBasedOnHw() {
+		if(hwVerMajor!=-1) {
+			updateStorageCapacitykBBasedOnHw(hwVerMajor, hwVerMinor, hwVerInternal);
+		} else {
+			updateStorageCapacitykBBasedOnHw(HW_ID.VERISENSE_IMU, 1, 0);
+		}
+	}
+
+	public void updateStorageCapacitykBBasedOnHw(int hwVerMajor, int hwVerMinor, int hwVerInternal) {
+		if (hwVerMajor == HW_ID.VERISENSE_PULSE_PLUS && hwVerMinor == 8) {
+			storageCapacitykB = 128 * 1024; // LTF is 128MB
+		} else {
+			storageCapacitykB = 512 * 1024; // LTF is 512MB
+		}
+	}
+
+	public String getChargerChipStatusDescriptionShort(){
+		String batteryChargerStatusStr = UtilVerisenseDriver.FEATURE_NOT_AVAILABLE;
+		if(isChargerChipPresent && batteryChargerStatus!=null) {
+			if(batteryChargerStatus instanceof VerisenseDevice.CHARGER_STATUS_LTC4123) {
+				batteryChargerStatusStr = ((VerisenseDevice.CHARGER_STATUS_LTC4123)batteryChargerStatus).descriptionShort;
+			}
+			else if(batteryChargerStatus instanceof VerisenseDevice.CHARGER_STATUS_LM3658D) {
+				batteryChargerStatusStr = ((VerisenseDevice.CHARGER_STATUS_LM3658D)batteryChargerStatus).descriptionShort;
+			}
+		}
+		return batteryChargerStatusStr;
+	}
+	
 }

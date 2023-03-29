@@ -71,8 +71,10 @@ public class UtilVerisenseDriver implements Serializable {
 	 */
 	public static final int CSV_HEADER_LINES_SEARCH_LIMIT = 12+5;
 	
-	public static final String FILE_FILTER_PREFIX_69 = File.separator + "69";
-	public static final String FILE_FILTER_PREFIX_70 = File.separator + "70";
+	public static final String FILE_FILTER_69 = "69";
+	public static final String FILE_FILTER_70 = "70";
+	public static final String FILE_FILTER_PREFIX_69 = File.separator + FILE_FILTER_69;
+	public static final String FILE_FILTER_PREFIX_70 = File.separator + FILE_FILTER_70;
 	public static final String FILE_FILTER_DUPLICATE = ").";
 
 	//TODO move these to UtilShimmer.ENUM_FILE_FORMAT?
@@ -580,11 +582,14 @@ public class UtilVerisenseDriver implements Serializable {
 	}
 	
 	/**
-	 * @param fileArray on which to filter out "/69", "/70" and duplicate files 
+	 * @param fileArray on which to filter out "69" & "70" filename prefixes, and duplicate files 
 	 * @return filtered array
 	 */
 	public static File[] filterOutOfFileArrayDuplicatesAnd69And70Files(File[] fileArray) {
-		return filterOutOfFileArray(fileArray, new String[] {FILE_FILTER_DUPLICATE}, new String[] {FILE_FILTER_PREFIX_69, FILE_FILTER_PREFIX_70});
+		//1) Filter out duplicates
+		File[] files = filterOutOfFileArray(fileArray, new String[] {FILE_FILTER_DUPLICATE}, null);
+		//2) Filter out filenames which start with "69" or "70"
+		return filterFilenamePrefixesOutOfFileArray(files, new String[] {FILE_FILTER_69, FILE_FILTER_70});
 	}
 	
 	/**
@@ -615,6 +620,30 @@ public class UtilVerisenseDriver implements Serializable {
 		File[] selectedFileArray = listOfFiles.toArray(new File[listOfFiles.size()]);
 		return selectedFileArray;
 	}
+	
+	/**
+	 * Remove any files with names that start with prefixContains
+	 * 
+	 * @param fileArray -> input file array to filter
+	 * @param prefixContains -> substrings of file name prefixes to remove
+	 * @return a new fileArray[] containing files that do no not match prefixContains
+	 */
+	public static File[] filterFilenamePrefixesOutOfFileArray(File[] fileArray, String[] prefixContains) {
+		List<File> listOfFiles = new ArrayList<File>();
+		
+		fileLoop:
+		for(File file:fileArray) {
+			String fileName = file.getName();
+						
+			if(prefixContains!=null && doesStringStartWithAny(fileName, prefixContains)) {
+				continue fileLoop;
+			}
+			listOfFiles.add(file);
+		}
+
+		File[] selectedFileArray = listOfFiles.toArray(new File[listOfFiles.size()]);
+		return selectedFileArray;
+	}
 
 	public static boolean doesStringContainAllOfAnySet(String strToScan, String[][] setsOfStrToSearch){
 		for(String[] setOfStrToSearch:setsOfStrToSearch) {
@@ -633,6 +662,15 @@ public class UtilVerisenseDriver implements Serializable {
 			}
 		}
 		return true;
+	}
+	
+	public static boolean doesStringStartWithAny(String strToScan, String[] setOfStrToSearch) {
+		for(String strToSearch:setOfStrToSearch) {
+			if(strToScan.startsWith(strToSearch)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static boolean doesStringEndWithAny(String strToScan, String[] setOfStrToSearch){

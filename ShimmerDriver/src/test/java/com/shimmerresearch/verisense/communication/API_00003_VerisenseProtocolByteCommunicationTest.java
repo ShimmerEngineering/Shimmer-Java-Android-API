@@ -95,7 +95,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 		assertTrue(statusPayload.storageBadkB==768);
 
 		assertTrue(statusPayload.failedBleConnectionAttemptCount==0);
-		assertTrue(statusPayload.failCounterFlashWrite==0);
+		assertTrue(statusPayload.flashWriteFailCounter==0);
 		assertTrue(statusPayload.timestampNextSyncAttempt==0);
 	}
 
