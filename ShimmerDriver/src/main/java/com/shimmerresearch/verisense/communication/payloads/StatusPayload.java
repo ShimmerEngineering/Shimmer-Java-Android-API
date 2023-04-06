@@ -39,6 +39,7 @@ public class StatusPayload extends AbstractPayload {
 	public boolean adaptiveSchedulerEnabled;
 	public boolean dfuServiceOn;
 	public boolean statusFlagFirstBoot;
+	public boolean secondaryStatusMsg;
 	
 	public int syncType = -1;
 	
@@ -91,7 +92,7 @@ public class StatusPayload extends AbstractPayload {
 		public static final int BIT_MASK_ADAPTIVE_SCHEDULER_ON = (1 << 4);
 		public static final int BIT_MASK_DFU_SERVICE_ON = (1 << 5);
 		public static final int BIT_MASK_FIRST_BOOT = (1 << 6);
-//		public static final int BIT_MASK_UNUSED = (1 << 7);
+		public static final int BIT_MASK_SECONDARY_STATUS = (1 << 7);
 
 		public static final int BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_SHORT_TRY_LSB = (8 * 1);
 		public static final int BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_SHORT_TRY_MSB = (8 * 2);
@@ -182,6 +183,9 @@ public class StatusPayload extends AbstractPayload {
 			dfuServiceOn = ((statusFlags & STATUS_FLAGS.BIT_MASK_DFU_SERVICE_ON) > 0) ? true : false;
 			statusFlagFirstBoot = ((statusFlags & STATUS_FLAGS.BIT_MASK_FIRST_BOOT) > 0) ? true : false;
 			
+			// FW v1.02.124 & FW v1.04.000 onwards (not the versions in between)
+			secondaryStatusMsg = ((statusFlags & STATUS_FLAGS.BIT_MASK_SECONDARY_STATUS) > 0) ? true : false;
+
 			// For a number of previous FW versions, the timestamp in ticks was stored in
 			// byte 5, 6 and 7. A better approach is to know what version of FW it is so it
 			// can be parsed correctly but that information isn't available at this point in
@@ -277,6 +281,10 @@ public class StatusPayload extends AbstractPayload {
 	public boolean isStatusFlagFirstBoot() {
 		return (isStatusFlagValid() && (statusFlags&STATUS_FLAGS.BIT_MASK_FIRST_BOOT)>0);
 	}
+	
+	public boolean isSecondaryStatusMsg() {
+		return (isStatusFlagValid() && secondaryStatusMsg);
+	}
 
 	@Override
 	public String generateDebugString() {
@@ -322,6 +330,7 @@ public class StatusPayload extends AbstractPayload {
 			sb.append("\t\tADAPTIVE_SCHEDULER_ON:\t\t" + adaptiveSchedulerEnabled + "\n");
 			sb.append("\t\tDFU_SERVICE_ON:\t\t\t" + dfuServiceOn + "\n");
 			sb.append("\t\tFIRST BOOT ON:\t\t\t" + statusFlagFirstBoot + "\n");
+			sb.append("\t\tSecondary Status:\t\t" + secondaryStatusMsg + "\n");
 
 			// 7th byte - Bits 0-7
 			sb.append("\t\tLTF WRITE FAIL COUNTER:\t\t" + failedBleConnectionAttemptCount + "\n");
