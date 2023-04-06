@@ -175,32 +175,7 @@ public class StatusPayload extends AbstractPayload {
 			// reverse so the value of 9 00001001 will be 10010000 which is easier to read
 			// via index/table provided in the document ASM-DES04
 			
-			usbPowered = ((statusFlags & STATUS_FLAGS.BIT_MASK_USB_PLUGGED_IN) > 0) ? true : false;
-			recordingPaused = ((statusFlags & STATUS_FLAGS.BIT_MASK_RECORDING_PAUSED) > 0) ? true : false;
-			flashIsFull = ((statusFlags & STATUS_FLAGS.BIT_MASK_FLASH_IS_FULL) > 0) ? true : false;
-			powerIsGood = ((statusFlags & STATUS_FLAGS.BIT_MASK_POWER_IS_GOOD) > 0) ? true : false;
-			adaptiveSchedulerEnabled = ((statusFlags & STATUS_FLAGS.BIT_MASK_ADAPTIVE_SCHEDULER_ON) > 0) ? true : false;
-			dfuServiceOn = ((statusFlags & STATUS_FLAGS.BIT_MASK_DFU_SERVICE_ON) > 0) ? true : false;
-			statusFlagFirstBoot = ((statusFlags & STATUS_FLAGS.BIT_MASK_FIRST_BOOT) > 0) ? true : false;
-			
-			// FW v1.02.124 & FW v1.04.000 onwards (not the versions in between)
-			secondaryStatusMsg = ((statusFlags & STATUS_FLAGS.BIT_MASK_SECONDARY_STATUS) > 0) ? true : false;
-
-			// For a number of previous FW versions, the timestamp in ticks was stored in
-			// byte 5, 6 and 7. A better approach is to know what version of FW it is so it
-			// can be parsed correctly but that information isn't available at this point in
-			// the code.
-			if(isStatusFlagValid()) {
-				// FW v1.02.123 onwards
-				flashWriteRetryCounterShortTry = (int) parseByteArrayAtIndex(payloadContents, 27, CHANNEL_DATA_TYPE.UINT16);
-				flashWriteRetryCounterLongTry = (int) parseByteArrayAtIndex(payloadContents, 29, CHANNEL_DATA_TYPE.UINT16);
-
-				// FW v1.02.084 onwards
-				flashWriteFailCounter = (int) parseByteArrayAtIndex(payloadContents, 31, CHANNEL_DATA_TYPE.UINT16);
-
-				// FW v1.02.063 onwards
-				failedBleConnectionAttemptCount = (int) parseByteArrayAtIndex(payloadContents, 33, CHANNEL_DATA_TYPE.UINT8);
-			}
+			parseStatusFlagBytes(statusFlags);
 		}
 
 		if (payloadContents.length > 34) { // supported fw for ASM-1329
@@ -225,6 +200,36 @@ public class StatusPayload extends AbstractPayload {
 		return isSuccess;
 	}
 	
+	private void parseStatusFlagBytes(long statusFlags) {
+		if(isStatusFlagValid()) {
+			usbPowered = ((statusFlags & STATUS_FLAGS.BIT_MASK_USB_PLUGGED_IN) > 0) ? true : false;
+			recordingPaused = ((statusFlags & STATUS_FLAGS.BIT_MASK_RECORDING_PAUSED) > 0) ? true : false;
+			flashIsFull = ((statusFlags & STATUS_FLAGS.BIT_MASK_FLASH_IS_FULL) > 0) ? true : false;
+			powerIsGood = ((statusFlags & STATUS_FLAGS.BIT_MASK_POWER_IS_GOOD) > 0) ? true : false;
+			adaptiveSchedulerEnabled = ((statusFlags & STATUS_FLAGS.BIT_MASK_ADAPTIVE_SCHEDULER_ON) > 0) ? true : false;
+			dfuServiceOn = ((statusFlags & STATUS_FLAGS.BIT_MASK_DFU_SERVICE_ON) > 0) ? true : false;
+			statusFlagFirstBoot = ((statusFlags & STATUS_FLAGS.BIT_MASK_FIRST_BOOT) > 0) ? true : false;
+			
+			// FW v1.02.124 & FW v1.04.000 onwards (not the versions in between)
+			secondaryStatusMsg = ((statusFlags & STATUS_FLAGS.BIT_MASK_SECONDARY_STATUS) > 0) ? true : false;
+
+			// For a number of previous FW versions, the timestamp in ticks was stored in
+			// byte 5, 6 and 7. A better approach is to know what version of FW it is so it
+			// can be parsed correctly but that information isn't available at this point in
+			// the code.
+
+			// FW v1.02.123 onwards
+			flashWriteRetryCounterShortTry = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_SHORT_TRY_LSB) & 0xFFFF);
+			flashWriteRetryCounterLongTry = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_LONG_TRY_LSB) & 0xFFFF);
+
+			// FW v1.02.084 onwards
+			flashWriteFailCounter = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FAIL_COUNT_FLASH_WRITE_LSB) & 0xFFFF);
+
+			// FW v1.02.063 onwards
+			failedBleConnectionAttemptCount = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FAIL_COUNT_BLE_SYNC) & 0xFF);
+		}
+	}
+
 	public void parseBatteryChargerStatusValue() {
 		if(hwVerMajor!=-1 && VerisenseDevice.isChargerLm3658dPresent(hwVerMajor, hwVerMinor, hwVerInternal)) {
 			batteryChargerStatus = VerisenseDevice.CHARGER_STATUS_LM3658D.values()[batteryChargerStatusValue];
@@ -275,15 +280,15 @@ public class StatusPayload extends AbstractPayload {
 	}
 	
 	public boolean isStatusFlagRecordingPaused() {
-		return (isStatusFlagValid() && (statusFlags&STATUS_FLAGS.BIT_MASK_RECORDING_PAUSED)>0);
+		return recordingPaused;
 	}
 
 	public boolean isStatusFlagFirstBoot() {
-		return (isStatusFlagValid() && (statusFlags&STATUS_FLAGS.BIT_MASK_FIRST_BOOT)>0);
+		return statusFlagFirstBoot;
 	}
 	
-	public boolean isSecondaryStatusMsg() {
-		return (isStatusFlagValid() && secondaryStatusMsg);
+	public boolean isStatusFlagSecondaryStatusMsg() {
+		return secondaryStatusMsg;
 	}
 
 	@Override
