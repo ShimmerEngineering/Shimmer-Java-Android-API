@@ -200,7 +200,7 @@ public class StatusPayload extends AbstractPayload {
 		return isSuccess;
 	}
 	
-	private void parseStatusFlagBytes(long statusFlags) {
+	public void parseStatusFlagBytes(long statusFlags) {
 		if(isStatusFlagValid()) {
 			usbPowered = ((statusFlags & STATUS_FLAGS.BIT_MASK_USB_PLUGGED_IN) > 0) ? true : false;
 			recordingPaused = ((statusFlags & STATUS_FLAGS.BIT_MASK_RECORDING_PAUSED) > 0) ? true : false;
@@ -327,7 +327,7 @@ public class StatusPayload extends AbstractPayload {
 		if (payloadContents.length >= 34) {
 			sb.append("\tStatus Message Flags:\n");
 
-			// First byte - Bits 0-7
+			// Byte 0 - Status flags
 			sb.append("\t\tUSB_PLUGGED_IN:\t\t\t" + usbPowered + "\n");
 			sb.append("\t\tRECORDING_PAUSED:\t\t" + recordingPaused + "\n");
 			sb.append("\t\tFLASH_IS_FULL:\t\t\t" + flashIsFull + "\n");
@@ -337,10 +337,14 @@ public class StatusPayload extends AbstractPayload {
 			sb.append("\t\tFIRST BOOT ON:\t\t\t" + statusFlagFirstBoot + "\n");
 			sb.append("\t\tSecondary Status:\t\t" + secondaryStatusMsg + "\n");
 
-			// 7th byte - Bits 0-7
+			// Bytes 1-4 - Pause counters
+			sb.append("\t\tLTF WRITE - Short Retry Counter (2 minutes gap, 10 retries):\t" + flashWriteRetryCounterShortTry + "\n");
+			sb.append("\t\tLTF WRITE - Long Retry Counter (4hrs gap, 1 retry):\t\t" + flashWriteRetryCounterLongTry + "\n");
+
+			// Bytes 5-6 - LTF write fail counter
 			sb.append("\t\tLTF WRITE FAIL COUNTER:\t\t" + failedBleConnectionAttemptCount + "\n");
 
-			// Last byte - Bits 0-7
+			// Byte 7 - Sync fail counter
 			sb.append("\t\tFAIL SYNC COUNTER:\t\t" + flashWriteFailCounter + "\n");
 		}
 
