@@ -1,5 +1,6 @@
 package com.shimmerresearch.verisense.communication.payloads;
 
+import com.shimmerresearch.verisense.UtilVerisenseDriver;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
 
 /**
@@ -123,7 +124,7 @@ public class RwcSchedulePayload extends AbstractPayload {
 		sb.append(CONSOLE_DIVIDER_STRING);
 		
 		sb.append("Verisense Current Time:\n");
-		sb.append("\t" + millisecondsToStringWitNanos(currentTimeMs) + "\n");
+		sb.append("\t" + UtilVerisenseDriver.millisecondsToStringWitNanos(currentTimeMs) + "\n");
 
 		sb.append("BLE Control Counter:\n");
 		sb.append("\t" + bleControlCounter + "\n");
@@ -133,7 +134,7 @@ public class RwcSchedulePayload extends AbstractPayload {
 			sb.append("\tNext Alarm Time\t= Not Set\n");
 		} else {
 			sb.append("\tNext Alarm Time\t= " + bleNextAlarmTimeMinutesDataTransfer + " minutes\n");
-			sb.append("\tNext Alarm TIme Will Happen At: " + millisecondsToString(bleNextAlarmTimeMinutesDataTransfer * 60 * 1000) + "\n");
+			sb.append("\tNext Alarm TIme Will Happen At: " + UtilVerisenseDriver.millisecondsToString(bleNextAlarmTimeMinutesDataTransfer * 60 * 1000) + "\n");
 		}
 
 		sb.append("BLE_STATUS:\n");
@@ -141,7 +142,7 @@ public class RwcSchedulePayload extends AbstractPayload {
 			sb.append("\tNext Alarm Time\t= Not Set\n");
 		} else {
 			sb.append("\tNext Alarm Time\t= " + bleNextAlarmTimeMinutesStatus + " minutes\n");
-			sb.append("\tNext Alarm TIme Will Happen At: " + millisecondsToString(bleNextAlarmTimeMinutesStatus * 60 * 1000) + "\n");
+			sb.append("\tNext Alarm TIme Will Happen At: " + UtilVerisenseDriver.millisecondsToString(bleNextAlarmTimeMinutesStatus * 60 * 1000) + "\n");
 		}
 
 		sb.append("BLE_RTC_SYNC:\n");
@@ -149,14 +150,14 @@ public class RwcSchedulePayload extends AbstractPayload {
 			sb.append("\tNext Alarm Time\t= Not Set\n");
 		} else {
 			sb.append("\tNext Alarm Time\t= " + bleNextAlarmTimeMinutesRtcSync + " minutes\n");
-			sb.append("\tNext Alarm TIme Will Happen At: " + millisecondsToString(bleNextAlarmTimeMinutesRtcSync * 60 * 1000) + "\n");
+			sb.append("\tNext Alarm TIme Will Happen At: " + UtilVerisenseDriver.millisecondsToString(bleNextAlarmTimeMinutesRtcSync * 60 * 1000) + "\n");
 		}
 
 		sb.append("BLE RETRY COUNTER:\n");
 		sb.append("\tNext Alarm Time will turn: " + retryOperation + "\n");
 		sb.append("\tRetry Count= " + retryCount + "\n");
 		sb.append("\tNext Alarm Time\t= " + bleNextAlarmTimeMinutesRetry + " minutes\n");
-		sb.append("\tNext Alarm TIme Will Happen At: " + millisecondsToString(bleNextAlarmTimeMinutesRetry * 60 * 1000) + "\n");
+		sb.append("\tNext Alarm TIme Will Happen At: " + UtilVerisenseDriver.millisecondsToString(bleNextAlarmTimeMinutesRetry * 60 * 1000) + "\n");
 		sb.append(CONSOLE_DIVIDER_STRING);
 
 		sb.append("ADAPTIVE SCHEDULER:\n");
@@ -164,7 +165,7 @@ public class RwcSchedulePayload extends AbstractPayload {
 			sb.append("\tCurrent Status: " + adaptiveScheduler + "\n");
 			sb.append("\tSync Fail Counter: " + syncFailCounter + "\n");
 			sb.append("\tNext Alarm Time\t= " + bleNextAlarmTimeMinutesAdaptiveSch + " minutes\n");
-			sb.append("\tNext Alarm TIme Will Happen At: " + millisecondsToString(bleNextAlarmTimeMinutesAdaptiveSch * 60 * 1000) + "\n");
+			sb.append("\tNext Alarm TIme Will Happen At: " + UtilVerisenseDriver.millisecondsToString(bleNextAlarmTimeMinutesAdaptiveSch * 60 * 1000) + "\n");
 		} else {
 			sb.append("\tNot supported");
 		}
@@ -177,7 +178,7 @@ public class RwcSchedulePayload extends AbstractPayload {
 			sb.append("\tShort Fail Counter: " + failCounterShort + "\n");
 			sb.append("\tLong Fail Counter: " + failCounterLong + "\n");
 			sb.append("\tNext Alarm Time\t= " + bleNextAlarmTimeMinutesFlashWriteRetry + " minutes\n");
-			sb.append("\tNext Alarm TIme Will Happen At: " + millisecondsToString(bleNextAlarmTimeMinutesFlashWriteRetry * 60 * 1000) + "\n");
+			sb.append("\tNext Alarm TIme Will Happen At: " + UtilVerisenseDriver.millisecondsToString(bleNextAlarmTimeMinutesFlashWriteRetry * 60 * 1000) + "\n");
 		} else {
 			sb.append("\tNot supported\n");
 		}
