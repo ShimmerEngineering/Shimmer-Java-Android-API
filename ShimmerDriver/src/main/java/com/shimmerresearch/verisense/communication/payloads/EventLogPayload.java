@@ -59,6 +59,8 @@ public class EventLogPayload extends AbstractPayload {
 		FIFO_INT_SAFETY_CHECK_EVENT_ADC
 	}
 	
+	public final String NO_EVENTS_LOGGED_TXT = "No events logged.";
+	
 	List<EventLogEntry> listOfEventLogEntries = new ArrayList<EventLogEntry>();
 
 	@Override
@@ -106,7 +108,8 @@ public class EventLogPayload extends AbstractPayload {
 		StringBuilder sb = new StringBuilder();
 		
 		if(listOfEventLogEntries.size()==0) {
-			sb.append("No events logged.\n");
+			sb.append(NO_EVENTS_LOGGED_TXT);
+			sb.append("\n");
 		} else {
 			for(int i=0;i<listOfEventLogEntries.size();i++) {
 				EventLogEntry eventLogEntry = listOfEventLogEntries.get(i);
