@@ -45,6 +45,7 @@ public class UtilVerisenseDriver implements Serializable {
 	public static final String DATE_FORMAT_VERISENSE_HEADER_LEGACY = "dd/MM/yyyy HH:mm:ss.SSS";
 	public static final String DATE_FORMAT_VERISENSE_HEADER = "yyyy/MM/dd HH:mm:ss.SSS";
 	public static final String DATE_FORMAT_DEBUGGING = "yyyy/MM/dd HH:mm:ss.SSS";
+	public static final String DATE_FORMAT_NO_MILLIS = "yyyy/MM/dd HH:mm:ss";
 	public static final String DATE_FORMAT_FILENAME = "yyMMdd_HHmmss";
 	public static final String DATE_FORMAT_IN_DB = "dd MMM yyyy HH:mm:ss:SSS";
 	public static final String DATE_FORMAT_SHORT_WITH_MILLIS = "yyMMdd HH:mm:ss.SSS";
@@ -229,6 +230,19 @@ public class UtilVerisenseDriver implements Serializable {
 		String timeString = dfLocal.format(new Date(milliSeconds));
 		timeString = timeString.replaceFirst("//", dayIndex + dayString + " " + monthString + " ");
 		return timeString;
+	}
+
+	public static String millisecondsToStringWitNanos(double timeMs) {
+		double timeUs = timeMs/1000;
+		int nanos = (int) ((timeUs - ((int)timeUs)) * 1000000);
+		
+		return millisecondsToString((long) timeMs) + "." + String.format("%06d", nanos);
+	}
+
+	public static String millisecondsToString(double timeMs) {
+		return UtilVerisenseDriver.convertMilliSecondsToFormat((long) timeMs, 
+				UtilVerisenseDriver.DATE_FORMAT_NO_MILLIS, 
+				UtilVerisenseDriver.TIME_ZONE_STR);
 	}
 
 	public static LocalDate toLocalDate(long timeInMilliseconds) {

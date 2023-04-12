@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
+import com.shimmerresearch.verisense.UtilVerisenseDriver;
 import com.shimmerresearch.verisense.payloaddesign.VerisenseTimeDetails;
 
 /**
@@ -153,7 +154,7 @@ public class EventLogPayload extends AbstractPayload {
 		}
 
 		public String getTimeString() {
-			return millisecondsToStringWitNanos(timeMs);
+			return UtilVerisenseDriver.millisecondsToStringWitNanos(timeMs);
 		}
 
 	}
