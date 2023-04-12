@@ -553,10 +553,23 @@ public class UtilVerisenseDriver implements Serializable {
 	 * @param fileArray -> input file array to filter
 	 * @param nameContains -> substrings of files names to keep. If NULL, this parameter is not used.
 	 * @param pathContains -> substrings of paths to keep. If NULL, this parameter is not used.
-	 * @param fileNameSuffix[] -> suffixes (including file extension) of files to keep. If NULL, this parameter is not used.
-	 * @return a new fileArray[] containing matches with nameContains, pathContains and fileSuffice
+	 * @param fileNameSuffixes[] -> suffixes (including file extension) of files to keep. If NULL, this parameter is not used.
+	 * @return a new fileArray[] containing matches with nameContains, pathContains and fileNameSuffixes
 	 */
 	public static File[] filterFileArrayForAllAndRemoveDuplicates(File[] fileArray, String[][] nameContains, String[][] pathContains, String[] fileNameSuffixes) {
+		return filterFileArrayForAllAndRemoveDuplicates(fileArray, nameContains, pathContains, fileNameSuffixes, null);
+	}
+	
+	/** This method is particularly used when searching for a matching strings in a set. All strings within any of the 1D arrays must be contained within the name or path. 
+	 * 
+	 * @param fileArray -> input file array to filter
+	 * @param nameContains -> substrings of files names to keep. If NULL, this parameter is not used.
+	 * @param pathContains -> substrings of paths to keep. If NULL, this parameter is not used.
+	 * @param fileNameSuffixes[] -> suffixes (including file extension) of files to keep. If NULL, this parameter is not used.
+	 * @param String[] fileNamePrefixes -> prefixes of filenames to keep. If NULL, this parameter is not used.
+	 * @return a new fileArray[] containing matches with nameContains, pathContains, fileNameSuffixes and fileNamePrefixes
+	 */
+	public static File[] filterFileArrayForAllAndRemoveDuplicates(File[] fileArray, String[][] nameContains, String[][] pathContains, String[] fileNameSuffixes, String[] fileNamePrefixes) {
 		List<File> listOfFiles = new ArrayList<File>();
 		fileLoop:
 		for(File file:fileArray) {
@@ -583,6 +596,19 @@ public class UtilVerisenseDriver implements Serializable {
 					
 					// If last entry and still no match, continue to next file
 					if(i==fileNameSuffixes.length-1) {
+						continue fileLoop;
+					}
+				}
+			}
+			
+			if(fileNamePrefixes != null) {
+				for(int i=0; i<fileNamePrefixes.length; i++) {
+					if(fileName.startsWith(fileNamePrefixes[i])) {
+						break;
+					}
+					
+					// If last entry and still no match, continue to next file
+					if(i==fileNamePrefixes.length-1) {
 						continue fileLoop;
 					}
 				}

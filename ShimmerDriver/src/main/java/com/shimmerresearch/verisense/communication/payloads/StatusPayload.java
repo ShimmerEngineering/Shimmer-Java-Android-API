@@ -39,6 +39,7 @@ public class StatusPayload extends AbstractPayload {
 	public boolean adaptiveSchedulerEnabled;
 	public boolean dfuServiceOn;
 	public boolean statusFlagFirstBoot;
+	public boolean secondaryStatusMsg;
 	
 	public int syncType = -1;
 	
@@ -91,7 +92,7 @@ public class StatusPayload extends AbstractPayload {
 		public static final int BIT_MASK_ADAPTIVE_SCHEDULER_ON = (1 << 4);
 		public static final int BIT_MASK_DFU_SERVICE_ON = (1 << 5);
 		public static final int BIT_MASK_FIRST_BOOT = (1 << 6);
-//		public static final int BIT_MASK_UNUSED = (1 << 7);
+		public static final int BIT_MASK_SECONDARY_STATUS = (1 << 7);
 
 		public static final int BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_SHORT_TRY_LSB = (8 * 1);
 		public static final int BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_SHORT_TRY_MSB = (8 * 2);
@@ -174,29 +175,7 @@ public class StatusPayload extends AbstractPayload {
 			// reverse so the value of 9 00001001 will be 10010000 which is easier to read
 			// via index/table provided in the document ASM-DES04
 			
-			usbPowered = ((statusFlags & STATUS_FLAGS.BIT_MASK_USB_PLUGGED_IN) > 0) ? true : false;
-			recordingPaused = ((statusFlags & STATUS_FLAGS.BIT_MASK_RECORDING_PAUSED) > 0) ? true : false;
-			flashIsFull = ((statusFlags & STATUS_FLAGS.BIT_MASK_FLASH_IS_FULL) > 0) ? true : false;
-			powerIsGood = ((statusFlags & STATUS_FLAGS.BIT_MASK_POWER_IS_GOOD) > 0) ? true : false;
-			adaptiveSchedulerEnabled = ((statusFlags & STATUS_FLAGS.BIT_MASK_ADAPTIVE_SCHEDULER_ON) > 0) ? true : false;
-			dfuServiceOn = ((statusFlags & STATUS_FLAGS.BIT_MASK_DFU_SERVICE_ON) > 0) ? true : false;
-			statusFlagFirstBoot = ((statusFlags & STATUS_FLAGS.BIT_MASK_FIRST_BOOT) > 0) ? true : false;
-			
-			// For a number of previous FW versions, the timestamp in ticks was stored in
-			// byte 5, 6 and 7. A better approach is to know what version of FW it is so it
-			// can be parsed correctly but that information isn't available at this point in
-			// the code.
-			if(isStatusFlagValid()) {
-				// FW v1.02.123 onwards
-				flashWriteRetryCounterShortTry = (int) parseByteArrayAtIndex(payloadContents, 27, CHANNEL_DATA_TYPE.UINT16);
-				flashWriteRetryCounterLongTry = (int) parseByteArrayAtIndex(payloadContents, 29, CHANNEL_DATA_TYPE.UINT16);
-
-				// FW v1.02.084 onwards
-				flashWriteFailCounter = (int) parseByteArrayAtIndex(payloadContents, 31, CHANNEL_DATA_TYPE.UINT16);
-
-				// FW v1.02.063 onwards
-				failedBleConnectionAttemptCount = (int) parseByteArrayAtIndex(payloadContents, 33, CHANNEL_DATA_TYPE.UINT8);
-			}
+			parseStatusFlagBytes(statusFlags);
 		}
 
 		if (payloadContents.length > 34) { // supported fw for ASM-1329
@@ -221,6 +200,36 @@ public class StatusPayload extends AbstractPayload {
 		return isSuccess;
 	}
 	
+	public void parseStatusFlagBytes(long statusFlags) {
+		if(isStatusFlagValid()) {
+			usbPowered = ((statusFlags & STATUS_FLAGS.BIT_MASK_USB_PLUGGED_IN) > 0) ? true : false;
+			recordingPaused = ((statusFlags & STATUS_FLAGS.BIT_MASK_RECORDING_PAUSED) > 0) ? true : false;
+			flashIsFull = ((statusFlags & STATUS_FLAGS.BIT_MASK_FLASH_IS_FULL) > 0) ? true : false;
+			powerIsGood = ((statusFlags & STATUS_FLAGS.BIT_MASK_POWER_IS_GOOD) > 0) ? true : false;
+			adaptiveSchedulerEnabled = ((statusFlags & STATUS_FLAGS.BIT_MASK_ADAPTIVE_SCHEDULER_ON) > 0) ? true : false;
+			dfuServiceOn = ((statusFlags & STATUS_FLAGS.BIT_MASK_DFU_SERVICE_ON) > 0) ? true : false;
+			statusFlagFirstBoot = ((statusFlags & STATUS_FLAGS.BIT_MASK_FIRST_BOOT) > 0) ? true : false;
+			
+			// FW v1.02.124 & FW v1.04.000 onwards (not the versions in between)
+			secondaryStatusMsg = ((statusFlags & STATUS_FLAGS.BIT_MASK_SECONDARY_STATUS) > 0) ? true : false;
+
+			// For a number of previous FW versions, the timestamp in ticks was stored in
+			// byte 5, 6 and 7. A better approach is to know what version of FW it is so it
+			// can be parsed correctly but that information isn't available at this point in
+			// the code.
+
+			// FW v1.02.123 onwards
+			flashWriteRetryCounterShortTry = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_SHORT_TRY_LSB) & 0xFFFF);
+			flashWriteRetryCounterLongTry = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FLASH_WRITE_RETRY_COUNTER_LONG_TRY_LSB) & 0xFFFF);
+
+			// FW v1.02.084 onwards
+			flashWriteFailCounter = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FAIL_COUNT_FLASH_WRITE_LSB) & 0xFFFF);
+
+			// FW v1.02.063 onwards
+			failedBleConnectionAttemptCount = (int) ((statusFlags >> STATUS_FLAGS.BIT_SHIFT_FAIL_COUNT_BLE_SYNC) & 0xFF);
+		}
+	}
+
 	public void parseBatteryChargerStatusValue() {
 		if(hwVerMajor!=-1 && VerisenseDevice.isChargerLm3658dPresent(hwVerMajor, hwVerMinor, hwVerInternal)) {
 			batteryChargerStatus = VerisenseDevice.CHARGER_STATUS_LM3658D.values()[batteryChargerStatusValue];
@@ -271,11 +280,15 @@ public class StatusPayload extends AbstractPayload {
 	}
 	
 	public boolean isStatusFlagRecordingPaused() {
-		return (isStatusFlagValid() && (statusFlags&STATUS_FLAGS.BIT_MASK_RECORDING_PAUSED)>0);
+		return recordingPaused;
 	}
 
 	public boolean isStatusFlagFirstBoot() {
-		return (isStatusFlagValid() && (statusFlags&STATUS_FLAGS.BIT_MASK_FIRST_BOOT)>0);
+		return statusFlagFirstBoot;
+	}
+	
+	public boolean isStatusFlagSecondaryStatusMsg() {
+		return secondaryStatusMsg;
 	}
 
 	@Override
@@ -314,7 +327,7 @@ public class StatusPayload extends AbstractPayload {
 		if (payloadContents.length >= 34) {
 			sb.append("\tStatus Message Flags:\n");
 
-			// First byte - Bits 0-7
+			// Byte 0 - Status flags
 			sb.append("\t\tUSB_PLUGGED_IN:\t\t\t" + usbPowered + "\n");
 			sb.append("\t\tRECORDING_PAUSED:\t\t" + recordingPaused + "\n");
 			sb.append("\t\tFLASH_IS_FULL:\t\t\t" + flashIsFull + "\n");
@@ -322,11 +335,16 @@ public class StatusPayload extends AbstractPayload {
 			sb.append("\t\tADAPTIVE_SCHEDULER_ON:\t\t" + adaptiveSchedulerEnabled + "\n");
 			sb.append("\t\tDFU_SERVICE_ON:\t\t\t" + dfuServiceOn + "\n");
 			sb.append("\t\tFIRST BOOT ON:\t\t\t" + statusFlagFirstBoot + "\n");
+			sb.append("\t\tSecondary Status:\t\t" + secondaryStatusMsg + "\n");
 
-			// 7th byte - Bits 0-7
+			// Bytes 1-4 - Pause counters
+			sb.append("\t\tLTF WRITE - Short Retry Counter (2 minutes gap, 10 retries):\t" + flashWriteRetryCounterShortTry + "\n");
+			sb.append("\t\tLTF WRITE - Long Retry Counter (4hrs gap, 1 retry):\t\t" + flashWriteRetryCounterLongTry + "\n");
+
+			// Bytes 5-6 - LTF write fail counter
 			sb.append("\t\tLTF WRITE FAIL COUNTER:\t\t" + failedBleConnectionAttemptCount + "\n");
 
-			// Last byte - Bits 0-7
+			// Byte 7 - Sync fail counter
 			sb.append("\t\tFAIL SYNC COUNTER:\t\t" + flashWriteFailCounter + "\n");
 		}
 
