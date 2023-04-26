@@ -12,7 +12,10 @@ public class VerisenseTimeDetails implements Serializable {
 	
 	public static final double DEFAULT_END_TIME_VALUE = Double.MIN_VALUE;
 	public static final double DEFAULT_START_TIME_VALUE = Double.MAX_VALUE;
-	
+
+	// Arbitrarily chosen threshold for detecting whether time is set in Sensor.
+	public static final long TIME_MS_1980 = UtilVerisenseDriver.fromTimeStringToMilliseconds("1980/01/01 00:00:00", UtilVerisenseDriver.DATE_FORMAT_NO_MILLIS);
+
 	private long endTimeMinutes = 0;
 	private long endTimeTicks = 0;
 	private double endTimeMs = DEFAULT_END_TIME_VALUE;
@@ -80,6 +83,10 @@ public class VerisenseTimeDetails implements Serializable {
 
 	public boolean isEndTimeSet() {
 		return endTimeMs != DEFAULT_END_TIME_VALUE;
+	}
+
+	public boolean isTimeSetInSensor() {
+		return endTimeMs < TIME_MS_1980;
 	}
 
 	public void calculateAndSetStartTimeMs(int sampleCount, double timestampDiffInS) {

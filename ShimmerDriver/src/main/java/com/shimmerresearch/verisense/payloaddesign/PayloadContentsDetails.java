@@ -69,12 +69,32 @@ public abstract class PayloadContentsDetails implements Serializable {
 		this.verisenseDevice = verisenseDevice;
 	}
 
+	/** Returns the end time as stored in the payload footer
+	 * @return Payload end time in a milliseconds
+	 */
 	public double getEndTimeRwcMs() {
 		return timeDetailsRwc.getEndTimeMs();
 	}
 	
+	/** Returns the end time as stored in the payload footer
+	 * @return Payload end time in a formatted String
+	 */
 	public String getEndTimeRwcStr() {
 		return timeDetailsRwc.getEndTimeStr();
+	}
+
+	/** Returns the end time of the last data sample within the payload
+	 * @return Payload data end time in a milliseconds
+	 */
+	public double getDataEndTimeRwcMs() {
+		return listOfDataBlocksInOrder.get(listOfDataBlocksInOrder.size()-1).getEndTimeRwcMs();
+	}
+	
+	/** Returns the end time of the last data sample within the payload
+	 * @return Payload data end time in a formatted String
+	 */
+	public String getDataEndTimeRwcStr() {
+		return UtilVerisenseDriver.convertMilliSecondsToCsvHeaderFormat((long)getDataEndTimeRwcMs());
 	}
 
 	public double getStartTimeRwcMs() {
@@ -107,7 +127,7 @@ public abstract class PayloadContentsDetails implements Serializable {
 
 	public void calculateAndSetPayloadPackagingDelayMs() {
 		double endTimeOfPayloadMs = getEndTimeRwcMs();
-		double endTimeOfLastDataBlockMs = listOfDataBlocksInOrder.get(listOfDataBlocksInOrder.size()-1).getEndTimeRwcMs();
+		double endTimeOfLastDataBlockMs = getDataEndTimeRwcMs();
 		payloadPackagingDelayMs = endTimeOfPayloadMs - endTimeOfLastDataBlockMs;
 	}
 
