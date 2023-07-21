@@ -12,7 +12,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.artifactory'
+//apply plugin: 'com.jfrog.artifactory'
 
 /*
 Rev0.2
@@ -20,8 +20,8 @@ Rev0.2
 */
 
 //This version should match the git release tag
-version = '0.9.5alpha'
-
+//version = '0.9.5alpha'
+/*
 buildscript {
     repositories {
         maven {
@@ -46,7 +46,7 @@ buildscript {
         }
     }
 }
-
+*/
 repositories {
     mavenCentral()
     mavenLocal()
@@ -56,7 +56,7 @@ test {
 	// this test requires a physical Shimmer2r to run
 	exclude '**/API_00001_ShimmerPC_GeneralBluetoothShimmer2R.class'
 }
-
+/*
 artifactory {
     contextUrl = "${artifactory_contextUrl}"
     publish {
@@ -93,7 +93,29 @@ publishing {
         }
     }
 }
+*/
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
 
+            groupId = 'com.shimmerresearch' // Replace with your package's group/organization name
+            artifactId = 'shimmerdriverpc' // Replace with the name of your package
+            version = '0.10.0_alpha' // Replace with your package version
+
+            // Jar publication
+            /*(
+            artifact sourceJar {
+                classifier 'sources'
+            }*/
+        }
+    }
+
+
+    repositories {
+    }
+    
+}
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // The production code uses the SLF4J logging API at compile time
