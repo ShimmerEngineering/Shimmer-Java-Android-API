@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.artifactory'
+//apply plugin: 'com.jfrog.artifactory'
 
 /*
 Rev0.2
@@ -10,11 +10,11 @@ Rev0.2
 */
 
 //This version should match the git release tag
-version = '0.9.46alpha'
+//version = '0.9.46alpha'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-
+/*
 buildscript {
     repositories {
         maven {
@@ -39,12 +39,12 @@ buildscript {
         }
     }
 }
-
+*/
 repositories {
     mavenCentral()
     mavenLocal()
 }
-
+/*
 artifactory {
     contextUrl = "${artifactory_contextUrl}"
     publish {
@@ -75,9 +75,40 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
            groupId = 'com.shimmersensing'
-           artifactId = 'ShimmerBluetoothManagerDev'
+           artifactId = 'ShimmerBluetoothManager'
            version = project.version
            from components.java
+        }
+    }
+}
+*/
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = 'com.shimmerresearch' // Replace with your package's group/organization name
+            artifactId = 'shimmerbluetoothmanager' // Replace with the name of your package
+            version = '0.10.0_alpha' // Replace with your package version
+
+            // Jar publication
+            /*(
+            artifact sourceJar {
+                classifier 'sources'
+            }*/
+        }
+    }
+
+    repositories {
+    	maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ShimmerEngineering/Shimmer-Java-Android-API")
+            credentials {
+                username = "useyourowncredentialshere"
+                password = "useyourowncredentialshere"
+            }
         }
     }
 }
