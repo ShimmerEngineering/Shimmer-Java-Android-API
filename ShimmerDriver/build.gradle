@@ -13,10 +13,10 @@ Rev0.2
 */
 
 //This version should match the git release tag
-//version = '0.9.139alpha' 
+//version = '0.9.148alpha' 
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 /*
 buildscript {
@@ -84,7 +84,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
            groupId = 'com.shimmersensing'
-           artifactId = 'ShimmerDriver'
+           artifactId = 'ShimmerDriverDev'
            version = project.version
            from components.java
         }
@@ -171,5 +171,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/junit/junit
 	testCompile group: 'junit', name: 'junit', version: '4.+'
 
+    compile 'com.parse.bolts:bolts-tasks:1.4.0'
 } 
 
