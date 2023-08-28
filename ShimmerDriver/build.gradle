@@ -21,6 +21,20 @@ repositories {
     mavenCentral()
     mavenLocal()
 }
+
+/*
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+           groupId = 'com.shimmersensing'
+           artifactId = 'ShimmerDriverDev'
+           version = project.version
+           from components.java
+        }
+    }
+}
+*/
+
 /*
 publishing {
     publications {
