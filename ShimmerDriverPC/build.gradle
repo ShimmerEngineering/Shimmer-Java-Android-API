@@ -12,88 +12,25 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-//apply plugin: 'com.jfrog.artifactory'
+
+sourceCompatibility = 1.8
 
 /*
 Rev0.2
 - switch to using jfrog
 */
 
-//This version should match the git release tag
-//version = '0.9.5alpha'
-/*
-buildscript {
-    repositories {
-        maven {
-            url 'https://shimmersensing.jfrog.io/artifactory/ShimmerAPI'
-            credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            }
-        }
-        mavenCentral()
-    }
-    dependencies {
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.+')
-    }
-    configurations.classpath {
-        resolutionStrategy {
-        	//Added to circumvent warnings thrown when building
-	    	//Sets the length of time that dynamic versions will be cached.
-            cacheDynamicVersionsFor 0, 'seconds'
-            //Sets the length of time that changing modules will be cached.
-            cacheChangingModulesFor 0, 'seconds'
-        }
-    }
-}
-*/
 repositories {
     mavenCentral()
     mavenLocal()
 }
 
 test {
-	// this test requires a physical Shimmer2r to run
-	exclude '**/API_00001_ShimmerPC_GeneralBluetoothShimmer2R.class'
-}
-/*
-artifactory {
-    contextUrl = "${artifactory_contextUrl}"
-    publish {
-        repository {
-            repoKey = 'ShimmerAPI'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
-        }
-        defaults {
-            publications('mavenJava')
-        }
-        publishBuildInfo = true
-        publishArtifacts = true
-        publishPom = true
-    }
-    resolve {
-        repository {
-            repoKey = 'ShimmerAPI'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
-        }
-    }
+    // this test requires a physical Shimmer2r to run
+    exclude '**/API_00001_ShimmerPC_GeneralBluetoothShimmer2R.class'
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-           groupId = 'com.shimmersensing'
-           artifactId = 'ShimmerDriverPC'
-           version = project.version
-           from components.java
-        }
-    }
-}
-*/
+/*
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -104,46 +41,46 @@ publishing {
             version = '0.10.0_alpha' // Replace with your package version
 
             // Jar publication
-            /*(
-            artifact sourceJar {
-                classifier 'sources'
-            }*/
+            //(
+            //artifact sourceJar {
+            //    classifier 'sources'
+            //}
         }
     }
 
-
     repositories {
-    	maven {
+        maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/ShimmerEngineering/Shimmer-Java-Android-API")
             credentials {
-                /**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/
+                // Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN
                 username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
                 password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
             }
         }
     }
-    
 }
+*/
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
-	compile project (':ShimmerDriver')
-	compile project (':ShimmerBluetoothManager')
-    
-   	// https://mvnrepository.com/artifact/org.scream3r/jssc
-	compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
-   
-	// https://mvnrepository.com/artifact/net.sf.bluecove/bluecove
-	compile group: 'net.sf.bluecove', name: 'bluecove', version: '2.1.0'
+    compile project (':ShimmerDriver')
+    compile project (':ShimmerBluetoothManager')
 
-   	// https://mvnrepository.com/artifact/commons-io/commons-io
-	compile group: 'commons-io', name: 'commons-io', version: '2.4'
-  	
-  	// https://mvnrepository.com/artifact/net.sf.jchart2d/jchart2d
-	compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
-	
+    // https://mvnrepository.com/artifact/org.scream3r/jssc
+    compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
+
+    // https://mvnrepository.com/artifact/net.sf.bluecove/bluecove
+    compile group: 'net.sf.bluecove', name: 'bluecove', version: '2.1.0'
+
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
+
+    // https://mvnrepository.com/artifact/net.sf.jchart2d/jchart2d
+    compile group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
+
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
