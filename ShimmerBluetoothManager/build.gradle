@@ -2,7 +2,6 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-//apply plugin: 'com.jfrog.artifactory'
 
 /*
 Rev0.2
@@ -14,76 +13,12 @@ Rev0.2
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-/*
-buildscript {
-    repositories {
-        maven {
-            url 'https://shimmersensing.jfrog.io/artifactory/ShimmerAPI'
-            credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            }
-        }
-        mavenCentral()
-    }
-    dependencies {
-        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.+')
-    }
-    configurations.classpath {
-        resolutionStrategy {
-            //Added to circumvent warnings thrown when building
-	        //Sets the length of time that dynamic versions will be cached.
-            cacheDynamicVersionsFor 0, 'seconds'
-	        //Sets the length of time that changing modules will be cached.
-            cacheChangingModulesFor 0, 'seconds'
-        }
-    }
-}
-*/
+
 repositories {
     mavenCentral()
     mavenLocal()
 }
 /*
-artifactory {
-    contextUrl = "${artifactory_contextUrl}"
-    publish {
-        repository {
-            repoKey = 'ShimmerAPI'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
-        }
-        defaults {
-            publications('mavenJava')
-        }
-        publishBuildInfo = true
-        publishArtifacts = true
-        publishPom = true
-    }
-    resolve {
-        repository {
-            repoKey = 'ShimmerAPI'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
-        }
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-           groupId = 'com.shimmersensing'
-           artifactId = 'ShimmerBluetoothManager'
-           version = project.version
-           from components.java
-        }
-    }
-}
-*/
-
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -94,25 +29,26 @@ publishing {
             version = '0.10.0_alpha' // Replace with your package version
 
             // Jar publication
-            /*(
-            artifact sourceJar {
-                classifier 'sources'
-            }*/
+            //(
+            //artifact sourceJar {
+            //    classifier 'sources'
+            //}
         }
     }
 
     repositories {
-    	maven {
+        maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/ShimmerEngineering/Shimmer-Java-Android-API")
             credentials {
-                /**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/
+                // Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN
                 username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
                 password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
             }
         }
     }
 }
+*/
 
 dependencies {
     compile 'commons-codec:commons-codec:1.5'
