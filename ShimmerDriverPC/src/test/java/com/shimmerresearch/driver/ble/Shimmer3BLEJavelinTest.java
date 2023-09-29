@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import javax.swing.JFrame;
+
 import javelin.javelin;
 
 public class Shimmer3BLEJavelinTest {
@@ -19,6 +21,10 @@ public class Shimmer3BLEJavelinTest {
 	static Class<?> loadedClass;
 	public Shimmer3BLEJavelinTest()
 	{
+		JFrame frame = new JFrame();
+		frame.setSize(300, 300);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		System.out.println("Hello");
 		String l_devices[] = javelin.listBLEDevices();
 		System.out.println("Back in Java:");
@@ -38,16 +44,42 @@ public class Shimmer3BLEJavelinTest {
 				testHWID();
 				testFWID();
 				startStreaming();
+				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//stopStreaming();
+				
+				//disconnect();
 			}
 		}
 	}
 	
+	public static void disconnect() {
+		
+		
+		javelin.clearBLECharacteristicChanges(l_device,
+				"49535343-fe7d-4ae5-8fa9-9fafd205e455".toUpperCase(),
+				"49535343-1e4d-4bd9-ba61-23c647249616".toUpperCase());
+		//javelin.disconnectDevice(l_device);
+		
+	}
 
 	public static void startStreaming() {
 		Thread thread = new Thread(new MyRunnable());
 		thread.start(); // Start the thread
 	}
 
+	public static void stopStreaming() {
+		System.out.println("Set char said: "+javelin.setBLECharacteristicValue(l_device,
+				"49535343-fe7d-4ae5-8fa9-9fafd205e455".toUpperCase(),
+				"49535343-8841-43f4-a8d4-ecbe34729bb3".toUpperCase(),
+				new byte[] {0x20}));
+	}
+	
 	public static void testToggleLED() {
 		System.out.println("Set char said: "+javelin.setBLECharacteristicValue(l_device,
 				"49535343-fe7d-4ae5-8fa9-9fafd205e455".toUpperCase(),
@@ -116,14 +148,8 @@ public class Shimmer3BLEJavelinTest {
 
 	public static void main(String[] args) {
 		try {
-
 			
-			// Define the relative path to the DLL
-			String dllPath = "libs/javelin.dll"; // Replace with the actual relative path
-
 			// Construct the absolute path to the DLL
-			
-			
 			System.out.println("Loading dlls");
 			System.load(getAbsoluteDLLPath("libs/javelin.dll"));
 			System.load(getAbsoluteDLLPath("libs/msvcp140d_app.dll"));
@@ -145,34 +171,7 @@ public class Shimmer3BLEJavelinTest {
 			System.load(getAbsoluteDLLPath("libs/api-ms-win-core-memory-l1-1-0.dll"));
 			System.load(getAbsoluteDLLPath("libs/api-ms-win-core-libraryloader-l1-2-0.dll"));
 			System.load(getAbsoluteDLLPath("libs/OLEAUT32.dll"));
-			
 
-
-			// Replace this with the path to your JAR file
-
-			// Create a URL representing the JAR file
-			File jarFile = new File(getAbsoluteDLLPath("libs/javelin.jar"));
-			URL jarUrl = jarFile.toURI().toURL();
-
-			// Create a class loader with the JAR file's URL
-			classLoader = new URLClassLoader(new URL[] { jarUrl });
-
-			// Load a class from the JAR file (replace with the class you need)
-			String className = "javelin.javelin";
-			loadedClass = classLoader.loadClass(className);
-
-			// Instantiate the loaded class (replace with your specific logic)
-			Object instance = loadedClass.newInstance();
-
-			// Now you can work with the loaded class and its methods/fields
-			System.out.println("Loaded class: " + loadedClass.getName());
-			// Define the relative path to the DLL
-			
-			// Load the DLL
-			
-
-			// Now you can use native methods from the loaded DLL using JNI
-			// For example: NativeClass.nativeMethod();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
