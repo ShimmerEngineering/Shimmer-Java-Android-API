@@ -13,4 +13,5 @@ public class javelin {
 	public static native byte[] waitForBLECharacteristicChanges(String a_dev_id, String a_service_uuid, String a_characterics_uuid,
 			int a_timeout_ms);
 	public static native boolean unWatchBLECharacteristicChanges(String a_dev_id, String a_service_uuid, String a_characterics_uuid);
+	public static native boolean disconnectDevice(String a_dev_id);
 }
