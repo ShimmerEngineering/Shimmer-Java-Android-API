@@ -15,6 +15,7 @@ import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.ble.BleRadioByteCommunication;
+import com.shimmerresearch.driver.ble.GrpcBLERadioByteCommunication;
 import com.shimmerresearch.driver.ble.JavelinBLERadioByteCommunication;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.shimmer4sdk.Shimmer4sdk;
@@ -136,7 +137,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		
 		if(!macIdList.contains(bdd.mShimmerMacId)) {
 			//BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
-			JavelinBLERadioByteCommunication radio1 = new JavelinBLERadioByteCommunication(bdd);
+			GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication(bdd);
 			VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 			verisenseDevice = new VerisenseDevice();
 			verisenseDevice.setShimmerUserAssignedName(bdd.mFriendlyName);

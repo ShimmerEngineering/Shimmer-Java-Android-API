@@ -45,7 +45,7 @@ import bolts.TaskCompletionSource;
 public class VerisenseProtocolByteCommunication {
 
 	private static final boolean DEBUG_TX_RX_MESSAGES = true;
-	private static final boolean DEBUG_TX_RX_BYTES = true;
+	private static final boolean DEBUG_TX_RX_BYTES = false;
 	
 	public static final String ERROR_MSG_TCS_INTERRUPTED = "TCS Interrupted";
 	public static final String ERROR_MSG_TASK_ONGOING = "A task is still ongoing";
