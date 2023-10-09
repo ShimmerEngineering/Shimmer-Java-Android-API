@@ -78,12 +78,12 @@ public class VerisenseProtocolByteCommunication {
 	int mNACKCRCcounter;
     private String mRootPathForBinFile=""; 
 	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit (actually 95 MB because 100MB = 102,400KB = 104,857,600 bytes, not 100,000,000 bytes)
-
+	boolean receivingMemoryLookupData = false;
 	TaskCompletionSource<VerisenseMessage> mTaskWriteBytes;
 	
 	//TODO this might be doubling up on setBluetoothRadioState inside ShimmerDevice, could we reuse that instead?
 	public enum VerisenseProtocolState {
-		None, Disconnected, Connecting, Connected, Streaming, StreamingLoggedData, Limited
+		None, Disconnected, Connecting, Connected, Streaming, StreamingLoggedData, Limited, SpeedTest
 	}
 
 	VerisenseProtocolState mState = VerisenseProtocolState.None;
@@ -249,12 +249,25 @@ public class VerisenseProtocolByteCommunication {
 				}
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.responseByte()) {
+				
+				if(receivingMemoryLookupData) {
+					stateChange(VerisenseProtocolState.SpeedTest);
+					verisenseMessage.consolePrintTransferTime();
+					latestMemoryLookupTablePayload = new MemoryLookupTablePayload();
+					if(latestMemoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+						//System.out.println(latestMemoryLookupTablePayload.generateDebugString());
+						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestMemoryLookupTablePayload);
+					}
+				}
+				
 				byte debugMode = verisenseMessage.payloadBytes[0];
 				switch (debugMode) {
 				case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ:
+					stateChange(VerisenseProtocolState.SpeedTest);
+					verisenseMessage.consolePrintTransferTime();
 					latestMemoryLookupTablePayload = new MemoryLookupTablePayload();
 					if(latestMemoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
-						System.out.println(latestMemoryLookupTablePayload.generateDebugString());
+						//System.out.println(latestMemoryLookupTablePayload.generateDebugString());
 						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestMemoryLookupTablePayload);
 					}
 					break;
@@ -522,6 +535,23 @@ public class VerisenseProtocolByteCommunication {
 			throw new ShimmerException("Device is not streaming");
 		}
 	}
+	
+	public void startSpeedTest() throws ShimmerException {
+		if(!mState.equals(VerisenseProtocolState.SpeedTest)) {
+			readFlashLookupTable();
+		} else {
+			throw new ShimmerException("Device is already running speed test");
+		}
+	}
+	
+	public void stopSpeedTest() throws ShimmerException {
+		if(mState.equals(VerisenseProtocolState.SpeedTest)) {
+			receivingMemoryLookupData = false;
+			stateChange(VerisenseProtocolState.Connected);
+		} else {
+			throw new ShimmerException("Device is not running speed test");
+		}
+	}
 
 	/** 
 	 * Send a write time command to synchronize the real-world clock
@@ -623,6 +653,7 @@ public class VerisenseProtocolByteCommunication {
 	}
 
 	public MemoryLookupTablePayload readFlashLookupTable() throws ShimmerException {
+        receivingMemoryLookupData = true;
 		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ});
 		waitForResponse(VERISENSE_PROPERTY.FW_DEBUG, TIMEOUT_MS.READ_LOOKUP_TABLE, true);
 		return latestMemoryLookupTablePayload;
@@ -823,6 +854,14 @@ public class VerisenseProtocolByteCommunication {
 				if (taskCompleted) {
 					System.out.println("TCS Set Result: " + vm.generateDebugString());
 					mTaskWriteBytes.setResult(vm);
+					if(mState.equals(VerisenseProtocolState.SpeedTest) && receivingMemoryLookupData) {
+					try {
+						readFlashLookupTable();
+					} catch (ShimmerException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 				} else if (taskError) {
 					VERISENSE_COMMAND commandReceived = VERISENSE_COMMAND.lookupByMask(vm.commandMask);
 					String errorMsg = commandReceived==null? "UNKNOWN":commandReceived.toString() 

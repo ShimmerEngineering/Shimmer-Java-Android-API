@@ -15,18 +15,23 @@ import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunic
 
 public class VerisenseProtocolByteGrpcCommunicationTest {
 
-	GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14");
+	//	GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14");
+	GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("c9:61:17:53:74:02");
 	//BTHLE\Dev_ec2ee3ebb799
 
 	//GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("da:a6:19:f0:4a:d7");
-	GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("ec2ee3ebb799");
+	//GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("ec2ee3ebb799");
+	GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("c0:04:19:85:9a:d5");
+	GrpcBLERadioByteCommunication radio3 = new GrpcBLERadioByteCommunication("f2:52:7c:20:d9:7e");
+
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
+	VerisenseProtocolByteCommunication protocol3 = new VerisenseProtocolByteCommunication(radio3);
 
 	public void initialize() {
 
 		JFrame frame = new JFrame(this.getClass().getSimpleName());
-		frame.setSize(333, 369);
+		frame.setSize(500, 369);
 		frame.getContentPane().setLayout(null);
 
 		JButton btnNewButton = new JButton("Connect");
@@ -54,7 +59,7 @@ public class VerisenseProtocolByteGrpcCommunicationTest {
 				}
 			}
 		});
-		btnDisconnect.setBounds(12, 200, 124, 25);
+		btnDisconnect.setBounds(12, 276, 124, 25);
 		frame.getContentPane().add(btnDisconnect);
 
 		JButton btnNewButton_1 = new JButton("Read Status");
@@ -138,7 +143,7 @@ public class VerisenseProtocolByteGrpcCommunicationTest {
 				}
 			}
 		});
-		button_3.setBounds(162, 200, 124, 25);
+		button_3.setBounds(162, 276, 124, 25);
 		frame.getContentPane().add(button_3);
 
 		JButton btnStartstreaming = new JButton("StartStreaming");
@@ -186,6 +191,174 @@ public class VerisenseProtocolByteGrpcCommunicationTest {
 				protocol2.stop();
 			}
 		});
+		
+		JButton button_6 = new JButton("Speed Test");
+		button_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol2.startSpeedTest();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		button_6.setBounds(162, 200, 124, 25);
+		frame.getContentPane().add(button_6);
+		
+		JButton button_7 = new JButton("Stop Speed Test");
+		button_7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol2.stopSpeedTest();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		button_7.setBounds(162, 238, 124, 25);
+		frame.getContentPane().add(button_7);
+		
+		JButton btnStartSpeedTest = new JButton("Speed Test");
+		btnStartSpeedTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol1.startSpeedTest();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnStartSpeedTest.setBounds(12, 200, 124, 25);
+		frame.getContentPane().add(btnStartSpeedTest);
+		
+		JButton btnStopSpeedTest = new JButton("Stop Speed Test");
+		btnStopSpeedTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol1.stopSpeedTest();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnStopSpeedTest.setBounds(12, 238, 124, 25);
+		frame.getContentPane().add(btnStopSpeedTest);
+		
+		JButton btnConnect3 = new JButton("Connect");
+		btnConnect3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol3.connect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnConnect3.setBounds(312, 13, 124, 25);
+		frame.getContentPane().add(btnConnect3);
+
+		JButton btnDisconnect3 = new JButton("Disconnect");
+		btnDisconnect3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol3.disconnect();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnDisconnect3.setBounds(312, 276, 124, 25);
+		frame.getContentPane().add(btnDisconnect3);
+
+		JButton btnReadStatus3 = new JButton("Read Status");
+		btnReadStatus3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol3.readStatus();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnReadStatus3.setBounds(312, 51, 124, 25);
+		frame.getContentPane().add(btnReadStatus3);
+
+		JButton btnReadData3 = new JButton("Read Data");
+		btnReadData3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol3.readLoggedData();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnReadData3.setBounds(312, 89, 124, 25);
+		frame.getContentPane().add(btnReadData3);
+		
+		JButton btnStartstreaming3 = new JButton("StartStreaming");
+		btnStartstreaming3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol3.startStreaming();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnStartstreaming3.setBounds(312, 127, 124, 25);
+		frame.getContentPane().add(btnStartstreaming3);
+
+		JButton btnStopstreaming3 = new JButton("StopStreaming");
+		btnStopstreaming3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol3.stopStreaming();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnStopstreaming3.setBounds(312, 162, 124, 25);
+		frame.getContentPane().add(btnStopstreaming3);
+		
+		JButton btnStartSpeedTest3 = new JButton("Speed Test");
+		btnStartSpeedTest3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol3.startSpeedTest();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnStartSpeedTest3.setBounds(312, 200, 124, 25);
+		frame.getContentPane().add(btnStartSpeedTest3);
+		
+		JButton btnStopSpeedTest3 = new JButton("Stop Speed Test");
+		btnStopSpeedTest3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					protocol3.stopSpeedTest();
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnStopSpeedTest3.setBounds(312, 238, 124, 25);
+		frame.getContentPane().add(btnStopSpeedTest3);
 	}
 
 	public static void main(String[] args) {
