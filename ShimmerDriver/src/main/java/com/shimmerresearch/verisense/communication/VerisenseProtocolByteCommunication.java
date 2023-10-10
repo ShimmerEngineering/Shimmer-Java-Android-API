@@ -78,7 +78,6 @@ public class VerisenseProtocolByteCommunication {
 	int mNACKCRCcounter;
     private String mRootPathForBinFile=""; 
 	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit (actually 95 MB because 100MB = 102,400KB = 104,857,600 bytes, not 100,000,000 bytes)
-	boolean receivingMemoryLookupData = false;
 	TaskCompletionSource<VerisenseMessage> mTaskWriteBytes;
 	
 	//TODO this might be doubling up on setBluetoothRadioState inside ShimmerDevice, could we reuse that instead?
@@ -249,61 +248,52 @@ public class VerisenseProtocolByteCommunication {
 				}
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.responseByte()) {
-				
-				if(receivingMemoryLookupData) {
-					stateChange(VerisenseProtocolState.SpeedTest);
-					verisenseMessage.consolePrintTransferTime();
-					latestMemoryLookupTablePayload = new MemoryLookupTablePayload();
-					if(latestMemoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
-						//System.out.println(latestMemoryLookupTablePayload.generateDebugString());
-						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestMemoryLookupTablePayload);
+				if(txVerisenseMessageInProgress != null) {
+					byte debugMode = txVerisenseMessageInProgress.payloadBytes[0];
+					switch (debugMode) {
+					case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ:
+						//stateChange(VerisenseProtocolState.SpeedTest);
+						verisenseMessage.consolePrintTransferTime();
+						latestMemoryLookupTablePayload = new MemoryLookupTablePayload();
+						if(latestMemoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+							//System.out.println(latestMemoryLookupTablePayload.generateDebugString());
+							sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestMemoryLookupTablePayload);
+						}
+						break;
+					case VERISENSE_DEBUG_MODE.RWC_SCHEDULE_READ:
+						latestRwcSchedulePayload = new RwcSchedulePayload();
+						if(latestRwcSchedulePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+							sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestRwcSchedulePayload);
+						}
+						break;
+					case VERISENSE_DEBUG_MODE.TRANSFER_LOOP:
+						//TODO 
+						break;
+					case VERISENSE_DEBUG_MODE.CHECK_PAYLOADS_FOR_CRC_ERRORS:
+						//TODO response is a array of bank indexes (2 bytes each LSB) that contain Payloads with CRC errors 
+						List<Long> listOfBankIdsWithCrcErrors = new ArrayList<Long>();
+						for(int i = 0;i<verisenseMessage.payloadBytes.length;i+=2) {
+							listOfBankIdsWithCrcErrors.add(AbstractPayload.parseByteArrayAtIndex(verisenseMessage.payloadBytes, i, CHANNEL_DATA_TYPE.UINT16));
+						}
+
+						break;
+					case VERISENSE_DEBUG_MODE.EVENT_LOG:
+						latestEventLogPayload = new EventLogPayload();
+						if(latestEventLogPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+							System.out.println(latestEventLogPayload.generateDebugString());
+							sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestEventLogPayload);
+						}
+						break;
+					case VERISENSE_DEBUG_MODE.RECORD_BUFFER_DETAILS:
+						RecordBufferDetailsPayload recordBufferDetailsPayload = new RecordBufferDetailsPayload();
+						if(recordBufferDetailsPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
+							System.out.println(recordBufferDetailsPayload.generateDebugString());
+							sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, recordBufferDetailsPayload);
+						}
+						break;
+					default:
+						break;
 					}
-				}
-				
-				byte debugMode = verisenseMessage.payloadBytes[0];
-				switch (debugMode) {
-				case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ:
-					stateChange(VerisenseProtocolState.SpeedTest);
-					verisenseMessage.consolePrintTransferTime();
-					latestMemoryLookupTablePayload = new MemoryLookupTablePayload();
-					if(latestMemoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
-						//System.out.println(latestMemoryLookupTablePayload.generateDebugString());
-						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestMemoryLookupTablePayload);
-					}
-					break;
-				case VERISENSE_DEBUG_MODE.RWC_SCHEDULE_READ:
-					latestRwcSchedulePayload = new RwcSchedulePayload();
-					if(latestRwcSchedulePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
-						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestRwcSchedulePayload);
-					}
-					break;
-				case VERISENSE_DEBUG_MODE.TRANSFER_LOOP:
-					//TODO 
-					break;
-				case VERISENSE_DEBUG_MODE.CHECK_PAYLOADS_FOR_CRC_ERRORS:
-					//TODO response is a array of bank indexes (2 bytes each LSB) that contain Payloads with CRC errors 
-					List<Long> listOfBankIdsWithCrcErrors = new ArrayList<Long>();
-					for(int i = 0;i<verisenseMessage.payloadBytes.length;i+=2) {
-						listOfBankIdsWithCrcErrors.add(AbstractPayload.parseByteArrayAtIndex(verisenseMessage.payloadBytes, i, CHANNEL_DATA_TYPE.UINT16));
-					}
-					
-					break;
-				case VERISENSE_DEBUG_MODE.EVENT_LOG:
-					latestEventLogPayload = new EventLogPayload();
-					if(latestEventLogPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
-						System.out.println(latestEventLogPayload.generateDebugString());
-						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, latestEventLogPayload);
-					}
-					break;
-				case VERISENSE_DEBUG_MODE.RECORD_BUFFER_DETAILS:
-					RecordBufferDetailsPayload recordBufferDetailsPayload = new RecordBufferDetailsPayload();
-					if(recordBufferDetailsPayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
-						System.out.println(recordBufferDetailsPayload.generateDebugString());
-						sendObjectToRadioListenerList(verisenseMessage.commandAndProperty, recordBufferDetailsPayload);
-					}
-					break;
-				default:
-					break;
 				}
 
 			} else if (verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.FW_DEBUG.ackByte()) {
@@ -538,6 +528,7 @@ public class VerisenseProtocolByteCommunication {
 	
 	public void startSpeedTest() throws ShimmerException {
 		if(!mState.equals(VerisenseProtocolState.SpeedTest)) {
+			stateChange(VerisenseProtocolState.SpeedTest);
 			readFlashLookupTable();
 		} else {
 			throw new ShimmerException("Device is already running speed test");
@@ -546,7 +537,6 @@ public class VerisenseProtocolByteCommunication {
 	
 	public void stopSpeedTest() throws ShimmerException {
 		if(mState.equals(VerisenseProtocolState.SpeedTest)) {
-			receivingMemoryLookupData = false;
 			stateChange(VerisenseProtocolState.Connected);
 		} else {
 			throw new ShimmerException("Device is not running speed test");
@@ -653,7 +643,6 @@ public class VerisenseProtocolByteCommunication {
 	}
 
 	public MemoryLookupTablePayload readFlashLookupTable() throws ShimmerException {
-        receivingMemoryLookupData = true;
 		writeMessageWithPayload(VERISENSE_PROPERTY.FW_DEBUG.writeByte(), new byte[] {VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ});
 		waitForResponse(VERISENSE_PROPERTY.FW_DEBUG, TIMEOUT_MS.READ_LOOKUP_TABLE, true);
 		return latestMemoryLookupTablePayload;
@@ -854,7 +843,7 @@ public class VerisenseProtocolByteCommunication {
 				if (taskCompleted) {
 					System.out.println("TCS Set Result: " + vm.generateDebugString());
 					mTaskWriteBytes.setResult(vm);
-					if(mState.equals(VerisenseProtocolState.SpeedTest) && receivingMemoryLookupData) {
+					if(mState.equals(VerisenseProtocolState.SpeedTest)) {
 					try {
 						readFlashLookupTable();
 					} catch (ShimmerException e1) {
