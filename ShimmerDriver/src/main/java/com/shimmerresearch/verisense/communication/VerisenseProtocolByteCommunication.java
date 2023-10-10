@@ -252,7 +252,6 @@ public class VerisenseProtocolByteCommunication {
 					byte debugMode = txVerisenseMessageInProgress.payloadBytes[0];
 					switch (debugMode) {
 					case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ:
-						//stateChange(VerisenseProtocolState.SpeedTest);
 						verisenseMessage.consolePrintTransferTime();
 						latestMemoryLookupTablePayload = new MemoryLookupTablePayload();
 						if(latestMemoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
