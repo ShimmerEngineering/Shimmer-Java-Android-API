@@ -25,40 +25,34 @@ import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 
 import info.monitorenter.gui.chart.Chart2D;
 
-public class ShimmerGRPCExample {
-	ShimmerGRPC shimmer;
+public class ShimmerPCExample {
+	ShimmerPC shimmer;
 	final static Chart2D mChart = new Chart2D();
 	static BasicPlotManagerPC plotManager = new BasicPlotManagerPC();
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		ShimmerGRPCExample example = new ShimmerGRPCExample();
+		ShimmerPCExample example = new ShimmerPCExample();
 		example.initialize();
 	}
 	static int mPort;
 	public void initialize() {
-		GrpcBLERadioByteTools grpcTool = new GrpcBLERadioByteTools();
-		try {
-			mPort = grpcTool.startServer();
-			
-		} catch (Exception e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		
 		JFrame frame = new JFrame();
 		frame.getContentPane().setLayout(null);
 
 		JButton btnNewButton = new JButton("Connect");
 		
-		ShimmerGRPCExample example = new ShimmerGRPCExample();
+		ShimmerPCExample example = new ShimmerPCExample();
 		SensorDataReceived sdr = example.new SensorDataReceived();
-		shimmer = new ShimmerGRPC("E8EB1B713E36","localhost",mPort);
-		//shimmer.connect("","");
+		shimmer = new ShimmerPC("E454");
+		//shimmer.connect("COM14","");
 		sdr.setWaitForData(shimmer);
+	
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//shimmer = new ShimmerGRPC("E8EB1B713E36","localhost",mPort);
-				shimmer.connect("","");
+				//shimmer = new ShimmerPC("E454");
+				shimmer.connect("COM14","");
 				//sdr.setWaitForData(shimmer);
 			}
 		});

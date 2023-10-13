@@ -23,9 +23,11 @@ import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.grpc.ShimmerBLEByteServerGrpc;
+import com.shimmerresearch.grpc.ShimmerBLEGRPC.BluetoothState;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.ObjectClusterByteArray;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.Request;
+import com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.StreamRequest;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.WriteBytes;
 import com.shimmerresearch.sensors.SensorPPG;
@@ -54,26 +56,30 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 	ShimmerBLEByteServerGrpc.ShimmerBLEByteServerBlockingStub blockingStub;
 	ManagedChannel channel;
 	ThreadSafeByteFifoBuffer mBuffer;
+	String mServerHost = "localhost";
+	int mServerPort = 50052;
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5029128107276324956L;
 
-	public ShimmerGRPC(String macAddress) {
+	public ShimmerGRPC(String macAddress, String serverHost, int serverPort) {
 		super();
-		InitializeProcess();
+		mServerHost = serverHost;
+		mServerPort = serverPort;
 		mMacAddress = macAddress;
 		mUseProcessingThread = true;
+		if (channel==null) {
+			InitializeProcess();
+		}
 	}
 
 	public void InitializeProcess() {
 		// Define the server host and port
-		String serverHost = "localhost";
-		int serverPort = 50052;
 
 		// Create a channel to connect to the server
-		channel = ManagedChannelBuilder.forAddress(serverHost, serverPort)
+		channel = ManagedChannelBuilder.forAddress(mServerHost, mServerPort)
 				.usePlaintext() // Use plaintext communication (insecure for testing)
 				.build();
 		// Create a gRPC client stub
@@ -83,17 +89,19 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 
 
 	}
-	static ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36");
+
+	
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.getContentPane().setLayout(null);
 
 		JButton btnNewButton = new JButton("Connect");
 		
-		
+		final ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36","localhost",50052);
+
 		SensorDataReceived sdr = shimmer.new SensorDataReceived();
 		sdr.setWaitForData(shimmer);
-		
+
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -108,7 +116,6 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					shimmer.disconnect();
-					shimmer = new ShimmerGRPC("E8EB1B713E36");
 				} catch (ShimmerException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -117,7 +124,7 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		});
 		btnNewButton_1.setBounds(10, 143, 89, 23);
 		frame.getContentPane().add(btnNewButton_1);
-		
+
 		JButton btnNewButton_2 = new JButton("start streaming");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -131,7 +138,7 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		});
 		btnNewButton_2.setBounds(10, 64, 89, 23);
 		frame.getContentPane().add(btnNewButton_2);
-		
+
 		JButton btnNewButton_3 = new JButton("Stop Streaming");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -145,18 +152,18 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// TODO Auto-generated method stub
 
-		
+
 	}
 
 	public static String byteArrayToHexString(byte[] byteArray) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : byteArray) {
-            // Convert each byte to a two-digit hexadecimal representation
-            hexString.append(String.format("%02X", b));
-        }
-        return hexString.toString();
-    }
-	
+		StringBuilder hexString = new StringBuilder();
+		for (byte b : byteArray) {
+			// Convert each byte to a two-digit hexadecimal representation
+			hexString.append(String.format("%02X", b));
+		}
+		return hexString.toString();
+	}
+
 	@Override
 	public void connect(String address, String bluetoothLibrary) {
 		// Create a request message
@@ -166,34 +173,69 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		Request request = Request.newBuilder().setName(mMacAddress).build();
 
 		// Call the remote gRPC service method
-		Reply response = blockingStub.connectShimmer(request);
 
-		// Process the response
-		System.out.println("Received: " + response.getMessage());
+
 
 		StreamRequest sreq = StreamRequest.newBuilder().setMessage(mMacAddress).build();
+		ShimmerBLEByteServerGrpc.ShimmerBLEByteServerStub stubConnect = ShimmerBLEByteServerGrpc.newStub(channel);
 
-		mBuffer = new ThreadSafeByteFifoBuffer(1000000);
-
-		StreamObserver<ObjectClusterByteArray> responseObserver = new StreamObserver<ObjectClusterByteArray>() {
+		StreamObserver<StateStatus> responseObserverState = new StreamObserver<StateStatus>() {
 
 			@Override
-			public void onNext(ObjectClusterByteArray value) {
+			public void onNext(StateStatus value) {
 				// TODO Auto-generated method stub
-				byte[] bytesData = value.getBinaryData().toByteArray();
-				//System.out.println(byteArrayToHexString(bytesData));
-				try {
-					mBuffer.write(bytesData);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				System.out.println(value.getMessage() + " " + value.getState().toString());
+				if (value.getState().equals(BluetoothState.Connected)) {
+					mBuffer = new ThreadSafeByteFifoBuffer(1000000);
+
+					StreamObserver<ObjectClusterByteArray> responseObserver = new StreamObserver<ObjectClusterByteArray>() {
+
+						@Override
+						public void onNext(ObjectClusterByteArray value) {
+							// TODO Auto-generated method stub
+							byte[] bytesData = value.getBinaryData().toByteArray();
+							//System.out.println(byteArrayToHexString(bytesData));
+							try {
+								mBuffer.write(bytesData);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+
+						@Override
+						public void onError(Throwable t) {
+							// TODO Auto-generated method stub
+							System.out.println("error 1");
+						}
+
+						@Override
+						public void onCompleted() {
+							// TODO Auto-generated method stub
+							System.out.println("completed");
+						}
+					};
+					ShimmerBLEByteServerGrpc.ShimmerBLEByteServerStub stub = ShimmerBLEByteServerGrpc.newStub(channel);
+					stub.getDataStream(sreq, responseObserver);
+
+					mIOThread = new IOThread();
+					mIOThread.start();
+					if (mUseProcessingThread){
+						mPThread = new ProcessingThread();
+						mPThread.start();
+					}
+
+					initialize();
+				} else if (value.getState().equals(BluetoothState.Disconnected)) {
+					stopAllTimers();
+					setBluetoothRadioState(BT_STATE.DISCONNECTED);
 				}
 			}
 
 			@Override
 			public void onError(Throwable t) {
 				// TODO Auto-generated method stub
-				System.out.println("error 1");
+				System.out.println("error 0");
 			}
 
 			@Override
@@ -201,18 +243,10 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 				// TODO Auto-generated method stub
 				System.out.println("completed");
 			}
+
 		};
-		ShimmerBLEByteServerGrpc.ShimmerBLEByteServerStub stub = ShimmerBLEByteServerGrpc.newStub(channel);
-		stub.getDataStream(sreq, responseObserver);
-		
-		mIOThread = new IOThread();
-		mIOThread.start();
-		if (mUseProcessingThread){
-			mPThread = new ProcessingThread();
-			mPThread.start();
-		}
-		
-		initialize();
+		stubConnect.connectShimmer(request, responseObserverState);
+
 	}
 
 	@Override
@@ -290,7 +324,7 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		// TODO Auto-generated method stub
 		mDeviceCallbackAdapter.inquiryDone();
 		isReadyForStreaming();
-		
+
 	}
 
 	@Override
@@ -308,6 +342,12 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	protected void connectionLost() {
 		// TODO Auto-generated method stub
+		try {
+			disconnect();
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		setBluetoothRadioState(BT_STATE.CONNECTION_LOST);
 	}
 
@@ -316,7 +356,7 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		this.startOperation(currentOperation, 1);
 		consolePrintLn(currentOperation + " START");
 	}
-	
+
 	@Override
 	public boolean setBluetoothRadioState(BT_STATE state) {
 		boolean isChanged = super.setBluetoothRadioState(state);
@@ -327,9 +367,9 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	public void startOperation(BT_STATE currentOperation, int totalNumOfCmds){
 		mDeviceCallbackAdapter.startOperation(currentOperation, totalNumOfCmds);
-		
+
 	}
-	
+
 	@Override
 	public void finishOperation(BT_STATE state){
 		mDeviceCallbackAdapter.finishOperation(state);
@@ -362,17 +402,17 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 				setBluetoothRadioState(BT_STATE.SDLOGGING);
 			}
 			else{
-//				if(!isStreaming() && !isSDLogging() && isConnected()){
+				//				if(!isStreaming() && !isSDLogging() && isConnected()){
 				if(!mIsStreaming && !isSDLogging() && isConnected() && mBluetoothRadioState!=BT_STATE.CONNECTED){
 					setBluetoothRadioState(BT_STATE.CONNECTED);	
 				}
-//				if(getBTState() == BT_STATE.INITIALISED){
-//					
-//				}
-//				else if(getBTState() != BT_STATE.CONNECTED){
-//					setState(BT_STATE.CONNECTED);
-//				}
-				
+				//				if(getBTState() == BT_STATE.INITIALISED){
+				//					
+				//				}
+				//				else if(getBTState() != BT_STATE.CONNECTED){
+				//					setState(BT_STATE.CONNECTED);
+				//				}
+
 				CallbackObject callBackObject = new CallbackObject(NOTIFICATION_SHIMMER_STATE_CHANGE, mBluetoothRadioState, getMacId(), getComPort());
 				sendCallBackMsg(MSG_IDENTIFIER_STATE_CHANGE, callBackObject);
 			}
@@ -470,7 +510,33 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 
 		// Process the response
 		System.out.println("Received: " + response.getMessage());
+		closeConnection();
 		setBluetoothRadioState(BT_STATE.DISCONNECTED);
+	}
+
+	private void closeConnection(){
+		try {
+			if (mIOThread != null) {
+				mIOThread.stop = true;
+				
+				// Closing serial port before before thread is finished stopping throws an error so waiting here
+				while(mIOThread != null && mIOThread.isAlive());
+
+				mIOThread = null;
+				
+				if(mUseProcessingThread){
+					mPThread.stop = true;
+					mPThread = null;
+				}
+			}
+			mIsStreaming = false;
+			mIsInitialised = false;
+
+			setBluetoothRadioState(BT_STATE.DISCONNECTED);
+		} catch (Exception ex) {
+			consolePrintException(ex.getMessage(), ex.getStackTrace());
+			setBluetoothRadioState(BT_STATE.DISCONNECTED);
+		}			
 	}
 	
 	//Need to override here because ShimmerDevice class uses a different map
@@ -479,9 +545,9 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		//TODO 2017-08-03 MN: super does this but in a different way, don't know is either is better
 		super.getSensorLabel(sensorKey);
 		SensorDetails sensor = mSensorMap.get(sensorKey);
-	    if(sensor!=null){
-		    return sensor.mSensorDetailsRef.mGuiFriendlyLabel;
-	    }
+		if(sensor!=null){
+			return sensor.mSensorDetailsRef.mGuiFriendlyLabel;
+		}
 		return null;
 	}
 	public class SensorDataReceived extends BasicProcessWithCallBack{
@@ -490,73 +556,73 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 			// TODO Auto-generated method stub
 			System.out.println(shimmerMSG.mIdentifier);
-			
+
 
 			// TODO Auto-generated method stub
 
 			// TODO Auto-generated method stub
-			  int ind = shimmerMSG.mIdentifier;
+			int ind = shimmerMSG.mIdentifier;
 
-			  Object object = (Object) shimmerMSG.mB;
+			Object object = (Object) shimmerMSG.mB;
 
 			if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
 				CallbackObject callbackObject = (CallbackObject)object;
-				
+
 				if (callbackObject.mState == BT_STATE.CONNECTING) {
 				} else if (callbackObject.mState == BT_STATE.CONNECTED) {} else if (callbackObject.mState == BT_STATE.DISCONNECTED
-//						|| callbackObject.mState == BT_STATE.NONE
+						//						|| callbackObject.mState == BT_STATE.NONE
 						|| callbackObject.mState == BT_STATE.CONNECTION_LOST){
-					
+
 				}
 			} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 				CallbackObject callbackObject = (CallbackObject)object;
 				int msg = callbackObject.mIndicator;
 				if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){}
 				if (msg == ShimmerPC.NOTIFICATION_SHIMMER_STOP_STREAMING) {
-					
+
 				} else if (msg == ShimmerPC.NOTIFICATION_SHIMMER_START_STREAMING) {
-					
+
 				} else {}
 			} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
-				
+
 				double accelX = 0;
 				double accelY = 0;
 				double accelZ = 0;
 				FormatCluster formatx;
 				FormatCluster formaty;
 				FormatCluster formatz;
-				
+
 				int INVALID_RESULT = -1;
 
 				ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
-				
+
 				Collection<FormatCluster> adcFormats = objc.getCollectionOfFormatClusters(SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_X);
 				formatx = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats, CHANNEL_TYPE.CAL.toString())); // retrieve the calibrated data
-				
+
 				adcFormats = objc.getCollectionOfFormatClusters(SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Y);
 				formaty = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats, CHANNEL_TYPE.CAL.toString())); // retrieve the calibrated data
-				
+
 				adcFormats = objc.getCollectionOfFormatClusters(SensorKionixAccel.ObjectClusterSensorName.ACCEL_LN_Z);
 				formatz = ((FormatCluster)ObjectCluster.returnFormatCluster(adcFormats, CHANNEL_TYPE.CAL.toString())); // retrieve the calibrated data
-				
+
 				if(formatx != null) {
-				System.out.println("X:"+formatx.mData +" Y:"+formaty.mData+" Z:"+formatz.mData);
-				
+					System.out.println("X:"+formatx.mData +" Y:"+formaty.mData+" Z:"+formatz.mData);
+
 				}
 				else {
 					System.out.println("ERROR! FormatCluster is Null!");
 				}
 
 			} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL) {
-				
+
 			}
-		
-		
-			
-			
-		
+
+
+
+
+
 		}
-		
+
 	}
 
 }

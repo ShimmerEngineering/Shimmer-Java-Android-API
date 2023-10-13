@@ -11,15 +11,16 @@ import javax.swing.JFrame;
 import org.bouncycastle.util.encoders.Hex;
 
 import com.shimmerresearch.exceptions.ShimmerException;
+import com.shimmerresearch.grpc.GrpcBLERadioByteCommunication;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 
 public class VerisenseProtocolByteGrpcCommunicationTest {
 
-	GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14");
+	GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14","localhost",50052);
 	//BTHLE\Dev_ec2ee3ebb799
 
 	//GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("da:a6:19:f0:4a:d7");
-	GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("ec2ee3ebb799");
+	GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("ec2ee3ebb799","localhost",50052);
 	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
 

@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.Request;
+import com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus;
 import com.google.protobuf.ByteString;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.ObjectClusterByteArray;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.StreamRequest;
@@ -207,10 +208,36 @@ public class grpctest {
 				Request request = Request.newBuilder().setName("E8EB1B713E36").build();
 
 	            // Call the remote gRPC service method
-	            Reply response = blockingStub.connectShimmer(request);
+	            //Reply response = blockingStub.connectShimmer(request);
 
 	            // Process the response
-	            System.out.println("Received: " + response.getMessage());
+	            //System.out.println("Received: " + response.getMessage());
+	            
+	            ShimmerBLEByteServerGrpc.ShimmerBLEByteServerStub stub = ShimmerBLEByteServerGrpc.newStub(channel);
+	    		//Request request = Request.newBuilder().setName(mMacAddress).build();
+
+	    		StreamObserver<StateStatus> responseObserverState = new StreamObserver<StateStatus>() {
+
+	    			@Override
+	    			public void onNext(StateStatus value) {
+	    				// TODO Auto-generated method stub
+	    				
+	    			}
+
+	    			@Override
+	    			public void onError(Throwable t) {
+	    				// TODO Auto-generated method stub
+	    				
+	    			}
+
+	    			@Override
+	    			public void onCompleted() {
+	    				// TODO Auto-generated method stub
+	    				
+	    			}
+	    			
+	    		};
+	    		stub.connectShimmer(request, responseObserverState);
 			}
 		});
 		
@@ -244,11 +271,37 @@ public class grpctest {
 				//e7452c6d6f14
 				Request request = Request.newBuilder().setName("e7452c6d6f14").build();
 
-	            // Call the remote gRPC service method
-	            Reply response = blockingStub.connectShimmer(request);
+				// Call the remote gRPC service method
+	            //Reply response = blockingStub.connectShimmer(request);
 
 	            // Process the response
-	            System.out.println("Received: " + response.getMessage());
+	            //System.out.println("Received: " + response.getMessage());
+	            
+	            ShimmerBLEByteServerGrpc.ShimmerBLEByteServerStub stub = ShimmerBLEByteServerGrpc.newStub(channel);
+	    		//Request request = Request.newBuilder().setName(mMacAddress).build();
+
+	    		StreamObserver<StateStatus> responseObserverState = new StreamObserver<StateStatus>() {
+
+	    			@Override
+	    			public void onNext(StateStatus value) {
+	    				// TODO Auto-generated method stub
+	    				
+	    			}
+
+	    			@Override
+	    			public void onError(Throwable t) {
+	    				// TODO Auto-generated method stub
+	    				
+	    			}
+
+	    			@Override
+	    			public void onCompleted() {
+	    				// TODO Auto-generated method stub
+	    				
+	    			}
+	    			
+	    		};
+	    		stub.connectShimmer(request, responseObserverState);
 			}
 		});
 		button.setBounds(110, 45, 89, 23);
