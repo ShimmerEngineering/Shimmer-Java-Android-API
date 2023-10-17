@@ -32,18 +32,28 @@ public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 	long ct1 = System.currentTimeMillis();
 	boolean debug = true;
     String mServerHost = "localhost";
-    int mServerPort = 50052;
+    int mServerPort = 500052;
 	public GrpcBLERadioByteCommunication(String macaddress, String serverHost, int serverPort) {
 		mServerHost = serverHost;
 		mServerPort = serverPort;
 		mMacAddress = macaddress.toUpperCase().replace(":", "");
 		InitializeProcess();
 	}
+	public GrpcBLERadioByteCommunication(String macaddress) {
+		mServerHost = "localhost";
+		mServerPort = 50052;
+		mMacAddress = macaddress.toUpperCase().replace(":", "");
+		InitializeProcess();
+	}
+	
 	public GrpcBLERadioByteCommunication(BluetoothDeviceDetails bdd) {
 		mMacAddress = bdd.mComPort.toUpperCase().replace(":", "");
 		InitializeProcess();
 	}
 	
+	public void setPort(int port) {
+		mServerPort = port;
+	}
 	
 	public void InitializeProcess() {
 		// Define the server host and port
