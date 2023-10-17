@@ -62,9 +62,14 @@ public class MemoryLookupTablePayload extends AbstractPayload {
 		
 		for(int i=idx;i<payloadContents.length;i+=3) {
 			byte statusByte = payloadContents[i];
-			long payloadIndex = parseByteArrayAtIndex(payloadContents, i+1, CHANNEL_DATA_TYPE.UINT16);
-			MemoryBankDetails memoryBankDetails = new MemoryBankDetails(statusByte, payloadIndex);
-			listOfMemoryBankDetails.add(memoryBankDetails);
+			if(i+1 == payloadContents.length) {
+				//this cant be parsed, this should be revisited
+				System.out.println("This can't be parsed " + (i+1) + " " + payloadContents.length);
+			} else {
+				long payloadIndex = parseByteArrayAtIndex(payloadContents, i+1, CHANNEL_DATA_TYPE.UINT16);
+				MemoryBankDetails memoryBankDetails = new MemoryBankDetails(statusByte, payloadIndex);
+				listOfMemoryBankDetails.add(memoryBankDetails);
+			}
 		}
 
 			

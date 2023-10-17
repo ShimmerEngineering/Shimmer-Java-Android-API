@@ -31,9 +31,6 @@ public abstract class AbstractPayload {
 
 	public static long parseByteArrayAtIndex(byte[] byteArray, int startByteIndex, CHANNEL_DATA_TYPE dataType, CHANNEL_DATA_ENDIAN byteEndian) {
 		byte[] buf = new byte[dataType.getNumBytes()];
-		if(startByteIndex == byteArray.length) {
-			return 0;
-		}
 		System.arraycopy(byteArray, startByteIndex, buf, 0, buf.length);
 		return UtilParseData.parseData(buf, dataType, byteEndian);
 	}
