@@ -18,36 +18,36 @@ import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunic
 public class VerisenseProtocolByteGrpcCommunicationTest {
 
 	//	GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14");
-	GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14");
+	GrpcBLERadioByteCommunication radio1;
 	//BTHLE\Dev_ec2ee3ebb799
 	//BTHLE\Dev_ca09b224625a
 
 	//GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("da:a6:19:f0:4a:d7");
 	//GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("ec2ee3ebb799");
-	GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("ec2ee3ebb799");
-	GrpcBLERadioByteCommunication radio3 = new GrpcBLERadioByteCommunication("ca09b224625a");
+	GrpcBLERadioByteCommunication radio2;
+	GrpcBLERadioByteCommunication radio3;
 
-	VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
-	VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
-	VerisenseProtocolByteCommunication protocol3 = new VerisenseProtocolByteCommunication(radio3);
+	VerisenseProtocolByteCommunication protocol1;
+	VerisenseProtocolByteCommunication protocol2;
+	VerisenseProtocolByteCommunication protocol3;
 
 	public void initialize() {
 		GrpcBLERadioByteTools grpcTool = new GrpcBLERadioByteTools();
 		try {
 			int port = grpcTool.startServer();
 			//	GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14");
-			GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14");
+			radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14","localhost",port);
 			//BTHLE\Dev_ec2ee3ebb799
 			//BTHLE\Dev_ca09b224625a
 
 			//GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("da:a6:19:f0:4a:d7");
 			//GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("ec2ee3ebb799");
-			GrpcBLERadioByteCommunication radio2 = new GrpcBLERadioByteCommunication("ec2ee3ebb799");
-			GrpcBLERadioByteCommunication radio3 = new GrpcBLERadioByteCommunication("ca09b224625a");
+			radio2 = new GrpcBLERadioByteCommunication("ec2ee3ebb799","localhost",port);
+			radio3 = new GrpcBLERadioByteCommunication("ca09b224625a","localhost",port);
 
-			VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
-			VerisenseProtocolByteCommunication protocol2 = new VerisenseProtocolByteCommunication(radio2);
-			VerisenseProtocolByteCommunication protocol3 = new VerisenseProtocolByteCommunication(radio3);
+			protocol1 = new VerisenseProtocolByteCommunication(radio1);
+			protocol2 = new VerisenseProtocolByteCommunication(radio2);
+			protocol3 = new VerisenseProtocolByteCommunication(radio3);
 		} catch (Exception e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -205,7 +205,7 @@ public class VerisenseProtocolByteGrpcCommunicationTest {
 		button_5.setBounds(162, 162, 124, 25);
 		frame.getContentPane().add(button_5);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
+
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -381,6 +381,7 @@ public class VerisenseProtocolByteGrpcCommunicationTest {
 		});
 		btnStopSpeedTest3.setBounds(312, 238, 124, 25);
 		frame.getContentPane().add(btnStopSpeedTest3);
+		frame.setVisible(true);
 	}
 
 	public static void main(String[] args) {
