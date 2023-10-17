@@ -22,6 +22,7 @@ import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.exceptions.ConnectionExceptionListener;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.grpc.GrpcBLERadioByteCommunication;
+import com.shimmerresearch.grpc.GrpcBLERadioByteTools;
 import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
@@ -35,7 +36,17 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	String mPathToVeriBLEApp = "bleconsoleapp\\BLEConsoleApp1.exe";
 	List<String> macIdList = new ArrayList<String>();
 	List<VerisenseDevice> verisenseDeviceList = new ArrayList<VerisenseDevice>();
-	
+	public static int mGRPCPort;
+	public BasicShimmerBluetoothManagerPc() {
+		GrpcBLERadioByteTools grpcTool = new GrpcBLERadioByteTools();
+		try {
+			mGRPCPort = grpcTool.startServer();
+			
+		} catch (Exception e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+	}
 	public void setPathToVeriBLEApp(String path) {
 		mPathToVeriBLEApp = path;
 	}
@@ -137,7 +148,8 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		
 		if(!macIdList.contains(bdd.mShimmerMacId)) {
 			//BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
-			GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication(bdd);
+			
+			GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication(bdd,"localhost",mGRPCPort);
 			VerisenseProtocolByteCommunication protocol1 = new VerisenseProtocolByteCommunication(radio1);
 			verisenseDevice = new VerisenseDevice();
 			verisenseDevice.setShimmerUserAssignedName(bdd.mFriendlyName);

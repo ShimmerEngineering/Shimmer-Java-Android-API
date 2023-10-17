@@ -39,7 +39,9 @@ public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 		mMacAddress = macaddress.toUpperCase().replace(":", "");
 		InitializeProcess();
 	}
-	public GrpcBLERadioByteCommunication(BluetoothDeviceDetails bdd) {
+	public GrpcBLERadioByteCommunication(BluetoothDeviceDetails bdd, String serverHost, int serverPort) {
+		mServerHost = serverHost;
+		mServerPort = serverPort;
 		mMacAddress = bdd.mComPort.toUpperCase().replace(":", "");
 		InitializeProcess();
 	}
