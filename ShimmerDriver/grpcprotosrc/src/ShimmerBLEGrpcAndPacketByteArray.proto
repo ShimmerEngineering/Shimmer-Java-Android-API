@@ -1,9 +1,8 @@
-//import "C:/Users/Lim/git/Shimmer-Java-Android-API/ShimmerDriver/grpcprotosrc/src/LiteProtocolInstructionSet.proto";
-
+//using 
+//protoc-3.13.0-win64
+//protoc-gen-grpc-java-1.32.1-windows-x86_64.exe
+//.nuget\packages\grpc.tools\2.34.0\tools\windows_x64\grpc_csharp_plugin.exe
 syntax = "proto3";
-//import "src/LiteProtocolInstructionSet.proto";
-
-//import "google/protobuf/descriptor.proto";
 
 option csharp_namespace = "com.shimmerresearch.grpc";
 option java_package = "com.shimmerresearch.grpc";
@@ -23,7 +22,7 @@ service ShimmerBLEByteServer {
     //Client sending data
   rpc SendDataStream(stream ObjectClusterByteArray) returns (Reply){}
   
-  rpc ConnectShimmer(Request) returns (Reply);
+  rpc ConnectShimmer(Request) returns (stream StateStatus) {}
   
   rpc DisconnectShimmer(Request) returns (Reply);
   
@@ -48,6 +47,17 @@ message WriteBytes{
 
 message StreamRequest {
   string message = 1;
+}
+
+enum BluetoothState {
+  Connected = 0;
+  Connecting = 1;
+  Disconnected = 2;
+}
+
+message StateStatus {
+	BluetoothState State = 1;
+	string message = 2;
 }
 
 message ObjectClusterByteArray {

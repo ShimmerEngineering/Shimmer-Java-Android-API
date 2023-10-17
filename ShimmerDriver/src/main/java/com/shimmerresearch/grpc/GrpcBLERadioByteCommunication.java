@@ -1,34 +1,41 @@
-package com.shimmerresearch.driver.ble;
+package com.shimmerresearch.grpc;
 
 import javax.swing.JFrame;
 
 import com.google.protobuf.ByteString;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.exceptions.ShimmerException;
-import com.shimmerresearch.grpc.ShimmerBLEByteServerGrpc;
+import com.shimmerresearch.grpc.ShimmerBLEGRPC.BluetoothState;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.ObjectClusterByteArray;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.Request;
+import com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.StreamRequest;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.WriteBytes;
 import com.shimmerresearch.verisense.communication.AbstractByteCommunication;
 
+import bolts.TaskCompletionSource;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
 
 public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 	String mMacAddress;
 	ShimmerBLEByteServerGrpc.ShimmerBLEByteServerBlockingStub blockingStub;
-	ManagedChannel channel;
+	ManagedChannel channel;;
+	TaskCompletionSource<Boolean> mConnectTask = new TaskCompletionSource<>();
 	static final byte[] ReadStatusRequest = new byte[] { 0x11, 0x00, 0x00 };
 	long ct1 = System.currentTimeMillis();
-	boolean debug = false;
-	
-	public GrpcBLERadioByteCommunication(String macaddress) {
+	boolean debug = true;
+    String mServerHost = "localhost";
+    int mServerPort = 50052;
+	public GrpcBLERadioByteCommunication(String macaddress, String serverHost, int serverPort) {
+		mServerHost = serverHost;
+		mServerPort = serverPort;
 		mMacAddress = macaddress.toUpperCase().replace(":", "");
 		InitializeProcess();
 	}
@@ -40,13 +47,13 @@ public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 	
 	public void InitializeProcess() {
 		// Define the server host and port
-        String serverHost = "localhost";
-        int serverPort = 50052;
+
 
         // Create a channel to connect to the server
-        channel = ManagedChannelBuilder.forAddress(serverHost, serverPort)
+        channel = ManagedChannelBuilder.forAddress(mServerHost, mServerPort)
                 .usePlaintext() // Use plaintext communication (insecure for testing)
                 .build();
+
         // Create a gRPC client stub
     	blockingStub = ShimmerBLEByteServerGrpc.newBlockingStub(channel);
     	
@@ -56,7 +63,7 @@ public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 	}
 	
 	public static void main(String[] args) {
-		GrpcBLERadioByteCommunication ble = new GrpcBLERadioByteCommunication("e7452c6d6f14");
+		GrpcBLERadioByteCommunication ble = new GrpcBLERadioByteCommunication("e7452c6d6f14","localhost",50052);
 		JFrame frame = new JFrame();
 		frame.setSize(300, 300);
 		frame.setVisible(true);
@@ -109,56 +116,104 @@ public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 		// Create a request message
 		//E8EB1B713E36
 		//e7452c6d6f14
+		ShimmerBLEByteServerGrpc.ShimmerBLEByteServerStub stub = ShimmerBLEByteServerGrpc.newStub(channel);
 		Request request = Request.newBuilder().setName(mMacAddress).build();
+		mConnectTask = new TaskCompletionSource<>();
+		
 
-        // Call the remote gRPC service method
-        Reply response = blockingStub.connectShimmer(request);
+		StreamObserver<StateStatus> responseObserverState = new StreamObserver<StateStatus>() {
 
-        // Process the response
-        System.out.println("Received: " + response.getMessage());
-        
-        StreamRequest sreq = StreamRequest.newBuilder().setMessage(mMacAddress).build();
-        
-        StreamObserver<ObjectClusterByteArray> responseObserver = new StreamObserver<ObjectClusterByteArray>() {
-        	long numberOfBytes = 0;
-        	long st = 0;
 			@Override
-			public void onNext(ObjectClusterByteArray value) {
+			public void onNext(StateStatus value) {
 				// TODO Auto-generated method stub
-				byte[] bytesData = value.getBinaryData().toByteArray();
-				if (debug) {
-					long nt = System.currentTimeMillis();
-					if (st==0) {
-						st=nt;
-					}
-					numberOfBytes += bytesData.length;
-					long totalElapsed = nt-st;
-					//System.out.println(value.getBluetoothAddress() + "  elapsed time:" + (nt-ct1)+ " # Bytes: " + bytesData.length + " Throughput: " + (bytesData.length*1000.0/(nt-ct1))/1024 + "KB/s values : " + byteArrayToHexString(bytesData));
-					if(totalElapsed!=0) {
-						System.out.println(totalElapsed + "   "+ numberOfBytes + "   " + "  Throughput: " + (numberOfBytes*1000.0/(totalElapsed))/1024 + "KB/s values");
-					}
-					ct1=nt;
+				System.out.println(value.getMessage() + " " + value.getState().toString());
+				if (value.getState().equals(BluetoothState.Connected)) {
+					mConnectTask.setResult(true);
+			        
+			        if (mByteCommunicationListener!=null) {
+			        	mByteCommunicationListener.eventConnected();
+			        }
+				} else {
+					mConnectTask.setResult(false);
 				}
-				mByteCommunicationListener.eventNewBytesReceived(bytesData);
 			}
 
 			@Override
 			public void onError(Throwable t) {
 				// TODO Auto-generated method stub
-				System.out.println("error 1");
+				
 			}
 
 			@Override
 			public void onCompleted() {
 				// TODO Auto-generated method stub
-				System.out.println("completed");
+				
 			}
-        };
-        ShimmerBLEByteServerGrpc.ShimmerBLEByteServerStub stub = ShimmerBLEByteServerGrpc.newStub(channel);
-        stub.getDataStream(sreq, responseObserver);
-        if (mByteCommunicationListener!=null) {
-        	mByteCommunicationListener.eventConnected();
-        }
+			
+		};
+		stub.connectShimmer(request, responseObserverState);
+        // Call the remote gRPC service method
+        //Reply response = blockingStub.connectShimmer(request);
+
+        // Process the response
+        //System.out.println("Received: " + response.getMessage());
+        
+        
+		try {
+			boolean result = mConnectTask.getTask().waitForCompletion(10, TimeUnit.SECONDS);
+			if (result) {
+				StreamRequest sreq = StreamRequest.newBuilder().setMessage(mMacAddress).build();
+		        
+		        StreamObserver<ObjectClusterByteArray> responseObserver = new StreamObserver<ObjectClusterByteArray>() {
+		        	long numberOfBytes = 0;
+		        	long st = 0;
+					@Override
+					public void onNext(ObjectClusterByteArray value) {
+						// TODO Auto-generated method stub
+						byte[] bytesData = value.getBinaryData().toByteArray();
+						if (debug) {
+							long nt = System.currentTimeMillis();
+							if (st==0) {
+								st=nt;
+							}
+							numberOfBytes += bytesData.length;
+							long totalElapsed = nt-st;
+							//System.out.println(value.getBluetoothAddress() + "  elapsed time:" + (nt-ct1)+ " # Bytes: " + bytesData.length + " Throughput: " + (bytesData.length*1000.0/(nt-ct1))/1024 + "KB/s values : " + byteArrayToHexString(bytesData));
+							if(totalElapsed!=0) {
+								System.out.println(totalElapsed + "   "+ numberOfBytes + "   " + "  Throughput: " + (numberOfBytes*1000.0/(totalElapsed))/1024 + "KB/s values");
+							}
+							ct1=nt;
+						}
+						if (mByteCommunicationListener!=null) {
+							mByteCommunicationListener.eventNewBytesReceived(bytesData);
+						}
+					}
+
+					@Override
+					public void onError(Throwable t) {
+						// TODO Auto-generated method stub
+						System.out.println("error 1");
+					}
+
+					@Override
+					public void onCompleted() {
+						// TODO Auto-generated method stub
+						System.out.println("completed");
+					}
+		        };
+		        
+		        //ShimmerBLEByteServerGrpc.ShimmerBLEByteServerStub stub = ShimmerBLEByteServerGrpc.newStub(channel);
+		        stub.getDataStream(sreq, responseObserver);
+		        
+			} else {
+				throw new ShimmerException("Connect Failed");
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			throw new ShimmerException("InterruptedException");
+		}
+        
+
 	}
 
 	@Override

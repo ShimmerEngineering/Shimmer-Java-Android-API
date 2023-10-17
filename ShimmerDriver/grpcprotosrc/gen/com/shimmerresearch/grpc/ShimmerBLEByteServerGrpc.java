@@ -124,28 +124,28 @@ public final class ShimmerBLEByteServerGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerBLEGRPC.Request,
-      com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply> getConnectShimmerMethod;
+      com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus> getConnectShimmerMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "ConnectShimmer",
       requestType = com.shimmerresearch.grpc.ShimmerBLEGRPC.Request.class,
-      responseType = com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+      responseType = com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
   public static io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerBLEGRPC.Request,
-      com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply> getConnectShimmerMethod() {
-    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerBLEGRPC.Request, com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply> getConnectShimmerMethod;
+      com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus> getConnectShimmerMethod() {
+    io.grpc.MethodDescriptor<com.shimmerresearch.grpc.ShimmerBLEGRPC.Request, com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus> getConnectShimmerMethod;
     if ((getConnectShimmerMethod = ShimmerBLEByteServerGrpc.getConnectShimmerMethod) == null) {
       synchronized (ShimmerBLEByteServerGrpc.class) {
         if ((getConnectShimmerMethod = ShimmerBLEByteServerGrpc.getConnectShimmerMethod) == null) {
           ShimmerBLEByteServerGrpc.getConnectShimmerMethod = getConnectShimmerMethod =
-              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerBLEGRPC.Request, com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              io.grpc.MethodDescriptor.<com.shimmerresearch.grpc.ShimmerBLEGRPC.Request, com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ConnectShimmer"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.shimmerresearch.grpc.ShimmerBLEGRPC.Request.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply.getDefaultInstance()))
+                  com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus.getDefaultInstance()))
               .setSchemaDescriptor(new ShimmerBLEByteServerMethodDescriptorSupplier("ConnectShimmer"))
               .build();
         }
@@ -331,7 +331,7 @@ public final class ShimmerBLEByteServerGrpc {
     /**
      */
     public void connectShimmer(com.shimmerresearch.grpc.ShimmerBLEGRPC.Request request,
-        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply> responseObserver) {
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus> responseObserver) {
       asyncUnimplementedUnaryCall(getConnectShimmerMethod(), responseObserver);
     }
 
@@ -381,10 +381,10 @@ public final class ShimmerBLEByteServerGrpc {
                   this, METHODID_SEND_DATA_STREAM)))
           .addMethod(
             getConnectShimmerMethod(),
-            asyncUnaryCall(
+            asyncServerStreamingCall(
               new MethodHandlers<
                 com.shimmerresearch.grpc.ShimmerBLEGRPC.Request,
-                com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply>(
+                com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus>(
                   this, METHODID_CONNECT_SHIMMER)))
           .addMethod(
             getDisconnectShimmerMethod(),
@@ -464,8 +464,8 @@ public final class ShimmerBLEByteServerGrpc {
     /**
      */
     public void connectShimmer(com.shimmerresearch.grpc.ShimmerBLEGRPC.Request request,
-        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply> responseObserver) {
-      asyncUnaryCall(
+        io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus> responseObserver) {
+      asyncServerStreamingCall(
           getChannel().newCall(getConnectShimmerMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -535,8 +535,9 @@ public final class ShimmerBLEByteServerGrpc {
 
     /**
      */
-    public com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply connectShimmer(com.shimmerresearch.grpc.ShimmerBLEGRPC.Request request) {
-      return blockingUnaryCall(
+    public java.util.Iterator<com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus> connectShimmer(
+        com.shimmerresearch.grpc.ShimmerBLEGRPC.Request request) {
+      return blockingServerStreamingCall(
           getChannel(), getConnectShimmerMethod(), getCallOptions(), request);
     }
 
@@ -577,14 +578,6 @@ public final class ShimmerBLEByteServerGrpc {
     protected ShimmerBLEByteServerFutureStub build(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new ShimmerBLEByteServerFutureStub(channel, callOptions);
-    }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply> connectShimmer(
-        com.shimmerresearch.grpc.ShimmerBLEGRPC.Request request) {
-      return futureUnaryCall(
-          getChannel().newCall(getConnectShimmerMethod(), getCallOptions()), request);
     }
 
     /**
@@ -647,7 +640,7 @@ public final class ShimmerBLEByteServerGrpc {
           break;
         case METHODID_CONNECT_SHIMMER:
           serviceImpl.connectShimmer((com.shimmerresearch.grpc.ShimmerBLEGRPC.Request) request,
-              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerBLEGRPC.Reply>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.shimmerresearch.grpc.ShimmerBLEGRPC.StateStatus>) responseObserver);
           break;
         case METHODID_DISCONNECT_SHIMMER:
           serviceImpl.disconnectShimmer((com.shimmerresearch.grpc.ShimmerBLEGRPC.Request) request,
