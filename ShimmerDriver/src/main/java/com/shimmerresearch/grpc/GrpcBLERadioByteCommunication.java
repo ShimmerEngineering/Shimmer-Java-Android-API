@@ -30,22 +30,29 @@ public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 	TaskCompletionSource<Boolean> mConnectTask = new TaskCompletionSource<>();
 	static final byte[] ReadStatusRequest = new byte[] { 0x11, 0x00, 0x00 };
 	long ct1 = System.currentTimeMillis();
-	boolean debug = true;
+	boolean debug = false;
     String mServerHost = "localhost";
-    int mServerPort = 50052;
+    int mServerPort = 500052;
+    
+    
+	/** Note that the server has to be started prior. See GrpcBLERadioByteTools
+	 * @param macaddress the Shimmer3 BLE MAC address you want to connect to
+	 * @param serverHost the GRPC server to be used for BLE communications
+	 * @param serverPort the GRPC port to be used for BLE communications
+	 */
 	public GrpcBLERadioByteCommunication(String macaddress, String serverHost, int serverPort) {
 		mServerHost = serverHost;
 		mServerPort = serverPort;
 		mMacAddress = macaddress.toUpperCase().replace(":", "");
 		InitializeProcess();
 	}
+
 	public GrpcBLERadioByteCommunication(BluetoothDeviceDetails bdd, String serverHost, int serverPort) {
 		mServerHost = serverHost;
 		mServerPort = serverPort;
 		mMacAddress = bdd.mComPort.toUpperCase().replace(":", "");
 		InitializeProcess();
 	}
-	
 	
 	public void InitializeProcess() {
 		// Define the server host and port
