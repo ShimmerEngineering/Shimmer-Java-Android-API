@@ -19,6 +19,15 @@ public class GrpcBLERadioByteTools {
 	String mExePath = "C:\\Github\\Shimmer-C-API\\ShimmerAPI\\ShimmerBLEGrpc\\bin\\Debug\\" + mExeName; // Replace with the path to your .exe file
 	//String exePath = "C:\\Users\\JC\\Desktop\\testgrpc\\ShimmerBLEGrpc.exe"; // Replace with the path to your .exe file
 
+	public GrpcBLERadioByteTools() {
+		
+	}
+	
+	public GrpcBLERadioByteTools(String exeName, String exePath) {
+		mExeName = exeName;
+		mExePath = exePath;
+	}
+	
 
 	/**
 	 * @return 
