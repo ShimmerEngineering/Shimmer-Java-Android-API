@@ -195,7 +195,7 @@ public class VerisenseProtocolByteCommunication {
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.DATA.responseByte()) {
 				stateChange(VerisenseProtocolState.StreamingLoggedData);
-				verisenseMessage.consolePrintTransferTime();
+				verisenseMessage.consolePrintTransferTime(mByteCommunication.getUuid());
 				if (!verisenseMessage.CRCCheck()) {
 					writeLoggedDataNack();
 					return;
@@ -252,7 +252,7 @@ public class VerisenseProtocolByteCommunication {
 					byte debugMode = txVerisenseMessageInProgress.payloadBytes[0];
 					switch (debugMode) {
 					case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ:
-						dataTransferRate = verisenseMessage.consolePrintTransferTime();
+						dataTransferRate = verisenseMessage.consolePrintTransferTime(mByteCommunication.getUuid());
 						latestMemoryLookupTablePayload = new MemoryLookupTablePayload();
 						if(latestMemoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
 							//System.out.println(latestMemoryLookupTablePayload.generateDebugString());
