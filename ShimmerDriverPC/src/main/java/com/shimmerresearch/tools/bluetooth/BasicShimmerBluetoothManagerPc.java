@@ -24,6 +24,7 @@ import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.grpc.GrpcBLERadioByteCommunication;
 import com.shimmerresearch.grpc.GrpcBLERadioByteTools;
 import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
+import com.shimmerresearch.pcDriver.ShimmerGRPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 import com.shimmerresearch.verisense.VerisenseDevice;
@@ -36,6 +37,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	String mPathToVeriBLEApp = "bleconsoleapp\\BLEConsoleApp1.exe";
 	List<String> macIdList = new ArrayList<String>();
 	List<VerisenseDevice> verisenseDeviceList = new ArrayList<VerisenseDevice>();
+	List<ShimmerGRPC> shimmer3BleDeviceList = new ArrayList<ShimmerGRPC>();
 	public static int mGRPCPort;
 	public BasicShimmerBluetoothManagerPc() {
 		GrpcBLERadioByteTools grpcTool = new GrpcBLERadioByteTools();
@@ -174,6 +176,33 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		}
 	}
 	
+	@Override
+	protected void connectShimmer3BleGrpc(BluetoothDeviceDetails bdd) {
+		ShimmerGRPC shimmer;
+		
+		if(!macIdList.contains(bdd.mShimmerMacId)) {
+			
+			shimmer = new ShimmerGRPC(bdd.mShimmerMacId.replace(":", ""),"localhost",mGRPCPort);
+			shimmer.setShimmerUserAssignedName(bdd.mFriendlyName);
+			shimmer.setMacIdFromUart(bdd.mShimmerMacId);
+			initializeNewShimmerCommon(shimmer);
+			
+			shimmer3BleDeviceList.add(shimmer);
+			macIdList.add(bdd.mShimmerMacId);
+	    }
+		else {
+			shimmer = shimmer3BleDeviceList.get(macIdList.indexOf(bdd.mShimmerMacId));
+		}
+
+		try {
+			if(shimmer.getBluetoothRadioState() == BT_STATE.CONNECTED || shimmer.getBluetoothRadioState() == BT_STATE.STREAMING || shimmer.getBluetoothRadioState() == BT_STATE.STREAMING_LOGGED_DATA) {
+				throw new ShimmerException("Device is already connected");
+			}
+			shimmer.connect("","");
+		} catch (ShimmerException e) {
+			e.printStackTrace();
+		}
+	}
 	@Override
 	public void connectShimmerThroughCommPort(String comPort){
 		directConnectUnknownShimmer=true;
