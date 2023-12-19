@@ -35,7 +35,8 @@ import jssc.SerialPort;
 public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 
 	String mPathToVeriBLEApp = "bleconsoleapp\\BLEConsoleApp1.exe";
-	List<String> macIdList = new ArrayList<String>();
+	List<String> verisenseMacIdList = new ArrayList<String>();
+	List<String> shimmer3BleMacIdList = new ArrayList<String>();
 	List<VerisenseDevice> verisenseDeviceList = new ArrayList<VerisenseDevice>();
 	List<ShimmerGRPC> shimmer3BleDeviceList = new ArrayList<ShimmerGRPC>();
 	public static int mGRPCPort;
@@ -148,7 +149,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	protected void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
 		VerisenseDevice verisenseDevice;
 		
-		if(!macIdList.contains(bdd.mShimmerMacId)) {
+		if(!verisenseMacIdList.contains(bdd.mShimmerMacId)) {
 			//BleRadioByteCommunication radio1 = new BleRadioByteCommunication(bdd, "bleconsoleapp\\BLEConsoleApp1.exe");
 			
 			GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication(bdd,"localhost",mGRPCPort);
@@ -160,10 +161,10 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 			initializeNewShimmerCommon(verisenseDevice);
 			
 			verisenseDeviceList.add(verisenseDevice);
-			macIdList.add(bdd.mShimmerMacId);
+			verisenseMacIdList.add(bdd.mShimmerMacId);
 	    }
 		else {
-			verisenseDevice = verisenseDeviceList.get(macIdList.indexOf(bdd.mShimmerMacId));
+			verisenseDevice = verisenseDeviceList.get(verisenseMacIdList.indexOf(bdd.mShimmerMacId));
 		}
 
 		try {
@@ -180,7 +181,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	protected void connectShimmer3BleGrpc(BluetoothDeviceDetails bdd) {
 		ShimmerGRPC shimmer;
 		
-		if(!macIdList.contains(bdd.mShimmerMacId)) {
+		if(!shimmer3BleMacIdList.contains(bdd.mShimmerMacId)) {
 			
 			shimmer = new ShimmerGRPC(bdd.mShimmerMacId.replace(":", ""),"localhost",mGRPCPort);
 			shimmer.setShimmerUserAssignedName(bdd.mFriendlyName);
@@ -188,10 +189,10 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 			initializeNewShimmerCommon(shimmer);
 			
 			shimmer3BleDeviceList.add(shimmer);
-			macIdList.add(bdd.mShimmerMacId);
+			shimmer3BleMacIdList.add(bdd.mShimmerMacId);
 	    }
 		else {
-			shimmer = shimmer3BleDeviceList.get(macIdList.indexOf(bdd.mShimmerMacId));
+			shimmer = shimmer3BleDeviceList.get(shimmer3BleMacIdList.indexOf(bdd.mShimmerMacId));
 		}
 
 		try {

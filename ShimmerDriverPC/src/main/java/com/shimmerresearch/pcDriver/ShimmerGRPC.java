@@ -53,9 +53,9 @@ import java.awt.event.ActionEvent;
 
 public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 	String mMacAddress;
-	ShimmerBLEByteServerGrpc.ShimmerBLEByteServerBlockingStub blockingStub;
-	ManagedChannel channel;
-	ThreadSafeByteFifoBuffer mBuffer;
+	transient ShimmerBLEByteServerGrpc.ShimmerBLEByteServerBlockingStub blockingStub;
+	transient ManagedChannel channel;
+	transient ThreadSafeByteFifoBuffer mBuffer;
 	String mServerHost = "localhost";
 	int mServerPort = 50052;
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
@@ -463,7 +463,7 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			return (ShimmerPC) ois.readObject();
+			return (ShimmerDevice) ois.readObject();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
