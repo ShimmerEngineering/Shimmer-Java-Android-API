@@ -832,7 +832,11 @@ public abstract class ShimmerBluetoothManager{
 						if (shimmerDevice!=null && !(shimmerDevice instanceof ShimmerShell)){
 							printMessage("Connecting to " + shimmerDevice.getClass().getSimpleName() + " with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 							if(connectThroughComPort){
-								connectExistingShimmer(shimmerDevice, comPort, bluetoothAddress);
+								if (!comPort.contains(COMPORT_PREFIX)) {
+									connectShimmer3BleGrpc(bluetoothDetails);
+								}else {
+									connectExistingShimmer(shimmerDevice, comPort, bluetoothAddress);
+								}
 							}
 							else{
 								connectExistingShimmer(shimmerDevice, bluetoothAddress);
@@ -979,6 +983,10 @@ public abstract class ShimmerBluetoothManager{
 	}
 
 	protected void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
+
+	}
+	
+	protected void connectShimmer3BleGrpc(BluetoothDeviceDetails bdd) {
 
 	}
 	
