@@ -79,7 +79,7 @@ public class VerisenseProtocolByteCommunication {
     private String mRootPathForBinFile=""; 
 	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit (actually 95 MB because 100MB = 102,400KB = 104,857,600 bytes, not 100,000,000 bytes)
 	TaskCompletionSource<VerisenseMessage> mTaskWriteBytes;
-	
+	public String dataTransferRate = "";
 	//TODO this might be doubling up on setBluetoothRadioState inside ShimmerDevice, could we reuse that instead?
 	public enum VerisenseProtocolState {
 		None, Disconnected, Connecting, Connected, Streaming, StreamingLoggedData, Limited, SpeedTest
@@ -195,7 +195,7 @@ public class VerisenseProtocolByteCommunication {
 				
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.DATA.responseByte()) {
 				stateChange(VerisenseProtocolState.StreamingLoggedData);
-				verisenseMessage.consolePrintTransferTime();
+				verisenseMessage.consolePrintTransferTime(mByteCommunication.getUuid());
 				if (!verisenseMessage.CRCCheck()) {
 					writeLoggedDataNack();
 					return;
@@ -252,7 +252,7 @@ public class VerisenseProtocolByteCommunication {
 					byte debugMode = txVerisenseMessageInProgress.payloadBytes[0];
 					switch (debugMode) {
 					case VERISENSE_DEBUG_MODE.FLASH_LOOKUP_TABLE_READ:
-						verisenseMessage.consolePrintTransferTime();
+						dataTransferRate = verisenseMessage.consolePrintTransferTime(mByteCommunication.getUuid());
 						latestMemoryLookupTablePayload = new MemoryLookupTablePayload();
 						if(latestMemoryLookupTablePayload.parsePayloadContents(verisenseMessage.payloadBytes)) {
 							//System.out.println(latestMemoryLookupTablePayload.generateDebugString());

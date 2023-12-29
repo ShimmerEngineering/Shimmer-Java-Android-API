@@ -52,7 +52,8 @@ public class BluetoothDeviceDetails {
 
 	public void checkDeviceType() {
 		if(!mShimmerMacId.equals(UtilShimmer.MAC_ADDRESS_ZEROS)){
-			if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER3)){
+			if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER3)
+					|| mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER3_RN4678_BLE)){
 				mDeviceTypeDetected = DEVICE_TYPE.SHIMMER3;
 			}
 			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.SHIMMER3_OUTPUT.getLabel())){

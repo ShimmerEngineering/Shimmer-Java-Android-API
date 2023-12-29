@@ -264,7 +264,7 @@ public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 	@Override
 	public String getUuid() {
 		// TODO Auto-generated method stub
-		return null;
+		return mMacAddress;
 	}
 	
 	public static String byteArrayToHexString(byte[] byteArray) {
