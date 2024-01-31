@@ -3,11 +3,7 @@ connection.arguments=
 connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
 connection.java.home=null
 connection.jvm.arguments=
-<<<<<<< HEAD
-connection.project.dir=../ShimmerDriverPC
-=======
-connection.project.dir=../../Shimmer-Advance-API/ShimmerPCExamples
->>>>>>> refs/heads/Consensys_v1.5.10
+connection.project.dir=../../ConsensysApps/OtherConsensysApps
 derived.resources=.gradle,build
 eclipse.preferences.version=1
 natures=org.eclipse.jdt.core.javanature

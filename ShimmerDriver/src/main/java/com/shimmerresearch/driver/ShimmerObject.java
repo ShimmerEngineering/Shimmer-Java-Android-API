@@ -35,6 +35,7 @@ import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.UtilCalibration;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driver.shimmer2r3.BluetoothModuleVersionDetails;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driver.shimmerGq.ConfigByteLayoutShimmerGq802154;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -67,6 +68,7 @@ import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.SensorPPG;
 import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.SensorADC.MICROCONTROLLER_ADC_PROPERTIES;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
 import com.shimmerresearch.sensors.bmpX80.SensorBMPX80;
@@ -463,7 +465,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte UPD_CALIB_DUMP_COMMAND					= (byte) 0x9B;	
 	//new BT + SD command to Write config file after all of InfoMem is written.
 	public static final byte UPD_SDLOG_CFG_COMMAND					= (byte) 0x9C;
-	
+
+	public static final byte GET_BT_FW_VERSION_STR_COMMAND			= (byte) 0xA1;
+	public static final byte BT_FW_VERSION_STR_RESPONSE				= (byte) 0xA2;
+
 	public static final int MAX_NUMBER_OF_SIGNALS = 77;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
@@ -502,6 +507,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //	protected String mMacIdFromUart = "";
 	/** Read from the InfoMem from UART command through the base/dock*/
 	protected String mMacIdFromInfoMem = "";
+
+	protected BluetoothModuleVersionDetails bluetoothModuleVersionDetails = new BluetoothModuleVersionDetails();
 	
 //	protected String mShimmerUserAssignedName=""; // This stores the user assigned name
 	
@@ -524,7 +531,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mEnableCalibration = true;	
 	protected boolean mConfigFileCreationFlag = true;
 	protected boolean mShimmerUsingConfigFromInfoMem = false;
-	protected boolean mIsCrcEnabled = false;
 	protected boolean mUseInfoMemConfigMethod = true;
 	
 	protected boolean mUseArraysDataStructureInObjectCluster = false;
@@ -1212,8 +1218,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if (mEnableCalibration){
 						if((mDerivedSensors & DerivedSensorsBitMask.SKIN_TEMP)>0){
 							calibratedData[iA1]=SensorBridgeAmp.calibratePhillipsSkinTemperatureData(tempData[0]);
-							calibratedDataUnits[iA1] = CHANNEL_UNITS.DEGREES_CELSUIS;
-							objectCluster.addDataToMap(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,calibratedData[iA1]);
+							calibratedDataUnits[iA1] = CHANNEL_UNITS.DEGREES_CELSIUS;
+							objectCluster.addDataToMap(sensorName,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSIUS,calibratedData[iA1]);
 						}
 						else{
 							calibratedData[iA1]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
@@ -1704,10 +1710,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					double[] bmp180caldata = mSensorBMPX80.calibratePressureSensorData(UP,UT);
 					objectCluster.addDataToMap(signalNameBmpX80Pressure,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.KPASCAL,bmp180caldata[0]/1000);
-					objectCluster.addDataToMap(signalNameBmpX80Temperature,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,bmp180caldata[1]);
+					objectCluster.addDataToMap(signalNameBmpX80Temperature,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSIUS,bmp180caldata[1]);
 					calibratedData[iUT]=bmp180caldata[1];
 					calibratedData[iUP]=bmp180caldata[0]/1000;
-					calibratedDataUnits[iUT]=CHANNEL_UNITS.DEGREES_CELSUIS;
+					calibratedDataUnits[iUT]=CHANNEL_UNITS.DEGREES_CELSIUS;
 					calibratedDataUnits[iUP]=CHANNEL_UNITS.KPASCAL;
 				}
 			}
@@ -1807,8 +1813,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if(currentGSRRange==3 && gsrAdcValueUnCal<SensorGSR.GSR_UNCAL_LIMIT_RANGE3) {
 						gsrAdcValueUnCal = SensorGSR.GSR_UNCAL_LIMIT_RANGE3;
 					}
-					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToKOhmsUsingAmplifierEq(gsrAdcValueUnCal, currentGSRRange);
-					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange());
+					gsrResistanceKOhms = SensorGSR.calibrateGsrDataToKOhmsUsingAmplifierEq(gsrAdcValueUnCal, currentGSRRange, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0, SensorGSR.SHIMMER3_GSR_REF_RESISTORS_KOHMS);
+					gsrResistanceKOhms = SensorGSR.nudgeGsrResistance(gsrResistanceKOhms, getGSRRange(), SensorGSR.SHIMMER3_GSR_RESISTANCE_MIN_MAX_KOHMS);
 					gsrConductanceUSiemens = (1.0/gsrResistanceKOhms)*1000;
 					
 					//If ShimmerGQ we only want to have one GSR channel and it's units should be 'uS'
@@ -1945,8 +1951,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.MPL_TEMPERATURE) > 0)){
 				int iT = getSignalIndex(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE);
 				calibratedData[iT] = (double)newPacketInt[iT]/Math.pow(2, 16);
-				calibratedDataUnits[iT] = CHANNEL_UNITS.DEGREES_CELSUIS;
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSUIS,calibratedData[iT]);
+				calibratedDataUnits[iT] = CHANNEL_UNITS.DEGREES_CELSIUS;
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.DEGREES_CELSIUS,calibratedData[iT]);
 				uncalibratedData[iT] = (double)newPacketInt[iT];
 				uncalibratedDataUnits[iT] = CHANNEL_UNITS.NO_UNITS;
 				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MPL_TEMPERATURE,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,uncalibratedData[iT]);
@@ -2022,8 +2028,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 
 			//Additional Channels Offset
-			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels+1;//+1; //+1 because timestamp channel appears at the start
-			
+			int additionalChannelsOffset = calibratedData.length-numAdditionalChannels; 
+			if(fwType == COMMUNICATION_TYPE.BLUETOOTH) {
+				additionalChannelsOffset += 1;	//BT need +1 because timestamp added as additional channel
+			}
 			if (getHardwareVersion() == HW_ID.SHIMMER_3){
 				if(isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultRespirationConfiguration()){
 					if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
@@ -2044,7 +2052,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 								calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
 								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_16BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]);
 							}
-							//additionalChannelsOffset += 1;
+							additionalChannelsOffset += 1;
 						}
 					}
 					else if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.EXG1_24BIT) > 0) 
@@ -2065,7 +2073,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 								calibratedDataUnits[additionalChannelsOffset]=CHANNEL_UNITS.MILLIVOLTS;
 								objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ECG_LL_LA_24BIT,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[additionalChannelsOffset]);
 							}
-							//additionalChannelsOffset += 1;
+							additionalChannelsOffset += 1;
 						}
 					}
 				}
@@ -9854,6 +9862,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mUseArraysDataStructureInObjectCluster = enable;
 	}
 
+	public void setBtFwVerDetails(BluetoothModuleVersionDetails bluetoothModuleVersionDetails) {
+		this.bluetoothModuleVersionDetails = bluetoothModuleVersionDetails;
+	}
+
+	public BluetoothModuleVersionDetails getBtFwVerDetails() {
+		return bluetoothModuleVersionDetails;
+	}
+	
+	@Override
+	public String getRadioModel() {
+		return getBtFwVerDetails().getUserFriendlyName();
+	}
 }
-
-

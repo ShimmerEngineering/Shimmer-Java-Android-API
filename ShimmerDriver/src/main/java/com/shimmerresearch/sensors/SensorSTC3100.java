@@ -165,7 +165,7 @@ public class SensorSTC3100 extends AbstractSensor{
     		ObjectClusterSensorName.STC_TEMP,
     		ObjectClusterSensorName.STC_TEMP,
 			CHANNEL_DATA_TYPE.INT32, 4, CHANNEL_DATA_ENDIAN.MSB,
-    		CHANNEL_UNITS.DEGREES_CELSUIS,
+    		CHANNEL_UNITS.DEGREES_CELSIUS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		true,
     		false);

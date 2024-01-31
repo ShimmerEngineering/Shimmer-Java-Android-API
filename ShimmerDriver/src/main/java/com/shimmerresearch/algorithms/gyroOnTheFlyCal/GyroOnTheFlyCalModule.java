@@ -34,17 +34,15 @@ public class GyroOnTheFlyCalModule extends AbstractAlgorithm {
 
 	public static String GENERAL_ALGORITHM_NAME = "Gyro on-the-fly calibration";
 
-	//TODO add support
+	//TODO add support?
 	private AbstractSensor.SENSORS sensorClass = AbstractSensor.SENSORS.MPU9X50;
-	private String ojcNameGyroX = SensorMPU9X50.ObjectClusterSensorName.GYRO_X;
-	private String ojcNameGyroY = SensorMPU9X50.ObjectClusterSensorName.GYRO_Y;
-	private String ojcNameGyroZ = SensorMPU9X50.ObjectClusterSensorName.GYRO_Z;
-//	private CalibDetailsKinematic calibDetails = null; 
+	
+	public int sensorId = -1;
+	public String ojcNameGyroX = SensorMPU9X50.ObjectClusterSensorName.GYRO_X;
+	public String ojcNameGyroY = SensorMPU9X50.ObjectClusterSensorName.GYRO_Y;
+	public String ojcNameGyroZ = SensorMPU9X50.ObjectClusterSensorName.GYRO_Z;
 
 	protected OnTheFlyGyroOffsetCal mOnTheFlyGyroOffsetCal = new OnTheFlyGyroOffsetCal();
-
-	
-//	private static final ShimmerVerObject svoSh3 = new ShimmerVerObject(HW_ID.SHIMMER_3,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
 	//--------- Algorithm specific variables end --------------	
 
@@ -255,6 +253,13 @@ public class GyroOnTheFlyCalModule extends AbstractAlgorithm {
 				ShimmerObject shimmerObject = (ShimmerObject)mShimmerDevice;
 				CalibDetails calibDetails = shimmerObject.getCurrentCalibDetailsGyro();
 				mOnTheFlyGyroOffsetCal.updateGyroOnTheFlyGyroOVCal((CalibDetailsKinematic) calibDetails, gyroCalibratedData, gyroUncalibratedData);
+			} else {
+				//TODO this approach should work also for ShimmerObject above if implemented there.
+				Object object = mShimmerDevice.getConfigValueUsingConfigLabel(Integer.toString(sensorId), AbstractSensor.GuiLabelConfigCommon.CALIBRATION_CURRENT_PER_SENSOR);
+				if(object!=null && (object instanceof CalibDetails)) {
+					CalibDetails calibDetails = (CalibDetails)object;
+					mOnTheFlyGyroOffsetCal.updateGyroOnTheFlyGyroOVCal((CalibDetailsKinematic) calibDetails, gyroCalibratedData, gyroUncalibratedData);
+				}
 			}
 
 //		}
@@ -353,5 +358,14 @@ public class GyroOnTheFlyCalModule extends AbstractAlgorithm {
     	return mOnTheFlyGyroOffsetCal.getOffsetThreshold();
     }
 
+	public void setGyroAxisLabels(String Gyro_X, String Gyro_Y, String Gyro_Z){
+		ojcNameGyroX = Gyro_X;
+		ojcNameGyroY = Gyro_Y;
+		ojcNameGyroZ = Gyro_Z;
+	}
+	
+	public void setSensorId(int sensorId) {
+		this.sensorId = sensorId;
+	}
 
 }

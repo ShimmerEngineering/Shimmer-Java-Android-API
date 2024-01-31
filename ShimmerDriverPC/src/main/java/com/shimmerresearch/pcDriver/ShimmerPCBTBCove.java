@@ -186,7 +186,6 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		if (conn==null){
 		mMyBluetoothAddress = address;
 		getListofInstructions().clear();
-		mFirstTime=true;
 		try {
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 //			setState(BT_STATE.CONNECTING);
@@ -595,8 +594,6 @@ public class ShimmerPCBTBCove extends ShimmerBluetooth implements Serializable{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
 	
 }
 

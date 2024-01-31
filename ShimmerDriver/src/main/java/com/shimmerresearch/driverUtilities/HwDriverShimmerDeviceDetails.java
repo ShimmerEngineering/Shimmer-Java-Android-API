@@ -19,6 +19,7 @@ public class HwDriverShimmerDeviceDetails {
 		RN42("RN42"),
 		RNBT("RNBT"),
 		SHIMMER3("Shimmer3"),
+		SHIMMER3_OUTPUT("OUTPUT"),
 		SHIMMER_ECG_MD("ShimmerECGmd"),
 		SHIMMER4("Shimmer4"),
 		
@@ -30,7 +31,8 @@ public class HwDriverShimmerDeviceDetails {
 		WII_BALANCE_BOARD("Wii_BalanceBoard"),
 		WEBCAM("Webcam"),
 		HOST_CPU_USAGE("CPU Usage"),
-		SWEATCH("SwEatch");
+		SWEATCH("SwEatch"),
+		VERISENSE("Verisense");
 
 		private String deviceLabel = "";
 		
@@ -195,6 +197,7 @@ public class HwDriverShimmerDeviceDetails {
 
             public static final String[] SHIMMER_DEVICE = new String[] {
             	SHIMMER3,
+            	DEVICE_TYPE.SHIMMER3_OUTPUT.getLabel(),
             	SHIMMER_ECG_MD,
             	SHIMMER4,
             	RN42,

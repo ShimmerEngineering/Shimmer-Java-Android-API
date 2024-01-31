@@ -212,7 +212,7 @@ public class SensorBridgeAmp extends AbstractSensor{
 			ObjectClusterSensorName.SKIN_TEMPERATURE_PROBE,
 			DatabaseChannelHandles.SKIN_TEMPERATURE,
 			CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
-			CHANNEL_UNITS.DEGREES_CELSUIS,
+			CHANNEL_UNITS.DEGREES_CELSIUS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 
 	// Resistance Amplifier

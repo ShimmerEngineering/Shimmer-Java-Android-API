@@ -28,6 +28,7 @@ public class ErrorCodesWiredProtocol extends AbstractErrorCodes {
 	public final static int SHIMMERUART_CMD_ERR_DAUGHTER_MEM_GET = 		(ERROR_CODES_ID*1000) + 29;
 	public final static int SHIMMERUART_CMD_ERR_INFOMEM_SET = 			(ERROR_CODES_ID*1000) + 32;
 	public final static int SHIMMERUART_CMD_ERR_INFOMEM_GET = 			(ERROR_CODES_ID*1000) + 31;
+	public final static int SHIMMERUART_CMD_ERR_BT_FW_VERSION_INFO_GET = (ERROR_CODES_ID*1000) + 37;
 
 	//SR7 (802.15.4 radio) related errors
 	public final static int SHIMMERUART_CMD_ERR_RADIO_802154_SET_SETTINGS = 			(ERROR_CODES_ID*1000) + 33;

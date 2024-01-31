@@ -77,8 +77,9 @@ public class LiteProtocol extends AbstractCommsProtocol{
 
 	//startregion --------- TIMERS ---------
 	public static final int TIMER_READ_STATUS_PERIOD = 5000;
-	public static final int TIMER_READ_BATT_STATUS_PERIOD = 600000; // Batt status is updated every 10 mins
+	public static final int TIMER_READ_BATT_STATUS_PERIOD = 60000; // Batt status is updated every 1min
 	public static final int TIMER_CHECK_ALIVE_PERIOD = 2000;
+	public static final int TIMER_CONNECTING_TIMEOUT = 20000;
 
 	transient protected Timer mTimerCheckForAckOrResp;								// Timer variable used when waiting for an ack or response packet
 	transient protected Timer mTimerCheckAlive;

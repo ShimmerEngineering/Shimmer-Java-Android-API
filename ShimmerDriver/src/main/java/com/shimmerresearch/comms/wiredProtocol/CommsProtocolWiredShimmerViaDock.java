@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driver.shimmer2r3.BluetoothModuleVersionDetails;
 import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -238,6 +239,24 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		}
 		
 		return rxBuf;
+	}
+	
+	/** Read the BT FW version 
+	 * @return String in bytes format
+	 * @throws ExecutionException
+	 */
+	public BluetoothModuleVersionDetails readBtFwVersion() throws ExecutionException {
+		int errorCode = ErrorCodesWiredProtocol.SHIMMERUART_CMD_ERR_BT_FW_VERSION_INFO_GET;
+		byte[] rxBuf = processShimmerGetCommand(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.BLUETOOTH.VER, errorCode);
+		
+		// Parse response string
+		if(rxBuf.length == 0) {
+			throw new DockException(mUniqueId, mComPort,errorCode,ErrorCodesWiredProtocol.SHIMMERUART_COMM_ERR_MESSAGE_CONTENTS);
+		}
+		BluetoothModuleVersionDetails bluetoothModuleVersionDetails = new BluetoothModuleVersionDetails();
+		bluetoothModuleVersionDetails.parseBtModuleVerBytes(rxBuf);
+
+		return bluetoothModuleVersionDetails;
 	}
 
 	@Override

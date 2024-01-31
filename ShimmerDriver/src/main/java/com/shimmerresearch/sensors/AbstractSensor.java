@@ -1,7 +1,6 @@
 package com.shimmerresearch.sensors;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.calibration.CalibArraysKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic.CALIBRATION_SCALE_FACTOR;
@@ -25,8 +23,6 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
-import com.shimmerresearch.sensors.SensorGSR.GuiLabelConfig;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC.DatabaseConfigHandle;
 
 public abstract class AbstractSensor implements Serializable{
 	
@@ -60,7 +56,12 @@ public abstract class AbstractSensor implements Serializable{
 		HOST_CPU_USAGE("Cpu Usage"),
 		SWEATCH_ADC("Sweatch ADC"),
 		SHIMMER2R_MAG("Shimmer2r Mag"),
-		SHIMMER2R_GYRO("Shimmer2r Gyro");
+		SHIMMER2R_GYRO("Shimmer2r Gyro"), 
+		LIS2DW12("LIS2DW12"),
+		LSM6DS3("LSM6DS3"),
+		MAX86150("MAX86150"),
+		MAX86916("MAX86916"),
+		BIOZ("MAX30001");
 		
 	    private final String text;
 
@@ -84,6 +85,7 @@ public abstract class AbstractSensor implements Serializable{
 		public static final String RANGE = "Range";
 		public static final String CALIBRATION_PER_SENSOR = "Calibration";
 		public static final String CALIBRATION_ALL = "Calibration all";
+		public static final String CALIBRATION_CURRENT_PER_SENSOR = "Calibration Current";
 	}
 	
 	public static class DatabaseChannelHandlesCommon{

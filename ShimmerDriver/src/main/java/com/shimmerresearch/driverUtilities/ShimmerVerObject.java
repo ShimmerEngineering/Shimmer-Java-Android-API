@@ -262,7 +262,11 @@ public class ShimmerVerObject implements Serializable {
 			// Handle FW version code.
 			mFirmwareVersionCode = -1;
 			
-			if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,6,5)
+			if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,13,7)
+					|| UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SDLOG,0,20,1)) {
+				mFirmwareVersionCode = 8;
+			}
+			else if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,6,5)
 					|| mHardwareVersion==HW_ID.SHIMMER_4_SDK
 					|| mHardwareVersion==HW_ID.ARDUINO
 					|| mFirmwareIdentifier==FW_ID.STROKARE
@@ -317,6 +321,13 @@ public class ShimmerVerObject implements Serializable {
 
 	public String getFirmwareVersionParsedJustVersionNumber() {
 		return mFirmwareVersionParsedJustVersionNumber;
+	}
+
+	public String getFirmwareVersionParsedVersionNumberFilled() {
+		String fwVerParsed = "v" + mFirmwareVersionMajor 
+				+ "." + String.format("%02d", mFirmwareVersionMinor) 
+				+ "." + String.format("%03d", mFirmwareVersionInternal);
+		return fwVerParsed;
 	}
 
 	public void setHardwareVersion(int hardwareVersion) {
@@ -617,6 +628,18 @@ public class ShimmerVerObject implements Serializable {
 			return false;
 	}
 
+	public boolean isShimmerGenVerisense() {
+		return isShimmerGenVerisense(getHardwareVersion());
+	}
+
+	public static boolean isShimmerGenVerisense(int hwVer) {
+		return (hwVer==HW_ID.VERISENSE_DEV_BRD 
+				|| hwVer==HW_ID.VERISENSE_GSR_PLUS
+				|| hwVer==HW_ID.VERISENSE_IMU
+				|| hwVer==HW_ID.VERISENSE_PPG
+				|| hwVer==HW_ID.VERISENSE_PULSE_PLUS);
+	}
+
 	public boolean compareVersions(int hardwareVersion, int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
 		return compareVersions(this, hardwareVersion, firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 	}
@@ -652,6 +675,10 @@ public class ShimmerVerObject implements Serializable {
 			return true;
 		}
 		return false;
+	}
+
+	public boolean isSupportedBtFwVerRequest() {
+		return (mFirmwareVersionCode >= 8);
 	}
 
 	public String generateDebugString() {

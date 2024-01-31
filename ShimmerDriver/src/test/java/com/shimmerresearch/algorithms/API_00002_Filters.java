@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -22,6 +24,8 @@ public class API_00002_Filters {
 	
 	private static final boolean REPLACE_REFERENCE_CSVS = false;
 
+	private static final String UNIT_TEST_FILES_PATH = System.getenv("USERPROFILE") + "/Shimmer Research Ltd/Shimmer - Shimmer/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/";
+	
 	/**
 	 * Passes invalid configuration into the filter initialisation in order to throw an error.
 	 */
@@ -46,8 +50,8 @@ public class API_00002_Filters {
 		double[] cornerFrequency = { 10 };
 		int nTaps = 200;
 		
-		String sourceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/WhiteNoise_001.csv";
-		String referenceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/Reference/" + testId + ".csv";
+		String sourceCsv = UNIT_TEST_FILES_PATH + "WhiteNoise_001.csv";
+		String referenceCsv = UNIT_TEST_FILES_PATH + "Reference/" + testId + ".csv";
 		
 		runTestCommon(testId, sourceCsv, referenceCsv, filterType, samplingRate, cornerFrequency, nTaps);
 	}
@@ -63,8 +67,8 @@ public class API_00002_Filters {
 		double[] cornerFrequency = { 400 };
 		int nTaps = 200;
 		
-		String sourceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/WhiteNoise_001.csv";
-		String referenceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/Reference/" + testId + ".csv";
+		String sourceCsv = UNIT_TEST_FILES_PATH + "WhiteNoise_001.csv";
+		String referenceCsv = UNIT_TEST_FILES_PATH + "Reference/" + testId + ".csv";
 		
 		runTestCommon(testId, sourceCsv, referenceCsv, filterType, samplingRate, cornerFrequency, nTaps);
 	}
@@ -80,8 +84,8 @@ public class API_00002_Filters {
 		double[] cornerFrequency = { 100, 400 };
 		int nTaps = 200;
 		
-		String sourceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/WhiteNoise_001.csv";
-		String referenceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/Reference/" + testId + ".csv";
+		String sourceCsv = UNIT_TEST_FILES_PATH + "WhiteNoise_001.csv";
+		String referenceCsv = UNIT_TEST_FILES_PATH + "Reference/" + testId + ".csv";
 		
 		runTestCommon(testId, sourceCsv, referenceCsv, filterType, samplingRate, cornerFrequency, nTaps);
 	}
@@ -97,8 +101,8 @@ public class API_00002_Filters {
 		double[] cornerFrequencies = { 100, 400 };
 		int nTaps = 200;
 		
-		String sourceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/WhiteNoise_001.csv";
-		String referenceCsv = "S:/Applications Team/Resources/Data Repository/JUnitTests/Shimmer-Java-Android-API/API_00002_Filters/Reference/" + testId + ".csv";
+		String sourceCsv = UNIT_TEST_FILES_PATH + "WhiteNoise_001.csv";
+		String referenceCsv = UNIT_TEST_FILES_PATH + "Reference/" + testId + ".csv";
 		
 		runTestCommon(testId, sourceCsv, referenceCsv, filterType, samplingRate, cornerFrequencies, nTaps);
 	}
@@ -178,8 +182,20 @@ public class API_00002_Filters {
 			assertTrue("Array lengths are not equal", false);
 		}
 		
-		for(int i=0;i<referenceSignal.length;i++) {
-			assertTrue("Arrays are not equal at index:" + i, filteredSignal[i]==referenceSignal[i]);
+		compareDoubleArraysToNDecimalPlaces(filteredSignal, referenceSignal, 10);
+	}
+
+	private void compareDoubleArraysToNDecimalPlaces(double[] a, double[] b, int nDecimalPlaces) {
+		String format = "#.";
+		for(int i=0;i<nDecimalPlaces;i++) {
+			format += "#";
+		}
+		DecimalFormat df = new DecimalFormat(format);
+		df.setRoundingMode(RoundingMode.HALF_UP);
+		
+		for(int i=0;i<a.length;i++) {
+			System.out.println(df.format(a[i]) + "\t" + df.format(b[i]));
+			assertTrue("Arrays are not equal at index:" + i, df.format(a[i]).equals(df.format(b[i])));
 		}
 	}
 

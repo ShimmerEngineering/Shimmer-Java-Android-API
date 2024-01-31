@@ -778,11 +778,21 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	 * @return index 
 	 */
 	public int getIndexForChannelName(String channelName) {
-		//TODO JOS: add parser map support here so we don't have to parse the array
-		for(int i=0; i<sensorDataArray.mSensorNames.length; i++) {
-			if(sensorDataArray.mSensorNames[i] != null) {
-				if(sensorDataArray.mSensorNames[i].equals(channelName)) {
-					return i;
+		if(mEnableArraysDataStructure) {
+			//TODO JOS: add parser map support here so we don't have to parse the array
+			for(int i=0; i<sensorDataArray.mSensorNames.length; i++) {
+				if(sensorDataArray.mSensorNames[i] != null) {
+					if(sensorDataArray.mSensorNames[i].equals(channelName)) {
+						return i;
+					}
+				}
+			}
+		} else {
+			for(int i=0; i<mSensorNames.length; i++) {
+				if(mSensorNames[i] != null) {
+					if(mSensorNames[i].equals(channelName)) {
+						return i;
+					}
 				}
 			}
 		}
