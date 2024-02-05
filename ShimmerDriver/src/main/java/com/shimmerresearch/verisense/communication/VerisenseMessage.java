@@ -247,14 +247,16 @@ public class VerisenseMessage {
 		return isCurrentLengthGreaterThanExpectedLength() || isCurrentLengthEqualToExpectedLength();
 	}
 
-	public void consolePrintTransferTime() {
+	public String consolePrintTransferTime(String macAddress) {
 		long duration = endTimeMs - startTimeMs;
 		System.out.println("Duration : " + duration);
 		if (duration != 0) {
 			mTransferRateByes = mCurrentLengthBytes / ((double) (endTimeMs - startTimeMs) / 1000);
 			String syncProgress = String.format("%f KB/s", (mTransferRateByes / 1024.0)) + "(Payload Index : " + payloadIndex + ")";
-			System.out.println(syncProgress);
+			System.out.println(macAddress + " " + syncProgress);
+			return syncProgress;
 		}
+		return null;
 	}
 	
 	boolean CRCCheck() {
