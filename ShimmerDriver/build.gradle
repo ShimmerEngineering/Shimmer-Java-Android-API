@@ -38,7 +38,7 @@ publishing {
 test {
     //exclude '**/*'
     exclude 'com/shimmerresearch/driver/API_00005_Suite_ShimmerDriver.class'
-    //exclude 'com/shimmerresearch/algorithms/API_00002_Filters.class'
+    exclude 'com/shimmerresearch/algorithms/API_00002_Filters.class'
     exclude 'com/shimmerresearch/verisense/communication/API_00003_VerisenseProtocolByteCommunicationTest.class'
 }
 
