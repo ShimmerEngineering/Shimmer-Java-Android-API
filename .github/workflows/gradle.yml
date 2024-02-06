@@ -34,7 +34,7 @@ jobs:
       uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
 
     - name: Make gradlew executable
-      run: chmod +x ./gradlew
+      run: chmod +x ./ShimmerDriver/gradlew
       
     - name: Build with Gradle Wrapper
       run: ./ShimmerDriver/gradlew build
