@@ -30,27 +30,23 @@ jobs:
 
     # Configure Gradle for optimal use in GiHub Actions, including caching of downloaded dependencies.
     # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
-    #- name: Setup Gradle
-    #  uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
+    # - name: Setup Gradle
+    #   uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
 
-    #- name: Make gradlew executable
-    #  run: chmod +x ./ShimmerDriver/gradlew
+    # - name: Make gradlew executable
+    #   run: chmod +x ./ShimmerDriver/gradlew
       
-    #- name: Build with Gradle Wrapper
-    #  run: ./ShimmerDriver/gradlew build
-      
-    #- name: Run Test
-    #  run: ./ShimmerDriver/gradlew test
-
+    # - name: Build with Gradle Wrapper
+    #   run: ./ShimmerDriver/gradlew build
+    
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #
-     - name: Setup Gradle
-       uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
-       with:
-         gradle-version: '5.6.3'
-    
-     - name: Build with Gradle 5.6.3
-       run: gradle build
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
+      with:
+        gradle-version: '5.6.3'
+    - name: Build with Gradle 5.6.3
+      run: gradle build
 
 
