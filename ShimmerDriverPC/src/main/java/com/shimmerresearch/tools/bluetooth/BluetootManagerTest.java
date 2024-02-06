@@ -10,6 +10,7 @@ import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 
 public class BluetootManagerTest extends BasicProcessWithCallBack{
@@ -45,7 +46,12 @@ public class BluetootManagerTest extends BasicProcessWithCallBack{
 			if(callbackObject.mState == BT_STATE.CONNECTED){
 				shimmer = (ShimmerPC) manager.getShimmerDeviceBtConnected("COM35");
 				System.out.println("State Connected");
-				shimmer.startStreaming();
+				try {
+					shimmer.startStreaming();
+				} catch (ShimmerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 			

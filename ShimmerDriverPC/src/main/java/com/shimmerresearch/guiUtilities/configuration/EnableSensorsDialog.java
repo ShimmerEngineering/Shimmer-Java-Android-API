@@ -34,7 +34,7 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 	private static JDialog dialog = new JDialog();
 	JPanel panel = new JPanel();
 	
-	public EnableSensorsDialog(ShimmerPC shimmerPC,BasicShimmerBluetoothManagerPc btManager) {
+	public EnableSensorsDialog(ShimmerDevice shimmerPC,BasicShimmerBluetoothManagerPc btManager) {
 		super(shimmerPC,btManager);
 	}
 	
@@ -69,6 +69,15 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 		 btnWriteConfig.addActionListener(new ActionListener() {
 		 	public void actionPerformed(ActionEvent e) {
 		 		//TODO: Write the config from clone to shimmer here
+		 		for(int i=0; i<listOfSensors.length; i++) {
+		 			if(((JCheckBox) listOfSensors[i]).isSelected()) {
+		 				enabledSensorKeys.add(sensorKeys[i]);
+		 			}
+		 		}
+		 		Integer[] sensorIds = new Integer[enabledSensorKeys.size()];
+		 		enabledSensorKeys.toArray(sensorIds);
+		 		clone.setSensorIdsEnabled(sensorIds);
+		 		
 		 		writeConfiguration();
 		 		dialog.dispose();
 		 	}
@@ -96,11 +105,11 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 		 ((JCheckBox)listOfSensors[count]).addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					
-					if(((JCheckBox) listOfSensors[count]).isSelected()) {
-						clone.setSensorEnabledState(sensorKeys[count], true);
-					} else {
-						clone.setSensorEnabledState(sensorKeys[count], false);
-					}
+//					if(((JCheckBox) listOfSensors[count]).isSelected()) {
+//						clone.setSensorEnabledState(sensorKeys[count], true);
+//					} else {
+//						clone.setSensorEnabledState(sensorKeys[count], false);
+//					}
 					
 					//updateCheckboxes(listOfSensors, clone, sensorKeys);
 					

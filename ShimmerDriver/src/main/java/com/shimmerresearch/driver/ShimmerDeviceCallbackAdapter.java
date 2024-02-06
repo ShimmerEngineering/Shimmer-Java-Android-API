@@ -7,6 +7,7 @@ import com.shimmerresearch.bluetooth.BluetoothProgressReportPerDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.exceptions.ShimmerException;
+import com.shimmerresearch.verisense.communication.SyncProgressDetails;
 
 /**
  * Still in development. Trying to figure out the best way to share common code
@@ -92,8 +93,28 @@ public class ShimmerDeviceCallbackAdapter implements Serializable {
 		}
 		
 		if(mShimmerDevice.isAutoStartStreaming()) {
-			mShimmerDevice.startStreaming();
+			try {
+				mShimmerDevice.startStreaming();
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+	}
+	
+	public void newSyncPayloadReceived(int payloadIndex, boolean crcError, double transferRateBytes, String binFilePath) {
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(),new SyncProgressDetails(payloadIndex,crcError, transferRateBytes, binFilePath));
+		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_SYNC_PROGRESS, callBackObject);
+	}
+	
+	public void eraseDataCompleted() {
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), true);
+		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_VERISENSE_ERASE_DATA_COMPLETED, callBackObject);
+	}
+	
+	public void writeOpConfigCompleted() {
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), true);
+		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_VERISENSE_WRITE_OPCONFIG_COMPLETED, callBackObject);
 	}
 	
 	public void hasStopStreaming() {

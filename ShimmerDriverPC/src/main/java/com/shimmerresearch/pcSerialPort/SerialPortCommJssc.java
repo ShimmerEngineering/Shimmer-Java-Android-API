@@ -29,6 +29,8 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 	public String mUniqueId = "";
 	public String mComPort = "";
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;
+	private boolean setRtsOnConnect = true;
+	private boolean setDtrOnConnect = false;
 
 	private transient ShimmerUartListener mShimmerUartListener;
 	private boolean mIsSerialPortReaderStarted = false;
@@ -71,8 +73,8 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
             		SerialPort.DATABITS_8, 
             		SerialPort.STOPBITS_1, 
             		SerialPort.PARITY_NONE, 
-            		true,
-            		false));//Set params.
+            		setRtsOnConnect,
+            		setDtrOnConnect));//Set params.
     		consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
 //            mSerialPort.openPort();//Open serial port
 //            mSerialPort.setParams(
@@ -359,6 +361,22 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 
 	public SerialPort getSerialPort(){
 		return mSerialPort;
+	}
+
+	public boolean isSetRtsOnConnect() {
+		return setRtsOnConnect;
+	}
+
+	public void setRtsOnConnect(boolean setRtsOnConnect) {
+		this.setRtsOnConnect = setRtsOnConnect;
+	}
+
+	public boolean isSetDtrOnConnect() {
+		return setDtrOnConnect;
+	}
+
+	public void setDtrOnConnect(boolean setDtrOnConnect) {
+		this.setDtrOnConnect = setDtrOnConnect;
 	}
 
 }

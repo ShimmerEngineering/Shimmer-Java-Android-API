@@ -172,10 +172,10 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override 
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
 		// process data originating from the Shimmer
-		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 		
 		if(this instanceof SensorLSM303DLHC){
 			//TODO swap Y and Z channels 
@@ -278,7 +278,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	@Override 
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
@@ -310,7 +310,7 @@ public abstract class SensorLSM303 extends AbstractSensor {
 
 	
 	@Override 
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) { 
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) { 
 		
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){

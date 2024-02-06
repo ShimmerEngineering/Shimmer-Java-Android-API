@@ -107,6 +107,7 @@ import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -146,6 +147,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		CONNECTED("Ready"),  // The class is now connected to a remote device
 		STREAMING("Streaming"),  // The class is now connected to a remote device
 		STREAMING_AND_SDLOGGING("Streaming and SD Logging"),
+		STREAMING_LOGGED_DATA("Streaming Logged Data"),
 		SDLOGGING("SD Logging"),
 		CONFIGURING("Configuring"), // The class is now initiating an outgoing connection 
 		CONNECTION_LOST("Lost connection"),
@@ -195,7 +197,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	protected boolean mIamAlive = false;
 	protected abstract void connect(String address,String bluetoothLibrary);
-	protected abstract void dataHandler(ObjectCluster ojc);
+	
 	protected abstract boolean bytesAvailableToBeRead();
 	protected abstract int availableBytes();
 	
@@ -221,10 +223,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract byte readByte();
 	protected abstract void dockedStateChange();
 	
-	private boolean mIsFirstSystemTimestampOffsetStored = false;
-	private double mOffsetFirstTime=-1;
-	private boolean mIsFirstSystemTimestampOffsetPlotStored = false;
-	private double mFirstSystemTimestampPlot = -1;
+	private SystemTimestampPlot systemTimestampPlot = new SystemTimestampPlot();
 
 	private List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
@@ -487,11 +486,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
 	public static final int MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE = 7;
+	public static final int MSG_IDENTIFIER_SYNC_PROGRESS = 10;
 	
 	//Temp here for Bluetooth discovery, pairing and unpairing operations
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_PAIR_UNPAIR_ALL = 11;
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_PAIR_UNPAIR_PER_DEVICE = 12;
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_DISCOVERY_RESULTS = 13;
+	
+	public static final int MSG_IDENTIFIER_VERISENSE_ERASE_DATA_COMPLETED = 14;
+	public static final int MSG_IDENTIFIER_VERISENSE_WRITE_OPCONFIG_COMPLETED = 15;
 
 	//	private boolean mVerboseMode = true;
 	//	private String mParentClassName = "ShimmerPC";
@@ -1139,7 +1142,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		ObjectCluster objectCluster = null;
 		try {
 			objectCluster = buildMsg(packet, fwType, timeSync, pcTimeStamp);
-			objectCluster = processSystemTimestampPlot(objectCluster);
+			objectCluster = systemTimestampPlot.processSystemTimestampPlot(objectCluster);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1147,36 +1150,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		dataHandler(objectCluster);
 	}
 
-	private ObjectCluster processSystemTimestampPlot(ObjectCluster objectCluster) {
-		if(!mIsFirstSystemTimestampOffsetStored) {
-			mIsFirstSystemTimestampOffsetStored = true;
-////			FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
-//			byte[] bSystemTS = objectCluster.mSystemTimeStampBytes;
-//			ByteBuffer bb = ByteBuffer.allocate(8);
-//	    	bb.put(bSystemTS);
-//	    	bb.flip();
-//	    	long systemTimeStamp = bb.getLong();
-	    	long systemTimeStamp = objectCluster.mSystemTimeStamp;
-			mOffsetFirstTime = systemTimeStamp-objectCluster.getTimestampMilliSecs();
-		}
-		
-		double calTimestamp = objectCluster.getTimestampMilliSecs();
-		double systemTimestampPlot = calTimestamp+mOffsetFirstTime;
-		
-		if(!mIsFirstSystemTimestampOffsetPlotStored) {
-			mIsFirstSystemTimestampOffsetPlotStored = true;
-			mFirstSystemTimestampPlot  = systemTimestampPlot;
-		}
-
-		objectCluster.addDataToMap(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, systemTimestampPlot);
-		
-		double systemTimestampPlotZeroed = 0;
-		if(mIsFirstSystemTimestampOffsetPlotStored) {
-			systemTimestampPlotZeroed = systemTimestampPlot - mFirstSystemTimestampPlot;
-		}
-		objectCluster.addCalData(SensorSystemTimeStamp.channelSystemTimestampPlotZeroed, systemTimestampPlotZeroed);
-		return objectCluster;
-	}
 	/**this is to clear the buffer
 	 * 
 	 */
@@ -2714,7 +2687,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//region  --------- START/STOP STREAMING FUNCTIONS --------- 
 	@Override
-	public void startStreaming() {
+	public void startStreaming() throws ShimmerException {
 		//mCurrentLEDStatus=-1;	
 		super.startStreaming();
 		
@@ -2746,8 +2719,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		determineCalibrationParamsForIMU();
 		initaliseDataProcessing();
 		
-		mIsFirstSystemTimestampOffsetStored = false;
-		mIsFirstSystemTimestampOffsetPlotStored = false;
+		systemTimestampPlot.reset();
 		
 		resetCalibratedTimeStamp();
 //		resetPacketLossVariables();
@@ -5623,7 +5595,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	
 	@Override
-	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) throws ShimmerException {
 		super.configureFromClone(shimmerDeviceClone);
 		
 		ShimmerBluetooth cloneShimmerCast = (ShimmerBluetooth) shimmerDeviceClone;

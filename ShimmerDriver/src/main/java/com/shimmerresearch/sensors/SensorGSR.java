@@ -308,7 +308,7 @@ public class SensorGSR extends AbstractSensor {
 
 	@Override
 	//TODO needs to be updated to match ShimmerObject
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		int index = 0;
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			//first process the data originating from the Shimmer sensor
@@ -428,7 +428,7 @@ public class SensorGSR extends AbstractSensor {
 //	}
 
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		int idxConfigSetupByte3 =	9;
 		int bitShiftGSRRange =		1;
 		int maskGSRRange =			0x07;
@@ -438,7 +438,7 @@ public class SensorGSR extends AbstractSensor {
 
 	
 	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		int idxConfigSetupByte3 =	9;
 		int bitShiftGSRRange =		1;
 		int maskGSRRange =			0x07;

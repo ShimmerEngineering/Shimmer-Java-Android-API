@@ -18,6 +18,7 @@ public class BluetoothDeviceDetails {
 	//TODO Testing for GUI feedback - shouldn't really be here 
 	public boolean mAttemptingConnection = false;
 	public BT_STATE mLastConnectionSate = BT_STATE.DISCONNECTED;
+	public boolean isBleDevice = false;
 
 	public BluetoothDeviceDetails(String comPort, String comPortDescription){
 		mComPort = comPort;
@@ -37,10 +38,8 @@ public class BluetoothDeviceDetails {
 
 		if(mac.length()>=12) {
 			mShimmerMacId = mac.toUpperCase();
-			if(mac.contains(":")){
-				mac = mac.replace(":", "");
-			}
-			mShimmerMacIdParsed = mShimmerMacId.substring(8).toUpperCase();
+			mac = mac.replace(":", "").toUpperCase();
+			mShimmerMacIdParsed = mac.substring(8);
 		}
 	}
 
@@ -53,7 +52,8 @@ public class BluetoothDeviceDetails {
 
 	public void checkDeviceType() {
 		if(!mShimmerMacId.equals(UtilShimmer.MAC_ADDRESS_ZEROS)){
-			if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER3)){
+			if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER3)
+					|| mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.SHIMMER3_RN4678_BLE)){
 				mDeviceTypeDetected = DEVICE_TYPE.SHIMMER3;
 			}
 			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.SHIMMER3_OUTPUT.getLabel())){
@@ -76,7 +76,10 @@ public class BluetoothDeviceDetails {
 			}
 			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.MANUFACTURER_NONIN)){
 				mDeviceTypeDetected = DEVICE_TYPE.NONIN_ONYX_II;
-			}
+			} 
+			else if(mFriendlyName.contains(HwDriverShimmerDeviceDetails.SH_SEARCH.BT.VERISENSE)){
+				mDeviceTypeDetected = DEVICE_TYPE.VERISENSE;
+			} 
 			else {
 				mDeviceTypeDetected = DEVICE_TYPE.UNKOWN;
 			}
