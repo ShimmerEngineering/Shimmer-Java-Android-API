@@ -36,7 +36,7 @@ public class VerisenseProtocolByteGrpcCommunicationTest {
 		try {
 			int port = grpcTool.startServer();
 			//	GrpcBLERadioByteCommunication radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14");
-			radio1 = new GrpcBLERadioByteCommunication("e7:45:2c:6d:6f:14","localhost",port);
+			radio1 = new GrpcBLERadioByteCommunication("da:a6:19:f0:4a:d7","localhost",port);
 			//BTHLE\Dev_ec2ee3ebb799
 			//BTHLE\Dev_ca09b224625a
 
@@ -48,6 +48,9 @@ public class VerisenseProtocolByteGrpcCommunicationTest {
 			protocol1 = new VerisenseProtocolByteCommunication(radio1);
 			protocol2 = new VerisenseProtocolByteCommunication(radio2);
 			protocol3 = new VerisenseProtocolByteCommunication(radio3);
+			
+			
+			
 		} catch (Exception e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -381,6 +384,16 @@ public class VerisenseProtocolByteGrpcCommunicationTest {
 		});
 		btnStopSpeedTest3.setBounds(312, 238, 124, 25);
 		frame.getContentPane().add(btnStopSpeedTest3);
+		
+		JButton btnClone = new JButton("Clone");
+		btnClone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				VerisenseProtocolByteCommunication vp = protocol1.deepClone();
+				System.out.println();
+			}
+		});
+		btnClone.setBounds(12, 305, 124, 25);
+		frame.getContentPane().add(btnClone);
 		frame.setVisible(true);
 	}
 

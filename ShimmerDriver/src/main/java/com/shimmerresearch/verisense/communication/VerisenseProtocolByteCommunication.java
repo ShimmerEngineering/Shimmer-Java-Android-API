@@ -1,6 +1,12 @@
 package com.shimmerresearch.verisense.communication;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,8 +48,13 @@ import com.shimmerresearch.verisense.communication.payloads.TimePayload;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
-public class VerisenseProtocolByteCommunication {
+public class VerisenseProtocolByteCommunication implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2252542248058276568L;
+	
 	private static final boolean DEBUG_TX_RX_MESSAGES = true;
 	private static final boolean DEBUG_TX_RX_BYTES = false;
 	
@@ -86,7 +97,7 @@ public class VerisenseProtocolByteCommunication {
 	}
 
 	VerisenseProtocolState mState = VerisenseProtocolState.None;
-	AbstractByteCommunication mByteCommunication;
+	transient AbstractByteCommunication mByteCommunication;
 
 	private EventLogPayload latestEventLogPayload;
 	private StatusPayload latestStatusPayload;
@@ -905,6 +916,24 @@ public class VerisenseProtocolByteCommunication {
 	 */
 	public String getDataFilePath() {
 		return dataFilePath;
+	}
+	
+	public VerisenseProtocolByteCommunication deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return (VerisenseProtocolByteCommunication) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }
