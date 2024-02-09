@@ -1,5 +1,6 @@
 package com.shimmerresearch.verisense.communication.payloads;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +53,7 @@ import com.shimmerresearch.verisense.sensors.SensorMAX86XXX.MAX86XXX_SAMPLE_AVG;
  * @author Mark Nolan
  *
  */
-public class OperationalConfigPayload extends AbstractPayload {
+public class OperationalConfigPayload extends AbstractPayload implements Serializable{
 
 	public static final byte[] DEFAULT_OP_CONFIG_BYTES_FW_1_02_70 = new byte[] {0x5A, 0x00, 0x00, 0x00, 0x00, 0x00,
 			0x20, 0x00, 0x7F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

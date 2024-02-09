@@ -1,5 +1,6 @@
 package com.shimmerresearch.verisense.communication;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -10,7 +11,7 @@ import com.shimmerresearch.verisense.communication.VerisenseMessage.TIMEOUT_MS;
 import com.shimmerresearch.verisense.communication.payloads.AbstractPayload;
 import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.BYTE_COUNT;
 
-public class VerisenseMessage {
+public class VerisenseMessage implements Serializable{
 	
 	public static enum VERISENSE_COMMAND {
 		READ((byte)0x10),

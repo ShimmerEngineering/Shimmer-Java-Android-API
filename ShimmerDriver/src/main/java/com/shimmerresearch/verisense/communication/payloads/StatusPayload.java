@@ -1,5 +1,7 @@
 package com.shimmerresearch.verisense.communication.payloads;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -16,7 +18,7 @@ import com.shimmerresearch.driverUtilities.UtilParseData;
  * @author Mark Nolan
  *
  */
-public class StatusPayload extends AbstractPayload {
+public class StatusPayload extends AbstractPayload implements Serializable{
 	
 	public String verisenseId;
 	public double batteryLevelMillivolts = 0.0;

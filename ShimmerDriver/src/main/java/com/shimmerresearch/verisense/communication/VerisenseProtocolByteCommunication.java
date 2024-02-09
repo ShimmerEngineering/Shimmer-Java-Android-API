@@ -1,6 +1,7 @@
 package com.shimmerresearch.verisense.communication;
 
 import java.io.File;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,7 +43,7 @@ import com.shimmerresearch.verisense.communication.payloads.TimePayload;
 import bolts.Task;
 import bolts.TaskCompletionSource;
 
-public class VerisenseProtocolByteCommunication {
+public class VerisenseProtocolByteCommunication implements Serializable{
 
 	private static final boolean DEBUG_TX_RX_MESSAGES = true;
 	private static final boolean DEBUG_TX_RX_BYTES = false;
@@ -78,7 +79,7 @@ public class VerisenseProtocolByteCommunication {
 	int mNACKCRCcounter;
     private String mRootPathForBinFile=""; 
 	int MaximumNumberOfBytesPerBinFile = 100000000; // 100MB limit (actually 95 MB because 100MB = 102,400KB = 104,857,600 bytes, not 100,000,000 bytes)
-	TaskCompletionSource<VerisenseMessage> mTaskWriteBytes;
+	transient TaskCompletionSource<VerisenseMessage> mTaskWriteBytes;
 	public String dataTransferRate = "";
 	//TODO this might be doubling up on setBluetoothRadioState inside ShimmerDevice, could we reuse that instead?
 	public enum VerisenseProtocolState {
@@ -86,7 +87,7 @@ public class VerisenseProtocolByteCommunication {
 	}
 
 	VerisenseProtocolState mState = VerisenseProtocolState.None;
-	AbstractByteCommunication mByteCommunication;
+	transient AbstractByteCommunication mByteCommunication;
 
 	private EventLogPayload latestEventLogPayload;
 	private StatusPayload latestStatusPayload;

@@ -81,7 +81,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 
 	private static final Integer INVALID_VALUE = -1;
 
-	transient VerisenseProtocolByteCommunication mProtocol;
+    VerisenseProtocolByteCommunication mProtocol;
 
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
 	public DATA_COMPRESSION_MODE dataCompressionMode = DATA_COMPRESSION_MODE.NONE;
@@ -204,7 +204,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	// Verisense Communication
-	transient protected HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
+    protected HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication> mapOfVerisenseProtocolByteCommunication = new HashMap<COMMUNICATION_TYPE, VerisenseProtocolByteCommunication>();
 	private COMMUNICATION_TYPE currentStreamingCommsRoute = COMMUNICATION_TYPE.BLUETOOTH;
 	private transient StatusPayload status;
 	private transient OperationalConfigPayload opConfig;

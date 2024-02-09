@@ -1,5 +1,7 @@
 package com.shimmerresearch.verisense.communication.payloads;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -13,7 +15,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
  * @author Mark Nolan
  *
  */
-public class ProductionConfigPayload extends AbstractPayload {
+public class ProductionConfigPayload extends AbstractPayload implements Serializable{
 
 	public String verisenseId;
 	public String manufacturingOrderNumber;
