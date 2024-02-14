@@ -1258,6 +1258,42 @@ public class UtilShimmer implements Serializable {
 		return modifiedString;
 	}
 
+	public static byte[] joinArrays(byte[] array1, byte[] array2) {
+        // Calculate the length of the joined array
+        int joinedLength = array1.length + array2.length;
+        
+        // Create a new array to hold the joined elements
+        byte[] joinedArray = new byte[joinedLength];
+        
+        // Copy elements from the first array
+        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
+        
+        // Copy elements from the second array
+        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
+        
+        return joinedArray;
+    }
+	
+	public static byte[] removeFirstBytes(byte[] array, int lengthToRemove) {
+        if (array == null || array.length <= lengthToRemove) {
+            return new byte[0]; // Return an empty array if the original array has length 0 or 1
+        }
+        
+        byte[] result = new byte[array.length - lengthToRemove];
+        System.arraycopy(array, lengthToRemove, result, 0, result.length);
+        return result;
+    }
+	
+	public static byte[] removeFirstByte(byte[] array) {
+        if (array == null || array.length <= 1) {
+            return new byte[0]; // Return an empty array if the original array has length 0 or 1
+        }
+        
+        byte[] result = new byte[array.length - 1];
+        System.arraycopy(array, 1, result, 0, result.length);
+        return result;
+    }
+	
 	public static int[] generateSawToothIntSignal(int min, int max, int size, int increment, int startVal) {
 		int[] signal = new int[size];
 		
