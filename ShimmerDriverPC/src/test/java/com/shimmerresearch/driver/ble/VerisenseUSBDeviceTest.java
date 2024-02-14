@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import com.shimmerresearch.comms.SerialPortByteCommunication;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;

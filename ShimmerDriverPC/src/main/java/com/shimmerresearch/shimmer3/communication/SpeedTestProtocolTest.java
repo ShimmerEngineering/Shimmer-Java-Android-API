@@ -2,7 +2,7 @@ package com.shimmerresearch.shimmer3.communication;
 
 import javax.swing.JFrame;
 
-import com.shimmerresearch.driver.ble.SerialPortByteCommunication;
+import com.shimmerresearch.comms.SerialPortByteCommunication;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
 

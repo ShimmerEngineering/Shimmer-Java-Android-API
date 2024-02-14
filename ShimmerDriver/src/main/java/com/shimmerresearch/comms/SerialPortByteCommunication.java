@@ -1,4 +1,4 @@
-package com.shimmerresearch.driver.ble;
+package com.shimmerresearch.comms;
 
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.serialPortInterface.ByteLevelDataCommListener;
