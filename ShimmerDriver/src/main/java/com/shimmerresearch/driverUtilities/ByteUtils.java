@@ -44,5 +44,12 @@ public class ByteUtils {
     	bufferShort.put(bytes);
         return bufferShort.getShort(0);
     }
+    
+    public static byte[] intToByteArray(int value, ByteOrder byteOrder) {
+        ByteBuffer buffer = ByteBuffer.allocate(4);
+        buffer.order(byteOrder);
+        buffer.putInt(value);
+        return buffer.array();
+    }
 
 }
