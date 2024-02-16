@@ -9,7 +9,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.concurrent.*;
 
+
 public class SpeedTestProtocol {
+	public interface SpeedTestResult {
+		public void onNewResult(String result);
+	}
+	SpeedTestResult mSpeedTestListener;
 	AbstractByteCommunication mByteCommunication;
 
     final byte[] ShimmerStopTestSignalCommand = new byte[]{ (byte)0xA4, (byte)0x00 };
@@ -30,6 +35,10 @@ public class SpeedTestProtocol {
 		mByteCommunication.connect();
 	}
 
+	public void setListener(SpeedTestResult listener) {
+		mSpeedTestListener = listener;
+    }
+	
 	/** 
 	 * Disconnect from the Shimmer3 device
 	 */
@@ -136,7 +145,7 @@ public class SpeedTestProtocol {
             				 ByteBuffer buffer = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN);
             				 int intValue = buffer.getInt();
             				 data = UtilShimmer.removeFirstBytes(data, lengthOfPacket);
-            				 System.out.println("COUNT : " + intValue );
+            				 //System.out.println("COUNT : " + intValue );
             				 
             				 if (keepValue != 0)
                              {
@@ -160,6 +169,9 @@ public class SpeedTestProtocol {
                     if (duration!=0) {
 	                    String result = "Effective Throughput (bytes per second): " + (TestSignalTotalEffectiveNumberOfBytes / duration) + ", Number of Bytes Dropped: " + NumberofBytesDropped + ", Numbers Skipped: " + NumberofNumbersSkipped + ", (Duration S): " + duration + "";
 	                    System.out.println(result);
+	                    if (mSpeedTestListener!=null) {
+	                    	mSpeedTestListener.onNewResult(result);
+	                    }
                     }
             		OldTestData = data;
             	}
