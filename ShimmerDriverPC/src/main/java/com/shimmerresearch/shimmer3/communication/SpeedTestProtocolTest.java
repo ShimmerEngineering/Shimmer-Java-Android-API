@@ -37,6 +37,18 @@ public class SpeedTestProtocolTest {
 				// TODO Auto-generated method stub
 				lblNewLabel.setText(result);
 			}
+
+			@Override
+			public void onConnected() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onDisconnected() {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 		try {
 			protocol.connect();
