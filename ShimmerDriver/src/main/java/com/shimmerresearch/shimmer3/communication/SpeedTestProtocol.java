@@ -13,6 +13,8 @@ import java.util.concurrent.*;
 public class SpeedTestProtocol {
 	public interface SpeedTestResult {
 		public void onNewResult(String result);
+		public void onConnected();
+		public void onDisconnected();
 	}
 	SpeedTestResult mSpeedTestListener;
 	AbstractByteCommunication mByteCommunication;
@@ -76,13 +78,17 @@ public class SpeedTestProtocol {
 			@Override
 			public void eventConnected() {
 				// TODO Auto-generated method stub
-				
+				if (mSpeedTestListener!=null) {
+                	mSpeedTestListener.onConnected();
+                }
 			}
 
 			@Override
 			public void eventDisconnected() {
 				// TODO Auto-generated method stub
-				
+				if (mSpeedTestListener!=null) {
+					mSpeedTestListener.onDisconnected();
+                }
 			}
 
 			@Override
