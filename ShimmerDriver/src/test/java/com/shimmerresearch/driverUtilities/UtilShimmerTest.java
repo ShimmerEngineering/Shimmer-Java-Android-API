@@ -8,6 +8,8 @@ public class UtilShimmerTest {
 
 	@Test
 	public void testRemoveFirstByte() {
+		String res = this.getClass().getSimpleName();
+		System.out.println(res);
 		// Original byte array
         byte[] originalArray = { 10, 20, 30, 40, 50 };
         
