@@ -108,5 +108,11 @@ public class CallbackObject {
 		mBluetoothAddress = myBlueAdd;
 		mMyObject = myObject;
 	}
+	
+	public CallbackObject(String myBlueAdd, String comPort, Object myObject) {
+		mBluetoothAddress = myBlueAdd;
+		mComPort = comPort;
+		mMyObject = myObject;
+	}
 
 }

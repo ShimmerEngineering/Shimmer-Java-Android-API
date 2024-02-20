@@ -305,22 +305,22 @@ public class SensorBridgeAmp extends AbstractSensor{
 	}
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled,
-			long pcTimestamp) {
+			double pcTimestampMs) {
 
 //		return processBAAdcChannel(sensorDetails, rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
 
-		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
+		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 		if(mEnableCalibration){
 			int index = sensorDetails.mListOfChannels.size();
 			for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 				if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BRIDGE_AMP_HIGH)){
 					double offset = 60; double vRefP = 3; double gain = 551; 
-					double calData = processBAAdcChannel(channelDetails,rawData,commType,objectCluster,isTimeSyncEnabled,pcTimestamp,offset,vRefP,gain);
+					double calData = processBAAdcChannel(channelDetails,rawData,commType,objectCluster,isTimeSyncEnabled,pcTimestampMs,offset,vRefP,gain);
 					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-2);
 				}
 				else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.BRIDGE_AMP_LOW)){
 					double offset = 1950; double vRefP = 3; double gain = 183.7;  
-					double calData = processBAAdcChannel(channelDetails,rawData,commType,objectCluster,isTimeSyncEnabled,pcTimestamp,offset,vRefP,gain);
+					double calData = processBAAdcChannel(channelDetails,rawData,commType,objectCluster,isTimeSyncEnabled,pcTimestampMs,offset,vRefP,gain);
 					objectCluster.addCalData(channelDetails, calData, objectCluster.getIndexKeeper()-1);
 				}
 				
@@ -341,12 +341,12 @@ public class SensorBridgeAmp extends AbstractSensor{
 	}
 	
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 
 	}
 	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 
 	}
@@ -413,7 +413,7 @@ public class SensorBridgeAmp extends AbstractSensor{
 		return false;
 	}
 	
-	public static double processBAAdcChannel(ChannelDetails channelDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp,
+	public static double processBAAdcChannel(ChannelDetails channelDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs,
 			double offset, double vRefP, double gain){
 //		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestamp);
 //		

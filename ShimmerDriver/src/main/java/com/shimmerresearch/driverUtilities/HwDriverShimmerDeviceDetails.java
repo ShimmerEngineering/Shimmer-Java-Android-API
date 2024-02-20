@@ -1,6 +1,7 @@
 package com.shimmerresearch.driverUtilities;
 
 import com.codeminders.hidapi.HIDDeviceInfo;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 
 /** Holds system HW information of Shimmer supported devices (used by DeviceInfo)
  * 
@@ -190,10 +191,13 @@ public class HwDriverShimmerDeviceDetails {
             }
             
 	        public static final String SHIMMER3 = "Shimmer3";
+	        public static final String SHIMMER3_RN4678_BLE = "S3BLE";
+	        public static final String SHIMMER3_CYW20820_BLE_SUFFIX = "-BLE";
 	        public static final String SHIMMER_ECG_MD = "ShimmerECGmd";
 	        public static final String SHIMMER4 = "Shimmer4";
 	        public static final String RN42 = "RN42";
 	        public static final String RNBT = "RNBT";
+			public static final String VERISENSE = "Verisense";
 
             public static final String[] SHIMMER_DEVICE = new String[] {
             	SHIMMER3,
@@ -201,7 +205,8 @@ public class HwDriverShimmerDeviceDetails {
             	SHIMMER_ECG_MD,
             	SHIMMER4,
             	RN42,
-            	RNBT
+            	RNBT,
+            	VERISENSE
             };
             
 	        public static final String MANUFACTURER_NONIN = "Nonin";

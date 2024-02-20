@@ -1071,6 +1071,9 @@ public class UtilShimmer implements Serializable {
 	    return Math.max(minVal, Math.min(maxVal, valToNudge));
 	}
 
+	public static long nudgeLong(long valToNudge, long minVal, long maxVal) {
+		return Math.max(minVal, Math.min(maxVal, valToNudge));
+	}
 
 	public static boolean isAllZeros(double[][] matrix){
 		if(matrix==null){

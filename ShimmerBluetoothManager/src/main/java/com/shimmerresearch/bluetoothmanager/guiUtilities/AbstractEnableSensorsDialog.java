@@ -19,6 +19,7 @@ public abstract class AbstractEnableSensorsDialog {
 	ShimmerBluetoothManager bluetoothManager;
 	protected Object[] listOfSensors;
 	protected int[] sensorKeys;
+	protected ArrayList<Integer> enabledSensorKeys = new ArrayList<Integer>();
 	protected String[] arraySensors;
 	protected boolean[] listEnabled;
 	public AbstractEnableSensorsDialog(ShimmerDevice shimmer,ShimmerBluetoothManager btManager) {

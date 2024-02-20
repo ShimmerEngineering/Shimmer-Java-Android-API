@@ -113,7 +113,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	
 	//TODO is mSystemTimeStampBytes actually used by anything?
 	private byte[] mSystemTimeStampBytes = new byte[8];
-	public long mSystemTimeStamp = 0;
+	public double mSystemTimeStamp = 0;
 	
 	private double mTimeStampMilliSecs;
 	/**
@@ -677,7 +677,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 //    	bb.flip();
 //    	long systemTimeStamp = bb.getLong();
 //		mObjectClusterBuilder.setSystemTime(systemTimeStamp);
-		mObjectClusterBuilder.setSystemTime(mSystemTimeStamp);
+		mObjectClusterBuilder.setSystemTime((long)mSystemTimeStamp);
 		return mObjectClusterBuilder.build();
 	}
 	
@@ -808,10 +808,10 @@ final public class ObjectCluster implements Cloneable,Serializable{
     	mSystemTimeStamp = bb.getLong();
 	}
 
-	public void setSystemTimeStamp(long systemTimeStamp) {
+	public void setSystemTimeStamp(double systemTimeStamp) {
 		mSystemTimeStamp = systemTimeStamp;
 //		mSystemTimeStampBytes=ByteBuffer.allocate(8).putLong(systemTimeStamp).array();
-		mSystemTimeStampBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(systemTimeStamp).array();
+		mSystemTimeStampBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong((long)systemTimeStamp).array();
 	}
 
 	public boolean isValidObjectCluster() {
