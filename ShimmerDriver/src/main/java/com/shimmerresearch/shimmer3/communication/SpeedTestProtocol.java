@@ -1,5 +1,6 @@
 package com.shimmerresearch.shimmer3.communication;
 
+import com.shimmerresearch.driverUtilities.ByteUtils;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.verisense.communication.AbstractByteCommunication;
@@ -131,12 +132,12 @@ public class SpeedTestProtocol {
                     {
                         TestFirstByteReceived = true;
                         //ProgrammerUtilities.CopyAndRemoveBytes(ref buffer, 1);
-                        byteArray = UtilShimmer.removeFirstByte(byteArray);
+                        byteArray = ByteUtils.removeFirstByte(byteArray);
                         System.out.println(UtilShimmer.bytesToHexString(byteArray));
                     }
             		TestSignalTotalNumberOfBytes += byteArray.length;
             		
-            		byte[] data = UtilShimmer.joinArrays(OldTestData, byteArray);
+            		byte[] data = ByteUtils.joinArrays(OldTestData, byteArray);
             		while(data.length >= lengthOfPacket+1)
                     {
             			
@@ -150,7 +151,7 @@ public class SpeedTestProtocol {
             				 //System.arraycopy(bytesFullPacket, 1, bytes, 0, bytes.length);
             				 ByteBuffer buffer = ByteBuffer.wrap(bytes, 0, 4).order(ByteOrder.LITTLE_ENDIAN);
             				 int intValue = buffer.getInt();
-            				 data = UtilShimmer.removeFirstBytes(data, lengthOfPacket);
+            				 data = ByteUtils.removeFirstBytes(data, lengthOfPacket);
             				 //System.out.println("COUNT : " + intValue );
             				 
             				 if (keepValue != 0)
@@ -166,7 +167,7 @@ public class SpeedTestProtocol {
             				 
                          } else
                          {
-                             data = UtilShimmer.removeFirstByte(data);
+                             data = ByteUtils.removeFirstByte(data);
                              NumberofBytesDropped++;
                          }
                     }
