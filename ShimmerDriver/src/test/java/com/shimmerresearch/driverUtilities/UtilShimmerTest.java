@@ -2,14 +2,16 @@ package com.shimmerresearch.driverUtilities;
 
 import static org.junit.Assert.*;
 
+import java.util.logging.Logger;
+
 import org.junit.Test;
 
 public class UtilShimmerTest {
+	 private static final Logger logger = Logger.getLogger(UtilShimmerTest.class.getName());
 
+	
 	@Test
 	public void testRemoveFirstByte() {
-		String res = this.getClass().getSimpleName();
-		System.out.println(res);
 		// Original byte array
         byte[] originalArray = { 10, 20, 30, 40, 50 };
         
@@ -21,6 +23,7 @@ public class UtilShimmerTest {
         
         // Assert that the modified array matches the expected result
         assertArrayEquals(expectedArray, modifiedArray);
+        logger.info("Executing testRemoveFirstByte -> PASS");
 	}
 	
 	@Test
@@ -36,6 +39,7 @@ public class UtilShimmerTest {
         
         // Assert that the modified array matches the expected result
         assertArrayEquals(expectedArray, modifiedArray);
+        logger.info("Executing testRemoveFirstBytes -> PASS");
 	}
 	
 	 @Test
@@ -54,6 +58,7 @@ public class UtilShimmerTest {
 	        
 	        // Assert that the joined array matches the expected result
 	        assertArrayEquals(expectedArray, joinedArray);
+	        logger.info("Executing testJoinArrays -> PASS");
 	    }
 
 	    @Test
@@ -69,6 +74,7 @@ public class UtilShimmerTest {
 	        
 	        // Assert that the joined array is the same as the first array
 	        assertArrayEquals(array1, joinedArray);
+	        logger.info("Executing testJoinArrays_OneEmptyArray -> PASS");
 	    }
 	 
 }
