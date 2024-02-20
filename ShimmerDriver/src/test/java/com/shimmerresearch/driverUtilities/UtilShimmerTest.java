@@ -27,7 +27,7 @@ public class UtilShimmerTest {
         byte[] originalArray = { 10, 20, 30, 40, 50 };
         
         // Expected result after removing the first byte
-        byte[] expectedArray = { 300, 40, 50 };
+        byte[] expectedArray = { 30, 40, 50 };
         
         // Call the method to remove the first byte
         byte[] modifiedArray = UtilShimmer.removeFirstBytes(originalArray,2);
