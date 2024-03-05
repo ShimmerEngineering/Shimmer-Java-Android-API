@@ -174,6 +174,10 @@ public class VerisenseProtocolByteCommunication implements Serializable{
 		mRadioListenerList.clear();
 	}
 
+	public void resetFileNameOnStreamingLoggedDataFinish() {
+		dataFileName = "";
+	}
+	
 	void handleResponse(VerisenseMessage verisenseMessage) {
 		try {
 			if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.STATUS.responseByte()) {
@@ -188,6 +192,7 @@ public class VerisenseProtocolByteCommunication implements Serializable{
 
 			} else if(verisenseMessage.commandAndProperty == VERISENSE_PROPERTY.DATA.ackByte()) {
 				if (mState.equals(VerisenseProtocolState.StreamingLoggedData)) {
+					resetFileNameOnStreamingLoggedDataFinish();
 					stateChange(VerisenseProtocolState.Connected);
 					for (RadioListener rl : mRadioListenerList) {
 						rl.hasStopStreamLoggedDataCallback();
