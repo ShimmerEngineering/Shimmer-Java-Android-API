@@ -475,7 +475,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	private int mNumOfMemSetCmds = 0;
 	
-	private boolean mSerialPortReadTimeout;
+	protected boolean mSerialPortReadTimeout;
 	
 	public static final int MSG_IDENTIFIER_DATA_PACKET = 2;
 	public static final int MSG_IDENTIFIER_DEVICE_PAIRED = 8;
@@ -1153,7 +1153,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**this is to clear the buffer
 	 * 
 	 */
-	private void clearSerialBuffer() {
+	protected void clearSerialBuffer() {
 		startTimerCheckForSerialPortClear();
 
 		List<Byte> buffer = new ArrayList<Byte>();
