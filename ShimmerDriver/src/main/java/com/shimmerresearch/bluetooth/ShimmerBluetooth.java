@@ -2315,7 +2315,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	
-	private byte[] readBytes(int numBytes, byte btCommand) {
+	protected byte[] readBytes(int numBytes, byte btCommand) {
 		byte[] response = readBytes(numBytes); 
 		if(response==null){
 			printLogDataForDebugging("NULL serial readBytes response for command: " + btCommandToString(btCommand));
@@ -2325,7 +2325,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @param statusByte
 	 */
-	private void parseStatusByte(byte statusByte){
+	protected void parseStatusByte(byte statusByte){
 		Boolean savedDockedState = isDocked();
 		
 		setIsDocked(((statusByte & (0x01 << 0)) > 0)? true:false);
