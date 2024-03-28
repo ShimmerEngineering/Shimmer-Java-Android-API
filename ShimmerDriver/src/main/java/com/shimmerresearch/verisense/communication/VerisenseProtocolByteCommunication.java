@@ -69,8 +69,8 @@ public class VerisenseProtocolByteCommunication implements Serializable{
 	public CircularFifoBuffer rxVerisenseMessageBuffer = new CircularFifoBuffer(5);
 
 	public int PreviouslyWrittenPayloadIndex;
-	String dataFileName = "";
-	String dataFilePath = "";
+	protected String dataFileName = "";
+	protected String dataFilePath = "";
 	String binFileFolderDir = "";
 	private String trialName = "DefaultTrial";
 	public String participantID = "DefaultParticipant";
@@ -87,7 +87,7 @@ public class VerisenseProtocolByteCommunication implements Serializable{
 	}
 
 	VerisenseProtocolState mState = VerisenseProtocolState.None;
-	transient AbstractByteCommunication mByteCommunication;
+	protected transient AbstractByteCommunication mByteCommunication;
 
 	private EventLogPayload latestEventLogPayload;
 	private StatusPayload latestStatusPayload;
@@ -373,7 +373,7 @@ public class VerisenseProtocolByteCommunication implements Serializable{
 		mNACKCRCcounter = 0;
 	}
 
-	void createBinFile(VerisenseMessage verisenseMessage, boolean crcError) {
+	protected void createBinFile(VerisenseMessage verisenseMessage, boolean crcError) {
 		try {
 			// var asm = RealmService.GetSensorbyID(Asm_uuid.ToString());
 			// var trialSettings = RealmService.LoadTrialSettings();
@@ -411,7 +411,7 @@ public class VerisenseProtocolByteCommunication implements Serializable{
 		}
 	}
 
-	void WritePayloadToBinFile(VerisenseMessage verisenseMessage) {
+	protected void WritePayloadToBinFile(VerisenseMessage verisenseMessage) {
 
 		if (PreviouslyWrittenPayloadIndex != verisenseMessage.payloadIndex) {
 			try {
