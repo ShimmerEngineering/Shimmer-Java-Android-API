@@ -77,6 +77,8 @@ import com.shimmerresearch.verisense.sensors.SensorVerisenseClock;
  */
 public class VerisenseDevice extends ShimmerDevice implements Serializable{
 
+	public static final String VERISENSE_PREFIX = "Verisense";
+	
 	private static final long serialVersionUID = -5496745972549472824L;
 
 	private static final Integer INVALID_VALUE = -1;

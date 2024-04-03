@@ -50,6 +50,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -3447,6 +3448,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param bufferInquiry
 	 */
 	protected void interpretInqResponse(byte[] bufferInquiry){
+		try {
 		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 			setPacketSize(mTimeStampPacketByteSize +bufferInquiry[3]*2); 
 			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
@@ -3513,6 +3515,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			System.arraycopy(bufferInquiry, 4, signalIdArray, 0, mNChannels); // this is 4 because there is no config byte
 			interpretDataPacketFormat(mNChannels,signalIdArray);
 		}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			try {
+				disconnect();
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	/** No need for this any more with correct usage of EnabledSensors, DerivedSensors and the SensorMap */
