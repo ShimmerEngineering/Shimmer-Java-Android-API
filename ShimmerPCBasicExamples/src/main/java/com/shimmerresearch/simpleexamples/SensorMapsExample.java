@@ -6,9 +6,11 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.grpc.ShimmerGRPC;
@@ -42,6 +44,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.Canvas;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -54,9 +58,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	static ShimmerDevice shimmerDevice;
 	static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
 	BasicPlotManagerPC plotManager = new BasicPlotManagerPC();
-	String btComport;
+	static String btComport;
 	final Chart2D mChart = new Chart2D();
-	
+	private JTextField textFieldSamplingRate;
+	static JLabel lblPRR;
 	
 	/**
 	 * Initialize the contents of the frame
@@ -64,17 +69,17 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	 */
 	public void initialize() {
 		frame = new JFrame("Shimmer SensorMaps Example");
-		frame.setBounds(100, 100, 842, 591);
+		frame.setBounds(100, 100, 1000, 591);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JLabel lblSetComPort = new JLabel("Set COM Port");
-		lblSetComPort.setBounds(10, 60, 119, 23);
+		JLabel lblSetComPort = new JLabel("Set COM Port (e.g. COMX) or Mac Address (e.g. XX:XX:XX:XX:XX:XX)");
+		lblSetComPort.setBounds(10, 25, 611, 23);
 		frame.getContentPane().add(lblSetComPort);
 		
 		textField = new JTextField();
 		textField.setToolTipText("for example COM1, COM2, etc");
-		textField.setBounds(10, 91, 144, 29);
+		textField.setBounds(10, 56, 144, 29);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
@@ -93,7 +98,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(185, 90, 199, 31);
+		btnConnect.setBounds(185, 55, 199, 31);
 		frame.getContentPane().add(btnConnect);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
@@ -105,7 +110,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(415, 90, 187, 31);
+		btnDisconnect.setBounds(415, 55, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
 		JButton btnSetBlinkLED = new JButton("Set Blink LED (Random)");
@@ -124,7 +129,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			    }
 			}
 		});
-		btnSetBlinkLED.setBounds(625, 90, 187, 31);
+		btnSetBlinkLED.setBounds(625, 55, 187, 31);
 		frame.getContentPane().add(btnSetBlinkLED);
 		
 		
@@ -137,7 +142,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(textPaneStatus);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 638, 23);
+		menuBar.setBounds(0, 0, 984, 23);
 		frame.getContentPane().add(menuBar);
 		
 		JMenu mnTools = new JMenu("Tools");
@@ -185,7 +190,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mnTools.add(mntmDeviceConfiguration);
 		
 		JPanel plotPanel = new JPanel();
-		plotPanel.setBounds(10, 236, 611, 272);
+		plotPanel.setBounds(10, 250, 611, 272);
 		frame.getContentPane().add(plotPanel);
 		plotPanel.setLayout(null);
 		
@@ -247,6 +252,30 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnTakeSnapshot.setBounds(625, 181, 187, 31);
 		frame.getContentPane().add(btnTakeSnapshot);
 		
+		textFieldSamplingRate = new JTextField();
+		textFieldSamplingRate.setToolTipText("for example COM1, COM2, etc");
+		textFieldSamplingRate.setColumns(10);
+		textFieldSamplingRate.setBounds(10, 99, 144, 29);
+		frame.getContentPane().add(textFieldSamplingRate);
+		
+		JButton btnWriteSamplingRate = new JButton("Write Sampling Rate");
+		btnWriteSamplingRate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ShimmerDevice sd = ((ShimmerDevice)btManager.getShimmerDeviceBtConnected(btComport));
+				ShimmerDevice cloned = sd.deepClone();
+				cloned.setSamplingRateShimmer(Double.parseDouble(textFieldSamplingRate.getText()));
+				AssembleShimmerConfig.generateSingleShimmerConfig(cloned, COMMUNICATION_TYPE.BLUETOOTH);
+                btManager.configureShimmer(cloned);
+			}
+		});
+		btnWriteSamplingRate.setToolTipText("attempt connection to Shimmer device");
+		btnWriteSamplingRate.setBounds(185, 97, 199, 31);
+		frame.getContentPane().add(btnWriteSamplingRate);
+		
+		lblPRR = new JLabel("Packet Reception Rate: ");
+		lblPRR.setBounds(10, 228, 372, 14);
+		frame.getContentPane().add(lblPRR);
+		
 		plotManager.setTitle("Plot");		
 	}
 
@@ -257,6 +286,18 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		s.setWaitForData(btManager.callBackObject);		
 		//s.setWaitForData(shimmer);
 	}
+	
+	static Timer timer = null;
+    static class PRRTask extends TimerTask {
+        @Override
+        public void run() {
+        	ShimmerDevice sd = ((ShimmerDevice)btManager.getShimmerDeviceBtConnected(btComport));
+        	if (sd!=null) {
+        		lblPRR.setText("Packet Reception Rate: " +Double.toString(sd.getPacketReceptionRateOverall()));
+        	}
+        }
+    }
+	
 	
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
@@ -273,6 +314,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			if (callbackObject.mState == BT_STATE.CONNECTING) {
 				textPaneStatus.setText("connecting...");
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
+				if (timer!=null){
+                    timer.cancel();
+                    timer = new Timer();
+                }
 				textPaneStatus.setText("connected");
 				//shimmer = (ShimmerPC) btManager.getShimmerDeviceBtConnected(btComport);
 //				shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
@@ -280,13 +325,28 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
 //					|| callbackObject.mState == BT_STATE.NONE
 					|| callbackObject.mState == BT_STATE.CONNECTION_LOST){
+				if (timer!=null) {
+                    timer.cancel();
+                    timer = null;
+                }
 				textPaneStatus.setText("disconnected");				
+			}else if (callbackObject.mState == BT_STATE.STREAMING) {
+				if (timer!=null){
+                    timer.cancel();
+                    timer = new Timer();
+                } else {
+                    timer = new Timer();
+                }
+                // Schedule a task to be executed after a delay of 2 seconds
+                timer.schedule(new PRRTask(), 0 , 2000);
+			
 			}
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
 			CallbackObject callbackObject = (CallbackObject)object;
 			int msg = callbackObject.mIndicator;
 			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
 				textPaneStatus.setText("device fully initialized");
+				textFieldSamplingRate.setText(Double.toString(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).getSamplingRateShimmer()));
 			}
 			if (msg == ShimmerPC.NOTIFICATION_SHIMMER_STOP_STREAMING) {
 				textPaneStatus.setText("device stopped streaming");
