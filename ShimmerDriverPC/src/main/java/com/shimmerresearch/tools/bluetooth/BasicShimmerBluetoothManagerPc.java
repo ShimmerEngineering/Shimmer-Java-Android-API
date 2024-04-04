@@ -178,7 +178,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	}
 	
 	@Override
-	protected void connectShimmer3BleGrpc(BluetoothDeviceDetails bdd) {
+	public void connectShimmer3BleGrpc(BluetoothDeviceDetails bdd) {
 		ShimmerGRPC shimmer;
 		
 		if(!shimmer3BleMacIdList.contains(bdd.mShimmerMacId)) {

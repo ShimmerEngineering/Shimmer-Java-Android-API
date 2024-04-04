@@ -9,14 +9,16 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.exceptions.ShimmerException;
+import com.shimmerresearch.grpc.ShimmerGRPC;
 import com.shimmerresearch.guiUtilities.configuration.EnableSensorsDialog;
 import com.shimmerresearch.guiUtilities.configuration.SensorConfigDialog;
 import com.shimmerresearch.guiUtilities.configuration.SignalsToPlotDialog;
 import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
-
+import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import info.monitorenter.gui.chart.Chart2D;
 
 import javax.swing.JLabel;
@@ -49,12 +51,13 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	private JFrame frame;
 	private JTextField textField;
 	JTextPane textPaneStatus;
-	static ShimmerPC shimmer = new ShimmerPC("ShimmerDevice"); 
 	static ShimmerDevice shimmerDevice;
 	static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
 	BasicPlotManagerPC plotManager = new BasicPlotManagerPC();
 	String btComport;
 	final Chart2D mChart = new Chart2D();
+	
+	
 	/**
 	 * Initialize the contents of the frame
 	 * @wbp.parser.entryPoint
@@ -80,7 +83,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				btComport = textField.getText();
-				btManager.connectShimmerThroughCommPort(btComport);
+				if (btComport.length()==17) {
+					BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, "ShimmerGRPC");
+					btManager.connectShimmer3BleGrpc(bdd);
+				} else {
+					btManager.connectShimmerThroughCommPort(btComport);
+				}
 				
 			}
 		});
@@ -92,7 +100,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				btManager.disconnectShimmer(shimmer);
+				btManager.disconnectShimmer(btComport);
 				
 			}
 		});
@@ -107,9 +115,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			    	Random random = new Random();
 			    	int ledvalue = random.nextInt(3-0)+0;
 			    	System.out.println("LED Value to Write: " + ledvalue);
-			    	shimmer.writeLEDCommand(ledvalue);
+			    	((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).writeLEDCommand(ledvalue);
 			    	Thread.sleep(400);//make sure to wait for the cmd to be written.
-			    	int currentledvalue = shimmer.getCurrentLEDStatus();
+			    	int currentledvalue = ((ShimmerPC)btManager.getShimmerDeviceBtConnected(btComport)).getCurrentLEDStatus();
 			    	System.out.println("Current ED Value: " + currentledvalue);
 			    } catch (Exception e) {
 			   
@@ -140,9 +148,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				//Ensure the Shimmer is not streaming or SD logging before configuring it
-				if(shimmer.isConnected()) {
-					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
-						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmer,btManager);
+				if(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isConnected()) {
+					if(!((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isStreaming() && !((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isSDLogging()) {
+						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)),btManager);
 						sensorsDialog.showDialog();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -161,9 +169,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mntmDeviceConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				if(shimmer.isConnected()) {
-					if(!shimmer.isStreaming() && !shimmer.isSDLogging()) {
-						SensorConfigDialog configDialog = new SensorConfigDialog(shimmer,btManager);
+				if(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isConnected()) {
+					if(!((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isStreaming() && !((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isSDLogging()) {
+						SensorConfigDialog configDialog = new SensorConfigDialog(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)),btManager);
 						configDialog.showDialog();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -175,7 +183,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		mnTools.add(mntmDeviceConfiguration);
-		
 		
 		JPanel plotPanel = new JPanel();
 		plotPanel.setBounds(10, 236, 611, 272);
@@ -192,7 +199,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mntmSignalsToPlot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SignalsToPlotDialog signalsToPlotDialog = new SignalsToPlotDialog();
-				signalsToPlotDialog.initialize(shimmer, plotManager, mChart);
+				signalsToPlotDialog.initialize(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)), plotManager, mChart);
 			}
 		});
 		mnTools.add(mntmSignalsToPlot);
@@ -202,7 +209,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				try {
-					shimmer.startStreaming();
+					((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).startStreaming();
 				} catch (ShimmerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -217,7 +224,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnStopStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				shimmer.stopStreaming();
+				((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).stopStreaming();
 				
 			}
 		});
@@ -267,7 +274,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				textPaneStatus.setText("connecting...");
 			} else if (callbackObject.mState == BT_STATE.CONNECTED) {
 				textPaneStatus.setText("connected");
-				shimmer = (ShimmerPC) btManager.getShimmerDeviceBtConnected(btComport);
+				//shimmer = (ShimmerPC) btManager.getShimmerDeviceBtConnected(btComport);
 //				shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
 				//shimmer.startStreaming();
 			} else if (callbackObject.mState == BT_STATE.DISCONNECTED
