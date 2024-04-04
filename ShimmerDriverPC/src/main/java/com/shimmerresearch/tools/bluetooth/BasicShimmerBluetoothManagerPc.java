@@ -146,7 +146,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
     }
 	
 	@Override
-	protected void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
+	public void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
 		VerisenseDevice verisenseDevice;
 		
 		if(!verisenseMacIdList.contains(bdd.mShimmerMacId)) {

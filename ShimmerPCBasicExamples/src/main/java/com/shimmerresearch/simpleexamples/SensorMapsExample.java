@@ -20,6 +20,7 @@ import com.shimmerresearch.guiUtilities.configuration.SignalsToPlotDialog;
 import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
+import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import info.monitorenter.gui.chart.Chart2D;
 
@@ -30,6 +31,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextPane;
@@ -49,6 +51,7 @@ import java.util.TimerTask;
 import java.awt.Canvas;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import javax.swing.JComboBox;
 
 public class SensorMapsExample extends BasicProcessWithCallBack {
 	
@@ -62,7 +65,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	final Chart2D mChart = new Chart2D();
 	private JTextField textFieldSamplingRate;
 	static JLabel lblPRR;
-	
+	JComboBox<String> comboBox;
 	/**
 	 * Initialize the contents of the frame
 	 * @wbp.parser.entryPoint
@@ -89,8 +92,13 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				
 				btComport = textField.getText();
 				if (btComport.length()==17) {
-					BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, "ShimmerGRPC");
-					btManager.connectShimmer3BleGrpc(bdd);
+					if (comboBox.getSelectedItem().equals("Shimmer3")) {
+						BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, "Shimmer3BLE");
+						btManager.connectShimmer3BleGrpc(bdd);	
+					} else if (comboBox.getSelectedItem().equals("Verisense")) {
+						BluetoothDeviceDetails bdd = new BluetoothDeviceDetails(btComport, btComport, "ShimmerGRPC");
+						btManager.connectVerisenseDevice(bdd);	
+					}
 				} else {
 					btManager.connectShimmerThroughCommPort(btComport);
 				}
@@ -98,7 +106,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(185, 55, 199, 31);
+		btnConnect.setBounds(245, 55, 199, 31);
 		frame.getContentPane().add(btnConnect);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
@@ -110,7 +118,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(415, 55, 187, 31);
+		btnDisconnect.setBounds(475, 55, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
 		JButton btnSetBlinkLED = new JButton("Set Blink LED (Random)");
@@ -129,7 +137,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			    }
 			}
 		});
-		btnSetBlinkLED.setBounds(625, 55, 187, 31);
+		btnSetBlinkLED.setBounds(685, 55, 187, 31);
 		frame.getContentPane().add(btnSetBlinkLED);
 		
 		
@@ -214,7 +222,13 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				try {
-					((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).startStreaming();
+					ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComport);
+					if (device instanceof VerisenseDevice) {
+						((VerisenseDevice)device).startStreaming();
+					}else{
+						((ShimmerBluetooth)device).startStreaming();
+					}
+					
 				} catch (ShimmerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -269,12 +283,19 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnWriteSamplingRate.setToolTipText("attempt connection to Shimmer device");
-		btnWriteSamplingRate.setBounds(185, 97, 199, 31);
+		btnWriteSamplingRate.setBounds(245, 97, 199, 31);
 		frame.getContentPane().add(btnWriteSamplingRate);
 		
 		lblPRR = new JLabel("Packet Reception Rate: ");
 		lblPRR.setBounds(10, 228, 372, 14);
 		frame.getContentPane().add(lblPRR);
+		String[] options = {"Shimmer3", "Verisense"};
+        
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(options);
+        comboBox = new JComboBox<>(options);
+        comboBox.setModel(model);
+		comboBox.setBounds(164, 59, 71, 22);
+		frame.getContentPane().add(comboBox);
 		
 		plotManager.setTitle("Plot");		
 	}
@@ -298,6 +319,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
         }
     }
 	
+    
 	
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
@@ -346,7 +368,13 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			int msg = callbackObject.mIndicator;
 			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
 				textPaneStatus.setText("device fully initialized");
-				textFieldSamplingRate.setText(Double.toString(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).getSamplingRateShimmer()));
+				ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComport);
+				if (device instanceof VerisenseDevice) {
+					
+					textFieldSamplingRate.setText(Double.toString(((VerisenseDevice)device).getSamplingRateShimmer()));
+				}else{
+					textFieldSamplingRate.setText(Double.toString(((ShimmerBluetooth)device).getSamplingRateShimmer()));
+				}
 			}
 			if (msg == ShimmerPC.NOTIFICATION_SHIMMER_STOP_STREAMING) {
 				textPaneStatus.setText("device stopped streaming");
