@@ -19,6 +19,7 @@ import com.shimmerresearch.guiUtilities.configuration.SensorConfigDialog;
 import com.shimmerresearch.guiUtilities.configuration.SignalsToPlotDialog;
 import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.tools.LoggingPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.SyncProgressDetails;
@@ -38,6 +39,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenu;
 import java.awt.event.KeyAdapter;
@@ -69,6 +72,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	static JLabel lblPRR;
 	JComboBox<String> comboBox;
 	JLabel lblFilePath;
+	LoggingPC lpc;
+	JCheckBox chckbxWriteDataToFile;
 
 	String[] options = {"Shimmer3", "Verisense"};
 	/**
@@ -235,6 +240,11 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnStartStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
+				if (chckbxWriteDataToFile.isSelected()) {
+					String ts = Long.toString(System.currentTimeMillis());
+                	lpc = new LoggingPC(ts+"_test.csv");
+				}
+				
 				try {
 					ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComport);
 					if (device instanceof VerisenseDevice) {
@@ -256,6 +266,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JButton btnStopStreaming = new JButton("STOP STREAMING");
 		btnStopStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				if (lpc!=null) {
+					lpc.closeFile();
+					lpc=null;
+				}
+				
 				ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComport);
 				try {
 				if (device instanceof VerisenseDevice) {
@@ -346,15 +362,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				VerisenseDevice device = (VerisenseDevice)btManager.getShimmerDeviceBtConnected(btComport);
 				try {
 				
-					((VerisenseProtocolByteCommunication)device.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH)).eraseDataTask().wait();
-					lblFilePath.setText("Erased Data");
+					((VerisenseProtocolByteCommunication)device.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH)).eraseDataTask();
+					
 				} catch (ShimmerException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				} 
 			}
 		});
 		btnEraseDataverisense.setBounds(632, 97, 187, 31);
@@ -363,6 +376,19 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		lblFilePath = new JLabel(" ");
 		lblFilePath.setBounds(12, 253, 611, 14);
 		frame.getContentPane().add(lblFilePath);
+		
+		chckbxWriteDataToFile = new JCheckBox("Write Data to File");
+		chckbxWriteDataToFile.setBounds(829, 185, 242, 23);
+		chckbxWriteDataToFile.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+
+                } else {
+
+                }
+            }
+        });
+		frame.getContentPane().add(chckbxWriteDataToFile);
 		
 		plotManager.setTitle("Plot");		
 	}
@@ -460,7 +486,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
 			System.out.println("Shimmer MSG_IDENTIFIER_DATA_PACKET");
 			ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
-			
+			if (lpc!=null) {
+				lpc.logData(objc);
+			}
 			try {
 				plotManager.filterDataAndPlot(objc);
 			} catch (Exception e) {
