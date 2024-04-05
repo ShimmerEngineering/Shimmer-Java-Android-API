@@ -21,6 +21,7 @@ import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 import com.shimmerresearch.verisense.VerisenseDevice;
+import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import info.monitorenter.gui.chart.Chart2D;
 
@@ -121,25 +122,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnDisconnect.setBounds(475, 55, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
-		JButton btnSetBlinkLED = new JButton("Set Blink LED (Random)");
-		btnSetBlinkLED.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			    try {
-			    	Random random = new Random();
-			    	int ledvalue = random.nextInt(3-0)+0;
-			    	System.out.println("LED Value to Write: " + ledvalue);
-			    	((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).writeLEDCommand(ledvalue);
-			    	Thread.sleep(400);//make sure to wait for the cmd to be written.
-			    	int currentledvalue = ((ShimmerPC)btManager.getShimmerDeviceBtConnected(btComport)).getCurrentLEDStatus();
-			    	System.out.println("Current ED Value: " + currentledvalue);
-			    } catch (Exception e) {
-			   
-			    }
-			}
-		});
-		btnSetBlinkLED.setBounds(685, 55, 187, 31);
-		frame.getContentPane().add(btnSetBlinkLED);
-		
 		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
 		lblShimmerStatus.setBounds(10, 139, 144, 23);
@@ -159,17 +141,31 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JMenuItem mntmSelectSensors = new JMenuItem("Select sensors");
 		mntmSelectSensors.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				ShimmerDevice SD = btManager.getShimmerDeviceBtConnected(btComport);
+				boolean connected = false;
+				if (SD!=null) {
+					if (SD instanceof VerisenseDevice) {
+						VerisenseDevice vd = (VerisenseDevice) SD;
+						if (vd.getBluetoothRadioState().equals(BT_STATE.CONNECTED)){
+							connected = true;
+						}
+						
+			            
+					} else {
+						ShimmerBluetooth sb = (ShimmerBluetooth) SD;
+						if (sb.getBluetoothRadioState().equals(BT_STATE.CONNECTED)){
+							connected = true;
+						}
+					}
+				}
 				
 				//Ensure the Shimmer is not streaming or SD logging before configuring it
-				if(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isConnected()) {
-					if(!((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isStreaming() && !((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isSDLogging()) {
-						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)),btManager);
+				if(connected) {
+						EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(((ShimmerDevice)btManager.getShimmerDeviceBtConnected(btComport)),btManager);
 						sensorsDialog.showDialog();
-					} else {
-						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
-					}
+					
 				} else {
-					JOptionPane.showMessageDialog(frame, "No device connected!", "Info", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Device not in a connected state!", "Info", JOptionPane.WARNING_MESSAGE);
 				}
 				
 //				EnableSensorsDialog sensorsDialog = new EnableSensorsDialog(shimmerDevice);
@@ -182,16 +178,30 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mntmDeviceConfiguration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				if(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isConnected()) {
-					if(!((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isStreaming() && !((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).isSDLogging()) {
-						SensorConfigDialog configDialog = new SensorConfigDialog(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)),btManager);
-						configDialog.showDialog();
+				ShimmerDevice SD = btManager.getShimmerDeviceBtConnected(btComport);
+				boolean connected = false;
+				if (SD!=null) {
+					if (SD instanceof VerisenseDevice) {
+						VerisenseDevice vd = (VerisenseDevice) SD;
+						if (vd.getBluetoothRadioState().equals(BT_STATE.CONNECTED)){
+							connected = true;
+						}
+						
+			            
 					} else {
-						JOptionPane.showMessageDialog(frame, "Cannot configure sensors!\nDevice is streaming or SDLogging", "Warning", JOptionPane.WARNING_MESSAGE);
+						ShimmerBluetooth sb = (ShimmerBluetooth) SD;
+						if (sb.getBluetoothRadioState().equals(BT_STATE.CONNECTED)){
+							connected = true;
+						}
 					}
-				} else {
-					JOptionPane.showMessageDialog(frame, "No device connected!", "Info", JOptionPane.WARNING_MESSAGE);
 				}
+				if(connected) {
+					SensorConfigDialog configDialog = new SensorConfigDialog(((ShimmerDevice)btManager.getShimmerDeviceBtConnected(btComport)),btManager);
+					configDialog.showDialog();
+				
+			} else {
+				JOptionPane.showMessageDialog(frame, "Device not in a connected state!", "Info", JOptionPane.WARNING_MESSAGE);
+			}	
 				
 			}
 		});
@@ -212,7 +222,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mntmSignalsToPlot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SignalsToPlotDialog signalsToPlotDialog = new SignalsToPlotDialog();
-				signalsToPlotDialog.initialize(((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)), plotManager, mChart);
+				signalsToPlotDialog.initialize(((ShimmerDevice)btManager.getShimmerDeviceBtConnected(btComport)), plotManager, mChart);
 			}
 		});
 		mnTools.add(mntmSignalsToPlot);
@@ -242,9 +252,20 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JButton btnStopStreaming = new JButton("STOP STREAMING");
 		btnStopStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComport);
+				try {
+				if (device instanceof VerisenseDevice) {
+					
+					((VerisenseDevice)device).stopStreaming();
+
+				}else{
+					((ShimmerBluetooth)device).stopStreaming();
+				}
 				
-				((ShimmerBluetooth)btManager.getShimmerDeviceBtConnected(btComport)).stopStreaming();
-				
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnStopStreaming.setBounds(415, 181, 187, 31);
@@ -272,7 +293,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		textFieldSamplingRate.setBounds(10, 99, 144, 29);
 		frame.getContentPane().add(textFieldSamplingRate);
 		
-		JButton btnWriteSamplingRate = new JButton("Write Sampling Rate");
+		JButton btnWriteSamplingRate = new JButton("Write Sampling Rate (Shimmer3)");
 		btnWriteSamplingRate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ShimmerDevice sd = ((ShimmerDevice)btManager.getShimmerDeviceBtConnected(btComport));
@@ -291,11 +312,29 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(lblPRR);
 		String[] options = {"Shimmer3", "Verisense"};
         
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(options);
         comboBox = new JComboBox<>(options);
-        comboBox.setModel(model);
-		comboBox.setBounds(164, 59, 71, 22);
+        comboBox.setBounds(164, 59, 71, 22);
 		frame.getContentPane().add(comboBox);
+		
+		JButton btnNewButton = new JButton("Sync (Verisense)");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				VerisenseDevice device = (VerisenseDevice)btManager.getShimmerDeviceBtConnected(btComport);
+				try {
+				
+					((VerisenseProtocolByteCommunication)device.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH)).readLoggedData();
+            
+
+				
+				
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnNewButton.setBounds(475, 97, 187, 31);
+		frame.getContentPane().add(btnNewButton);
 		
 		plotManager.setTitle("Plot");		
 	}
@@ -368,7 +407,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			int msg = callbackObject.mIndicator;
 			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
 				textPaneStatus.setText("device fully initialized");
-				ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComport);
+				ShimmerDevice device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
 				if (device instanceof VerisenseDevice) {
 					
 					textFieldSamplingRate.setText(Double.toString(((VerisenseDevice)device).getSamplingRateShimmer()));
