@@ -21,6 +21,7 @@ import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 import com.shimmerresearch.verisense.VerisenseDevice;
+import com.shimmerresearch.verisense.communication.SyncProgressDetails;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import info.monitorenter.gui.chart.Chart2D;
@@ -67,13 +68,16 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	private JTextField textFieldSamplingRate;
 	static JLabel lblPRR;
 	JComboBox<String> comboBox;
+	JLabel lblFilePath;
+
+	String[] options = {"Shimmer3", "Verisense"};
 	/**
 	 * Initialize the contents of the frame
 	 * @wbp.parser.entryPoint
 	 */
 	public void initialize() {
 		frame = new JFrame("Shimmer SensorMaps Example");
-		frame.setBounds(100, 100, 1000, 591);
+		frame.setBounds(100, 100, 1200, 591);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -107,7 +111,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
-		btnConnect.setBounds(245, 55, 199, 31);
+		btnConnect.setBounds(290, 56, 199, 31);
 		frame.getContentPane().add(btnConnect);
 		
 		JButton btnDisconnect = new JButton("DISCONNECT");
@@ -119,7 +123,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
-		btnDisconnect.setBounds(475, 55, 187, 31);
+		btnDisconnect.setBounds(520, 56, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
 		
 		
@@ -132,7 +136,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(textPaneStatus);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 984, 23);
+		menuBar.setBounds(0, 0, 1184, 23);
 		frame.getContentPane().add(menuBar);
 		
 		JMenu mnTools = new JMenu("Tools");
@@ -208,13 +212,13 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		mnTools.add(mntmDeviceConfiguration);
 		
 		JPanel plotPanel = new JPanel();
-		plotPanel.setBounds(10, 250, 611, 272);
+		plotPanel.setBounds(10, 269, 1164, 272);
 		frame.getContentPane().add(plotPanel);
 		plotPanel.setLayout(null);
 		
 
 		mChart.setLocation(12, 13);
-		mChart.setSize(587, 246);
+		mChart.setSize(1142, 246);
 		plotPanel.add(mChart);
 		plotManager.addChart(mChart);
 		
@@ -304,16 +308,16 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		btnWriteSamplingRate.setToolTipText("attempt connection to Shimmer device");
-		btnWriteSamplingRate.setBounds(245, 97, 199, 31);
+		btnWriteSamplingRate.setBounds(164, 98, 220, 31);
 		frame.getContentPane().add(btnWriteSamplingRate);
 		
 		lblPRR = new JLabel("Packet Reception Rate: ");
 		lblPRR.setBounds(10, 228, 372, 14);
 		frame.getContentPane().add(lblPRR);
-		String[] options = {"Shimmer3", "Verisense"};
         
-        comboBox = new JComboBox<>(options);
-        comboBox.setBounds(164, 59, 71, 22);
+		DefaultComboBoxModel<String> comboModel = new DefaultComboBoxModel<String>(options);
+        comboBox = new JComboBox<>(comboModel);
+        comboBox.setBounds(164, 59, 116, 22);
 		frame.getContentPane().add(comboBox);
 		
 		JButton btnNewButton = new JButton("Sync (Verisense)");
@@ -333,8 +337,32 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				}
 			}
 		});
-		btnNewButton.setBounds(475, 97, 187, 31);
+		btnNewButton.setBounds(415, 97, 187, 31);
 		frame.getContentPane().add(btnNewButton);
+		
+		JButton btnEraseDataverisense = new JButton("Erase Data (Verisense)");
+		btnEraseDataverisense.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				VerisenseDevice device = (VerisenseDevice)btManager.getShimmerDeviceBtConnected(btComport);
+				try {
+				
+					((VerisenseProtocolByteCommunication)device.getMapOfVerisenseProtocolByteCommunication().get(COMMUNICATION_TYPE.BLUETOOTH)).eraseDataTask().wait();
+					lblFilePath.setText("Erased Data");
+				} catch (ShimmerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnEraseDataverisense.setBounds(632, 97, 187, 31);
+		frame.getContentPane().add(btnEraseDataverisense);
+		
+		lblFilePath = new JLabel(" ");
+		lblFilePath.setBounds(12, 253, 611, 14);
+		frame.getContentPane().add(lblFilePath);
 		
 		plotManager.setTitle("Plot");		
 	}
@@ -380,6 +408,15 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
                     timer = new Timer();
                 }
 				textPaneStatus.setText("connected");
+				//shimmer = (ShimmerPC) btManager.getShimmerDeviceBtConnected(btComport);
+//				shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
+				//shimmer.startStreaming();
+			}  else if (callbackObject.mState == BT_STATE.STREAMING_LOGGED_DATA) {
+				if (timer!=null){
+                    timer.cancel();
+                    timer = new Timer();
+                }
+				textPaneStatus.setText("Syncing");
 				//shimmer = (ShimmerPC) btManager.getShimmerDeviceBtConnected(btComport);
 //				shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
 				//shimmer.startStreaming();
@@ -432,7 +469,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			
 		} else if (ind == ShimmerPC.MSG_IDENTIFIER_PACKET_RECEPTION_RATE_OVERALL) {
 			
-		}
+		} else if(ind == ShimmerPC.MSG_IDENTIFIER_SYNC_PROGRESS){
+            SyncProgressDetails mDetails = (SyncProgressDetails)((CallbackObject)shimmerMSG.mB).mMyObject;
+            String progress = "Payload Index : " + Double.toString(mDetails.mPayloadIndex) + ", Transfer Rate (bytes/s) : " + Double.toString(mDetails.mTransferRateBytes) ;
+            lblPRR.setText(progress);
+            lblFilePath.setText(mDetails.mBinFilePath);
+        }
 	
 	
 		
