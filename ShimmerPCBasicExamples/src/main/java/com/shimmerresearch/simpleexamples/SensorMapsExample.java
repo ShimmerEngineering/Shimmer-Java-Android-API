@@ -471,6 +471,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
 				textPaneStatus.setText("device fully initialized");
 				ShimmerDevice device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
+				if (btComport.contains("COM")) {
+					device = btManager.getShimmerDeviceBtConnected(btComport);
+				}
+				
 				if (device instanceof VerisenseDevice) {
 					
 					textFieldSamplingRate.setText(Double.toString(((VerisenseDevice)device).getSamplingRateShimmer()));
