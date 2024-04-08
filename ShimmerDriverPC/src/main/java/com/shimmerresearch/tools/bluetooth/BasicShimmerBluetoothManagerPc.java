@@ -207,6 +207,12 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	@Override
 	public void connectShimmerThroughCommPort(String comPort){
 		directConnectUnknownShimmer=true;
+		
+		if (mMapOfBtConnectedShimmers.containsKey(comPort)){
+			if(!mMapOfBtConnectedShimmers.get(comPort).isConnected()) {
+				mMapOfBtConnectedShimmers.remove(comPort);
+			} 
+		}
 
 		super.setConnectionExceptionListener(new ConnectionExceptionListener() {
 
@@ -243,6 +249,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	
 	protected void setupShimmer3BluetoothForBtManager(ShimmerDevice shimmerDevice) {
 		((ShimmerPC)shimmerDevice).setUseInfoMemConfigMethod(USE_INFOMEM_CONFIG_METHOD);
+    	((ShimmerPC)shimmerDevice).enableCheckifAlive(true);
 	}
 	
 
