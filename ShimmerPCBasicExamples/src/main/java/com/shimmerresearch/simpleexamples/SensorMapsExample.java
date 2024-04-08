@@ -231,6 +231,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JMenuItem mntmSignalsToPlot = new JMenuItem("Signals to plot");
 		mntmSignalsToPlot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				mChart.removeAll();
+				plotManager.removeAllSignals();
 				SignalsToPlotDialog signalsToPlotDialog = new SignalsToPlotDialog();
 				signalsToPlotDialog.initialize(((ShimmerDevice)btManager.getShimmerDeviceBtConnected(btComport)), plotManager, mChart);
 			}
@@ -240,7 +242,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JButton btnStartStreaming = new JButton("START STREAMING");
 		btnStartStreaming.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 				if (chckbxWriteDataToFile.isSelected()) {
 					String ts = Long.toString(System.currentTimeMillis());
                 	lpc = new LoggingPC(ts+"_test.csv");
