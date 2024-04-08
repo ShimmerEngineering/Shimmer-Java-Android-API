@@ -124,7 +124,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				btManager.disconnectShimmer(btComport);
+				btManager.disconnectAllDevices(); //using disconnect all as this removes the device from the map as well
 				
 			}
 		});

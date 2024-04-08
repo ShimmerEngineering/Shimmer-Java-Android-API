@@ -137,6 +137,9 @@ public abstract class ShimmerBluetoothManager{
 		connectThread.start();
 	}
 	
+	/**
+	 * @param connectionHandle comport or mac address, note that this does not remove the device from the map
+	 */
 	public void disconnectShimmer(String connectionHandle){
 		printMessage("Attempting to disconnect from connection handle = " + connectionHandle);
 		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(connectionHandle); 
