@@ -70,6 +70,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	final Chart2D mChart = new Chart2D();
 	private JTextField textFieldSamplingRate;
 	static JLabel lblPRR;
+	static final String PREFIX_COM = "COM";
 	JComboBox<String> comboBox;
 	JLabel lblFilePath;
 	LoggingPC lpc;
@@ -471,7 +472,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
 				textPaneStatus.setText("device fully initialized");
 				ShimmerDevice device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
-				if (btComport.contains("COM")) {
+				if (btComport.contains(PREFIX_COM)) {
 					device = btManager.getShimmerDeviceBtConnected(btComport);
 				}
 				
