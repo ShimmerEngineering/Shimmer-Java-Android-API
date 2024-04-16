@@ -88,6 +88,7 @@ public class EnableSensorsDialog extends AbstractEnableSensorsDialog{
 
 	@Override
 	protected void createFrame() {
+		 dialog = new JDialog();
 		 dialog.setModal(true);
 		 dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		 dialog.setTitle("Enable Sensors");
