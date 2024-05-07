@@ -19,3 +19,10 @@ include 'services:webservice'
 rootProject.name = 'ShimmerLSL'
 
 include 'jna'
+
+include ':ShimmerDriver'
+project(':ShimmerDriver').projectDir = new File(settingsDir, '../ShimmerDriver')
+include ':ShimmerDriverPC'
+project(':ShimmerDriverPC').projectDir = new File(settingsDir, '../ShimmerDriverPC')
+include ':ShimmerBluetoothManager'
+project(':ShimmerBluetoothManager').projectDir = new File(settingsDir, '../ShimmerBluetoothManager')
