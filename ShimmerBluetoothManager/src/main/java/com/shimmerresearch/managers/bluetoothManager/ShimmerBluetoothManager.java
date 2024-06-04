@@ -937,6 +937,9 @@ public abstract class ShimmerBluetoothManager{
 				if (sVO.isShimmerGen2() || sVO.isShimmerGen3()){
 					shimmerDeviceNew = createNewShimmer3(shimmerRadioInitializer, bluetoothAddress);
 				} 
+				else if(sVO.isShimmerGen3R()) {
+					shimmerDeviceNew = createNewShimmer3(shimmerRadioInitializer, bluetoothAddress);
+				}
 				else if(sVO.isShimmerGen4()){
 					shimmerDeviceNew = createNewShimmer4(shimmerRadioInitializer, bluetoothAddress);
 				}

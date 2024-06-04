@@ -2022,6 +2022,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mShimmerVerObject.isShimmerGen3();
 	}
 
+	public boolean isShimmerGen3R(){
+		return mShimmerVerObject.isShimmerGen3R();
+	}
+	
 	public boolean isShimmerGen4(){
 		return mShimmerVerObject.isShimmerGen4();
 	}

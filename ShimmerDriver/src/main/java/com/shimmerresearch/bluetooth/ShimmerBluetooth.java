@@ -1126,7 +1126,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
 			initializeShimmer3();
 		}
-		
+		else if(getHardwareVersion()==HW_ID.SHIMMER_3R) {
+			initializeShimmer3R();
+		}
 		stopTimerConnectingTimeout();
 		startTimerCheckIfAlive();
 	}
@@ -2495,6 +2497,128 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 
+	private void initializeShimmer3R(){
+
+		setHardwareVersionAndCreateSensorMaps(HW_ID.SHIMMER_3R);
+//		initialise(HW_ID.SHIMMER_3);
+		
+		setHaveAttemptedToReadConfig(true);
+		
+		if(mSendProgressReport){
+			operationPrepare();
+			setBluetoothRadioState(BT_STATE.CONNECTING);
+		}
+		
+		//readExpansionBoardID();
+		
+		if (isBtCrcModeSupported()) {
+			writeBtCommsCrcMode(DEFAULT_BT_CRC_MODE_IF_SUPPORTED);
+		}
+		
+		if (isSetupDeviceWhileConnecting()){
+			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
+				boolean triggerConfig = setFixedConfigWhenConnecting();
+				if(triggerConfig){
+					writeConfigBytes(false);
+				}
+			}
+			else {
+				if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
+					writeConfigBytes(false);
+				}
+				else {
+					if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
+						writeShimmerUserAssignedName(getShimmerUserAssignedName());
+					}
+					if(mSetupEXG){
+						writeEXGConfiguration();
+						mSetupEXG = false;
+					}
+					writeGSRRange(getGSRRange());
+					writeAccelRange(getAccelRange());
+					writeGyroRange(getGyroRange());
+					writeMagRange(getMagRange());
+					writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
+					writeInternalExpPower(1);
+					//		setContinuousSync(mContinousSync);
+				}
+			}
+		}
+		
+		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
+			readConfigBytes();
+			readPressureCalibrationCoefficients();
+		}
+		else {
+			readSamplingRate();
+			readMagRange();
+			readAccelRange();
+			readGyroRange();
+			readAccelSamplingRate();
+			readCalibrationParameters("All");
+			readPressureCalibrationCoefficients();
+			readEXGConfigurations();
+			//enableLowPowerMag(mLowPowerMag);
+			
+			readDerivedChannelBytes();
+			
+			if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
+				readTrial();
+				readConfigTime();
+				readShimmerName();
+				readExperimentName();
+			}
+		}
+		
+		readLEDCommand();
+
+		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2) ||
+				isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1)){
+			readStatusLogAndStream();
+		}
+		
+		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9) ||
+				isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1)){
+			readBattery();
+		}
+		
+		if(getShimmerVerObject().isSupportedBtFwVerRequest()) {
+			readBtFwVersion();
+		}
+		
+		// Only read calibration dump over bluetooth if the Shimmer is not
+		// docked as the Shimmer won't have access to the SD card
+		if(!isDocked()){
+			readCalibrationDump();
+		}
+		
+		if(isSetupDeviceWhileConnecting()){
+			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
+				writeEnabledSensors(mEnabledSensors); //this should always be the last command
+			} else {
+				//writeAccelRange(mDigitalAccelRange);
+				writeEnabledSensors(mSetEnabledSensors); //this should always be the last command
+			}
+		} 
+		else {
+			inquiry();
+		}
+
+		if(mSendProgressReport){
+			// Just unlock instruction stack and leave logAndStream timer as
+			// this is handled in the next step, i.e., no need for
+			// operationStart() here
+			startOperation(BT_STATE.CONNECTING, getListofInstructions().size());
+			
+			setInstructionStackLock(false);
+		}
+		
+		startTimerReadStatus();	// if shimmer is using LogAndStream FW, read its status periodically
+		startTimerReadBattStatus(); // if shimmer is using LogAndStream FW, read its status periodically
+		
+	
+	}
+	
 	private void initializeShimmer3(){
 		setHardwareVersionAndCreateSensorMaps(HW_ID.SHIMMER_3);
 //		initialise(HW_ID.SHIMMER_3);
