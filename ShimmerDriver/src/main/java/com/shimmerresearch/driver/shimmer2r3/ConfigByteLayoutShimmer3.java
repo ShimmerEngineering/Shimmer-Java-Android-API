@@ -8,6 +8,7 @@ import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 /**
@@ -299,15 +300,16 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	 * @param firmwareVersionMajor
 	 * @param firmwareVersionMinor
 	 * @param firmwareVersionInternal
+	 * @param hardwareVersion
 	 */
-	public ConfigByteLayoutShimmer3(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal) {
-		mShimmerVerObject = new ShimmerVerObject(firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
+	public ConfigByteLayoutShimmer3(int firmwareIdentifier, int firmwareVersionMajor, int firmwareVersionMinor, int firmwareVersionInternal, int hardwareVersion) {
+		mShimmerVerObject = new ShimmerVerObject(hardwareVersion,firmwareIdentifier, firmwareVersionMajor, firmwareVersionMinor, firmwareVersionInternal);
 		
 		mInfoMemSize = calculateConfigByteLength();
 
 		//Include changes to mapping below in order of oldest to newest in separate "if statements"
-		
-		if(compareVersions(FW_ID.SDLOG,0,8,42)
+		if(mShimmerVerObject.mHardwareVersion == HW_ID.SHIMMER_3R 
+				|| compareVersions(FW_ID.SDLOG,0,8,42)
 				|| compareVersions(FW_ID.LOGANDSTREAM,0,3,4)
 				|| compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
 				|| compareVersions(FW_ID.STROKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
@@ -321,7 +323,8 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 			idxDerivedSensors2 = 117;
 		}
 		
-		if(compareVersions(FW_ID.SDLOG,0,8,68)
+		if(mShimmerVerObject.mHardwareVersion == HW_ID.SHIMMER_3R 
+				|| compareVersions(FW_ID.SDLOG,0,8,68)
 				|| compareVersions(FW_ID.LOGANDSTREAM,0,3,17)
 				|| compareVersions(FW_ID.BTSTREAM,0,6,0)
 				|| compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
@@ -335,14 +338,16 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 			idxLSM303DLHCAccelCalibration = 97;
 		}
 
-		if(compareVersions(FW_ID.SDLOG,0,11,3)
+		if(mShimmerVerObject.mHardwareVersion == HW_ID.SHIMMER_3R 
+				|| compareVersions(FW_ID.SDLOG,0,11,3)
 				|| compareVersions(FW_ID.LOGANDSTREAM,0,5,12)
 				|| compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
 				|| compareVersions(FW_ID.STROKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
 			maskShowErrorLedsRwc =	 		0x01;
 		}
 		
-		if(compareVersions(FW_ID.SDLOG,0,11,5)
+		if(mShimmerVerObject.mHardwareVersion == HW_ID.SHIMMER_3R 
+				|| compareVersions(FW_ID.SDLOG,0,11,5)
 				|| compareVersions(FW_ID.LOGANDSTREAM,0,5,16)
 				|| compareVersions(FW_ID.BTSTREAM,0,7,4)
 				|| compareVersions(FW_ID.SHIMMER4_SDK_STOCK,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)
@@ -354,7 +359,8 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 			MSP430_5XX_INFOMEM_LAST_ADDRESS = 511;
 		}
 		
-		if(mShimmerVerObject.isSupportedEightByteDerivedSensors()){
+		if(mShimmerVerObject.mHardwareVersion == HW_ID.SHIMMER_3R 
+				|| mShimmerVerObject.isSupportedEightByteDerivedSensors()){
 			idxDerivedSensors3 =		    		118;
 			idxDerivedSensors4 =		    		119;
 			idxDerivedSensors5 =		    		120;
@@ -362,12 +368,14 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 			idxDerivedSensors7 =		    		122;
 		}
 
-		if(compareVersions(FW_ID.LOGANDSTREAM,0,7,12)
+		if(mShimmerVerObject.mHardwareVersion == HW_ID.SHIMMER_3R 
+				|| compareVersions(FW_ID.LOGANDSTREAM,0,7,12)
 				|| compareVersions(FW_ID.STROKARE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION)) {
 			maskShowErrorLedsSd = 0x01;
 		}
 		
-		if(compareVersions(FW_ID.LOGANDSTREAM,0,8,1)) {
+		if(mShimmerVerObject.mHardwareVersion == HW_ID.SHIMMER_3R 
+				|| compareVersions(FW_ID.LOGANDSTREAM,0,8,1)) {
 			idxBtFactoryReset =            		128+103;
 		}
 		
