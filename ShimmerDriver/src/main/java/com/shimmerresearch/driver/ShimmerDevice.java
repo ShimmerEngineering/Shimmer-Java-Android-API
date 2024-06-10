@@ -2767,7 +2767,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		
 		//TODO: handle Shimmer2/r exceptions which involve get5VReg(), getPMux() and writePMux()
 		
-		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_4_SDK || getHardwareVersion() == HW_ID.SHIMMER_3R){
 			if(getSensorDetails(key).mSensorDetailsRef.mListOfSensorIdsConflicting != null) {
 				for(Integer sensorId:getSensorDetails(key).mSensorDetailsRef.mListOfSensorIdsConflicting) {
 					if(isSensorEnabled(sensorId)) {

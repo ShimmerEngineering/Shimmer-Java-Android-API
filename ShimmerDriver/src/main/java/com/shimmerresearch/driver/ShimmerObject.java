@@ -2033,7 +2033,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if(fwType == COMMUNICATION_TYPE.BLUETOOTH) {
 				additionalChannelsOffset += 1;	//BT need +1 because timestamp added as additional channel
 			}
-			if (getHardwareVersion() == HW_ID.SHIMMER_3){
+			if (getHardwareVersion() == HW_ID.SHIMMER_3 || getHardwareVersion() == HW_ID.SHIMMER_3R){
 				if(isEXGUsingDefaultECGConfiguration() || isEXGUsingDefaultRespirationConfiguration()){
 					if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.EXG1_16BIT) > 0) 
 							|| ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.EXG1_16BIT) > 0)){
@@ -2628,7 +2628,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
 		
-		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion() == HW_ID.SHIMMER_3R){
 			signalNameArray[0]=Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP;
 		}
 		else{
@@ -4625,7 +4625,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		mConfigBytes = configByteLayoutCast.createConfigByteArrayEmpty(mConfigBytes.length);
 //		mInfoMemBytes = infoMemLayout.createEmptyInfoMemByteArray();
 		
-		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+		if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 		
 			// If not being generated from scratch then copy across existing InfoMem contents
 			if(!generateForWritingToShimmer) {
@@ -5085,7 +5085,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(mConfigOptionsMapSensors!=null){
 			ConfigOptionDetails configOptions = mConfigOptionsMapSensors.get(stringKey);
 			if(configOptions!=null){
-				if(getHardwareVersion()==HW_ID.SHIMMER_3){
+				if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R ){
 					int nonStandardIndex = -1;
 					//Taking out as now handled in the Sensor class
 //			        if(stringKey.equals(SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE)) {
@@ -5269,7 +5269,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 // --------------------Implemented in SensorPPG-----------------------	
 	public boolean checkIfSensorEnabled(int sensorId){
-		if (getHardwareVersion() == HW_ID.SHIMMER_3) {
+		if (getHardwareVersion() == HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R ) {
 			//Used for Shimmer GSR hardware
 			if(sensorId==Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY){
 				if((super.isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A12))
@@ -5339,7 +5339,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
 		
-		if (getHardwareVersion() == HW_ID.SHIMMER_3){
+		if (getHardwareVersion() == HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 
 			// If Shimmer name is default, update with MAC ID if available.
 			if(mShimmerUserAssignedName.equals(DEFAULT_SHIMMER_NAME)){
@@ -5388,7 +5388,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		super.checkIfInternalExpBrdPowerIsNeeded();
 		
 		if(mInternalExpPower==0){
-			if (getHardwareVersion() == HW_ID.SHIMMER_3){
+			if (getHardwareVersion() == HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 				for(SensorDetails sensorDetails:mSensorMap.values()) {
 					if(sensorDetails.isInternalExpBrdPowerRequired()){
 						mInternalExpPower = 1;
@@ -5626,7 +5626,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return 0 in case the 5V Reg is disableb, 1 in case the 5V Reg is enabled, and -1 in case the device doesn't support this feature
 	 */
 	public int get5VReg(){
-		if(getHardwareVersion()!=HW_ID.SHIMMER_3){
+		if(getHardwareVersion()!=HW_ID.SHIMMER_3 && getHardwareVersion()!=HW_ID.SHIMMER_3R){
 			if((mConfigByte0 & (byte)128)!=0) {
 				//then set ConfigByte0 at bit position 7
 				return 1;
@@ -6328,7 +6328,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 */
 	 public void setDefaultECGConfiguration(double shimmerSamplingRate) {
-		 if (getHardwareVersion()==HW_ID.SHIMMER_3){
+		 if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 45,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 
@@ -6362,7 +6362,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * needs to be set again
 	 */
 	 protected void setDefaultEMGConfiguration(double shimmerSamplingRate){
-		if (getHardwareVersion()==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 105,(byte) 96,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 129,(byte) 129,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			
@@ -6398,7 +6398,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * enabled
 	 */
 	 protected void setEXGTestSignal(double shimmerSamplingRate){
-		if (getHardwareVersion()==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 5,(byte) 5,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			
@@ -6429,7 +6429,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 */
 	 protected void setDefaultRespirationConfiguration(double shimmerSamplingRate) {
-		 if (getHardwareVersion()==HW_ID.SHIMMER_3){
+		 if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 64,(byte) 32,(byte) 0,(byte) 0,(byte) 2,(byte) 3};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 160,(byte) 16,(byte) 64,(byte) 71,(byte) 0,(byte) 0,(byte) 0,(byte) 234,(byte) 1};
 			
@@ -6482,7 +6482,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * 
 	 */
 	 protected void setEXGCustom(double shimmerSamplingRate){
-		if (getHardwareVersion()==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 //			mEXG1RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 //			mEXG2RegisterArray = new byte[]{(byte) 2,(byte) 163,(byte) 16,(byte) 7,(byte) 7,(byte) 0,(byte) 0,(byte) 0,(byte) 2,(byte) 1};
 			
@@ -6980,7 +6980,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 *When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
 	 */
 	 protected void enableDefaultECGConfiguration() {
-		 if (getHardwareVersion()==HW_ID.SHIMMER_3){
+		 if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 			setDefaultECGConfiguration(getSamplingRateShimmer());
 		 }
 	}
@@ -6990,7 +6990,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * When a enable configuration is loaded, the advanced ExG configuration is removed, so it needs to be set again
 	 */
 	protected void enableDefaultEMGConfiguration(){
-		if (getHardwareVersion()==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 			setDefaultEMGConfiguration(getSamplingRateShimmer());
 		}
 	}
@@ -6999,7 +6999,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * This can only be used for Shimmer3 devices (EXG). Enables the test signal (square wave) of both EXG chips, to use, both EXG1 and EXG2 have to be enabled
 	 */
 	protected void enableEXGTestSignal(){
-		if (getHardwareVersion()==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 			setEXGTestSignal(getSamplingRateShimmer());
 		}
 	}
@@ -7326,7 +7326,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	private void internalCheckExgModeAndUpdateSensorMap(){
 		if(mSensorMap!=null){
-			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 //				if((mIsExg1_24bitEnabled||mIsExg2_24bitEnabled||mIsExg1_16bitEnabled||mIsExg2_16bitEnabled)){
 //				if((isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT))
 //						||(isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT))
@@ -7404,7 +7404,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(mConfigOptionsMapSensors!=null){
 			ConfigOptionDetails configOptions = mConfigOptionsMapSensors.get(stringKey);
 			if(configOptions!=null){
-				if(getHardwareVersion()==HW_ID.SHIMMER_3){
+				if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					int nonStandardIndex = -1;
 					if(isExgRespirationDetectFreq32kHz()) {
 						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_RESPIRATION_DETECT_PHASE.PHASE_32KHZ;
@@ -7433,7 +7433,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(mConfigOptionsMapSensors!=null){
 			ConfigOptionDetails configOptions = mConfigOptionsMapSensors.get(stringKey);
 			if(configOptions!=null){
-				if(getHardwareVersion()==HW_ID.SHIMMER_3){
+				if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					int nonStandardIndex = -1;
 					if(isEXGUsingDefaultRespirationConfiguration()) { // Do Respiration check first
 						nonStandardIndex = ConfigOptionDetailsSensor.VALUE_INDEXES.EXG_REFERENCE_ELECTRODE.RESP;
@@ -9628,7 +9628,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		// Parse response string
 		if(cPD==UART_COMPONENT_AND_PROPERTY.BAT.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
-			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 				getSensorMap().get(Configuration.Shimmer3.SENSOR_ID.SHIMMER_VBATT).setIsEnabled((response[0]==0)? false:true);
 			}
 			else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
@@ -9641,7 +9641,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 		else if(cPD==UART_COMPONENT_AND_PROPERTY.LSM303DLHC_ACCEL.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
-			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 				getSensorMap().get(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL).setIsEnabled((response[0]==0)? false:true);
 			}
 			else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
@@ -9668,7 +9668,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		else if(cPD==UART_COMPONENT_AND_PROPERTY.GSR.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
-			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 				getSensorMap().get(Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR).setIsEnabled((response[0]==0)? false:true);
 			}
 			else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
@@ -9683,7 +9683,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		else if(cPD==UART_COMPONENT_AND_PROPERTY.BEACON.ENABLE){
 			//TODO Shimmer3 vs. ShimmerGQ
-			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 				getSensorMap().get(Configuration.ShimmerGqBle.SENSOR_ID.BEACON).setIsEnabled((response[0]==0)? false:true);
 			}
 			else if(getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE){
@@ -9791,7 +9791,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int expBrdRev = ebd.getExpansionBoardRev();
 		int expBrdRevSpecial = ebd.getExpansionBoardRevSpecial();
 		
-		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
+		if((svo.getHardwareVersion()==HW_ID.SHIMMER_3R) ||
+				(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
 				(expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.EXG_UNIFIED)			// >= SR47-3-0
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.GSR_UNIFIED) 		// >= SR48-3-0
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.BRIDGE_AMP)	// >= SR49-2-0
@@ -9799,7 +9800,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				|| (expBrdRevSpecial==Configuration.Shimmer3.NEW_IMU_EXP_REV.ANY_EXP_BRD_WITH_SPECIAL_REV)													// == SRx-x-171
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.PROTO3_DELUXE)	// Future unified board
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI && expBrdRev>=Configuration.Shimmer3.NEW_IMU_EXP_REV.PROTO3_MINI)		// Future unified board
-				)){
+				))){
 			return true;
 		}
 		else {
@@ -9846,7 +9847,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		int expBrdRev = ebd.getExpansionBoardRev();
 		int expBrdRevSpecial = ebd.getExpansionBoardRevSpecial();
 
-		if(svo.getHardwareVersion()==HW_ID.SHIMMER_3 &&	(
+		if((svo.getHardwareVersion()==HW_ID.SHIMMER_3 || svo.getHardwareVersion()==HW_ID.SHIMMER_3R) &&	(
 				(expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev==1 && expBrdRevSpecial==1))){
 			return true;
 		} else {
