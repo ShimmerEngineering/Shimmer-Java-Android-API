@@ -19,9 +19,11 @@ public class SendData extends BasicProcessWithCallBack {
     
     static List<ShimmerDevice> shimmerDevices = new ArrayList<>();
     static List<LSL.StreamOutlet> outlets = new ArrayList<>(); // flat list for each sensor of each device
-    static BasicShimmerBluetoothManagerPc[] btManagers = new BasicShimmerBluetoothManagerPc[2];
-    static String[] btComports = {"Com5", "Com7"}; // to use multiple shimmer device
-    static String[] shimmerNames = {"Shimmer_96A9","Shimmer_6749"};
+
+    static String[] btComports = {"Com8"}; // to use multiple shimmer device
+    static String[] shimmerNames = {"Shimmer_6749"};
+    static int NUM_DEVICES = btComports.length;
+    static BasicShimmerBluetoothManagerPc[] btManagers = new BasicShimmerBluetoothManagerPc[NUM_DEVICES];
     static final double SAMPLE_RATE = 51.2;
     static final int NUM_CHANNELS = 3;
     
