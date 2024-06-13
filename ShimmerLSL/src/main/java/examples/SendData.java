@@ -5,25 +5,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
+
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
+import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.exceptions.ShimmerException;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SendData extends BasicProcessWithCallBack {
     
-    static List<ShimmerDevice> shimmerDevices = new ArrayList<>();
     static List<LSL.StreamOutlet> outlets = new ArrayList<>(); // flat list for each sensor of each device
 
-    static String[] btComports = {"Com8"}; // to use multiple shimmer device
-    static String[] shimmerNames = {"Shimmer_6749"};
+    static String[] btComports = {"COM33","COM6"}; // to use multiple shimmer device
+    static List<String> shimmerNames = new ArrayList<>();
     static int NUM_DEVICES = btComports.length;
-    static BasicShimmerBluetoothManagerPc[] btManagers = new BasicShimmerBluetoothManagerPc[NUM_DEVICES];
+    static BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
     static final double SAMPLE_RATE = 51.2;
     static final int NUM_CHANNELS = 3;
     
@@ -36,10 +42,42 @@ public class SendData extends BasicProcessWithCallBack {
 
     public static void main(String[] args) throws IOException, InterruptedException  {
         
+    	JFrame frame = new JFrame();
+    	frame.setSize(300, 300);
+    	frame.getContentPane().setLayout(null);
+    	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	frame.setVisible(true);
+    	JButton btnNewButton = new JButton("Connect All Devices");
+    	btnNewButton.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			 for (int i = 0; i < btComports.length; i++) {
+    		            btManager.connectShimmerThroughCommPort(btComports[i]);
+    		     }
+    		}
+    	});
+    	btnNewButton.setBounds(21, 21, 140, 23);
+    	frame.getContentPane().add(btnNewButton);
+    	
+    	JButton button = new JButton("Start Streaming");
+    	button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					 for (int i = 0; i < btComports.length; i++) {
+						ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComports[i]);
+						try {
+							((ShimmerBluetooth)device).startStreaming();
+						} catch (ShimmerException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					 }
+				}
+			});
+    	button.setBounds(21, 93, 140, 23);
+    	frame.getContentPane().add(button);
+    	
         NativeLibraryLoader.loadLibrary(); // to use the lib/liblsl64.dll
         
-        for (int i = 0; i < btManagers.length; i++) {
-            btManagers[i] = new BasicShimmerBluetoothManagerPc();
+        for (int i = 0; i < btComports.length; i++) {
             System.out.println("Creating StreamInfos for Device " + (i+1) + "...");
             for (int j = 0; j < 3; j++) { // outlet for each sensor
                 String type = "";
@@ -68,13 +106,9 @@ public class SendData extends BasicProcessWithCallBack {
         }
         
         SendData s = new SendData();
-        for (BasicShimmerBluetoothManagerPc btManager : btManagers) {
-            s.setWaitForData(btManager.callBackObject);
-        }
-        
-        for (int i = 0; i < btManagers.length; i++) {
-            btManagers[i].connectShimmerThroughCommPort(btComports[i]);
-        }
+       
+        s.setWaitForData(btManager.callBackObject);
+       
     }
     
     @Override
@@ -85,11 +119,10 @@ public class SendData extends BasicProcessWithCallBack {
         if (ind == ShimmerPC.MSG_IDENTIFIER_STATE_CHANGE) {
             CallbackObject callbackObject = (CallbackObject) object;
             if (callbackObject.mState == BT_STATE.CONNECTED) {
-                for (int i = 0; i < btManagers.length; i++) {
-                    ShimmerDevice shimmerDevice = btManagers[i].getShimmerDeviceBtConnected(btComports[i]);
-                    if (shimmerDevice != null) {
-                        System.out.println("Device " + (i+1) + " connected.");
-                        shimmerDevices.add(shimmerDevice);
+                for (int i = 0; i < btComports.length; i++) {
+                    ShimmerDevice shimmerDevice = btManager.getShimmerDeviceBtConnected(btComports[i]);
+                    if (!shimmerNames.contains(shimmerDevice.getShimmerUserAssignedName())) {
+                    	shimmerNames.add(shimmerDevice.getShimmerUserAssignedName());
                     }
                 }
             }
@@ -97,14 +130,7 @@ public class SendData extends BasicProcessWithCallBack {
             CallbackObject callbackObject = (CallbackObject)object;
             int msg = callbackObject.mIndicator;
             if (msg == ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED) {
-                try {
-                    for (ShimmerDevice shimmerDevice : shimmerDevices) {
-                        shimmerDevice.startStreaming();                 
-                        System.out.println("Device " + shimmerDevice.getShimmerUserAssignedName() + " streamed.");
-                    }
-                } catch (ShimmerException e) {
-                    e.printStackTrace();
-                }
+            	
             }
         } else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
             handleDataPacket(shimmerMSG);
@@ -113,7 +139,7 @@ public class SendData extends BasicProcessWithCallBack {
     
     private void handleDataPacket(ShimmerMsg shimmerMSG) {
         ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
-        int deviceIndex = objc.getShimmerName().equals(shimmerNames[0]) ? 0 : 1;
+        int deviceIndex = shimmerNames.indexOf(objc.getShimmerName());
         
         double[] sensorValues = {
             objc.getFormatClusterValue("Accel_LN_X", "CAL"),
