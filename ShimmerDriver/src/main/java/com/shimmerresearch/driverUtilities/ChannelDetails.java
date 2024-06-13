@@ -176,7 +176,8 @@ public class ChannelDetails implements Serializable {
 //	public CHANNEL_AXES mChannelAxes = CHANNEL_AXES.TIME;
 	public enum CHANNEL_AXES{
 		TIME,
-		FREQUENCY
+		FREQUENCY,
+		VALUE
 	}
 
 	/**
