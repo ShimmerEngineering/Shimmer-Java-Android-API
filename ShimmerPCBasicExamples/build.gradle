@@ -54,5 +54,5 @@ dependencies {
 //    compile(group: 'com.shimmerresearch', name: 'shimmerdriverpc', version: '0.10.0_alpha')
     
     compile name: 'ShimmerBiophysicalProcessingLibrary_Rev_0_11'
-    
+    compile 'com.parse.bolts:bolts-tasks:1.4.0'
 }
