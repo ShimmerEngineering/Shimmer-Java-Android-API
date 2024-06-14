@@ -409,6 +409,7 @@ public class ShimmerVerObject implements Serializable {
 	
 	public static boolean isSupportedConfigViaUart(int hwVer, int fwId) {
 		if(hwVer==HW_ID.SHIMMER_3
+				|| hwVer==HW_ID.SHIMMER_3R
 				|| hwVer==HW_ID.SHIMMER_GQ_802154_NR
 				|| hwVer==HW_ID.SHIMMER_GQ_802154_LR
 				|| hwVer==HW_ID.SHIMMER_2R_GQ
