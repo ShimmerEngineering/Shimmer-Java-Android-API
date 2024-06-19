@@ -3,6 +3,8 @@ package examples;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,11 +16,14 @@ import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
-import com.shimmerresearch.exceptions.ShimmerException;
 
-import edu.ucsd.sccn.*;
+import edu.ucsd.sccn.LSL;
 import edu.ucsd.sccn.LSL.StreamInfo;
 import edu.ucsd.sccn.LSL.StreamOutlet;
 
@@ -30,19 +35,22 @@ public class SendData extends BasicProcessWithCallBack {
     static final int NUM_DEVICES = btComports.length;
     static final BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
     static final double SAMPLE_RATE = 51.2;
-    //static final int NUM_CHANNELS = 3;
     static boolean streamingState = false;
+    static ShimmerDevice device, shimmerDeviceClone;
+    static TreeMap<Integer, SensorGroupingDetails> compatibleSensorGroupMap;
+    static int sensorKeys[];
 
     // Sensor labels
     static final String[] SENSOR_LABELS = {
-    		"Accel_LN_X","Accel_LN_Y","Accel_LN_Z"
-        		,"Gyro_X","Gyro_Y","Gyro_Z"
-        		,"Mag_X","Mag_Y","Mag_Z"};
+            "Accel_LN_X", "Accel_LN_Y", "Accel_LN_Z",
+            "Gyro_X", "Gyro_Y", "Gyro_Z",
+            "Mag_X", "Mag_Y", "Mag_Z"};
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame();
-            frame.setSize(300, 300);
+            frame.setSize(400, 400);
             frame.getContentPane().setLayout(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -60,6 +68,11 @@ public class SendData extends BasicProcessWithCallBack {
             stopButton.addActionListener(e -> stopStreaming());
             stopButton.setBounds(21, 165, 140, 23);
             frame.getContentPane().add(stopButton);
+            
+            JButton configButton = new JButton("Configure Sensors");
+            configButton.addActionListener(e -> configureSensors());
+            configButton.setBounds(21, 237, 140, 23);
+            frame.getContentPane().add(configButton);
 
             frame.setVisible(true);
 
@@ -76,26 +89,90 @@ public class SendData extends BasicProcessWithCallBack {
 
     private static void startStreaming() {
         streamingState = true;
-        for (String comport : btComports) {
-            ShimmerDevice device = btManager.getShimmerDeviceBtConnected(comport);
-            if (device instanceof ShimmerBluetooth) {
-                try {
-                    ((ShimmerBluetooth) device).startStreaming();
-                } catch (ShimmerException e) {
-                    e.printStackTrace();
-                }
-            }
+        if (shimmerDeviceClone != null) {
+	        for (String comport : btComports) {
+	            device = btManager.getShimmerDeviceBtConnected(comport);
+	            if (device instanceof ShimmerBluetooth) {
+	                try {
+	                    ((ShimmerBluetooth) device).startStreaming();
+	                } catch (ShimmerException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        }
+        }
+        else {
+        	 System.out.println("Error! Shimmer Device clone is null!");
         }
     }
 
     private static void stopStreaming() {
         streamingState = false;
-        for (String comport : btComports) {
-            ShimmerDevice device = btManager.getShimmerDeviceBtConnected(comport);
-            if (device instanceof ShimmerBluetooth) {
-                ((ShimmerBluetooth) device).stopStreaming();
+        if (shimmerDeviceClone != null) {
+	        for (String comport : btComports) {
+	            device = btManager.getShimmerDeviceBtConnected(comport);
+	            if (device instanceof ShimmerBluetooth) {
+	                ((ShimmerBluetooth) device).stopStreaming();
+	            }
+	        }
+        }
+        else {
+       	 System.out.println("Error! Shimmer Device clone is null!");
+       }
+    }
+    
+    protected static boolean isSensorGroupCompatible(ShimmerDevice device, SensorGroupingDetails groupDetails) {
+        List<ShimmerVerObject> listOfCompatibleVersionInfo = groupDetails.mListOfCompatibleVersionInfo;
+        return device.isVerCompatibleWithAnyOf(listOfCompatibleVersionInfo);
+    }
+    
+    private static void configureSensors() {
+    	for (String comport : btComports) {
+            device = btManager.getShimmerDeviceBtConnected(comport);
+            shimmerDeviceClone = device.deepClone();
+            
+          //Get the list of sensor groups the device is compatible with and store it in an ArrayList
+            compatibleSensorGroupMap = new TreeMap<Integer, SensorGroupingDetails>();
+            TreeMap<Integer, SensorGroupingDetails> groupMap = shimmerDeviceClone.getSensorGroupingMap();
+            for(Map.Entry<Integer, SensorGroupingDetails> entry : groupMap.entrySet()) {
+                if(isSensorGroupCompatible(shimmerDeviceClone, entry.getValue())) {
+                  compatibleSensorGroupMap.put(entry.getKey(), entry.getValue());
+                }
+            }
+
+            Map<Integer, SensorDetails> sensorMap = shimmerDeviceClone.getSensorMap();
+            int count = 0;
+            for (SensorDetails sd : sensorMap.values()) {
+                if (shimmerDeviceClone.isVerCompatibleWithAnyOf(sd.mSensorDetailsRef.mListOfCompatibleVersionInfo)) {
+                    count++;
+                }
+            }
+            
+            String[] arraySensors = new String[count];
+            final boolean[] listEnabled = new boolean[count];
+            sensorKeys = new int[count];
+            count = 0;
+
+            for (int key : sensorMap.keySet()) {
+                SensorDetails sd = sensorMap.get(key);
+                if (shimmerDeviceClone.isVerCompatibleWithAnyOf(sd.mSensorDetailsRef.mListOfCompatibleVersionInfo)) {
+                    arraySensors[count] = sd.mSensorDetailsRef.mGuiFriendlyLabel;
+                    
+                    if (("Low-Noise Accelerometer".equals(sd.mSensorDetailsRef.mGuiFriendlyLabel)) ||
+                    ("Magnetometer".equals(sd.mSensorDetailsRef.mGuiFriendlyLabel)) ||
+                    ("Gyroscope".equals(sd.mSensorDetailsRef.mGuiFriendlyLabel)))
+                    {
+                        shimmerDeviceClone.setSensorEnabledState(key, true);
+                        System.out.println("Sensors Enabled for "+arraySensors[count]);
+                    }
+                    
+                    listEnabled[count] = sd.isEnabled();
+                    sensorKeys[count] = key;
+                    count++;
+                }
             }
         }
+    	System.out.println("Writing config to Shimmer...");
     }
 
     @Override
@@ -131,19 +208,18 @@ public class SendData extends BasicProcessWithCallBack {
     }
 
     private static void createStreamOutlet() {
-    	NativeLibraryLoader.loadLibrary();
-    	
+        NativeLibraryLoader.loadLibrary();
+
         for (int i = 0; i < btComports.length; i++) {
             System.out.println("Creating StreamInfos for Device " + (i + 1) + "...");
             for (String label : SENSOR_LABELS) {
                 String streamName = "SendData_Device" + (i + 1) + "_" + btComports[i] + "_" + label;
                 StreamInfo info = new StreamInfo(streamName, "SensorData", 1, SAMPLE_RATE, LSL.ChannelFormat.float32, "test");
                 try {
-					outlets.add(new LSL.StreamOutlet(info));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    outlets.add(new LSL.StreamOutlet(info));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 System.out.println("Created outlet for " + streamName);
             }
         }
@@ -163,7 +239,7 @@ public class SendData extends BasicProcessWithCallBack {
         int deviceIndex = shimmerNames.indexOf(shimmerName);
 
         for (int i = 0; i < SENSOR_LABELS.length; i++) {
-        	double sensorValue = objc.getFormatClusterValue(SENSOR_LABELS[i], "CAL");
+            double sensorValue = objc.getFormatClusterValue(SENSOR_LABELS[i], "CAL");
             if (!Double.isNaN(sensorValue)) {
                 float[] data = {(float) sensorValue};
                 int outletIndex = deviceIndex * SENSOR_LABELS.length + i;
