@@ -13,9 +13,12 @@ import javax.swing.SwingUtilities;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
@@ -26,6 +29,7 @@ import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
 import edu.ucsd.sccn.LSL;
 import edu.ucsd.sccn.LSL.StreamInfo;
 import edu.ucsd.sccn.LSL.StreamOutlet;
+import javax.swing.JLabel;
 
 public class SendData extends BasicProcessWithCallBack {
 
@@ -36,7 +40,6 @@ public class SendData extends BasicProcessWithCallBack {
     static final BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
     static final double SAMPLE_RATE = 51.2;
     static boolean streamingState = false;
-    static ShimmerDevice device, shimmerDeviceClone;
     static TreeMap<Integer, SensorGroupingDetails> compatibleSensorGroupMap;
     static int sensorKeys[];
 
@@ -48,9 +51,9 @@ public class SendData extends BasicProcessWithCallBack {
 
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
+   
             JFrame frame = new JFrame();
-            frame.setSize(400, 400);
+            frame.setSize(509, 400);
             frame.getContentPane().setLayout(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -69,16 +72,20 @@ public class SendData extends BasicProcessWithCallBack {
             stopButton.setBounds(21, 165, 140, 23);
             frame.getContentPane().add(stopButton);
             
+            JLabel lblNewLabel = new JLabel("Please enable LN Accel, Gyro and Mag before connecting");
+            lblNewLabel.setBounds(168, 25, 315, 14);
+            frame.getContentPane().add(lblNewLabel);
+            
             JButton configButton = new JButton("Configure Sensors");
             configButton.addActionListener(e -> configureSensors());
             configButton.setBounds(21, 237, 140, 23);
-            frame.getContentPane().add(configButton);
+            //frame.getContentPane().add(configButton);
 
             frame.setVisible(true);
 
             SendData s = new SendData();
             s.setWaitForData(btManager.callBackObject);
-        });
+
     }
 
     private static void connectAllDevices() {
@@ -89,36 +96,29 @@ public class SendData extends BasicProcessWithCallBack {
 
     private static void startStreaming() {
         streamingState = true;
-        if (shimmerDeviceClone != null) {
-	        for (String comport : btComports) {
-	            device = btManager.getShimmerDeviceBtConnected(comport);
-	            if (device instanceof ShimmerBluetooth) {
-	                try {
-	                    ((ShimmerBluetooth) device).startStreaming();
-	                } catch (ShimmerException e) {
-	                    e.printStackTrace();
-	                }
-	            }
-	        }
+        
+        for (String comport : btComports) {
+            ShimmerPC device = (ShimmerPC)btManager.getShimmerDeviceBtConnected(comport);
+            if (device instanceof ShimmerBluetooth) {
+                try {
+                    ((ShimmerBluetooth) device).startStreaming();
+                } catch (ShimmerException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        else {
-        	 System.out.println("Error! Shimmer Device clone is null!");
-        }
+
     }
 
     private static void stopStreaming() {
         streamingState = false;
-        if (shimmerDeviceClone != null) {
 	        for (String comport : btComports) {
-	            device = btManager.getShimmerDeviceBtConnected(comport);
+	        	ShimmerPC device = (ShimmerPC)btManager.getShimmerDeviceBtConnected(comport);
 	            if (device instanceof ShimmerBluetooth) {
 	                ((ShimmerBluetooth) device).stopStreaming();
 	            }
 	        }
-        }
-        else {
-       	 System.out.println("Error! Shimmer Device clone is null!");
-       }
+        
     }
     
     protected static boolean isSensorGroupCompatible(ShimmerDevice device, SensorGroupingDetails groupDetails) {
@@ -127,51 +127,20 @@ public class SendData extends BasicProcessWithCallBack {
     }
     
     private static void configureSensors() {
+    	List<ShimmerDevice> cloneList = new ArrayList<ShimmerDevice>();
     	for (String comport : btComports) {
-            device = btManager.getShimmerDeviceBtConnected(comport);
-            shimmerDeviceClone = device.deepClone();
-            
-          //Get the list of sensor groups the device is compatible with and store it in an ArrayList
-            compatibleSensorGroupMap = new TreeMap<Integer, SensorGroupingDetails>();
-            TreeMap<Integer, SensorGroupingDetails> groupMap = shimmerDeviceClone.getSensorGroupingMap();
-            for(Map.Entry<Integer, SensorGroupingDetails> entry : groupMap.entrySet()) {
-                if(isSensorGroupCompatible(shimmerDeviceClone, entry.getValue())) {
-                  compatibleSensorGroupMap.put(entry.getKey(), entry.getValue());
-                }
-            }
-
-            Map<Integer, SensorDetails> sensorMap = shimmerDeviceClone.getSensorMap();
-            int count = 0;
-            for (SensorDetails sd : sensorMap.values()) {
-                if (shimmerDeviceClone.isVerCompatibleWithAnyOf(sd.mSensorDetailsRef.mListOfCompatibleVersionInfo)) {
-                    count++;
-                }
-            }
-            
-            String[] arraySensors = new String[count];
-            final boolean[] listEnabled = new boolean[count];
-            sensorKeys = new int[count];
-            count = 0;
-
-            for (int key : sensorMap.keySet()) {
-                SensorDetails sd = sensorMap.get(key);
-                if (shimmerDeviceClone.isVerCompatibleWithAnyOf(sd.mSensorDetailsRef.mListOfCompatibleVersionInfo)) {
-                    arraySensors[count] = sd.mSensorDetailsRef.mGuiFriendlyLabel;
-                    
-                    if (("Low-Noise Accelerometer".equals(sd.mSensorDetailsRef.mGuiFriendlyLabel)) ||
-                    ("Magnetometer".equals(sd.mSensorDetailsRef.mGuiFriendlyLabel)) ||
-                    ("Gyroscope".equals(sd.mSensorDetailsRef.mGuiFriendlyLabel)))
-                    {
-                        shimmerDeviceClone.setSensorEnabledState(key, true);
-                        System.out.println("Sensors Enabled for "+arraySensors[count]);
-                    }
-                    
-                    listEnabled[count] = sd.isEnabled();
-                    sensorKeys[count] = key;
-                    count++;
-                }
-            }
-        }
+    		ShimmerPC device = (ShimmerPC) btManager.getShimmerDeviceBtConnected(comport);
+            ShimmerDevice cloneDevice = device.deepClone();
+			cloneDevice.setEnabledAndDerivedSensorsAndUpdateMaps(0, 0);
+			cloneDevice.setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, true);
+			cloneDevice.setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO, true);
+			cloneDevice.setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG, true);
+			cloneDevice.setSamplingRateShimmer(COMMUNICATION_TYPE.BLUETOOTH, SAMPLE_RATE);;
+			AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
+			cloneList.add(cloneDevice);
+	 	}
+    	btManager.configureShimmers(cloneList);
+ 		
     	System.out.println("Writing config to Shimmer...");
     }
 
@@ -244,7 +213,7 @@ public class SendData extends BasicProcessWithCallBack {
                 float[] data = {(float) sensorValue};
                 int outletIndex = deviceIndex * SENSOR_LABELS.length + i;
                 outlets.get(outletIndex).push_sample(data);
-                System.out.println("Device " + shimmerName + " " + SENSOR_LABELS[i] + " data sent.");
+                System.out.println("Device " + shimmerName + " " + SENSOR_LABELS[i] + " " + sensorValue + " data sent.");
             }
         }
     }
