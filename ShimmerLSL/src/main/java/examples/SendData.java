@@ -2,9 +2,12 @@ package examples;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -35,13 +38,15 @@ public class SendData extends BasicProcessWithCallBack {
 
     static List<StreamOutlet> outlets = new ArrayList<>(); // LSL stream outlets
     static List<String> shimmerNames = new ArrayList<>();
-    static final String[] btComports = {"COM8"}; // Bluetooth COM ports
+    static final String[] btComports = {"COM10","COM8"}; // Bluetooth COM ports
     static final int NUM_DEVICES = btComports.length;
     static final BasicShimmerBluetoothManagerPc btManager = new BasicShimmerBluetoothManagerPc();
     static final double SAMPLE_RATE = 51.2;
     static boolean streamingState = false;
     static TreeMap<Integer, SensorGroupingDetails> compatibleSensorGroupMap;
     static int sensorKeys[];
+    private Map<String, List<LSL.StreamOutlet>> deviceOutletsMap = new HashMap<>();
+    private ConcurrentHashMap<String, String> mMapOfAllShimmerDevices = new ConcurrentHashMap<String, String>(); 
 
     // Sensor labels
     static final String[] SENSOR_LABELS = {
@@ -107,7 +112,6 @@ public class SendData extends BasicProcessWithCallBack {
                 }
             }
         }
-
     }
 
     private static void stopStreaming() {
@@ -117,8 +121,7 @@ public class SendData extends BasicProcessWithCallBack {
 	            if (device instanceof ShimmerBluetooth) {
 	                ((ShimmerBluetooth) device).stopStreaming();
 	            }
-	        }
-        
+	        }  
     }
     
     protected static boolean isSensorGroupCompatible(ShimmerDevice device, SensorGroupingDetails groupDetails) {
@@ -156,6 +159,7 @@ public class SendData extends BasicProcessWithCallBack {
                     ShimmerDevice shimmerDevice = btManager.getShimmerDeviceBtConnected(comport);
                     if (shimmerDevice != null && !shimmerNames.contains(shimmerDevice.getShimmerUserAssignedName())) {
                         shimmerNames.add(shimmerDevice.getShimmerUserAssignedName());
+                        mMapOfAllShimmerDevices.put(comport, shimmerDevice.getShimmerUserAssignedName());
                     }
                 }
             }
@@ -163,36 +167,45 @@ public class SendData extends BasicProcessWithCallBack {
             CallbackObject callbackObject = (CallbackObject) object;
             int msg = callbackObject.mIndicator;
             if (msg == ShimmerPC.NOTIFICATION_SHIMMER_START_STREAMING) {
+            	ShimmerDevice shimmerDevice = btManager.getShimmerDeviceBtConnected(callbackObject.mComPort);
                 if (streamingState) {
-                    createStreamOutlet();
+                    createStreamOutlet(shimmerDevice);
                 }
             } else if (msg == ShimmerPC.NOTIFICATION_SHIMMER_STOP_STREAMING) {
                 if (!streamingState) {
                     destroyStreamOutlet();
                 }
             }
-        } else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
+        } else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {	
             handleDataPacket(shimmerMSG);
         }
     }
 
-    private static void createStreamOutlet() {
-        NativeLibraryLoader.loadLibrary();
+    private void createStreamOutlet(ShimmerDevice shimmerDevice) {
+		// TODO Auto-generated method stub
+        try {
+            NativeLibraryLoader.loadLibrary();
+            String comPort = shimmerDevice.getComPort();
+            String shimmerName = mMapOfAllShimmerDevices.get(comPort);
 
-        for (int i = 0; i < btComports.length; i++) {
-            System.out.println("Creating StreamInfos for Device " + (i + 1) + "...");
-            for (String label : SENSOR_LABELS) {
-                String streamName = "SendData_Device" + (i + 1) + "_" + btComports[i] + "_" + label;
-                StreamInfo info = new StreamInfo(streamName, "SensorData", 1, SAMPLE_RATE, LSL.ChannelFormat.float32, "test");
-                try {
-                    outlets.add(new LSL.StreamOutlet(info));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Created outlet for " + streamName);
+            System.out.println("Creating StreamInfos for Device on " + shimmerName + "...");
+
+            List<LSL.StreamOutlet> outlets = new ArrayList<>();
+            for (String channelName : SENSOR_LABELS) {
+                String streamName = "SendData_Device_" + shimmerName + "_" + channelName;
+                LSL.StreamInfo info = new LSL.StreamInfo(streamName, channelName, 1, SAMPLE_RATE, LSL.ChannelFormat.float32, "test");
+
+                System.out.println("Creating outlet for Device " + shimmerName + " Sensor " + channelName + "...");
+                outlets.add(new LSL.StreamOutlet(info));
             }
+
+            deviceOutletsMap.put(shimmerName, outlets);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error initializing LSL Outlets: " + e.getMessage());
         }
-    }
+	}
 
     private static void destroyStreamOutlet() {
         for (StreamOutlet outlet : outlets) {
@@ -201,20 +214,30 @@ public class SendData extends BasicProcessWithCallBack {
         }
         outlets.clear();
     }
-
+    
     private void handleDataPacket(ShimmerMsg shimmerMSG) {
-        ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
-        String shimmerName = objc.getShimmerName();
-        int deviceIndex = shimmerNames.indexOf(shimmerName);
+    	
+    	ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
+    	String shimmerName = objc.getShimmerName();
+        float[] data = new float[1];
+        
+        List<LSL.StreamOutlet> outlets = deviceOutletsMap.get(shimmerName);
+        if (outlets != null) {
+            for (int i = 0; i < SENSOR_LABELS.length; i++) {
+                double sensorValue = objc.getFormatClusterValue(SENSOR_LABELS[i], "CAL");
+                if (!Double.isNaN(sensorValue)) {
 
-        for (int i = 0; i < SENSOR_LABELS.length; i++) {
-            double sensorValue = objc.getFormatClusterValue(SENSOR_LABELS[i], "CAL");
-            if (!Double.isNaN(sensorValue)) {
-                float[] data = {(float) sensorValue};
-                int outletIndex = deviceIndex * SENSOR_LABELS.length + i;
-                outlets.get(outletIndex).push_sample(data);
-                System.out.println("Device " + shimmerName + " " + SENSOR_LABELS[i] + " " + sensorValue + " data sent.");
+                	data[0] = (float) sensorValue;
+                    if (data[0] == 0.0f) {  
+                    	// 0.0f to represent null value
+                    } else {
+                        outlets.get(i).push_sample(data);
+                        System.out.println("Device " + outlets.get(i).info().type() + " data sent to " + SENSOR_LABELS[i] + " @ " + shimmerName + " : " + data[0]);
+                    }
+                }
             }
+        } else {
+            System.err.println("No LSL Outlets found for device on " + shimmerName);
         }
     }
 }
