@@ -46,8 +46,7 @@ public class SendData extends BasicProcessWithCallBack {
     static TreeMap<Integer, SensorGroupingDetails> compatibleSensorGroupMap;
     static int sensorKeys[];
     private Map<String, List<LSL.StreamOutlet>> deviceOutletsMap = new HashMap<>();
-    private ConcurrentHashMap<String, String> mMapOfAllShimmerDevices = new ConcurrentHashMap<String, String>(); 
-
+    
     // Sensor labels
     static final String[] SENSOR_LABELS = {
             "Accel_LN_X", "Accel_LN_Y", "Accel_LN_Z",
@@ -159,7 +158,6 @@ public class SendData extends BasicProcessWithCallBack {
                     ShimmerDevice shimmerDevice = btManager.getShimmerDeviceBtConnected(comport);
                     if (shimmerDevice != null && !shimmerNames.contains(shimmerDevice.getShimmerUserAssignedName())) {
                         shimmerNames.add(shimmerDevice.getShimmerUserAssignedName());
-                        mMapOfAllShimmerDevices.put(comport, shimmerDevice.getShimmerUserAssignedName());
                     }
                 }
             }
@@ -185,8 +183,7 @@ public class SendData extends BasicProcessWithCallBack {
 		// TODO Auto-generated method stub
         try {
             NativeLibraryLoader.loadLibrary();
-            String comPort = shimmerDevice.getComPort();
-            String shimmerName = mMapOfAllShimmerDevices.get(comPort);
+            String shimmerName = shimmerDevice.getShimmerUserAssignedName();
 
             System.out.println("Creating StreamInfos for Device on " + shimmerName + "...");
 
