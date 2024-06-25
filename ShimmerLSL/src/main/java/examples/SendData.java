@@ -13,7 +13,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import com.shimmerresearch.bluetooth.BluetoothProgressReportAll;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
@@ -83,7 +85,7 @@ public class SendData extends BasicProcessWithCallBack {
             JButton configButton = new JButton("Configure Sensors");
             configButton.addActionListener(e -> configureSensors());
             configButton.setBounds(21, 237, 140, 23);
-            //frame.getContentPane().add(configButton);
+            frame.getContentPane().add(configButton);
 
             frame.setVisible(true);
 
@@ -141,10 +143,46 @@ public class SendData extends BasicProcessWithCallBack {
 			AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
 			cloneList.add(cloneDevice);
 	 	}
-    	btManager.configureShimmers(cloneList);
+    	configureShimmers(cloneList);
  		
     	System.out.println("Writing config to Shimmer...");
     }
+    
+    public static void configureShimmers(List<ShimmerDevice> listOfShimmerClones){
+
+		//mProgressReportAll = new BluetoothProgressReportAll(BT_STATE.CONFIGURING, listOfShimmerClones);
+		
+		for(ShimmerDevice cloneShimmer:listOfShimmerClones){
+			//TODO include below?
+//			cloneShimmerCast.setBluetoothRadioState(BT_STATE.CONFIGURING);
+
+			ShimmerDevice originalShimmerDevice = btManager.getShimmerDeviceBtConnected(cloneShimmer.getComPort()); //changed from getmacid to getcomport
+			//int cloneHwId = cloneShimmer.getHardwareVersion();
+			if(originalShimmerDevice!=null) {
+				try {
+//					System.out.println("MAC ID IS " +cloneShimmer.getMacId()); // the getmacid is null because the connection is happening using comport
+					originalShimmerDevice.configureFromClone(cloneShimmer);
+					originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
+				} catch (ShimmerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println("Hardware ID not supported currently: ");
+			}
+			
+			threadSleep(50);
+		}
+	}
+    
+	private static void threadSleep(long millis){
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
     @Override
     protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
