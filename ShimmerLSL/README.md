@@ -5,7 +5,7 @@ Update btComports:
 
 - Open the SendData.java file.
 
-- Replace "Com5" and "Com7" with the actual COM ports where your Shimmer devices are connected. Ensure each COM port matches a unique device.
+- Replace "COM10" and "COM8" with the actual COM ports where your Shimmer devices are connected. Ensure each COM port matches a unique device.
 
 Download LabRecorder:
 
@@ -15,11 +15,14 @@ Download LabRecorder:
 
 Run SendData.java:
 
-- Compile and run the program SendData.java
+- Compile and run the program SendData.java.
+- Make sure the devices is turned on and click Connect All Devices when the program started.
+- Please enable the respective sensors first by clicking the Configure Sensors before starting the stream.
+- Click Start Streaming button on the program.
 
 Start LabRecorder:
 
-- Open the downloaded LabRecorder application from the extracted path. 
+- Open the downloaded LabRecorder.exe from the extracted path. 
 
 Update Stream List:
 
@@ -27,16 +30,14 @@ Update Stream List:
 
 Select Stream:
 
-- Locate the stream corresponding to the COM port you used in btComports. It should be named something like "SendData_DeviceX_ComX_SensorName" (where X represents the device number and COM port, SensorName represents the sensor being streamed).
+- Locate the stream corresponding to the COM port you used in btComports. It should be named something like "SendData_Device_Shimmer_Name_SensorType".
 - Click the checkbox next to the desired stream to select it.
-
-Set Modality:
-
-- In the bottom-right corner of LabRecorder, find the "Modality (%m)" update to "Accel" or any sensor that being recorded.
+- Modality (%m) can be changed for different folder name.
 
 Start Recording:
 
 - Click the "Start" button in LabRecorder to begin recording the streaming data.
+- Make sure the timer has started on the bottom of the program.
 
 Stop Recording:
 
@@ -45,7 +46,7 @@ Stop Recording:
 Recorded Data Location:
 
 - By default, LabRecorder saves recorded data files in XDF format. The location depends on your operating system:
-Windows: The file will be saved in "C:\Users\X\Documents\CurrentStudy\sub-P001\ses-S001\"Modality (%m)"" (replace "X" with your username).
+Windows: The file will be saved in "C:\Users\X\Documents\CurrentStudy\sub-P001\ses-S001\"Modality (%m)"" (replace "X" with your username, "Modality (%m)" by default is "eeg" and can be referred to step 3 in Select Stream).
 
 Download SigViewer:
 
