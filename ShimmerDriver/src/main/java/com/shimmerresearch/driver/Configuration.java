@@ -87,6 +87,11 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
+import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
+import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense;
+import com.shimmerresearch.verisense.sensors.SensorGSRVerisense;
+import com.shimmerresearch.verisense.sensors.SensorMAX86916;
 
 /**
  * The purpose of this code is to maintain the configurations constants for a
@@ -168,7 +173,7 @@ public class Configuration {
 		DOCK,
 		BLUETOOTH,
 		IEEE802154,
-		SD,
+		SD, // Bin file
 		HID,
 		USB,
 		CLASS, //this is to read the value of the class for clones etc. e.g. if you do a getsettings(accelRange,CLASS) and getsettings(accelRange,Bluetooth), the results are different. One returns the value in the object while the other should generate a read command to be sent to the shimmer device
@@ -2168,7 +2173,7 @@ public class Configuration {
 	
 	public static final class Verisense {
 		
-		public class SensorBitmap{
+		public class SensorBitmap {
 			// LSB byte 0
 			public static final int LIS2DW12_ACCEL			= 1 << (7 + (8*0));
 			public static final int LSM6DS3_ACCEL			= 1 << (6 + (8*0));
@@ -2185,18 +2190,20 @@ public class Configuration {
 		}
 		
 		public class DerivedSensorsBitMask {
-			public final static int NON_WEAR_DETECTION		= (1 << 0);
-			public final static int PPG_TO_HR_RED_LED		= (1 << 1);
-			public final static int PPG_TO_HR_IR_LED		= (1 << 2);
-			public final static int PPG_TO_HR_GREEN_LED		= (1 << 3);
-			public final static int PPG_TO_HR_BLUE_LED		= (1 << 4);
-			public final static int PPG_TO_SPO2				= (1 << 5);
-			public final static int GYRO_ON_THE_FLY_CAL		= (1 << 6);
-			public final static int ORIENTATION_6DOF_QUAT 	= (1 << 7);
-			public final static int ORIENTATION_6DOF_EULER 	= (1 << 8);
+			public final static int NON_WEAR_DETECTION_LIS2DW12	= (1 << 0);
+			public final static int NON_WEAR_DETECTION_LSM6DS3	= (1 << 1);
+			public final static int PPG_TO_HR_RED_LED		= (1 << 2);
+			public final static int PPG_TO_HR_IR_LED		= (1 << 3);
+			public final static int PPG_TO_HR_GREEN_LED		= (1 << 4);
+			public final static int PPG_TO_HR_BLUE_LED		= (1 << 5);
+			public final static int PPG_TO_SPO2				= (1 << 6);
+			public final static int GYRO_ON_THE_FLY_CAL		= (1 << 7);
+			public final static int ORIENTATION_6DOF_QUAT 	= (1 << 8);
+			public final static int ORIENTATION_6DOF_EULER 	= (1 << 9);
 		}
 
 		public class SENSOR_ID {
+			public static final int VERISENSE_TIMESTAMP		= 2000;
 			//TODO not sure if there is a need for an offset here -> it was just copied from Sweatch implementation above
 			public static final int LIS2DW12_ACCEL 			= 2005;
 			public static final int LSM6DS3_GYRO 			= 2006;
@@ -2208,6 +2215,23 @@ public class Configuration {
 			public static final int MAX86916_PPG_BLUE 		= 2012;
 			public static final int VBATT			 		= 2013;
 			public static final int GSR				 		= 2014;
+		}
+		
+		public enum LABEL_SENSOR_TILE{
+			ACCEL(SensorLIS2DW12.LABEL_SENSOR_TILE.ACCEL),
+			GSR(SensorGSRVerisense.LABEL_SENSOR_TILE.GSR),
+			PPG(SensorMAX86916.LABEL_SENSOR_TILE.PPG),
+			VBATT(SensorBattVoltageVerisense.LABEL_SENSOR_TILE.BATTERY_MONITORING),
+			ACCEL2_GYRO(SensorLSM6DS3.LABEL_SENSOR_TILE.ACCEL2_GYRO);
+			
+			private String tileText = "";
+			LABEL_SENSOR_TILE(String text){
+				this.tileText = text;
+			}
+			
+			public String getTileText(){
+				return tileText;
+			}
 		}
 		
 		public static class CompatibilityInfoForMaps{

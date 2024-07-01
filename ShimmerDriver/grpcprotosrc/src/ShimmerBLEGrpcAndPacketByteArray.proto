@@ -1,0 +1,79 @@
+//using 
+//protoc-3.13.0-win64
+//protoc-gen-grpc-java-1.32.1-windows-x86_64.exe
+//.nuget\packages\grpc.tools\2.34.0\tools\windows_x64\grpc_csharp_plugin.exe
+syntax = "proto3";
+
+option csharp_namespace = "com.shimmerresearch.grpc";
+option java_package = "com.shimmerresearch.grpc";
+option java_outer_classname = "ShimmerBLEGRPC";
+
+package shimmerBLEGRPC;
+
+// The greeter service definition.
+service ShimmerBLEByteServer {
+
+  //Client asking for data
+  rpc GetDataStream(StreamRequest) returns (stream ObjectClusterByteArray) {}
+
+  //Client asking for data
+  rpc GetTestDataStream(StreamRequest) returns (stream ObjectClusterByteArray) {}
+  
+    //Client sending data
+  rpc SendDataStream(stream ObjectClusterByteArray) returns (Reply){}
+  
+  rpc ConnectShimmer(Request) returns (stream StateStatus) {}
+  
+  rpc DisconnectShimmer(Request) returns (Reply);
+  
+  rpc WriteBytesShimmer(WriteBytes) returns (Reply);
+  
+  rpc SayHello (Request) returns (Reply);
+}
+
+// The response message containing the greetings
+message Reply {
+  string message = 1;
+}
+// The request message containing the user's name.
+message Request {
+  string name = 1;
+}
+
+message WriteBytes{
+  string address = 1;
+  bytes byte_to_write = 2;
+}
+
+message StreamRequest {
+  string message = 1;
+}
+
+enum BluetoothState {
+  Connected = 0;
+  Connecting = 1;
+  Disconnected = 2;
+}
+
+message StateStatus {
+	BluetoothState State = 1;
+	string message = 2;
+}
+
+message ObjectClusterByteArray {
+  string uuid = 1;
+  string bluetoothAddress = 2;
+  
+  enum CommunicationType {
+    BT = 0;
+    SD = 1;
+    Radio_802_15_4 = 2;
+  }
+  
+  CommunicationType communicationType = 3;
+  
+  int64 systemTime = 4;
+  double calibratedTimeStamp = 5;
+  bytes binary_data = 6;
+  
+}

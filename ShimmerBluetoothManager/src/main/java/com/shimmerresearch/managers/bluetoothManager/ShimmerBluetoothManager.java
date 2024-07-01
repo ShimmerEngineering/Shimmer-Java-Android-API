@@ -33,6 +33,8 @@ import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.thirdpartyDevices.noninOnyxII.NoninOnyxIIDevice;
+import com.shimmerresearch.verisense.VerisenseDevice;
+import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 
 public abstract class ShimmerBluetoothManager{
 
@@ -42,7 +44,9 @@ public abstract class ShimmerBluetoothManager{
 	public static ConcurrentHashMap<String, ShimmerDevice> mMapOfBtConnectedShimmers = new ConcurrentHashMap<String, ShimmerDevice>(7);
 	
 	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBtComPorts = new TreeMap<String, BluetoothDeviceDetails>();
+	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBLEDevices = new TreeMap<String, BluetoothDeviceDetails>();
 	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBtComPortsDeepCopy  = new TreeMap<String, BluetoothDeviceDetails>();
+	public TreeMap<String, BluetoothDeviceDetails> mMapOfParsedBLEDevicesDeepCopy  = new TreeMap<String, BluetoothDeviceDetails>();
 	
 	public HashMap<String, ConnectThread> mapOfConnectionThreads = new HashMap<String, ConnectThread>(); 
 	
@@ -50,6 +54,7 @@ public abstract class ShimmerBluetoothManager{
 	
 	protected static final boolean USE_INFOMEM_CONFIG_METHOD = true;
 	public static final long SLEEP_BETWEEN_GROUP_ACTIONS_MS = 50;
+	public static final String COMPORT_PREFIX = "COM";
 	protected int mSyncTrainingIntervalInSeconds = 15;
 	protected int msDelayBetweenSetCommands = 0;
 	protected BluetoothProgressReportAll mProgressReportAll;
@@ -90,7 +95,9 @@ public abstract class ShimmerBluetoothManager{
 	/** If true, all devices will auto-stream once a connection is established */
 	protected boolean mAutoStartStreaming = false;		
 
-	private static final List<Integer> HW_IDS_THAT_SUPPORT_CONFIG_VIA_BT = Arrays.asList(HW_ID.SHIMMER_3, HW_ID.SWEATCH, HW_ID.SHIMMER_4_SDK);
+	private static final List<Integer> HW_IDS_THAT_SUPPORT_CONFIG_VIA_BT = Arrays.asList(
+			HW_ID.SHIMMER_3, HW_ID.SWEATCH, HW_ID.SHIMMER_4_SDK, 
+			HW_ID.VERISENSE_IMU, HW_ID.VERISENSE_DEV_BRD, HW_ID.VERISENSE_GSR_PLUS, HW_ID.VERISENSE_PPG, HW_ID.VERISENSE_PULSE_PLUS);
 	
 	public ShimmerBluetoothManager() {
 		startTimerCalcReceptionRate();
@@ -100,15 +107,22 @@ public abstract class ShimmerBluetoothManager{
 		connectShimmer(comPort, null, null);
 	}
 	
-	public void connectShimmer(String comPort, ShimmerVerObject shimmerVerObject, ExpansionBoardDetails expansionBoardDetails) {
-		BluetoothDeviceDetails portDetails = getBluetoothDeviceDetails(comPort);
+	/**This is called to connect to a shimmer device
+	 * 
+	 * @param connectionHandle can either be COM port or MAC address e.g. COM3, D0:2B:46:3D:A2:BB
+	 * @param shimmerVerObject
+	 * @param expansionBoardDetails
+	 */
+	public void connectShimmer(String connectionHandle, ShimmerVerObject shimmerVerObject, ExpansionBoardDetails expansionBoardDetails) {
+		BluetoothDeviceDetails bluetoothDetails = getBluetoothDeviceDetails(connectionHandle);
+
 		//No need to start the thread if the device isn't available
-		if(portDetails!=null){
-			ConnectThread connectThread = new ConnectThread(comPort, shimmerVerObject, expansionBoardDetails);
+		if(bluetoothDetails!=null){
+			ConnectThread connectThread = new ConnectThread(connectionHandle, shimmerVerObject, expansionBoardDetails);
 			mapOfConnectionThreads.put(connectThread.connectionHandle, connectThread);
 			connectThread.start();
 		} else {
-			sendFeedbackOnConnectStartException(comPort);
+			sendFeedbackOnConnectStartException(connectionHandle);
 		}
 	}
 	
@@ -118,6 +132,14 @@ public abstract class ShimmerBluetoothManager{
 		connectThread.start();
 	}
 	
+	public void connectShimmerThroughBTAddress(BluetoothDeviceDetails deviceDetails){
+		ConnectThread connectThread = new ConnectThread(deviceDetails);
+		connectThread.start();
+	}
+	
+	/**
+	 * @param connectionHandle comport or mac address, note that this does not remove the device from the map
+	 */
 	public void disconnectShimmer(String connectionHandle){
 		printMessage("Attempting to disconnect from connection handle = " + connectionHandle);
 		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnected(connectionHandle); 
@@ -145,7 +167,7 @@ public abstract class ShimmerBluetoothManager{
 		}
 	}
 	
-	public void startStreaming(String bluetoothAddress) {
+	public void startStreaming(String bluetoothAddress) throws ShimmerException {
 		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnectedFromMac(bluetoothAddress);
 		if(shimmerDevice!=null){
 			startStreaming(shimmerDevice);
@@ -156,12 +178,17 @@ public abstract class ShimmerBluetoothManager{
 		Iterator<ShimmerDevice> iterator = mMapOfBtConnectedShimmers.values().iterator();
 		while (iterator.hasNext()) {
 			ShimmerDevice shimmerDevice = iterator.next();
-			startStreaming(shimmerDevice);
+			try {
+				startStreaming(shimmerDevice);
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			threadSleep(SLEEP_BETWEEN_GROUP_ACTIONS_MS);
 		}
 	}
 
-	public void startStreaming(ShimmerDevice shimmerDevice){
+	public void startStreaming(ShimmerDevice shimmerDevice) throws ShimmerException{
 		if (shimmerDevice.isConnected()){
 			shimmerDevice.startStreaming();
 		}
@@ -171,19 +198,24 @@ public abstract class ShimmerBluetoothManager{
 		Iterator<ShimmerDevice> iterator = mMapOfBtConnectedShimmers.values().iterator();
 		while (iterator.hasNext()) {
 			ShimmerDevice shimmerDevice = iterator.next();
-			stopStreaming(shimmerDevice);
+			try {
+				stopStreaming(shimmerDevice);
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			threadSleep(SLEEP_BETWEEN_GROUP_ACTIONS_MS);
 		}
 	}
 	
-	public void stopStreaming(String bluetoothAddress) {
+	public void stopStreaming(String bluetoothAddress) throws ShimmerException {
 		ShimmerDevice shimmerDevice = getShimmerDeviceBtConnectedFromMac(bluetoothAddress);
 		if(shimmerDevice!=null){
 			stopStreaming(shimmerDevice);
 		}
 	}
 
-	public void stopStreaming(ShimmerDevice shimmerDevice) {
+	public void stopStreaming(ShimmerDevice shimmerDevice) throws ShimmerException {
 		if (shimmerDevice.isConnected() && shimmerDevice.isStreaming()) {
 			shimmerDevice.stopStreaming();
 		}
@@ -341,8 +373,13 @@ public abstract class ShimmerBluetoothManager{
 					&& HW_IDS_THAT_SUPPORT_CONFIG_VIA_BT.contains(cloneHwId)
 					&& originalShimmerDevice.getClass().isInstance(cloneShimmer)){
 				originalShimmerDevice.operationPrepare();
-				originalShimmerDevice.configureFromClone(cloneShimmer);
-				originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
+				try {
+					originalShimmerDevice.configureFromClone(cloneShimmer);
+					originalShimmerDevice.operationStart(BT_STATE.CONFIGURING);
+				} catch (ShimmerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else {
 				printMessage("Hardware ID not supported currently: " + cloneHwId);
 			}
@@ -465,7 +502,14 @@ public abstract class ShimmerBluetoothManager{
 	}
 
 	protected BluetoothDeviceDetails getBluetoothDeviceDetails(String connectionHandle){
+		if (!connectionHandle.contains(COMPORT_PREFIX)) {
+			return getBLEDeviceDetails(connectionHandle);
+		}
     	return mMapOfParsedBtComPorts.get(connectionHandle);
+    }
+	
+	protected BluetoothDeviceDetails getBLEDeviceDetails(String connectionHandle){
+    	return mMapOfParsedBLEDevices.get(connectionHandle);
     }
 
 	public ConcurrentHashMap<String, ShimmerDevice> getMapOfBtConnectedShimmers() {
@@ -682,6 +726,7 @@ public abstract class ShimmerBluetoothManager{
 		boolean connectThroughComPort;
 		/** Com port for PC/MAC, Bluetooth address for Android*/
 		String connectionHandle;
+		BluetoothDeviceDetails mDeviceDetails;
 		ShimmerRadioInitializer shimmerRadioInitializer = null;
 		
 		/**For use via Consensys for PC/MAC/Linux
@@ -707,7 +752,17 @@ public abstract class ShimmerBluetoothManager{
 			this.connectThroughComPort = false;
 			this.setName(getClass().getSimpleName()+"_"+connectionHandle);
 		}
-
+		public ConnectThread(BluetoothDeviceDetails devDetails) {
+			directConnectUnknownShimmer=false;
+			this.bluetoothAddress = devDetails.mShimmerMacId;
+			this.connectionHandle = devDetails.mShimmerMacId;
+			this.connectThroughComPort = false;
+			this.mDeviceDetails = devDetails;
+			deviceTypeDetected = devDetails.mDeviceTypeDetected;
+			mDeviceDetails = devDetails;
+			this.setName(getClass().getSimpleName()+"_"+connectionHandle);
+		}
+		
 		public void disconnect() {
 			if(shimmerRadioInitializer!=null) {
 				try {
@@ -732,21 +787,27 @@ public abstract class ShimmerBluetoothManager{
 				}
 			}else{
 				try {
-					BluetoothDeviceDetails portDetails = getBluetoothDeviceDetails(connectionHandle);
-
-					if(portDetails==null){
+					BluetoothDeviceDetails bluetoothDetails = getBluetoothDeviceDetails(connectionHandle);
+					
+					if (mDeviceDetails!=null) {
+						bluetoothDetails=mDeviceDetails;
+					}
+					if(bluetoothDetails==null){
 						printMessage("NULL BluetoothDeviceDetails for ConnectionHandle: " + connectionHandle + ", returning...");
 						sendFeedbackOnConnectStartException(connectionHandle);
 						return;
 					}
 
-					setBluetoothDeviceDetails(portDetails);
+					setBluetoothDeviceDetails(bluetoothDetails);
 
 					sendFeedbackOnConnectionStart(connectionHandle);
 
 					//Handle third party Bluetooth devices here
 					if(deviceTypeDetected==DEVICE_TYPE.NONIN_ONYX_II){
 						connectNoninOnyxII(comPort, bluetoothAddress);
+					}
+					if(deviceTypeDetected==DEVICE_TYPE.VERISENSE){
+						connectVerisenseDevice(bluetoothDetails);
 					}
 					else if(deviceTypeDetected==DEVICE_TYPE.LUMAFIT){
 						//TODO
@@ -774,7 +835,11 @@ public abstract class ShimmerBluetoothManager{
 						if (shimmerDevice!=null && !(shimmerDevice instanceof ShimmerShell)){
 							printMessage("Connecting to " + shimmerDevice.getClass().getSimpleName() + " with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 							if(connectThroughComPort){
-								connectExistingShimmer(shimmerDevice, comPort, bluetoothAddress);
+								if (!comPort.contains(COMPORT_PREFIX)) {
+									connectShimmer3BleGrpc(bluetoothDetails);
+								}else {
+									connectExistingShimmer(shimmerDevice, comPort, bluetoothAddress);
+								}
 							}
 							else{
 								connectExistingShimmer(shimmerDevice, bluetoothAddress);
@@ -920,6 +985,14 @@ public abstract class ShimmerBluetoothManager{
 
 	}
 
+	protected void connectVerisenseDevice(BluetoothDeviceDetails bdd) {
+
+	}
+	
+	protected void connectShimmer3BleGrpc(BluetoothDeviceDetails bdd) {
+
+	}
+	
 	protected void connectNoninOnyxII(String comPort, String bluetoothAddress) throws ShimmerException {
 		NoninOnyxIIDevice noninDevice = new NoninOnyxIIDevice(comPort, bluetoothAddress);
 		connectThirdPartyDevice(noninDevice, comPort, bluetoothAddress);

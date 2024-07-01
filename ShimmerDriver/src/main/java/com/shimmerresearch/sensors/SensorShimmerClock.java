@@ -1,6 +1,5 @@
 package com.shimmerresearch.sensors;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -44,7 +43,7 @@ public class SensorShimmerClock extends AbstractSensor {
 
 	protected boolean mFirstTime = true;
 	double mFirstTsOffsetFromInitialTsTicks = 0;
-	long mSystemTimeStamp = 0;
+	double mSystemTimeStamp = 0;
 	public int OFFSET_LENGTH = 9;
 	protected long mRTCOffset = 0; //this is in ticks
 	
@@ -289,7 +288,6 @@ public class SensorShimmerClock extends AbstractSensor {
 		if(mShimmerVerObject.isShimmerGenGq()){
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.RSSI, ShimmerStreamingProperties.channelRssi);
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.SENSOR_DISTANCE, ShimmerStreamingProperties.channelSensorDistance);
-			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER, SensorShimmerClock.channelEventMarker);
 		}
 		else {// if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
 			if(mShimmerVerObject.getFirmwareVersionCode()>=6 || mShimmerVerObject.mHardwareVersion==HW_ID.ARDUINO){
@@ -308,8 +306,9 @@ public class SensorShimmerClock extends AbstractSensor {
 			
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, SensorShimmerClock.channelReceptionRateCurrent);
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, SensorShimmerClock.channelReceptionRateTrial);
-			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER, SensorShimmerClock.channelEventMarker);
 		}
+		
+		channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.EVENT_MARKER, SensorShimmerClock.channelEventMarker);
 		
 		super.createLocalSensorMapWithCustomParser(mSensorMapRef, channelMapRef);
 	}
@@ -325,7 +324,7 @@ public class SensorShimmerClock extends AbstractSensor {
 	}
 	
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
 		//Debugging
 //		if(sensorDetails.getExpectedDataPacketSize()>0){
@@ -520,7 +519,7 @@ public class SensorShimmerClock extends AbstractSensor {
 				for(ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 
 					if(channelDetails.mObjectClusterName.equals(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP)){
-						long systemTime = pcTimestamp;
+						double systemTime = pcTimestampMs;
 						if(commType==COMMUNICATION_TYPE.SD){
 							systemTime = System.currentTimeMillis();
 						}
@@ -629,12 +628,12 @@ public class SensorShimmerClock extends AbstractSensor {
 	}
 
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		//NOT USED IN THIS CLASS
 	}
 
 	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		//NOT USED IN THIS CLASS
 	}
 

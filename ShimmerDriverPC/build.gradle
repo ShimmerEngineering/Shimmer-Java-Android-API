@@ -30,7 +30,6 @@ test {
     exclude '**/API_00001_ShimmerPC_GeneralBluetoothShimmer2R.class'
 }
 
-/*
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -38,7 +37,7 @@ publishing {
 
             groupId = 'com.shimmerresearch' // Replace with your package's group/organization name
             artifactId = 'shimmerdriverpc' // Replace with the name of your package
-            version = '0.10.0_alpha' // Replace with your package version
+            version = '0.10.19_beta' // Replace with your package version
 
             // Jar publication
             //(
@@ -53,14 +52,19 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/ShimmerEngineering/Shimmer-Java-Android-API")
             credentials {
-                // Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN
-                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
-                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+                /* Create gradle.properties file in GRADLE_USER_HOME/.gradle/ 
+                (e.g. C:/Users/YourUsername/.gradle/) with the two lines listed below. Fill in your 
+                Github ID and personal access token - as generated through the Github Developer 
+                Settings page. The token needs to have "read:packages" scope enabled on it: 
+                    gpr.usr=GITHUB_USER_ID 
+                    gpr.key=PERSONAL_ACCESS_TOKEN 
+                */
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
             }
         }
     }
 }
-*/
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
@@ -90,4 +94,5 @@ dependencies {
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     testCompile 'junit:junit:4.12'
+    compile 'com.parse.bolts:bolts-tasks:1.4.0'
 }

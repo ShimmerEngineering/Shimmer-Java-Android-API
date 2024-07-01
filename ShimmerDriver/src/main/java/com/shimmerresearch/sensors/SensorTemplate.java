@@ -170,7 +170,7 @@ public class SensorTemplate extends AbstractSensor{
 	}
 
 	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails,	byte[] sensorByteArray, COMMUNICATION_TYPE commType,ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails,	byte[] sensorByteArray, COMMUNICATION_TYPE commType,ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		int index = 0;
 		for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
 			// first process the data originating from the Shimmer sensor
@@ -223,13 +223,13 @@ public class SensorTemplate extends AbstractSensor{
 	}
 
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] mInfoMemBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 
 	}

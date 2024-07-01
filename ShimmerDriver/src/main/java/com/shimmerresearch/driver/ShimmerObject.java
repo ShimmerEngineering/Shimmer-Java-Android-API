@@ -50,6 +50,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -717,11 +718,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param newPacket
 	 * @param fwType
 	 * @param isTimeSyncEnabled
-	 * @param pcTimestamp this is only used by shimmerbluetooth, set to -1 if not using
+	 * @param pcTimestampMs this is only used by shimmerbluetooth, set to -1 if not using
 	 * @return
 	 */
 	@Override
-	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE fwType, boolean isTimeSyncEnabled, long pcTimestamp) {
+	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE fwType, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
 		ObjectCluster objectCluster = new ObjectCluster();
 		
@@ -749,7 +750,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if (fwType == COMMUNICATION_TYPE.BLUETOOTH){
 //			objectCluster.mSystemTimeStampBytes=ByteBuffer.allocate(8).putLong(pcTimestamp).array();
-			objectCluster.setSystemTimeStamp(pcTimestamp);
+			objectCluster.setSystemTimeStamp(pcTimestampMs);
 			//plus 1 because of: timestamp
 			numAdditionalChannels += 1;
 			
@@ -2113,8 +2114,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				additionalChannelsOffset+=1;
 				
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,(double)pcTimestamp);
-				calibratedData[additionalChannelsOffset] = (double)pcTimestamp;
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLISECONDS,(double)pcTimestampMs);
+				calibratedData[additionalChannelsOffset] = (double)pcTimestampMs;
 				calibratedDataUnits[additionalChannelsOffset] = CHANNEL_UNITS.MILLISECONDS;
 				uncalibratedData[additionalChannelsOffset] = Double.NaN;
 				uncalibratedDataUnits[additionalChannelsOffset] = "";
@@ -3447,6 +3448,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @param bufferInquiry
 	 */
 	protected void interpretInqResponse(byte[] bufferInquiry){
+		try {
 		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R){
 			setPacketSize(mTimeStampPacketByteSize +bufferInquiry[3]*2); 
 			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
@@ -3513,6 +3515,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			System.arraycopy(bufferInquiry, 4, signalIdArray, 0, mNChannels); // this is 4 because there is no config byte
 			interpretDataPacketFormat(mNChannels,signalIdArray);
 		}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			try {
+				disconnect();
+			} catch (ShimmerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	/** No need for this any more with correct usage of EnabledSensors, DerivedSensors and the SensorMap */
@@ -4368,7 +4380,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 *            the array of InfoMem bytes.
 	 */
 	@Override
-	public void configBytesParse(byte[] configBytes) {
+	public void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType) {
 		String shimmerName = "";
 
 		mInfoMemBytesOriginal = configBytes;
@@ -4538,7 +4550,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				abstractSensor.configBytesParse(this, mConfigBytes);
+				abstractSensor.configBytesParse(this, mConfigBytes, commType);
 			}
 			
 
@@ -4598,7 +4610,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return
 	 */
 	@Override
-	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer, COMMUNICATION_TYPE commType) {
 
 		ConfigByteLayoutShimmer3 configByteLayoutCast = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
 		
@@ -4790,7 +4802,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			// Configuration from each Sensor settings
 			for(AbstractSensor abstractSensor:mMapOfSensorClasses.values()){
-				abstractSensor.configBytesGenerate(this, mConfigBytes);
+				abstractSensor.configBytesGenerate(this, mConfigBytes, commType);
 			}
 		}
 		

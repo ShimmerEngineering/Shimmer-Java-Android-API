@@ -103,13 +103,13 @@ public class ShimmerShell extends ShimmerDevice {
 	}
 
 	@Override
-	public void configBytesParse(byte[] infoMemContents) {
+	public void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 	@Override
-	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -142,5 +142,10 @@ public class ShimmerShell extends ShimmerDevice {
 		//TODO
 	}
 
+	@Override
+	protected void dataHandler(ObjectCluster ojc) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

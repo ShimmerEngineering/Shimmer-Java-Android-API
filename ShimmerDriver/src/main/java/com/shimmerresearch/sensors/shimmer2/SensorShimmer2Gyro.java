@@ -74,7 +74,7 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType,
-			ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimeStamp) {
+			ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pctimeStampMs) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -86,13 +86,13 @@ public class SensorShimmer2Gyro extends AbstractSensor {
 	}
 
 	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes) {
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
 		// TODO Auto-generated method stub
 		
 	}

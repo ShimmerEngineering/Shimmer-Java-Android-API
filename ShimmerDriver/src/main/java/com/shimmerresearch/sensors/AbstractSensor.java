@@ -23,6 +23,7 @@ import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
+import com.shimmerresearch.verisense.sensors.ISensorConfig;
 
 public abstract class AbstractSensor implements Serializable{
 	
@@ -100,12 +101,12 @@ public abstract class AbstractSensor implements Serializable{
 	public abstract void generateSensorGroupMapping();
 
 	/** for use only if a custom parser is required, i.e. for calibrated data. Use in conjunction with createLocalSensorMapWithCustomParser()*/ 
-	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, long pctimeStamp);
+	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pctimeStampMs);
 //	public abstract ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] sensorByteArray, COMMUNICATION_TYPE commType, ObjectCluster objectCluster);
 	
 	public abstract void checkShimmerConfigBeforeConfiguring();
-	public abstract void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes);
-	public abstract void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes);
+	public abstract void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType);
+	public abstract void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType);
 	public abstract Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet);
 	public abstract Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel);
 
@@ -323,9 +324,9 @@ public abstract class AbstractSensor implements Serializable{
 			SensorDetailsRef sensorDetailsRef = sensorMapRef.get(sensorId);
 			SensorDetails sensorDetails = new SensorDetails(false, 0, sensorDetailsRef){
 				@Override
-				public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object, boolean isTimeSyncEnabled, long pcTimestamp) {
+				public ObjectCluster processData(byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster object, boolean isTimeSyncEnabled, double pcTimestampMs) {
 //					System.out.println("PARSING\t" + this.mSensorDetails.mGuiFriendlyLabel);
-					return processDataCustom(this, rawData, commType, object, isTimeSyncEnabled, pcTimestamp);
+					return processDataCustom(this, rawData, commType, object, isTimeSyncEnabled, pcTimestampMs);
 //					return super.processData(rawData, commType, object);
 				}
 			};
@@ -783,6 +784,16 @@ public abstract class AbstractSensor implements Serializable{
 	
 	public void addConfigOption(ConfigOptionDetailsSensor configOptionDetails) {
 		mConfigOptionsMap.put(configOptionDetails.mGuiHandle, configOptionDetails); 
+	}
+	
+	
+	public void setSensorConfig(ISensorConfig sensorConfig) {
+		// Can be overridden by extended class
+	}
+	
+	public List<ISensorConfig> getSensorConfig() {
+		// Can be overridden by extended class
+		return new ArrayList<>();
 	}
 	
 

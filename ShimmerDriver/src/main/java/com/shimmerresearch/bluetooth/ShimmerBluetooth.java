@@ -107,6 +107,7 @@ import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -146,6 +147,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		CONNECTED("Ready"),  // The class is now connected to a remote device
 		STREAMING("Streaming"),  // The class is now connected to a remote device
 		STREAMING_AND_SDLOGGING("Streaming and SD Logging"),
+		STREAMING_LOGGED_DATA("Streaming Logged Data"),
 		SDLOGGING("SD Logging"),
 		CONFIGURING("Configuring"), // The class is now initiating an outgoing connection 
 		CONNECTION_LOST("Lost connection"),
@@ -195,7 +197,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	protected boolean mIamAlive = false;
 	protected abstract void connect(String address,String bluetoothLibrary);
-	protected abstract void dataHandler(ObjectCluster ojc);
+	
 	protected abstract boolean bytesAvailableToBeRead();
 	protected abstract int availableBytes();
 	
@@ -221,10 +223,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected abstract byte readByte();
 	protected abstract void dockedStateChange();
 	
-	private boolean mIsFirstSystemTimestampOffsetStored = false;
-	private double mOffsetFirstTime=-1;
-	private boolean mIsFirstSystemTimestampOffsetPlotStored = false;
-	private double mFirstSystemTimestampPlot = -1;
+	private SystemTimestampPlot systemTimestampPlot = new SystemTimestampPlot();
 
 	private List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
@@ -256,7 +255,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private boolean mCheckIfConnectionisAlive = false;
 	//endregion --------- TIMERS ---------
 
-	transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
+	protected transient ByteArrayOutputStream mByteArrayOutputStream = new ByteArrayOutputStream();
 	
 //	private boolean mVerboseMode = true;
 //	private String mParentClassName = "ShimmerBluetooth";
@@ -476,7 +475,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	private int mNumOfMemSetCmds = 0;
 	
-	private boolean mSerialPortReadTimeout;
+	protected boolean mSerialPortReadTimeout;
 	
 	public static final int MSG_IDENTIFIER_DATA_PACKET = 2;
 	public static final int MSG_IDENTIFIER_DEVICE_PAIRED = 8;
@@ -487,11 +486,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_ALL = 5;
 	public static final int MSG_IDENTIFIER_PROGRESS_REPORT_PER_DEVICE = 4;
 	public static final int MSG_IDENTIFIER_SHIMMER_DOCKED_STATE_CHANGE = 7;
+	public static final int MSG_IDENTIFIER_SYNC_PROGRESS = 10;
 	
 	//Temp here for Bluetooth discovery, pairing and unpairing operations
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_PAIR_UNPAIR_ALL = 11;
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_PAIR_UNPAIR_PER_DEVICE = 12;
 	public static final int MSG_IDENTIFIER_PROGRESS_BT_DISCOVERY_RESULTS = 13;
+	
+	public static final int MSG_IDENTIFIER_VERISENSE_ERASE_DATA_COMPLETED = 14;
+	public static final int MSG_IDENTIFIER_VERISENSE_WRITE_OPCONFIG_COMPLETED = 15;
 
 	//	private boolean mVerboseMode = true;
 	//	private String mParentClassName = "ShimmerPC";
@@ -577,7 +580,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- BLUETOOH STACK --------- 
 	
 	public class IOThread extends Thread {
-		byte[] byteBuffer = {0};
+		protected byte[] byteBuffer = {0};
 		public boolean stop = false;
 		
 		public void run() {
@@ -722,112 +725,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				if (!mIsStreaming && !bytesAvailableToBeRead()){
 					threadSleep(50);
 				}
-			}
-		}
-
-		
-		private void processWhileStreaming() {
-			byteBuffer = readBytes(1);
-			if(byteBuffer!=null){
-				mByteArrayOutputStream.write(byteBuffer[0]);
-				//Everytime a byte is received the timestamp is taken
-				if(mEnablePCTimeStamps) {
-					mListofPCTimeStamps.add(System.currentTimeMillis());
-				}
-			} 
-			else {
-				printLogDataForDebugging("readbyte null");
-			}
-
-			//If there is a full packet and the subsequent sequence number of following packet
-			if(mByteArrayOutputStream.size()>=getPacketSizeWithCrc()+2){ // +2 because there are two acks
-				processPacket();
-			} 
-		}
-
-		private void processPacket() {
-			setIamAlive(true);
-			byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
-			
-			//Data packet followed by another data packet
-			if(bufferTemp[0]==DATA_PACKET 
-					&& bufferTemp[getPacketSizeWithCrc()+1]==DATA_PACKET){
-				
-				if (mBtCommsCrcModeCurrent != BT_CRC_MODE.OFF && !checkCrc(bufferTemp, getPacketSize() + 1)) {
-					discardFirstBufferByte();
-					return;
-				}
-				
-				//Handle the data packet
-				processDataPacket(bufferTemp);
-				clearSingleDataPacketFromBuffers(bufferTemp, getPacketSizeWithCrc()+1);
-			} 
-			
-			//Data packet followed by an ACK (suggesting an ACK in response to a SET BT command or else a BT response command)
-			else if(bufferTemp[0]==DATA_PACKET 
-					&& bufferTemp[getPacketSizeWithCrc()+1]==ACK_COMMAND_PROCESSED){
-				if(mByteArrayOutputStream.size()>getPacketSizeWithCrc()+2){
-					
-					if(bufferTemp[getPacketSizeWithCrc()+2]==DATA_PACKET){
-						//Firstly handle the data packet
-						processDataPacket(bufferTemp);
-						clearSingleDataPacketFromBuffers(bufferTemp, getPacketSizeWithCrc()+2);
-						
-						//Then handle the ACK from the last SET command
-						if(isKnownSetCommand(mCurrentCommand)){
-							stopTimerCheckForAckOrResp(); //cancel the ack timer
-							mWaitForAck=false;
-							
-							processAckFromSetCommand(mCurrentCommand);
-							
-							mTransactionCompleted = true;
-							setInstructionStackLock(false);
-						}
-						printLogDataForDebugging("Ack Received for Command: \t\t\t" + btCommandToString(mCurrentCommand));
-					}
-					
-					//this is for LogAndStream support, command is transmitted and ack received
-					else if(isSupportedInStreamCmds() && bufferTemp[getPacketSizeWithCrc()+2]==INSTREAM_CMD_RESPONSE){ 
-						printLogDataForDebugging("COMMAND TXed and ACK RECEIVED IN STREAM");
-						printLogDataForDebugging("INS CMD RESP");
-
-						//Firstly handle the in-stream response
-						stopTimerCheckForAckOrResp(); //cancel the ack timer
-						mWaitForResponse=false;
-						mWaitForAck=false;
-
-						processInstreamResponse();
-
-						// Need to remove here because it is an
-						// in-stream response while streaming so not
-						// handled elsewhere
-						if(getListofInstructions().size()>0){
-							removeInstruction(0);
-						}
-						
-						mTransactionCompleted=true;
-						setInstructionStackLock(false);
-
-						//Then process the Data packet
-						processDataPacket(bufferTemp);
-						clearBuffers();
-					} 
-					else {
-						printLogDataForDebugging("Unknown parsing error while streaming");
-					}
-				} 
-				if(mByteArrayOutputStream.size()>getPacketSizeWithCrc()+2){
-					printLogDataForDebugging("Unknown packet error (check with JC):\tExpected: " + (getPacketSizeWithCrc()+2) + "bytes but buffer contains " + mByteArrayOutputStream.size() + "bytes");
-					discardFirstBufferByte(); //throw the first byte away
-				}
-				
-			} 
-			//TODO: ACK in bufferTemp[0] not handled
-			//else if
-			else {
-				printLogDataForDebugging("Packet syncing problem:\tExpected: " + (getPacketSizeWithCrc()+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes" 
-										+ "\nBuffer = " + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
-				discardFirstBufferByte(); //throw the first byte away
 			}
 		}
 		
@@ -1006,6 +903,112 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	}
 	
+	
+	protected void processPacket() {
+		setIamAlive(true);
+		byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
+		
+		//Data packet followed by another data packet
+		if(bufferTemp[0]==DATA_PACKET 
+				&& bufferTemp[getPacketSizeWithCrc()+1]==DATA_PACKET){
+			
+			if (mBtCommsCrcModeCurrent != BT_CRC_MODE.OFF && !checkCrc(bufferTemp, getPacketSize() + 1)) {
+				discardFirstBufferByte();
+				return;
+			}
+			
+			//Handle the data packet
+			processDataPacket(bufferTemp);
+			clearSingleDataPacketFromBuffers(bufferTemp, getPacketSizeWithCrc()+1);
+		} 
+		
+		//Data packet followed by an ACK (suggesting an ACK in response to a SET BT command or else a BT response command)
+		else if(bufferTemp[0]==DATA_PACKET 
+				&& bufferTemp[getPacketSizeWithCrc()+1]==ACK_COMMAND_PROCESSED){
+			if(mByteArrayOutputStream.size()>getPacketSizeWithCrc()+2){
+				
+				if(bufferTemp[getPacketSizeWithCrc()+2]==DATA_PACKET){
+					//Firstly handle the data packet
+					processDataPacket(bufferTemp);
+					clearSingleDataPacketFromBuffers(bufferTemp, getPacketSizeWithCrc()+2);
+					
+					//Then handle the ACK from the last SET command
+					if(isKnownSetCommand(mCurrentCommand)){
+						stopTimerCheckForAckOrResp(); //cancel the ack timer
+						mWaitForAck=false;
+						
+						processAckFromSetCommand(mCurrentCommand);
+						
+						mTransactionCompleted = true;
+						setInstructionStackLock(false);
+					}
+					printLogDataForDebugging("Ack Received for Command: \t\t\t" + btCommandToString(mCurrentCommand));
+				}
+				
+				//this is for LogAndStream support, command is transmitted and ack received
+				else if(isSupportedInStreamCmds() && bufferTemp[getPacketSizeWithCrc()+2]==INSTREAM_CMD_RESPONSE){ 
+					printLogDataForDebugging("COMMAND TXed and ACK RECEIVED IN STREAM");
+					printLogDataForDebugging("INS CMD RESP");
+
+					//Firstly handle the in-stream response
+					stopTimerCheckForAckOrResp(); //cancel the ack timer
+					mWaitForResponse=false;
+					mWaitForAck=false;
+
+					processInstreamResponse();
+
+					// Need to remove here because it is an
+					// in-stream response while streaming so not
+					// handled elsewhere
+					if(getListofInstructions().size()>0){
+						removeInstruction(0);
+					}
+					
+					mTransactionCompleted=true;
+					setInstructionStackLock(false);
+
+					//Then process the Data packet
+					processDataPacket(bufferTemp);
+					clearBuffers();
+				} 
+				else {
+					printLogDataForDebugging("Unknown parsing error while streaming");
+				}
+			} 
+			if(mByteArrayOutputStream.size()>getPacketSizeWithCrc()+2){
+				printLogDataForDebugging("Unknown packet error (check with JC):\tExpected: " + (getPacketSizeWithCrc()+2) + "bytes but buffer contains " + mByteArrayOutputStream.size() + "bytes");
+				discardFirstBufferByte(); //throw the first byte away
+			}
+			
+		} 
+		//TODO: ACK in bufferTemp[0] not handled
+		//else if
+		else {
+			printLogDataForDebugging("Packet syncing problem:\tExpected: " + (getPacketSizeWithCrc()+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes" 
+									+ "\nBuffer = " + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
+			discardFirstBufferByte(); //throw the first byte away
+		}
+	}
+	
+	protected void processWhileStreaming() {
+		byte[] byteBuffer = readBytes(1);
+		if(byteBuffer!=null){
+			mByteArrayOutputStream.write(byteBuffer[0]);
+			//Everytime a byte is received the timestamp is taken
+			if(mEnablePCTimeStamps) {
+				mListofPCTimeStamps.add(System.currentTimeMillis());
+			}
+		} 
+		else {
+			printLogDataForDebugging("readbyte null");
+		}
+
+		//If there is a full packet and the subsequent sequence number of following packet
+		if(mByteArrayOutputStream.size()>=getPacketSizeWithCrc()+2){ // +2 because there are two acks
+			processPacket();
+		} 
+	}
+	
 	private static boolean isKnownResponse(byte response) {
 		return mBtResponseMap.containsKey(response);
 	}
@@ -1039,7 +1042,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return mBtGetCommandMap.containsKey(getCmd);
 	}
 
-	private static boolean isKnownSetCommand(byte setCmd) {
+	protected static boolean isKnownSetCommand(byte setCmd) {
 		return mBtSetCommandMap.containsKey(setCmd);
 	}
 	
@@ -1061,7 +1064,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/** process responses to in-stream response */
-	private void processInstreamResponse() {
+	protected void processInstreamResponse() {
 		byte[] inStreamResponseCommandBuffer = readBytes(1, INSTREAM_CMD_RESPONSE);
 		if(inStreamResponseCommandBuffer!=null){
 			byte inStreamResponseCommand = inStreamResponseCommandBuffer[0];
@@ -1139,7 +1142,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		ObjectCluster objectCluster = null;
 		try {
 			objectCluster = buildMsg(packet, fwType, timeSync, pcTimeStamp);
-			objectCluster = processSystemTimestampPlot(objectCluster);
+			objectCluster = systemTimestampPlot.processSystemTimestampPlot(objectCluster);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1147,40 +1150,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		dataHandler(objectCluster);
 	}
 
-	private ObjectCluster processSystemTimestampPlot(ObjectCluster objectCluster) {
-		if(!mIsFirstSystemTimestampOffsetStored) {
-			mIsFirstSystemTimestampOffsetStored = true;
-////			FormatCluster f = ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(Shimmer3.ObjectClusterSensorName.TIMESTAMP), CHANNEL_TYPE.CAL.toString());
-//			byte[] bSystemTS = objectCluster.mSystemTimeStampBytes;
-//			ByteBuffer bb = ByteBuffer.allocate(8);
-//	    	bb.put(bSystemTS);
-//	    	bb.flip();
-//	    	long systemTimeStamp = bb.getLong();
-	    	long systemTimeStamp = objectCluster.mSystemTimeStamp;
-			mOffsetFirstTime = systemTimeStamp-objectCluster.getTimestampMilliSecs();
-		}
-		
-		double calTimestamp = objectCluster.getTimestampMilliSecs();
-		double systemTimestampPlot = calTimestamp+mOffsetFirstTime;
-		
-		if(!mIsFirstSystemTimestampOffsetPlotStored) {
-			mIsFirstSystemTimestampOffsetPlotStored = true;
-			mFirstSystemTimestampPlot  = systemTimestampPlot;
-		}
-
-		objectCluster.addDataToMap(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT,CHANNEL_TYPE.CAL.toString(), CHANNEL_UNITS.MILLISECONDS, systemTimestampPlot);
-		
-		double systemTimestampPlotZeroed = 0;
-		if(mIsFirstSystemTimestampOffsetPlotStored) {
-			systemTimestampPlotZeroed = systemTimestampPlot - mFirstSystemTimestampPlot;
-		}
-		objectCluster.addCalData(SensorSystemTimeStamp.channelSystemTimestampPlotZeroed, systemTimestampPlotZeroed);
-		return objectCluster;
-	}
 	/**this is to clear the buffer
 	 * 
 	 */
-	private void clearSerialBuffer() {
+	protected void clearSerialBuffer() {
 		startTimerCheckForSerialPortClear();
 
 		List<Byte> buffer = new ArrayList<Byte>();
@@ -1246,7 +1219,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param bufferTemp
 	 * @param packetSize
 	 */
-	private void clearSingleDataPacketFromBuffers(byte[] bufferTemp, int packetSize) {
+	protected void clearSingleDataPacketFromBuffers(byte[] bufferTemp, int packetSize) {
 		mByteArrayOutputStream.reset();
 		mByteArrayOutputStream.write(bufferTemp[packetSize]);
 //		consolePrintLn(Integer.toString(bufferTemp[mPacketSize+2]));
@@ -1265,7 +1238,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * 
 	 */
-	private void clearBuffers() {
+	protected void clearBuffers() {
 		mByteArrayOutputStream.reset();
 		mListofPCTimeStamps.clear();
 	}
@@ -1273,7 +1246,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * 
 	 */
-	private void discardFirstBufferByte(){
+	protected void discardFirstBufferByte(){
 		byte[] bTemp = mByteArrayOutputStream.toByteArray();
 		mByteArrayOutputStream.reset();
 		mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
@@ -1828,7 +1801,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @param currentCommand
 	 */
-	private void processAckFromSetCommand(byte currentCommand) {
+	protected void processAckFromSetCommand(byte currentCommand) {
 		// check for null and size were put in because if Shimmer was abruptly
 		// disconnected there is sometimes indexoutofboundsexceptions
 		if(getListofInstructions().size() > 0){
@@ -2342,7 +2315,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	
-	private byte[] readBytes(int numBytes, byte btCommand) {
+	protected byte[] readBytes(int numBytes, byte btCommand) {
 		byte[] response = readBytes(numBytes); 
 		if(response==null){
 			printLogDataForDebugging("NULL serial readBytes response for command: " + btCommandToString(btCommand));
@@ -2352,7 +2325,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * @param statusByte
 	 */
-	private void parseStatusByte(byte statusByte){
+	protected void parseStatusByte(byte statusByte){
 		Boolean savedDockedState = isDocked();
 		
 		setIsDocked(((statusByte & (0x01 << 0)) > 0)? true:false);
@@ -2398,7 +2371,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 12);
 	}
 	
-	private boolean isSupportedInStreamCmds() {
+	protected boolean isSupportedInStreamCmds() {
 		if((getFirmwareIdentifier()==FW_ID.LOGANDSTREAM 
 				|| isThisVerCompatibleWith(FW_ID.BTSTREAM, 0, 8, 1))&& getHardwareVersion()!=HW_ID.SHIMMER_2R){
 			return true;
@@ -2714,7 +2687,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//region  --------- START/STOP STREAMING FUNCTIONS --------- 
 	@Override
-	public void startStreaming() {
+	public void startStreaming() throws ShimmerException {
 		//mCurrentLEDStatus=-1;	
 		super.startStreaming();
 		
@@ -2746,8 +2719,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		determineCalibrationParamsForIMU();
 		initaliseDataProcessing();
 		
-		mIsFirstSystemTimestampOffsetStored = false;
-		mIsFirstSystemTimestampOffsetPlotStored = false;
+		systemTimestampPlot.reset();
 		
 		resetCalibratedTimeStamp();
 //		resetPacketLossVariables();
@@ -5504,7 +5476,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		return null;
 	}
 	
-	private synchronized void removeInstruction(int index){
+	protected synchronized void removeInstruction(int index){
 		synchronized(mListofInstructions){
 		try {
 			mListofInstructions.remove(index);
@@ -5623,7 +5595,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	
 	@Override
-	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) throws ShimmerException {
 		super.configureFromClone(shimmerDeviceClone);
 		
 		ShimmerBluetooth cloneShimmerCast = (ShimmerBluetooth) shimmerDeviceClone;

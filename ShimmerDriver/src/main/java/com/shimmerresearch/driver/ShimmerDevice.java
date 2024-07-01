@@ -29,6 +29,7 @@ import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
 import com.shimmerresearch.algorithms.orientation.OrientationModule6DOFLoader;
 import com.shimmerresearch.algorithms.orientation.OrientationModule9DOFLoader;
+import com.shimmerresearch.algorithms.verisense.gyroAutoCal.GyroOnTheFlyCalLoaderVerisense;
 import com.shimmerresearch.bluetooth.DataProcessingInterface;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
@@ -65,6 +66,8 @@ import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
+import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
+import com.shimmerresearch.verisense.sensors.ISensorConfig;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
 
@@ -294,7 +297,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	private static final List<AlgorithmLoaderInterface> OPEN_SOURCE_ALGORITHMS = Arrays.asList(
 			new GyroOnTheFlyCalLoader(),
 			new OrientationModule6DOFLoader(), 
-			new OrientationModule9DOFLoader());
+			new OrientationModule9DOFLoader(),
+			new GyroOnTheFlyCalLoaderVerisense());
 
 	public static final class DatabaseConfigHandle{
 		public static final String TRIAL_NAME = "Trial_Name";
@@ -352,10 +356,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param object in some cases additional details might be required for building the packer format, e.g. inquiry response
 	 */
 	protected abstract void interpretDataPacketFormat(Object object,COMMUNICATION_TYPE commType);
-	public abstract void configBytesParse(byte[] configBytes);
-	public abstract byte[] configBytesGenerate(boolean generateForWritingToShimmer);
+	public abstract void configBytesParse(byte[] configBytes, COMMUNICATION_TYPE commType);
+	public abstract byte[] configBytesGenerate(boolean generateForWritingToShimmer, COMMUNICATION_TYPE commType);
 	public abstract void createConfigBytesLayout();
-
+	protected abstract void dataHandler(ObjectCluster ojc);
 
 	// --------------- Abstract Methods End --------------------------
 
@@ -1358,9 +1362,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	public ObjectCluster buildMsg(byte[] dataPacketFormat, byte[] packetByteArray, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
+	public ObjectCluster buildMsg(byte[] dataPacketFormat, byte[] packetByteArray, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, double pcTimestampMs){
 		interpretDataPacketFormat(dataPacketFormat, commType);
-		return buildMsg(packetByteArray, commType, isTimeSyncEnabled, pcTimestamp);
+		return buildMsg(packetByteArray, commType, isTimeSyncEnabled, pcTimestampMs);
 	}
 	
 	/** The packet format can be changed by calling interpretpacketformat
@@ -1368,9 +1372,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param commType
 	 * @return
 	 */
-	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, long pcTimestamp){
+	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE commType, boolean isTimeSyncEnabled, double pcTimestampMs){
 		boolean debug = false;
-//		printSensorParserAndAlgoMaps();
 		
 		if(debug)
 			consolePrintLn("Packet: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(newPacket));
@@ -1399,7 +1402,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 						consolePrintLn(mShimmerUserAssignedName + " ERROR PARSING " + sensor.mSensorDetailsRef.mGuiFriendlyLabel);
 					}
 				}
-				sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, pcTimestamp);
+				sensor.processData(sensorByteArray, commType, ojc, isTimeSyncEnabled, pcTimestampMs);
 
 				if(debug)
 					System.out.println(sensor.mSensorDetailsRef.mGuiFriendlyLabel + "\texpectedPacketArraySize:" + length + "\tcurrentIndex:" + index);
@@ -1702,6 +1705,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public void setDefaultShimmerConfiguration() {
 		// TODO Auto-generated method stub
 	}
+	
+	public void configBytesParse(byte[] configBytes) {
+		configBytesParse(configBytes, COMMUNICATION_TYPE.BLUETOOTH);
+	}
+	
+	public byte[] configBytesGenerate(boolean generateForWritingToShimmer) {
+		return configBytesGenerate(generateForWritingToShimmer, COMMUNICATION_TYPE.BLUETOOTH);
+	}
+
 	
 	public Object setConfigValueUsingConfigLabel(String configLabel, Object valueToSet){
 		return setConfigValueUsingConfigLabel("", configLabel, valueToSet);
@@ -3346,7 +3358,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 * @param rateHz
 	 * @return
 	 */
-	private double correctSamplingRate(double rateHz) {
+	protected double correctSamplingRate(double rateHz) {
 		double maxSamplingRateHz = calcMaxSamplingRate();
 		double maxShimmerSamplingRateTicks = getSamplingClockFreq();
 		
@@ -4353,7 +4365,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	public void startStreaming() {
+	public void startStreaming() throws ShimmerException {
 		resetPacketLossVariables();
 		generateParserMap();
 //		resetAlgorithmBuffers();
@@ -4363,7 +4375,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
-	public void stopStreaming() {
+	public void stopStreaming() throws ShimmerException {
 		resetPacketLossVariables();
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.stopStreaming();
@@ -4609,7 +4621,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mIsEnabledAlgorithmModulesDuringPlayback = enableAlgorithmModulesDuringPlayback;
 	}
 
-	public void configureFromClone(ShimmerDevice shimmerDeviceClone) {
+	public void configureFromClone(ShimmerDevice shimmerDeviceClone) throws ShimmerException {
 		//Not current used in this class but can be overwritten in ShimmerDevice instances
 	}
 
@@ -4619,6 +4631,36 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public boolean isPlaybackDevice() {
 		return mIsPlaybackDevice;
+	}
+	
+	public void setSensorConfig(List<ISensorConfig> listOfSensorConfig) {
+		setSensorConfig(listOfSensorConfig.toArray(new ISensorConfig[listOfSensorConfig.size()]));
+	}
+
+	public void setSensorConfig(ISensorConfig[] arrayOfSensorConfig) {
+		for(ISensorConfig sensorConfig : arrayOfSensorConfig) {
+			setSensorConfig(sensorConfig);
+		}
+	}
+
+	public void setSensorConfig(ISensorConfig sensorConfig) {
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			abstractSensor.setSensorConfig(sensorConfig);
+		}
+	}
+
+	public List<ISensorConfig> getSensorConfig() {
+		List<ISensorConfig> listOfSensorConfig = new ArrayList<>();
+
+		Iterator<AbstractSensor> iterator = mMapOfSensorClasses.values().iterator();
+		while(iterator.hasNext()){
+			AbstractSensor abstractSensor = iterator.next();
+			listOfSensorConfig.addAll(abstractSensor.getSensorConfig());
+		}
+		
+		return listOfSensorConfig;
 	}
 
 	public String getRadioModel() {

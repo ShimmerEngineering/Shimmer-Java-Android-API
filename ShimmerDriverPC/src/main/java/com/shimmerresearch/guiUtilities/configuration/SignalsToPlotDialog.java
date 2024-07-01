@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.JDialog;
 
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.guiUtilities.plot.BasicPlotManagerPC;
@@ -30,10 +31,19 @@ import javax.swing.ScrollPaneLayout;
 
 public class SignalsToPlotDialog {
 
+	boolean mUseGeneratedXAxis = false;
+	public SignalsToPlotDialog() {
+		
+	}
+	
+	public SignalsToPlotDialog(boolean useGeneratedXAxis) {
+		mUseGeneratedXAxis = useGeneratedXAxis;
+	}
+	
 	/**
 	 * @wbp.parser.entryPoint
 	 */
-	public void initialize(ShimmerPC shimmerDevice, BasicPlotManagerPC plotManager, Chart2D chart) {
+	public void initialize(ShimmerDevice shimmerDevice, BasicPlotManagerPC plotManager, Chart2D chart) {
 		
 		JDialog dialog = new JDialog();
 		dialog.setModal(true);
@@ -112,7 +122,11 @@ public class SignalsToPlotDialog {
 							try {
 								plotManager.addSignal(mList.get(i), chart);
 								String[] xAxis = new String[3];
-								xAxis[0] = shimmerName;
+								if (mUseGeneratedXAxis) {
+									xAxis[0] = shimmerName+"genX"; //force the plot to generate its own x axis value
+								} else {
+									xAxis[0] = shimmerName;
+								}
 								xAxis[1] = Configuration.Shimmer3.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT;
 								xAxis[2] = CHANNEL_TYPE.CAL.toString(); 
 								plotManager.addXAxis(xAxis);
