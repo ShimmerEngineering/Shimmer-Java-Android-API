@@ -13,7 +13,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.11
 
 /*
 Rev0.2
@@ -70,11 +70,15 @@ publishing {
 dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
+    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.21.1'
     compile project (':ShimmerDriver')
     compile project (':ShimmerBluetoothManager')
 
     // https://mvnrepository.com/artifact/org.scream3r/jssc
-    compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
+    //compile group: 'org.scream3r', name: 'jssc', version: '2.9.1'
+    compile group: 'io.github.java-native', name: 'jssc', version: '2.9.6'
+    
 
     // https://mvnrepository.com/artifact/net.sf.bluecove/bluecove
     compile group: 'net.sf.bluecove', name: 'bluecove', version: '2.1.0'

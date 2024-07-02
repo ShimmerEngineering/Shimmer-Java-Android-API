@@ -10,7 +10,7 @@
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.11
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -18,8 +18,8 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
     flatDir {
-        dirs 'libs'
-    }
+       dirs 'libs'
+   }
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/ShimmerEngineering/Shimmer-Java-Android-API")
@@ -41,6 +41,8 @@ repositories {
 dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile 'org.slf4j:slf4j-api:1.7.21'
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
+    testImplementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.21.1'
 
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
