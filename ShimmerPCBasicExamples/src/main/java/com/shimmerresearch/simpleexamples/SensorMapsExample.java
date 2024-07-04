@@ -71,6 +71,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	private JTextField textFieldSamplingRate;
 	static JLabel lblPRR;
 	static final String PREFIX_COM = "COM";
+	static final String PREFIX_RFCOMM = "rfcomm";
 	JComboBox<String> comboBox;
 	JLabel lblFilePath;
 	LoggingPC lpc;
@@ -87,8 +88,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JLabel lblSetComPort = new JLabel("Set COM Port (e.g. COMX) or Mac Address (e.g. XX:XX:XX:XX:XX:XX)");
-		lblSetComPort.setBounds(10, 25, 611, 23);
+		JLabel lblSetComPort = new JLabel("Set COM Port (e.g. COMX or /dev/rfcommX) or Mac Address (e.g. XX:XX:XX:XX:XX:XX , note this requires grpc and BLE)");
+		lblSetComPort.setBounds(10, 25, 1000, 23);
 		frame.getContentPane().add(lblSetComPort);
 		
 		textField = new JTextField();
@@ -473,7 +474,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			if (msg== ShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED){
 				textPaneStatus.setText("device fully initialized");
 				ShimmerDevice device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
-				if (btComport.contains(PREFIX_COM)) {
+				if (btComport.contains(PREFIX_COM) || btComport.contains(PREFIX_RFCOMM)) {
 					device = btManager.getShimmerDeviceBtConnected(btComport);
 				}
 				
