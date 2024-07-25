@@ -1,6 +1,6 @@
 # ShimmerLSL: Streaming Shimmer Data with LabRecorder
 This guide outlines how to stream data from your Shimmer device using LSL (Lab Streaming Layer) and record it with LabRecorder.
-# liblsl-1.13.0-Win64 (https://github.com/sccn/liblsl/releases/tag/1.13.0) was used for the liblsl64.dll.
+liblsl-1.13.0-Win64 (https://github.com/sccn/liblsl/releases/tag/1.13.0) was used for the liblsl64.dll.
 
 Update btComports:
 
