@@ -3025,6 +3025,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			// looping through algorithms to see which ones are enabled
 			for (AlgorithmDetails algorithmDetails:sGD.mListOfAlgorithmDetails) {
 				AbstractAlgorithm abstractAlgorithm = mMapOfAlgorithmModules.get(algorithmDetails.mAlgorithmName);
+				SensorDetails respSensorDetails = getSensorDetails(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION);
+				if (respSensorDetails.isEnabled()) {
+					abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors.set(0, Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION);
+				}
+				else {
+					abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors.set(0, Configuration.Shimmer3.SENSOR_ID.HOST_ECG);
+				}
 				if (abstractAlgorithm!=null && abstractAlgorithm.isEnabled()) { // run check to see if accompanying sensors
 					innerLoop:
 					for (Integer sensor:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
