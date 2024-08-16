@@ -114,7 +114,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	//TODO is mSystemTimeStampBytes actually used by anything?
 	private byte[] mSystemTimeStampBytes = new byte[8];
 	public double mSystemTimeStamp = 0;
-	
+	public double mLSLTimeStamp = 0;
 	private double mTimeStampMilliSecs;
 	/**
 	 * Used in PC software for ShimmerGQ units to indicate if the data packet is
