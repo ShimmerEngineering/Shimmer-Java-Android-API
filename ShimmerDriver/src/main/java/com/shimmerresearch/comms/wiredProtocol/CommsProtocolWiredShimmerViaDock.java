@@ -1,8 +1,12 @@
 package com.shimmerresearch.comms.wiredProtocol;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
+import com.shimmerresearch.comms.StringListener;
 import com.shimmerresearch.comms.serialPortInterface.InterfaceSerialPortHal;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.shimmer2r3.BluetoothModuleVersionDetails;
@@ -10,6 +14,9 @@ import com.shimmerresearch.driverUtilities.ExpansionBoardDetails;
 import com.shimmerresearch.driverUtilities.ShimmerBattStatusDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
+
+import bolts.TaskCompletionSource;
 
 /**Driver for managing and configuring the Shimmer through the Dock using the 
  * Shimmer's dock connected UART.
@@ -18,6 +25,8 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
  *
  */
 public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired {
+	
+	StringListener mStringTestListener;
 
 	public CommsProtocolWiredShimmerViaDock(String comPort, String uniqueId, InterfaceSerialPortHal serialPortInterface){
 		super(comPort, uniqueId, serialPortInterface);
@@ -77,6 +86,71 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 
 		ShimmerVerObject shimmerVerDetails = new ShimmerVerObject(rxBuf);
 		return shimmerVerDetails;
+	}
+	
+	public void addTestStringListener(StringListener stringTestListener) {
+		mStringTestListener = stringTestListener;
+	}
+	
+	/**
+	 * @param timeoutInSeconds
+	 * @return
+	 * @throws ExecutionException
+	 */
+	public boolean readMainTest(int timeoutInSeconds) throws ExecutionException {
+		int errorCode = ErrorCodesWiredProtocol.SHIMMERUART_CMD_ERR_VERSION_INFO_GET;
+		//rxBuf = processShimmerSetCommand(compPropDetails, txBuf, errorCode);(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, -1);
+		TaskCompletionSource tcs = new TaskCompletionSource<>();
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		setListener(new ByteCommunicationListener() {
+			
+			@Override
+			public void eventNewBytesReceived(byte[] rxBytes) {
+				// TODO Auto-generated method stub
+				System.out.println("Test : " + UtilShimmer.bytesToHexString(rxBytes));
+				try {
+					outputStream.write(rxBytes);
+					String result = new String(outputStream.toByteArray());
+					System.out.println(result);
+					if (mStringTestListener!=null){
+						mStringTestListener.eventNewStringRx(result);
+					}
+					if (result.contains("TEST END *************************************//")) {
+						tcs.setResult(null);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+			@Override
+			public void eventDisconnected() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void eventConnected() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		// Parse response string
+		mTestStreaming = true;
+		processShimmerSetCommandNoWait(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, errorCode, null);
+		boolean completed = false;
+		try {
+			completed = tcs.getTask().waitForCompletion(timeoutInSeconds, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			mTestStreaming = false;
+			return false;
+		}
+		mTestStreaming = false;
+		return completed;
 	}
 	
 	/** Read the real time clock config time of the Shimmer

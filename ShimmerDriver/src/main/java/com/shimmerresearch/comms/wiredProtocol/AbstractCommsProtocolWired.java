@@ -18,6 +18,7 @@ import com.shimmerresearch.driver.MsgDock;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.ShimmerException;
+import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
 
 /**Driver for managing and configuring the Shimmer through the Dock using the 
  * Shimmer's dock connected UART.
@@ -28,9 +29,10 @@ import com.shimmerresearch.exceptions.ShimmerException;
 public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBack implements SerialPortListener{
 	
 	public InterfaceSerialPortHal mSerialPortInterface;
-	
+	ByteCommunicationListener mTestByteListener;
 	/** Boolean only used if COM port is not left open */
 	private boolean mIsUARTInUse = false;
+	protected boolean mTestStreaming = false;
 	public String mUniqueId = "";
 	public String mComPort = "";
 	private int mBaudToUse = SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED;
@@ -80,6 +82,10 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 
 	public AbstractCommsProtocolWired(String comPort, String uniqueId, InterfaceSerialPortHal shimmerSerialPortInterface){
 		this(comPort, uniqueId, SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED, shimmerSerialPortInterface);
+	}
+	
+	public void setListener(ByteCommunicationListener listener) {
+		mTestByteListener = listener;
 	}
 	
 	public boolean isUARTinUse(){
@@ -609,6 +615,12 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	public void serialPortRxEvent(int eventLength){
         try {
         	byte[] rxBuf = mSerialPortInterface.rxBytes(eventLength);
+        	if (mTestStreaming) {
+        		if (mTestByteListener != null) {
+        			mTestByteListener.eventNewBytesReceived(rxBuf);
+        		}
+        		return;
+        	}
         	if(mIsDebugMode){
             	consolePrintLn("serialEvent Received(" + rxBuf.length + "):" + UtilShimmer.bytesToHexStringWithSpacesFormatted(rxBuf));
         	}
