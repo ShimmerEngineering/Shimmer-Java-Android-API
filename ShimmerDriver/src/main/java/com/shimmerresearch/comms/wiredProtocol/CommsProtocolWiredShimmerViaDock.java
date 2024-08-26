@@ -121,6 +121,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					tcs.setResult(null);
 				}
 				
 			}

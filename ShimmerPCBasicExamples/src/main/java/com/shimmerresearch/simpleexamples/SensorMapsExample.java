@@ -393,6 +393,16 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
         });
 		frame.getContentPane().add(chckbxWriteDataToFile);
 		
+		JButton btnNewButton_1 = new JButton("In Shimmer Test");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComport);
+				((ShimmerBluetooth)device).startInShimmerTest();
+			}
+		});
+		btnNewButton_1.setBounds(741, 55, 170, 31);
+		frame.getContentPane().add(btnNewButton_1);
+		
 		plotManager.setTitle("Plot");		
 	}
 

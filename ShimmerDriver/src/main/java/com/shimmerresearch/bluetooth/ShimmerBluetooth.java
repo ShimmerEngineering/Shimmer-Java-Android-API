@@ -75,6 +75,7 @@
 package com.shimmerresearch.bluetooth;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -89,9 +90,11 @@ import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.shimmerresearch.comms.StringListener;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.MemReadDetails;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
@@ -122,6 +125,9 @@ import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.sensors.shimmer2.SensorMMA736x;
 import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Mag;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
+import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
+
+import bolts.TaskCompletionSource;
 
 public abstract class ShimmerBluetooth extends ShimmerObject implements Serializable{
 	
@@ -130,7 +136,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- CLASS VARIABLES AND ABSTRACT METHODS ---------
 	
 	protected long mSetEnabledSensors = SENSOR_ACCEL;								// Only used during the initialization process, see initialize();
-
+	
 	private int mNumberofTXRetriesCount=1;
 	private final static int NUMBER_OF_TX_RETRIES_LIMIT = 0;
 	private class DUMMY_READ_WAIT_TIME_MS {
@@ -585,30 +591,45 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		public void run() {
 			while(!stop) {
-
-				if (mDummyRead) {
-					performDummyRead();
+				//In-Shimmer Test here
+				if(InShimmerTest) {
+					if (bytesAvailableToBeRead()) {
+					byte[] data = readBytes(availableBytes());
+					if (data!=null) {
+						if (data.length>0) {
+							if (mTestByteListener != null) {
+			        			mTestByteListener.eventNewBytesReceived(data);
+			        		}
+						}
+					}
+					}
 				}
-
-				// Process Instruction on stack. is an instruction running? if not proceed
-				if(!isInstructionStackLock()){
-					processNextInstruction();
+				else {
+					if (mDummyRead) {
+						performDummyRead();
+					}
+	
+					// Process Instruction on stack. is an instruction running? if not proceed
+					if(!isInstructionStackLock()){
+						processNextInstruction();
+					}
+	
+					if(mIsStreaming){
+						processWhileStreaming();
+					}
+					else if(bytesAvailableToBeRead()){
+						if(mWaitForAck) {
+							processNotStreamingWaitForAck();
+						} 
+						else if(mWaitForResponse) {
+							processNotStreamingWaitForResp();
+						} 
+						
+						processBytesAvailableAndInstreamSupported();
+	
+					}
 				}
-
-				if(mIsStreaming){
-					processWhileStreaming();
-				}
-				else if(bytesAvailableToBeRead()){
-					if(mWaitForAck) {
-						processNotStreamingWaitForAck();
-					} 
-					else if(mWaitForResponse) {
-						processNotStreamingWaitForResp();
-					} 
-					
-					processBytesAvailableAndInstreamSupported();
-
-				}
+				
 			}
 		}
 		
@@ -3131,6 +3152,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		@Override
 		public void run() {
+			if (InShimmerTest) {
+				return;
+			}
 			if(isIamAlive()){
 				mCountDeadConnection = 0;
 				setIamAlive(false);
@@ -3554,7 +3578,84 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void readAccelRange() {
 		writeInstruction(GET_ACCEL_SENSITIVITY_COMMAND);
 	}
+	protected boolean InShimmerTest = false;
+	StringListener mStringTestListener;
+	public boolean startInShimmerTest() {
+		stopTimerCheckAlive();
+		try {
+			Thread.sleep(LiteProtocol.TIMER_CHECK_ALIVE_PERIOD);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		TaskCompletionSource tcs = new TaskCompletionSource<>();
+		InShimmerTest = true;
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		setListener(new ByteCommunicationListener() {
 
+			@Override
+			public void eventConnected() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void eventDisconnected() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void eventNewBytesReceived(byte[] rxBytes) {
+				// TODO Auto-generated method stub
+
+				// TODO Auto-generated method stub
+				System.out.println("Test : " + UtilShimmer.bytesToHexString(rxBytes));
+				try {
+					outputStream.write(rxBytes);
+					String result = new String(outputStream.toByteArray());
+					System.out.println(result);
+					if (mStringTestListener!=null){
+						mStringTestListener.eventNewStringRx(result);
+					}
+					if (result.contains("TEST END *************************************//")) {
+						tcs.setResult(null);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					tcs.setResult(null);
+				}
+				
+			
+			}
+		
+		});
+		writeBytes(new byte[]{(byte) 0xA8, 0x00});
+		
+		boolean completed = false;
+		try {
+			completed = tcs.getTask().waitForCompletion(60, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			InShimmerTest = false;
+			return false;
+		}
+		InShimmerTest = false;
+		startTimerCheckIfAlive();
+		return completed;
+	}
+	
+	public void addTestStringListener(StringListener stringTestListener) {
+		mStringTestListener = stringTestListener;
+	}
+	
+	ByteCommunicationListener mTestByteListener;
+	public void setListener(ByteCommunicationListener listener) {
+		mTestByteListener = listener;
+	}
+	
 	/**
 	 * writeAccelRange(range) sets the Accelerometer range on the Shimmer to the value of the input range. When setting/changing the accel range, please ensure you have the correct calibration parameters. Note that the Shimmer device can only carry one set of accel calibration parameters at a single time.
 	 * @param range is a numeric value defining the desired accelerometer range. Valid range setting values for the Shimmer 2 are 0 (+/- 1.5g), 1 (+/- 2g), 2 (+/- 4g) and 3 (+/- 6g). Valid range setting values for the Shimmer 2r are 0 (+/- 1.5g) and 3 (+/- 6g).
