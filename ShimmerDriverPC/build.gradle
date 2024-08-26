@@ -36,8 +36,8 @@ publishing {
             from components.java
 
             groupId = 'com.shimmerresearch' // Replace with your package's group/organization name
-            artifactId = 'shimmerdriverpc' // Replace with the name of your package
-            version = '0.10.19_beta' // Replace with your package version
+            artifactId = 'shimmerdriverpcdev' // Replace with the name of your package
+            version = '0.10.21_alpha' // Replace with your package version
 
             // Jar publication
             //(
