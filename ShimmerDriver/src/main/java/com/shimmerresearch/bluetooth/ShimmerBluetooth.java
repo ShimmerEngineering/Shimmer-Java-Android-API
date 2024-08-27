@@ -417,7 +417,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(UPD_SDLOG_CFG_COMMAND, 		new BtCommandDetails(UPD_SDLOG_CFG_COMMAND, "UPD_SDLOG_CFG_COMMAND"));
         aMap.put(SET_CRC_COMMAND, 				new BtCommandDetails(SET_CRC_COMMAND, "SET_CRC_COMMAND"));
         aMap.put(SET_RWC_COMMAND, 				new BtCommandDetails(SET_RWC_COMMAND, "SET_RWC_COMMAND"));
-        
+        aMap.put(SET_TEST, 				new BtCommandDetails(SET_TEST, "SET_TEST_COMMAND"));
         mBtSetCommandMap = Collections.unmodifiableMap(aMap);
     }
 
@@ -1177,32 +1177,34 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * 
 	 */
 	protected void clearSerialBuffer() {
-		startTimerCheckForSerialPortClear();
-
-		List<Byte> buffer = new ArrayList<Byte>();
-		while (availableBytes() != 0) {
-//			int available = availableBytes();
-			if (bytesAvailableToBeRead()) {
-				// JC: not working well on android
-				// byte[] buffer = readBytes(availableBytes());
-				byte[] tb = readBytes(1);
-				if (tb != null) {
-					buffer.add(tb[0]);
-				}
-
-				if (mSerialPortReadTimeout) {
-					break;
+		if (!InShimmerTest) {
+			startTimerCheckForSerialPortClear();
+	
+			List<Byte> buffer = new ArrayList<Byte>();
+			while (availableBytes() != 0) {
+	//			int available = availableBytes();
+				if (bytesAvailableToBeRead()) {
+					// JC: not working well on android
+					// byte[] buffer = readBytes(availableBytes());
+					byte[] tb = readBytes(1);
+					if (tb != null) {
+						buffer.add(tb[0]);
+					}
+	
+					if (mSerialPortReadTimeout) {
+						break;
+					}
 				}
 			}
+	
+			if (buffer.size() > 0) {
+				byte[] newBuf = ArrayUtils.toPrimitive(buffer.toArray(new Byte[buffer.size()]));
+				String msg = "Clearing Buffer:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(newBuf);
+				printLogDataForDebugging(msg);
+			}
+	
+			stopTimerCheckForSerialPortClear();
 		}
-
-		if (buffer.size() > 0) {
-			byte[] newBuf = ArrayUtils.toPrimitive(buffer.toArray(new Byte[buffer.size()]));
-			String msg = "Clearing Buffer:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(newBuf);
-			printLogDataForDebugging(msg);
-		}
-
-		stopTimerCheckForSerialPortClear();
 	}
 	
 	/**
@@ -2219,6 +2221,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 				else if(currentCommand==SET_CRC_COMMAND){
 					setCurrentBtCommsCrcMode(BT_CRC_MODE.values()[(int)((byte [])getListofInstructions().get(0))[1]]);
+				}
+				else if(currentCommand==SET_TEST){
+					InShimmerTest = true;
 				}
 				else {
 					//unhandled set command
@@ -3581,15 +3586,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected boolean InShimmerTest = false;
 	StringListener mStringTestListener;
 	public boolean startInShimmerTest() {
-		stopTimerCheckAlive();
-		try {
-			Thread.sleep(LiteProtocol.TIMER_CHECK_ALIVE_PERIOD);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		TaskCompletionSource tcs = new TaskCompletionSource<>();
-		InShimmerTest = true;
+		//InShimmerTest = true;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		setListener(new ByteCommunicationListener() {
 
@@ -3631,19 +3629,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		
 		});
-		writeBytes(new byte[]{(byte) 0xA8, 0x00});
+		//writeBytes(new byte[]{(byte) 0xA8, 0x00});
+		writeInstruction(new byte[]{SET_TEST, 0x00});
 		
 		boolean completed = false;
 		try {
 			completed = tcs.getTask().waitForCompletion(60, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch block Clearing Buffer:
 			e.printStackTrace();
 			InShimmerTest = false;
 			return false;
 		}
 		InShimmerTest = false;
-		startTimerCheckIfAlive();
 		return completed;
 	}
 	
