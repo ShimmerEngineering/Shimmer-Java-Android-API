@@ -469,7 +469,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public static final byte GET_BT_FW_VERSION_STR_COMMAND			= (byte) 0xA1;
 	public static final byte BT_FW_VERSION_STR_RESPONSE				= (byte) 0xA2;
-
+	public static final byte SET_TEST				= (byte) 0xA8;
 	public static final int MAX_NUMBER_OF_SIGNALS = 77;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
