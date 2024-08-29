@@ -3,7 +3,9 @@ package com.shimmerresearch.comms.wiredProtocol;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails.PERMISSION;
 import com.shimmerresearch.driver.ShimmerObject;
@@ -154,6 +156,15 @@ public class UartPacketDetails {
 
 	}
 
+	public static final Map<String,UartComponentPropertyDetails> mMapOfUartDeviceTest;
+	static {
+		Map<String,UartComponentPropertyDetails> aMap = new HashMap<String,UartComponentPropertyDetails>();
+        
+        aMap.put(UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST.mPropertyName,UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST);
+        aMap.put(UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.LED_TEST.mPropertyName,UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.LED_TEST);
+        mMapOfUartDeviceTest = Collections.unmodifiableMap(aMap);
+    }
+	
 	public static final List<UartComponentPropertyDetails> mListOfUartCommandsConfig;
 	static {
     	List<UartComponentPropertyDetails> aMap = new ArrayList<UartComponentPropertyDetails>();

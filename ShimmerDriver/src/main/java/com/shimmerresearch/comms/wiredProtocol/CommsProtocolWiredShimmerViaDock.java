@@ -91,17 +91,20 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 	public void addTestStringListener(StringListener stringTestListener) {
 		mStringTestListener = stringTestListener;
 	}
-	
+	boolean ackNotReceivedForTestCommand = true;
 	/**
 	 * @param timeoutInSeconds
 	 * @return
 	 * @throws ExecutionException
 	 */
-	public boolean readMainTest(int timeoutInSeconds) throws ExecutionException {
+	public boolean readMainTest(int timeoutInSeconds, UartComponentPropertyDetails details) throws ExecutionException {
 		int errorCode = ErrorCodesWiredProtocol.SHIMMERUART_CMD_ERR_VERSION_INFO_GET;
 		//rxBuf = processShimmerSetCommand(compPropDetails, txBuf, errorCode);(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, -1);
 		TaskCompletionSource tcs = new TaskCompletionSource<>();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		ackNotReceivedForTestCommand = true;
+        String targetString = TEST_ACK;
+        byte[] targetBytes = targetString.getBytes();
 		setListener(new ByteCommunicationListener() {
 			
 			@Override
@@ -110,12 +113,23 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 				System.out.println("Test : " + UtilShimmer.bytesToHexString(rxBytes));
 				try {
 					outputStream.write(rxBytes);
+					if (ackNotReceivedForTestCommand) {
+						byte[] byteStreamArray = outputStream.toByteArray();
+				        
+				        // Step 3: Check if the first four bytes match "$ÿÙ²"
+				        if (byteStreamArray.length >= 4 && Arrays.equals(Arrays.copyOfRange(byteStreamArray, 0, 4), targetBytes)) {
+				            // Step 4: Remove the first four bytes
+				        	outputStream.reset(); // Clear the stream
+				        	outputStream.write(byteStreamArray, 4, byteStreamArray.length - 4); // Write remaining bytes
+				        }
+				        ackNotReceivedForTestCommand = false;
+					}
 					String result = new String(outputStream.toByteArray());
 					System.out.println(result);
 					if (mStringTestListener!=null){
 						mStringTestListener.eventNewStringRx(result);
 					}
-					if (result.contains("TEST END *************************************//")) {
+					if (result.contains(TEST_ENDING)) {
 						tcs.setResult(null);
 					}
 				} catch (IOException e) {
@@ -138,9 +152,10 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 				
 			}
 		});
-		// Parse response string
+        // Parse response string
 		mTestStreaming = true;
-		processShimmerSetCommandNoWait(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, errorCode, null);
+		//processShimmerSetCommandNoWait(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, errorCode, null);
+		processShimmerSetCommandNoWait(details, errorCode, null);
 		boolean completed = false;
 		try {
 			completed = tcs.getTask().waitForCompletion(timeoutInSeconds, TimeUnit.SECONDS);
@@ -152,6 +167,10 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		}
 		mTestStreaming = false;
 		return completed;
+	}
+	
+	public boolean isTestStreaming() {
+		return mTestStreaming;
 	}
 	
 	/** Read the real time clock config time of the Shimmer

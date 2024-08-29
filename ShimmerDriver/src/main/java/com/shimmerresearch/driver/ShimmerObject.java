@@ -473,6 +473,47 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final int MAX_NUMBER_OF_SIGNALS = 77;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
+	public enum TEST_MODE {
+	    MAIN_TEST((byte)0, "Main Test"),
+	    LED_TEST((byte)1, "LED Test");
+
+	    private final byte byteInstruction;
+	    private final String description;
+
+	    // Constructor to initialize the int and String values
+	    TEST_MODE(byte byteInstruction, String description) {
+	        this.byteInstruction = byteInstruction;
+	        this.description = description;
+	    }
+
+	    // Getter to retrieve the int value
+	    public byte getByteInstruction() {
+	        return byteInstruction;
+	    }
+
+	    // Getter to retrieve the String value
+	    public String getDescription() {
+	        return description;
+	    }
+
+	    // Optional: Override toString() to include both values in the string representation
+	    @Override
+	    public String toString() {
+	        return description + " (" + String.format("0x%02X", byteInstruction) + ")";
+	    }
+
+
+	}
+	public static final Map<String,TEST_MODE> mMapOfBluetoothDeviceTest;
+	static {
+		Map<String,TEST_MODE> aMap = new HashMap<String,TEST_MODE>();
+        
+        aMap.put(TEST_MODE.MAIN_TEST.getDescription(),TEST_MODE.MAIN_TEST);
+        aMap.put(TEST_MODE.LED_TEST.getDescription(),TEST_MODE.LED_TEST);
+        mMapOfBluetoothDeviceTest = Collections.unmodifiableMap(aMap);
+    }
+	
+	
 	protected int mBluetoothBaudRate=9; //460800
 
 	protected int mPacketSize=0; // Default 2 bytes for time stamp and 6 bytes for accelerometer 

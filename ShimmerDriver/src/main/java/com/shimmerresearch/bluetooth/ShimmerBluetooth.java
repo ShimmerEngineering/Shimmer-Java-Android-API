@@ -3578,16 +3578,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void readAccelRange() {
 		writeInstruction(GET_ACCEL_SENSITIVITY_COMMAND);
 	}
-	protected boolean InShimmerTest = false;
-	StringListener mStringTestListener;
-	public boolean startInShimmerTest() {
+
+	transient protected boolean InShimmerTest = false;
+	transient StringListener mStringTestListener;
+	public boolean startInShimmerTest(TEST_MODE mode) {
+		
 		stopTimerCheckAlive();
-		try {
-			Thread.sleep(LiteProtocol.TIMER_CHECK_ALIVE_PERIOD);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		TaskCompletionSource tcs = new TaskCompletionSource<>();
 		InShimmerTest = true;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -3631,7 +3627,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		
 		});
-		writeBytes(new byte[]{(byte) 0xA8, 0x00});
+
+		//writeBytes(new byte[]{(byte) 0xA8, 0x00});
+		writeInstruction(new byte[]{SET_TEST, mode.getByteInstruction()});
 		
 		boolean completed = false;
 		try {
@@ -3640,8 +3638,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			InShimmerTest = false;
+			startTimerCheckIfAlive();
 			return false;
 		}
+		startTimerCheckIfAlive();
 		InShimmerTest = false;
 		startTimerCheckIfAlive();
 		return completed;
@@ -3651,7 +3651,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mStringTestListener = stringTestListener;
 	}
 	
-	ByteCommunicationListener mTestByteListener;
+	transient ByteCommunicationListener mTestByteListener;
 	public void setListener(ByteCommunicationListener listener) {
 		mTestByteListener = listener;
 	}
