@@ -9,6 +9,7 @@
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
@@ -76,17 +77,17 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.scream3r/jssc
     //implementation group: 'org.scream3r', name: 'jssc', version: '2.9.1'
-    implementation group: 'io.github.java-native', name: 'jssc', version: '2.9.6'
+    api group: 'io.github.java-native', name: 'jssc', version: '2.9.6'
     
 
     // https://mvnrepository.com/artifact/net.sf.bluecove/bluecove
     implementation group: 'net.sf.bluecove', name: 'bluecove', version: '2.1.0'
 
     // https://mvnrepository.com/artifact/commons-io/commons-io
-    implementation group: 'commons-io', name: 'commons-io', version: '2.4'
+    api group: 'commons-io', name: 'commons-io', version: '2.4'
 
     // https://mvnrepository.com/artifact/net.sf.jchart2d/jchart2d
-    implementation group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
+    api group: 'net.sf.jchart2d', name: 'jchart2d', version: '3.3.2'
 
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
