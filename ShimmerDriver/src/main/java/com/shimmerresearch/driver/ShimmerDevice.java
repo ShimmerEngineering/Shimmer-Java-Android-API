@@ -36,6 +36,7 @@ import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
@@ -3022,7 +3023,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
-	
+	public boolean isECGAlgoEnabled(AbstractAlgorithm abstractAlgorithm){
+		SensorDetails ecgSensorDetails = getSensorDetails(Configuration.Shimmer3.SENSOR_ID.HOST_ECG);
+		SensorDetails respSensorDetails = getSensorDetails(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION);
+		if((ecgSensorDetails.isEnabled() || respSensorDetails.isEnabled()) && abstractAlgorithm.mAlgorithmName.contains("ECGtoHR")){
+			return true;
+		}
+		return false;
+	}
+		
 	/** check to ensure sensors that algorithm requires haven't been switched off */
 	public void algorithmRequiredSensorCheck() {
 		for(SensorGroupingDetails sGD:mMapOfAlgorithmGrouping.values()){
@@ -3032,6 +3041,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 				if (abstractAlgorithm!=null && abstractAlgorithm.isEnabled()) { // run check to see if accompanying sensors
 					innerLoop:
 					for (Integer sensor:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
+						if (isECGAlgoEnabled(abstractAlgorithm)) {
+							break innerLoop;
+						}
 						SensorDetails sensorDetails = getSensorDetails(sensor);
 						if (sensorDetails!=null && !sensorDetails.isEnabled()) {
 							setIsAlgorithmEnabledAndSyncGroup(abstractAlgorithm.mAlgorithmName, sGD.mGroupName, false);
