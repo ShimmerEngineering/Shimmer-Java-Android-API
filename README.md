@@ -1,6 +1,10 @@
 # Shimmer-Java-Android-API
 
-Note the gradle.properties file which hold jfrog credentials is a part of the project, this is important if we ever decide to make this project public
+Best examples to start with are
+* SensorMapsExample (ShimmerPCBasicExamples project)
+* ShimmerPCExample (ShimmerPCBasicExamples project)
+
+For help with using on Ubuntu please check the [wiki](https://github.com/ShimmerEngineering/Shimmer-Java-Android-API/wiki).
 
 Rev 3.00
 - Change to Handler MSGs
