@@ -37,7 +37,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	public String mComPort = "";
 	private int mBaudToUse = SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED;
 	public final static String TEST_ENDING = "TEST END *************************************//";
-	public final static String TEST_ACK = "$ÿÙ²";
+	public final static byte[] TEST_ACK = new byte[] {36,-1,-39,-78};
 	byte[] carriedRxBuf = new byte[]{};
 
 	public boolean mIsDebugMode = false;

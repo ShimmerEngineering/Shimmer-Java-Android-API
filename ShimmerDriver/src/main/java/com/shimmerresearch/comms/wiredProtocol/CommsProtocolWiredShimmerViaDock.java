@@ -17,6 +17,7 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
 
 import bolts.TaskCompletionSource;
+import junit.framework.Test;
 
 /**Driver for managing and configuring the Shimmer through the Dock using the 
  * Shimmer's dock connected UART.
@@ -103,8 +104,6 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		TaskCompletionSource tcs = new TaskCompletionSource<>();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ackNotReceivedForTestCommand = true;
-        String targetString = TEST_ACK;
-        byte[] targetBytes = targetString.getBytes();
 		setListener(new ByteCommunicationListener() {
 			
 			@Override
@@ -113,18 +112,18 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 				System.out.println("Test : " + UtilShimmer.bytesToHexString(rxBytes));
 				try {
 					outputStream.write(rxBytes);
-					if (ackNotReceivedForTestCommand) {
-						byte[] byteStreamArray = outputStream.toByteArray();
-				        
-				        // Step 3: Check if the first four bytes match "$ÿÙ²"
-				        if (byteStreamArray.length >= 4 && Arrays.equals(Arrays.copyOfRange(byteStreamArray, 0, 4), targetBytes)) {
-				            // Step 4: Remove the first four bytes
-				        	outputStream.reset(); // Clear the stream
-				        	outputStream.write(byteStreamArray, 4, byteStreamArray.length - 4); // Write remaining bytes
-				        }
-				        ackNotReceivedForTestCommand = false;
-					}
 					String result = new String(outputStream.toByteArray());
+					if (ackNotReceivedForTestCommand) {
+						byte[] originalBytes = outputStream.toByteArray();
+						boolean match = UtilShimmer.doesFirstBytesMatch(originalBytes, TEST_ACK);
+						if (match) {
+							outputStream.reset();
+							outputStream.write(originalBytes, TEST_ACK.length, originalBytes.length - TEST_ACK.length);
+							result = new String(outputStream.toByteArray());
+							ackNotReceivedForTestCommand = false;
+						}
+					}
+					
 					System.out.println(result);
 					if (mStringTestListener!=null){
 						mStringTestListener.eventNewStringRx(result);

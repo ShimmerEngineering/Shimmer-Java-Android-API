@@ -570,6 +570,23 @@ public class UtilShimmer implements Serializable {
 		return compareVersions(thisMajor, thisMinor, thisInternal, compMajor, compMinor, compInternal);
 	}
 	
+	
+    /**
+     * @param byteArray needs to be larger or same size as the target
+     * @param targetValue 
+     * @return true if the first x bytes match, x is the length of the target value
+     */
+    public static boolean doesFirstBytesMatch(byte[] byteArray, byte[] targetValue) {
+        if (byteArray.length >= targetValue.length) {
+            for (int i = 0; i < targetValue.length; i++) {
+                if (byteArray[i] != targetValue[i]) {
+                    return false;
+                }
+            }
+            return true; // All bytes match
+        }
+        return false; // The array is too short to contain the target value
+    }
 	/**Returns true if "this" version is greater or equal then comparison version
 	 * @param thisMajor
 	 * @param thisMinor
