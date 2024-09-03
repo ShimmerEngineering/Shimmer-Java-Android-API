@@ -546,6 +546,26 @@ public class UtilShimmer implements Serializable {
 //		return false; // if less or not the same FW_ID and HW_ID
 	}
 
+	public static boolean compareVersions(ShimmerVerObject svo, ShimmerVerObject svoTarget) {
+		int thisHwIdent = svo.mHardwareVersion;
+		int thisFwIdent = svo.mFirmwareIdentifier;
+		int thisMajor = svo.mFirmwareVersionMajor;
+		int thisMinor = svo.mFirmwareVersionMinor;
+		int thisInternal = svo.mFirmwareVersionInternal;
+		int compHwIdent = svoTarget.mHardwareVersion;
+		int compFwIdent= svoTarget.mFirmwareIdentifier;
+		int compMajor = svoTarget.mFirmwareVersionMajor;
+		int compMinor = svoTarget.mFirmwareVersionMinor;
+		int compInternal = svoTarget.mFirmwareVersionInternal;
+		
+		if(compHwIdent!=ShimmerVerDetails.ANY_VERSION){
+			if (thisHwIdent!=compHwIdent){
+				return false;
+			}
+		}
+		return compareVersions(thisFwIdent, thisMajor, thisMinor, thisInternal, compFwIdent, compMajor, compMinor, compInternal);
+	}
+	
 	
 	/**Returns true if FW ID is the same and "this" version is greater or equal then comparison version
 	 * @param thisFwIdent
