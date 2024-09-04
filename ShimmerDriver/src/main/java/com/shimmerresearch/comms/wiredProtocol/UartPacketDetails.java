@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -151,17 +152,17 @@ public class UartPacketDetails {
 		public static class DEVICE_TEST {
 			public static final UartComponentPropertyDetails MAIN_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x00, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "MAIN_TEST");
 			public static final UartComponentPropertyDetails LED_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x01, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "LED_TEST");
-			
+			public static final UartComponentPropertyDetails IC_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x02, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "IC_TEST");
 		}
 
 	}
 
 	public static final Map<String,UartComponentPropertyDetails> mMapOfUartDeviceTest;
 	static {
-		Map<String,UartComponentPropertyDetails> aMap = new HashMap<String,UartComponentPropertyDetails>();
-        
+		Map<String,UartComponentPropertyDetails> aMap = new LinkedHashMap<String,UartComponentPropertyDetails>();
         aMap.put(UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST.mPropertyName,UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST);
         aMap.put(UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.LED_TEST.mPropertyName,UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.LED_TEST);
+        aMap.put(UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.IC_TEST.mPropertyName,UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.IC_TEST);
         mMapOfUartDeviceTest = Collections.unmodifiableMap(aMap);
     }
 	

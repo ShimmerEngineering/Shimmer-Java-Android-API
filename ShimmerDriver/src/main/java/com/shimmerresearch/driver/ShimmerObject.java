@@ -475,7 +475,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public enum TEST_MODE {
 	    MAIN_TEST((byte)0, "Main Test"),
-	    LED_TEST((byte)1, "LED Test");
+	    LED_TEST((byte)1, "LED Test"),
+		IC_TEST((byte)2, "IC Test");
 
 	    private final byte byteInstruction;
 	    private final String description;
@@ -506,10 +507,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	public static final Map<String,TEST_MODE> mMapOfBluetoothDeviceTest;
 	static {
-		Map<String,TEST_MODE> aMap = new HashMap<String,TEST_MODE>();
+		Map<String,TEST_MODE> aMap = new LinkedHashMap<String,TEST_MODE>();
         
         aMap.put(TEST_MODE.MAIN_TEST.getDescription(),TEST_MODE.MAIN_TEST);
         aMap.put(TEST_MODE.LED_TEST.getDescription(),TEST_MODE.LED_TEST);
+        aMap.put(TEST_MODE.IC_TEST.getDescription(),TEST_MODE.IC_TEST);
         mMapOfBluetoothDeviceTest = Collections.unmodifiableMap(aMap);
     }
 	
