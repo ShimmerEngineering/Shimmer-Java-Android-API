@@ -69,6 +69,8 @@ public class MsgDock {
 	public final static int MSG_ID_SHIMMERUART_INFOMEM_WRITE_PROGRESS = 51;
 	public final static int MSG_ID_SHIMMERUART_PACKET_RX = 52;
 	public final static int MSG_ID_SHIMMERUART_UNEXPECTED_PACKET = 59;
+	public final static int MSG_ID_SHIMMERUART_TEST_SUCCESS = 140;
+	public final static int MSG_ID_SHIMMERUART_TEST_FAIL = 141;
 	
 	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_PER_DOCK = 53;
 	public final static int MSG_ID_DOCK_INFOMEM_WRITE_FINISHED_ALL = 54;
