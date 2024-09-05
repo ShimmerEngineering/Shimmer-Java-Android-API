@@ -98,6 +98,7 @@ import com.shimmerresearch.comms.StringListener;
 import com.shimmerresearch.comms.radioProtocol.LiteProtocol;
 import com.shimmerresearch.comms.radioProtocol.MemReadDetails;
 import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsSet;
+import com.shimmerresearch.comms.wiredProtocol.AbstractCommsProtocolWired;
 import com.shimmerresearch.comms.wiredProtocol.ShimmerCrc;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
@@ -3618,7 +3619,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					if (mStringTestListener!=null){
 						mStringTestListener.eventNewStringRx(result);
 					}
-					if (result.contains("TEST END *************************************//")) {
+					if (result.contains(AbstractCommsProtocolWired.TEST_ENDING)) {
 						tcs.setResult(true);
 					}
 				} catch (IOException e) {
