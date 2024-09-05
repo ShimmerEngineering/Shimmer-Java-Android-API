@@ -708,7 +708,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mPastGSRFirstTime=true; 	// this is to fix a bug with SDLog v0.9
 
 	// ---------- GSR end ------------------
-
+    
+	public ObjectCluster setLSLTimeIfAvailable(ObjectCluster ojc) {
+		return ojc;
+	}
 
 	/** This method will be deprecated for future Shimmer hardware revisions. The last hardware this will be used for is Shimmer3. 
 	 *  It should work with all FW associated with Shimmer3 and Shimmer2 devices.
@@ -725,7 +728,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public ObjectCluster buildMsg(byte[] newPacket, COMMUNICATION_TYPE fwType, boolean isTimeSyncEnabled, double pcTimestampMs) {
 		
 		ObjectCluster objectCluster = new ObjectCluster();
-		
+		setLSLTimeIfAvailable(objectCluster);
 		if(mUseArraysDataStructureInObjectCluster) {
 			objectCluster.mEnableArraysDataStructure = true;	//This will disable the Multimap as well
 		}
