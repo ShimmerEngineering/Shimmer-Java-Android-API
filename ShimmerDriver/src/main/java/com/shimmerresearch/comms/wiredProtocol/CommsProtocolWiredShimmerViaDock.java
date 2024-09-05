@@ -122,6 +122,8 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 							result = new String(outputStream.toByteArray());
 							ackNotReceivedForTestCommand = false;
 						}
+						
+						
 					}
 					
 					System.out.println(result);
@@ -129,12 +131,12 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 						mStringTestListener.eventNewStringRx(result);
 					}
 					if (result.contains(TEST_ENDING)) {
-						tcs.setResult(null);
+						tcs.setResult(true);
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					tcs.setResult(null);
+					tcs.setResult(false);
 				}
 				
 			}

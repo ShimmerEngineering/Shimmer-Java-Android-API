@@ -150,9 +150,9 @@ public class UartPacketDetails {
 		}
 		
 		public static class DEVICE_TEST {
-			public static final UartComponentPropertyDetails MAIN_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x00, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "MAIN_TEST");
-			public static final UartComponentPropertyDetails LED_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x01, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "LED_TEST");
-			public static final UartComponentPropertyDetails IC_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x02, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "IC_TEST");
+			public static final UartComponentPropertyDetails MAIN_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x00, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "Main Test");
+			public static final UartComponentPropertyDetails LED_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x01, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "LED Test");
+			public static final UartComponentPropertyDetails IC_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x02, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "IC Test");
 		}
 
 	}
