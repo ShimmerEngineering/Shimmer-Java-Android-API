@@ -3619,12 +3619,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						mStringTestListener.eventNewStringRx(result);
 					}
 					if (result.contains("TEST END *************************************//")) {
-						tcs.setResult(null);
+						tcs.setResult(true);
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					tcs.setResult(null);
+					tcs.setResult(false);
 				}
 				
 			
@@ -3637,7 +3637,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		boolean completed = false;
 		try {
-			completed = tcs.getTask().waitForCompletion(60, TimeUnit.SECONDS);
+			completed = tcs.getTask().waitForCompletion(30, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block Clearing Buffer:
 			e.printStackTrace();
