@@ -3638,7 +3638,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		boolean completed = false;
 		try {
-			completed = tcs.getTask().waitForCompletion(30, TimeUnit.SECONDS);
+			completed = tcs.getTask().waitForCompletion(AbstractCommsProtocolWired.TIMEOUT_IN_SHIMMER_TEST, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block Clearing Buffer:
 			e.printStackTrace();

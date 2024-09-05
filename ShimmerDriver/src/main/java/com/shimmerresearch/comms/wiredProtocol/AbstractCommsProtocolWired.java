@@ -38,6 +38,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	private int mBaudToUse = SHIMMER_UART_BAUD_RATES.SHIMMER3_DOCKED;
 	public final static String TEST_ENDING = "TEST END *************************************//";
 	public final static byte[] TEST_ACK = new byte[] {36,-1,-39,-78};
+	public final static int TIMEOUT_IN_SHIMMER_TEST = 60; //assumes test will complete in 60 seconds;
 	byte[] carriedRxBuf = new byte[]{};
 
 	public boolean mIsDebugMode = false;

@@ -98,7 +98,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 	 * @return
 	 * @throws ExecutionException
 	 */
-	public boolean readMainTest(int timeoutInSeconds, UartComponentPropertyDetails details) throws ExecutionException {
+	public boolean readMainTest(UartComponentPropertyDetails details) throws ExecutionException {
 		int errorCode = ErrorCodesWiredProtocol.SHIMMERUART_CMD_ERR_VERSION_INFO_GET;
 		//rxBuf = processShimmerSetCommand(compPropDetails, txBuf, errorCode);(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, -1);
 		TaskCompletionSource tcs = new TaskCompletionSource<>();
@@ -159,7 +159,7 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		processShimmerSetCommandNoWait(details, errorCode, null);
 		boolean completed = false;
 		try {
-			completed = tcs.getTask().waitForCompletion(timeoutInSeconds, TimeUnit.SECONDS);
+			completed = tcs.getTask().waitForCompletion(TIMEOUT_IN_SHIMMER_TEST, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
