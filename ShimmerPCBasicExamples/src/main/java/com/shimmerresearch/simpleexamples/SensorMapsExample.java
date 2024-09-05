@@ -392,7 +392,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
             }
         });
 		frame.getContentPane().add(chckbxWriteDataToFile);
-		
+				
 		plotManager.setTitle("Plot");		
 	}
 

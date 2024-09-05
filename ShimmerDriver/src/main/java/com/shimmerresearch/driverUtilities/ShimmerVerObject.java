@@ -241,6 +241,7 @@ public class ShimmerVerObject implements Serializable {
 			// Set default on Shimmer2R
 			if (mHardwareVersion==HW_ID.SHIMMER_2R
 				|| mHardwareVersion==HW_ID.SHIMMER_3
+				|| mHardwareVersion==HW_ID.SHIMMER_3R
 				|| (mHardwareVersion==HW_ID.SHIMMER_GQ_BLE && mFirmwareIdentifier==FW_ID.GQ_BLE)
 				|| ((mHardwareVersion==HW_ID.SHIMMER_GQ_802154_NR || mHardwareVersion==HW_ID.SHIMMER_GQ_802154_LR) && mFirmwareIdentifier==FW_ID.GQ_802154)
 				|| (mHardwareVersion==HW_ID.SHIMMER_2R_GQ && mFirmwareIdentifier==FW_ID.GQ_802154)
@@ -263,7 +264,8 @@ public class ShimmerVerObject implements Serializable {
 			// Handle FW version code.
 			mFirmwareVersionCode = -1;
 			
-			if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,13,7)
+			if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,0,1)
+					|| UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,13,7)
 					|| UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.SDLOG,0,20,1)) {
 				mFirmwareVersionCode = 8;
 			}
@@ -408,6 +410,7 @@ public class ShimmerVerObject implements Serializable {
 	
 	public static boolean isSupportedConfigViaUart(int hwVer, int fwId) {
 		if(hwVer==HW_ID.SHIMMER_3
+				|| hwVer==HW_ID.SHIMMER_3R
 				|| hwVer==HW_ID.SHIMMER_GQ_802154_NR
 				|| hwVer==HW_ID.SHIMMER_GQ_802154_LR
 				|| hwVer==HW_ID.SHIMMER_2R_GQ
@@ -543,10 +546,30 @@ public class ShimmerVerObject implements Serializable {
 		return false;
 	}
 
+	public boolean isShimmerGen3R(){
+		return isShimmer3RGen(getHardwareVersion(), getFirmwareIdentifier());
+	}
+	
 	public boolean isShimmerGen3(){
 		return isShimmer3Gen(getHardwareVersion(), getFirmwareIdentifier());
 	}
 
+	//TODO GQ should be kept separate - probably used in some places to indicate MSP430 model is being used?
+	public static boolean isShimmer3RGen(int hwVer) {
+		if(hwVer==HW_ID.SHIMMER_3R){ 
+//				|| hwVer==HW_ID.SHIMMER_GQ_BLE || hwVer==HW_ID.SHIMMER_GQ_802154_LR || hwVer==HW_ID.SHIMMER_GQ_802154_NR){
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean isShimmer3RGen(int hwVer, int fwId) {
+		if(isShimmer3RGen(hwVer) && (fwId==FW_ID.BTSTREAM || fwId==FW_ID.SDLOG || fwId==FW_ID.LOGANDSTREAM  || fwId==FW_ID.STROKARE)){// || fwId==FW_ID.GQ_BLE)){
+			return true;
+		}
+		return false;
+	}
+	
 	//TODO GQ should be kept separate - probably used in some places to indicate MSP430 model is being used?
 	public static boolean isShimmer3Gen(int hwVer) {
 		if(hwVer==HW_ID.SHIMMER_3 || hwVer==HW_ID.SHIMMER_ECG_MD){ 

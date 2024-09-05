@@ -164,7 +164,11 @@ public class Shimmer4sdk extends ShimmerDevice {
 	@Override
 	public void createConfigBytesLayout() {
 		//TODO replace with Shimmer4?
-		mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		if (mShimmerVerObject.mHardwareVersion==HW_ID.UNKNOWN) {
+			mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(), HW_ID.SHIMMER_4_SDK);
+		} else {
+			mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(), mShimmerVerObject.mHardwareVersion);
+		}
 	}
 
 	// TODO need to move common infomem related activity to ShimmerDevice. Not
@@ -316,7 +320,14 @@ public class Shimmer4sdk extends ShimmerDevice {
 				getFirmwareIdentifier(), 
 				getFirmwareVersionMajor(), 
 				getFirmwareVersionMinor(), 
-				getFirmwareVersionInternal());
+				getFirmwareVersionInternal(), HW_ID.SHIMMER_4_SDK);
+		if (mShimmerVerObject.mHardwareVersion==HW_ID.UNKNOWN) {
+			
+		} else {
+			infoMemLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(), mShimmerVerObject.mHardwareVersion);
+		}
+		
+		
 		
 //		byte[] infoMemBackup = mInfoMemBytes.clone();
 		mConfigBytes = infoMemLayout.createConfigByteArrayEmpty();

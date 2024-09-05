@@ -32,6 +32,7 @@ public class ShimmerVerDetails implements Serializable {
 //		public static final int BIOSENSICS = 6;
 		public static final int SPAN = 7;
 		public static final int SHIMMER_2R_GQ = 9; // Used for testing GQ
+		public static final int SHIMMER_3R = 10;
 		
 		// For older devices the was a 'new' HW id given in firmware/software
 		// for each device. For newer devices from GQ onwards, we decided to just
