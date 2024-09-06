@@ -74,6 +74,7 @@ import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
@@ -887,7 +888,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 
 	@Override
 	public void createConfigBytesLayout() {
-		mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal());
+		if (mShimmerVerObject.mHardwareVersion==HW_ID.UNKNOWN) {
+			mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(), HW_ID.SHIMMER_3);
+		} else {
+			mConfigByteLayout = new ConfigByteLayoutShimmer3(getFirmwareIdentifier(), getFirmwareVersionMajor(), getFirmwareVersionMinor(), getFirmwareVersionInternal(), mShimmerVerObject.mHardwareVersion);
+		}
 	}
 	
 	public boolean isChannelEnabled(int sensorKey) {

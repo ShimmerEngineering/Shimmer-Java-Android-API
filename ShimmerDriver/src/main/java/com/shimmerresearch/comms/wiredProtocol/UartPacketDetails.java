@@ -3,7 +3,10 @@ package com.shimmerresearch.comms.wiredProtocol;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails.PERMISSION;
 import com.shimmerresearch.driver.ShimmerObject;
@@ -61,7 +64,8 @@ public class UartPacketDetails {
 		MPU9X50_ACCEL		((byte)0x07),
 		BEACON				((byte)0x08),
 		RADIO_802154		((byte)0x09),
-		RADIO_BLUETOOTH		((byte)0x0A);
+		RADIO_BLUETOOTH		((byte)0x0A),
+		TEST				((byte)0x0B);
 		
 	    private final byte command;
 
@@ -79,12 +83,14 @@ public class UartPacketDetails {
 	public static ShimmerVerObject svoGq802154NR = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_NR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 	public static ShimmerVerObject svoGq802154LR = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_LR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 	public static ShimmerVerObject svoGq802154Shimmer2r  = 	new ShimmerVerObject(HW_ID.SHIMMER_2R_GQ,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+	public static ShimmerVerObject svoS3Test = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,16,7,ShimmerVerDetails.ANY_VERSION);
+	public static ShimmerVerObject svoS3RTest = 	new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,ShimmerVerDetails.ANY_VERSION);
 	
 	//TODO improve
 	public static List<ShimmerVerObject> listOfCompatibleVersionInfoGqBle = Arrays.asList(svoGqBle);
 	public static List<ShimmerVerObject> listOfCompatibleVersionInfoGq802154 = Arrays.asList(svoGq802154NR, svoGq802154LR, svoGq802154Shimmer2r);
 	public static List<ShimmerVerObject> listOfCompatibleVersionInfoGq = Arrays.asList(svoGqBle, svoGq802154NR, svoGq802154LR, svoGq802154Shimmer2r);
-
+	public static List<ShimmerVerObject> listOfCompatibleVersionInfoTest = Arrays.asList(svoS3Test, svoS3RTest);
 	
 	/** Class listing all of the components and property combinations that can be used with the Shimmer UART commands */
 	public static class UART_COMPONENT_AND_PROPERTY {
@@ -142,9 +148,24 @@ public class UartPacketDetails {
 		public static class BLUETOOTH {
 			public static final UartComponentPropertyDetails VER          = new UartComponentPropertyDetails(UART_COMPONENT.RADIO_BLUETOOTH, 0x03, PERMISSION.READ_ONLY, null, "BT_FW_VER");
 		}
+		
+		public static class DEVICE_TEST {
+			public static final UartComponentPropertyDetails MAIN_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x00, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "Main Test");
+			public static final UartComponentPropertyDetails LED_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x01, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "LED Test");
+			public static final UartComponentPropertyDetails IC_TEST          = new UartComponentPropertyDetails(UART_COMPONENT.TEST, 0x02, PERMISSION.WRITE_ONLY, listOfCompatibleVersionInfoTest, "IC Test");
+		}
 
 	}
 
+	public static final Map<String,UartComponentPropertyDetails> mMapOfUartDeviceTest;
+	static {
+		Map<String,UartComponentPropertyDetails> aMap = new LinkedHashMap<String,UartComponentPropertyDetails>();
+        aMap.put(UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST.mPropertyName,UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST);
+        aMap.put(UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.LED_TEST.mPropertyName,UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.LED_TEST);
+        aMap.put(UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.IC_TEST.mPropertyName,UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.IC_TEST);
+        mMapOfUartDeviceTest = Collections.unmodifiableMap(aMap);
+    }
+	
 	public static final List<UartComponentPropertyDetails> mListOfUartCommandsConfig;
 	static {
     	List<UartComponentPropertyDetails> aMap = new ArrayList<UartComponentPropertyDetails>();
