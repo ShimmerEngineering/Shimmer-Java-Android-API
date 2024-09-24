@@ -57,6 +57,44 @@ public class CalibDetailsBmp390 extends CalibDetailsBmpX80 {
 	        public static byte ParP10;
 	        public static byte ParP11;
 	 }
+	 
+	 public double par_T1 = Bmp3QuantizedCalibData.ParT1; 
+	 public double par_T2 = Bmp3QuantizedCalibData.ParT2; 
+	 public double par_T3 = Bmp3QuantizedCalibData.ParT3; 
+	 public double par_P1 = Bmp3QuantizedCalibData.ParP1;
+	 public double par_P2 = Bmp3QuantizedCalibData.ParP2;
+	 public double par_P3 = Bmp3QuantizedCalibData.ParP3;
+	 public double par_P4 = Bmp3QuantizedCalibData.ParP4;
+	 public double par_P5 = Bmp3QuantizedCalibData.ParP5;
+	 public double par_P6 = Bmp3QuantizedCalibData.ParP6;
+	 public double par_P7 = Bmp3QuantizedCalibData.ParP7;
+	 public double par_P8 = Bmp3QuantizedCalibData.ParP8;
+	 public double par_P9 =Bmp3QuantizedCalibData.ParP9;
+	 public double par_P10 = Bmp3QuantizedCalibData.ParP10;
+	 public double par_P11 = Bmp3QuantizedCalibData.ParP11;
+	 
+	 public void setPressureCalib(
+				double T1, double T2, double T3,
+				double P1, double P2, double P3, 
+				double P4, double P5, double P6, 
+				double P7, double P8, double P9,
+				double P10, double P11) {
+			this.par_T1 = T1; 
+			this.par_T2 = T2;
+			this.par_T3 = T3;
+			this.par_P1 = P1;
+			this.par_P2 = P2;
+			this.par_P3 = P3;
+			this.par_P4 = P4;
+			this.par_P5 = P5;
+			this.par_P6 = P6;
+			this.par_P7 = P7;
+			this.par_P8 = P8;
+			this.par_P9 = P9;
+			this.par_P10 = P10;
+			this.par_P11 = P11;
+		}
+	 
 	@Override
 	public double[] calibratePressureSensorData(double UP, double UT) {
 		byte rslt = Bmp3Constants.BMP3_OK;

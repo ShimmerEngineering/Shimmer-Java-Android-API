@@ -72,6 +72,7 @@ import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.SensorADC.MICROCONTROLLER_ADC_PROPERTIES;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP390;
 import com.shimmerresearch.sensors.bmpX80.SensorBMPX80;
 import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
@@ -459,6 +460,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND = (byte) 0xA0;//(byte) InstructionsGet.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND_VALUE;
 	public static final byte BMP280_CALIBRATION_COEFFICIENTS_RESPONSE = (byte) 0x9F;//(byte) InstructionsResponse.BMP280_CALIBRATION_COEFFICIENTS_RESPONSE_VALUE;
 
+	public static final byte GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND  = (byte) 0xA7;//BMP390
+	public static final byte PRESSURE_CALIBRATION_COEFFICIENTS_RESPONSE    = (byte) 0xA6;//BMP390
+	
 	//new BT + SD command to set/rsp/get/update_dump_file all calibration parameters using the new byte array structure
 	public static final byte SET_CALIB_DUMP_COMMAND					= (byte) 0x98;
 	public static final byte RSP_CALIB_DUMP_COMMAND					= (byte) 0x99;
@@ -648,7 +652,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// Shimmer3 - Gyro
 	protected SensorMPU9X50 mSensorMpu9x50 = new SensorMPU9150(this);
 	// Shimmer3 - Pressure/Temperature 
-	private SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
+	protected SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
 	
 	// ----------  ECG/EMG start ---------------
 	protected double OffsetECGRALL=2060;
@@ -1738,7 +1742,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				String signalNameBmpX80Temperature = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180;
 				String signalNameBmpX80Pressure = SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;
-				if(isSupportedBmp280()){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
+					signalNameBmpX80Temperature = SensorBMP390.ObjectClusterSensorName.TEMPERATURE_BMP390;
+					signalNameBmpX80Pressure = SensorBMP390.ObjectClusterSensorName.PRESSURE_BMP390;
+				} else if(isSupportedBmp280()){
 					signalNameBmpX80Temperature = SensorBMP280.ObjectClusterSensorName.TEMPERATURE_BMP280;
 					signalNameBmpX80Pressure = SensorBMP280.ObjectClusterSensorName.PRESSURE_BMP280;
 				}
@@ -3044,7 +3051,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalId[i]==(byte)0x1A){
-				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){
 					String signalName = SensorBMP180.ObjectClusterSensorName.TEMPERATURE_BMP180;
 					if(isSupportedBmp280()){
 						signalName=SensorBMP280.ObjectClusterSensorName.TEMPERATURE_BMP280;
@@ -3053,16 +3060,28 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					signalDataTypeArray[i+1] = "u16r";
 					packetSize=packetSize+2;
 					enabledSensors |= SENSOR_BMPX80;
+				}else if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
+					String signalName = SensorBMP390.ObjectClusterSensorName.TEMPERATURE_BMP390;
+					signalNameArray[i+1]=signalName;
+					signalDataTypeArray[i+1] = "u24";
+					packetSize=packetSize+3;
+					enabledSensors |= SENSOR_BMPX80;
 				}
 			}
 			else if ((byte)signalId[i]==(byte)0x1B){
-				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3){ 
 					String signalName = SensorBMP180.ObjectClusterSensorName.PRESSURE_BMP180;
 					if(isSupportedBmp280()){
 						signalName=SensorBMP280.ObjectClusterSensorName.PRESSURE_BMP280;
 					}
 					signalNameArray[i+1]=signalName;
 					signalDataTypeArray[i+1] = "u24r";
+					packetSize=packetSize+3;
+					enabledSensors |= SENSOR_BMPX80;
+				}else if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
+					String signalName=SensorBMP390.ObjectClusterSensorName.PRESSURE_BMP390;
+					signalNameArray[i+1]=signalName;
+					signalDataTypeArray[i+1] = "u24";
 					packetSize=packetSize+3;
 					enabledSensors |= SENSOR_BMPX80;
 				}
@@ -4966,7 +4985,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				addSensorClass(mSensorMpu9x50);
 			}
 		} else if(isShimmerGen3R()){
-			mSensorBMPX80 = new SensorBMP280(this);
+			mSensorBMPX80 = new SensorBMP390(this);
 			addSensorClass(mSensorBMPX80);
 			
 			mSensorLSM303 = new SensorLSM303AH(this);

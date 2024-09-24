@@ -81,6 +81,7 @@ import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP390;
 import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
@@ -890,6 +891,7 @@ public class Configuration {
 			MAG(SensorLSM303.LABEL_SENSOR_TILE.MAG),
 			PRESSURE_TEMPERATURE_BMP180(SensorBMP180.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
+			PRESSURE_TEMPERATURE_BMP390(SensorBMP390.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			BATTERY_MONITORING(SensorBattVoltage.LABEL_SENSOR_TILE.BATTERY_MONITORING),
 			EXTERNAL_EXPANSION_ADC(SensorADC.LABEL_SENSOR_TILE.EXTERNAL_EXPANSION_ADC),
 			INTERNAL_EXPANSION_ADC(SensorADC.LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC),
@@ -1400,6 +1402,16 @@ public class Configuration {
 					svoShimmer4Stock);
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP280 = Arrays.asList(
+					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream, 
+					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
+					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
+					svoExgUnifiedNewImuSdLog, svoExgUnifiedNewImuLogAndStream,
+					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
+					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
+					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
+					svoShimmer4Stock);  
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP390 = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream, 
 					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
 					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
