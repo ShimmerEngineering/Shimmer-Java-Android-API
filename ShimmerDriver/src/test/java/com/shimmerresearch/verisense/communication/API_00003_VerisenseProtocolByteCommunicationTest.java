@@ -103,7 +103,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 	public void test002_production_config_payload() {
 		testStartCommon("Test002");
 		
-		String messageStr = readVerisenseMessageBytesFromFile("ProdConfigPayload_01.txt");
+		String messageStr = readVerisenseMessageBytesFromFile("/ProdConfigPayload_01.txt");
 		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
 
 		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
@@ -169,7 +169,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 	public void test005_operational_config_payload() {
 		testStartCommon("Test005");
 		
-		String messageStr = readVerisenseMessageBytesFromFile("OpConfigPayload_01.txt");
+		String messageStr = readVerisenseMessageBytesFromFile("/OpConfigPayload_01.txt");
 		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
 
 		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
@@ -339,7 +339,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 	public void test008_read_event_log() {
 		testStartCommon("Test008");
 
-		String messageStr = readVerisenseMessageBytesFromFile("EventLogPayload_01.txt");
+		String messageStr = readVerisenseMessageBytesFromFile("/EventLogPayload_01.txt");
 		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
 		
 		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
@@ -357,7 +357,7 @@ public class API_00003_VerisenseProtocolByteCommunicationTest {
 	public void test009_read_memory_lookup_table() {
 		testStartCommon("Test009");
 
-		String messageStr = readVerisenseMessageBytesFromFile("MemoryLookupTablePayload_01.txt");
+		String messageStr = readVerisenseMessageBytesFromFile("/MemoryLookupTablePayload_01.txt");
 		byte[] messageBytes = UtilShimmer.hexStringToByteArray(messageStr);
 		
 		VerisenseMessage verisenseMessage = new VerisenseMessage(messageBytes, System.currentTimeMillis());
