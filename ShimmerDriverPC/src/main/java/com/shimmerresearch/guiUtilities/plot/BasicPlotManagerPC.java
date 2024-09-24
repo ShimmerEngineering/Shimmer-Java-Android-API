@@ -92,6 +92,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public boolean mIsGridOn = false;
 	public boolean mIsHRVisible = false;
 	public boolean mEnablePCTS = true;
+	public boolean mSetTraceName = true;
 	private boolean mIsDebugMode = false;
 	private boolean mIsTraceDataBuffered = false;
 	protected boolean isFirstPointOnFillTrace = true;
@@ -309,7 +310,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		mListofTraces.get(i).setColor(color);
 		String traceName = joinChannelStringArray(signal);
 		//utilShimmer.consolePrintErrLn("TRACE NAME: " +name);
-		mListofTraces.get(i).setName(traceName);
+		if(mSetTraceName) {
+			mListofTraces.get(i).setName(traceName);
+		} else {
+			mListofTraces.get(i).setName("");
+		}
 		mChart=chart;
 		mMapofDefaultXAxisSizes.put(traceName, plotMaxSize);
 		
@@ -373,7 +378,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			int [] colorrgbaray = mListOfTraceColorsCurrentlyUsed.get(i);
 			mListofTraces.get(i).setColor(color);
 			String name = joinChannelStringArray(signal);
-			mListofTraces.get(i).setName(name);
+			if(mSetTraceName) {
+				mListofTraces.get(i).setName(name);
+			} else {
+				mListofTraces.get(i).setName("");
+			}
 			return trace;
 		}	
 		else {
@@ -607,6 +616,8 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 			setXAxisLabel("Freq (Hz)", null);
 //			setYAxisLabel("Power (dB)");
 //			setXAxisRange(0, 100);
+		} else if (isXAxisValue()){
+			initializeAxesAutoUnits();
 		}
 	}
 	
@@ -1936,7 +1947,7 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 
 			boolean isXAxisTime = isXAxisTime();
 			boolean isXAxisFrequency = isXAxisFrequency();
-			
+			boolean isXAxisValue = isXAxisValue();
 			synchronized(mListofPropertiestoPlot){
 				Iterator <String[]> entries = mListofPropertiestoPlot.iterator();
 				int indexOfTrace = 0;
@@ -2032,6 +2043,11 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 								if(fftCalculateDetails!=null){
 									fftCalculateDetails.addData(xData, yData);
 								}
+							} else if (isXAxisValue){
+								if(addDummyPointToFillTraceIfRequired(currentTrace, xData)) {
+									isDummyPointAddedToFillTrace = true;
+								}
+								addTracePoint(currentTrace, xData, yData);
 							}
 						}
 
@@ -2181,6 +2197,10 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 		initializeAxes(1000);//Any value
 	}
 
+	public boolean isXAxisValue() {
+		return (mXAisType==CHANNEL_AXES.VALUE? true:false);
+	}
+	
 	public boolean isXAxisTime(){
 		return (mXAisType==CHANNEL_AXES.TIME? true:false);
 	}
