@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
-public class ByteUtilsTest {
+public class API_00006_ByteUtilsTest {
 
-	 private static final Logger logger = Logger.getLogger(ByteUtilsTest.class.getName());
+	 private static final Logger logger = Logger.getLogger(API_00006_ByteUtilsTest.class.getName());
 
 		
 		@Test
