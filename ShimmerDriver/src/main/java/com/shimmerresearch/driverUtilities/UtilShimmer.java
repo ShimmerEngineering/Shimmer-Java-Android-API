@@ -1333,7 +1333,31 @@ public class UtilShimmer implements Serializable {
 	public static boolean isBitSet(long value, int bitIndex) {
 		return (value & (1L << bitIndex)) != 0;
 	}
-
+	
+	public static String getParsedSamplingRateWithTwoDecimalPlaces(double samplingRate){
+		// limit rate to 2 decimal places
+		String convertedDouble = Double.toString(samplingRate);
+		String[] splitArray=String.valueOf(samplingRate).split("\\."); 
+		
+		if(splitArray.length >= 2){
+			if(splitArray[1].length()>2){
+				convertedDouble = splitArray[0]+".";
+				for(int i =0; i < 2; i++){
+					convertedDouble += splitArray[1].charAt(i);
+				}
+			}
+		}
+		return convertedDouble;
+	}
+	
+	public static String getTimeZoneID(){
+		return TimeZone.getDefault().getID();
+	}
+	
+	public static int getTimeZoneOffset(){
+		return TimeZone.getDefault().getOffset(System.currentTimeMillis());
+	}
+	
 //	public static void main(String[] args) {
 //		long milliSeconds = System.currentTimeMillis();
 //		
