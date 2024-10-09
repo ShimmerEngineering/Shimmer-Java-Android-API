@@ -5,12 +5,12 @@ import jssc.SerialNativeInterface;
 import jssc.SerialPortException;
 
 public class ByteCommunicationJSSC implements ByteCommunication {
-    
-    final public static String TYPE_PORT_NOT_OPENED = "Port not opened";
-    final public static String TYPE_CANT_REMOVE_LISTENER = "Can't remove event listener, because listener not added";
-    final public static String TYPE_LISTENER_THREAD_INTERRUPTED = "Event listener thread interrupted";
-    final public static String TYPE_CANT_SET_MASK = "Can't set mask";
-    
+	
+	/** Ignore bytes with framing error or parity error **/
+    private static final int PARAMS_FLAG_IGNPAR = 1;
+    /** Mark bytes with parity error or framing error **/
+    private static final int PARAMS_FLAG_PARMRK = 2;
+   
     private String portName;
     private volatile long portHandle;
     private boolean portOpened = false;
@@ -22,11 +22,6 @@ public class ByteCommunicationJSSC implements ByteCommunication {
 	private ByteCommunicationJSSC port;
 	private int eventType;
 	private int eventValue;
-	
-    public ByteCommunicationJSSC() {
-		serialInterface = new SerialNativeInterface();
-    	
-    }
 
     public ByteCommunicationJSSC(String portName) {
         this.portName = portName;
@@ -40,16 +35,11 @@ public class ByteCommunicationJSSC implements ByteCommunication {
 		serialInterface = new SerialNativeInterface();
 	}
 
-	// Public methods
-    public void connect() {
-        connect();
-    }
+    public ByteCommunicationJSSC() {
+		this.serialInterface = new SerialNativeInterface();
+	}
 
-    public void disconnect() {
-        disconnect();
-    }
-
-    @Override
+	@Override
     public int getInputBufferBytesCount() throws Exception {
         checkPortOpened();
         try {
@@ -154,14 +144,14 @@ public class ByteCommunicationJSSC implements ByteCommunication {
 
     private void checkPortOpened() throws Exception {
         if (!portOpened) {
-            throw new Exception(TYPE_PORT_NOT_OPENED);
+            throw new Exception(SerialPortException.TYPE_PORT_NOT_OPENED);
         }
     }
 
     private synchronized boolean removeEventListener() throws Exception {
         checkPortOpened();
         if (!eventListenerAdded) {
-            throw new Exception(TYPE_CANT_REMOVE_LISTENER);
+            throw new Exception(SerialPortException.TYPE_CANT_REMOVE_LISTENER);
         }
         eventThread.terminateThread();
         setEventsMask(0);
@@ -170,7 +160,7 @@ public class ByteCommunicationJSSC implements ByteCommunication {
                 try {
                     eventThread.join(5000);
                 } catch (InterruptedException ex) {
-                    throw new Exception(TYPE_LISTENER_THREAD_INTERRUPTED);
+                    throw new Exception(SerialPortException.TYPE_LISTENER_THREAD_INTERRUPTED);
                 }
             }
         }
@@ -187,7 +177,7 @@ public class ByteCommunicationJSSC implements ByteCommunication {
         }
         boolean returnValue = serialInterface.setEventsMask(portHandle, mask);
         if (!returnValue) {
-            throw new Exception(TYPE_CANT_SET_MASK);
+            throw new Exception(SerialPortException.TYPE_CANT_SET_MASK);
         }
         return returnValue;
     }
@@ -228,5 +218,34 @@ public class ByteCommunicationJSSC implements ByteCommunication {
 
     public interface SerialPortEventListener {
         void serialEvent(ByteCommunicationJSSC serialPortEvent);
+    }
+
+	@Override
+    public boolean setParams(int baudRate, int dataBits, int stopBits, int parity) throws Exception {
+        return setParams(baudRate, dataBits, stopBits, parity, true, true);
+    }
+	
+	public synchronized boolean setParams(int baudRate, int dataBits, int stopBits, int parity, boolean setRTS, boolean setDTR) throws Exception {
+        checkPortOpened();
+        if(stopBits == 1){
+            stopBits = 0;
+        }
+        else if(stopBits == 3){
+            stopBits = 1;
+        }
+        int flags = 0;
+        if(System.getProperty(SerialNativeInterface.PROPERTY_JSSC_IGNPAR) != null || System.getProperty(SerialNativeInterface.PROPERTY_JSSC_IGNPAR.toLowerCase()) != null){
+            flags |= PARAMS_FLAG_IGNPAR;
+        }
+        if(System.getProperty(SerialNativeInterface.PROPERTY_JSSC_PARMRK) != null || System.getProperty(SerialNativeInterface.PROPERTY_JSSC_PARMRK.toLowerCase()) != null){
+            flags |= PARAMS_FLAG_PARMRK;
+        }
+        return serialInterface.setParams(portHandle, baudRate, dataBits, stopBits, parity, setRTS, setDTR, flags);
+    }
+
+	@Override
+    public synchronized boolean purgePort(int flags) throws Exception {
+        checkPortOpened();
+        return serialInterface.purgePort(portHandle, flags);
     }
 }

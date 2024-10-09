@@ -1,12 +1,6 @@
 package com.shimmerresearch.shimmer3.communication;
 
-import com.shimmerresearch.exceptions.ShimmerException;
-
 public interface ByteCommunication{
-
-	public abstract void connect() throws ShimmerException;
-
-	public abstract void disconnect() throws ShimmerException;
 
     // Returns the number of bytes available in the input buffer.
     int getInputBufferBytesCount() throws Exception;
@@ -24,6 +18,10 @@ public interface ByteCommunication{
     byte[] readBytes(int byteCount, int timeout) throws Exception;
 
     // Writes the specified byte buffer to the communication port.
-    boolean writeBytes(byte[] buffer) throws Throwable;
-  
+    boolean writeBytes(byte[] buffer) throws Exception;
+
+	boolean setParams(int i, int j, int k, int l) throws Exception;
+
+	boolean purgePort(int i) throws Exception;
+
 }

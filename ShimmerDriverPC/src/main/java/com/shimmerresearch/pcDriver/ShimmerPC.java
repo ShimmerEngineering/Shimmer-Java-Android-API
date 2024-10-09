@@ -80,15 +80,15 @@ import com.shimmerresearch.sensors.SensorEXG;
 import com.shimmerresearch.sensors.SensorGSR;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.shimmer3.communication.ByteCommunication;
+import com.shimmerresearch.shimmer3.communication.ByteCommunicationJSSC;
+import com.shimmerresearch.shimmer3.communication.ByteCommunicationRadio;
+import com.shimmerresearch.shimmer3.communication.TestByteRadio;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDeviceCallbackAdapter;
 import com.shimmerresearch.driver.ShimmerMsg;
-
-import jssc.SerialPort;
-import jssc.SerialPortException;
-import jssc.SerialPortTimeoutException;
 
 public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
@@ -96,7 +96,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	private static final long serialVersionUID = -5927054314345918072L;
 	
 	// Used by the constructor when the user intends to write new settings to the Shimmer device after connection
-	protected transient SerialPort mSerialPort=null;
+	protected transient ByteCommunication mByteCommunication=null;
 	ObjectCluster objectClusterTemp = null;
 	
 //	double mLastSavedCalibratedTimeStamp = -1;
@@ -108,11 +108,24 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	protected transient ShimmerDeviceCallbackAdapter mDeviceCallbackAdapter = new ShimmerDeviceCallbackAdapter(this);
 	
 	public static boolean CONSOLE_PRINT_TX_RX_BYTES = false;
+	
+	public boolean testShimmerDevice = false;
 
 	//--------------- Constructors start ----------------------------
 
 	public ShimmerPC() {
-		super();
+//		super();
+		mByteCommunication = new ByteCommunicationJSSC();
+	}
+	
+	public ShimmerPC(boolean testShimmerDevice) {
+//		super();
+		if(!testShimmerDevice) {
+			mByteCommunication = new ByteCommunicationJSSC();
+		} else {
+			mByteCommunication = new ByteCommunicationRadio();
+			TestByteRadio mTestRadio = new TestByteRadio();
+		}
 	}
 
 	/**
@@ -343,22 +356,22 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				setIamAlive(false);
 				getListofInstructions().clear();
 				
-				if (mSerialPort==null){
+				if (mByteCommunication==null){
 					setComPort(address);
-					mSerialPort = new SerialPort(address);
+					mByteCommunication = new ByteCommunicationJSSC(address);
 
 					try {
 						consolePrintLn("Connecting to Shimmer on " + address);
-						consolePrintLn("Port open: " + mSerialPort.openPort());
-						consolePrintLn("Params set: " + mSerialPort.setParams(115200, 8, 1, 0));
-						consolePrintLn("Port Status : " + Boolean.toString(mSerialPort.isOpened()));
+						consolePrintLn("Port open: " + mByteCommunication.openPort());
+						consolePrintLn("Params set: " + mByteCommunication.setParams(115200, 8, 1, 0));
+						consolePrintLn("Port Status : " + Boolean.toString(mByteCommunication.isOpened()));
 						
 						if (mIOThread != null) { 
 							mIOThread = null;
 							mPThread = null;
 						}
 						
-						if (mSerialPort.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
+						if (mByteCommunication.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
 //						if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
 //							setState(BT_STATE.CONNECTED);
 							setIsConnected(true);
@@ -376,7 +389,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 							disconnectNoException();
 						}
 					}
-					catch (SerialPortException ex){
+					catch (Exception ex){
 						consolePrintException(ex.getMessage(), ex.getStackTrace());
 						
 //						connectionLost();
@@ -409,12 +422,12 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	public boolean bytesAvailableToBeRead() {
 		try {
-			if(mSerialPort != null){
-				if (mSerialPort.getInputBufferBytesCount()!=0){
+			if(mByteCommunication != null){
+				if (mByteCommunication.getInputBufferBytesCount()!=0){
 					return true;
 				}
 			}
-		} catch (SerialPortException | NullPointerException ex) {
+		} catch (Exception ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 
 			connectionLost();
@@ -425,13 +438,13 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	public int availableBytes(){
 		try {
-			if(mSerialPort != null){
-				return mSerialPort.getInputBufferBytesCount();
+			if(mByteCommunication != null){
+				return mByteCommunication.getInputBufferBytesCount();
 			}
 			else{
 				return 0;
 			}
-		} catch (SerialPortException | NullPointerException ex) {
+		} catch (Exception ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
 			return 0;
@@ -441,13 +454,13 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	@Override
 	public void writeBytes(byte[] data) {
 		try {
-			if(mSerialPort != null){
+			if(mByteCommunication != null){
 				if(CONSOLE_PRINT_TX_RX_BYTES) {
 					consolePrintLn("TX: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(data));
 				}
-				mSerialPort.writeBytes(data);
+				mByteCommunication.writeBytes(data);
 			}
-		} catch (SerialPortException | NullPointerException ex) {
+		} catch (Exception ex) {
 			consolePrintLn("Tried to writeBytes but port is closed");
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			connectionLost();
@@ -462,9 +475,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		}
 		
 		try {
-			if(mSerialPort != null){
-				if (mSerialPort.isOpened()){
-					byte[] data = mSerialPort.readBytes(numberOfBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_2000);
+			if(mByteCommunication != null){
+				if (mByteCommunication.isOpened()){
+					byte[] data = mByteCommunication.readBytes(numberOfBytes, AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_2000);
 					if(CONSOLE_PRINT_TX_RX_BYTES) {
 						consolePrintLn("RX: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(data));
 					}
@@ -473,23 +486,11 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 					consolePrintLn("Tried to readBytes but port is closed");
 				}
 			}
-		} catch (SerialPortException | NullPointerException e) {
+		} catch (Exception e) {
 			connectionLost();
 			consolePrintLn("Tried to readBytes but serial port error");
 			consolePrintException(e.getMessage(), e.getStackTrace());
 //			e.printStackTrace();
-		} catch (SerialPortTimeoutException e) {
-			consolePrintLn("Tried to readBytes but serial port timed out");
-			consolePrintException(e.getMessage(), e.getStackTrace());
-//			e.printStackTrace();
-
-			// TODO if in the middle of connecting or configuring, trigger a
-			// connectionLost()? BT_STATE.CONFIGURING not currently used by
-			// ShimmerBluetooth
-			if(mBluetoothRadioState==BT_STATE.CONNECTING
-					|| mBluetoothRadioState==BT_STATE.CONFIGURING){
-				connectionLost();
-			}
 		}
 		return null;
 	}
@@ -605,27 +606,27 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			mIsInitialised = false;
 
 			setBluetoothRadioState(BT_STATE.DISCONNECTED);
-			if (mSerialPort != null) {
-				if (mSerialPort.isOpened()) {
-					mSerialPort.purgePort(1);
-					mSerialPort.purgePort(2);
-					mSerialPort.closePort();
+			if (mByteCommunication != null) {
+				if (mByteCommunication.isOpened()) {
+					mByteCommunication.purgePort(1);
+					mByteCommunication.purgePort(2);
+					mByteCommunication.closePort();
 				}
 			}
-			 mSerialPort = null;
+			mByteCommunication = null;
 		} catch (Exception ex) {
 			consolePrintException(ex.getMessage(), ex.getStackTrace());
 			setBluetoothRadioState(BT_STATE.DISCONNECTED);
 		}			
 	}
 	
-	public void setSerialPort(SerialPort sp){
-		mSerialPort = sp;
+	public void setSerialPort(ByteCommunicationJSSC sp){
+		mByteCommunication = sp;
 		getSamplingRateShimmer();
-		if (mSerialPort.isOpened()){
+		if (mByteCommunication.isOpened()){
 			setBluetoothRadioState(BT_STATE.CONNECTING);
 		}
-		if (mSerialPort.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
+		if (mByteCommunication.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
 			//			if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
 			//				setState(BT_STATE.CONNECTED);
 			setIsConnected(true);
