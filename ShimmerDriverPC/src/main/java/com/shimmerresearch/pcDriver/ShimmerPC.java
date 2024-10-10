@@ -82,7 +82,6 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.shimmer3.communication.ByteCommunication;
 import com.shimmerresearch.shimmer3.communication.ByteCommunicationJSSC;
-import com.shimmerresearch.shimmer3.communication.ByteCommunicationRadio;
 import com.shimmerresearch.shimmer3.communication.TestByteRadio;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.driver.CallbackObject;
@@ -123,8 +122,7 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		if(!testShimmerDevice) {
 			mByteCommunication = new ByteCommunicationJSSC();
 		} else {
-			mByteCommunication = new ByteCommunicationRadio();
-			TestByteRadio mTestRadio = new TestByteRadio();
+			mByteCommunication = new TestByteRadio(mByteCommunication);
 		}
 	}
 

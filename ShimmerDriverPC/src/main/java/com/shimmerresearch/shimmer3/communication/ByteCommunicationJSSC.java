@@ -1,6 +1,9 @@
 package com.shimmerresearch.shimmer3.communication;
 
 import java.io.IOException;
+
+import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
+
 import jssc.SerialNativeInterface;
 import jssc.SerialPortException;
 
@@ -248,4 +251,16 @@ public class ByteCommunicationJSSC implements ByteCommunication {
         checkPortOpened();
         return serialInterface.purgePort(portHandle, flags);
     }
+
+	@Override
+	public void setByteCommunicationListener(ByteCommunicationListener byteCommListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeRadioListenerList() {
+		// TODO Auto-generated method stub
+		
+	}
 }

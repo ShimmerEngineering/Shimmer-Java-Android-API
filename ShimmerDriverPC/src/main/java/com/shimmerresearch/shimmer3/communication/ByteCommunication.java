@@ -1,5 +1,7 @@
 package com.shimmerresearch.shimmer3.communication;
 
+import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
+
 public interface ByteCommunication{
 
     // Returns the number of bytes available in the input buffer.
@@ -23,5 +25,9 @@ public interface ByteCommunication{
 	boolean setParams(int i, int j, int k, int l) throws Exception;
 
 	boolean purgePort(int i) throws Exception;
+
+	public void setByteCommunicationListener(ByteCommunicationListener byteCommListener);
+
+	public void removeRadioListenerList();
 
 }
