@@ -52,6 +52,7 @@ dependencies {
     
     implementation project (':ShimmerDriver')
     implementation project (':ShimmerDriverPC')
+	implementation project (':ShimmerBluetoothManager')
 //    compile(group: 'com.shimmerresearch', name: 'shimmerdriver', version: '0.10.0_alpha')
 //    compile(group: 'com.shimmerresearch', name: 'shimmerdriverpc', version: '0.10.0_alpha')
     
