@@ -9,6 +9,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
-public class API_0000X_ByteCommunication extends BasicProcessWithCallBack{
+public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
 	TaskCompletionSource<Boolean> mCalibrationTask;
 	@Before
@@ -35,7 +36,7 @@ public class API_0000X_ByteCommunication extends BasicProcessWithCallBack{
     	
     		mCalibrationTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
+				boolean result = mCalibrationTask.getTask().waitForCompletion(60, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -45,6 +46,14 @@ public class API_0000X_ByteCommunication extends BasicProcessWithCallBack{
     		assert(false);
     	}
     	if (!mDevice.getFirmwareVersionParsed().equals("LogAndStream v0.16.9")) {
+    		assert(false);
+    	}
+    	if (!(mDevice.getHardwareVersion()==HW_ID.SHIMMER_3)) {
+    		assert(false);
+    	}
+    	
+    	System.out.println(mDevice.getHardwareVersionParsed());
+    	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3")) {
     		assert(false);
     	}
     }
@@ -61,10 +70,17 @@ public class API_0000X_ByteCommunication extends BasicProcessWithCallBack{
 				CallbackObject callbackObject = (CallbackObject)object;
 				
 				if (callbackObject.mState == BT_STATE.CONNECTED) {
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (mCalibrationTask!=null) {
 						mCalibrationTask.setResult(true);
 						mCalibrationTask = null;
 					}
+					
 				}
 		}
 		

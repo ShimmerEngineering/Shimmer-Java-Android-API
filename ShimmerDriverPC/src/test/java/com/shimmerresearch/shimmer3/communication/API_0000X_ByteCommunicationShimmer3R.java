@@ -9,6 +9,9 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 
@@ -16,9 +19,10 @@ import bolts.TaskCompletionSource;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
-public class API_0000X_ByteCommunication3R extends BasicProcessWithCallBack{
+public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
 	TaskCompletionSource<Boolean> mCalibrationTask;
 	@Before
@@ -44,15 +48,29 @@ public class API_0000X_ByteCommunication3R extends BasicProcessWithCallBack{
     	if (!mDevice.isConnected()) {
     		assert(false);
     	}
-    	if (!mDevice.getFirmwareVersionParsed().equals("LogAndStream v0.16.9")) {
+    	if (!mDevice.getFirmwareVersionParsed().equals("LogAndStream v0.0.1")) {
     		assert(false);
     	}
-    	/*
+    	if (!(mDevice.getHardwareVersion()==HW_ID.SHIMMER_3R)) {
+    		assert(false);
+    	}
+    	
     	System.out.println(mDevice.getHardwareVersionParsed());
-    	if (!mDevice.getHardwareVersionParsed().equals("")) {
+    	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3r")) {
     		assert(false);
     	}
-    	*/
+    	
+    	ArrayList<SensorDetails> listofsensorDetails = (ArrayList<SensorDetails>) mDevice.getListOfEnabledSensors();
+    	
+    	for(SensorDetails sd: listofsensorDetails) {
+    		if (sd.isEnabled()) {
+    			for (ChannelDetails cd: sd.getListOfChannels()) {
+    				System.out.print(cd.mGuiName + " ; ");
+    			}
+    			System.out.println();
+    		}
+    	}
+    	
     }
 
 	@Override
@@ -67,6 +85,12 @@ public class API_0000X_ByteCommunication3R extends BasicProcessWithCallBack{
 				CallbackObject callbackObject = (CallbackObject)object;
 				
 				if (callbackObject.mState == BT_STATE.CONNECTED) {
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (mCalibrationTask!=null) {
 						mCalibrationTask.setResult(true);
 						mCalibrationTask = null;

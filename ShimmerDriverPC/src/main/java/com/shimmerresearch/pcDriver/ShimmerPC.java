@@ -82,7 +82,6 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.shimmer3.communication.ByteCommunication;
 import com.shimmerresearch.shimmer3.communication.ByteCommunicationJSSC;
-import com.shimmerresearch.shimmer3.communication.ByteCommunicationSimulator;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;

@@ -10,174 +10,29 @@ import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
-public class ByteCommunicationSimulatorS3R implements ByteCommunication{
+public class ByteCommunicationSimulatorS3R extends ByteCommunicationSimulatorS3{
 
 	public ByteCommunicationSimulatorS3R(String address) {
+		super(address);
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	@Override
-	public int getInputBufferBytesCount() throws SerialPortException {
-		// TODO Auto-generated method stub
-		return mBuffer.size();
+	protected void txShimmerVersion() {
+		mBuffer.add((byte) 0xff);
+		mBuffer.add((byte) 0x25);
+		mBuffer.add((byte) 0x0A);
 	}
-
-	@Override
-	public boolean isOpened() {
-		// TODO Auto-generated method stub
-		return true;
+	
+	@Override 
+	protected void txFirmwareVersion() {
+		mBuffer.add((byte) 0xff);
+		mBuffer.add((byte) 0x2f);
+		mBuffer.add((byte) 0x03);
+		mBuffer.add((byte) 0x00);
+		mBuffer.add((byte) 0x00);
+		mBuffer.add((byte) 0x00);
+		mBuffer.add((byte) 0x00);
+		mBuffer.add((byte) 0x01);
 	}
-
-	@Override
-	public boolean closePort() throws SerialPortException {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean openPort() throws SerialPortException {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public byte[] readBytes(int byteCount, int timeout) throws SerialPortTimeoutException, SerialPortException {
-		if (byteCount <= 0) {
-            throw new IllegalArgumentException("Number of bytes to read must be positive.");
-        }
-        byte[] result = new byte[byteCount];
-
-        for (int i = 0; i < byteCount; i++) {
-            try {
-				result[i] = mBuffer.take();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} // Blocks if the buffer is empty
-        }
-
-        //System.out.println("Read " + byteCount + " bytes from buffer.");
-        return result;
-	}
-	BlockingQueue<Byte> mBuffer = new ArrayBlockingQueue<>(1000); // Fixed size 1000
-	@Override
-	public boolean writeBytes(byte[] buffer) throws SerialPortException {
-		// TODO Auto-generated method stub
-		
-		if(buffer[0]==ShimmerObject.GET_SHIMMER_VERSION_COMMAND_NEW) {
-			System.out.println(UtilShimmer.bytesToHexString(buffer));
-			mBuffer.add((byte) 0xff);
-			mBuffer.add((byte) 0x25);
-			mBuffer.add((byte) 0x0A);
-		} else if(buffer[0]==ShimmerObject.GET_SAMPLING_RATE_COMMAND) {
-			mBuffer.add((byte) 0xff);
-			mBuffer.add((byte) 0x04);
-			mBuffer.add((byte) 0x80);
-			mBuffer.add((byte) 0x02);
-		} else if(buffer[0]==ShimmerObject.SET_CRC_COMMAND) {
-			mBuffer.add((byte) 0xff);
-			mBuffer.add((byte) 0x04);
-			mBuffer.add((byte) 0xf4);
-		} else if(buffer[0]==ShimmerObject.GET_FW_VERSION_COMMAND) {
-			mBuffer.add((byte) 0xff);
-			mBuffer.add((byte) 0x2f);
-			mBuffer.add((byte) 0x03);
-			mBuffer.add((byte) 0x00);
-			mBuffer.add((byte) 0x00);
-			mBuffer.add((byte) 0x00);
-			mBuffer.add((byte) 0x10);
-			mBuffer.add((byte) 0x09);
-		} else if(buffer[0]==ShimmerObject.GET_DAUGHTER_CARD_ID_COMMAND){
-			mBuffer.add((byte) 0xff);
-			mBuffer.add((byte) 0x65);
-			mBuffer.add((byte) 0x03);
-			mBuffer.add((byte) 0x30);
-			mBuffer.add((byte) 0x04);
-			mBuffer.add((byte) 0x02);
-		} else if (buffer[0]==ShimmerObject.GET_INFOMEM_COMMAND){
-			if (buffer[1]==(byte)0x80 && buffer[2]==(byte)0x00 && buffer[3]==(byte)0x00) //0x8E 0x80 0x00 0x00
-			{
-				mBuffer.add((byte) 0xff);
-				mBuffer.add((byte) 0x8D);
-				mBuffer.add((byte) 0x80);
-				byte[] bytes = UtilShimmer.hexStringToByteArray("800201E010004D9B0E08008010000000000002010080100000000000020109000000083C081F0825005300530054019C009C0100FEFF9C0000000000000CD00CD00CD0009C009C000000009C002AFBEDFC21010700E500FD009C0064000000009C00000000000001A201A201A2009C0064000000009C0000000000FFFFFFFFFF");
-				for (byte b:bytes) {
-					mBuffer.add(b);
-				}
-				mBuffer.add((byte) 0x8c);
-			}
-			else if (buffer[1]==(byte)0x80 && buffer[2]==(byte)0x80 && buffer[3]==(byte)0x00) //0x8E 0x80 0x80 0x00
-			{
-				mBuffer.add((byte) 0xff);
-				mBuffer.add((byte) 0x8D);
-				mBuffer.add((byte) 0x80);
-				byte[] bytes = UtilShimmer.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005368696D6D65725F33453336574354455354FFFFFFFFFFFF670773A70000B9003600000000E8EB1B713E360000000000000000000000000000000000000000000000000000");
-				for (byte b:bytes) {
-					mBuffer.add(b);
-				}
-
-				mBuffer.add((byte) 0x32);
-			}	else if (buffer[1]==(byte)0x80 && buffer[2]==(byte)0x00 && buffer[3]==(byte)0x01) //[0x8E 0x80 0x00 0x01]
-			{
-				mBuffer.add((byte) 0xff);
-				mBuffer.add((byte) 0x8D);
-				mBuffer.add((byte) 0x80);
-				byte[] bytes = UtilShimmer.hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-				for (byte b:bytes) {
-					mBuffer.add(b);
-				}
-
-				mBuffer.add((byte) 0x9B);
-			}			
-		} else if(buffer[0]==ShimmerObject.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND) {
-			mBuffer.add((byte) 0xff);
-			mBuffer.add((byte) 0x9f);
-			byte[] bytes = UtilShimmer.hexStringToByteArray("7A6A0D6632007F9016D7D00BBC1B2AFFF9FF8C3CF8C67017");
-			for (byte b:bytes) {
-				mBuffer.add(b);
-			}
-			mBuffer.add((byte) 0xDF);
-		} else if(buffer[0]==ShimmerObject.GET_BLINK_LED) {
-			mBuffer.add((byte) 0xff);
-			mBuffer.add((byte) 0x31);
-			mBuffer.add((byte) 0x01);
-			mBuffer.add((byte) 0xE0);
-		}else if(buffer[0]==ShimmerObject.GET_STATUS_COMMAND) {
-			mBuffer.add((byte) 0xff);
-			mBuffer.add((byte) 0x8A);
-			mBuffer.add((byte) 0x71);
-			mBuffer.add((byte) 0x24);
-		}
-		else {
-		
-			System.out.println("Unresolved: " + UtilShimmer.bytesToHexString(buffer));
-		}
-		
-		return true;
-	}
-
-	@Override
-	public boolean setParams(int i, int j, int k, int l) throws SerialPortException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean purgePort(int i) throws SerialPortException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setByteCommunicationListener(ByteCommunicationListener byteCommListener) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeRadioListenerList() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
