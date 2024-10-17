@@ -52,7 +52,7 @@ public class ShimmerPCExample {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//shimmer = new ShimmerPC("E454");
-				shimmer.connect("COM14","");
+				shimmer.connect("COM12","");
 				//sdr.setWaitForData(shimmer);
 			}
 		});
