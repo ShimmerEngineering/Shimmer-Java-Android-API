@@ -12,6 +12,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 import bolts.TaskCompletionSource;
 
@@ -22,10 +23,13 @@ import java.util.concurrent.TimeUnit;
 public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
 	TaskCompletionSource<Boolean> mCalibrationTask;
+	ByteCommunicationSimulatorS3 mByteCommunicationSimulatorS3;
+
 	@Before
     public void setUp() {
+		mByteCommunicationSimulatorS3 = new ByteCommunicationSimulatorS3("COM99");
 		mDevice = new ShimmerPC("COM99");
-		mDevice.setTestRadio(new ByteCommunicationSimulatorS3("COM99"));
+		mDevice.setTestRadio(mByteCommunicationSimulatorS3);
 		setWaitForData(mDevice);
     }
     
@@ -56,6 +60,14 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
     	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3")) {
     		assert(false);
     	}
+    	
+    	if(!mByteCommunicationSimulatorS3.isGetBmp280CalibrationCoefficientsCommand) {
+    		assert(false);
+    	}
+    	
+		if(!mDevice.mSensorBMPX80.mSensorType.equals(SENSORS.BMP280)){
+    		assert(false);
+		}
     }
 
 	@Override

@@ -652,7 +652,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// Shimmer3 - Gyro
 	protected SensorMPU9X50 mSensorMpu9x50 = new SensorMPU9150(this);
 	// Shimmer3 - Pressure/Temperature 
-	protected SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
+	public SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
 	
 	// ----------  ECG/EMG start ---------------
 	protected double OffsetECGRALL=2060;

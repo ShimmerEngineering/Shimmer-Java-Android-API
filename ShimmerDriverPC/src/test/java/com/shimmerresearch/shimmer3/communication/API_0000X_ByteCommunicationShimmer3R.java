@@ -14,6 +14,7 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 import bolts.TaskCompletionSource;
 
@@ -25,10 +26,12 @@ import java.util.concurrent.TimeUnit;
 public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
 	TaskCompletionSource<Boolean> mCalibrationTask;
+	ByteCommunicationSimulatorS3R mByteCommunicationSimulatorS3R;
 	@Before
     public void setUp() {
+		mByteCommunicationSimulatorS3R = new ByteCommunicationSimulatorS3R("COM99");
 		mDevice = new ShimmerPC("COM99");
-		mDevice.setTestRadio(new ByteCommunicationSimulatorS3R("COM99"));
+		mDevice.setTestRadio(mByteCommunicationSimulatorS3R);
 		setWaitForData(mDevice);
     }
     
@@ -59,7 +62,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3r")) {
     		assert(false);
     	}
-    	
+    	if(!mByteCommunicationSimulatorS3R.isGetPressureCalibrationCoefficientsCommand) {
+    		assert(false);
+    	}
+    	if(!mDevice.mSensorBMPX80.mSensorType.equals(SENSORS.BMP390)){
+    		assert(false);
+		}
     	ArrayList<SensorDetails> listofsensorDetails = (ArrayList<SensorDetails>) mDevice.getListOfEnabledSensors();
     	
     	for(SensorDetails sd: listofsensorDetails) {

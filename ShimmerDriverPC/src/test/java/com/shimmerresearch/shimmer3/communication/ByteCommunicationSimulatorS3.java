@@ -11,6 +11,9 @@ import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
 public class ByteCommunicationSimulatorS3 implements ByteCommunication{
+	
+	public boolean isGetBmp280CalibrationCoefficientsCommand = false;
+	public boolean isGetPressureCalibrationCoefficientsCommand = false;
 
 	public ByteCommunicationSimulatorS3(String address) {
 		// TODO Auto-generated constructor stub
@@ -147,6 +150,7 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 				mBuffer.add((byte) 0x9B);
 			}			
 		} else if(buffer[0]==ShimmerObject.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND) {
+			isGetBmp280CalibrationCoefficientsCommand = true;
 			mBuffer.add((byte) 0xff);
 			mBuffer.add((byte) 0x9f);
 			byte[] bytes = UtilShimmer.hexStringToByteArray("7A6A0D6632007F9016D7D00BBC1B2AFFF9FF8C3CF8C67017");
@@ -154,6 +158,17 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 				mBuffer.add(b);
 			}
 			mBuffer.add((byte) 0xDF);
+		}else if(buffer[0]==ShimmerObject.GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND) {
+			isGetPressureCalibrationCoefficientsCommand = true;
+			
+			/*
+			mBuffer.add((byte) 0x9f);
+			byte[] bytes = UtilShimmer.hexStringToByteArray("7A6A0D6632007F9016D7D00BBC1B2AFFF9FF8C3CF8C67017");
+			for (byte b:bytes) {
+				mBuffer.add(b);
+			}
+			mBuffer.add((byte) 0xDF);
+			*/
 		} else if(buffer[0]==ShimmerObject.GET_BLINK_LED) {
 			mBuffer.add((byte) 0xff);
 			mBuffer.add((byte) 0x31);
