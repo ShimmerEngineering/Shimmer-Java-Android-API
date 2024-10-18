@@ -243,6 +243,9 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	// SD logging related
 	public int bitShiftButtonStart = 			5;
 	public int maskButtonStart = 				0x01;
+	
+	public int bitShiftDisableBluetooth = 		3;
+	public int maskDisableBluetooth = 			0x01;
 
 	public int bitShiftShowErrorLedsRwc = 		4;
 	public int maskShowErrorLedsRwc =	 		0; // Only applicable for certain FW
