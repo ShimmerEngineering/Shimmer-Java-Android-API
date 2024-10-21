@@ -1566,7 +1566,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}else if(mSensorBMPX80.mSensorType.equals(SENSORS.BMP280)){
 				pressureResoRes = new byte[26]; //24 bytes + 2
 				pressureResoRes = readBytes(26, responseCommand);
-				printLogDataForDebugging("BMP280 CALIB Received:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(filteredByteArray));
+				printLogDataForDebugging("BMP280 CALIB Received:\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(pressureResoRes));
 			}else if(mSensorBMPX80.mSensorType.equals(SENSORS.BMP180)){
 				pressureResoRes = new byte[24]; //22 bytes + 2
 				pressureResoRes = readBytes(24, responseCommand);
