@@ -4775,7 +4775,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				if(getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.STROKARE) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] = (byte) ((mButtonStart & configByteLayoutCast.maskButtonStart) << configByteLayoutCast.bitShiftButtonStart);
-//					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] = (byte) ((mDisableBluetooth & configByteLayoutCast.maskDisableBluetooth) << configByteLayoutCast.bitShiftDisableBluetooth);
+					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] |= (byte) ((mDisableBluetooth & configByteLayoutCast.maskDisableBluetooth) << configByteLayoutCast.bitShiftDisableBluetooth);
 					if(this.isOverrideShowErrorLedsRtc){
 						mConfigBytes[configByteLayoutCast.idxSDExperimentConfig0] |= (byte) ((configByteLayoutCast.maskShowErrorLedsRwc) << configByteLayoutCast.bitShiftShowErrorLedsRwc);
 					}
@@ -8688,6 +8688,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		switch(configLabel){
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				returnValue = isButtonStart();
+				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SD_STREAM_WHEN_RECORDING):
+				returnValue = isDisableBluetooth();
 				break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START):
 				returnValue = isSingleTouch();
