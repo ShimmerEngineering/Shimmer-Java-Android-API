@@ -79,6 +79,7 @@ import com.shimmerresearch.sensors.kionix.SensorKionixKXTC92050;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303AH;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
+import com.shimmerresearch.sensors.lsm6dsv.SensorLSM6DSV;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9250;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
@@ -649,6 +650,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected SensorMPU9X50 mSensorMpu9x50 = new SensorMPU9150(this);
 	// Shimmer3 - Pressure/Temperature 
 	private SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
+	
+	// Shimmer3r - Accel LN
+	private SensorLSM6DSV mSensorLSM6DSV = new SensorLSM6DSV(this);
 	
 	// ----------  ECG/EMG start ---------------
 	protected double OffsetECGRALL=2060;
@@ -4951,6 +4955,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				mSensorMpu9x50 = new SensorMPU9250(this);
 				addSensorClass(mSensorMpu9x50);
+				
+				// Added
+				mSensorLSM6DSV = new SensorLSM6DSV(this);
+				addSensorClass(mSensorLSM6DSV);
 			}
 			else{
 				mSensorBMPX80 = new SensorBMP180(this);
@@ -4964,6 +4972,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				mSensorMpu9x50 = new SensorMPU9150(this);
 				addSensorClass(mSensorMpu9x50);
+				
+				// Added
+				mSensorLSM6DSV = new SensorLSM6DSV(this);
+				addSensorClass(mSensorLSM6DSV);
 			}
 		} else if(isShimmerGen3R()){
 			mSensorBMPX80 = new SensorBMP280(this);
@@ -4977,6 +4989,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			mSensorMpu9x50 = new SensorMPU9250(this);
 			addSensorClass(mSensorMpu9x50);
+			
+			// Added
+			mSensorLSM6DSV = new SensorLSM6DSV(this);
+			addSensorClass(mSensorLSM6DSV);
 		}
 	}
 
