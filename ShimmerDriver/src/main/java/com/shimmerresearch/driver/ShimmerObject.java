@@ -4955,11 +4955,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				mSensorMpu9x50 = new SensorMPU9250(this);
 				addSensorClass(mSensorMpu9x50);
-				
-				// Added
-				mSensorLSM6DSV = new SensorLSM6DSV(this);
-				addSensorClass(mSensorLSM6DSV);
 			}
+			
 			else{
 				mSensorBMPX80 = new SensorBMP180(this);
 				addSensorClass(mSensorBMPX80);
@@ -4972,11 +4969,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 				mSensorMpu9x50 = new SensorMPU9150(this);
 				addSensorClass(mSensorMpu9x50);
-				
-				// Added
-				mSensorLSM6DSV = new SensorLSM6DSV(this);
-				addSensorClass(mSensorLSM6DSV);
 			}
+			
 		} else if(isShimmerGen3R()){
 			mSensorBMPX80 = new SensorBMP280(this);
 			addSensorClass(mSensorBMPX80);
