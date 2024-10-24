@@ -709,7 +709,8 @@ public class Configuration {
 			/** Shimmer3 Alternative magnetometer */
 			public static final int SHIMMER_MPU9X50_MAG = 34;
 			public static final int SHIMMER_MPU9X50_TEMP = 35;
-			public static final int SHIMMER_BMPX80_PRESSURE = 36;
+			public static final int SHIMMER_BMPX80_PRESSURE = 36;	//BMP180 and BMP280
+			public static final int SHIMMER_BMP390_PRESSURE = 43;
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;

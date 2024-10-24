@@ -116,7 +116,7 @@ public class SensorBMP390 extends SensorBMPX80{
 		public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
 		static {
 			Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-			aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE, SensorBMP390.sensorBmp390);
+			aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMP390_PRESSURE, SensorBMP390.sensorBmp390);
 			mSensorMapRef = Collections.unmodifiableMap(aMap);
 		}
 		
