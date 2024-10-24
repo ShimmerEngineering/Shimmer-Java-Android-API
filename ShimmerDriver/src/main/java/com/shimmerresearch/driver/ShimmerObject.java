@@ -82,6 +82,7 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9250;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.sensors.lis3mdl.SensorLIS3MDL;
 import com.shimmerresearch.sensors.shimmer2.SensorMMA736x;
 import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Gyro;
 import com.shimmerresearch.sensors.shimmer2.SensorShimmer2Mag;
@@ -649,6 +650,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected SensorMPU9X50 mSensorMpu9x50 = new SensorMPU9150(this);
 	// Shimmer3 - Pressure/Temperature 
 	private SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
+	// Shimmer3r - Mag
+	private SensorLIS3MDL mSensorLIS3MDL = new SensorLIS3MDL(this);
 	
 	// ----------  ECG/EMG start ---------------
 	protected double OffsetECGRALL=2060;
@@ -4977,6 +4980,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			mSensorMpu9x50 = new SensorMPU9250(this);
 			addSensorClass(mSensorMpu9x50);
+			
+			mSensorLIS3MDL = new SensorLIS3MDL(this);
+			addSensorClass(mSensorLIS3MDL);
 		}
 	}
 

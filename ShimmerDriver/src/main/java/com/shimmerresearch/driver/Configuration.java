@@ -721,6 +721,8 @@ public class Configuration {
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
 			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
 			
+			public static final int SHIMMER_LIS3MDL_MAG = 41;
+			
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_6DOF = 50;
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_9DOF = 51;
 			public static final int SHIMMER_MPU9X50_MPL_EULER_6DOF = 52;
