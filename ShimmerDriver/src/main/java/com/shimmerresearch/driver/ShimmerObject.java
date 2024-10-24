@@ -4978,13 +4978,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensorLSM303 = new SensorLSM303AH(this);
 			addSensorClass(mSensorLSM303);
 
-			mSensorKionixAccel = new SensorKionixKXTC92050(this);
-			addSensorClass(mSensorKionixAccel);
-
 			mSensorMpu9x50 = new SensorMPU9250(this);
 			addSensorClass(mSensorMpu9x50);
 			
-			// Added
 			mSensorLSM6DSV = new SensorLSM6DSV(this);
 			addSensorClass(mSensorLSM6DSV);
 		}
@@ -6123,8 +6119,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelLn() {
 		if(isShimmerGen2()){
 			return mSensorMMA736x.getCurrentCalibDetailsAccelLn();
-		} else {
+		} else if (isShimmerGen3()){
 			return mSensorKionixAccel.getCurrentCalibDetailsAccelLn();
+		} else {
+			return mSensorLSM6DSV.getCurrentCalibDetailsAccelLn();
 		}
 	}
 
