@@ -6121,9 +6121,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return mSensorMMA736x.getCurrentCalibDetailsAccelLn();
 		} else if (isShimmerGen3()){
 			return mSensorKionixAccel.getCurrentCalibDetailsAccelLn();
-		} else {
+		} else if (isShimmerGen3R()){
 			return mSensorLSM6DSV.getCurrentCalibDetailsAccelLn();
 		}
+		return null;
 	}
 
 	@Override

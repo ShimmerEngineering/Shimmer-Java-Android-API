@@ -87,6 +87,7 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.sensors.lsm6dsv.SensorLSM6DSV;
 import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
 import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
 import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense;
@@ -721,6 +722,9 @@ public class Configuration {
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
 			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
 			
+			public static final int SHIMMER_LSM6DSV_ACCEL_LN = 37;
+			public static final int SHIMMER_LSM6DSV_GYRO = 38;
+			
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_6DOF = 50;
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_9DOF = 51;
 			public static final int SHIMMER_MPU9X50_MPL_EULER_6DOF = 52;
@@ -887,9 +891,11 @@ public class Configuration {
 		 */
 		public enum LABEL_SENSOR_TILE{
 			STREAMING_PROPERTIES(SensorShimmerClock.LABEL_SENSOR_TILE.STREAMING_PROPERTIES),
-			LOW_NOISE_ACCEL(SensorKionixAccel.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL),
+//			LOW_NOISE_ACCEL(SensorKionixAccel.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL),
+			LOW_NOISE_ACCEL(SensorLSM6DSV.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL),
 			WIDE_RANGE_ACCEL(SensorLSM303.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL),
-			GYRO(SensorMPU9X50.LABEL_SENSOR_TILE.GYRO),
+//			GYRO(SensorMPU9X50.LABEL_SENSOR_TILE.GYRO),
+			GYRO(SensorLSM6DSV.LABEL_SENSOR_TILE.GYRO),
 			MAG(SensorLSM303.LABEL_SENSOR_TILE.MAG),
 			PRESSURE_TEMPERATURE_BMP180(SensorBMP180.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
@@ -1421,6 +1427,17 @@ public class Configuration {
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
 					svoShimmer4Stock);  
+			
+			// Added LSM6DSV Gyro
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DSVGyro = Arrays.asList(
+					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
+					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
+					svoExgUnifiedNewImuSdLog, svoExgUnifiedNewImuLogAndStream,
+					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
+					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
+					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
+					svoShimmer4Stock);  
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303AH = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
@@ -1437,6 +1454,16 @@ public class Configuration {
 					svoShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXTC92050 = Arrays.asList(
+					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
+					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
+					svoExgUnifiedNewImuSdLog, svoExgUnifiedNewImuLogAndStream,
+					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
+					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
+					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
+			
+			// Added LSM6DSV Accel
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DSVAccel = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
 					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,

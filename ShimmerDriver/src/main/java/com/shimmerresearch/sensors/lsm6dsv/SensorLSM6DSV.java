@@ -44,6 +44,7 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303AH;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9250;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50.GuiLabelConfig;
+import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50.LABEL_SENSOR_TILE;
 import com.shimmerresearch.sensors.ActionSetting;
 
 public class SensorLSM6DSV extends AbstractSensor{
@@ -163,6 +164,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 		public static final String GYRO_Y = "LSM6DSV_GYRO_Y";
 		public static final String GYRO_Z = "LSM6DSV_GYRO_Z";
 	}
+	
 	public static final class DatabaseConfigHandle{
 		public static final String LN_ACC_CALIB_TIME = "LSM6DSV_Acc_Calib_Time";
 		public static final String LN_ACC_OFFSET_X = "LSM6DSV_Acc_Offset_X";
@@ -225,6 +227,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 		public static final String LSM6DSV_GYRO_RANGE = "Gyro Range";
 		public static final String LSM6DSV_GYRO_RATE = "Gyro Sampling Rate";
 		public static final String LSM6DSV_GYRO_RATE_HZ = "Gyro Sampling Rate Hertz";
+		public static final String LSM6DSV_GYRO_LPM = "Gyro Low-Power Mode";
 	}
 	
 	public static class ObjectClusterSensorName{
@@ -246,6 +249,8 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	public class LABEL_SENSOR_TILE{
 		public static final String LOW_NOISE_ACCEL = GuiLabelSensors.ACCEL_LN;
+		public static final String GYRO = GuiLabelSensors.GYRO;
+
 	}
 	//--------- Sensor specific variables end --------------
 	
@@ -254,63 +259,33 @@ public class SensorLSM6DSV extends AbstractSensor{
 	//--------- Configuration options start --------------
 	// ACCEL_LN
 	public static final Integer[] ListofLSM6DSVAccelRangeConfigValues={0,1,2,3};  
-
 	public static final String[] ListofLSM6DSVGyroRate={"Power-down","1.875Hz","7.5Hz","12.0Hz","30.0Hz","60.0Hz","120.0Hz","240.0Hz","480.0Hz","960.0Hz","1920.0Hz","3840.0Hz","7680.0Hz"};
 	public static final Integer[] ListofLSM6DSVGyroRateConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13};
-
-//	public static final String[] ListofLSM303AHAccelRateLpm={"Power-down","1.0Hz","12.5Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","400.0Hz","800.0Hz"};
-//	public static final Integer[] ListofLSM303AHAccelRateLpmConfigValues={0,8,9,10,11,12,13,14,15};
-//
-//	public static final ConfigOptionDetailsSensor configOptionAccelRange = new ConfigOptionDetailsSensor(
-//			SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RANGE,
-//			SensorLSM303AH.DatabaseConfigHandle.WR_ACC_RANGE,
-//			ListofLSM303AccelRange, 
-//			ListofLSM303AccelRangeConfigValues, 
-//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
-//
-//	public static final ConfigOptionDetailsSensor configOptionAccelRate = new ConfigOptionDetailsSensor(
-//			SensorLSM303.GuiLabelConfig.LSM303_ACCEL_RATE,
-//			SensorLSM303AH.DatabaseConfigHandle.WR_ACC_RATE,
-//			ListofLSM303AHAccelRateHr, 
-//			ListofLSM303AHAccelRateHrConfigValues, 
-//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH,
-//			Arrays.asList(
-//				new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LSM303_ACCEL_RATE.IS_LPM, 
-//						ListofLSM303AHAccelRateLpm, 
-//						ListofLSM303AHAccelRateLpmConfigValues)));
-//
-//	public static final String[] ListofLSM303AHMagRate={"10.0Hz","20.0Hz","50.0Hz","100.0Hz"};
-//	public static final Integer[] ListofLSM303AHMagRateConfigValues={0,1,2,3};
-//
-//	public static final String[] ListofLSM303AHMagRange={"+/- 49.152Ga"}; 
-//	public static final Integer[] ListofLSM303AHMagRangeConfigValues={0};  
-//
-//	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
-//			SensorLSM303.GuiLabelConfig.LSM303_MAG_RANGE,
-//			SensorLSM303AH.DatabaseConfigHandle.MAG_RANGE,
-//			ListofLSM303AHMagRange, 
-//			ListofLSM303AHMagRangeConfigValues, 
-//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
-//	
-//	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
-//			SensorLSM303.GuiLabelConfig.LSM303_MAG_RATE,
-//			SensorLSM303AH.DatabaseConfigHandle.MAG_RATE,
-//			ListofLSM303AHMagRate, 
-//			ListofLSM303AHMagRateConfigValues, 
-//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH);
-//
-//	public static final ConfigOptionDetailsSensor configOptionAccelLpm = new ConfigOptionDetailsSensor(
-//			SensorLSM303.GuiLabelConfig.LSM303_ACCEL_LPM,
-//			SensorLSM303AH.DatabaseConfigHandle.WR_ACC_LPM,
-//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX);
 	
 	// GYRO
 	public static final String[] ListofGyroRange = {"+/- 125dps","+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps","+/- 4000dps"};
 	public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,2,3,4,5};
+
+	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroRange = new ConfigOptionDetailsSensor(
+			SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_RANGE,
+			SensorLSM6DSV.DatabaseConfigHandle.GYRO_RANGE,
+			ListofGyroRange, 
+			ListofLSM6DSVGyroRangeConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+
+	//General Config
+	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroRate = new ConfigOptionDetailsSensor(
+			SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_RATE,
+			SensorLSM6DSV.DatabaseConfigHandle.GYRO_RATE,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+
+	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroLpm = new ConfigOptionDetailsSensor(
+			SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM,
+			null,
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
 	//--------- Configuration options end --------------
 	
 	
@@ -320,7 +295,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 	// To Be Changed
 			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 
 			GuiLabelSensors.ACCEL_LN,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXTC92050,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSVAccel,
 			null,
 			Arrays.asList(SensorLSM6DSV.ObjectClusterSensorName.ACCEL_LN_X,
 					SensorLSM6DSV.ObjectClusterSensorName.ACCEL_LN_Y,
@@ -328,7 +303,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	public static final SensorDetailsRef sensorLSM6DSVGyroRef = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.GYRO,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPU9250,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_GYRO),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO),
 			Arrays.asList(
 					GuiLabelConfig.LSM6DSV_GYRO_RANGE, 
 					GuiLabelConfig.LSM6DSV_GYRO_RATE),
@@ -341,8 +316,8 @@ public class SensorLSM6DSV extends AbstractSensor{
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, SensorLSM6DSV.sensorLSM6DSV);
-        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO, SensorLSM6DSV.sensorLSM6DSVGyroRef);
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN, SensorLSM6DSV.sensorLSM6DSV);
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO, SensorLSM6DSV.sensorLSM6DSVGyroRef);
 
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
@@ -426,12 +401,13 @@ public class SensorLSM6DSV extends AbstractSensor{
     
     public static final SensorGroupingDetails sensorGroupLnAccelLSM6DSV = new SensorGroupingDetails(
     		SensorLSM6DSV.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL),
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXTC92050);
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN),
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSVAccel);
 	
     
     
 	//--------- Bluetooth commands start --------------
+    // ACCEL_LN
 	public static final byte SET_LN_ACCEL_CALIBRATION_COMMAND			= (byte) 0x11;
 	public static final byte LN_ACCEL_CALIBRATION_RESPONSE       		= (byte) 0x12;
 	public static final byte GET_LN_ACCEL_CALIBRATION_COMMAND    		= (byte) 0x13;
@@ -439,7 +415,41 @@ public class SensorLSM6DSV extends AbstractSensor{
 	public static final byte SET_ALT_ACCEL_RANGE_COMMAND				= (byte) 0x4F;
 	public static final byte ALT_ACCEL_RANGE_RESPONSE					= (byte) 0x50;
 	public static final byte GET_ALT_ACCEL_RANGE_COMMAND				= (byte) 0x51;
-
+	
+	//GYRO
+	public static final byte SET_GYRO_CALIBRATION_COMMAND 	  		= (byte) 0x14;
+	public static final byte GYRO_CALIBRATION_RESPONSE        		= (byte) 0x15;
+	public static final byte GET_GYRO_CALIBRATION_COMMAND     		= (byte) 0x16;
+	public static final byte SET_LSM6DSV_GYRO_RANGE_COMMAND 		= (byte) 0x49;
+	public static final byte LSM6DSV_GYRO_RANGE_RESPONSE 			= (byte) 0x4A;
+	public static final byte GET_LSM6DSV_GYRO_RANGE_COMMAND 		= (byte) 0x4B;
+	public static final byte SET_LSM6DSV_SAMPLING_RATE_COMMAND 		= (byte) 0x4C;
+	public static final byte LSM6DSV_SAMPLING_RATE_RESPONSE 		= (byte) 0x4D;
+	public static final byte GET_LSM6DSV_SAMPLING_RATE_COMMAND 		= (byte) 0x4E;
+	
+	 public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+	    static {
+	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	        
+	        aMap.put(GET_LN_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(GET_LN_ACCEL_CALIBRATION_COMMAND,"GET_LN_ACCEL_CALIBRATION_COMMAND",LN_ACCEL_CALIBRATION_RESPONSE));
+	        
+	        aMap.put(GET_GYRO_CALIBRATION_COMMAND, new BtCommandDetails(GET_GYRO_CALIBRATION_COMMAND, "GET_GYRO CALIBRATION_COMMAND", GYRO_CALIBRATION_RESPONSE));
+	        aMap.put(GET_LSM6DSV_GYRO_RANGE_COMMAND, new BtCommandDetails(GET_LSM6DSV_GYRO_RANGE_COMMAND, "GET_LSM6DSV GYRO RANGE_COMMAND", LSM6DSV_GYRO_RANGE_RESPONSE));
+	        aMap.put(GET_LSM6DSV_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_LSM6DSV_SAMPLING_RATE_COMMAND, "GET_LSM6DSV_SAMPLING_RATE_COMMAND", LSM6DSV_SAMPLING_RATE_RESPONSE));
+	        mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+	    static {
+	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	        
+			aMap.put(SET_LN_ACCEL_CALIBRATION_COMMAND, new BtCommandDetails(SET_LN_ACCEL_CALIBRATION_COMMAND, "SET_LN_ACCEL_CALIBRATION_COMMAND"));
+	        
+	        aMap.put(SET_GYRO_CALIBRATION_COMMAND, new BtCommandDetails(SET_GYRO_CALIBRATION_COMMAND, "SET_GYRO_CALIBRATION_COMMAND"));
+	        aMap.put(SET_LSM6DSV_GYRO_RANGE_COMMAND, new BtCommandDetails(SET_LSM6DSV_GYRO_RANGE_COMMAND, "SET_LSM6DSV_GYRO_RANGE_COMMAND"));
+	        aMap.put(SET_LSM6DSV_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_LSM6DSV_SAMPLING_RATE_COMMAND, "SET_LSM6DSV_SAMPLING_RATE_COMMAND"));
+	        mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+	    }
 	//--------- Bluetooth commands end --------------
 	
 	
@@ -482,41 +492,17 @@ public class SensorLSM6DSV extends AbstractSensor{
 	}
 	
 	public CalibDetailsKinematic getCurrentCalibDetailsAccelLn(){
-		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, LN_ACCEL_RANGE_VALUE_2G);
+		CalibDetails calibPerSensor = getCalibForSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN, LN_ACCEL_RANGE_VALUE_2G);
 		if(calibPerSensor!=null){
 			return (CalibDetailsKinematic) calibPerSensor;
 		}
 		return null;
 	}
-//	
-//	/**
-//	 * Converts the Analog Accel calibration variables from Shimmer Object
-//	 * into a byte array for sending to the Shimmer.
-//	 * 
-//	 * @return the bytes array containing the Analog Accel Calibration
-//	 */
-//	public byte[] generateCalParamByteArrayAccelLn(){
-//		return getCurrentCalibDetailsAccelLn().generateCalParamByteArray();
-//	}
-
 	//--------- Sensor specific methods end --------------
 	
 	
 	
 	// Constructors for Class START ------------------------------------------
-//	public SensorLSM6DSV(SENSORS sensorType) {
-//		super(sensorType);
-//		// TODO Auto-generated constructor stub
-//	}
-//
-//	public SensorLSM6DSV(SENSORS sensorType, ShimmerVerObject svo) {
-//		super(sensorType, svo);
-//	}
-//	
-//	public SensorLSM6DSV(SENSORS sensorType, ShimmerDevice shimmerDevice) {
-//		super(sensorType, shimmerDevice);
-//	}
-	
 	public SensorLSM6DSV() {
 		super(SENSORS.LSM6DSV);
 		initialise();
@@ -533,6 +519,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	}
 	// Constructors for Class END ------------------------------------------
 
+	
 	
 	// GYRO Methods ----------------------------------------------------------
 	public int getGyroRange(){
@@ -588,8 +575,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	
 	
-	
-	
 	@Override
 	public void generateSensorMap() {
 		// TODO Auto-generated method stub
@@ -642,14 +627,25 @@ public class SensorLSM6DSV extends AbstractSensor{
 
 	@Override
 	public void generateConfigOptionsMap() {
-		// TODO Auto-generated method stub
-
+		// No Configuration Needed for Accel
+		
+		// For Gyro
+		mConfigOptionsMap.clear();
+		addConfigOption(configOptionLSM6DSVGyroRange);
+		//General Config
+		addConfigOption(configOptionLSM6DSVGyroRate);
+		addConfigOption(configOptionLSM6DSVGyroLpm);
 	}
 
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL.ordinal(), sensorGroupLnAccelLSM6DSV);
+		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.GYRO.ordinal(), new SensorGroupingDetails(
+				LABEL_SENSOR_TILE.GYRO,
+				Arrays.asList(mSensorIdGyro),
+				CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSVGyro));
+		
 		super.updateSensorGroupingMap();	
 	}
 
@@ -731,23 +727,41 @@ public class SensorLSM6DSV extends AbstractSensor{
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override
 	public void initialise() {
+		mSensorIdGyro = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO;
+
 		super.initialise();
 		
 		updateCurrentAccelLnCalibInUse();
+		setCalibSensitivityScaleFactor(mSensorIdGyro, CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
+		updateCurrentGyroCalibInUse();
 	}
 	
 	@Override
 	public void generateCalibMap() {
 		super.generateCalibMap();
 		
+		// ACCEL_LN
 		TreeMap<Integer, CalibDetails> calibMapAccelLn = new TreeMap<Integer, CalibDetails>();
 		calibMapAccelLn.put(calibDetailsAccelLn2g.mRangeValue, calibDetailsAccelLn2g);
 		
-		setCalibrationMapPerSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, calibMapAccelLn);
+		setCalibrationMapPerSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN, calibMapAccelLn);
 		
 		updateCurrentAccelLnCalibInUse();
+		
+		// GYRO
+		TreeMap<Integer, CalibDetails> calibMapGyro = new TreeMap<Integer, CalibDetails>();
+		calibMapGyro.put(calibDetailsGyro125.mRangeValue, calibDetailsGyro125);
+		calibMapGyro.put(calibDetailsGyro250.mRangeValue, calibDetailsGyro250);
+		calibMapGyro.put(calibDetailsGyro500.mRangeValue, calibDetailsGyro500);
+		calibMapGyro.put(calibDetailsGyro1000.mRangeValue, calibDetailsGyro1000);
+		calibMapGyro.put(calibDetailsGyro2000.mRangeValue, calibDetailsGyro2000);
+		calibMapGyro.put(calibDetailsGyro4000.mRangeValue, calibDetailsGyro4000);
+		
+		mCalibMap.put(mSensorIdGyro, calibMapGyro);
+		updateCurrentGyroCalibInUse();
 	}
 	//--------- Optional methods to override in Sensor Class end --------
+	
 	
 	public void updateCurrentGyroCalibInUse(){
 		mCurrentCalibDetailsGyro = getCurrentCalibDetailsIfKinematic(mSensorIdGyro, getGyroRange());
