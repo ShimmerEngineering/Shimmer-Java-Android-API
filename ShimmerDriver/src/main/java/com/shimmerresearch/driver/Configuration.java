@@ -1522,6 +1522,14 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoShimmer4 = Arrays.asList(svoShimmer4Stock);
 			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLISM3MDL = Arrays.asList(
+			svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
+			svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
+			svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
+			svoExgUnifiedNewImuSdLog, svoExgUnifiedNewImuLogAndStream,
+			svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
+			svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
+			svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
 			
 		}
 

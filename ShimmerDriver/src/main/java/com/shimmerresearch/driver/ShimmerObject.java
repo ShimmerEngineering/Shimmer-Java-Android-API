@@ -6111,9 +6111,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected CalibDetailsKinematic getCurrentCalibDetailsMag() {
 		if(isShimmerGen2()){
 			return mSensorShimmer2Mag.getCurrentCalibDetailsMag();
-		} else {
+		} else if(isShimmerGen3()) {
 			return mSensorLSM303.getCurrentCalibDetailsMag();
+		} else if(isShimmerGen3R()) {
+			return mSensorLIS3MDL.getCurrentCalibDetailsMag();
 		}
+		return null;
 	}
 	
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelLn() {
