@@ -91,8 +91,8 @@ public class SensorBMP390 extends SensorBMPX80{
 		
 		
 		//--------- Configuration options start --------------
-		public static final String[] ListofPressureResolutionBMP390 = {"Low","Standard","High","Ultra High"};
-		public static final Integer[] ListofPressureResolutionConfigValuesBMP390 = {0,1,2,3};
+		public static final String[] ListofPressureResolutionBMP390 = {"Ultra Low","Low","Standard","High","Ultra High","Highest"};
+		public static final Integer[] ListofPressureResolutionConfigValuesBMP390 = {0,1,2,3,4,5};
 
 		public static final ConfigOptionDetailsSensor configOptionPressureResolutionBMP390 = new ConfigOptionDetailsSensor(
 				SensorBMPX80.GuiLabelConfig.PRESSURE_RESOLUTION,
@@ -146,7 +146,7 @@ public class SensorBMP390 extends SensorBMPX80{
 				ObjectClusterSensorName.TEMPERATURE_BMP390,
 				ObjectClusterSensorName.TEMPERATURE_BMP390,
 				DatabaseChannelHandles.TEMPERATURE_BMP390,
-				CHANNEL_DATA_TYPE.UINT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+				CHANNEL_DATA_TYPE.UINT24, 2, CHANNEL_DATA_ENDIAN.MSB,
 				CHANNEL_UNITS.DEGREES_CELSIUS,
 				Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 		{
