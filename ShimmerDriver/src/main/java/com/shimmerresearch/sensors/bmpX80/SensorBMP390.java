@@ -39,14 +39,14 @@ public class SensorBMP390 extends SensorBMPX80{
 		/** Calibration handled on chip for Shimmer4 - might change in the future */	
 
 		private CalibDetailsBmp390 mCalibDetailsBmp390Lcl;
-		
 		public static class DatabaseChannelHandles{
 			public static final String PRESSURE_BMP390 = "BMP390_Pressure";
 			public static final String TEMPERATURE_BMP390 = "BMP390_Temperature";
 		}
 		public static final class DatabaseConfigHandle{
 			public static final String PRESSURE_PRECISION_BMP390 = "BMP390_Pressure_Precision";
-			
+			public static final String PRESSURE_RATE = "BMP390_Pres_Rate";
+
 			public static final String PAR_T1 = "BMP390_PAR_T1";
 			public static final String PAR_T2 = "BMP390_PAR_T2";
 			public static final String PAR_T3 = "BMP390_PAR_T3";
@@ -93,6 +93,8 @@ public class SensorBMP390 extends SensorBMPX80{
 		//--------- Configuration options start --------------
 		public static final String[] ListofPressureResolutionBMP390 = {"Ultra Low","Low","Standard","High","Ultra High","Highest"};
 		public static final Integer[] ListofPressureResolutionConfigValuesBMP390 = {0,1,2,3,4,5};
+		public static final String[] ListofPressureRateBMP390 = {"200.0Hz","100.0Hz","50.0Hz","25.0Hz", "12.5Hz", "6.25Hz", "3.1Hz", "1.5Hz", "0.78Hz", "0.39Hz", "0.2Hz", "0.1Hz", "0.05Hz", "0.02Hz", "0.01Hz", "0.006Hz", "0.003Hz", "0.0015Hz"};
+		public static final Integer[] ListofPressureRateConfigValuesBMP390 = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
 
 		public static final ConfigOptionDetailsSensor configOptionPressureResolutionBMP390 = new ConfigOptionDetailsSensor(
 				SensorBMPX80.GuiLabelConfig.PRESSURE_RESOLUTION,
@@ -101,6 +103,15 @@ public class SensorBMP390 extends SensorBMPX80{
 				ListofPressureResolutionConfigValuesBMP390, 
 				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 				CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP390);
+		
+		public static final ConfigOptionDetailsSensor configOptionPressureRateBMP390 = new ConfigOptionDetailsSensor(
+				SensorBMPX80.GuiLabelConfig.PRESSURE_RATE,
+				SensorBMP390.DatabaseConfigHandle.PRESSURE_RATE,
+				ListofPressureRateBMP390, 
+				ListofPressureRateConfigValuesBMP390, 
+				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+				CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP390);
+		
 		//--------- Configuration options end --------------
 
 		//--------- Sensor info start --------------
@@ -188,6 +199,7 @@ public class SensorBMP390 extends SensorBMPX80{
 	@Override
 	public void generateConfigOptionsMap() {
 		addConfigOption(configOptionPressureResolutionBMP390);		
+		addConfigOption(configOptionPressureRateBMP390);
 	}
 
 	@Override
