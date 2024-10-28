@@ -710,6 +710,9 @@ public class Configuration {
 			public static final int SHIMMER_MPU9X50_TEMP = 35;
 			public static final int SHIMMER_BMPX80_PRESSURE = 36;
 			
+			/** Shimmer3r Wide-Range Accelerometer **/
+			public static final int SHIMMER_LIS2DW12_ACCEL_WR = 39;
+			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
 			//public static final int SHIMMER_HR = 9;
