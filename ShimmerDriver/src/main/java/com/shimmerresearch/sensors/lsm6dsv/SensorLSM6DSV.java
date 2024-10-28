@@ -295,7 +295,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 	// To Be Changed
 			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 
 			GuiLabelSensors.ACCEL_LN,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSVAccel,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXTC92050,
 			null,
 			Arrays.asList(SensorLSM6DSV.ObjectClusterSensorName.ACCEL_LN_X,
 					SensorLSM6DSV.ObjectClusterSensorName.ACCEL_LN_Y,
@@ -402,7 +402,7 @@ public class SensorLSM6DSV extends AbstractSensor{
     public static final SensorGroupingDetails sensorGroupLnAccelLSM6DSV = new SensorGroupingDetails(
     		SensorLSM6DSV.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL,
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN),
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSVAccel);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXTC92050);
 	
     
     
@@ -644,7 +644,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.GYRO.ordinal(), new SensorGroupingDetails(
 				LABEL_SENSOR_TILE.GYRO,
 				Arrays.asList(mSensorIdGyro),
-				CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSVGyro));
+				CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPU9250));
 		
 		super.updateSensorGroupingMap();	
 	}

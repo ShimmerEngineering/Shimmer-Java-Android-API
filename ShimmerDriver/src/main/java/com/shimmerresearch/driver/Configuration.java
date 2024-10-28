@@ -1427,17 +1427,6 @@ public class Configuration {
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
 					svoShimmer4Stock);  
-			
-			// Added LSM6DSV Gyro
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DSVGyro = Arrays.asList(
-					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
-					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
-					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
-					svoExgUnifiedNewImuSdLog, svoExgUnifiedNewImuLogAndStream,
-					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
-					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
-					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
-					svoShimmer4Stock);  
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303AH = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
@@ -1454,16 +1443,6 @@ public class Configuration {
 					svoShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXTC92050 = Arrays.asList(
-					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
-					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
-					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
-					svoExgUnifiedNewImuSdLog, svoExgUnifiedNewImuLogAndStream,
-					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
-					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
-					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
-			
-			// Added LSM6DSV Accel
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DSVAccel = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
 					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
