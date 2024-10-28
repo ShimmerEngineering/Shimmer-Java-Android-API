@@ -157,8 +157,8 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	public static class DatabaseChannelHandles{
 		public static final String LN_ACC_X = "LSM6DSV_X";
-		public static final String LN_ACC_Y = "LSM6DSV_X";
-		public static final String LN_ACC_Z = "LSM6DSV_X";
+		public static final String LN_ACC_Y = "LSM6DSV_Y";
+		public static final String LN_ACC_Z = "LSM6DSV_Z";
 		
 		public static final String GYRO_X = "LSM6DSV_GYRO_X";
 		public static final String GYRO_Y = "LSM6DSV_GYRO_Y";
@@ -256,15 +256,13 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	
 	
-	//--------- Configuration options start --------------
-	// ACCEL_LN
-	public static final Integer[] ListofLSM6DSVAccelRangeConfigValues={0,1,2,3};  
-	public static final String[] ListofLSM6DSVGyroRate={"Power-down","1.875Hz","7.5Hz","12.0Hz","30.0Hz","60.0Hz","120.0Hz","240.0Hz","480.0Hz","960.0Hz","1920.0Hz","3840.0Hz","7680.0Hz"};
-	public static final Integer[] ListofLSM6DSVGyroRateConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13};
+	//--------- Configuration options start --------------  
 	
 	// GYRO
 	public static final String[] ListofGyroRange = {"+/- 125dps","+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps","+/- 4000dps"};
 	public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,2,3,4,5};
+	public static final String[] ListofLSM6DSVGyroRate={"Power-down","1.875Hz","7.5Hz","12.0Hz","30.0Hz","60.0Hz","120.0Hz","240.0Hz","480.0Hz","960.0Hz","1920.0Hz","3840.0Hz","7680.0Hz"};
+	public static final Integer[] ListofLSM6DSVGyroRateConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13};
 
 	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroRange = new ConfigOptionDetailsSensor(
 			SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_RANGE,
@@ -295,14 +293,14 @@ public class SensorLSM6DSV extends AbstractSensor{
 			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 	// To Be Changed
 			0x80, //== Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL will be: SensorBitmap.SENSOR_A_ACCEL, 
 			GuiLabelSensors.ACCEL_LN,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXTC92050,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSV,
 			null,
 			Arrays.asList(SensorLSM6DSV.ObjectClusterSensorName.ACCEL_LN_X,
 					SensorLSM6DSV.ObjectClusterSensorName.ACCEL_LN_Y,
 					SensorLSM6DSV.ObjectClusterSensorName.ACCEL_LN_Z));
 	
 	public static final SensorDetailsRef sensorLSM6DSVGyroRef = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.GYRO,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPU9250,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSV,
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO),
 			Arrays.asList(
 					GuiLabelConfig.LSM6DSV_GYRO_RANGE, 
@@ -402,7 +400,7 @@ public class SensorLSM6DSV extends AbstractSensor{
     public static final SensorGroupingDetails sensorGroupLnAccelLSM6DSV = new SensorGroupingDetails(
     		SensorLSM6DSV.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL,
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN),
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoKionixKXTC92050);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSV);
 	
     
     
@@ -640,11 +638,11 @@ public class SensorLSM6DSV extends AbstractSensor{
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL.ordinal(), sensorGroupLnAccelLSM6DSV);
-		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.GYRO.ordinal(), new SensorGroupingDetails(
+		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL_3R.ordinal(), sensorGroupLnAccelLSM6DSV);
+		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.GYRO_3R.ordinal(), new SensorGroupingDetails(
 				LABEL_SENSOR_TILE.GYRO,
 				Arrays.asList(mSensorIdGyro),
-				CompatibilityInfoForMaps.listOfCompatibleVersionInfoMPU9250));
+				CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSV));
 		
 		super.updateSensorGroupingMap();	
 	}

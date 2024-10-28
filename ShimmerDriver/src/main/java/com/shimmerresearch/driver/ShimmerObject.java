@@ -4977,9 +4977,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			mSensorLSM303 = new SensorLSM303AH(this);
 			addSensorClass(mSensorLSM303);
-
-			mSensorMpu9x50 = new SensorMPU9250(this);
-			addSensorClass(mSensorMpu9x50);
 			
 			mSensorLSM6DSV = new SensorLSM6DSV(this);
 			addSensorClass(mSensorLSM6DSV);
