@@ -24,6 +24,7 @@ import com.shimmerresearch.driverUtilities.ConfigOptionObject;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -40,6 +41,7 @@ public class SensorLIS3MDL extends AbstractSensor{
 	protected int mSensorIdMag = -1;
 	protected int mMagRange = 0;
 	protected int mLIS3MDLMagRate = 0;
+	public boolean mIsUsingDefaultMagParam = true;
 	protected boolean mLowPowerMag = false;
 	protected boolean mMedPowerMag = false;
 	protected boolean mHighPowerMag = false;
@@ -136,7 +138,7 @@ public class SensorLIS3MDL extends AbstractSensor{
 	
 	public static final String[] ListofLIS3MDLMagRateLp={"0.625Hz","1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","1000Hz"};
 	public static final String[] ListofLIS3MDLMagRateMp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","560Hz"};
-	public static final String[] ListofLIS3MDLMagRateHp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","200Hz"};
+	public static final String[] ListofLIS3MDLMagRateHp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","300Hz"};
 	public static final String[] ListofLIS3MDLMagRateUp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","155Hz"};
 	public static final Integer[] ListofLIS3MDLMagRateLpConfigValues = {0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x01};
 	public static final Integer[] ListofLIS3MDLMagRateMpConfigValues = {0x12, 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x11};
@@ -153,14 +155,6 @@ public class SensorLIS3MDL extends AbstractSensor{
 			ListofLIS3MDLMagRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL);
-	
-//	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
-//			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_RATE,
-//			SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE,
-//			ListofLIS3MDLMagRateMp, 
-//			ListofLIS3MDLMagRateMpConfigValues, 
-//			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-//			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL);
 	
 	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
 			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_RATE,
@@ -303,91 +297,6 @@ public class SensorLIS3MDL extends AbstractSensor{
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
 		// 		Object returnValue = null;
 		ActionSetting actionsetting = new ActionSetting(commType);
-		
-//		 switch(componentName){
-//			case(Configuration.Shimmer3.GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
-//				mAccelRange = ((int)valueToSet);
-//				//
-//			if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
-//				actionsetting.mActionByteArray = new byte[]{ShimmerObject.SET_ACCEL_SENSITIVITY_COMMAND, (byte)mAccelRange};
-//				return actionsetting;
-//			} else if (mFirmwareType==FW_ID.SDLOG){
-//				//compatiblity check and instruction generation
-//			}
-//        	break;
-		
-//		public static final byte SET_ACCEL_SENSITIVITY_COMMAND    		= (byte) 0x09;
-//		public static final byte SET_MAG_CALIBRATION_COMMAND      		= (byte) 0x17;		
-//		public static final byte SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND = (byte) 0x1A;
-//		public static final byte SET_MAG_GAIN_COMMAND             		= (byte) 0x37;	
-//		public static final byte SET_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3A;		
-//		public static final byte SET_ACCEL_SAMPLING_RATE_COMMAND  		= (byte) 0x40;	
-//		public static final byte SET_LSM303DLHC_ACCEL_LPMODE_COMMAND 	= (byte) 0x43;	
-//		public static final byte SET_LSM303DLHC_ACCEL_HRMODE_COMMAND	= (byte) 0x46;
-//		public boolean mLowPowerAccelWR = false;
-//		public boolean mHighResAccelWR = false;
-//		
-//		public int mAccelRange = 0;
-//		public int mLSM303DigitalAccelRate = 0;
-//		public int mMagRange = 1;
-//		public int mLSM303MagRate = 4;
-		
-		//Might be used like this - RS 
-//		switch(componentName){
-//			case(GuiLabelConfig.LSM303DLHC_ACCEL_RANGE):
-//				mAccelRange = ((int)valueToSet);
-//				if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
-//					actionsetting.mActionByteArray = new byte[]{SET_ACCEL_SENSITIVITY_COMMAND, (byte)mAccelRange};
-//					return actionsetting;
-//				} else if (mFirmwareType==FW_ID.SDLOG){
-//					//compatiblity check and instruction generation
-//				}
-//				break;
-//			case(GuiLabelConfig.LSM303DLHC_MAG_RANGE):
-//				mMagRange = ((int)valueToSet);
-//				if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
-//					actionsetting.mActionByteArray = new byte[]{SET_MAG_GAIN_COMMAND, (byte)mMagRange};
-//					return actionsetting;
-//				} else if (mFirmwareType==FW_ID.SDLOG){
-//					//compatiblity check and instruction generation
-//				}
-//				break;
-//			case(GuiLabelConfig.LSM303DLHC_ACCEL_RATE):
-//				mLSM303DigitalAccelRate = ((int)valueToSet);
-//				if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
-//					actionsetting.mActionByteArray = new byte[]{SET_ACCEL_SAMPLING_RATE_COMMAND, (byte)mLSM303DigitalAccelRate};
-//					return actionsetting;
-//				} else if (mFirmwareType==FW_ID.SDLOG){
-//					//compatiblity check and instruction generation
-//				}
-//				break;
-//			case(GuiLabelConfig.LSM303DLHC_MAG_RATE):
-//				mLSM303MagRate = ((int)valueToSet);
-//				if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
-//					actionsetting.mActionByteArray = new byte[]{SET_MAG_SAMPLING_RATE_COMMAND, (byte)mLSM303MagRate};
-//					return actionsetting;
-//				} else if (mFirmwareType==FW_ID.SDLOG){
-//					//compatiblity check and instruction generation
-//				}
-//				break;
-//			case(GuiLabelConfig.LSM303DLHC_ACCEL_LPM):
-//				mLowPowerAccelWR = ((boolean)valueToSet);
-//			if(mFirmwareType==FW_ID.BTSTREAM||mFirmwareType==FW_ID.LOGANDSTREAM){ //mcommtype
-//				actionsetting.mActionByteArray = new byte[]{SET_MAG_SAMPLING_RATE_COMMAND, (byte)mLowPowerAccelWR};
-//				return actionsetting;
-//			} else if (mFirmwareType==FW_ID.SDLOG){
-//				//compatiblity check and instruction generation
-//			}
-//			break;
-//			case(GuiLabelConfig.LSM303DLHC_MAG_LPM):
-//				
-//				
-//			//TODO Above: Do LPM for Accel and Mag as is done in ShimmerObject. Below: Should these settings to be included in here as well? 
-//			/*
-//			case(GuiLabelConfig.LSM303DLHC_ACCEL_DEFAULT_CALIB):
-//			case(GuiLabelConfig.LSM303DLHC_MAG_DEFAULT_CALIB):
-//			*/
-//		}
 		
 		return actionsetting;
 		
@@ -749,6 +658,34 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	
 	public boolean isUltraHighPowerMagEnabled(){
 		return mUltraHighPowerMag;
+	}
+	
+	public double getCalibTimeMag() {
+		return mCurrentCalibDetailsMag.getCalibTimeMs();
+	}
+	
+	public boolean isUsingValidMagParam() {
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixMag()) && !UtilShimmer.isAllZeros(getSensitivityMatrixMag())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public double[][] getAlignmentMatrixMag(){
+		return getCurrentCalibDetailsMag().getValidAlignmentMatrix();
+	}
+
+	public double[][] getSensitivityMatrixMag(){
+		return getCurrentCalibDetailsMag().getValidSensitivityMatrix();
+	}
+	
+	public double[][] getOffsetVectorMatrixMag(){
+		return getCurrentCalibDetailsMag().getValidOffsetVector();
+	}
+	
+	public void updateIsUsingDefaultMagParam() {
+		mIsUsingDefaultMagParam = getCurrentCalibDetailsMag().isUsingDefaultParameters();
 	}
 	
 	public int setLIS3MDLMagRateFromFreq(double freq) {
