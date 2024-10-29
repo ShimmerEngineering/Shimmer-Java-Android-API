@@ -53,6 +53,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	//--------- Sensor specific variables start --------------
 
 	// LN ACCEL
+	public boolean mIsUsingDefaultLNAccelParam = true;
 	public static final double[][] AlignmentMatrixLowNoiseAccelShimmer3r = {{-1,0,0},{0,1,0},{0,0,-1}};
 	public static final double[][] OffsetVectorLowNoiseAccelShimmer3r = {{0},{0},{0}}; 
 	
@@ -91,6 +92,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn16g = calibDetailsAccelLn16g;
 	
 	// GYRO
+	public boolean mIsUsingDefaultGyroParam = true;
 	private int mGyroRange = 1;	
 	protected int mLSM6DSVGyroAccelRate=0;
 	protected int mSensorIdGyro = -1;
@@ -528,12 +530,12 @@ public class SensorLSM6DSV extends AbstractSensor{
 		return mLSM6DSVGyroAccelRate;
 	}
 	
-	public CalibDetailsKinematic getCurrentCalibDetailsGyro(){
-		return mCurrentCalibDetailsGyro;
-	}
-	
 	public void setLSM6DSVGyroAccelRate(int rate) {
 		mLSM6DSVGyroAccelRate = rate;
+	}
+	
+	public CalibDetailsKinematic getCurrentCalibDetailsGyro(){
+		return mCurrentCalibDetailsGyro;
 	}
 	
 	public void setGyroRange(int gyroRange){
@@ -760,6 +762,13 @@ public class SensorLSM6DSV extends AbstractSensor{
 	}
 	//--------- Optional methods to override in Sensor Class end --------
 	
+	public void updateIsUsingDefaultLNAccelParam() {
+		mIsUsingDefaultLNAccelParam = getCurrentCalibDetailsAccelLn().isUsingDefaultParameters();
+	}
+	
+	public void updateIsUsingDefaultGyroParam() {
+		mIsUsingDefaultGyroParam = getCurrentCalibDetailsGyro().isUsingDefaultParameters();
+	}
 	
 	public void updateCurrentGyroCalibInUse(){
 		mCurrentCalibDetailsGyro = getCurrentCalibDetailsIfKinematic(mSensorIdGyro, getGyroRange());
