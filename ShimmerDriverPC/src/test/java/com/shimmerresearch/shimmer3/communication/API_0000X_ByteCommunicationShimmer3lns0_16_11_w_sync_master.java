@@ -84,6 +84,10 @@ public class API_0000X_ByteCommunicationShimmer3lns0_16_11_w_sync_master extends
     		assert(false);
     	}
     	
+    	if (mDevice.getTrialDurationEstimatedInSecs()!=5) {
+    		assert(false);
+    	}
+    	
     	for (String s:mDevice.getSyncNodesList()) {
     		System.out.println("Node List: " + s);
     	}
