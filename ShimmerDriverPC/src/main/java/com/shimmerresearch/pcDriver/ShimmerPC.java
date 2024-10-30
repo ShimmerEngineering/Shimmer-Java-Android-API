@@ -637,6 +637,9 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	}
 	
 	public void setSerialPort(SerialPort sp){
+		if (mByteCommunication == null) {
+			mByteCommunication = new ByteCommunicationJSSC(sp);
+		}
 		if(mByteCommunication instanceof ByteCommunicationJSSC) {
 			((ByteCommunicationJSSC)mByteCommunication).setSerialPort(sp);
 			getSamplingRateShimmer();
