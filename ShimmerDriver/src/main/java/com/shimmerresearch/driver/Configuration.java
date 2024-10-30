@@ -83,6 +83,7 @@ import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
 import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
+import com.shimmerresearch.sensors.lis3mdl.SensorLISXMDL;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
@@ -722,6 +723,7 @@ public class Configuration {
 			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
 			
 			public static final int SHIMMER_LIS3MDL_MAG = 41;
+			public static final int SHIMMER_LIS2MDL_MAG = 42;
 			
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_6DOF = 50;
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_9DOF = 51;
@@ -893,6 +895,7 @@ public class Configuration {
 			WIDE_RANGE_ACCEL(SensorLSM303.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL),
 			GYRO(SensorMPU9X50.LABEL_SENSOR_TILE.GYRO),
 			MAG(SensorLSM303.LABEL_SENSOR_TILE.MAG),
+			WIDE_RANGE_MAG(SensorLISXMDL.LABEL_SENSOR_TILE.WIDE_RANGE_MAG),
 			PRESSURE_TEMPERATURE_BMP180(SensorBMP180.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			BATTERY_MONITORING(SensorBattVoltage.LABEL_SENSOR_TILE.BATTERY_MONITORING),
@@ -1441,6 +1444,16 @@ public class Configuration {
 			
 			//Shimmer3r Mag
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLISM3MDL = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r WR Mag
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2MDL = Arrays.asList(
 					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoShimmer3RNewImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedNewImuLogAndStream,
