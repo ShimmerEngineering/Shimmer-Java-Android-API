@@ -97,6 +97,10 @@ public class SensorLSM6DSV extends AbstractSensor{
 	protected int mLSM6DSVGyroAccelRate=0;
 	protected int mSensorIdGyro = -1;
 	
+	protected boolean mLowPowerGyro = false;
+	private boolean debugGyroRate = false;
+	protected int mLSM6DSVLPF = 0;
+	
 	public static final double[][] AlignmentMatrixGyroShimmer3r = {{-1,0,0},{0,1,0},{0,0,-1}}; 				
 	public static final double[][] OffsetVectorGyroShimmer3r = {{0},{0},{0}};	
 	public static final double[][] SensitivityMatrixGyro125dpsShimmer3r = {{229,0,0},{0,229,0},{0,0,229}};
@@ -570,6 +574,121 @@ public class SensorLSM6DSV extends AbstractSensor{
 			}
 		}
 		return false;
+	}
+	
+	public boolean checkIfAMpuGyroOrAccelEnabled(){
+		if(isSensorEnabled(mSensorIdGyro)) {
+			return true;
+		}
+//		if(isSensorEnabled(mSensorIdAccel)) {
+//			return true;
+//		}
+//		if(mSensorMap.get(SENSOR_ID.SHIMMER_MPU9150_MAG) != null) {
+//			if(mSensorMap.get(SENSOR_ID.SHIMMER_MPU9150_MAG).mIsEnabled) {
+//				return true;
+//			}
+//		}
+		return false;
+	}
+	
+	/**
+	 * Computes next higher available sensor sampling rate setting based on
+	 * passed in "freq" variable and dependent on whether low-power mode is set.
+	 * 
+	 * @param freq
+	 * @return int the rate configuration setting for the respective sensor
+	 */
+	public int setLSM6DSVGyroAccelRateFromFreq(double freq) {
+		if(debugGyroRate && mShimmerDevice!=null){
+			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\t" + freq);
+		}
+		
+		boolean setFreq = false;
+		// Check if channel is enabled 
+		if(checkIfAnyMplChannelEnabled()){
+			setFreq = true;
+		}
+		else if(checkIfAMpuGyroOrAccelEnabled()){
+			setFreq = true;
+		}
+		
+		if(setFreq){
+			// Gyroscope Output Rate = 8kHz when the DLPF (Digital Low-pass filter) is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
+			double numerator = 1000;
+			if(mLSM6DSVLPF == 0) {
+				numerator = 8000;
+			}
+	
+			if (!mLowPowerGyro){
+				if(freq<4) {
+					freq = 4;
+				}
+				else if(freq>numerator) {
+					freq = numerator;
+				}
+				int result = (int) Math.floor(((numerator / freq) - 1));
+				if(result>255) {
+					result = 255;
+				}
+				setLSM6DSVGyroAccelRate(result);
+	
+			}
+			else {
+				setLSM6DSVGyroAccelRate(0xFF); // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
+			}
+		}
+		else {
+			setLSM6DSVGyroAccelRate(0xFF); // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
+		}
+		return getLSM6DSVGyroAccelRate();			
+	}
+	
+	/**
+	 * This enables the low-power gyro option. When not enabled the sampling
+	 * rate of the gyro is set to the closest supported value to the actual
+	 * sampling rate that it can achieve. 
+	 * 
+	 * @param enable
+	 */
+	public void setLowPowerGyro(boolean enable){
+		if(!checkIfAnyMplChannelEnabled()) {
+			mLowPowerGyro = enable;
+		}
+		else{
+			mLowPowerGyro = false;
+		}
+		
+		if(debugGyroRate && mShimmerDevice!=null){
+			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tsetLowPowerGyro\t" + mShimmerDevice.getSamplingRateShimmer());
+		}
+		if(mShimmerDevice!=null){
+			setLSM6DSVGyroAccelRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	/**
+	 * Checks to see if the MPU9150 gyro is in low power mode. As determined by
+	 * the sensor's sampling rate being set to the lowest possible value and not
+	 * related to any specific configuration bytes sent to the Shimmer/MPU9150.
+	 * 
+	 * @return boolean, true if low-power mode enabled
+	 */
+	public boolean checkLowPowerGyro() {
+		if(mLSM6DSVGyroAccelRate == 0xFF) {
+			mLowPowerGyro = true;
+		}
+		else {
+			mLowPowerGyro = false;
+		}
+		return mLowPowerGyro;
+	}
+	
+	public int getLowPowerGyroEnabled() {
+		return mLowPowerGyro? 1:0;
+	}
+	
+	public boolean isLowPowerGyroEnabled() {
+		return mLowPowerGyro;
 	}
 	// GYRO Methods end ------------------------------------------------------
 	

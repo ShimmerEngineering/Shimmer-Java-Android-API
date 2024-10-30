@@ -651,7 +651,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// Shimmer3 - Pressure/Temperature 
 	private SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
 	
-	// Shimmer3r - Accel LN
+	// Shimmer3r - Accel LN & Gyro
 	private SensorLSM6DSV mSensorLSM6DSV = new SensorLSM6DSV(this);
 	
 	// ----------  ECG/EMG start ---------------
@@ -8637,7 +8637,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 
 	public boolean isLowPowerGyroEnabled() {
-		return mSensorMpu9x50.isLowPowerGyroEnabled();
+		if (isShimmerGen3()) {
+			return mSensorMpu9x50.isLowPowerGyroEnabled();
+		}
+		else if (isShimmerGen3R()) {
+			return mSensorLSM6DSV.isLowPowerGyroEnabled();
+		}
+		return (Boolean) null;
 	}
 	
 	public boolean isUsingDefaultGyroParam(){
@@ -8667,6 +8673,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else if(mShimmerVerObject.isShimmerGen3()){
 			mSensorMpu9x50.setLowPowerGyro(enable);
 		}
+		else if(mShimmerVerObject.isShimmerGen3R()) {
+			mSensorLSM6DSV.setLowPowerGyro(enable);
+		}
 	}
 	
 	/**
@@ -8683,6 +8692,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		else if(mShimmerVerObject.isShimmerGen3()){
 			return mSensorMpu9x50.checkLowPowerGyro();
 		}
+		else if (mShimmerVerObject.isShimmerGen3R()) {
+			return mSensorLSM6DSV.checkLowPowerGyro();
+		}
 		return false;
 	}
 
@@ -8692,6 +8704,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		else if(mShimmerVerObject.isShimmerGen3()){
 			return mSensorMpu9x50.getLowPowerGyroEnabled();
+		}
+		else if (mShimmerVerObject.isShimmerGen3R()) {
+			return mSensorLSM6DSV.getLowPowerGyroEnabled();
 		}
 		return 0;
 	}
