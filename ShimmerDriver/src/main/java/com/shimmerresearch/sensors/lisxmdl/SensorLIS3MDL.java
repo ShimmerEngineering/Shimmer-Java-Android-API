@@ -15,38 +15,25 @@ import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMap
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.ConfigOptionObject;
-import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
-import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 
-public class SensorLIS3MDL extends AbstractSensor{
+public class SensorLIS3MDL extends SensorLISXMDL{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2366590050010873738L;
-	
-	protected int mSensorIdMag = -1;
-	protected int mMagRange = 0;
-	protected int mLIS3MDLMagRate = 0;
-	public boolean mIsUsingDefaultMagParam = true;
-	protected boolean mLowPowerMag = false;
-	protected boolean mMedPowerMag = false;
-	protected boolean mHighPowerMag = false;
-	protected boolean mUltraHighPowerMag = false;
-	public CalibDetailsKinematic mCurrentCalibDetailsMag = null;
 	
 	//--------- Sensor specific variables start --------------	
 	
@@ -149,7 +136,7 @@ public class SensorLIS3MDL extends AbstractSensor{
 	public static final Integer[] ListofLIS3MDLMagRangeConfigValues={0,1,2,3};
 
 	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
-			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_RANGE,
+			SensorLIS3MDL.GuiLabelConfig.LISXMDL_MAG_RANGE,
 			SensorLIS3MDL.DatabaseConfigHandle.MAG_RANGE,
 			ListofLIS3MDLMagRange, 
 			ListofLIS3MDLMagRangeConfigValues, 
@@ -157,7 +144,7 @@ public class SensorLIS3MDL extends AbstractSensor{
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL);
 	
 	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
-			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_RATE,
+			SensorLIS3MDL.GuiLabelConfig.LISXMDL_MAG_RATE,
 			SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE,
 			ListofLIS3MDLMagRateLp, 
 			ListofLIS3MDLMagRateLpConfigValues,
@@ -184,8 +171,8 @@ public class SensorLIS3MDL extends AbstractSensor{
 			0x20, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
 			GuiLabelSensors.MAG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL,
-			Arrays.asList(GuiLabelConfig.LIS3MDL_MAG_RANGE,
-					GuiLabelConfig.LIS3MDL_MAG_RATE),
+			Arrays.asList(GuiLabelConfig.LISXMDL_MAG_RANGE,
+					GuiLabelConfig.LISXMDL_MAG_RATE),
 			//MAG channel parsing order is XZY instead of XYZ but it would be better to represent it on the GUI in XYZ
 			Arrays.asList(ObjectClusterSensorName.MAG_X,
 					ObjectClusterSensorName.MAG_Y,
@@ -248,17 +235,17 @@ public class SensorLIS3MDL extends AbstractSensor{
   //--------- Constructors for this class start --------------
     
 	public SensorLIS3MDL() {
-		super(SENSORS.LIS3MDL);
+		super();
 		initialise();
 	}
 	
 	public SensorLIS3MDL(ShimmerObject obj) {
-		super(SENSORS.LIS3MDL, obj);
+		super(obj);
 		initialise();
 	}
 	
 	public SensorLIS3MDL(ShimmerDevice shimmerDevice) {
-		super(SENSORS.LIS3MDL, shimmerDevice);
+		super(shimmerDevice);
 		initialise();
 	}
     
@@ -542,213 +529,13 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
 		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
 	}
+
+	@Override
+	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	//--------- Sensor specific methods end --------------
-	
-	public class GuiLabelSensors{
-		public static final String MAG = "Magnetometer"; 
-	}
-	
-	public class LABEL_SENSOR_TILE{
-		public static final String MAG = GuiLabelSensors.MAG;
-	}
-	
-	public class GuiLabelConfig{
-		public static final String LIS3MDL_MAG_RANGE = "Mag Range";
-		public static final String LIS3MDL_MAG_RATE = "Mag Rate";
-	}
-	   
-	public static class ObjectClusterSensorName{
-		public static  String MAG_X = "Mag_X";
-		public static  String MAG_Y = "Mag_Y";
-		public static  String MAG_Z = "Mag_Z";		
-	}
-
-	@Override
-	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public boolean isUsingDefaultMagParam(){
-		return getCurrentCalibDetailsMag().isUsingDefaultParameters(); 
-	}
-	
-	public CalibDetailsKinematic getCurrentCalibDetailsMag(){
-//		return getCurrentCalibDetails(mSensorIdMag, getMagRange());
-		if(mCurrentCalibDetailsMag==null){
-			updateCurrentMagCalibInUse();
-		}
-		return mCurrentCalibDetailsMag;
-	}
-	
-	public void updateCurrentMagCalibInUse(){
-//		mCurrentCalibDetailsMag = getCurrentCalibDetailsMag();
-		mCurrentCalibDetailsMag = getCurrentCalibDetailsIfKinematic(mSensorIdMag, getMagRange());
-	}
-	
-	public int getMagRange() {
-		return mMagRange;
-	}
-	
-	public int getLowPowerMagEnabled(){
-		return (isLowPowerMagEnabled()? 1:0);
-	}
-	
-	public int getMedPowerMagEnabled(){
-		return (isMedPowerMagEnabled()? 1:0);
-	}
-	
-	public int getHighPowerMagEnabled(){
-		return (isHighPowerMagEnabled()? 1:0);
-	}
-	
-	public int getUltraHighPowerMagEnabled(){
-		return (isUltraHighPowerMagEnabled()? 1:0);
-	}
-	
-	
-	public void setLIS3MDLMagRate(int valueToSet){
-		mLIS3MDLMagRate = valueToSet;
-	}
-	
-	public int getLIS3MDLMagRate() {
-		return mLIS3MDLMagRate;
-	}
-	
-	public void	setLowPowerMag(boolean enable){
-		mLowPowerMag = enable;
-		if(mShimmerDevice!=null){
-			setLIS3MDLMagRateFromFreq(getSamplingRateShimmer());
-		}
-	}
-	
-	public void	setMedPowerMag(boolean enable){
-		mMedPowerMag = enable;
-		if(mShimmerDevice!=null){
-			setLIS3MDLMagRateFromFreq(getSamplingRateShimmer());
-		}
-	}
-	
-	public void	setHighPowerMag(boolean enable){
-		mHighPowerMag = enable;
-		if(mShimmerDevice!=null){
-			setLIS3MDLMagRateFromFreq(getSamplingRateShimmer());
-		}
-	}
-	
-	public void	setUltraHighPowerMag(boolean enable){
-		mUltraHighPowerMag = enable;
-		if(mShimmerDevice!=null){
-			setLIS3MDLMagRateFromFreq(getSamplingRateShimmer());
-		}
-	}
-
-	public boolean isLowPowerMagEnabled(){
-		return mLowPowerMag;
-	}
-	
-	public boolean isMedPowerMagEnabled(){
-		return mMedPowerMag;
-	}
-	
-	public boolean isHighPowerMagEnabled(){
-		return mHighPowerMag;
-	}
-	
-	public boolean isUltraHighPowerMagEnabled(){
-		return mUltraHighPowerMag;
-	}
-	
-	public double getCalibTimeMag() {
-		return mCurrentCalibDetailsMag.getCalibTimeMs();
-	}
-	
-	public boolean isUsingValidMagParam() {
-		if(!UtilShimmer.isAllZeros(getAlignmentMatrixMag()) && !UtilShimmer.isAllZeros(getSensitivityMatrixMag())){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
-	public double[][] getAlignmentMatrixMag(){
-		return getCurrentCalibDetailsMag().getValidAlignmentMatrix();
-	}
-
-	public double[][] getSensitivityMatrixMag(){
-		return getCurrentCalibDetailsMag().getValidSensitivityMatrix();
-	}
-	
-	public double[][] getOffsetVectorMatrixMag(){
-		return getCurrentCalibDetailsMag().getValidOffsetVector();
-	}
-	
-	public void updateIsUsingDefaultMagParam() {
-		mIsUsingDefaultMagParam = getCurrentCalibDetailsMag().isUsingDefaultParameters();
-	}
-	
-	public int setLIS3MDLMagRateFromFreq(double freq) {
-		boolean isEnabled = isSensorEnabled(mSensorIdMag);
-		if(isLowPowerMagEnabled()) {
-			mLIS3MDLMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 0);
-		} else if(isMedPowerMagEnabled()) {
-			mLIS3MDLMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 1);
-		} else if(isHighPowerMagEnabled()) {
-			mLIS3MDLMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 2);
-		} else if(isUltraHighPowerMagEnabled()) {
-			mLIS3MDLMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 3);
-		}
-		return mLIS3MDLMagRate;
-	}
-	
-	@Override
-	public void checkShimmerConfigBeforeConfiguring() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setSensorSamplingRate(double samplingRateHz) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
 
 }

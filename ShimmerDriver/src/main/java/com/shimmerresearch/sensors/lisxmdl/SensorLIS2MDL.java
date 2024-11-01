@@ -31,8 +31,6 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 	 * 
 	 */
 	private static final long serialVersionUID = 4028368641088628178L;
-	
-	protected int mSensorIdMag = -1;
 
 	//--------- Sensor specific variables start --------------	
 	
@@ -326,6 +324,12 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 
 	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
 		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
+	}
+
+	@Override
+	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq, int mode) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	//--------- Sensor specific methods end --------------
