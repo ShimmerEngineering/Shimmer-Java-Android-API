@@ -76,6 +76,7 @@ import com.shimmerresearch.sensors.bmpX80.SensorBMPX80;
 import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXTC92050;
+import com.shimmerresearch.sensors.lis2dw12.SensorLIS2DW12;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303AH;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
@@ -650,6 +651,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// Shimmer3 - Pressure/Temperature 
 	private SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
 	
+	// Shimmer3R - WR Accel
+	private SensorLIS2DW12 mSensorLIS2DW12 = new SensorLIS2DW12(this);
+	
 	// ----------  ECG/EMG start ---------------
 	protected double OffsetECGRALL=2060;
 	protected double GainECGRALL=175;
@@ -1011,9 +1015,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedData[iAccelY]=accelCalibratedData[1];
 					calibratedData[iAccelZ]=accelCalibratedData[2];
 					
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.ACCEL_CAL_UNIT,calibratedData[iAccelX],mSensorLSM303.isUsingDefaultWRAccelParam());
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.ACCEL_CAL_UNIT,calibratedData[iAccelY],mSensorLSM303.isUsingDefaultWRAccelParam());
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.ACCEL_CAL_UNIT,calibratedData[iAccelZ],mSensorLSM303.isUsingDefaultWRAccelParam());
+					if (isShimmerGen3R()) {
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.ACCEL_CAL_UNIT,calibratedData[iAccelX],mSensorLIS2DW12.isUsingDefaultWRAccelParam());
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.ACCEL_CAL_UNIT,calibratedData[iAccelY],mSensorLIS2DW12.isUsingDefaultWRAccelParam());
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.ACCEL_CAL_UNIT,calibratedData[iAccelZ],mSensorLIS2DW12.isUsingDefaultWRAccelParam());
+					}
+					else if (isShimmerGen3()) {
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ACCEL_WR_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.ACCEL_CAL_UNIT,calibratedData[iAccelX],mSensorLSM303.isUsingDefaultWRAccelParam());
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ACCEL_WR_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.ACCEL_CAL_UNIT,calibratedData[iAccelY],mSensorLSM303.isUsingDefaultWRAccelParam());
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ACCEL_WR_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.ACCEL_CAL_UNIT,calibratedData[iAccelZ],mSensorLSM303.isUsingDefaultWRAccelParam());
+					}
+
 					calibratedDataUnits[iAccelX]=CHANNEL_UNITS.ACCEL_CAL_UNIT;
 					calibratedDataUnits[iAccelY]=CHANNEL_UNITS.ACCEL_CAL_UNIT;
 					calibratedDataUnits[iAccelZ]=CHANNEL_UNITS.ACCEL_CAL_UNIT;
@@ -4971,6 +4983,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			
 			mSensorLSM303 = new SensorLSM303AH(this);
 			addSensorClass(mSensorLSM303);
+			
+			mSensorLIS2DW12 = new SensorLIS2DW12(this);
+			addSensorClass(mSensorLIS2DW12);
 
 			mSensorKionixAccel = new SensorKionixKXTC92050(this);
 			addSensorClass(mSensorKionixAccel);
@@ -6099,7 +6114,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelWr() {
-		return mSensorLSM303.getCurrentCalibDetailsAccelWr();
+		if (isShimmerGen3()) {
+			return mSensorLSM303.getCurrentCalibDetailsAccelWr();
+		}
+		else if (isShimmerGen3R()) {
+			return mSensorLIS2DW12.getCurrentCalibDetailsAccelWr();
+		}
+		return null;
 	}
 
 	protected CalibDetailsKinematic getCurrentCalibDetailsMag() {
@@ -9925,6 +9946,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensorLSM303.updateIsUsingDefaultWRAccelParam();
 			mSensorLSM303.updateIsUsingDefaultMagParam();
 			mSensorMpu9x50.updateIsUsingDefaultGyroParam();
+		} else if(isShimmerGen3R()) {
+			mSensorLIS2DW12.updateIsUsingDefaultWRAccelParam();
 		}
 	}
 	

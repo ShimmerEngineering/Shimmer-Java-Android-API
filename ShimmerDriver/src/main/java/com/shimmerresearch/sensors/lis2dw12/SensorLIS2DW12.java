@@ -43,6 +43,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	protected int mSensorIdAccel = -1;
 	protected int mAccelRange = 0;
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelWr = null;
+	public boolean mIsUsingDefaultWRAccelParam = true;
 	
 	public class GuiLabelConfig{
 		public static final String LIS2DW12_ACCEL_RANGE = "Wide Range Accel Range"; 
@@ -440,5 +441,18 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	public int getAccelRange() {
 		return mAccelRange;
 	}
+	
+	public boolean isUsingDefaultWRAccelParam(){
+		return mCurrentCalibDetailsAccelWr.isUsingDefaultParameters(); 
+	}
+	
+	public CalibDetailsKinematic getCurrentCalibDetailsAccelWr(){
+		return mCurrentCalibDetailsAccelWr;
+	}
+	
+	public void updateIsUsingDefaultWRAccelParam() {
+		mIsUsingDefaultWRAccelParam = getCurrentCalibDetailsAccelWr().isUsingDefaultParameters();
+	}
 	//--------- Sensor specific methods end --------------
+	
 }
