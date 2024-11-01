@@ -1,4 +1,4 @@
-package com.shimmerresearch.sensors.lis3mdl;
+package com.shimmerresearch.sensors.lisxmdl;
 
 import java.util.LinkedHashMap;
 
