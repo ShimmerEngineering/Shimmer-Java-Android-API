@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
@@ -44,6 +46,11 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	protected int mAccelRange = 0;
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelWr = null;
 	public boolean mIsUsingDefaultWRAccelParam = true;
+	protected boolean mHighResAccelWR = true;
+	
+	protected boolean mHighPerModeAccelWR = true;
+	protected boolean mLowPowerAccelWR = false;
+	protected int mLIS2DW12DigitalAccelRate = 0;
 	
 	public class GuiLabelConfig{
 		public static final String LIS2DW12_ACCEL_RANGE = "Wide Range Accel Range"; 
@@ -452,6 +459,177 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	
 	public void updateIsUsingDefaultWRAccelParam() {
 		mIsUsingDefaultWRAccelParam = getCurrentCalibDetailsAccelWr().isUsingDefaultParameters();
+	}
+	
+	public void setHighPerModeAccelWR(boolean enable) {
+		mHighPerModeAccelWR = enable;
+	}
+	
+	public void setHighPerModeAccelWR(int i){
+		mHighPerModeAccelWR = (i>0)? true:false;
+	}
+	
+	public int getHighPerModeAccelWREnabled(){
+		return (mHighPerModeAccelWR? 1:0);
+	}
+	
+	public void setLowPowerAccelWR(boolean enable){
+		mLowPowerAccelWR = enable;
+		mHighPerModeAccelWR = !enable;
+		if(mShimmerDevice!=null){
+			setLIS2DW12AccelRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	public int setLIS2DW12AccelRateFromFreq(double freq) {
+		boolean isEnabled = isSensorEnabled(mSensorIdAccel);
+//		System.out.println("Setting Sampling Rate: " + freq + "\tmLowPowerAccelWR:" + mLowPowerAccelWR);
+		setLIS2DW12DigitalAccelRateInternal(getAccelRateFromFreqForSensor(isEnabled, freq, mLowPowerAccelWR));
+		return mLIS2DW12DigitalAccelRate;
+	}
+	
+	public void setLIS2DW12DigitalAccelRateInternal(int valueToSet) {
+		//System.out.println("Accel Rate:\t" + valueToSet);
+		//UtilShimmer.consolePrintCurrentStackTrace();
+		mLIS2DW12DigitalAccelRate = valueToSet;
+	}
+	
+	public int getAccelRateFromFreqForSensor(boolean isEnabled, double freq, boolean isLowPowerMode) {
+		return SensorLIS2DW12.getAccelRateFromFreq(isEnabled, freq, isLowPowerMode);
+	}
+	
+	public static int getAccelRateFromFreq(boolean isEnabled, double freq, boolean isLowPowerMode) {
+		int accelRate = 0; // Power down
+		
+		if(isEnabled){
+			if(isLowPowerMode){
+				if (freq<1.6){
+					accelRate = 1; // 1.6Hz
+				} else if (freq<12.5){
+					accelRate = 2; // 12.5Hz
+				} else if (freq<25){
+					accelRate = 3; // 25Hz
+				} else if (freq<50){
+					accelRate = 4; // 50Hz
+				} else if (freq<100){
+					accelRate = 5; // 100Hz
+				} else if (freq<200){
+					accelRate = 6; // 200Hz
+				}
+				
+			} else {
+				if (freq<12.5){
+					accelRate = 2; // 12.5Hz
+				} else if (freq<25){
+					accelRate = 3; // 25Hz
+				} else if (freq<50){
+					accelRate = 4; // 50Hz
+				} else if (freq<100){
+					accelRate = 5; // 100Hz
+				} else if (freq<200){
+					accelRate = 6; // 200Hz
+				} else if (freq<400){
+					accelRate = 7; // 400Hz
+				} else if (freq<800){
+					accelRate = 8; // 800Hz
+				} else if (freq<1600){
+					accelRate = 9; // 1600Hz
+				} 
+			}
+		}
+		return accelRate;
+	}
+	
+	public void setLIS2DW12AccelRange(int valueToSet){
+		if(ArrayUtils.contains(ListofLIS2DW12AccelRangeConfigValues, valueToSet)){
+			mAccelRange = valueToSet;
+			updateCurrentAccelWrCalibInUse();
+		}
+	}
+	
+	public void setLIS2DW12DigitalAccelRate(int valueToSet) {
+		setLIS2DW12DigitalAccelRateInternal(valueToSet);
+		if(mLowPowerAccelWR){
+			for(Integer i:SensorLIS2DW12.ListofLIS2DW12AccelRateLpmConfigValues){
+				if(i==valueToSet){
+					return;
+				}
+			}
+			setLIS2DW12DigitalAccelRateInternal(SensorLIS2DW12.ListofLIS2DW12AccelRateLpmConfigValues[SensorLIS2DW12.ListofLIS2DW12AccelRateLpmConfigValues.length-1]);
+		} else {
+			for(Integer i:SensorLIS2DW12.ListofLIS2DW12AccelRateHpmConfigValues){
+				if(i==valueToSet){
+					return;
+				}
+			}
+			setLIS2DW12DigitalAccelRateInternal(SensorLIS2DW12.ListofLIS2DW12AccelRateHpmConfigValues[SensorLIS2DW12.ListofLIS2DW12AccelRateHpmConfigValues.length-1]);
+		}
+	}
+	
+	public void setDefaultLIS2DW12AccelSensorConfig(boolean isSensorEnabled) {
+		if(isSensorEnabled) {
+			setLowPowerAccelWR(false);
+		}
+		else {
+			setLIS2DW12AccelRange(0);
+			setLowPowerAccelWR(true);
+		}
+	}
+	
+	public boolean isHighPerModeAccelWR(){
+		return isLIS2DW12DigitalAccelHPM();
+	}
+	
+	public boolean isLIS2DW12DigitalAccelHPM() {
+		return mHighPerModeAccelWR;
+	}
+	
+	public double getCalibTimeWRAccel() {
+		return mCurrentCalibDetailsAccelWr.getCalibTimeMs();
+	}
+	
+	public boolean isUsingValidWRAccelParam(){
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixWRAccel()) && !UtilShimmer.isAllZeros(getSensitivityMatrixWRAccel())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public double[][] getAlignmentMatrixWRAccel(){
+		return mCurrentCalibDetailsAccelWr.getValidAlignmentMatrix();
+	}
+	
+	public double[][] getSensitivityMatrixWRAccel(){
+		return mCurrentCalibDetailsAccelWr.getValidSensitivityMatrix();
+	}
+	
+	public double[][] getOffsetVectorMatrixWRAccel(){
+		return mCurrentCalibDetailsAccelWr.getValidOffsetVector();
+	}
+	
+	public boolean isLowPowerAccelWR(){
+		return isLIS2DW12DigitalAccelLPM();
+	}
+	
+	public boolean isLIS2DW12DigitalAccelLPM() {
+		return mLowPowerAccelWR;
+	}
+	
+	public boolean isLowPowerAccelEnabled() {
+		return isLIS2DW12DigitalAccelLPM();
+	}
+	
+	public void setLowPowerAccelEnabled(int i){
+		mLowPowerAccelWR = (i>0)? true:false;
+	}
+	
+	public int getLowPowerAccelEnabled(){
+		return (isLIS2DW12DigitalAccelLPM()? 1:0);
+	}
+	
+	public int getLIS2DW12DigitalAccelRate() {
+		return mLIS2DW12DigitalAccelRate;
 	}
 	//--------- Sensor specific methods end --------------
 	
