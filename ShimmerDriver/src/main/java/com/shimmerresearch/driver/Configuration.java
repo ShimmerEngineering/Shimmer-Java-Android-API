@@ -863,6 +863,9 @@ public class Configuration {
 			public static final String ENABLED_SENSORS = "Enabled Sensors Int";
 			public static final String ENABLED_SENSORS_IDS = "Enabled SensorsIds";
 
+			public static final String SD_BT_STREAM_WHEN_RECORDING = "<html>   SD Log and/or<br> Bluetooth Stream<html>";
+			public static final String SD_STREAM_WHEN_RECORDING = "<html>SD Log Recording<br>Only<html>";
+			public static final String SD_SYNC_STREAM_WHEN_RECORDING = "<html>   SD Log with<br> Inter-device Sync<html>";
 			public static final String USER_BUTTON_START = "User Button";
 			public static final String UNDOCK_START = "Undock/Dock";
 			public static final String SINGLE_TOUCH_START = "Single Touch Start";

@@ -18,6 +18,11 @@ public class ByteCommunicationJSSC implements ByteCommunication{
 		mSerialPort = new SerialPort(mAddress);
 	}
 	
+	public ByteCommunicationJSSC(SerialPort serialPort) {
+		mSerialPort = serialPort;
+		mAddress = mSerialPort.getPortName();
+	}
+	
 	@Override
 	public int getInputBufferBytesCount() throws SerialPortException {
 		// TODO Auto-generated method stub

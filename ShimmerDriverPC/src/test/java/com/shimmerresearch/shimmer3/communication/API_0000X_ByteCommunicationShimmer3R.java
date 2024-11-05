@@ -9,6 +9,7 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
@@ -19,12 +20,15 @@ import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.bmpX80.CalibDetailsBmp390;
+import com.shimmerresearch.sensors.AbstractSensor;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
 import bolts.TaskCompletionSource;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
 public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBack{
@@ -80,6 +84,13 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     				System.out.print(cd.mGuiName + " ; ");
     			}
     			System.out.println();
+    		}
+    	}
+    	
+    	LinkedHashMap<SENSORS, AbstractSensor> mapOfSensors = mDevice.getMapOfSensorsClasses();
+    	for (AbstractSensor sensor:mapOfSensors.values()) {
+    		if (sensor.getNumberOfEnabledChannels(COMMUNICATION_TYPE.BLUETOOTH)>0) {
+    			System.out.println(sensor.getClass().getName() + " ; " + sensor.getSensorName());
     		}
     	}
     	
