@@ -141,7 +141,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 			0x10<<8, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
 			0x10<<8, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
 			GuiLabelSensors.ACCEL_WR,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH,  // To add for LIS2DW12
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12,
 			Arrays.asList(GuiLabelConfig.LIS2DW12_ACCEL_RANGE,
 					GuiLabelConfig.LIS2DW12_ACCEL_RATE),
 			Arrays.asList(ObjectClusterSensorName.ACCEL_WR_X,
@@ -219,7 +219,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 			ListofLIS2DW12AccelRange, 
 			ListofLIS2DW12AccelRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH); // To Be Changed
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12); 
 
 	public static final ConfigOptionDetailsSensor configOptionAccelRate = new ConfigOptionDetailsSensor(
 			SensorLIS2DW12.GuiLabelConfig.LIS2DW12_ACCEL_RATE,
@@ -227,7 +227,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 			ListofLIS2DW12AccelRateHpm, 
 			ListofLIS2DW12AccelRateHpmConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH, // To Be Changed
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12, 
 			Arrays.asList(
 				new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS2DW12_ACCEL_RATE.IS_LPM, 
 						ListofLIS2DW12AccelRateLpm, 
@@ -282,7 +282,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
     public static final SensorGroupingDetails sensorGroupLpmAccel = new SensorGroupingDetails(
 			LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL,
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR),
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM303AH); // To Be Changed
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2DW12); // To Be Changed
 	
     
 	
@@ -323,7 +323,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	public void generateSensorGroupMapping() {
 		// TODO Auto-generated method stub
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL.ordinal(), sensorGroupLpmAccel);
+		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL_3R.ordinal(), sensorGroupLpmAccel);
 		super.updateSensorGroupingMap();
 	}
 

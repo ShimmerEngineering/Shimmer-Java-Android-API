@@ -1467,7 +1467,7 @@ public class Configuration {
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
 			
-			//Shimmer3r LN Accel
+			//Shimmer3r LN Accel & Gyro
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DSV = Arrays.asList(
 					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoShimmer3RNewImuAnyExpBrdLogAndStream,
@@ -1475,7 +1475,17 @@ public class Configuration {
 					svoShimmer3RExgUnifiedNewImuLogAndStream,
 					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
 					svoShimmer3RProto3MiniNewImuLogAndStream,
-					svoShimmer3RProto3DeluxeNewImuLogAndStream);  
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r WR Accel
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2DW12 = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					svoBrAmpSdLog, svoBrAmpBtStream, svoBrAmpLogAndStream,  
