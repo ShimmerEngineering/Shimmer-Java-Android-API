@@ -1421,13 +1421,13 @@ public class Configuration {
 					svoShimmer4Stock);  
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP390 = Arrays.asList(
-					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream, 
-					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
-					svoGsrUnifiedNewImuSdLog, svoGsrUnifiedNewImuLogAndStream,
-					svoExgUnifiedNewImuSdLog, svoExgUnifiedNewImuLogAndStream,
-					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
-					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
-					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream,
 					svoShimmer4Stock);  
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPU9250 = Arrays.asList(
