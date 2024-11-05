@@ -128,7 +128,7 @@ public class SensorADXL371 extends AbstractSensor{
 		
 		public static final Integer[] ListofADXL371AccelRangeConfigValues={0};  
 
-		public static final String[] ListofADXL371AccelRate={"Power-down","1.0Hz","10.0Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","400.0Hz","1344.0Hz"};
+		public static final String[] ListofADXL371AccelRate={"320Hz", "640Hz", "1280Hz", "2560Hz", "5120Hz"};
 		public static final Integer[] ListofADXL371AccelRateConfigValues={0,1,2,3,4};
 
 		public static final ConfigOptionDetailsSensor configOptionAccelRate = new ConfigOptionDetailsSensor(
