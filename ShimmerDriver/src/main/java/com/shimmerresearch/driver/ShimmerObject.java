@@ -5973,7 +5973,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mButtonStart = state;
 	}
 	
-	public void setDisableBluetooth(int state) {
+	protected void setDisableBluetooth(int state) {
 		this.mDisableBluetooth = state;
 	}
 
@@ -8854,8 +8854,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setButtonStart((boolean)valueToSet);
 				break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SD_BT_STREAM_WHEN_RECORDING):
-				setDisableBluetooth((boolean)valueToSet);
-				setSyncWhenLogging((boolean)valueToSet);
+				setDisableBluetooth(!(boolean)valueToSet);
+				setSyncWhenLogging(!(boolean)valueToSet);
 				break;
 			case(Configuration.Shimmer3.GuiLabelConfig.SD_STREAM_WHEN_RECORDING):
 				setDisableBluetooth((boolean)valueToSet);

@@ -2049,7 +2049,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public boolean isSupportedSdLogSync() {
 		if(getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.SDLOG
-				|| getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.LOGANDSTREAM
+				|| (UtilShimmer.compareVersions(getShimmerVerObject(),Configuration.Shimmer3.CompatibilityInfoForMaps.svoShimmer3RLogAndStream))
+				|| (UtilShimmer.compareVersions(getShimmerVerObject(),Configuration.Shimmer3.CompatibilityInfoForMaps.svoShimmer3LogAndStreamWithSDLogSyncSupport))
 				|| getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.STROKARE){
 			return true;
 		}

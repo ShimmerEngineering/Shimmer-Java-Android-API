@@ -67,10 +67,10 @@ public class AssembleShimmerConfig {
     			    			if(shimmerDevice instanceof ShimmerBluetooth) {
 //    			    				shimmerDevice = (ShimmerBluetooth) shimmerDevice;
     			        			if(((ShimmerBluetooth)shimmerDevice).isMasterShimmer()) {
-    			        				syncNodesList.add(0, shimmerDevice.getMacIdFromUart());
+    			        				syncNodesList.add(0, shimmerDevice.getMacId());
     			        			}
     			        			else {
-    			        				syncNodesList.add(shimmerDevice.getMacIdFromUart());
+    			        				syncNodesList.add(shimmerDevice.getMacId());
     			        			}
     		    				}
     		    			}

@@ -48,7 +48,7 @@ jobs:
         gradle-version: '8.10.2'
     - name: Build with Gradle 8.10.2
       run: |
-        cd ShimmerDriver       
+        cd ShimmerDriverPC       
         gradle build -i
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v4
