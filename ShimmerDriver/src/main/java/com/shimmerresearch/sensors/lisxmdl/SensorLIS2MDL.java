@@ -214,7 +214,7 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.WIDE_RANGE_MAG.ordinal(), sensorGroupLisMag);
+		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.WIDE_RANGE_MAG_3R.ordinal(), sensorGroupLisMag);
 		super.updateSensorGroupingMap();	
 	}
 

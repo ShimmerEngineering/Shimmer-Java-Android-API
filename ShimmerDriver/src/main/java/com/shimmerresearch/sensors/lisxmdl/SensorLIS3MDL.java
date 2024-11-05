@@ -268,7 +268,7 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
-			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.MAG.ordinal(), sensorGroupLisMag);
+			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.MAG_3R.ordinal(), sensorGroupLisMag);
 		}
 		super.updateSensorGroupingMap();	
 	}	
