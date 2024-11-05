@@ -8087,12 +8087,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mLSM303DigitalAccelLPM
 	 */
 	public boolean isLSM303DigitalAccelLPM() {
-		if (isShimmerGen3()) {
-			return mSensorLSM303.isLSM303DigitalAccelLPM();
-		} else if (isShimmerGen3R()) {
-			return mSensorLIS2DW12.isLIS2DW12DigitalAccelLPM();
-		}
-		return (Boolean) null;
+		return mSensorLSM303.isLSM303DigitalAccelLPM();
+	}
+	
+	public boolean isLIS2DW12DigitalAccelLPM() {
+		return mSensorLIS2DW12.isLIS2DW12DigitalAccelLPM();
 	}
 
 	public boolean isLowPowerAccelEnabled() {
@@ -8149,14 +8148,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 * @return the mLSM303DigitalAccelRate
 	 */
 	public int getLSM303DigitalAccelRate() {
-		if (isShimmerGen3()) {
-			return mSensorLSM303.getLSM303DigitalAccelRate();
-		} else if (isShimmerGen3R()) {
-			return mSensorLIS2DW12.getLIS2DW12DigitalAccelRate();
-		}
-		return (Integer) null;
+		return mSensorLSM303.getLSM303DigitalAccelRate();
 	}
-
+	
+	public int getLIS2DW12DigitalAccelRate() {
+		return mSensorLIS2DW12.getLIS2DW12DigitalAccelRate();
+	}
 
 	public double[][] getAlignmentMatrixWRAccel(){
 		if (isShimmerGen3()) {
