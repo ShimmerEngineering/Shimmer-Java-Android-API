@@ -132,7 +132,7 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>(); 
-        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG, SensorLIS2MDL.sensorLIS2MDLMag);	
+        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR, SensorLIS2MDL.sensorLIS2MDLMag);	
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
     }
 	//--------- Sensor info end --------------
@@ -178,7 +178,7 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 
     public static final SensorGroupingDetails sensorGroupLisMag = new SensorGroupingDetails(
 			LABEL_SENSOR_TILE.WIDE_RANGE_MAG,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG),
+			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2MDL);
     
     //--------- Constructors for this class start --------------
@@ -263,7 +263,7 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 		
 		//Magnetometer Calibration Configuration
 		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
-				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG, 
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR, 
 				getMagRange(), 
 				SensorLIS2MDL.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
 				SensorLIS2MDL.DatabaseConfigHandle.MAG_CALIB_TIME);
@@ -274,7 +274,7 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override
 	public void initialise() {
-		mSensorIdMag = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG;
+		mSensorIdMag = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR;
 		super.initialise();
 		
 		mMagRange = ListofLIS2MDLWRMagRangeConfigValues[0];
