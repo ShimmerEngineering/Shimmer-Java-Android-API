@@ -24,6 +24,10 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 			public static final int NOT_LPM = 0;
 			public static final int IS_LPM = 1;
 		}
+		public static final class LIS2DW12_ACCEL_RATE{
+			public static final int NOT_LPM = 0;
+			public static final int IS_LPM = 1;
+		}
 		public static final class EXG_RESPIRATION_DETECT_PHASE{
 			public static final int PHASE_32KHZ = 0;
 			public static final int PHASE_64KHZ = 1;

@@ -189,7 +189,7 @@ public class SensorBMP280 extends SensorBMPX80 {
 	}
 
 	public SensorBMP280(ShimmerDevice shimmerDevice) {
-		super(SENSORS.BMP180, shimmerDevice);
+		super(SENSORS.BMP280, shimmerDevice);
 		initialise();
 	}
 
