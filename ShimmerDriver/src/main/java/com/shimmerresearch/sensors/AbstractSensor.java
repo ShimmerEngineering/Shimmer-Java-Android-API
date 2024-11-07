@@ -63,7 +63,7 @@ public abstract class AbstractSensor implements Serializable{
 		MAX86150("MAX86150"),
 		MAX86916("MAX86916"),
 		BIOZ("MAX30001"),
-		LSM6DSV("LSM6DSV");
+		LSM6DSV("LSM6DSV"),
 		BMP390("BMP390");
 		
 	    private final String text;
