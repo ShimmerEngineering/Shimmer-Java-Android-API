@@ -55,4 +55,41 @@ public class API_00007_UtilShimmerTest {
         assertTrue(UtilShimmer.round(1.0E10 + 0.4, 0) == 1.0E10);
         assertTrue(UtilShimmer.round(1.0E10 - 0.5, 0) == 1.0E10);
     }
+   
+    @Test
+    public void testParseValidVersionWithVPrefix() {
+        int[] result = SoftwareVersion.parseVersion("v1.2.3");
+        if (result[0]==1 && result[1]==2 && result[2]==3) {
+        	
+        } else {
+        	assert(false);
+        }
+        
+        result = SoftwareVersion.parseVersion("v2.0.0");
+        if (result[0]==2 && result[1]==0 && result[2]==0) {
+        	
+        } else {
+        	assert(false);
+        }
+        
+    }
+    
+    @Test
+    public void testParseValidVersionWithoutVPrefix() {
+        int[] result = SoftwareVersion.parseVersion("1.2.3");
+        if (result[0]==1 && result[1]==2 && result[2]==3) {
+        	
+        } else {
+        	assert(false);
+        }
+        
+        result = SoftwareVersion.parseVersion("2.0.0");
+        if (result[0]==2 && result[1]==0 && result[2]==0) {
+        	
+        } else {
+        	assert(false);
+        }
+        
+    }
+    
 }
