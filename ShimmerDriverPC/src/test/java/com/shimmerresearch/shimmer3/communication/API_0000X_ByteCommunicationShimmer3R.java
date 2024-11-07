@@ -8,13 +8,18 @@ import org.junit.runners.MethodSorters;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.UtilParseData;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
+import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
+import com.shimmerresearch.sensors.bmpX80.CalibDetailsBmp390;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 
@@ -29,10 +34,12 @@ import java.util.concurrent.TimeUnit;
 public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
 	TaskCompletionSource<Boolean> mCalibrationTask;
+	ByteCommunicationSimulatorS3R mByteCommunicationSimulatorS3R;
 	@Before
     public void setUp() {
+		mByteCommunicationSimulatorS3R = new ByteCommunicationSimulatorS3R("COM99");
 		mDevice = new ShimmerPC("COM99");
-		mDevice.setTestRadio(new ByteCommunicationSimulatorS3R("COM99"));
+		mDevice.setTestRadio(mByteCommunicationSimulatorS3R);
 		setWaitForData(mDevice);
     }
     
@@ -63,7 +70,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3r")) {
     		assert(false);
     	}
-    	
+    	if(!mByteCommunicationSimulatorS3R.isGetPressureCalibrationCoefficientsCommand) {
+    		assert(false);
+    	}
+    	if(!mDevice.mSensorBMPX80.mSensorType.equals(SENSORS.BMP390)){
+    		assert(false);
+		}
     	ArrayList<SensorDetails> listofsensorDetails = (ArrayList<SensorDetails>) mDevice.getListOfEnabledSensors();
     	
     	for(SensorDetails sd: listofsensorDetails) {
@@ -84,6 +96,46 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	
     }
 
+
+	@Test
+	public void test002_ConnectandTestBMP390() {
+		mCalibrationTask = new TaskCompletionSource<Boolean>();
+    	mDevice.connect("","");
+    	
+    		mCalibrationTask = new TaskCompletionSource<>();
+    		try {
+				boolean result = mCalibrationTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+    	if (!mDevice.isConnected()) {
+    		assert(false);
+    	}
+    	
+    	//BMP390 data parsing
+    	try{
+    		mDevice.mSensorBMPX80.parseCalParamByteArray(mByteCommunicationSimulatorS3R.getPressureResoTest(),CALIB_READ_SOURCE.INFOMEM);
+    		long[] dataPacket = UtilParseData.parseData(mByteCommunicationSimulatorS3R.getTestDataPacket(), mByteCommunicationSimulatorS3R.getTestDataType());	//uncalib
+    		double UT = (double)dataPacket[7];
+			double UP = (double)dataPacket[8];
+			
+			double[] bmp390caldata = mDevice.mSensorBMPX80.calibratePressureSensorData(UP, UT);
+			double pressure = bmp390caldata[0];
+			double temperature = bmp390caldata[1];
+			
+			if(Math.round(pressure * 10000d) / 10000d != 100912.8176) {	//4d.p. accuracy
+	    		assert(false);
+			}
+			
+			if(Math.round(temperature * 10000d) / 10000d != 23.2659) {		//4d.p. accuracy
+	    		assert(false);
+			}
+    	} catch(IndexOutOfBoundsException e){
+    		throw(e);
+    	}
+	}
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
