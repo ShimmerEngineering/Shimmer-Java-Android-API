@@ -88,8 +88,9 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.sensors.lis2dw12.SensorLIS2DW12;
 import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
-import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
+//import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
 import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense;
 import com.shimmerresearch.verisense.sensors.SensorGSRVerisense;
 import com.shimmerresearch.verisense.sensors.SensorMAX86916;
@@ -712,6 +713,9 @@ public class Configuration {
 			public static final int SHIMMER_BMPX80_PRESSURE = 36;	//BMP180 and BMP280
 			public static final int SHIMMER_BMP390_PRESSURE = 43;
 			
+			/** Shimmer3r Wide-Range Accelerometer **/
+			public static final int SHIMMER_LIS2DW12_ACCEL_WR = 39;
+			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
 			//public static final int SHIMMER_HR = 9;
@@ -891,6 +895,7 @@ public class Configuration {
 			STREAMING_PROPERTIES(SensorShimmerClock.LABEL_SENSOR_TILE.STREAMING_PROPERTIES),
 			LOW_NOISE_ACCEL(SensorKionixAccel.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL),
 			WIDE_RANGE_ACCEL(SensorLSM303.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL),
+			WIDE_RANGE_ACCEL_3R(SensorLIS2DW12.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL),
 			GYRO(SensorMPU9X50.LABEL_SENSOR_TILE.GYRO),
 			MAG(SensorLSM303.LABEL_SENSOR_TILE.MAG),
 			PRESSURE_TEMPERATURE_BMP180(SensorBMP180.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
@@ -1475,7 +1480,7 @@ public class Configuration {
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
 			
-			//Shimmer3r LN Accel
+			//Shimmer3r LN Accel & Gyro
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DSV = Arrays.asList(
 					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoShimmer3RNewImuAnyExpBrdLogAndStream,
@@ -1483,7 +1488,17 @@ public class Configuration {
 					svoShimmer3RExgUnifiedNewImuLogAndStream,
 					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
 					svoShimmer3RProto3MiniNewImuLogAndStream,
-					svoShimmer3RProto3DeluxeNewImuLogAndStream);  
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r WR Accel
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2DW12 = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					svoBrAmpSdLog, svoBrAmpBtStream, svoBrAmpLogAndStream,  
