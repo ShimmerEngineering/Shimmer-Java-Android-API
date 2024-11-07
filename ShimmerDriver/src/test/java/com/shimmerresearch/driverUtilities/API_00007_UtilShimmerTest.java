@@ -92,4 +92,14 @@ public class API_00007_UtilShimmerTest {
         
     }
     
+    @Test
+    public void testParseEmptyString() {
+        int[] result = SoftwareVersion.parseVersion("");
+        if (result==null) {
+        	
+        } else {
+        	assert(false);
+        }
+    }
+    
 }
