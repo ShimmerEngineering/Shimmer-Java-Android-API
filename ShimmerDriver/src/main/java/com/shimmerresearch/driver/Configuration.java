@@ -81,15 +81,19 @@ import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP390;
 import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
+import com.shimmerresearch.sensors.lisxmdl.SensorLISXMDL;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.sensors.adxl371.SensorADXL371;
+import com.shimmerresearch.sensors.lsm6dsv.SensorLSM6DSV;
+import com.shimmerresearch.sensors.lis2dw12.SensorLIS2DW12;
 import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
-import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
+//import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
 import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense;
 import com.shimmerresearch.verisense.sensors.SensorGSRVerisense;
 import com.shimmerresearch.verisense.sensors.SensorMAX86916;
@@ -709,7 +713,16 @@ public class Configuration {
 			/** Shimmer3 Alternative magnetometer */
 			public static final int SHIMMER_MPU9X50_MAG = 34;
 			public static final int SHIMMER_MPU9X50_TEMP = 35;
-			public static final int SHIMMER_BMPX80_PRESSURE = 36;
+			public static final int SHIMMER_BMPX80_PRESSURE = 36;	//BMP180 and BMP280
+      
+			/** Shimmer3r Wide-Range Accelerometer **/
+			public static final int SHIMMER_LSM6DSV_ACCEL_LN = 37;
+			public static final int SHIMMER_LSM6DSV_GYRO = 38;			
+			public static final int SHIMMER_LIS2DW12_ACCEL_WR = 39;
+      public static final int SHIMMER_ADXL371_ACCEL = 40;
+			public static final int SHIMMER_LIS3MDL_MAG = 41;
+			public static final int SHIMMER_LIS2MDL_MAG_WR = 42;
+			public static final int SHIMMER_BMP390_PRESSURE = 43;
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
@@ -720,10 +733,8 @@ public class Configuration {
 			//public static final int SHIMMER_BMP180_TEMPERATURE = 23; // not yet implemented
 			//public static final int SHIMMER_MSP430_TEMPERATURE = 24; // not yet implemented
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
-			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
-			
-			public static final int SHIMMER_ADXL371_ACCEL = 40;
-			
+			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 			
+
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_6DOF = 50;
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_9DOF = 51;
 			public static final int SHIMMER_MPU9X50_MPL_EULER_6DOF = 52;
@@ -891,12 +902,18 @@ public class Configuration {
 		public enum LABEL_SENSOR_TILE{
 			STREAMING_PROPERTIES(SensorShimmerClock.LABEL_SENSOR_TILE.STREAMING_PROPERTIES),
 			LOW_NOISE_ACCEL(SensorKionixAccel.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL),
+			LOW_NOISE_ACCEL_3R(SensorLSM6DSV.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL),
 			WIDE_RANGE_ACCEL(SensorLSM303.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL),
 			HIGH_G_ACCEL(SensorADXL371.LABEL_SENSOR_TILE.HIGH_G_ACCEL),
+			WIDE_RANGE_ACCEL_3R(SensorLIS2DW12.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL),
 			GYRO(SensorMPU9X50.LABEL_SENSOR_TILE.GYRO),
+			GYRO_3R(SensorLSM6DSV.LABEL_SENSOR_TILE.GYRO),
 			MAG(SensorLSM303.LABEL_SENSOR_TILE.MAG),
+			MAG_3R(SensorLISXMDL.LABEL_SENSOR_TILE.MAG),
+			WIDE_RANGE_MAG_3R(SensorLISXMDL.LABEL_SENSOR_TILE.WIDE_RANGE_MAG),
 			PRESSURE_TEMPERATURE_BMP180(SensorBMP180.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
+			PRESSURE_TEMPERATURE_BMP390(SensorBMP390.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			BATTERY_MONITORING(SensorBattVoltage.LABEL_SENSOR_TILE.BATTERY_MONITORING),
 			EXTERNAL_EXPANSION_ADC(SensorADC.LABEL_SENSOR_TILE.EXTERNAL_EXPANSION_ADC),
 			INTERNAL_EXPANSION_ADC(SensorADC.LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC),
@@ -1277,10 +1294,12 @@ public class Configuration {
 			private static final ShimmerVerObject svoNewImuLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.SHIMMER3, NEW_IMU_EXP_REV.IMU);
 			private static final ShimmerVerObject svoNewImuAnyExpBrdSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,15,1,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.ANY_EXP_BRD_WITH_SPECIAL_REV);
 			private static final ShimmerVerObject svoNewImuAnyExpBrdLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.IMU);
-
+			private static final ShimmerVerObject svoShimmer3RNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.SHIMMER3, NEW_IMU_EXP_REV.IMU);
+			private static final ShimmerVerObject svoShimmer3RNewImuAnyExpBrdLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.IMU);
+		
 			public static final ShimmerVerObject svoShimmer3RLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			public static final ShimmerVerObject svoShimmer3RSDLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.SDLOG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-			
+						
 			private static final ShimmerVerObject svoShimmerGq802154Lr = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_LR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoShimmerGq802154Nr = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_NR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoShimmer2rGq = 			new ShimmerVerObject(HW_ID.SHIMMER_2R_GQ,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
@@ -1293,7 +1312,8 @@ public class Configuration {
 			private static final ShimmerVerObject svoExgLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_EXG);
 			private static final ShimmerVerObject svoExgUnifiedLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED);
 			private static final ShimmerVerObject svoExgUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED, NEW_IMU_EXP_REV.EXG_UNIFIED);
-			
+			private static final ShimmerVerObject svoShimmer3RExgUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED, NEW_IMU_EXP_REV.EXG_UNIFIED);
+
 			private static final ShimmerVerObject svoGsrSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_GSR);
 			private static final ShimmerVerObject svoGsrUnifiedSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
 			private static final ShimmerVerObject svoGsrUnifiedNewImuSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,15,1,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, NEW_IMU_EXP_REV.GSR_UNIFIED);
@@ -1304,9 +1324,8 @@ public class Configuration {
 			private static final ShimmerVerObject svoGsrUnifiedNewImuLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, NEW_IMU_EXP_REV.GSR_UNIFIED);
 			private static final ShimmerVerObject svoGsrGqBle = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.GQ_BLE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR);
 			private static final ShimmerVerObject svoGsrUnifiedGqBle = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.GQ_BLE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
-			private static final ShimmerVerObject svoShimmer3RGsrUnifiedNewImuLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, NEW_IMU_EXP_REV.GSR_UNIFIED);
+			private static final ShimmerVerObject svoShimmer3RGsrUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, NEW_IMU_EXP_REV.GSR_UNIFIED);
 			private static final ShimmerVerObject svoShimmer3RGsrNewImuLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR);
-			
 			
 			private static final ShimmerVerObject svoBrAmpSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP);
 			private static final ShimmerVerObject svoBrAmpUnifiedSdLog = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED);
@@ -1316,18 +1335,21 @@ public class Configuration {
 			private static final ShimmerVerObject svoBrAmpLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_BR_AMP);
 			private static final ShimmerVerObject svoBrAmpUnifiedLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED);
 			private static final ShimmerVerObject svoBrAmpUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED, NEW_IMU_EXP_REV.BRIDGE_AMP);
-			
+			private static final ShimmerVerObject svoShimmer3RBrAmpUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED, NEW_IMU_EXP_REV.BRIDGE_AMP);
+
 			private static final ShimmerVerObject svoProto3MiniSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI);
 			private static final ShimmerVerObject svoProto3MiniNewImuSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,15,1,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI, NEW_IMU_EXP_REV.PROTO3_MINI);
 			private static final ShimmerVerObject svoProto3MiniBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI);
 			private static final ShimmerVerObject svoProto3MiniLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI);
 			private static final ShimmerVerObject svoProto3MiniNewImuLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI, NEW_IMU_EXP_REV.PROTO3_MINI);
+			private static final ShimmerVerObject svoShimmer3RProto3MiniNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI, NEW_IMU_EXP_REV.PROTO3_MINI);
 
 			private static final ShimmerVerObject svoProto3DeluxeSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
 			private static final ShimmerVerObject svoProto3DeluxeNewImuSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,15,1,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, NEW_IMU_EXP_REV.PROTO3_DELUXE);
 			private static final ShimmerVerObject svoProto3DeluxeBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
 			private static final ShimmerVerObject svoProto3DeluxeLogAndStream =	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
 			private static final ShimmerVerObject svoProto3DeluxeNewImuLogAndStream =	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, NEW_IMU_EXP_REV.PROTO3_DELUXE);
+			private static final ShimmerVerObject svoShimmer3RProto3DeluxeNewImuLogAndStream =new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, NEW_IMU_EXP_REV.PROTO3_DELUXE);
 
 			private static final ShimmerVerObject svoAdxl377Accel200GSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
 			private static final ShimmerVerObject svoAdxl377Accel200GBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
@@ -1417,6 +1439,16 @@ public class Configuration {
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
 					svoShimmer4Stock);  
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP390 = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream,
+					svoShimmer4Stock);  
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPU9250 = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
@@ -1428,6 +1460,7 @@ public class Configuration {
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
 					svoShimmer4Stock);  
 
+			//Shimmer3 WR Accel & Mag
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303AH = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
@@ -1436,12 +1469,33 @@ public class Configuration {
 					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
-
+			
+			//Shimmer3r Mag
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLISM3MDL = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r WR Mag
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2MDL = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
 			//TODO need to update this list and remove "any"
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXRB52042 = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog, svoAnyIntExpBoardAndBtStream, svoAnyIntExpBoardAndLogAndStream,
 					svoShimmer4Stock);
 
+			//Shimmer3 LN Accel
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXTC92050 = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
@@ -1450,6 +1504,26 @@ public class Configuration {
 					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r LN Accel & Gyro
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DSV = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r WR Accel
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2DW12 = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					svoBrAmpSdLog, svoBrAmpBtStream, svoBrAmpLogAndStream,  
@@ -1525,7 +1599,6 @@ public class Configuration {
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPLSensors = Arrays.asList(svoSdLogMpl);//,baseShimmer4); //TODO Shimmer4 temp here
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoShimmer4 = Arrays.asList(svoShimmer4Stock);
-			
 			
 		}
 

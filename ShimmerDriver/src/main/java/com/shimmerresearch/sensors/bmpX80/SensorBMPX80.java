@@ -27,6 +27,7 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 
 	public class GuiLabelConfig{
 		public static final String PRESSURE_RESOLUTION = "Pressure Resolution";
+		public static final String PRESSURE_RATE = "Pressure Rate";
 	}
 
 	public class GuiLabelSensors{

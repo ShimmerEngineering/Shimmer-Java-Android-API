@@ -29,15 +29,64 @@ import java.util.concurrent.TimeUnit;
 public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
 	TaskCompletionSource<Boolean> mCalibrationTask;
+	ByteCommunicationSimulatorS3 mByteCommunicationSimulatorS3;
+
 	@Before
     public void setUp() {
+		mByteCommunicationSimulatorS3 = new ByteCommunicationSimulatorS3("COM99");
 		mDevice = new ShimmerPC("COM99");
-		mDevice.setTestRadio(new ByteCommunicationSimulatorS3("COM99"));
+		mDevice.setTestRadio(mByteCommunicationSimulatorS3);
 		setWaitForData(mDevice);
     }
     
     @Test
     public void test001_testConnectandDisconnect() {
+    	mByteCommunicationSimulatorS3.setIsNewBMPSupported(false);
+    	mCalibrationTask = new TaskCompletionSource<Boolean>();
+    	mDevice.connect("","");
+    	
+    		mCalibrationTask = new TaskCompletionSource<>();
+    		try {
+				boolean result = mCalibrationTask.getTask().waitForCompletion(60, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+    	if (!mDevice.isConnected()) {
+    		assert(false);
+    	}
+    	if (!mDevice.getFirmwareVersionParsed().equals("LogAndStream v0.16.0")) {
+    		assert(false);
+    	}
+    	if (!(mDevice.getHardwareVersion()==HW_ID.SHIMMER_3)) {
+    		assert(false);
+    	}
+    	
+    	System.out.println(mDevice.getHardwareVersionParsed());
+    	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3")) {
+    		assert(false);
+    	}
+    	
+    	if(!mByteCommunicationSimulatorS3.isGetBmp280CalibrationCoefficientsCommand) {
+    		assert(false);
+    	}
+    	
+		if(!mDevice.mSensorBMPX80.mSensorType.equals(SENSORS.BMP280)){
+    		assert(false);
+		}
+		
+		try {
+			mDevice.disconnect();
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    @Test
+    public void test002_testConnectandDisconnect_NewBMPSupported() {
+    	mByteCommunicationSimulatorS3.setIsNewBMPSupported(true);
     	mCalibrationTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
@@ -64,6 +113,14 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
     		assert(false);
     	}
     	
+    	if(!mByteCommunicationSimulatorS3.isGetPressureCalibrationCoefficientsCommand) {
+    		assert(false);
+    	}
+    	
+		if(!mDevice.mSensorBMPX80.mSensorType.equals(SENSORS.BMP280)){
+    		assert(false);
+		}
+      
     	ArrayList<SensorDetails> listofsensorDetails = (ArrayList<SensorDetails>) mDevice.getListOfEnabledSensors();
     	
     	for(SensorDetails sd: listofsensorDetails) {
