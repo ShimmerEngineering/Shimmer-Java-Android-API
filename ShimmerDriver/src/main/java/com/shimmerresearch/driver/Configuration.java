@@ -714,11 +714,11 @@ public class Configuration {
 			public static final int SHIMMER_MPU9X50_TEMP = 35;
 			public static final int SHIMMER_BMPX80_PRESSURE = 36;	//BMP180 and BMP280
       
-      /** Shimmer3r Wide-Range Accelerometer **/
-      public static final int SHIMMER_LSM6DSV_ACCEL_LN = 37;
+			/** Shimmer3r Wide-Range Accelerometer **/
+			public static final int SHIMMER_LSM6DSV_ACCEL_LN = 37;
 			public static final int SHIMMER_LSM6DSV_GYRO = 38;			
 			public static final int SHIMMER_LIS2DW12_ACCEL_WR = 39;
-      public static final int SHIMMER_LIS3MDL_MAG = 41;
+			public static final int SHIMMER_LIS3MDL_MAG = 41;
 			public static final int SHIMMER_LIS2MDL_MAG_WR = 42;
 			public static final int SHIMMER_BMP390_PRESSURE = 43;
 			
