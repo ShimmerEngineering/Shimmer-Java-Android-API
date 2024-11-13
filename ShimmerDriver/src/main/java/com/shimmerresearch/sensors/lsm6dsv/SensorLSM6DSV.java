@@ -58,6 +58,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	//--------- Sensor specific variables start --------------
 
 	// LN ACCEL
+	protected int mSensorIdAccelLN = -1;
 	public boolean mIsUsingDefaultLNAccelParam = true;
 	public static final double[][] AlignmentMatrixLowNoiseAccelShimmer3r = {{-1,0,0},{0,1,0},{0,0,-1}};
 	public static final double[][] OffsetVectorLowNoiseAccelShimmer3r = {{0},{0},{0}}; 
@@ -1094,6 +1095,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override
 	public void initialise() {
+		mSensorIdAccelLN = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN;
 		mSensorIdGyro = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO;
 
 		super.initialise();
@@ -1111,7 +1113,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 		TreeMap<Integer, CalibDetails> calibMapAccelLn = new TreeMap<Integer, CalibDetails>();
 		calibMapAccelLn.put(calibDetailsAccelLn2g.mRangeValue, calibDetailsAccelLn2g);
 		
-		setCalibrationMapPerSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN, calibMapAccelLn);
+		setCalibrationMapPerSensor(mSensorIdAccelLN, calibMapAccelLn);
 		
 		updateCurrentAccelLnCalibInUse();
 		
