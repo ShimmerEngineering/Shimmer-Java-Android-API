@@ -719,7 +719,7 @@ public class Configuration {
 			public static final int SHIMMER_LSM6DSV_ACCEL_LN = 37;
 			public static final int SHIMMER_LSM6DSV_GYRO = 38;			
 			public static final int SHIMMER_LIS2DW12_ACCEL_WR = 39;
-      public static final int SHIMMER_ADXL371_ACCEL = 40;
+      public static final int SHIMMER_ADXL371_ACCEL_HIGHG = 40;
 			public static final int SHIMMER_LIS3MDL_MAG = 41;
 			public static final int SHIMMER_LIS2MDL_MAG_WR = 42;
 			public static final int SHIMMER_BMP390_PRESSURE = 43;
