@@ -1,6 +1,6 @@
 package com.shimmerresearch.driverUtilities;
 
-public class SoftwareVersion {
+public class Version {
 
 	public int mMajor;
 	public int mMinor;
@@ -9,7 +9,7 @@ public class SoftwareVersion {
 	/**
 	 * @param version vX.X.X e.g. v2.0.0 or Y.Y.Y e.g. 1.8.0
 	 */
-	public SoftwareVersion(String version) {
+	public Version(String version) {
 		int[] parsedVersion = parseVersion(version);
         if (parsedVersion != null) {
         	mMajor = parsedVersion[0];

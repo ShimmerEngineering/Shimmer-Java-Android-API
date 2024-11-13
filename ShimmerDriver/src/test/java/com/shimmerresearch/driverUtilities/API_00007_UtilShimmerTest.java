@@ -58,14 +58,14 @@ public class API_00007_UtilShimmerTest {
    
     @Test
     public void testParseValidVersionWithVPrefix() {
-        int[] result = SoftwareVersion.parseVersion("v1.2.3");
+        int[] result = Version.parseVersion("v1.2.3");
         if (result[0]==1 && result[1]==2 && result[2]==3) {
         	
         } else {
         	assert(false);
         }
         
-        result = SoftwareVersion.parseVersion("v2.0.0");
+        result = Version.parseVersion("v2.0.0");
         if (result[0]==2 && result[1]==0 && result[2]==0) {
         	
         } else {
@@ -76,14 +76,14 @@ public class API_00007_UtilShimmerTest {
     
     @Test
     public void testParseValidVersionWithoutVPrefix() {
-        int[] result = SoftwareVersion.parseVersion("1.2.3");
+        int[] result = Version.parseVersion("1.2.3");
         if (result[0]==1 && result[1]==2 && result[2]==3) {
         	
         } else {
         	assert(false);
         }
         
-        result = SoftwareVersion.parseVersion("2.0.0");
+        result = Version.parseVersion("2.0.0");
         if (result[0]==2 && result[1]==0 && result[2]==0) {
         	
         } else {
@@ -94,7 +94,7 @@ public class API_00007_UtilShimmerTest {
     
     @Test
     public void testParseEmptyString() {
-        int[] result = SoftwareVersion.parseVersion("");
+        int[] result = Version.parseVersion("");
         if (result==null) {
         	
         } else {
