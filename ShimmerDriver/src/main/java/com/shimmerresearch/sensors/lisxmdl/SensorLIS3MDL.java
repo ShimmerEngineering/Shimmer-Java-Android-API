@@ -14,6 +14,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
+import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
@@ -121,6 +122,38 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 	
 	//--------- Sensor specific variables end --------------	
 	
+	//--------- Bluetooth commands start --------------
+	public static final byte SET_MAG_CALIBRATION_COMMAND      		= (byte) 0x17;
+	public static final byte MAG_CALIBRATION_RESPONSE         		= (byte) 0x18;
+	public static final byte GET_MAG_CALIBRATION_COMMAND      		= (byte) 0x19;
+	
+	public static final byte SET_MAG_GAIN_COMMAND             		= (byte) 0x37;
+	public static final byte MAG_GAIN_RESPONSE                		= (byte) 0x38;
+	public static final byte GET_MAG_GAIN_COMMAND             		= (byte) 0x39;
+	
+	public static final byte SET_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3A;
+	public static final byte MAG_SAMPLING_RATE_RESPONSE       		= (byte) 0x3B;
+	public static final byte GET_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3C;
+	
+    public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+    static {
+        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+        aMap.put(GET_MAG_CALIBRATION_COMMAND, new BtCommandDetails(GET_MAG_CALIBRATION_COMMAND, "GET_MAG_CALIBRATION_COMMAND", MAG_CALIBRATION_RESPONSE));
+        aMap.put(GET_MAG_GAIN_COMMAND, new BtCommandDetails(GET_MAG_GAIN_COMMAND, "GET_MAG_GAIN_COMMAND", MAG_GAIN_RESPONSE));
+        aMap.put(GET_MAG_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_MAG_SAMPLING_RATE_COMMAND, "GET_MAG_SAMPLING_RATE_COMMAND", MAG_SAMPLING_RATE_RESPONSE));
+        mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+    }
+    
+    public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+    static {
+        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+        aMap.put(SET_MAG_CALIBRATION_COMMAND, new BtCommandDetails(SET_MAG_CALIBRATION_COMMAND, "SET_MAG_CALIBRATION_COMMAND"));
+        aMap.put(SET_MAG_GAIN_COMMAND, new BtCommandDetails(SET_MAG_GAIN_COMMAND, "SET_MAG_GAIN_COMMAND"));
+        aMap.put(SET_MAG_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_MAG_SAMPLING_RATE_COMMAND, "SET_MAG_SAMPLING_RATE_COMMAND"));
+        mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+    }
+	//--------- Bluetooth commands end --------------
+	
 	//--------- Configuration options start --------------
 	
 	public static final String[] ListofLIS3MDLMagRateLp={"0.625Hz","1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","1000Hz"};
@@ -151,13 +184,13 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL,
 		    Arrays.asList(
-		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS3MDL_MAG_RATE.IS_MP, 
+		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LISXMDL_MAG_RATE.IS_MP, 
 		                    SensorLIS3MDL.ListofLIS3MDLMagRateMp, 
 		                    SensorLIS3MDL.ListofLIS3MDLMagRateMpConfigValues),
-		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS3MDL_MAG_RATE.IS_HP, 
+		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LISXMDL_MAG_RATE.IS_HP, 
 		                    SensorLIS3MDL.ListofLIS3MDLMagRateHp, 
 		                    SensorLIS3MDL.ListofLIS3MDLMagRateHpConfigValues),
-		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS3MDL_MAG_RATE.IS_UP, 
+		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LISXMDL_MAG_RATE.IS_UP, 
 		                    SensorLIS3MDL.ListofLIS3MDLMagRateUp, 
 		                    SensorLIS3MDL.ListofLIS3MDLMagRateUpConfigValues)
 		        ));
@@ -293,7 +326,7 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 	public LinkedHashMap<String, Object> generateConfigMap() {
 LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
-		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE, getLIS3MDLMagRate());
+		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE, getLISMagRate());
 		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.MAG_RANGE, getMagRange());
 		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.MAG_LPM, getLowPowerMagEnabled());
 		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.MAG_MPM, getMedPowerMagEnabled());
@@ -324,10 +357,10 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 			setUltraHighPowerMag(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_UPM))>0? true:false);
 		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLIS3MDL.DatabaseConfigHandle.MAG_RANGE)){
-			setLIS3MDLMagRate(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_RANGE)).intValue());
+			setLISMagRate(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_RANGE)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE)){
-			setLIS3MDLMagRange(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE)).intValue());
+			setLISMagRange(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE)).intValue());
 		}
 		
 		//Magnetometer Calibration Configuration
@@ -375,7 +408,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	
 	//--------- Sensor specific methods start --------------
 	
-	public void setLIS3MDLMagRange(int valueToSet){
+	public void setLISMagRange(int valueToSet){
 		if(ArrayUtils.contains(ListofLIS3MDLMagRangeConfigValues, valueToSet)){
 			mMagRange = valueToSet;
 			updateCurrentMagCalibInUse();
@@ -383,22 +416,22 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	}
 	
 	public boolean checkLowPowerMag() {
-		setLowPowerMag((getLIS3MDLMagRate() <= 14)? true:false);
+		setLowPowerMag((getLISMagRate() <= 14)? true:false);
 		return isLowPowerMagEnabled();
 	}
 	
 	public boolean checkMedPowerMag() {
-		setMedPowerMag((getLIS3MDLMagRate() >= 17 && getLIS3MDLMagRate() <= 30)? true:false);
+		setMedPowerMag((getLISMagRate() >= 17 && getLISMagRate() <= 30)? true:false);
 		return isMedPowerMagEnabled();
 	}
 	
 	public boolean checkHighPowerMag() {
-		setHighPowerMag((getLIS3MDLMagRate() >= 33 && getLIS3MDLMagRate() <= 46)? true:false);
+		setHighPowerMag((getLISMagRate() >= 33 && getLISMagRate() <= 46)? true:false);
 		return isHighPowerMagEnabled();
 	}
 	
 	public boolean checkUltraHighPowerMag() {
-		setUltraHighPowerMag((getLIS3MDLMagRate() >= 49 && getLIS3MDLMagRate() <= 62)? true:false); 
+		setUltraHighPowerMag((getLISMagRate() >= 49 && getLISMagRate() <= 62)? true:false); 
 		return isUltraHighPowerMagEnabled();
 	}
 	
@@ -532,8 +565,14 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 
 	@Override
 	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq) {
-		// TODO Auto-generated method stub
+		// not used due to different implementation
 		return 0;
+	}
+
+	@Override
+	public void setLISWRMagRange(int valueToSet) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	//--------- Sensor specific methods end --------------
