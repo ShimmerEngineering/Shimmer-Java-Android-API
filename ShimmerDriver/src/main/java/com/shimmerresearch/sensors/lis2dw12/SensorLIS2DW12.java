@@ -3,6 +3,7 @@ package com.shimmerresearch.sensors.lis2dw12;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,8 +14,13 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
+import com.shimmerresearch.driver.calibration.UtilCalibration;
+import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.bluetooth.BtCommandDetails;
+import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -30,13 +36,6 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303AH;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303.GuiLabelConfig;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303.GuiLabelSensors;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303.LABEL_SENSOR_TILE;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303.ObjectClusterSensorName;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303AH.DatabaseChannelHandles;
 
 public class SensorLIS2DW12 extends AbstractSensor {
 
@@ -86,6 +85,30 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		
 		public static final String WR_ACC_LPM = "LIS2DW12_Acc_LPM";
 		public static final String WR_ACC_HPM = "LIS2DW12_Acc_HPM";
+		
+		public static final String WR_ACC_CALIB_TIME = "LIS2DW12_Acc_Calib_Time";
+		public static final String WR_ACC_OFFSET_X = "LIS2DW12_Acc_Offset_X";
+		public static final String WR_ACC_OFFSET_Y = "LIS2DW12_Acc_Offset_Y";
+		public static final String WR_ACC_OFFSET_Z = "LIS2DW12_Acc_Offset_Z";
+		public static final String WR_ACC_GAIN_X = "LIS2DW12_Acc_Gain_X";
+		public static final String WR_ACC_GAIN_Y = "LIS2DW12_Acc_Gain_Y";
+		public static final String WR_ACC_GAIN_Z = "LIS2DW12_Acc_Gain_Z";
+		public static final String WR_ACC_ALIGN_XX = "LIS2DW12_Acc_Align_XX";
+		public static final String WR_ACC_ALIGN_XY = "LIS2DW12_Acc_Align_XY";
+		public static final String WR_ACC_ALIGN_XZ = "LIS2DW12_Acc_Align_XZ";
+		public static final String WR_ACC_ALIGN_YX = "LIS2DW12_Acc_Align_YX";
+		public static final String WR_ACC_ALIGN_YY = "LIS2DW12_Acc_Align_YY";
+		public static final String WR_ACC_ALIGN_YZ = "LIS2DW12_Acc_Align_YZ";
+		public static final String WR_ACC_ALIGN_ZX = "LIS2DW12_Acc_Align_ZX";
+		public static final String WR_ACC_ALIGN_ZY = "LIS2DW12_Acc_Align_ZY";
+		public static final String WR_ACC_ALIGN_ZZ = "LIS2DW12_Acc_Align_ZZ";
+		
+		public static final List<String> LIST_OF_CALIB_HANDLES_WR_ACCEL = Arrays.asList(
+				DatabaseConfigHandle.WR_ACC_OFFSET_X, DatabaseConfigHandle.WR_ACC_OFFSET_Y, DatabaseConfigHandle.WR_ACC_OFFSET_Z,
+				DatabaseConfigHandle.WR_ACC_GAIN_X, DatabaseConfigHandle.WR_ACC_GAIN_Y, DatabaseConfigHandle.WR_ACC_GAIN_Z,
+				DatabaseConfigHandle.WR_ACC_ALIGN_XX, DatabaseConfigHandle.WR_ACC_ALIGN_XY, DatabaseConfigHandle.WR_ACC_ALIGN_XZ,
+				DatabaseConfigHandle.WR_ACC_ALIGN_YX, DatabaseConfigHandle.WR_ACC_ALIGN_YY, DatabaseConfigHandle.WR_ACC_ALIGN_YZ,
+				DatabaseConfigHandle.WR_ACC_ALIGN_ZX, DatabaseConfigHandle.WR_ACC_ALIGN_ZY, DatabaseConfigHandle.WR_ACC_ALIGN_ZZ);
 	}
 	
 	public static final String[] ListofLIS2DW12AccelRange={
@@ -329,57 +352,240 @@ public class SensorLIS2DW12 extends AbstractSensor {
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType,
-			ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pctimeStampMs) {
-		// TODO Auto-generated method stub
-		return null;
+			ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
+		
+		// process data originating from the Shimmer
+		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
+		
+		//Calibration
+		if(mEnableCalibration){
+			// get uncalibrated data for each (sub)sensor
+			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_WR) && mCurrentCalibDetailsAccelWr!=null){
+				double[] unCalibratedAccelWrData = new double[3];
+				for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					//Uncalibrated Accelerometer data
+					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_X)){
+						unCalibratedAccelWrData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					}
+					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Y)){
+						unCalibratedAccelWrData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					}
+					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Z)){
+						unCalibratedAccelWrData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					}
+				}
+				
+				double[] calibratedAccelWrData = UtilCalibration.calibrateInertialSensorData(unCalibratedAccelWrData, mCurrentCalibDetailsAccelWr);	
+				//Add calibrated data to Object cluster
+				if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.ACCEL_WR)){	
+					for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+						if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_X)){
+							objectCluster.addCalData(channelDetails, calibratedAccelWrData[0], objectCluster.getIndexKeeper()-3, isUsingDefaultWRAccelParam());
+						}
+						else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Y)){
+							objectCluster.addCalData(channelDetails, calibratedAccelWrData[1], objectCluster.getIndexKeeper()-2, isUsingDefaultWRAccelParam());
+						}
+						else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.ACCEL_WR_Z)){
+							objectCluster.addCalData(channelDetails, calibratedAccelWrData[2], objectCluster.getIndexKeeper()-1, isUsingDefaultWRAccelParam());
+						}
+					}
+				}
+	
+				//Debugging
+				if(mIsDebugOutput){
+					super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+							new String[]{ObjectClusterSensorName.ACCEL_WR_X, CHANNEL_TYPE.UNCAL.toString()}, 
+							new String[]{ObjectClusterSensorName.ACCEL_WR_Y, CHANNEL_TYPE.UNCAL.toString()}, 
+							new String[]{ObjectClusterSensorName.ACCEL_WR_Z, CHANNEL_TYPE.UNCAL.toString()}, 
+							new String[]{ObjectClusterSensorName.ACCEL_WR_X, CHANNEL_TYPE.CAL.toString()}, 
+							new String[]{ObjectClusterSensorName.ACCEL_WR_Y, CHANNEL_TYPE.CAL.toString()},
+							new String[]{ObjectClusterSensorName.ACCEL_WR_Z, CHANNEL_TYPE.CAL.toString()}));
+				}
+			}
+		}
+		return objectCluster;
 	}
 
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-		// TODO Auto-generated method stub
-		
+		if(!isSensorEnabled(mSensorIdAccel)) {
+			setDefaultLIS2DW12AccelSensorConfig(false);
+		}
+		//Added this for Conensys 1.0.0 release - assumes individual sampling rates of each sensor matches the Shimmer sampling
+		setLowPowerAccelWR(false);
 	}
 
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
 		
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+			
+			configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (byte) ((getLIS2DW12DigitalAccelRate() & configByteLayoutCast.maskLSM303DLHCAccelSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate);
+			configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (byte) ((getAccelRange() & configByteLayoutCast.maskLSM303DLHCAccelRange) << configByteLayoutCast.bitShiftLSM303DLHCAccelRange);
+			if(isLowPowerAccelWR()) {
+				configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (configByteLayoutCast.maskLSM303DLHCAccelLPM << configByteLayoutCast.bitShiftLSM303DLHCAccelLPM);
+			}
+			if(isHighPerModeAccelWR()) {
+				configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (configByteLayoutCast.maskLSM303DLHCAccelHRM << configByteLayoutCast.bitShiftLSM303DLHCAccelHRM);
+			}
+
+			// LSM303DLHC Digital Accel Calibration Parameters
+			byte[] bufferCalibrationParameters = generateCalParamLIS2DW12Accel();
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLSM303DLHCAccelCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+		}	
 	}
 
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
 		
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+
+			setLIS2DW12DigitalAccelRate((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate) & configByteLayoutCast.maskLSM303DLHCAccelSamplingRate); 
+			setLIS2DW12AccelRange((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelRange) & configByteLayoutCast.maskLSM303DLHCAccelRange);
+			if(((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelLPM) & configByteLayoutCast.maskLSM303DLHCAccelLPM) == configByteLayoutCast.maskLSM303DLHCAccelLPM) {
+				setLowPowerAccelWR(true);
+			}
+			else {
+				setLowPowerAccelWR(false);
+			}
+			if(((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelHRM) & configByteLayoutCast.maskLSM303DLHCAccelHRM) == configByteLayoutCast.maskLSM303DLHCAccelHRM) {
+				setHighPerModeAccelWR(true);
+			}
+			else {
+				setHighPerModeAccelWR(false);
+			}
+
+			if (shimmerDevice.isConnected()){
+				getCurrentCalibDetailsAccelWr().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+			}
+
+			// LIS2DW12 Digital Accel Calibration Parameters
+			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+			System.arraycopy(configBytes, configByteLayoutCast.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			parseCalibParamFromPacketAccelWR(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
+		}
 	}
 
 	@Override
 	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
-		// TODO Auto-generated method stub
-		return null;
+		Object returnValue = null;
+		
+		switch(configLabel){
+			case(GuiLabelConfig.LIS2DW12_ACCEL_LPM):
+				setLowPowerAccelWR((boolean)valueToSet);
+				break;
+			case(GuiLabelConfig.LIS2DW12_ACCEL_RANGE):
+				setLIS2DW12AccelRange((int)valueToSet);
+				break;
+			case(GuiLabelConfig.LIS2DW12_ACCEL_RATE):
+				setLIS2DW12DigitalAccelRate((int)valueToSet);
+				break;
+
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorId==mSensorIdAccel){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LIS2DW12_ACCEL_RANGE, valueToSet);
+				}
+			case(GuiLabelConfigCommon.RATE):
+				if(sensorId==mSensorIdAccel){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LIS2DW12_ACCEL_RATE, valueToSet);
+				}
+			default:
+				returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
+				break;
+		}	
+		
+        if(configLabel.equals(SensorLIS2DW12.GuiLabelConfig.LIS2DW12_ACCEL_RATE)){
+        	checkConfigOptionValues(configLabel);
+        }
+		
+		return returnValue;
 	}
 
 	@Override
 	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
-		// TODO Auto-generated method stub
-		return null;
+		Object returnValue = null;
+		
+		if(configLabel.equals(GuiLabelConfig.LIS2DW12_ACCEL_RATE)){
+        	checkConfigOptionValues(configLabel);
+        }
+		
+		switch(configLabel){
+			case(GuiLabelConfig.LIS2DW12_ACCEL_LPM):
+				returnValue = isLIS2DW12DigitalAccelLPM();
+	        	break;
+			case(GuiLabelConfig.LIS2DW12_ACCEL_RANGE): 
+				returnValue = getAccelRange();
+		    	break;
+			case(GuiLabelConfig.LIS2DW12_ACCEL_RATE): 
+				int configValue = getLIS2DW12DigitalAccelRate(); 
+				returnValue = configValue;
+				break;
+	        	
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorId==mSensorIdAccel){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LIS2DW12_ACCEL_RANGE);
+				}
+			case(GuiLabelConfigCommon.RATE):
+				if(sensorId==mSensorIdAccel){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LIS2DW12_ACCEL_RATE);
+				}
+			default:
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
+				break;
+		}
+		return returnValue;
 	}
 
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
-		// TODO Auto-generated method stub
-		
+		//set sampling rate of the sensors as close to the Shimmer sampling rate as possible (sensor sampling rate >= shimmer sampling rate)
+		setLowPowerAccelWR(false);
+		setLIS2DW12AccelRateFromFreq(samplingRateHz);
 	}
 
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
-		// TODO Auto-generated method stub
+		if(mSensorMap.containsKey(sensorId)){
+			if(sensorId==mSensorIdAccel) {
+				setDefaultLIS2DW12AccelSensorConfig(isSensorEnabled);		
+			}
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean checkConfigOptionValues(String stringKey) {
-		// TODO Auto-generated method stub
+		if(mConfigOptionsMap.containsKey(stringKey)){
+			if(stringKey==GuiLabelConfig.LIS2DW12_ACCEL_RATE){
+				if(isLIS2DW12DigitalAccelLPM()) {
+					mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS2DW12_ACCEL_RATE.IS_LPM);
+				}
+				else {
+					mConfigOptionsMap.get(stringKey).setIndexOfValuesToUse(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS2DW12_ACCEL_RATE.NOT_LPM);
+				}
+			}		
+			return true;
+		}
 		return false;
+	}
+	
+	@Override
+	public boolean isSensorUsingDefaultCal(int sensorId) {
+		if(sensorId==mSensorIdAccel){
+			return isUsingDefaultWRAccelParam();
+		}
+		return false;
+	}
+	
+	@Override
+	public void setCalibrationMapPerSensor(int sensorId, TreeMap<Integer, CalibDetails> mapOfSensorCalibration) {
+		super.setCalibrationMapPerSensor(sensorId, mapOfSensorCalibration);
+		updateCurrentAccelWrCalibInUse();
 	}
 
 	@Override
@@ -390,8 +596,8 @@ public class SensorLIS2DW12 extends AbstractSensor {
 
 	@Override
 	public ActionSetting setSettings(String componentName, Object valueToSet, COMMUNICATION_TYPE commType) {
-		// TODO Auto-generated method stub
-		return null;
+		ActionSetting actionsetting = new ActionSetting(commType);		
+		return actionsetting;
 	}
 
 	@Override
@@ -402,14 +608,44 @@ public class SensorLIS2DW12 extends AbstractSensor {
 
 	@Override
 	public LinkedHashMap<String, Object> generateConfigMap() {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
+		
+		mapOfConfig.put(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_RATE, getLIS2DW12DigitalAccelRate());
+		mapOfConfig.put(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_RANGE, getAccelRange());
+		mapOfConfig.put(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_LPM, getLowPowerAccelEnabled());
+		mapOfConfig.put(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_HPM, getHighPerModeAccelWREnabled());
+		
+		super.addCalibDetailsToDbMap(mapOfConfig, 
+				getCurrentCalibDetailsAccelWr(), 
+				SensorLIS2DW12.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
+				SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
+
+		return mapOfConfig;
 	}
 
 	@Override
 	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-		// TODO Auto-generated method stub
 		
+		//Better if LPM/HRM are processed first as they can override the sampling rate
+		if(mapOfConfigPerShimmer.containsKey(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_LPM)){
+			setLowPowerAccelWR(((Double) mapOfConfigPerShimmer.get(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_LPM))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_HPM)){
+			setHighResAccelWR(((Double) mapOfConfigPerShimmer.get(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_HPM))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_RATE)){
+			setLIS2DW12DigitalAccelRate(((Double) mapOfConfigPerShimmer.get(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_RATE)).intValue());
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_RANGE)){
+			setLIS2DW12AccelRange(((Double) mapOfConfigPerShimmer.get(SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_RANGE)).intValue());
+		}
+		
+		//Digital Accel Calibration Configuration
+		parseCalibDetailsKinematicFromDb(mapOfConfigPerShimmer, 
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR, 
+				getAccelRange(), 
+				SensorLIS2DW12.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_WR_ACCEL,
+				SensorLIS2DW12.DatabaseConfigHandle.WR_ACC_CALIB_TIME);
 	}
 	
 	
@@ -441,6 +677,14 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	
 	
 	//--------- Sensor specific methods start --------------
+	public void setHighResAccelWR(boolean enable) {
+		mHighResAccelWR = enable;
+	}
+	
+	public void setHighResAccelWR(int i){
+		mHighResAccelWR = (i>0)? true:false;
+	}
+	
 	public void updateCurrentAccelWrCalibInUse(){
 		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsIfKinematic(mSensorIdAccel, getAccelRange());
 	}
@@ -540,6 +784,14 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		return accelRate;
 	}
 	
+	public static String parseFromDBColumnToGUIChannel(String databaseChannelHandle) {
+		return AbstractSensor.parseFromDBColumnToGUIChannel(mChannelMapRef, databaseChannelHandle);
+	}
+	
+	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
+		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
+	}
+	
 	public void setLIS2DW12AccelRange(int valueToSet){
 		if(ArrayUtils.contains(ListofLIS2DW12AccelRangeConfigValues, valueToSet)){
 			mAccelRange = valueToSet;
@@ -630,6 +882,18 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	
 	public int getLIS2DW12DigitalAccelRate() {
 		return mLIS2DW12DigitalAccelRate;
+	}
+	
+	public byte[] generateCalParamLIS2DW12Accel(){
+		return mCurrentCalibDetailsAccelWr.generateCalParamByteArray();
+	}
+	
+	public void parseCalibParamFromPacketAccelWR(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
+		mCurrentCalibDetailsAccelWr.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
+	}
+	
+	public void setDefaultCalibrationShimmer3rWideRangeAccel() {
+		mCurrentCalibDetailsAccelWr.resetToDefaultParameters();
 	}
 	//--------- Sensor specific methods end --------------
 	
