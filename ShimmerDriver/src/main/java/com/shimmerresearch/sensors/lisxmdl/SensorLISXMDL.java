@@ -271,9 +271,18 @@ public abstract class SensorLISXMDL extends AbstractSensor{
 			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getMagRange() & configByteLayoutCast.maskLSM303DLHCMagRange) << configByteLayoutCast.bitShiftLSM303DLHCMagRange);
 			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getLISMagRate() & configByteLayoutCast.maskLSM303DLHCMagSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate);
 
+			//implementation for wr mag sensor : tbd
+			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getWRMagRange() & configByteLayoutCast.maskLSM303DLHCMagRange) << configByteLayoutCast.bitShiftLSM303DLHCMagRange);
+			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getLISWRMagRate() & configByteLayoutCast.maskLSM303DLHCMagSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate);
+
 			// LISM3MDL Magnetometer Calibration Parameters
 			byte[] bufferCalibrationParameters = generateCalParamLIS3MDLMag();
 			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+		
+			//implementation for wr mag sensor : tbd
+			bufferCalibrationParameters = generateCalParamLIS2MDLMag();
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+		
 		}
 		
 	}
@@ -289,14 +298,25 @@ public abstract class SensorLISXMDL extends AbstractSensor{
 			setLISMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
 			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
 			
+			//implementation for wr mag sensor : tbd
+			setLISWRMagRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagRange) & configByteLayoutCast.maskLSM303DLHCMagRange);
+			setLISWRMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
+			
+			
 			if (shimmerDevice.isConnected()){
 				getCurrentCalibDetailsMag().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+				getCurrentCalibDetailsMagWr().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 			}
 
 			// LSM303DLHC Magnetometer Calibration Parameters
 			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
 			System.arraycopy(configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
 			parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
+		
+			//implementation for wr mag sensor : tbd
+			bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+			System.arraycopy(configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			parseCalibParamFromPacketMagWr(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 		}
 	}
 	

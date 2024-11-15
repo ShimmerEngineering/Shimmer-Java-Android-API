@@ -303,12 +303,12 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 	//--------- Optional methods to override in Sensor Class start --------
 	@Override
 	public void initialise() {
-		mSensorIdMag = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR;
+		mSensorIdWRMag = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR;
 		super.initialise();
 		
-		mMagRange = ListofLIS2MDLWRMagRangeConfigValues[0];
+		mWRMagRange = ListofLIS2MDLWRMagRangeConfigValues[0];
 		
-		updateCurrentMagCalibInUse();
+		updateCurrentMagWrCalibInUse();
 	}
 
 	@Override
@@ -317,9 +317,9 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 
 		TreeMap<Integer, CalibDetails> calibMapMag = new TreeMap<Integer, CalibDetails>();
 		calibMapMag.put(calibDetailsMag.mRangeValue, calibDetailsMag);
-		setCalibrationMapPerSensor(mSensorIdMag, calibMapMag);
+		setCalibrationMapPerSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR, calibMapMag);
 		
-		updateCurrentMagCalibInUse();
+		updateCurrentMagWrCalibInUse();
 	}
 	
 	//--------- Optional methods to override in Sensor Class end --------
@@ -352,7 +352,7 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 
 	@Override
 	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq, int mode) {
-		return SensorLIS3MDL.getMagRateFromFreq(isEnabled, freq, mode);
+		return 0;
 	}
 
 	@Override
