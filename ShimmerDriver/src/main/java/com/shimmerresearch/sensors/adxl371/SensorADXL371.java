@@ -145,7 +145,7 @@ public class SensorADXL371 extends AbstractSensor{
 	//--------- Sensor info end --------------
     
 	//--------- Bluetooth commands start --------------
-
+	//still not being implemented for high g accel sensor due to unavailability in doc
 	public static final byte SET_ALT_ACCEL_CALIBRATION_COMMAND 	= (byte) 0x1A; //tbd
 	public static final byte ALT_ACCEL_CALIBRATION_RESPONSE	 	= (byte) 0x1B; //tbd
 	public static final byte GET_ALT_ACCEL_CALIBRATION_COMMAND  	= (byte) 0x1C; //tbd
@@ -337,6 +337,7 @@ public class SensorADXL371 extends AbstractSensor{
 
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
+		// currently use wr accel sensor as placeholder
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
@@ -352,6 +353,7 @@ public class SensorADXL371 extends AbstractSensor{
 
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
+		// currently use wr accel sensor as placeholder
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;

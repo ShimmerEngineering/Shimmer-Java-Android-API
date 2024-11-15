@@ -92,6 +92,7 @@ public class SensorLIS2MDL extends SensorLISXMDL{
 	//--------- Sensor specific variables end --------------	
 	
 	//--------- Bluetooth commands start --------------
+	//still not being implemented for wr mag sensor due to unavailability in docs
 	public static final byte SET_ALT_MAG_CALIBRATION_COMMAND      		= (byte) 0x17;//tbd
 	public static final byte ALT_MAG_CALIBRATION_RESPONSE         		= (byte) 0x18;//tbd
 	public static final byte GET_ALT_MAG_CALIBRATION_COMMAND      		= (byte) 0x19;//tbd
