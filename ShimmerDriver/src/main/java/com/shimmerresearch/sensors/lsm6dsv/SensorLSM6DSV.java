@@ -910,6 +910,9 @@ public class SensorLSM6DSV extends AbstractSensor{
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 			
+			configBytes[configByteLayoutCast.idxConfigSetupByte1] |= (byte) ((getLSM6DSVGyroAccelRate() & configByteLayoutCast.maskMPU9150AccelGyroSamplingRate) << configByteLayoutCast.bitShiftMPU9150AccelGyroSamplingRate);
+			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getGyroRange() & configByteLayoutCast.maskMPU9150GyroRange) << configByteLayoutCast.bitShiftMPU9150GyroRange);
+			
 			// Analog Accel Calibration Parameters
 			byte[] bufferCalibrationParametersAccelLN = generateCalParamByteArrayAccelLn();
 			System.arraycopy(bufferCalibrationParametersAccelLN, 0, configBytes, configByteLayoutCast.idxAnalogAccelCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
