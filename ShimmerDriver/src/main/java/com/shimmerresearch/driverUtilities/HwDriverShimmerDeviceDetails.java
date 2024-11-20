@@ -33,7 +33,8 @@ public class HwDriverShimmerDeviceDetails {
 		WEBCAM("Webcam"),
 		HOST_CPU_USAGE("CPU Usage"),
 		SWEATCH("SwEatch"),
-		VERISENSE("Verisense");
+		VERISENSE("Verisense"),
+		KEYBOARD("Keyboard");
 
 		private String deviceLabel = "";
 		
