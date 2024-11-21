@@ -30,6 +30,7 @@ import com.shimmerresearch.driverUtilities.ConfigOptionObject;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -963,5 +964,33 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	}
 	
 	//--------- Sensor specific methods end --------------
+	
+	public double getCalibTimeMag() {
+		return mCurrentCalibDetailsMag.getCalibTimeMs();
+	}
+	
+	public boolean isUsingValidMagParam() {
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixMag()) && !UtilShimmer.isAllZeros(getSensitivityMatrixMag())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public double[][] getAlignmentMatrixMag(){
+		return getCurrentCalibDetailsMag().getValidAlignmentMatrix();
+	}
+	
+	public void updateIsUsingDefaultMagParam() {
+		mIsUsingDefaultMagParam = getCurrentCalibDetailsMag().isUsingDefaultParameters();
+	}
+	
+	public double[][] getSensitivityMatrixMag(){
+		return getCurrentCalibDetailsMag().getValidSensitivityMatrix();
+	}
+	
+	public double[][] getOffsetVectorMatrixMag(){
+		return getCurrentCalibDetailsMag().getValidOffsetVector();
+	}
 
 }
