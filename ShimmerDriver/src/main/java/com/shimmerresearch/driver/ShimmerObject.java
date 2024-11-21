@@ -8084,7 +8084,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if (isShimmerGen3()){
 			return mSensorLSM303.getLSM303MagRate();
 		} else if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.getLISMagRate();
+			return mSensorLIS3MDL.getLIS3MDLMagRate();
 		}
 		return 0;
 	}
