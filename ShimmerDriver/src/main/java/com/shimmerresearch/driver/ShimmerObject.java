@@ -8049,7 +8049,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen3()) {
 			mSensorLSM303.setLSM303MagRange(i);
 		} else if(isShimmerGen3R()) {
-			mSensorLIS3MDL.setLIS3MDLMagRange(i);
+			mSensorLIS3MDL.setLISMagRange(i);
 		}
 	}
 
@@ -8074,7 +8074,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if (isShimmerGen3()){
 			mSensorLSM303.setLSM303MagRate(magRate);
 		} else if (isShimmerGen3R()) {
-			mSensorLIS3MDL.setLIS3MDLMagRate(magRate);
+			mSensorLIS3MDL.setLISMagRate(magRate);
 		}
 	}
 

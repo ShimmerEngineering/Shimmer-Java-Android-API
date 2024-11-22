@@ -12,28 +12,46 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
+import com.shimmerresearch.driver.calibration.UtilCalibration;
+import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
+import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
+import com.shimmerresearch.bluetooth.BtCommandDetails;
+import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.ConfigOptionObject;
+import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 
-public class SensorLIS3MDL extends SensorLISXMDL{
+public class SensorLIS3MDL extends AbstractSensor{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2366590050010873738L;
+	
+	protected int mMagRange = 0;
+	protected int mLISMagRate = 4;
+	public boolean mIsUsingDefaultMagParam = true;
+	protected boolean mLowPowerMag = false;
+	protected boolean mMedPowerMag = false;
+	protected boolean mHighPowerMag = false;
+	protected boolean mUltraHighPowerMag = false;
+	protected int mSensorIdMag = -1;
 	
 	//--------- Sensor specific variables start --------------	
 	
@@ -75,6 +93,7 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 			DefaultAlignmentMatrixMagShimmer3,
 			DefaultSensitivityMatrixMag16GaShimmer3,
 			DefaultOffsetVectorMagShimmer3);
+	public CalibDetailsKinematic mCurrentCalibDetailsMag = calibDetailsMag4;
 
 	// ----------   Mag end ---------------
 	
@@ -119,6 +138,39 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 				DatabaseConfigHandle.MAG_ALIGN_ZX, DatabaseConfigHandle.MAG_ALIGN_ZY, DatabaseConfigHandle.MAG_ALIGN_ZZ);
 	}
 	
+	public class GuiLabelConfig{
+	
+		public static final String LIS3MDL_MAG_RANGE = "Mag Range";
+		public static final String LIS3MDL_MAG_RATE = "Mag Rate";
+		
+		public static final String LIS3MDL_MAG_LP = "Mag Low-Power Mode";
+		public static final String LIS3MDL_MAG_MP = "Mag Med-Power Mode";
+		public static final String LIS3MDL_MAG_HP = "Mag High-Power Mode";
+		public static final String LIS3MDL_MAG_UP = "Mag Ultra High-Power Mode";
+
+		public static final String LIS3MDL_MAG_DEFAULT_CALIB = "Mag Default Calibration";
+
+		//NEW
+		public static final String LIS3MDL_MAG_CALIB_PARAM = "Mag Calibration Details";
+		public static final String LIS3MDL_MAG_VALID_CALIB = "Mag Valid Calibration";
+		
+	}
+	
+	public static class ObjectClusterSensorName{
+		
+		public static  String MAG_X = "Mag_X";
+		public static  String MAG_Y = "Mag_Y";
+		public static  String MAG_Z = "Mag_Z";		
+	}
+	
+	public class GuiLabelSensors{
+		public static final String MAG = "Magnetometer"; 
+	}
+	
+	public class LABEL_SENSOR_TILE{
+		public static final String MAG = GuiLabelSensors.MAG;
+	}
+	
 	//--------- Sensor specific variables end --------------	
 	
 	//--------- Configuration options start --------------
@@ -136,7 +188,7 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 	public static final Integer[] ListofLIS3MDLMagRangeConfigValues={0,1,2,3};
 
 	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
-			SensorLIS3MDL.GuiLabelConfig.LISXMDL_MAG_RANGE,
+			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_RANGE,
 			SensorLIS3MDL.DatabaseConfigHandle.MAG_RANGE,
 			ListofLIS3MDLMagRange, 
 			ListofLIS3MDLMagRangeConfigValues, 
@@ -144,7 +196,7 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL);
 	
 	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
-			SensorLIS3MDL.GuiLabelConfig.LISXMDL_MAG_RATE,
+			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_RATE,
 			SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE,
 			ListofLIS3MDLMagRateLp, 
 			ListofLIS3MDLMagRateLpConfigValues,
@@ -171,8 +223,8 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 			0x20, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
 			GuiLabelSensors.MAG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL,
-			Arrays.asList(GuiLabelConfig.LISXMDL_MAG_RANGE,
-					GuiLabelConfig.LISXMDL_MAG_RATE),
+			Arrays.asList(GuiLabelConfig.LIS3MDL_MAG_RANGE,
+					GuiLabelConfig.LIS3MDL_MAG_RATE),
 			//MAG channel parsing order is XZY instead of XYZ but it would be better to represent it on the GUI in XYZ
 			Arrays.asList(ObjectClusterSensorName.MAG_X,
 					ObjectClusterSensorName.MAG_Y,
@@ -232,20 +284,52 @@ public class SensorLIS3MDL extends SensorLISXMDL{
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL);
     
+  //--------- Bluetooth commands start --------------
+  	public static final byte SET_MAG_CALIBRATION_COMMAND      		= (byte) 0x17;
+  	public static final byte MAG_CALIBRATION_RESPONSE         		= (byte) 0x18;
+  	public static final byte GET_MAG_CALIBRATION_COMMAND      		= (byte) 0x19;
+  	
+  	public static final byte SET_MAG_GAIN_COMMAND             		= (byte) 0x37;
+  	public static final byte MAG_GAIN_RESPONSE                		= (byte) 0x38;
+  	public static final byte GET_MAG_GAIN_COMMAND             		= (byte) 0x39;
+  	
+  	public static final byte SET_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3A;
+  	public static final byte MAG_SAMPLING_RATE_RESPONSE       		= (byte) 0x3B;
+  	public static final byte GET_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3C;
+  	
+	  public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+	  static {
+	      Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	      aMap.put(GET_MAG_CALIBRATION_COMMAND, new BtCommandDetails(GET_MAG_CALIBRATION_COMMAND, "GET_MAG_CALIBRATION_COMMAND", MAG_CALIBRATION_RESPONSE));
+	      aMap.put(GET_MAG_GAIN_COMMAND, new BtCommandDetails(GET_MAG_GAIN_COMMAND, "GET_MAG_GAIN_COMMAND", MAG_GAIN_RESPONSE));
+	      aMap.put(GET_MAG_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_MAG_SAMPLING_RATE_COMMAND, "GET_MAG_SAMPLING_RATE_COMMAND", MAG_SAMPLING_RATE_RESPONSE));
+	      mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+	  }
+	  
+	  public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+	  static {
+	      Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	      aMap.put(SET_MAG_CALIBRATION_COMMAND, new BtCommandDetails(SET_MAG_CALIBRATION_COMMAND, "SET_MAG_CALIBRATION_COMMAND"));
+	      aMap.put(SET_MAG_GAIN_COMMAND, new BtCommandDetails(SET_MAG_GAIN_COMMAND, "SET_MAG_GAIN_COMMAND"));
+	      aMap.put(SET_MAG_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_MAG_SAMPLING_RATE_COMMAND, "SET_MAG_SAMPLING_RATE_COMMAND"));
+	      mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+	  }
+	  //--------- Bluetooth commands end --------------
+    
   //--------- Constructors for this class start --------------
     
 	public SensorLIS3MDL() {
-		super();
+		super(SENSORS.LIS3MDL);
 		initialise();
 	}
 	
 	public SensorLIS3MDL(ShimmerObject obj) {
-		super(obj);
+		super(SENSORS.LIS3MDL, obj);
 		initialise();
 	}
 	
 	public SensorLIS3MDL(ShimmerDevice shimmerDevice) {
-		super(shimmerDevice);
+		super(SENSORS.LIS3MDL, shimmerDevice);
 		initialise();
 	}
     
@@ -307,6 +391,98 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 
 		return mapOfConfig;
 	}
+	
+	public CalibDetailsKinematic getCurrentCalibDetailsMag(){
+//		return getCurrentCalibDetails(mSensorIdMag, getMagRange());
+		if(mCurrentCalibDetailsMag==null){
+			updateCurrentMagCalibInUse();
+		}
+		return mCurrentCalibDetailsMag;
+	}
+	
+	public void updateCurrentMagCalibInUse(){
+//		mCurrentCalibDetailsMag = getCurrentCalibDetailsMag();
+		mCurrentCalibDetailsMag = getCurrentCalibDetailsIfKinematic(mSensorIdMag, getMagRange());
+	}
+	
+	public int getMagRange() {
+		return mMagRange;
+	}
+	
+	public int getLIS3MDLMagRate() {
+		return mLISMagRate;
+	}
+	
+	public void setLISMagRange(int valueToSet){
+		if(ArrayUtils.contains(ListofLIS3MDLMagRangeConfigValues, valueToSet)){
+			mMagRange = valueToSet;
+			updateCurrentMagCalibInUse();
+		}
+	}
+	
+	public void setLISMagRate(int valueToSet){
+		mLISMagRate = valueToSet;
+	}
+	
+	public int getLowPowerMagEnabled(){
+		return (isLowPowerMagEnabled()? 1:0);
+	}
+	
+	public int getMedPowerMagEnabled(){
+		return (isMedPowerMagEnabled()? 1:0);
+	}
+	
+	public int getHighPowerMagEnabled(){
+		return (isHighPowerMagEnabled()? 1:0);
+	}
+	
+	public int getUltraHighPowerMagEnabled(){
+		return (isUltraHighPowerMagEnabled()? 1:0);
+	}
+	
+	public void	setLowPowerMag(boolean enable){
+		mLowPowerMag = enable;
+		if(mShimmerDevice!=null){
+			setLIS3MDLMagRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	public void	setMedPowerMag(boolean enable){
+		mMedPowerMag = enable;
+		if(mShimmerDevice!=null){
+			setLIS3MDLMagRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	public void	setHighPowerMag(boolean enable){
+		mHighPowerMag = enable;
+		if(mShimmerDevice!=null){
+			setLIS3MDLMagRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	public void	setUltraHighPowerMag(boolean enable){
+		mUltraHighPowerMag = enable;
+		if(mShimmerDevice!=null){
+			setLIS3MDLMagRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	public boolean isLowPowerMagEnabled(){
+		return mLowPowerMag;
+	}
+	
+	public boolean isMedPowerMagEnabled(){
+		return mMedPowerMag;
+	}
+	
+	public boolean isHighPowerMagEnabled(){
+		return mHighPowerMag;
+	}
+	
+	public boolean isUltraHighPowerMagEnabled(){
+		return mUltraHighPowerMag;
+	}
 
 	@Override
 	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
@@ -324,10 +500,10 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 			setUltraHighPowerMag(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_UPM))>0? true:false);
 		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLIS3MDL.DatabaseConfigHandle.MAG_RANGE)){
-			setLIS3MDLMagRate(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_RANGE)).intValue());
+			setLISMagRate(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_RANGE)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE)){
-			setLIS3MDLMagRange(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE)).intValue());
+			setLISMagRange(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE)).intValue());
 		}
 		
 		//Magnetometer Calibration Configuration
@@ -375,11 +551,18 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	
 	//--------- Sensor specific methods start --------------
 	
-	public void setLIS3MDLMagRange(int valueToSet){
-		if(ArrayUtils.contains(ListofLIS3MDLMagRangeConfigValues, valueToSet)){
-			mMagRange = valueToSet;
-			updateCurrentMagCalibInUse();
+	public int setLIS3MDLMagRateFromFreq(double freq) {
+		boolean isEnabled = isSensorEnabled(mSensorIdMag);
+		if(isLowPowerMagEnabled()) {
+			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 0);
+		} else if(isMedPowerMagEnabled()) {
+			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 1);
+		} else if(isHighPowerMagEnabled()) {
+			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 2);
+		} else if(isUltraHighPowerMagEnabled()) {
+			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 3);
 		}
+		return mLISMagRate;
 	}
 	
 	public boolean checkLowPowerMag() {
@@ -531,11 +714,283 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	}
 
 	@Override
-	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq) {
+	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType,
+			ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs) {
+
+		// process data originating from the Shimmer
+		objectCluster = sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
+		
+		//Calibration
+		if(mEnableCalibration){
+			if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MAG) && mCurrentCalibDetailsMag!=null){
+				double[] unCalibratedMagData = new double[3];
+				for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+					//Uncalibrated Magnetometer data
+					if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_X)){
+						unCalibratedMagData[0] = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					}
+					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Y)){
+						unCalibratedMagData[1]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					}
+					else if (channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Z)){
+						unCalibratedMagData[2]  = ((FormatCluster)ObjectCluster.returnFormatCluster(objectCluster.getCollectionOfFormatClusters(channelDetails.mObjectClusterName), channelDetails.mChannelFormatDerivedFromShimmerDataPacket.toString())).mData;
+					}	
+				}
+				
+//				double[] calibratedMagData = UtilCalibration.calibrateInertialSensorData(unCalibratedMagData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
+				double[] calibratedMagData = UtilCalibration.calibrateInertialSensorData(unCalibratedMagData, mCurrentCalibDetailsMag);
+
+				if(sensorDetails.mSensorDetailsRef.mGuiFriendlyLabel.equals(GuiLabelSensors.MAG)){
+					for (ChannelDetails channelDetails:sensorDetails.mListOfChannels){
+						if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_X)){
+							objectCluster.addCalData(channelDetails, calibratedMagData[0], objectCluster.getIndexKeeper()-3, isUsingDefaultMagParam());
+						}
+						else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Y)){
+							objectCluster.addCalData(channelDetails, calibratedMagData[1], objectCluster.getIndexKeeper()-2, isUsingDefaultMagParam());
+						}
+						else if(channelDetails.mObjectClusterName.equals(ObjectClusterSensorName.MAG_Z)){
+							objectCluster.addCalData(channelDetails, calibratedMagData[2], objectCluster.getIndexKeeper()-1, isUsingDefaultMagParam());
+						}
+					}
+				}
+	
+				//Debugging
+				if(mIsDebugOutput){
+					super.consolePrintChannelsCal(objectCluster, Arrays.asList(
+							new String[]{ObjectClusterSensorName.MAG_X, CHANNEL_TYPE.UNCAL.toString()}, 
+							new String[]{ObjectClusterSensorName.MAG_Y, CHANNEL_TYPE.UNCAL.toString()}, 
+							new String[]{ObjectClusterSensorName.MAG_Z, CHANNEL_TYPE.UNCAL.toString()}, 
+							new String[]{ObjectClusterSensorName.MAG_X, CHANNEL_TYPE.CAL.toString()}, 
+							new String[]{ObjectClusterSensorName.MAG_Y, CHANNEL_TYPE.CAL.toString()},
+							new String[]{ObjectClusterSensorName.MAG_Z, CHANNEL_TYPE.CAL.toString()}));
+				}
+			}
+		}
+		return objectCluster;
+	}
+	
+	public boolean isUsingDefaultMagParam(){
+		return getCurrentCalibDetailsMag().isUsingDefaultParameters(); 
+	}
+
+	@Override
+	public void checkShimmerConfigBeforeConfiguring() {
+		if(!isSensorEnabled(mSensorIdMag)) {
+			setDefaultLisMagSensorConfig(false);
+		}
+
+		setLowPowerMag(false);
+	}
+
+	@Override
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+
+			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getMagRange() & configByteLayoutCast.maskLSM303DLHCMagRange) << configByteLayoutCast.bitShiftLSM303DLHCMagRange);
+			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getLIS3MDLMagRate() & configByteLayoutCast.maskLSM303DLHCMagSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate);
+
+			// LISM3MDL Magnetometer Calibration Parameters
+			byte[] bufferCalibrationParameters = generateCalParamLIS3MDLMag();
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+		}
+	}
+	
+	public byte[] generateCalParamLIS3MDLMag(){
+		return getCurrentCalibDetailsMag().generateCalParamByteArray();
+	}
+
+	@Override
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+
+			setLISMagRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagRange) & configByteLayoutCast.maskLSM303DLHCMagRange);
+			setLISMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
+			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
+			
+			if (shimmerDevice.isConnected()){
+				getCurrentCalibDetailsMag().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
+			}
+
+			// LSM303DLHC Magnetometer Calibration Parameters
+			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
+			System.arraycopy(configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			parseCalibParamFromPacketMag(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
+		}
+	}
+
+	public void parseCalibParamFromPacketMag(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
+		getCurrentCalibDetailsMag().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
+	}
+	
+	@Override
+	public Object setConfigValueUsingConfigLabel(Integer sensorId, String configLabel, Object valueToSet) {
+		Object returnValue = null;
+		
+		switch(configLabel){
+			case(GuiLabelConfig.LIS3MDL_MAG_LP):
+				setLowPowerMag((boolean)valueToSet);
+				break;
+			case(GuiLabelConfig.LIS3MDL_MAG_MP):
+				setMedPowerMag((boolean)valueToSet);
+				break;
+			case(GuiLabelConfig.LIS3MDL_MAG_HP):
+				setHighPowerMag((boolean)valueToSet);
+				break;
+			case(GuiLabelConfig.LIS3MDL_MAG_UP):
+				setUltraHighPowerMag((boolean)valueToSet);
+				break;
+			case(GuiLabelConfig.LIS3MDL_MAG_RANGE):
+				setLISMagRange((int)valueToSet);
+				break;
+			case(GuiLabelConfig.LIS3MDL_MAG_RATE):
+				setLISMagRate((int)valueToSet);
+				break;
+				
+//			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
+//				TreeMap<Integer, TreeMap<Integer, CalibDetails>> mapOfKinematicSensorCalibration = (TreeMap<Integer, TreeMap<Integer, CalibDetails>>) valueToSet;
+//				setCalibration(mapOfKinematicSensorCalibration);
+//				returnValue = valueToSet;
+//	    		break;
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorId==mSensorIdMag){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LIS3MDL_MAG_RANGE, valueToSet);
+				}
+				break;
+			case(GuiLabelConfigCommon.RATE):
+				if(sensorId==mSensorIdMag){
+					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LIS3MDL_MAG_RATE, valueToSet);
+				}
+				break;
+			default:
+				returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
+				break;
+		}	
+		
+        if(configLabel.equals(SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_RATE)){
+        	checkConfigOptionValues(configLabel);
+        }
+		
+		return returnValue;
+	}
+
+	@Override
+	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
+		Object returnValue = null;
+		
+		if(configLabel.equals(GuiLabelConfig.LIS3MDL_MAG_RATE)){
+        	checkConfigOptionValues(configLabel);
+        }
+		
+		switch(configLabel){
+			case(GuiLabelConfig.LIS3MDL_MAG_LP):
+				returnValue = isLowPowerMagEnabled();
+	        	break;
+			case(GuiLabelConfig.LIS3MDL_MAG_MP):
+				returnValue = isMedPowerMagEnabled();
+	        	break;
+			case(GuiLabelConfig.LIS3MDL_MAG_HP):
+				returnValue = isHighPowerMagEnabled();
+	        	break;
+			case(GuiLabelConfig.LIS3MDL_MAG_UP):
+				returnValue = isUltraHighPowerMagEnabled();
+	        	break;
+			case(GuiLabelConfig.LIS3MDL_MAG_RATE): 
+				returnValue = getLIS3MDLMagRate();
+		    	break;
+			case(GuiLabelConfig.LIS3MDL_MAG_RANGE):
+				//TODO check below and commented out code (RS (20/5/2016): Same as in ShimmerObject.)
+				returnValue = getMagRange();
+	        	
+//			case(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_CALIBRATION_ALL):
+//				returnValue = getKinematicCalibration();
+//				break;
+			case(GuiLabelConfigCommon.RANGE):
+				if(sensorId==mSensorIdMag){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LIS3MDL_MAG_RANGE);
+				}
+				break;
+			case(GuiLabelConfigCommon.RATE):
+				if(sensorId==mSensorIdMag){
+					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LIS3MDL_MAG_RATE);
+				}
+				break;
+			default:
+				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
+				break;
+			
+		}
+		return returnValue;
+	}
+
+	@Override
+	public void setSensorSamplingRate(double samplingRateHz) {
+		//set sampling rate of the sensors as close to the Shimmer sampling rate as possible (sensor sampling rate >= shimmer sampling rate)
+		setLowPowerMag(false);
+		
+		setLIS3MDLMagRateFromFreq(samplingRateHz);
+		
+		checkLowPowerMag();
+	}
+	
+	public void setDefaultLisMagSensorConfig(boolean isSensorEnabled) {
+		if(isSensorEnabled) {
+			setLowPowerMag(false);
+		}
+		else {
+			setLISMagRange(1);
+			setLowPowerMag(true);
+		}		
+	}
+
+	@Override
+	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
+		if(mSensorMap.containsKey(sensorId)){
+			if(sensorId==mSensorIdMag) {
+				setDefaultLisMagSensorConfig(isSensorEnabled);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean checkConfigOptionValues(String stringKey) {
 		// TODO Auto-generated method stub
-		return 0;
+		return false;
 	}
 	
 	//--------- Sensor specific methods end --------------
+	
+	public double getCalibTimeMag() {
+		return mCurrentCalibDetailsMag.getCalibTimeMs();
+	}
+	
+	public boolean isUsingValidMagParam() {
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixMag()) && !UtilShimmer.isAllZeros(getSensitivityMatrixMag())){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public double[][] getAlignmentMatrixMag(){
+		return getCurrentCalibDetailsMag().getValidAlignmentMatrix();
+	}
+	
+	public void updateIsUsingDefaultMagParam() {
+		mIsUsingDefaultMagParam = getCurrentCalibDetailsMag().isUsingDefaultParameters();
+	}
+	
+	public double[][] getSensitivityMatrixMag(){
+		return getCurrentCalibDetailsMag().getValidSensitivityMatrix();
+	}
+	
+	public double[][] getOffsetVectorMatrixMag(){
+		return getCurrentCalibDetailsMag().getValidOffsetVector();
+	}
 
 }

@@ -84,7 +84,8 @@ import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP390;
 import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
-import com.shimmerresearch.sensors.lisxmdl.SensorLISXMDL;
+import com.shimmerresearch.sensors.lisxmdl.SensorLIS2MDL;
+import com.shimmerresearch.sensors.lisxmdl.SensorLIS3MDL;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
@@ -719,7 +720,7 @@ public class Configuration {
 			public static final int SHIMMER_LSM6DSV_ACCEL_LN = 37;
 			public static final int SHIMMER_LSM6DSV_GYRO = 38;			
 			public static final int SHIMMER_LIS2DW12_ACCEL_WR = 39;
-      public static final int SHIMMER_ADXL371_ACCEL = 40;
+      public static final int SHIMMER_ADXL371_ACCEL_HIGHG = 40;
 			public static final int SHIMMER_LIS3MDL_MAG = 41;
 			public static final int SHIMMER_LIS2MDL_MAG_WR = 42;
 			public static final int SHIMMER_BMP390_PRESSURE = 43;
@@ -909,8 +910,8 @@ public class Configuration {
 			GYRO(SensorMPU9X50.LABEL_SENSOR_TILE.GYRO),
 			GYRO_3R(SensorLSM6DSV.LABEL_SENSOR_TILE.GYRO),
 			MAG(SensorLSM303.LABEL_SENSOR_TILE.MAG),
-			MAG_3R(SensorLISXMDL.LABEL_SENSOR_TILE.MAG),
-			WIDE_RANGE_MAG_3R(SensorLISXMDL.LABEL_SENSOR_TILE.WIDE_RANGE_MAG),
+			MAG_3R(SensorLIS3MDL.LABEL_SENSOR_TILE.MAG),
+			WIDE_RANGE_MAG_3R(SensorLIS2MDL.LABEL_SENSOR_TILE.WIDE_RANGE_MAG),
 			PRESSURE_TEMPERATURE_BMP180(SensorBMP180.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP390(SensorBMP390.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
