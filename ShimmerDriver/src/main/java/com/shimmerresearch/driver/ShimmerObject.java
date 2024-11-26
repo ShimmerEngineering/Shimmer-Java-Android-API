@@ -8359,6 +8359,48 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return mSensorLSM303.getOffsetVectorMatrixMag();
 		}
 	}
+	
+	public double[][] getOffsetVectorMatrixHighGAccel(){
+		if (isShimmerGen3R()) {
+			return mSensorADXL371.getOffsetVectorMatrixHighGAccel();
+		}
+		return null; 
+	}
+	
+	public double[][] getAlignmentMatrixHighGAccel(){
+		if (isShimmerGen3R()) {
+			return mSensorADXL371.getAlignmentMatrixHighGAccel();
+		}
+		return null; 
+	}
+	
+	public double[][] getSensitivityMatrixHighGAccel(){
+		if (isShimmerGen3R()) {
+			return mSensorADXL371.getSensitivityMatrixHighGAccel();
+		}
+		return null; 
+	}
+	
+	public double[][] getOffsetVectorMatrixWRMag(){
+		if (isShimmerGen3R()) {
+			return mSensorADXL371.getOffsetVectorMatrixHighGAccel();
+		}
+		return null; 
+	}
+	
+	public double[][] getAlignmentMatrixWRMag(){
+		if (isShimmerGen3R()) {
+			return mSensorADXL371.getAlignmentMatrixHighGAccel();
+		}
+		return null; 
+	}
+	
+	public double[][] getSensitivityMatrixWRMag(){
+		if (isShimmerGen3R()) {
+			return mSensorADXL371.getSensitivityMatrixHighGAccel();
+		}
+		return null; 
+	}
 
 	/** Only GQ BLE
 	 * @return the mSamplingDividerLsm303dlhcAccel

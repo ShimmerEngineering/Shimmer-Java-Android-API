@@ -473,7 +473,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 		mCurrentCalibDetailsAccelLn.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 	
-	private void setDefaultCalibrationShimmer3RrLowNoiseAccel() {
+	private void setDefaultCalibrationShimmer3rLowNoiseAccel() {
 		mCurrentCalibDetailsAccelLn.resetToDefaultParameters();
 	}
 
