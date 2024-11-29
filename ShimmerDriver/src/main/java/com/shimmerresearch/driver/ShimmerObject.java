@@ -2953,7 +2953,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_X;
-					signalDataTypeArray[i+1] = "i16r";
+					if (getHardwareVersion()==HW_ID.SHIMMER_3) {
+						signalDataTypeArray[i+1] = "i16r";
+					}else if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
+						signalDataTypeArray[i+1] = "i16";
+					}
 					packetSize=packetSize+2;
 					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO;
 				}
@@ -2973,7 +2977,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Y;
-					signalDataTypeArray[i+1] = "i16r";
+					if (getHardwareVersion()==HW_ID.SHIMMER_3) {
+						signalDataTypeArray[i+1] = "i16r";
+					}else if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
+						signalDataTypeArray[i+1] = "i16";
+					}
 					packetSize=packetSize+2;
 					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO;
 				}
@@ -2993,7 +3001,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) {
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.GYRO_Z;
-					signalDataTypeArray[i+1] = "i16r";
+					if (getHardwareVersion()==HW_ID.SHIMMER_3) {
+						signalDataTypeArray[i+1] = "i16r";
+					}else if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
+						signalDataTypeArray[i+1] = "i16";
+					}
 					packetSize=packetSize+2;
 					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_GYRO;
 				}
