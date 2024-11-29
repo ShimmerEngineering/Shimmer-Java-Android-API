@@ -146,13 +146,13 @@ public class SensorADXL371 extends AbstractSensor{
     
 	//--------- Bluetooth commands start --------------
 	//still not being implemented for high g accel sensor due to unavailability in doc
-	public static final byte SET_ALT_ACCEL_CALIBRATION_COMMAND 	= (byte) 0x1A; //tbd
-	public static final byte ALT_ACCEL_CALIBRATION_RESPONSE	 	= (byte) 0x1B; //tbd
-	public static final byte GET_ALT_ACCEL_CALIBRATION_COMMAND  	= (byte) 0x1C; //tbd
+	public static final byte SET_ALT_ACCEL_CALIBRATION_COMMAND 	= (byte) 0xA9; 
+	public static final byte ALT_ACCEL_CALIBRATION_RESPONSE	 	= (byte) 0xAA; 
+	public static final byte GET_ALT_ACCEL_CALIBRATION_COMMAND  	= (byte) 0xAB; 
 	
-	public static final byte SET_ALT_ACCEL_SAMPLING_RATE_COMMAND  	= (byte) 0x40; //tbd
-	public static final byte ALT_ACCEL_SAMPLING_RATE_RESPONSE  		= (byte) 0x41; //tbd
-	public static final byte GET_ALT_ACCEL_SAMPLING_RATE_COMMAND  	= (byte) 0x42; //tbd
+	public static final byte SET_ALT_ACCEL_SAMPLING_RATE_COMMAND  	= (byte) 0xAC; 
+	public static final byte ALT_ACCEL_SAMPLING_RATE_RESPONSE  		= (byte) 0xAD; 
+	public static final byte GET_ALT_ACCEL_SAMPLING_RATE_COMMAND  	= (byte) 0xAE; 
 
     public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
     static {

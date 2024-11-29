@@ -223,13 +223,13 @@ public class SensorLIS2MDL extends AbstractSensor{
     
 	//--------- Bluetooth commands start --------------
 	//still not being implemented for wr mag sensor due to unavailability in docs
-	public static final byte SET_ALT_MAG_CALIBRATION_COMMAND      		= (byte) 0x17; //TBD; temporarily use mag command
-	public static final byte ALT_MAG_CALIBRATION_RESPONSE         		= (byte) 0x18; //TBD; temporarily use mag command
-	public static final byte GET_ALT_MAG_CALIBRATION_COMMAND      		= (byte) 0x19; //TBD; temporarily use mag command
+	public static final byte SET_ALT_MAG_CALIBRATION_COMMAND      		= (byte) 0xAF; 
+	public static final byte ALT_MAG_CALIBRATION_RESPONSE         		= (byte) 0xB0; 
+	public static final byte GET_ALT_MAG_CALIBRATION_COMMAND      		= (byte) 0xB1; 
 
-	public static final byte SET_ALT_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3A; //TBD; temporarily use mag command
-	public static final byte ALT_MAG_SAMPLING_RATE_RESPONSE       		= (byte) 0x3B; //TBD; temporarily use mag command
-	public static final byte GET_ALT_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0x3C; //TBD; temporarily use mag command
+	public static final byte SET_ALT_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0xB2; 
+	public static final byte ALT_MAG_SAMPLING_RATE_RESPONSE       		= (byte) 0xB3; 
+	public static final byte GET_ALT_MAG_SAMPLING_RATE_COMMAND    		= (byte) 0xB4; 
 	
     public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
     static {
