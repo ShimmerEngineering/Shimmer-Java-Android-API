@@ -49,7 +49,7 @@ public class SignalsToPlotDialog {
 		dialog.setModal(true);
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dialog.setTitle("Select Signals to Plot");
-		dialog.setSize(300, 1000);
+		dialog.setSize(300, 800);
 		
 		
 		JPanel panel = new JPanel();
