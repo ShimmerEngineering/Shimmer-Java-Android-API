@@ -311,9 +311,12 @@ public class SensorLSM6DSV extends AbstractSensor{
 					SensorLSM6DSV.ObjectClusterSensorName.ACCEL_LN_Y,
 					SensorLSM6DSV.ObjectClusterSensorName.ACCEL_LN_Z));
 	
-	public static final SensorDetailsRef sensorLSM6DSVGyroRef = new SensorDetailsRef(0x40<<(0*8), 0x40<<(0*8), GuiLabelSensors.GYRO,
+	public static final SensorDetailsRef sensorLSM6DSVGyroRef = new SensorDetailsRef(
+			0x40<<(0*8), 
+			0x40<<(0*8), 
+			GuiLabelSensors.GYRO,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSV,
-			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO),
+			null,
 			Arrays.asList(
 					GuiLabelConfig.LSM6DSV_GYRO_RANGE, 
 					GuiLabelConfig.LSM6DSV_GYRO_RATE),
