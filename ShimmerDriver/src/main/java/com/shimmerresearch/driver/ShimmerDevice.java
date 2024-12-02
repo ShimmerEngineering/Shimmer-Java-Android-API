@@ -706,8 +706,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		addCommunicationRoute(COMMUNICATION_TYPE.DOCK);
 	}
 	
-	public void clearDockInfo(){
-		setDockInfo(DEFAULT_DOCKID, DEFAULT_SLOTNUMBER);
+	public void clearDockInfo(String dockId, int slotNumber){
+		setDockInfo(dockId, slotNumber);
+//		setDockInfo(DEFAULT_DOCKID, DEFAULT_SLOTNUMBER);
 	}
 	
 	public void setDockInfo(String dockId, int slotNumber){
@@ -753,7 +754,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
 			setIsDocked(false);
 			setFirstDockRead();
-			clearDockInfo();
+			clearDockInfo(mDockID, mSlotNumber);
 		}
 		
 		//TODO temp here -> check if the best place for it
