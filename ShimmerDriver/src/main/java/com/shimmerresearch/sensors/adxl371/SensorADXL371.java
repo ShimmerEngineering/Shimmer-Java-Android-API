@@ -337,16 +337,15 @@ public class SensorADXL371 extends AbstractSensor{
 
 	@Override
 	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		// currently use wr accel sensor as placeholder
+
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 			
-			configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (byte) ((getADXL371AnalogAccelRate() & configByteLayoutCast.maskLSM303DLHCAccelSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate);
-			configBytes[configByteLayoutCast.idxConfigSetupByte0] |= (byte) ((getAccelRange() & configByteLayoutCast.maskLSM303DLHCAccelRange) << configByteLayoutCast.bitShiftLSM303DLHCAccelRange);
-			// LSM303DLHC Digital Accel Calibration Parameters
+			configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((getADXL371AnalogAccelRate() & configByteLayoutCast.maskADXL371AccelSamplingRate) << configByteLayoutCast.bitShiftADXL371AccelSamplingRate);
+
 			byte[] bufferCalibrationParameters = generateCalParamADXL371Accel();
-			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLSM303DLHCAccelCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxADXL371AccelCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
 
 		}
 	}
@@ -358,16 +357,15 @@ public class SensorADXL371 extends AbstractSensor{
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
-			setADXL371AnalogAccelRate((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelSamplingRate) & configByteLayoutCast.maskLSM303DLHCAccelSamplingRate); 
-			setADXL371AccelRange((configBytes[configByteLayoutCast.idxConfigSetupByte0] >> configByteLayoutCast.bitShiftLSM303DLHCAccelRange) & configByteLayoutCast.maskLSM303DLHCAccelRange);
-
+			setADXL371AnalogAccelRate((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftADXL371AccelSamplingRate) & configByteLayoutCast.maskADXL371AccelSamplingRate); 
+			
 			if (shimmerDevice.isConnected()){
 				getCurrentCalibDetailsAccelHighG().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 			}
 
 			// LSM303DLHC Digital Accel Calibration Parameters
 			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
-			System.arraycopy(configBytes, configByteLayoutCast.idxLSM303DLHCAccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			System.arraycopy(configBytes, configByteLayoutCast.idxADXL371AccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
 			parseCalibParamFromPacketAccelAdxl(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 		}
 		

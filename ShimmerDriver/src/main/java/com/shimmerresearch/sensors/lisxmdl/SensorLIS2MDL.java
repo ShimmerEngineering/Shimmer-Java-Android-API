@@ -503,13 +503,10 @@ public class SensorLIS2MDL extends AbstractSensor{
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
-			// TBD; Currently use Magnetometer Calibration Parameters
-			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getWRMagRange() & configByteLayoutCast.maskLSM303DLHCMagRange) << configByteLayoutCast.bitShiftLSM303DLHCMagRange);
-			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getLIS2MDLWRMagRate() & configByteLayoutCast.maskLSM303DLHCMagSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate);
+			configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((getLIS2MDLWRMagRate() & configByteLayoutCast.maskLIS2MDLMagSamplingRate) << configByteLayoutCast.bitShiftLIS2MDLMagSamplingRate);
 
-			// TBD; Currently use Magnetometer Calibration Parameters
 			byte[] bufferCalibrationParameters = generateCalParamLIS2MDLMag();
-			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLIS2MDLMagCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
 		}
 	}
 
@@ -524,18 +521,14 @@ public class SensorLIS2MDL extends AbstractSensor{
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
-			// TBD; Currently use Magnetometer Calibration Parameters
-			setLIS2MDLWRMagRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagRange) & configByteLayoutCast.maskLSM303DLHCMagRange);
-			setLIS2MDLWRMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
-			
+			setLIS2MDLWRMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftLIS2MDLMagSamplingRate) & configByteLayoutCast.maskLIS2MDLMagSamplingRate);
 			
 			if (shimmerDevice.isConnected()){
 				getCurrentCalibDetailsMagWr().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 			}
 
-			// TBD; Currently use Magnetometer Calibration Parameters
 			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
-			System.arraycopy(configBytes, configByteLayoutCast.idxLSM303DLHCMagCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			System.arraycopy(configBytes, configByteLayoutCast.idxLIS2MDLMagCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
 			parseCalibParamFromPacketMagWr(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 		}
 	}
