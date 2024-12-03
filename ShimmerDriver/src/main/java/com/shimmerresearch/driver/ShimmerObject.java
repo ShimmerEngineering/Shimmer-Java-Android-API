@@ -6182,6 +6182,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setDefaultCalibrationShimmer3WideRangeAccel();
 		setDefaultCalibrationShimmer3Gyro();
 		setDefaultCalibrationShimmer3Mag();
+		setDefaultCalibrationShimmer3WideRangeMag();
 	}
 
 	private void setDefaultCalibrationShimmer3LowNoiseAccel() {
@@ -6194,6 +6195,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	private void setDefaultCalibrationShimmer3Mag() {
 		getCurrentCalibDetailsMag().resetToDefaultParameters();
+	}
+	
+	private void setDefaultCalibrationShimmer3WideRangeMag() {
+		getCurrentCalibDetailsMagWr().resetToDefaultParameters();
 	}
 	
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelWr() {
@@ -6213,6 +6218,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return mSensorLSM303.getCurrentCalibDetailsMag();
 		} else if(isShimmerGen3R()) {
 			return mSensorLIS3MDL.getCurrentCalibDetailsMag();
+		}
+		return null;
+	}
+	
+	protected CalibDetailsKinematic getCurrentCalibDetailsMagWr() {
+		if(isShimmerGen3R()) {
+			return mSensorLIS2MDL.getCurrentCalibDetailsMagWr();
 		}
 		return null;
 	}
@@ -8395,21 +8407,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public double[][] getOffsetVectorMatrixWRMag(){
 		if (isShimmerGen3R()) {
-			return mSensorADXL371.getOffsetVectorMatrixHighGAccel();
+			return mSensorLIS2MDL.getOffsetVectorMatrixMagWr();
 		}
 		return null; 
 	}
 	
 	public double[][] getAlignmentMatrixWRMag(){
 		if (isShimmerGen3R()) {
-			return mSensorADXL371.getAlignmentMatrixHighGAccel();
+			return mSensorLIS2MDL.getAlignmentMatrixMagWr();
 		}
 		return null; 
 	}
 	
 	public double[][] getSensitivityMatrixWRMag(){
 		if (isShimmerGen3R()) {
-			return mSensorADXL371.getSensitivityMatrixHighGAccel();
+			return mSensorLIS2MDL.getSensitivityMatrixMagWr();
 		}
 		return null; 
 	}

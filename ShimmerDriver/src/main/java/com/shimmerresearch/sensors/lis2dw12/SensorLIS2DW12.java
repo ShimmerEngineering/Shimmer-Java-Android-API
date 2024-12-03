@@ -43,7 +43,6 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	// ----------   Wide-range accel start ---------------
 	protected int mSensorIdAccel = -1;
 	protected int mAccelRange = 0;
-	public CalibDetailsKinematic mCurrentCalibDetailsAccelWr = null;
 	public boolean mIsUsingDefaultWRAccelParam = true;
 	protected boolean mHighResAccelWR = true;
 	
@@ -155,6 +154,8 @@ public class SensorLIS2DW12 extends AbstractSensor {
 			DefaultAlignmentMatrixWideRangeAccelShimmer3R,
 			DefaultSensitivityMatrixWideRangeAccel16gShimmer3R, 
 			DefaultOffsetVectorWideRangeAccelShimmer3R);
+	
+	public CalibDetailsKinematic mCurrentCalibDetailsAccelWr = calibDetailsAccelWr2g;
 	// ----------   Wide-range accel end ---------------
 	
 	
@@ -228,7 +229,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
     
     
 	//--------- Configuration options start --------------
-	public static final Integer[] ListofLIS2DW12AccelRangeConfigValues={0,1,2,3};  
+	public static final Integer[] ListofLIS2DW12AccelRangeConfigValues={0,2,3,1};  
 
 	public static final String[] ListofLIS2DW12AccelRateHpm={"Power-down","12.5Hz","12.5Hz","25.0Hz","50.0Hz","100.0Hz","200.0Hz","400.0Hz","800.0Hz","1600.0Hz"};
 	public static final Integer[] ListofLIS2DW12AccelRateHpmConfigValues={0,1,2,3,4,5,6,7,8,9};

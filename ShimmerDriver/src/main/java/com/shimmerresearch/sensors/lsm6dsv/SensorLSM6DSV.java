@@ -26,7 +26,6 @@ import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
-import com.shimmerresearch.driverUtilities.ConfigOptionObject;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -36,20 +35,6 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
-import com.shimmerresearch.sensors.AbstractSensor.GuiLabelConfigCommon;
-import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
-import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
-import com.shimmerresearch.sensors.kionix.SensorKionixKXTC92050;
-import com.shimmerresearch.sensors.kionix.SensorKionixAccel.GuiLabelSensors;
-import com.shimmerresearch.sensors.kionix.SensorKionixAccel.ObjectClusterSensorName;
-import com.shimmerresearch.sensors.kionix.SensorKionixKXTC92050.DatabaseChannelHandles;
-import com.shimmerresearch.sensors.kionix.SensorKionixKXTC92050.DatabaseConfigHandle;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303;
-import com.shimmerresearch.sensors.lsm303.SensorLSM303AH;
-import com.shimmerresearch.sensors.mpu9x50.SensorMPU9250;
-import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
-import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50.GuiLabelConfig;
-import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50.LABEL_SENSOR_TILE;
 import com.shimmerresearch.sensors.ActionSetting;
 
 public class SensorLSM6DSV extends AbstractSensor{
@@ -272,10 +257,25 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	// GYRO
 	public static final String[] ListofGyroRange = {"+/- 125dps","+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps","+/- 4000dps"};
-	public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,2,3,4,5};
+	public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,4,5,3,6};
 	public static final String[] ListofLSM6DSVGyroRate={"Power-down","1.875Hz","7.5Hz","12.0Hz","30.0Hz","60.0Hz","120.0Hz","240.0Hz","480.0Hz","960.0Hz","1920.0Hz","3840.0Hz","7680.0Hz"};
 	public static final Integer[] ListofLSM6DSVGyroRateConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13};
 
+	public static final List<Integer> mListOfMplChannels = Arrays.asList(
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_TEMP,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_QUAT_6DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_QUAT_9DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_EULER_6DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_EULER_9DOF,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_HEADING,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_PEDOMETER,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_TAP,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MOTION_ORIENT,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_GYRO,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_ACCEL,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_MAG,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MPL_QUAT_6DOF_RAW);
+	
 	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroRange = new ConfigOptionDetailsSensor(
 			SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_RANGE,
 			SensorLSM6DSV.DatabaseConfigHandle.GYRO_RANGE,
@@ -584,7 +584,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	public boolean checkIfAnyMplChannelEnabled(){
 		if(mShimmerVerObject.isSupportedMpl()){
 			if(mSensorMap.keySet().size()>0){
-				for(int key:SensorMPU9X50.mListOfMplChannels){
+				for(int key:SensorLSM6DSV.mListOfMplChannels){
 //					for(int key:mListOfMplChannels){
 					if(isSensorEnabled(key)) {
 						return true;
@@ -735,8 +735,8 @@ public class SensorLSM6DSV extends AbstractSensor{
 	public LinkedHashMap<String, Object> generateConfigMap() {
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
-		mapOfConfig.put(SensorMPU9250.DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
-		mapOfConfig.put(SensorMPU9250.DatabaseConfigHandle.GYRO_RATE, getLSM6DSVGyroAccelRate());
+		mapOfConfig.put(SensorLSM6DSV.DatabaseConfigHandle.GYRO_RANGE, getGyroRange());
+		mapOfConfig.put(SensorLSM6DSV.DatabaseConfigHandle.GYRO_RATE, getLSM6DSVGyroAccelRate());
 		
 		super.addCalibDetailsToDbMap(mapOfConfig, 
 				getCurrentCalibDetailsAccelLn(), 
