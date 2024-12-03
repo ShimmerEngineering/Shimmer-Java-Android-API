@@ -1,10 +1,13 @@
 package com.shimmerresearch.sensors.bmpX80;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
@@ -181,14 +184,35 @@ public class SensorBMP390 extends SensorBMPX80{
 
 	@Override
 	public void setPressureResolution(int i) {
-		// TODO Auto-generated method stub
+		if(ArrayUtils.contains(ListofPressureResolutionConfigValuesBMP390, i)){
+//			System.err.println("New resolution:\t" + ListofPressureResolution[i]);
+			mPressureResolution = i;
+		}
+		updateCurrentPressureCalibInUse();
 		
 	}
 
 	@Override
 	public List<Double> getPressTempConfigValuesLegacy() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Double> configValues = new ArrayList<Double>();
+
+		CalibDetailsBmp390 calibDetailsBmp390 = ((CalibDetailsBmp390)mCalibDetailsBmpX80);
+		configValues.add(calibDetailsBmp390.par_T1);
+		configValues.add(calibDetailsBmp390.par_T2);
+		configValues.add(calibDetailsBmp390.par_T3);
+		configValues.add(calibDetailsBmp390.par_P1);
+		configValues.add(calibDetailsBmp390.par_P2);
+		configValues.add(calibDetailsBmp390.par_P3);
+		configValues.add(calibDetailsBmp390.par_P4);
+		configValues.add(calibDetailsBmp390.par_P5);
+		configValues.add(calibDetailsBmp390.par_P6);
+		configValues.add(calibDetailsBmp390.par_P7);
+		configValues.add(calibDetailsBmp390.par_P8);
+		configValues.add(calibDetailsBmp390.par_P9);
+		configValues.add(calibDetailsBmp390.par_P10);
+		configValues.add(calibDetailsBmp390.par_P11);
+
+		return configValues;
 	}
 
 	@Override
