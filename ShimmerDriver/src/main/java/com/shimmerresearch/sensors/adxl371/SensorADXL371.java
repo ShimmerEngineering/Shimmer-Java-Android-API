@@ -342,10 +342,10 @@ public class SensorADXL371 extends AbstractSensor{
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 			
-			configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((getADXL371AnalogAccelRate() & configByteLayoutCast.maskADXL371AccelSamplingRate) << configByteLayoutCast.bitShiftADXL371AccelSamplingRate);
+			configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((getADXL371AnalogAccelRate() & configByteLayoutCast.maskADXL371AltAccelSamplingRate) << configByteLayoutCast.bitShiftADXL371AltAccelSamplingRate);
 
 			byte[] bufferCalibrationParameters = generateCalParamADXL371Accel();
-			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxADXL371AccelCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxADXL371AltAccelCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
 
 		}
 	}
@@ -357,7 +357,7 @@ public class SensorADXL371 extends AbstractSensor{
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
-			setADXL371AnalogAccelRate((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftADXL371AccelSamplingRate) & configByteLayoutCast.maskADXL371AccelSamplingRate); 
+			setADXL371AnalogAccelRate((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftADXL371AltAccelSamplingRate) & configByteLayoutCast.maskADXL371AltAccelSamplingRate); 
 			
 			if (shimmerDevice.isConnected()){
 				getCurrentCalibDetailsAccelHighG().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
@@ -365,7 +365,7 @@ public class SensorADXL371 extends AbstractSensor{
 
 			// LSM303DLHC Digital Accel Calibration Parameters
 			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
-			System.arraycopy(configBytes, configByteLayoutCast.idxADXL371AccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			System.arraycopy(configBytes, configByteLayoutCast.idxADXL371AltAccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
 			parseCalibParamFromPacketAccelAdxl(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 		}
 		

@@ -503,10 +503,10 @@ public class SensorLIS2MDL extends AbstractSensor{
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
-			configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((getLIS2MDLWRMagRate() & configByteLayoutCast.maskLIS2MDLMagSamplingRate) << configByteLayoutCast.bitShiftLIS2MDLMagSamplingRate);
+			configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((getLIS2MDLWRMagRate() & configByteLayoutCast.maskLIS2MDLAltMagSamplingRate) << configByteLayoutCast.bitShiftLIS2MDLAltMagSamplingRate);
 
 			byte[] bufferCalibrationParameters = generateCalParamLIS2MDLMag();
-			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLIS2MDLMagCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
+			System.arraycopy(bufferCalibrationParameters, 0, configBytes, configByteLayoutCast.idxLIS2MDLAltMagCalibration, configByteLayoutCast.lengthGeneralCalibrationBytes);
 		}
 	}
 
@@ -521,14 +521,14 @@ public class SensorLIS2MDL extends AbstractSensor{
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
-			setLIS2MDLWRMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftLIS2MDLMagSamplingRate) & configByteLayoutCast.maskLIS2MDLMagSamplingRate);
+			setLIS2MDLWRMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftLIS2MDLAltMagSamplingRate) & configByteLayoutCast.maskLIS2MDLAltMagSamplingRate);
 			
 			if (shimmerDevice.isConnected()){
 				getCurrentCalibDetailsMagWr().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 			}
 
 			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
-			System.arraycopy(configBytes, configByteLayoutCast.idxLIS2MDLMagCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
+			System.arraycopy(configBytes, configByteLayoutCast.idxLIS2MDLAltMagCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
 			parseCalibParamFromPacketMagWr(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
 		}
 	}
