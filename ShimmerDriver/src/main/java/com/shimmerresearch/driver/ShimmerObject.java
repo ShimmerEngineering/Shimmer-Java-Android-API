@@ -3819,7 +3819,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public byte[] getRawCalibrationParameters(){
 
 		byte[] rawcal=new byte[1];
-		if (getHardwareVersion()==HW_ID.SHIMMER_3)
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R)
 		{
 			//Accel + Digi Accel + Gyro + Mag + Pressure
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
@@ -3876,7 +3876,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	@Deprecated 
 	public List<String> getListofEnabledSensors(){
 		List<String> listofSensors = new ArrayList<String>();
-		if (getHardwareVersion()==HW_ID.SHIMMER_3){
+		if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 			
 			if (((mEnabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				listofSensors.add("Low Noise Accelerometer");
@@ -4151,7 +4151,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //				listofSignals.add(channel);
 //			}
 
-		} else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
+		} else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) {
 			//Below based on SensorMap approach
 			return super.getListofEnabledChannelSignalsandFormats();
 		}
@@ -4358,7 +4358,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_2 || getHardwareVersion()==HW_ID.SHIMMER_2R) {
 			maxGUISamplingRate = Math.min(1024.0, maxGUISamplingRate);
-		} else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE) {
+		} else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_GQ_BLE || getHardwareVersion()==HW_ID.SHIMMER_3R) {
 			maxGUISamplingRate = Math.min(2048.0, maxGUISamplingRate);
 		}	
 		return maxGUISamplingRate;
@@ -6182,6 +6182,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setDefaultCalibrationShimmer3WideRangeAccel();
 		setDefaultCalibrationShimmer3Gyro();
 		setDefaultCalibrationShimmer3Mag();
+		
 	}
 
 	private void setDefaultCalibrationShimmer3LowNoiseAccel() {

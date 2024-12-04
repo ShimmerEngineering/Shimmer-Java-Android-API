@@ -344,6 +344,7 @@ public class SensorLIS3MDL extends AbstractSensor{
 
 	@Override
 	public void generateConfigOptionsMap() {
+		mConfigOptionsMap.clear();
 		addConfigOption(configOptionMagRange);
 		addConfigOption(configOptionMagRate);
 	}
