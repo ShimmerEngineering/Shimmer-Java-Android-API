@@ -1491,6 +1491,16 @@ public class Configuration {
 					svoShimmer3RProto3MiniNewImuLogAndStream,
 					svoShimmer3RProto3DeluxeNewImuLogAndStream);
 			
+			//Shimmer3r High-G Accel
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoADXL371 = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
 			//TODO need to update this list and remove "any"
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXRB52042 = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog, svoAnyIntExpBoardAndBtStream, svoAnyIntExpBoardAndLogAndStream,
