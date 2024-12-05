@@ -115,12 +115,17 @@ public class SensorADXL371 extends AbstractSensor{
 	public static final double[][] DefaultOffsetVectorHighGAccelShimmer3R = {{0},{0},{0}};	
 	public static final double[][] DefaultSensitivityMatrixHighGAccelShimmer3R = {{16,0,0},{0,16,0},{0,0,16}};
 
+//	private CalibDetailsKinematic calibDetailsAccelHighG = new CalibDetailsKinematic(
+//			0,
+//			"0",
+//			DefaultAlignmentMatrixHighGAccelShimmer3R, 
+//			DefaultSensitivityMatrixHighGAccelShimmer3R, 
+//			DefaultOffsetVectorHighGAccelShimmer3R);
+	
 	private CalibDetailsKinematic calibDetailsAccelHighG = new CalibDetailsKinematic(
-			0,
-			"0",
-			DefaultAlignmentMatrixHighGAccelShimmer3R, 
-			DefaultSensitivityMatrixHighGAccelShimmer3R, 
-			DefaultOffsetVectorHighGAccelShimmer3R);
+			0, "0",
+			DefaultAlignmentMatrixHighGAccelShimmer3R, DefaultSensitivityMatrixHighGAccelShimmer3R, DefaultOffsetVectorHighGAccelShimmer3R,
+			DefaultAlignmentMatrixHighGAccelShimmer3R, DefaultSensitivityMatrixHighGAccelShimmer3R, DefaultOffsetVectorHighGAccelShimmer3R);
 
 	// ----------   High-g accel end ---------------
 	

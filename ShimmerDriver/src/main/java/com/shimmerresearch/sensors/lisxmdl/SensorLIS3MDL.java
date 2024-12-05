@@ -69,30 +69,54 @@ public class SensorLIS3MDL extends AbstractSensor{
 	// Manufacturer stated: X any Y any Z axis @ 1711  LSB/gauss
 	public static final double[][] DefaultSensitivityMatrixMag16GaShimmer3 = {{1711 ,0,0},{0,1711 ,0},{0,0,1711 }};
 
+//	private CalibDetailsKinematic calibDetailsMag4 = new CalibDetailsKinematic(
+//			ListofLIS3MDLMagRangeConfigValues[0],
+//			ListofLIS3MDLMagRange[0],
+//			DefaultAlignmentMatrixMagShimmer3,
+//			DefaultSensitivityMatrixMag4GaShimmer3,
+//			DefaultOffsetVectorMagShimmer3);
+	
 	private CalibDetailsKinematic calibDetailsMag4 = new CalibDetailsKinematic(
-			ListofLIS3MDLMagRangeConfigValues[0],
-			ListofLIS3MDLMagRange[0],
-			DefaultAlignmentMatrixMagShimmer3,
-			DefaultSensitivityMatrixMag4GaShimmer3,
-			DefaultOffsetVectorMagShimmer3);
+			ListofLIS3MDLMagRangeConfigValues[0], ListofLIS3MDLMagRange[0],
+			DefaultAlignmentMatrixMagShimmer3, DefaultSensitivityMatrixMag4GaShimmer3, DefaultOffsetVectorMagShimmer3,
+			DefaultAlignmentMatrixMagShimmer3, DefaultSensitivityMatrixMag4GaShimmer3, DefaultOffsetVectorMagShimmer3);
+	
+//	private CalibDetailsKinematic calibDetailsMag8 = new CalibDetailsKinematic(
+//			ListofLIS3MDLMagRangeConfigValues[1],
+//			ListofLIS3MDLMagRange[1],
+//			DefaultAlignmentMatrixMagShimmer3, 
+//			DefaultSensitivityMatrixMag8GaShimmer3,
+//			DefaultOffsetVectorMagShimmer3);
+	
 	private CalibDetailsKinematic calibDetailsMag8 = new CalibDetailsKinematic(
-			ListofLIS3MDLMagRangeConfigValues[1],
-			ListofLIS3MDLMagRange[1],
-			DefaultAlignmentMatrixMagShimmer3, 
-			DefaultSensitivityMatrixMag8GaShimmer3,
-			DefaultOffsetVectorMagShimmer3);
+			ListofLIS3MDLMagRangeConfigValues[1], ListofLIS3MDLMagRange[1],
+			DefaultAlignmentMatrixMagShimmer3, DefaultSensitivityMatrixMag8GaShimmer3, DefaultOffsetVectorMagShimmer3,
+			DefaultAlignmentMatrixMagShimmer3, DefaultSensitivityMatrixMag8GaShimmer3, DefaultOffsetVectorMagShimmer3);
+	
+//	private CalibDetailsKinematic calibDetailsMag12 = new CalibDetailsKinematic(
+//			ListofLIS3MDLMagRangeConfigValues[2], 
+//			ListofLIS3MDLMagRange[2],
+//			DefaultAlignmentMatrixMagShimmer3,
+//			DefaultSensitivityMatrixMag12GaShimmer3, 
+//			DefaultOffsetVectorMagShimmer3);
+	
 	private CalibDetailsKinematic calibDetailsMag12 = new CalibDetailsKinematic(
-			ListofLIS3MDLMagRangeConfigValues[2], 
-			ListofLIS3MDLMagRange[2],
-			DefaultAlignmentMatrixMagShimmer3,
-			DefaultSensitivityMatrixMag12GaShimmer3, 
-			DefaultOffsetVectorMagShimmer3);
+			ListofLIS3MDLMagRangeConfigValues[2], ListofLIS3MDLMagRange[2],
+			DefaultAlignmentMatrixMagShimmer3, DefaultSensitivityMatrixMag12GaShimmer3, DefaultOffsetVectorMagShimmer3,
+			DefaultAlignmentMatrixMagShimmer3, DefaultSensitivityMatrixMag12GaShimmer3, DefaultOffsetVectorMagShimmer3);
+	
+//	private CalibDetailsKinematic calibDetailsMag16 = new CalibDetailsKinematic(
+//			ListofLIS3MDLMagRangeConfigValues[3],
+//			ListofLIS3MDLMagRange[3],
+//			DefaultAlignmentMatrixMagShimmer3,
+//			DefaultSensitivityMatrixMag16GaShimmer3,
+//			DefaultOffsetVectorMagShimmer3);
+	
 	private CalibDetailsKinematic calibDetailsMag16 = new CalibDetailsKinematic(
-			ListofLIS3MDLMagRangeConfigValues[3],
-			ListofLIS3MDLMagRange[3],
-			DefaultAlignmentMatrixMagShimmer3,
-			DefaultSensitivityMatrixMag16GaShimmer3,
-			DefaultOffsetVectorMagShimmer3);
+			ListofLIS3MDLMagRangeConfigValues[3], ListofLIS3MDLMagRange[3],
+			DefaultAlignmentMatrixMagShimmer3, DefaultSensitivityMatrixMag16GaShimmer3, DefaultOffsetVectorMagShimmer3,
+			DefaultAlignmentMatrixMagShimmer3, DefaultSensitivityMatrixMag16GaShimmer3, DefaultOffsetVectorMagShimmer3);
+	
 	public CalibDetailsKinematic mCurrentCalibDetailsMag = calibDetailsMag4;
 
 	// ----------   Mag end ---------------
