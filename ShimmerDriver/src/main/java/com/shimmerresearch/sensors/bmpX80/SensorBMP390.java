@@ -136,7 +136,7 @@ public class SensorBMP390 extends SensorBMPX80{
 		
 	    public static final SensorGroupingDetails sensorGroupBmp390 = new SensorGroupingDetails(
 				LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE,
-				Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE),
+				Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMP390_PRESSURE),
 				CompatibilityInfoForMaps.listOfCompatibleVersionInfoBMP390);
 
 		//--------- Sensor info end --------------
@@ -230,7 +230,7 @@ public class SensorBMP390 extends SensorBMPX80{
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
 		//TODO Extra version check here not needed because compatability info already contained in SensorGroupingDetails?
-		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen3R() || mShimmerVerObject.isShimmerGen4()){
 			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE_BMP390.ordinal(), sensorGroupBmp390);
 		}
 		super.updateSensorGroupingMap();
