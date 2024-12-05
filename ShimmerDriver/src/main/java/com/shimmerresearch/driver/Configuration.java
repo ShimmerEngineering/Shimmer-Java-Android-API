@@ -720,7 +720,7 @@ public class Configuration {
 			public static final int SHIMMER_LSM6DSV_ACCEL_LN = 37;
 			public static final int SHIMMER_LSM6DSV_GYRO = 38;			
 			public static final int SHIMMER_LIS2DW12_ACCEL_WR = 39;
-      public static final int SHIMMER_ADXL371_ACCEL_HIGHG = 40;
+			public static final int SHIMMER_ADXL371_ACCEL_HIGHG = 40;
 			public static final int SHIMMER_LIS3MDL_MAG = 41;
 			public static final int SHIMMER_LIS2MDL_MAG_WR = 42;
 			public static final int SHIMMER_BMP390_PRESSURE = 43;
@@ -947,6 +947,7 @@ public class Configuration {
 		//TODO Change over to sensor classes
 		public class GuiLabelSensors{
 //			public static final String ACCEL_LN = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
+//			public static final String ACCEL_LN = SensorLSM6DSV.GuiLabelSensors.ACCEL_LN;
 			
 //			public static final String BATTERY = SensorBattVoltage.GuiLabelSensors.BATTERY;
 			
@@ -1483,6 +1484,16 @@ public class Configuration {
 			
 			//Shimmer3r WR Mag
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2MDL = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r High-G Accel
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoADXL371 = Arrays.asList(
 					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoShimmer3RNewImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedNewImuLogAndStream,

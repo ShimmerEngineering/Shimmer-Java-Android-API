@@ -39,6 +39,10 @@ import com.shimmerresearch.sensors.ActionSetting;
 
 public class SensorLIS2DW12 extends AbstractSensor {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5066903487855750207L;
 	
 	// ----------   Wide-range accel start ---------------
 	protected int mSensorIdAccel = -1;

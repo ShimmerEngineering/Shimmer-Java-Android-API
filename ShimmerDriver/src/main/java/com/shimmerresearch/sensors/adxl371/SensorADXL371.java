@@ -115,12 +115,17 @@ public class SensorADXL371 extends AbstractSensor{
 	public static final double[][] DefaultOffsetVectorHighGAccelShimmer3R = {{0},{0},{0}};	
 	public static final double[][] DefaultSensitivityMatrixHighGAccelShimmer3R = {{16,0,0},{0,16,0},{0,0,16}};
 
+//	private CalibDetailsKinematic calibDetailsAccelHighG = new CalibDetailsKinematic(
+//			0,
+//			"0",
+//			DefaultAlignmentMatrixHighGAccelShimmer3R, 
+//			DefaultSensitivityMatrixHighGAccelShimmer3R, 
+//			DefaultOffsetVectorHighGAccelShimmer3R);
+	
 	private CalibDetailsKinematic calibDetailsAccelHighG = new CalibDetailsKinematic(
-			0,
-			"0",
-			DefaultAlignmentMatrixHighGAccelShimmer3R, 
-			DefaultSensitivityMatrixHighGAccelShimmer3R, 
-			DefaultOffsetVectorHighGAccelShimmer3R);
+			0, "0",
+			DefaultAlignmentMatrixHighGAccelShimmer3R, DefaultSensitivityMatrixHighGAccelShimmer3R, DefaultOffsetVectorHighGAccelShimmer3R,
+			DefaultAlignmentMatrixHighGAccelShimmer3R, DefaultSensitivityMatrixHighGAccelShimmer3R, DefaultOffsetVectorHighGAccelShimmer3R);
 
 	// ----------   High-g accel end ---------------
 	
@@ -230,7 +235,7 @@ public class SensorADXL371 extends AbstractSensor{
     public static final SensorGroupingDetails sensorGroupAdxlAccel = new SensorGroupingDetails(
 			LABEL_SENSOR_TILE.HIGH_G_ACCEL,
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ADXL371_ACCEL_HIGHG),
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoADXL371);
 
   //--------- Constructors for this class start --------------
 
