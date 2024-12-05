@@ -629,6 +629,18 @@ public class SensorLIS2MDL extends AbstractSensor{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public double[][] getAlignmentMatrixMagWr(){
+		return mCurrentCalibDetailsMagWr.getValidAlignmentMatrix();
+	}
+	
+	public double[][] getSensitivityMatrixMagWr(){
+		return mCurrentCalibDetailsMagWr.getValidSensitivityMatrix();
+	}
+	
+	public double[][] getOffsetVectorMatrixMagWr(){
+		return mCurrentCalibDetailsMagWr.getValidOffsetVector();
+	}
 
 	//--------- Sensor specific methods end --------------
 

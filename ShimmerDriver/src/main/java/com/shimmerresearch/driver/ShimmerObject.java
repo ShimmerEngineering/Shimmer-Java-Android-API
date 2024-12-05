@@ -3593,7 +3593,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mInquiryResponseBytes = new byte[5+mNChannels];
 			System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
 		} 
-		else if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) {
+		else if (getHardwareVersion()==HW_ID.SHIMMER_3) {
 			if(bufferInquiry.length>=8){
 				mPacketSize = mTimeStampPacketByteSize+bufferInquiry[6]*2; 
 				double samplingRate = convertSamplingRateBytesToFreq(bufferInquiry[0], bufferInquiry[1], getSamplingClockFreq());
@@ -3632,6 +3632,46 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 		} 
+		else if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
+			if(bufferInquiry.length>=11){
+				mPacketSize = mTimeStampPacketByteSize+bufferInquiry[12]*2; 
+				double samplingRate = convertSamplingRateBytesToFreq(bufferInquiry[0], bufferInquiry[1], getSamplingClockFreq());
+				setSamplingRateShimmer(samplingRate);
+//				setSamplingRateShimmer((getSamplingClockFreq()/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
+				mNChannels = bufferInquiry[9];
+				mBufferSize = bufferInquiry[10];
+				mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24)
+						+((long)(bufferInquiry[6] & 0xFF) << 32)+((long)(bufferInquiry[7] & 0xFF) << 40)+((long)(bufferInquiry[8] & 0xFF) << 48) );
+				setDigitalAccelRange(((int)(mConfigByte0 & 0xC))>>2);
+				setGyroRange(((int)(mConfigByte0 & 196608))>>16);
+				setLSM303MagRange(((int)(mConfigByte0 & 14680064))>>21);
+				setLSM303DigitalAccelRate(((int)(mConfigByte0 & 0xF0))>>4);
+				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
+				setMagRate(((int)(mConfigByte0 & 1835008))>>18); 
+				setPressureResolution((((int)(mConfigByte0 >>28)) & 3));
+				setGSRRange((((int)(mConfigByte0 >>25)) & 7));
+				setInternalExpPower(((int)(mConfigByte0 >>24)) & 1);
+				mInquiryResponseBytes = new byte[11+mNChannels];
+				System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
+				if ((getLSM303DigitalAccelRate()==2 && getSamplingRateShimmer()>10)){
+					setLowPowerAccelWR(true);
+				}
+				checkLowPowerGyro();
+				checkLowPowerMag();
+				
+				if(bufferInquiry.length>=(11+mNChannels)){
+					byte[] signalIdArray = new byte[mNChannels];
+					System.arraycopy(bufferInquiry, 11, signalIdArray, 0, mNChannels);
+					updateEnabledSensorsFromChannels(signalIdArray);
+					if(mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
+					} else {
+						setEnabledAndDerivedSensorsAndUpdateMaps(mEnabledSensors, mDerivedSensors);
+					}
+					interpretDataPacketFormat(mNChannels,signalIdArray);
+					checkExgResolutionFromEnabledSensorsVar();
+				}
+			}
+		}
 		else if (getHardwareVersion()==HW_ID.SHIMMER_SR30) {
 			mPacketSize = mTimeStampPacketByteSize+bufferInquiry[2]*2; 
 			setSamplingRateShimmer((double)1024/bufferInquiry[0]);
@@ -6182,6 +6222,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setDefaultCalibrationShimmer3WideRangeAccel();
 		setDefaultCalibrationShimmer3Gyro();
 		setDefaultCalibrationShimmer3Mag();
+		setDefaultCalibrationShimmer3WideRangeMag();
 	}
 
 	private void setDefaultCalibrationShimmer3LowNoiseAccel() {
@@ -6194,6 +6235,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	private void setDefaultCalibrationShimmer3Mag() {
 		getCurrentCalibDetailsMag().resetToDefaultParameters();
+	}
+	
+	private void setDefaultCalibrationShimmer3WideRangeMag() {
+		getCurrentCalibDetailsMagWr().resetToDefaultParameters();
 	}
 	
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelWr() {
@@ -6213,6 +6258,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return mSensorLSM303.getCurrentCalibDetailsMag();
 		} else if(isShimmerGen3R()) {
 			return mSensorLIS3MDL.getCurrentCalibDetailsMag();
+		}
+		return null;
+	}
+	
+	protected CalibDetailsKinematic getCurrentCalibDetailsMagWr() {
+		if(isShimmerGen3R()) {
+			return mSensorLIS2MDL.getCurrentCalibDetailsMagWr();
 		}
 		return null;
 	}
@@ -8395,21 +8447,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public double[][] getOffsetVectorMatrixWRMag(){
 		if (isShimmerGen3R()) {
-			return mSensorADXL371.getOffsetVectorMatrixHighGAccel();
+			return mSensorLIS2MDL.getOffsetVectorMatrixMagWr();
 		}
 		return null; 
 	}
 	
 	public double[][] getAlignmentMatrixWRMag(){
 		if (isShimmerGen3R()) {
-			return mSensorADXL371.getAlignmentMatrixHighGAccel();
+			return mSensorLIS2MDL.getAlignmentMatrixMagWr();
 		}
 		return null; 
 	}
 	
 	public double[][] getSensitivityMatrixWRMag(){
 		if (isShimmerGen3R()) {
-			return mSensorADXL371.getSensitivityMatrixHighGAccel();
+			return mSensorLIS2MDL.getSensitivityMatrixMagWr();
 		}
 		return null; 
 	}

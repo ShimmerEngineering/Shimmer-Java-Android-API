@@ -1317,7 +1317,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			if(mShimmerVerObject.isShimmerGen2()) {
 				lengthSettings = 5;
 				idxLengthChannels = 3;
+			}else if(mShimmerVerObject.isShimmerGen3R()) {
+				lengthSettings = 11;
+				idxLengthChannels = 9;
 			}
+
         	// get Sampling rate, accel range, config setup byte0, num chans and buffer size
 			byte[] settings = readBytes(lengthSettings, responseCommand);
 			if(settings!=null){
