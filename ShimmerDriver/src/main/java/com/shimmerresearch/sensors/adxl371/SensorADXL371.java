@@ -129,7 +129,7 @@ public class SensorADXL371 extends AbstractSensor{
 			0x10<<8, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
 			0x10<<8, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
 			GuiLabelSensors.ACCEL_HIGHG,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoADXL371,
 			Arrays.asList(GuiLabelConfig.ADXL371_ACCEL_RANGE,
 				GuiLabelConfig.ADXL371_ACCEL_RATE),
 			Arrays.asList(ObjectClusterSensorName.ACCEL_HIGHG_X,
