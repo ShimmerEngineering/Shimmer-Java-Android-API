@@ -243,16 +243,16 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     		mDevice.writeGyroRange(1);
     		double[][] gyroSensitivity1 = mDevice.getSensitivityMatrixGyro();
     		assertTrue(Arrays.deepEquals(gyroSensitivity1, SensorLSM6DSV.SensitivityMatrixGyro250dpsShimmer3r));
-    		mDevice.writeGyroRange(4);
+    		mDevice.writeGyroRange(2);
     		double[][] gyroSensitivity2 = mDevice.getSensitivityMatrixGyro();
     		assertTrue(Arrays.deepEquals(gyroSensitivity2, SensorLSM6DSV.SensitivityMatrixGyro500dpsShimmer3r));
-    		mDevice.writeGyroRange(5);
+    		mDevice.writeGyroRange(3);
     		double[][] gyroSensitivity3 = mDevice.getSensitivityMatrixGyro();
     		assertTrue(Arrays.deepEquals(gyroSensitivity3, SensorLSM6DSV.SensitivityMatrixGyro1000dpsShimmer3r));
-    		mDevice.writeGyroRange(3);
+    		mDevice.writeGyroRange(4);
     		double[][] gyroSensitivity4 = mDevice.getSensitivityMatrixGyro();
     		assertTrue(Arrays.deepEquals(gyroSensitivity4, SensorLSM6DSV.SensitivityMatrixGyro2000dpsShimmer3r));
-    		mDevice.writeGyroRange(6);
+    		mDevice.writeGyroRange(5);
     		double[][] gyroSensitivity5 = mDevice.getSensitivityMatrixGyro();
     		assertTrue(Arrays.deepEquals(gyroSensitivity5, SensorLSM6DSV.SensitivityMatrixGyro4000dpsShimmer3r));
 
@@ -287,13 +287,13 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     		mDevice.writeAccelRange(0);
     		double[][] accelSensitivity0 = mDevice.getSensitivityMatrixWRAccel();
     		assertTrue(Arrays.deepEquals(accelSensitivity0, SensorLIS2DW12.DefaultSensitivityMatrixWideRangeAccel2gShimmer3R));
-    		mDevice.writeAccelRange(2);    		
+    		mDevice.writeAccelRange(1);    		
     		double[][] accelSensitivity1 = mDevice.getSensitivityMatrixWRAccel();
     		assertTrue(Arrays.deepEquals(accelSensitivity1, SensorLIS2DW12.DefaultSensitivityMatrixWideRangeAccel4gShimmer3R));
-    		mDevice.writeAccelRange(3);    		
+    		mDevice.writeAccelRange(2);    		
     		double[][] accelSensitivity2 = mDevice.getSensitivityMatrixWRAccel();
     		assertTrue(Arrays.deepEquals(accelSensitivity2, SensorLIS2DW12.DefaultSensitivityMatrixWideRangeAccel8gShimmer3R));		
-    		mDevice.writeAccelRange(1);    		
+    		mDevice.writeAccelRange(3);    		
     		double[][] accelSensitivity3 = mDevice.getSensitivityMatrixWRAccel();
     		assertTrue(Arrays.deepEquals(accelSensitivity3, SensorLIS2DW12.DefaultSensitivityMatrixWideRangeAccel16gShimmer3R));
     		}

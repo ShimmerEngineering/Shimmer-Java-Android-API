@@ -257,7 +257,8 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	// GYRO
 	public static final String[] ListofGyroRange = {"+/- 125dps","+/- 250dps","+/- 500dps","+/- 1000dps","+/- 2000dps","+/- 4000dps"};
-	public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,4,5,3,6};
+	//public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,4,5,3,6};
+	public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,2,3,4,5};
 	public static final String[] ListofLSM6DSVGyroRate={"Power-down","1.875Hz","7.5Hz","12.0Hz","30.0Hz","60.0Hz","120.0Hz","240.0Hz","480.0Hz","960.0Hz","1920.0Hz","3840.0Hz","7680.0Hz"};
 	public static final Integer[] ListofLSM6DSVGyroRateConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13};
 
