@@ -296,7 +296,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     		mDevice.writeAccelRange(3);    		
     		double[][] accelSensitivity3 = mDevice.getSensitivityMatrixWRAccel();
     		assertTrue(Arrays.deepEquals(accelSensitivity3, SensorLIS2DW12.DefaultSensitivityMatrixWideRangeAccel16gShimmer3R));
-	}
+    		}
 	
 	@Test
 	public void test006_ConnectandTestDefaultMagCalibParam() {
@@ -386,7 +386,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 			double[][] wrMagOffset = mDevice.getOffsetVectorMatrixWRMag();
     		assertTrue(Arrays.deepEquals(wrMagOffset, SensorLIS2MDL.DefaultOffsetVectorWRMagShimmer3r));
     		double[][] wrMagAlignment = mDevice.getAlignmentMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagAlignment, SensorLIS2MDL.DefaultAlignmentMatrixWRMagShimmer3r));  		
+    		assertTrue(Arrays.deepEquals(wrMagAlignment, SensorLIS2MDL.DefaultAlignmentMatrixWRMagShimmer3r)); 
     		double[][] wrMagSensitivity = mDevice.getSensitivityMatrixWRMag();
     		assertTrue(Arrays.deepEquals(wrMagSensitivity, SensorLIS2MDL.DefaultSensitivityMatrixWRMagShimmer3r));
 	}
