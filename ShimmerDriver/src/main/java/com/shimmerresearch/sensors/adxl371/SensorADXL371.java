@@ -181,8 +181,8 @@ public class SensorADXL371 extends AbstractSensor{
 	
 	public static final Integer[] ListofADXL371AccelRangeConfigValues={0};  
 
-	public static final String[] ListofADXL371AccelRate={"320Hz", "640Hz", "1280Hz", "2560Hz", "5120Hz"};
-	public static final Integer[] ListofADXL371AccelRateConfigValues={0,1,2,3,4};
+	public static final String[] ListofADXL371AccelRate={"320Hz", "640Hz", "1280Hz", "2560Hz"};
+	public static final Integer[] ListofADXL371AccelRateConfigValues={0,1,2,3};
 
 	public static final ConfigOptionDetailsSensor configOptionAccelRate = new ConfigOptionDetailsSensor(
 			SensorADXL371.GuiLabelConfig.ADXL371_ACCEL_RATE,
