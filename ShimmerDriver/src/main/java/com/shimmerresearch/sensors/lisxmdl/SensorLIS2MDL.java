@@ -32,6 +32,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
+import com.shimmerresearch.sensors.lis2dw12.SensorLIS2DW12.GuiLabelConfig;
 
 public class SensorLIS2MDL extends AbstractSensor{
 
@@ -55,12 +56,18 @@ public class SensorLIS2MDL extends AbstractSensor{
 
 	public static final double[][] DefaultSensitivityMatrixWRMagShimmer3r = {{667,0,0},{0,667,0},{0,0,667}};
 
+//	private CalibDetailsKinematic calibDetailsMagWr = new CalibDetailsKinematic(
+//			ListofLIS2MDLWRMagRangeConfigValues[0],
+//			ListofLIS2MDLWRMagRange[0],
+//			DefaultAlignmentMatrixWRMagShimmer3r,
+//			DefaultSensitivityMatrixWRMagShimmer3r,
+//			DefaultOffsetVectorWRMagShimmer3r);
+	
 	private CalibDetailsKinematic calibDetailsMagWr = new CalibDetailsKinematic(
-			ListofLIS2MDLWRMagRangeConfigValues[0],
-			ListofLIS2MDLWRMagRange[0],
-			DefaultAlignmentMatrixWRMagShimmer3r,
-			DefaultSensitivityMatrixWRMagShimmer3r,
-			DefaultOffsetVectorWRMagShimmer3r);
+			ListofLIS2MDLWRMagRangeConfigValues[0], ListofLIS2MDLWRMagRange[0],
+			DefaultAlignmentMatrixWRMagShimmer3r, DefaultSensitivityMatrixWRMagShimmer3r, DefaultOffsetVectorWRMagShimmer3r,
+			DefaultAlignmentMatrixWRMagShimmer3r, DefaultSensitivityMatrixWRMagShimmer3r, DefaultOffsetVectorWRMagShimmer3r);
+	
 	public CalibDetailsKinematic mCurrentCalibDetailsMagWr = calibDetailsMagWr;
 
 	// ----------   Mag end ---------------
@@ -545,13 +552,13 @@ public class SensorLIS2MDL extends AbstractSensor{
 			case(GuiLabelConfigCommon.RANGE):
 				if(sensorId==mSensorIdWRMag){
 					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LIS2MDL_WR_MAG_RANGE, valueToSet);
+					break;
 				}
-				break;
 			case(GuiLabelConfigCommon.RATE):
 				if(sensorId==mSensorIdWRMag){
 					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LIS2MDL_WR_MAG_RATE, valueToSet);
+					break;
 				}
-				break;
 			default:
 				returnValue = super.setConfigValueUsingConfigLabelCommon(sensorId, configLabel, valueToSet);
 				break;
@@ -573,16 +580,21 @@ public class SensorLIS2MDL extends AbstractSensor{
         }
 		
 		switch(configLabel){
+			case(GuiLabelConfig.LIS2MDL_WR_MAG_RANGE): 
+				returnValue = getWRMagRange();
+	    		break;
+	    	
 			case(GuiLabelConfigCommon.RANGE):
 				if(sensorId==mSensorIdWRMag){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LIS2MDL_WR_MAG_RANGE);
+//					returnValue = 0;
+					break;
 				}
-				break;
 			case(GuiLabelConfigCommon.RATE):
 				if(sensorId==mSensorIdWRMag){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LIS2MDL_WR_MAG_RATE);
+					break;
 				}
-				break;
 			default:
 				returnValue = super.getConfigValueUsingConfigLabelCommon(sensorId, configLabel);
 				break;
