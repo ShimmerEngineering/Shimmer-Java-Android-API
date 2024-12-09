@@ -634,6 +634,8 @@ public class Configuration {
 			public static final int SENSOR_EXG1_16BIT		= 0x100000;
 			public static final int SENSOR_EXG2_16BIT		= 0x080000;
 			public static final int SENSOR_BRIDGE_AMP		= 0x8000;
+			public static final int SENSOR_ALT_ACCEL		= 0x400000; 
+			public static final int SENSOR_ALT_MAG		  	= 0X200000; 
 		}
 
 		public static final String[] ListofBluetoothBaudRates = {"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};

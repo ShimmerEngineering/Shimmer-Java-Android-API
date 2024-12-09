@@ -3220,51 +3220,51 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 			}
 			else if ((byte)signalId[i]==(byte)0x14){
-				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3R){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_HIGHG_X;
 					signalDataTypeArray[i+1] = "i12*>";
 					packetSize=packetSize+2;
-					enabledSensors |= SENSOR_ALT_ACCEL;
+					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_ALT_ACCEL;
 				}
 			}
 			else if ((byte)signalId[i]==(byte)0x15){
-				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3R){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_HIGHG_Y;
 					signalDataTypeArray[i+1] = "i12*>";
 					packetSize=packetSize+2;
-					enabledSensors |= SENSOR_ALT_ACCEL;
+					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_ALT_ACCEL;
 				}
 			}
 			else if ((byte)signalId[i]==(byte)0x16){
-				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3R){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_HIGHG_Z;
 					signalDataTypeArray[i+1] = "i12*>";
 					packetSize=packetSize+2;
-					enabledSensors |= SENSOR_ALT_ACCEL;
+					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_ALT_ACCEL;
 				}
 			}
 			else if ((byte)signalId[i]==(byte)0x17){
-				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3R){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_WR_X;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors |= SENSOR_ALT_MAG;
+					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_ALT_MAG;
 				}
 			}
 			else if ((byte)signalId[i]==(byte)0x18){
-				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3R){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_WR_Y;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors |= SENSOR_ALT_MAG;
+					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_ALT_MAG;
 				}
 			}
 			else if ((byte)signalId[i]==(byte)0x19){
-				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+				if (getHardwareVersion()==HW_ID.SHIMMER_3R){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_WR_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
-					enabledSensors |= SENSOR_ALT_MAG;
+					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_ALT_MAG;
 				}
 			}
 			else if ((byte)signalId[i]==(byte)0x1A){
@@ -3941,6 +3941,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				if ((channels[i] == Configuration.Shimmer3.Channel.BridgeAmpHigh) || (channels[i] == Configuration.Shimmer3.Channel.BridgeAmpLow)){
 					enabledSensors = enabledSensors | SENSOR_BRIDGE_AMP;
+				}
+				if (channels[i]==Configuration.Shimmer3.Channel.XAlterAccel || channels[i]==Configuration.Shimmer3.Channel.YAlterAccel || channels[i]==Configuration.Shimmer3.Channel.ZAlterAccel){
+					enabledSensors = enabledSensors | SENSOR_ALT_ACCEL;
+				}
+				if (channels[i]==Configuration.Shimmer3.Channel.XAlterMag || channels[i]==Configuration.Shimmer3.Channel.YAlterMag || channels[i]==Configuration.Shimmer3.Channel.ZAlterMag){
+					enabledSensors = enabledSensors | SENSOR_ALT_MAG;
 				}
 
 			}
