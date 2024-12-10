@@ -159,8 +159,8 @@ public class SensorLIS2MDL extends AbstractSensor{
 	//--------- Sensor info start --------------
 	
 	public static final SensorDetailsRef sensorLIS2MDLMag = new SensorDetailsRef(
-			0x20, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
-			0x20, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
+			0x200000, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
+			0x200000, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
 			GuiLabelSensors.MAG_WR,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2MDL,
 			Arrays.asList(GuiLabelConfig.LIS2MDL_WR_MAG_RATE),
@@ -183,28 +183,28 @@ public class SensorLIS2MDL extends AbstractSensor{
 			ObjectClusterSensorName.MAG_WR_X,
 			ObjectClusterSensorName.MAG_WR_X,
 			DatabaseChannelHandles.WR_MAG_X,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_DATA_TYPE.INT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.LOCAL_FLUX,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
-			0x07);
+			0x17);
 	
 	public static final ChannelDetails channelLIS2MDLMagY = new ChannelDetails(
 			ObjectClusterSensorName.MAG_WR_Y,
 			ObjectClusterSensorName.MAG_WR_Y,
 			DatabaseChannelHandles.WR_MAG_Y,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_DATA_TYPE.INT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.LOCAL_FLUX,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
-			0x08);
+			0x18);
 	
 	public static final ChannelDetails channelLIS2MDLMagZ = new ChannelDetails(
 			ObjectClusterSensorName.MAG_WR_Z,
 			ObjectClusterSensorName.MAG_WR_Z,
 			DatabaseChannelHandles.WR_MAG_Z,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.MSB,
+			CHANNEL_DATA_TYPE.INT12, 2, CHANNEL_DATA_ENDIAN.LSB,
 			CHANNEL_UNITS.LOCAL_FLUX,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
-			0x09);
+			0x19);
     
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
