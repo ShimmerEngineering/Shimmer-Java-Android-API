@@ -634,6 +634,8 @@ public class Configuration {
 			public static final int SENSOR_EXG1_16BIT		= 0x100000;
 			public static final int SENSOR_EXG2_16BIT		= 0x080000;
 			public static final int SENSOR_BRIDGE_AMP		= 0x8000;
+			public static final int SENSOR_ALT_ACCEL		= 0x400000; 
+			public static final int SENSOR_ALT_MAG		  	= 0X200000; 
 		}
 
 		public static final String[] ListofBluetoothBaudRates = {"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
@@ -1095,6 +1097,13 @@ public class Configuration {
 			public static String INT_EXP_ADC_A12 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A12;
 			public static String INT_EXP_ADC_A13 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A13;
 			public static String INT_EXP_ADC_A14 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A14;
+			
+			public static  String ACCEL_HIGHG_X = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_X;
+			public static  String ACCEL_HIGHG_Y = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Y;
+			public static  String ACCEL_HIGHG_Z= SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Z;
+			public static  String MAG_WR_X = SensorLIS2MDL.ObjectClusterSensorName.MAG_WR_X;
+			public static  String MAG_WR_Y = SensorLIS2MDL.ObjectClusterSensorName.MAG_WR_Y;
+			public static  String MAG_WR_Z= SensorLIS2MDL.ObjectClusterSensorName.MAG_WR_Z;
 			
 			public static String BRIDGE_AMP_HIGH = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_HIGH;
 			public static String BRIDGE_AMP_LOW = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_LOW;

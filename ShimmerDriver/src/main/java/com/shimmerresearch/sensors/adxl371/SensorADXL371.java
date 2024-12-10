@@ -126,8 +126,8 @@ public class SensorADXL371 extends AbstractSensor{
 	
 	//--------- Sensor info start --------------
 	public static final SensorDetailsRef sensorADXL371Accel = new SensorDetailsRef(
-			0x10<<8, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
-			0x10<<8, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
+			0x400000, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
+			0x400000, //== Configuration.Shimmer3.SensorBitmap.SENSOR_D_ACCEL will be: SensorBitmap.SENSOR_D_ACCEL
 			GuiLabelSensors.ACCEL_HIGHG,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoADXL371,
 			Arrays.asList(GuiLabelConfig.ADXL371_ACCEL_RANGE,
@@ -176,8 +176,8 @@ public class SensorADXL371 extends AbstractSensor{
 	
 	public static final Integer[] ListofADXL371AccelRangeConfigValues={0};  
 
-	public static final String[] ListofADXL371AccelRate={"320Hz", "640Hz", "1280Hz", "2560Hz", "5120Hz"};
-	public static final Integer[] ListofADXL371AccelRateConfigValues={0,1,2,3,4};
+	public static final String[] ListofADXL371AccelRate={"320Hz", "640Hz", "1280Hz", "2560Hz"};
+	public static final Integer[] ListofADXL371AccelRateConfigValues={0,1,2,3};
 
 	public static final ConfigOptionDetailsSensor configOptionAccelRate = new ConfigOptionDetailsSensor(
 			SensorADXL371.GuiLabelConfig.ADXL371_ACCEL_RATE,
@@ -185,7 +185,7 @@ public class SensorADXL371 extends AbstractSensor{
 			ListofADXL371AccelRate, 
 			ListofADXL371AccelRateConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW);
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoADXL371);
 	
 	//--------- Configuration options end --------------
     
@@ -194,28 +194,28 @@ public class SensorADXL371 extends AbstractSensor{
 			ObjectClusterSensorName.ACCEL_HIGHG_X,
 			ObjectClusterSensorName.ACCEL_HIGHG_X,
 			DatabaseChannelHandles.HIGHG_ACC_X,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_DATA_TYPE.UNKOWN, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
-			0x04);
+			0x14);
     
     public static final ChannelDetails channelADXL371AccelY = new ChannelDetails(
 			ObjectClusterSensorName.ACCEL_HIGHG_Y,
 			ObjectClusterSensorName.ACCEL_HIGHG_Y,
 			DatabaseChannelHandles.HIGHG_ACC_Y,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_DATA_TYPE.UNKOWN, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
-			0x05);
+			0x15);
     
     public static final ChannelDetails channelADXL371AccelZ = new ChannelDetails(
 			ObjectClusterSensorName.ACCEL_HIGHG_Z,
 			ObjectClusterSensorName.ACCEL_HIGHG_Z,
 			DatabaseChannelHandles.HIGHG_ACC_Z,
-			CHANNEL_DATA_TYPE.INT16, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_DATA_TYPE.UNKOWN, 2, CHANNEL_DATA_ENDIAN.MSB,
 			CHANNEL_UNITS.METER_PER_SECOND_SQUARE,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
-			0x06);
+			0x16);
     
     public static final Map<String, ChannelDetails> mChannelMapRef;
     static {
@@ -352,7 +352,6 @@ public class SensorADXL371 extends AbstractSensor{
 
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		// currently use wr accel sensor as placeholder
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
@@ -363,7 +362,6 @@ public class SensorADXL371 extends AbstractSensor{
 				getCurrentCalibDetailsAccelHighG().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 			}
 
-			// LSM303DLHC Digital Accel Calibration Parameters
 			byte[] bufferCalibrationParameters = new byte[configByteLayoutCast.lengthGeneralCalibrationBytes];
 			System.arraycopy(configBytes, configByteLayoutCast.idxADXL371AltAccelCalibration, bufferCalibrationParameters, 0 , configByteLayoutCast.lengthGeneralCalibrationBytes);
 			parseCalibParamFromPacketAccelAdxl(bufferCalibrationParameters, CALIB_READ_SOURCE.INFOMEM);
@@ -551,7 +549,6 @@ public class SensorADXL371 extends AbstractSensor{
 	//--------- Sensor specific methods start --------------
 
 	public void updateCurrentAccelHighGCalibInUse(){
-//		mCurrentCalibDetailsAccelWr = getCurrentCalibDetailsAccelWr();
 		mCurrentCalibDetailsAccelHighG = getCurrentCalibDetailsIfKinematic(mSensorIdAccel, getAccelRange());
 	}
 	
