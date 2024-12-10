@@ -69,41 +69,21 @@ public class SensorLSM6DSV extends AbstractSensor{
 	private CalibDetailsKinematic calibDetailsAccelLn2g = new CalibDetailsKinematic(
 			LN_ACCEL_RANGE_VALUE_2G, LN_ACCEL_RANGE_STRING_2G, 
 			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel2gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r);
-	
-//	private CalibDetailsKinematic calibDetailsAccelLn2g = new CalibDetailsKinematic(
-//			LN_ACCEL_RANGE_VALUE_2G, LN_ACCEL_RANGE_STRING_2G, 
-//			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel2gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r,
-//			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel2gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r);
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn2g = calibDetailsAccelLn2g;
 	
 	private CalibDetailsKinematic calibDetailsAccelLn4g = new CalibDetailsKinematic(
 			LN_ACCEL_RANGE_VALUE_4G, LN_ACCEL_RANGE_STRING_4G, 
 			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel4gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r);
-	
-//	private CalibDetailsKinematic calibDetailsAccelLn4g = new CalibDetailsKinematic(
-//			LN_ACCEL_RANGE_VALUE_4G, LN_ACCEL_RANGE_STRING_4G, 
-//			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel4gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r,
-//			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel4gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r);
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn4g = calibDetailsAccelLn4g;
 	
 	private CalibDetailsKinematic calibDetailsAccelLn8g = new CalibDetailsKinematic(
 			LN_ACCEL_RANGE_VALUE_8G, LN_ACCEL_RANGE_STRING_8G, 
 			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel8gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r);
-	
-//	private CalibDetailsKinematic calibDetailsAccelLn8g = new CalibDetailsKinematic(
-//			LN_ACCEL_RANGE_VALUE_8G, LN_ACCEL_RANGE_STRING_8G, 
-//			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel8gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r,
-//			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel8gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r);
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn8g = calibDetailsAccelLn8g;
 	
 	private CalibDetailsKinematic calibDetailsAccelLn16g = new CalibDetailsKinematic(
 			LN_ACCEL_RANGE_VALUE_16G, LN_ACCEL_RANGE_STRING_16G, 
 			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel16gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r);
-	
-//	private CalibDetailsKinematic calibDetailsAccelLn16g = new CalibDetailsKinematic(
-//			LN_ACCEL_RANGE_VALUE_16G, LN_ACCEL_RANGE_STRING_16G, 
-//			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel16gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r,
-//			AlignmentMatrixLowNoiseAccelShimmer3r, SensitivityMatrixLowNoiseAccel16gShimmer3r, OffsetVectorLowNoiseAccelShimmer3r);
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelLn16g = calibDetailsAccelLn16g;
 	
 	// GYRO
@@ -133,12 +113,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 			OffsetVectorGyroShimmer3r,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	
-//	private CalibDetailsKinematic calibDetailsGyro125 = new CalibDetailsKinematic(
-//			ListofLSM6DSVGyroRangeConfigValues[0], ListofGyroRange[0],
-//			AlignmentMatrixGyroShimmer3r,SensitivityMatrixGyro125dpsShimmer3r,OffsetVectorGyroShimmer3r,
-//			AlignmentMatrixGyroShimmer3r,SensitivityMatrixGyro125dpsShimmer3r,OffsetVectorGyroShimmer3r,
-//			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
-	
 	private CalibDetailsKinematic calibDetailsGyro250 = new CalibDetailsKinematic(
 			ListofLSM6DSVGyroRangeConfigValues[1], 
 			ListofGyroRange[1],
@@ -146,12 +120,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 			SensitivityMatrixGyro250dpsShimmer3r,
 			OffsetVectorGyroShimmer3r,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
-	
-//	private CalibDetailsKinematic calibDetailsGyro250 = new CalibDetailsKinematic(
-//			ListofLSM6DSVGyroRangeConfigValues[1], ListofGyroRange[1],
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro250dpsShimmer3r,OffsetVectorGyroShimmer3r,
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro250dpsShimmer3r,OffsetVectorGyroShimmer3r,
-//			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	
 	private CalibDetailsKinematic calibDetailsGyro500 = new CalibDetailsKinematic(
 			ListofLSM6DSVGyroRangeConfigValues[2], 
@@ -161,12 +129,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 			OffsetVectorGyroShimmer3r,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	
-//	private CalibDetailsKinematic calibDetailsGyro500 = new CalibDetailsKinematic(
-//			ListofLSM6DSVGyroRangeConfigValues[2], ListofGyroRange[2],
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro500dpsShimmer3r, OffsetVectorGyroShimmer3r,
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro500dpsShimmer3r, OffsetVectorGyroShimmer3r,
-//			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
-	
 	private CalibDetailsKinematic calibDetailsGyro1000 = new CalibDetailsKinematic(
 			ListofLSM6DSVGyroRangeConfigValues[3],
 			ListofGyroRange[3],
@@ -174,12 +136,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 			SensitivityMatrixGyro1000dpsShimmer3r, 
 			OffsetVectorGyroShimmer3r,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
-	
-//	private CalibDetailsKinematic calibDetailsGyro1000 = new CalibDetailsKinematic(
-//			ListofLSM6DSVGyroRangeConfigValues[3],ListofGyroRange[3],
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro1000dpsShimmer3r, OffsetVectorGyroShimmer3r,
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro1000dpsShimmer3r, OffsetVectorGyroShimmer3r,
-//			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	
 	private CalibDetailsKinematic calibDetailsGyro2000 = new CalibDetailsKinematic(
 			ListofLSM6DSVGyroRangeConfigValues[4],
@@ -189,12 +145,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 			OffsetVectorGyroShimmer3r,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	
-//	private CalibDetailsKinematic calibDetailsGyro2000 = new CalibDetailsKinematic(
-//			ListofLSM6DSVGyroRangeConfigValues[4],ListofGyroRange[4],
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro2000dpsShimmer3r, OffsetVectorGyroShimmer3r,
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro2000dpsShimmer3r, OffsetVectorGyroShimmer3r,
-//			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
-	
 	private CalibDetailsKinematic calibDetailsGyro4000 = new CalibDetailsKinematic(
 			ListofLSM6DSVGyroRangeConfigValues[5],
 			ListofGyroRange[5],
@@ -202,12 +152,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 			SensitivityMatrixGyro4000dpsShimmer3r, 
 			OffsetVectorGyroShimmer3r,
 			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
-	
-//	private CalibDetailsKinematic calibDetailsGyro4000 = new CalibDetailsKinematic(
-//			ListofLSM6DSVGyroRangeConfigValues[5],ListofGyroRange[5],
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro4000dpsShimmer3r, OffsetVectorGyroShimmer3r,
-//			AlignmentMatrixGyroShimmer3r, SensitivityMatrixGyro4000dpsShimmer3r, OffsetVectorGyroShimmer3r,
-//			CALIBRATION_SCALE_FACTOR.ONE_HUNDRED);
 	
 	public CalibDetailsKinematic mCurrentCalibDetailsGyro = calibDetailsGyro250;
 

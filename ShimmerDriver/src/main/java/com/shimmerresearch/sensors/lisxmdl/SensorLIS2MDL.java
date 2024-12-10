@@ -56,17 +56,12 @@ public class SensorLIS2MDL extends AbstractSensor{
 
 	public static final double[][] DefaultSensitivityMatrixWRMagShimmer3r = {{667,0,0},{0,667,0},{0,0,667}};
 
-//	private CalibDetailsKinematic calibDetailsMagWr = new CalibDetailsKinematic(
-//			ListofLIS2MDLWRMagRangeConfigValues[0],
-//			ListofLIS2MDLWRMagRange[0],
-//			DefaultAlignmentMatrixWRMagShimmer3r,
-//			DefaultSensitivityMatrixWRMagShimmer3r,
-//			DefaultOffsetVectorWRMagShimmer3r);
-	
 	private CalibDetailsKinematic calibDetailsMagWr = new CalibDetailsKinematic(
-			ListofLIS2MDLWRMagRangeConfigValues[0], ListofLIS2MDLWRMagRange[0],
-			DefaultAlignmentMatrixWRMagShimmer3r, DefaultSensitivityMatrixWRMagShimmer3r, DefaultOffsetVectorWRMagShimmer3r,
-			DefaultAlignmentMatrixWRMagShimmer3r, DefaultSensitivityMatrixWRMagShimmer3r, DefaultOffsetVectorWRMagShimmer3r);
+			ListofLIS2MDLWRMagRangeConfigValues[0],
+			ListofLIS2MDLWRMagRange[0],
+			DefaultAlignmentMatrixWRMagShimmer3r,
+			DefaultSensitivityMatrixWRMagShimmer3r,
+			DefaultOffsetVectorWRMagShimmer3r);
 	
 	public CalibDetailsKinematic mCurrentCalibDetailsMagWr = calibDetailsMagWr;
 

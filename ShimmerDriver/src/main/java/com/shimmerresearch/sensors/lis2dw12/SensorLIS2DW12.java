@@ -131,53 +131,33 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel8gShimmer3R = {{418,0,0},{0,418,0},{0,0,418}};
 	public static final double[][] DefaultSensitivityMatrixWideRangeAccel16gShimmer3R = {{209,0,0},{0,209,0},{0,0,209}};
 
-//	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
-//			ListofLIS2DW12AccelRangeConfigValues[0],
-//			ListofLIS2DW12AccelRange[0],
-//			DefaultAlignmentMatrixWideRangeAccelShimmer3R, 
-//			DefaultSensitivityMatrixWideRangeAccel2gShimmer3R, 
-//			DefaultOffsetVectorWideRangeAccelShimmer3R);
-	
 	private CalibDetailsKinematic calibDetailsAccelWr2g = new CalibDetailsKinematic(
-			ListofLIS2DW12AccelRangeConfigValues[0], ListofLIS2DW12AccelRange[0],
-			DefaultAlignmentMatrixWideRangeAccelShimmer3R, DefaultSensitivityMatrixWideRangeAccel2gShimmer3R, DefaultOffsetVectorWideRangeAccelShimmer3R,
-			DefaultAlignmentMatrixWideRangeAccelShimmer3R, DefaultSensitivityMatrixWideRangeAccel2gShimmer3R, DefaultOffsetVectorWideRangeAccelShimmer3R);
-	
-//	private CalibDetailsKinematic calibDetailsAccelWr4g = new CalibDetailsKinematic(
-//			ListofLIS2DW12AccelRangeConfigValues[1], 
-//			ListofLIS2DW12AccelRange[1],
-//			DefaultAlignmentMatrixWideRangeAccelShimmer3R,
-//			DefaultSensitivityMatrixWideRangeAccel4gShimmer3R, 
-//			DefaultOffsetVectorWideRangeAccelShimmer3R);
+			ListofLIS2DW12AccelRangeConfigValues[0],
+			ListofLIS2DW12AccelRange[0],
+			DefaultAlignmentMatrixWideRangeAccelShimmer3R, 
+			DefaultSensitivityMatrixWideRangeAccel2gShimmer3R, 
+			DefaultOffsetVectorWideRangeAccelShimmer3R);
 	
 	private CalibDetailsKinematic calibDetailsAccelWr4g = new CalibDetailsKinematic(
-			ListofLIS2DW12AccelRangeConfigValues[1], ListofLIS2DW12AccelRange[1],
-			DefaultAlignmentMatrixWideRangeAccelShimmer3R,DefaultSensitivityMatrixWideRangeAccel4gShimmer3R, DefaultOffsetVectorWideRangeAccelShimmer3R,
-			DefaultAlignmentMatrixWideRangeAccelShimmer3R,DefaultSensitivityMatrixWideRangeAccel4gShimmer3R, DefaultOffsetVectorWideRangeAccelShimmer3R);
-	
-//	private CalibDetailsKinematic calibDetailsAccelWr8g = new CalibDetailsKinematic(
-//			ListofLIS2DW12AccelRangeConfigValues[2], 
-//			ListofLIS2DW12AccelRange[2],
-//			DefaultAlignmentMatrixWideRangeAccelShimmer3R, 
-//			DefaultSensitivityMatrixWideRangeAccel8gShimmer3R, 
-//			DefaultOffsetVectorWideRangeAccelShimmer3R);
+			ListofLIS2DW12AccelRangeConfigValues[1], 
+			ListofLIS2DW12AccelRange[1],
+			DefaultAlignmentMatrixWideRangeAccelShimmer3R,
+			DefaultSensitivityMatrixWideRangeAccel4gShimmer3R, 
+			DefaultOffsetVectorWideRangeAccelShimmer3R);
 	
 	private CalibDetailsKinematic calibDetailsAccelWr8g = new CalibDetailsKinematic(
-			ListofLIS2DW12AccelRangeConfigValues[2], ListofLIS2DW12AccelRange[2],
-			DefaultAlignmentMatrixWideRangeAccelShimmer3R, DefaultSensitivityMatrixWideRangeAccel8gShimmer3R, DefaultOffsetVectorWideRangeAccelShimmer3R,
-			DefaultAlignmentMatrixWideRangeAccelShimmer3R, DefaultSensitivityMatrixWideRangeAccel8gShimmer3R, DefaultOffsetVectorWideRangeAccelShimmer3R);
-	
-//	private CalibDetailsKinematic calibDetailsAccelWr16g = new CalibDetailsKinematic(
-//			ListofLIS2DW12AccelRangeConfigValues[3], 
-//			ListofLIS2DW12AccelRange[3],
-//			DefaultAlignmentMatrixWideRangeAccelShimmer3R,
-//			DefaultSensitivityMatrixWideRangeAccel16gShimmer3R, 
-//			DefaultOffsetVectorWideRangeAccelShimmer3R);
+			ListofLIS2DW12AccelRangeConfigValues[2], 
+			ListofLIS2DW12AccelRange[2],
+			DefaultAlignmentMatrixWideRangeAccelShimmer3R, 
+			DefaultSensitivityMatrixWideRangeAccel8gShimmer3R, 
+			DefaultOffsetVectorWideRangeAccelShimmer3R);
 	
 	private CalibDetailsKinematic calibDetailsAccelWr16g = new CalibDetailsKinematic(
-			ListofLIS2DW12AccelRangeConfigValues[3], ListofLIS2DW12AccelRange[3],
-			DefaultAlignmentMatrixWideRangeAccelShimmer3R,DefaultSensitivityMatrixWideRangeAccel16gShimmer3R, DefaultOffsetVectorWideRangeAccelShimmer3R,
-			DefaultAlignmentMatrixWideRangeAccelShimmer3R,DefaultSensitivityMatrixWideRangeAccel16gShimmer3R, DefaultOffsetVectorWideRangeAccelShimmer3R);
+			ListofLIS2DW12AccelRangeConfigValues[3], 
+			ListofLIS2DW12AccelRange[3],
+			DefaultAlignmentMatrixWideRangeAccelShimmer3R,
+			DefaultSensitivityMatrixWideRangeAccel16gShimmer3R, 
+			DefaultOffsetVectorWideRangeAccelShimmer3R);
 	
 	public CalibDetailsKinematic mCurrentCalibDetailsAccelWr = calibDetailsAccelWr2g;
 	// ----------   Wide-range accel end ---------------
