@@ -23,8 +23,10 @@ public class OrientationModule9DOFLoader implements AlgorithmLoaderInterface {
 			mapOfSupportedAlgorithms.put(OrientationModule9DOF.algo9DoFOrientation_WR_Acc.mAlgorithmName, OrientationModule9DOF.algo9DoFOrientation_WR_Acc);
 		}
 		else {
-			if(svo.isShimmerGen3() || svo.isShimmerGen4()){
-//				mapOfSupportedAlgorithms.putAll(OrientationModule9DOF.mAlgorithmMapRef);
+			if(svo.isShimmerGen3R()){
+				mapOfSupportedAlgorithms.putAll(OrientationModule9DOF.mAlgorithmMapRef);
+			}
+			else {
 				mapOfSupportedAlgorithms = AlgorithmDetails.loadAlgorithmsWhereSensorsAreAvailable(shimmerDevice, OrientationModule9DOF.mAlgorithmMapRef);
 			}
 		}

@@ -6,6 +6,7 @@ import com.shimmerresearch.algorithms.AlgorithmDetails;
 import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 
 public class GyroOnTheFlyCalLoader implements AlgorithmLoaderInterface {
 
@@ -21,7 +22,13 @@ public class GyroOnTheFlyCalLoader implements AlgorithmLoaderInterface {
 	@Override
 	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerDevice shimmerDevice) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
-		mapOfSupportedAlgorithms = AlgorithmDetails.loadAlgorithmsWhereSensorsAreAvailable(shimmerDevice, GyroOnTheFlyCalModule.mAlgorithmMapRef);
+		ShimmerVerObject svo = shimmerDevice.getShimmerVerObject();
+		if (svo.isShimmerGen3R()){
+			mapOfSupportedAlgorithms.putAll(GyroOnTheFlyCalModule.mAlgorithmMapRef);
+		}
+		else {
+			mapOfSupportedAlgorithms = AlgorithmDetails.loadAlgorithmsWhereSensorsAreAvailable(shimmerDevice, GyroOnTheFlyCalModule.mAlgorithmMapRef);
+		}
 		return mapOfSupportedAlgorithms;
 	}
 
