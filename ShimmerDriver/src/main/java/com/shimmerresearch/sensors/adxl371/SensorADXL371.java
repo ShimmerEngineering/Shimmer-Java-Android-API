@@ -52,6 +52,7 @@ public class SensorADXL371 extends AbstractSensor{
 	protected boolean mHighResAccelHighG = true;
 	
 	protected int mADXL371AnalogAccelRate = 0;
+	protected int mADXL371AnalogAccelRange = 0;
 	
 	public class GuiLabelConfig{
 		public static final String ADXL371_ACCEL_RANGE = "High G Accel Range"; 
@@ -116,8 +117,8 @@ public class SensorADXL371 extends AbstractSensor{
 	public static final double[][] DefaultSensitivityMatrixHighGAccelShimmer3R = {{16,0,0},{0,16,0},{0,0,16}};
 
 	private CalibDetailsKinematic calibDetailsAccelHighG = new CalibDetailsKinematic(
-			0,
-			"0",
+			ListofADXL371AccelRangeConfigValues[0],
+			ListofADXL371AccelRange[0],
 			DefaultAlignmentMatrixHighGAccelShimmer3R, 
 			DefaultSensitivityMatrixHighGAccelShimmer3R, 
 			DefaultOffsetVectorHighGAccelShimmer3R);
@@ -174,16 +175,25 @@ public class SensorADXL371 extends AbstractSensor{
 	
 	//--------- Configuration options start --------------
 	
-	public static final Integer[] ListofADXL371AccelRangeConfigValues={0};  
 
 	public static final String[] ListofADXL371AccelRate={"320Hz", "640Hz", "1280Hz", "2560Hz"};
 	public static final Integer[] ListofADXL371AccelRateConfigValues={0,1,2,3};
+	public static final String[] ListofADXL371AccelRange={"+/- 200g"}; 
+	public static final Integer[] ListofADXL371AccelRangeConfigValues={0};  
 
 	public static final ConfigOptionDetailsSensor configOptionAccelRate = new ConfigOptionDetailsSensor(
 			SensorADXL371.GuiLabelConfig.ADXL371_ACCEL_RATE,
 			SensorADXL371.DatabaseConfigHandle.HIGHG_ACC_RATE,
 			ListofADXL371AccelRate, 
 			ListofADXL371AccelRateConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoADXL371);
+	
+	public static final ConfigOptionDetailsSensor configOptionAccelRange = new ConfigOptionDetailsSensor(
+			SensorADXL371.GuiLabelConfig.ADXL371_ACCEL_RANGE,
+			SensorADXL371.DatabaseConfigHandle.HIGHG_ACC_RANGE,
+			ListofADXL371AccelRange, 
+			ListofADXL371AccelRangeConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoADXL371);
 	
@@ -260,6 +270,7 @@ public class SensorADXL371 extends AbstractSensor{
 	@Override 
 	public void generateConfigOptionsMap() {
 		addConfigOption(configOptionAccelRate);
+		addConfigOption(configOptionAccelRange);
 	}
 	
 	@Override 
@@ -500,6 +511,7 @@ public class SensorADXL371 extends AbstractSensor{
 		LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		
 		mapOfConfig.put(SensorADXL371.DatabaseConfigHandle.HIGHG_ACC_RATE, getADXL371AnalogAccelRate());
+		mapOfConfig.put(SensorADXL371.DatabaseConfigHandle.HIGHG_ACC_RANGE, getADXL371AnalogAccelRange());
 		
 		super.addCalibDetailsToDbMap(mapOfConfig, 
 				getCurrentCalibDetailsAccelHighG(), 
@@ -529,6 +541,7 @@ public class SensorADXL371 extends AbstractSensor{
 	public void initialise() {
 		mSensorIdAccel = Configuration.Shimmer3.SENSOR_ID.SHIMMER_ADXL371_ACCEL_HIGHG;
 		super.initialise();
+		mADXL371AnalogAccelRange = ListofADXL371AccelRangeConfigValues[0];
 
 		updateCurrentAccelHighGCalibInUse();
 	}
@@ -657,6 +670,15 @@ public class SensorADXL371 extends AbstractSensor{
 	
 	public int getADXL371AnalogAccelRate() {
 		return mADXL371AnalogAccelRate;
+	}
+	
+	public int getADXL371AnalogAccelRange() {
+		return mADXL371AnalogAccelRange;	
+	}
+	
+	public void setADXL371AnalogAccelRange(int i) {
+		mADXL371AnalogAccelRange = i;
+		updateCurrentAccelHighGCalibInUse();
 	}
 	
 	public static String parseFromDBColumnToGUIChannel(String databaseChannelHandle) {
