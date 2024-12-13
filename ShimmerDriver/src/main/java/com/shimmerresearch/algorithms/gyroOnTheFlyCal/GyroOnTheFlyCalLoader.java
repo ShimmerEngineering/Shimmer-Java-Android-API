@@ -22,13 +22,8 @@ public class GyroOnTheFlyCalLoader implements AlgorithmLoaderInterface {
 	@Override
 	public LinkedHashMap<String, AlgorithmDetails> getMapOfSupportedAlgorithms(ShimmerDevice shimmerDevice) {
 		LinkedHashMap<String, AlgorithmDetails> mapOfSupportedAlgorithms = new LinkedHashMap<String, AlgorithmDetails>();
-		ShimmerVerObject svo = shimmerDevice.getShimmerVerObject();
-		if (svo.isShimmerGen3R()){
-			mapOfSupportedAlgorithms.putAll(GyroOnTheFlyCalModule.mAlgorithmMapRef);
-		}
-		else {
-			mapOfSupportedAlgorithms = AlgorithmDetails.loadAlgorithmsWhereSensorsAreAvailable(shimmerDevice, GyroOnTheFlyCalModule.mAlgorithmMapRef);
-		}
+		mapOfSupportedAlgorithms = AlgorithmDetails.loadAlgorithmsWhereSensorsAreAvailable(shimmerDevice, GyroOnTheFlyCalModule.mAlgorithmMapRef);
+		
 		return mapOfSupportedAlgorithms;
 	}
 
