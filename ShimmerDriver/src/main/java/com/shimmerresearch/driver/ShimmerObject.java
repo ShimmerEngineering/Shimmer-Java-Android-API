@@ -1501,9 +1501,17 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.INT_EXP_A13) > 0) 
 					|| ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.INT_EXP_A13) > 0)
 					) {
-				int iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
+				int iA13;
+				String sensorName;
+				if (mShimmerVerObject.isShimmerGen3R()) {
+					iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A15);
+					sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A15;
+				}
+				else {
+					iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
+					sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13;
+				}
 				tempData[0] = (double)newPacketInt[iA13];
-				String sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13;
 				//to Support derived sensor renaming
 				if (isSupportedDerivedSensors()){
 					//change name based on derived sensor value
@@ -2728,7 +2736,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					objectCluster.addDataToMap(Shimmer2.ObjectClusterSensorName.VOLT_REG,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA0]);
 					if (mEnableCalibration){
 						if (mShimmerVerObject.isShimmerGen3R()) {
-							calibratedData[iA0]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1)*1.988;
+							calibratedData[iA0]=SensorADC.calibrateU14AdcValueToMillivolts(tempData[0],0,3,1)*1.988;
 						}
 						else {
 							calibratedData[iA0]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1)*1.988;
@@ -2790,7 +2798,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 					tempData[0] = (double)newPacketInt[iA7];
 					if (mShimmerVerObject.isShimmerGen3R()) {
-						calibratedData[iA7]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1)*2;
+						calibratedData[iA7]=SensorADC.calibrateU14AdcValueToMillivolts(tempData[0],0,3,1)*2;
 					}
 					else {
 						calibratedData[iA7]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1)*2;

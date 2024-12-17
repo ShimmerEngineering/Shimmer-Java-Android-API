@@ -663,7 +663,14 @@ public class SensorADC extends AbstractSensor {
 	}
 
 	public static int uncalibrateAdcChannelFromVolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
-		int calData = uncalibrateU12AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		int calData;
+		if(mShimmerVerObject.isShimmerGen3R()){
+			calData = uncalibrateU14AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		}
+		else {
+			calData = uncalibrateU12AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		}
+
 		return calData;
 	}
 
