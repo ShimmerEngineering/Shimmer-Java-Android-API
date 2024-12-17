@@ -3789,7 +3789,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} 
 		else if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
 			if(bufferInquiry.length>=11){
-				mPacketSize = mTimeStampPacketByteSize+bufferInquiry[12]*2; 
+				mPacketSize = mTimeStampPacketByteSize+bufferInquiry[9]*2; 
 				double samplingRate = convertSamplingRateBytesToFreq(bufferInquiry[0], bufferInquiry[1], getSamplingClockFreq());
 				setSamplingRateShimmer(samplingRate);
 //				setSamplingRateShimmer((getSamplingClockFreq()/(double)((int)(bufferInquiry[0] & 0xFF) + ((int)(bufferInquiry[1] & 0xFF) << 8))));
