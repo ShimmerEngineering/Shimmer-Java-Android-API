@@ -1098,6 +1098,14 @@ public class Configuration {
 			public static String INT_EXP_ADC_A13 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A13;
 			public static String INT_EXP_ADC_A14 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A14;
 			
+			public static String EXT_EXP_ADC_A9 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A9;
+			public static String EXT_EXP_ADC_A11 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A11;
+			public static String EXT_EXP_ADC_A12 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A12;
+			public static String INT_EXP_ADC_A17 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A17;
+			public static String INT_EXP_ADC_A10 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A10;
+			public static String INT_EXP_ADC_A15 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A15;
+			public static String INT_EXP_ADC_A16 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A16;
+			
 			public static  String ACCEL_HIGHG_X = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_X;
 			public static  String ACCEL_HIGHG_Y = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Y;
 			public static  String ACCEL_HIGHG_Z= SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Z;

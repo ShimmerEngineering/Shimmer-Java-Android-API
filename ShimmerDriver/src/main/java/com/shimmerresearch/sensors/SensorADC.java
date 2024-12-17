@@ -74,6 +74,14 @@ public class SensorADC extends AbstractSensor {
 		public static final String INT_ADC_A12 = "F5437a_Int_A12";
 		public static final String INT_ADC_A13 = "F5437a_Int_A13";
 		public static final String INT_ADC_A14 = "F5437a_Int_A14";
+		
+		public static final String EXT_ADC_A9 = "F5437a_Ext_A9";
+		public static final String EXT_ADC_A11 = "F5437a_Ext_A11";
+		public static final String EXT_ADC_A12 = "F5437a_Ext_A12";
+		public static final String INT_ADC_A17 = "F5437a_Int_A17";
+		public static final String INT_ADC_A10 = "F5437a_Int_A10";
+		public static final String INT_ADC_A15 = "F5437a_Int_A15";
+		public static final String INT_ADC_A16 = "F5437a_Int_A16";
 	}
 	
 	//GUI AND EXPORT CHANNELS
@@ -85,6 +93,14 @@ public class SensorADC extends AbstractSensor {
 		public static String INT_EXP_ADC_A12 = "Int_Exp_A12";
 		public static String INT_EXP_ADC_A13 = "Int_Exp_A13";
 		public static String INT_EXP_ADC_A14 = "Int_Exp_A14";
+		
+		public static String EXT_EXP_ADC_A9 = "Ext_Exp_A9";
+		public static String EXT_EXP_ADC_A11 = "Ext_Exp_A11";
+		public static String EXT_EXP_ADC_A12 = "Ext_Exp_A12";
+		public static String INT_EXP_ADC_A17 = "Ext_Exp_A17";
+		public static String INT_EXP_ADC_A10 = "Ext_Exp_A10";
+		public static String INT_EXP_ADC_A15 = "Ext_Exp_A15";
+		public static String INT_EXP_ADC_A16 = "Ext_Exp_A16";
 	}
 	
 	
@@ -308,12 +324,30 @@ public class SensorADC extends AbstractSensor {
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0D);
+    
+    public static final ChannelDetails channel_EXT_EXP_ADC_A9 = new ChannelDetails(
+    		ObjectClusterSensorName.EXT_EXP_ADC_A9,
+    		ObjectClusterSensorName.EXT_EXP_ADC_A9,
+    		DatabaseChannelHandles.EXT_ADC_A9,
+    		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+    		CHANNEL_UNITS.MILLIVOLTS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x0D);
 
     public static final ChannelDetails channel_EXT_EXP_ADC_A6 = new ChannelDetails(
     		ObjectClusterSensorName.EXT_EXP_ADC_A6,
     		ObjectClusterSensorName.EXT_EXP_ADC_A6,
     		DatabaseChannelHandles.EXT_ADC_A6,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+    		CHANNEL_UNITS.MILLIVOLTS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x0E);
+    
+    public static final ChannelDetails channel_EXT_EXP_ADC_A11 = new ChannelDetails(
+    		ObjectClusterSensorName.EXT_EXP_ADC_A11,
+    		ObjectClusterSensorName.EXT_EXP_ADC_A11,
+    		DatabaseChannelHandles.EXT_ADC_A11,
+    		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0E);
@@ -330,6 +364,15 @@ public class SensorADC extends AbstractSensor {
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0F);
+    
+    public static final ChannelDetails channel_EXT_EXP_ADC_A12 = new ChannelDetails(
+    		ObjectClusterSensorName.EXT_EXP_ADC_A12,
+    		ObjectClusterSensorName.EXT_EXP_ADC_A12,
+    		DatabaseChannelHandles.EXT_ADC_A12,
+    		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+    		CHANNEL_UNITS.MILLIVOLTS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x0F);
 
     // Internal ADCs
     public static final ChannelDetails channel_INT_EXP_ADC_A1 = new ChannelDetails(
@@ -340,6 +383,15 @@ public class SensorADC extends AbstractSensor {
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x10);
+    
+    public static final ChannelDetails channel_INT_EXP_ADC_A17 = new ChannelDetails(
+    		ObjectClusterSensorName.INT_EXP_ADC_A17,
+    		ObjectClusterSensorName.INT_EXP_ADC_A17,
+    		DatabaseChannelHandles.INT_ADC_A17,
+    		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+    		CHANNEL_UNITS.MILLIVOLTS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x10);
 
 
     public static final ChannelDetails channel_INT_EXP_ADC_A12 = new ChannelDetails(
@@ -347,6 +399,15 @@ public class SensorADC extends AbstractSensor {
     		ObjectClusterSensorName.INT_EXP_ADC_A12,
     		DatabaseChannelHandles.INT_ADC_A12,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+    		CHANNEL_UNITS.MILLIVOLTS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x11);
+    
+    public static final ChannelDetails channel_INT_EXP_ADC_A10 = new ChannelDetails(
+    		ObjectClusterSensorName.INT_EXP_ADC_A10,
+    		ObjectClusterSensorName.INT_EXP_ADC_A10,
+    		DatabaseChannelHandles.INT_ADC_A10,
+    		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x11);
@@ -361,11 +422,29 @@ public class SensorADC extends AbstractSensor {
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x12);
 
+    public static final ChannelDetails channel_INT_EXP_ADC_A15 = new ChannelDetails(
+    		ObjectClusterSensorName.INT_EXP_ADC_A15,
+    		ObjectClusterSensorName.INT_EXP_ADC_A15,
+    		DatabaseChannelHandles.INT_ADC_A15,
+    		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+    		CHANNEL_UNITS.MILLIVOLTS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x12);
+    
     public static final ChannelDetails channel_INT_EXP_ADC_A14 = new ChannelDetails(
     		ObjectClusterSensorName.INT_EXP_ADC_A14,
     		ObjectClusterSensorName.INT_EXP_ADC_A14,
     		DatabaseChannelHandles.INT_ADC_A14,
     		CHANNEL_DATA_TYPE.UINT12, 2, CHANNEL_DATA_ENDIAN.LSB,
+    		CHANNEL_UNITS.MILLIVOLTS,
+    		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
+    		0x13);
+    
+    public static final ChannelDetails channel_INT_EXP_ADC_A16 = new ChannelDetails(
+    		ObjectClusterSensorName.INT_EXP_ADC_A16,
+    		ObjectClusterSensorName.INT_EXP_ADC_A16,
+    		DatabaseChannelHandles.INT_ADC_A16,
+    		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x13);
@@ -384,6 +463,21 @@ public class SensorADC extends AbstractSensor {
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A14, channel_INT_EXP_ADC_A14);
     	mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
+    
+    public static final Map<String, ChannelDetails> mChannelMapRef3R;
+    static {
+    	Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+    	// External ADCs
+    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A9,  channel_EXT_EXP_ADC_A9);
+    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A11,  channel_EXT_EXP_ADC_A11);
+    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A12, channel_EXT_EXP_ADC_A12);
+    	// Internal ADCs
+    	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A17,  channel_INT_EXP_ADC_A17);
+    	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A10, channel_INT_EXP_ADC_A10);
+    	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A15, channel_INT_EXP_ADC_A15);
+    	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A16, channel_INT_EXP_ADC_A16);
+    	mChannelMapRef3R = Collections.unmodifiableMap(aMap);
+    }
 
     //--------- Sensor info end --------------
 	
@@ -400,7 +494,12 @@ public class SensorADC extends AbstractSensor {
 	//--------- Abstract methods implemented start --------------
 	@Override
 	public void generateSensorMap() {
-		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
+		if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef3R);
+		}
+		else {
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
+		}
 	}
 
 	@Override
@@ -436,7 +535,7 @@ public class SensorADC extends AbstractSensor {
 		return processMspAdcChannel(sensorDetails, rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 	}
 	
-	public static ObjectCluster processMspAdcChannel(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs){
+	public ObjectCluster processMspAdcChannel(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs){
 		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 		
 		if(mEnableCalibration){
@@ -534,16 +633,28 @@ public class SensorADC extends AbstractSensor {
 	}
 
 	public static double calibrateAdcChannelToMillivolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
-		double calData = calibrateU12AdcValueToMillivolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		double calData;
+		if(mShimmerVerObject.isShimmerGen3R()){
+			calData = calibrateU14AdcValueToMillivolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		}
+		else {
+			calData = calibrateU12AdcValueToMillivolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		}
 		return calData;
 	}
 
-	public static double calibrateMspAdcChannelToVolts(double unCalData){
+	public double calibrateMspAdcChannelToVolts(double unCalData){
 		return calibrateAdcChannelToVolts(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
 	}
 
-	public static double calibrateAdcChannelToVolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
-		double calData = calibrateU12AdcValueToVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+	public double calibrateAdcChannelToVolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
+		double calData;
+		if(mShimmerVerObject.isShimmerGen3R()){
+			calData = calibrateU14AdcValueToVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		}
+		else {
+			calData = calibrateU12AdcValueToVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		}
 		return calData;
 	}
 
@@ -564,6 +675,15 @@ public class SensorADC extends AbstractSensor {
 		double calibratedData = (uncalibratedData-offset) * ((vRefP/gain)/4095);
 		return calibratedData;
 	}
+	
+	public static double calibrateU14AdcValueToMillivolts(double uncalibratedData, double offset, double vRefP, double gain){
+		return calibrateU14AdcValueToVolts(uncalibratedData, offset, vRefP*1000, gain);
+	}
+
+	public static double calibrateU14AdcValueToVolts(double uncalibratedData, double offset, double vRefP, double gain){
+		double calibratedData = (uncalibratedData-offset) * ((vRefP/gain)/16383);
+		return calibratedData;
+	}
 
 	public static double calibrateAdcValueToMillivolts(double uncalibratedData, double offset, double vRefP, double gain, CHANNEL_DATA_TYPE channelDataType){
 		double calibratedData = (uncalibratedData-offset) * (((vRefP*1000)/gain)/channelDataType.getMaxVal());
@@ -579,6 +699,16 @@ public class SensorADC extends AbstractSensor {
 
 	public static int uncalibrateU12AdcValueFromVolts(double calibratedData, double offset, double vRefP, double gain) {
 		double adcVal = (calibratedData / (((vRefP)/gain)/4095)) + offset;
+		return (int) adcVal;
+	}
+	
+	public static int uncalibrateU14AdcValueFromMillivolts(double calibratedData, double offset, double vRefP, double gain) {
+		double adcVal = (calibratedData / (((vRefP*1000)/gain)/16383)) + offset;
+		return (int) adcVal;
+	}
+
+	public static int uncalibrateU14AdcValueFromVolts(double calibratedData, double offset, double vRefP, double gain) {
+		double adcVal = (calibratedData / (((vRefP)/gain)/16383)) + offset;
 		return (int) adcVal;
 	}
 
