@@ -19,6 +19,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
@@ -81,6 +82,13 @@ public class SensorPPG extends AbstractSensor {
 		public static final String PPG2_DUMMY = "PPG2";
 		public static final String PPG2_A1 = "PPG2 A1";
 		public static final String PPG2_A14 = "PPG2 A14";
+		
+		public static final String PPG_A10 = "PPG A10";
+		public static final String PPG_A15 = "PPG A15";
+		public static final String PPG1_A10 = "PPG1 A10";
+		public static final String PPG1_A15 = "PPG1 A15";
+		public static final String PPG2_A17 = "PPG2 A17";
+		public static final String PPG2_A16 = "PPG2 A16";
 	}
 
 	 
@@ -91,6 +99,13 @@ public class SensorPPG extends AbstractSensor {
 		public static final String PPG1_A13 = "F5437a_PPG1_A13";
 		public static final String PPG2_A1 = "F5437a_PPG2_A1";
 		public static final String PPG2_A14 = "F5437a_PPG2_A14";
+		
+		public static final String PPG_A10 = "F5437a_PPG_A10";
+		public static final String PPG_A15 = "F5437a_PPG_A15";
+		public static final String PPG1_A10 = "F5437a_PPG1_A10";
+		public static final String PPG1_A15 = "F5437a_PPG1_A15";
+		public static final String PPG2_A17 = "F5437a_PPG2_A17";
+		public static final String PPG2_A16 = "F5437a_PPG2_A16";
 	}
 	
 public static class DatabaseConfigHandle{
@@ -127,10 +142,13 @@ public static class DatabaseConfigHandle{
 	//--------- Configuration options start --------------
 	
 	public static final String[] ListOfPpgAdcSelection = {"Int A13","Int A12"};
+	public static final String[] ListOfPpgAdcSelection3r = {"Int A15","Int A10"};
 	public static final Integer[] ListOfPpgAdcSelectionConfigValues = {0,1};
 	public static final String[] ListOfPpg1AdcSelection = {"Int A13","Int A12"};
+	public static final String[] ListOfPpg1AdcSelection3r = {"Int A15","Int A10"};
 	public static final Integer[] ListOfPpg1AdcSelectionConfigValues = {0,1};
 	public static final String[] ListOfPpg2AdcSelection = {"Int A1","Int A14"};
+	public static final String[] ListOfPpg2AdcSelection3r = {"Int A17","Int A16"};
 	public static final Integer[] ListOfPpg2AdcSelectionConfigValues = {0,1};
 	
 	public static final Integer[] FixedConflictingSensorIds = {
@@ -155,6 +173,14 @@ public static class DatabaseConfigHandle{
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
     
+    public static final ConfigOptionDetailsSensor configOptionPpgAdcSelection3r = new ConfigOptionDetailsSensor(
+    		SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION,
+    		null,
+    		ListOfPpgAdcSelection3r, 
+			ListOfPpgAdcSelectionConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr);
+    
     public static final ConfigOptionDetailsSensor configOptionPpg1AdcSelection = new ConfigOptionDetailsSensor(
     		SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION,
     		null,
@@ -163,10 +189,26 @@ public static class DatabaseConfigHandle{
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
     
+    public static final ConfigOptionDetailsSensor configOptionPpg1AdcSelection3r = new ConfigOptionDetailsSensor(
+    		SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION,
+    		null,
+    		ListOfPpg1AdcSelection3r, 
+			ListOfPpg1AdcSelectionConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
+    
     public static final ConfigOptionDetailsSensor configOptionPpg2AdcSelection = new ConfigOptionDetailsSensor(
     		SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION,
     		null,
     		ListOfPpg2AdcSelection, 
+			ListOfPpg2AdcSelectionConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
+    
+    public static final ConfigOptionDetailsSensor configOptionPpg2AdcSelection3r = new ConfigOptionDetailsSensor(
+    		SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION,
+    		null,
+    		ListOfPpg2AdcSelection3r, 
 			ListOfPpg2AdcSelectionConfigValues, 
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe);
@@ -209,6 +251,26 @@ public static class DatabaseConfigHandle{
 //		sensorPpgHostPPG_A12.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
 	}
 	
+	public static final SensorDetailsRef sensorPpgHostPPG_A10 = new SensorDetailsRef(
+			SensorADC.sensorADC_INT_EXP_ADC_A12Ref.mSensorBitmapIDStreaming,
+			SensorADC.sensorADC_INT_EXP_ADC_A12Ref.mSensorBitmapIDSDLogHeader,
+			GuiLabelSensors.PPG_A10,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
+			getListSensorPpgHostPPG_A12(), // RM passed in list into constructor as settings the list outside of constructor wasn't working
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG_A10),
+			true);
+	{
+		List<Integer> listOfKeysConflicting =  new ArrayList<Integer>();
+		listOfKeysConflicting.addAll(FixedConflictingSensorIdsList);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A13);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13);
+		sensorPpgHostPPG_A10.mListOfSensorIdsConflicting = Collections.unmodifiableList(listOfKeysConflicting);
+		
+//		sensorPpgHostPPG_A12.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
+	}
+	
 	/**
 	 * Hack method put in to return list of conflicting sensors for PPG A12 as the setting the list value
 	 * outside of the constructor was not working (talk to MN)
@@ -242,6 +304,27 @@ public static class DatabaseConfigHandle{
 		listOfKeysConflicting.add(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12);
 		listOfKeysConflicting.add(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13);
 		sensorPpgHostPPG_A13.mListOfSensorIdsConflicting = Collections.unmodifiableList(listOfKeysConflicting);
+		
+//		sensorPpgHostPPG_A13.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
+	}
+	
+	public static final SensorDetailsRef sensorPpgHostPPG_A15 = new SensorDetailsRef(
+			SensorADC.sensorADC_INT_EXP_ADC_A13Ref.mSensorBitmapIDStreaming,
+			SensorADC.sensorADC_INT_EXP_ADC_A13Ref.mSensorBitmapIDSDLogHeader,
+			GuiLabelSensors.PPG_A15,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr,
+			getListSensorPpgHostPPG_A13(), // RM passed in list into constructor as settings the list outside of constructor wasn't working
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG_A15),
+			true);
+	
+	{
+		List<Integer> listOfKeysConflicting =  new ArrayList<Integer>();
+		listOfKeysConflicting.addAll(FixedConflictingSensorIdsList);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A12);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12);
+		listOfKeysConflicting.add(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13);
+		sensorPpgHostPPG_A15.mListOfSensorIdsConflicting = Collections.unmodifiableList(listOfKeysConflicting);
 		
 //		sensorPpgHostPPG_A13.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG_12_13; 
 	}
@@ -304,6 +387,31 @@ public static class DatabaseConfigHandle{
 //	{
 //		sensorPpgHostPPG1_A12.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG1_12_13; 
 //	}
+	public static final SensorDetailsRef sensorPpgHostPPG1_A10 = new SensorDetailsRef(
+			SensorADC.sensorADC_INT_EXP_ADC_A12Ref.mSensorBitmapIDStreaming,
+			SensorADC.sensorADC_INT_EXP_ADC_A12Ref.mSensorBitmapIDSDLogHeader,
+			GuiLabelSensors.PPG1_A10,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			Arrays.asList(
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A13,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG1_A10),
+			true);
 	
 	public static final SensorDetailsRef sensorPpgHostPPG1_A13 = new SensorDetailsRef(
 			SensorADC.sensorADC_INT_EXP_ADC_A13Ref.mSensorBitmapIDStreaming,
@@ -332,6 +440,30 @@ public static class DatabaseConfigHandle{
 //	{
 //		sensorPpgHostPPG1_A13.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG1_12_13; 
 //	}
+	public static final SensorDetailsRef sensorPpgHostPPG1_A15 = new SensorDetailsRef(
+			SensorADC.sensorADC_INT_EXP_ADC_A13Ref.mSensorBitmapIDStreaming,
+			SensorADC.sensorADC_INT_EXP_ADC_A13Ref.mSensorBitmapIDSDLogHeader,
+			GuiLabelSensors.PPG1_A15,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			Arrays.asList(
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG1_A15),
+			true);
 	
 	public static final SensorDetailsRef sensorPpg2Dummy = new SensorDetailsRef(
 			0, 0, 
@@ -372,6 +504,30 @@ public static class DatabaseConfigHandle{
 //	{
 //		sensorPpgHostPPG2_A1.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG2_1_14; 
 //	}
+	public static final SensorDetailsRef sensorPpgHostPPG2_A17 = new SensorDetailsRef(
+			SensorADC.sensorADC_INT_EXP_ADC_A1Ref.mSensorBitmapIDStreaming,
+			SensorADC.sensorADC_INT_EXP_ADC_A1Ref.mSensorBitmapIDSDLogHeader,
+			GuiLabelSensors.PPG2_A17,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			Arrays.asList(
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG2_A17),
+			true);
 	
 	public static final SensorDetailsRef sensorPpgHostPPG2_A14 = new SensorDetailsRef(
 			SensorADC.sensorADC_INT_EXP_ADC_A14Ref.mSensorBitmapIDStreaming,
@@ -401,6 +557,31 @@ public static class DatabaseConfigHandle{
 //	{
 //		sensorPpgHostPPG2_A1.mDerivedSensorBitmapID = ShimmerObject.DerivedSensorsBitMask.PPG2_1_14; 
 //	}
+	public static final SensorDetailsRef sensorPpgHostPPG2_A16 = new SensorDetailsRef(
+			SensorADC.sensorADC_INT_EXP_ADC_A14Ref.mSensorBitmapIDStreaming,
+			SensorADC.sensorADC_INT_EXP_ADC_A14Ref.mSensorBitmapIDSDLogHeader,
+			GuiLabelSensors.PPG2_A16,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe,
+			Arrays.asList(
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14),
+			null,
+			Arrays.asList(ObjectClusterSensorName.PPG2_A16),
+			true);
 	    
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -419,6 +600,25 @@ public static class DatabaseConfigHandle{
 		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A14, sensorPpgHostPPG2_A14);
 
         mSensorMapRef = Collections.unmodifiableMap(aMap);
+       }
+    
+	public static final Map<Integer, SensorDetailsRef> mSensorMapRef3r;
+    static {
+        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+
+    	// Derived Channels - GSR Board
+        
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY, sensorPpgDummy);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A12, sensorPpgHostPPG_A10);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A13, sensorPpgHostPPG_A15);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_DUMMY,sensorPpg1Dummy);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A12, sensorPpgHostPPG1_A10);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A13, sensorPpgHostPPG1_A15);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_DUMMY ,sensorPpg2Dummy);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A1, sensorPpgHostPPG2_A17);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A14, sensorPpgHostPPG2_A16);
+
+        mSensorMapRef3r = Collections.unmodifiableMap(aMap);
        }
 	//--------- Sensor info end --------------
     
@@ -476,6 +676,58 @@ public static class DatabaseConfigHandle{
 			CHANNEL_UNITS.MILLIVOLTS,
 			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
 	
+	 // PPG - Using GSR+ board
+	public static final ChannelDetails channelPPG_A10 = new ChannelDetails(
+			ObjectClusterSensorName.PPG_A10,
+			ObjectClusterSensorName.PPG_A10,
+			DatabaseChannelHandles.PPG_A10,
+			CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.MILLIVOLTS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	
+	public static final ChannelDetails channelPPG_A15 = new ChannelDetails(
+			ObjectClusterSensorName.PPG_A15,
+			ObjectClusterSensorName.PPG_A15,
+			DatabaseChannelHandles.PPG_A15,
+			CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.MILLIVOLTS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	
+	// PPG - Using Proto3 Deluxe TRRS Socket 1
+	
+	public static final ChannelDetails channelPPG1_A10 = new ChannelDetails(
+			ObjectClusterSensorName.PPG1_A10,
+			ObjectClusterSensorName.PPG1_A10,
+			DatabaseChannelHandles.PPG1_A10,
+			CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.MILLIVOLTS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	
+	public static final ChannelDetails channelPPG1_A15 = new ChannelDetails(
+			ObjectClusterSensorName.PPG1_A15,
+			ObjectClusterSensorName.PPG1_A15,
+			DatabaseChannelHandles.PPG1_A15,
+			CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.MILLIVOLTS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	
+	// PPG - Using Proto3 Deluxe TRRS Socket 2
+	public static final ChannelDetails channelPPG2_A17 = new ChannelDetails(
+			ObjectClusterSensorName.PPG2_A17,
+			ObjectClusterSensorName.PPG2_A17,
+			DatabaseChannelHandles.PPG2_A17,
+			CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.MILLIVOLTS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	
+	public static final ChannelDetails channelPPG2_A16 = new ChannelDetails(
+			ObjectClusterSensorName.PPG2_A16,
+			ObjectClusterSensorName.PPG2_A16,
+			DatabaseChannelHandles.PPG2_A16,
+			CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
+			CHANNEL_UNITS.MILLIVOLTS,
+			Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL));
+	
 	
 	public static final Map<String, ChannelDetails> mChannelMapRef;
 	static {
@@ -492,6 +744,23 @@ public static class DatabaseConfigHandle{
 		aChannelMap.put(ObjectClusterSensorName.PPG2_A14, SensorPPG.channelPPG2_A14);
 
 		mChannelMapRef = Collections.unmodifiableMap(aChannelMap);
+	}
+	
+	public static final Map<String, ChannelDetails> mChannelMapRef3r;
+	static {
+		 Map<String, ChannelDetails> aChannelMap = new LinkedHashMap<String, ChannelDetails>();
+		
+		// PPG - Using GSR+ board
+		aChannelMap.put(ObjectClusterSensorName.PPG_A10, SensorPPG.channelPPG_A10);
+		aChannelMap.put(ObjectClusterSensorName.PPG_A15, SensorPPG.channelPPG_A15); 
+		// PPG - Using Proto3 Deluxe TRRS Socket 1
+		aChannelMap.put(ObjectClusterSensorName.PPG1_A10, SensorPPG.channelPPG1_A10); 
+		aChannelMap.put(ObjectClusterSensorName.PPG1_A15, SensorPPG.channelPPG1_A15);
+		// PPG - Using Proto3 Deluxe TRRS Socket 2
+		aChannelMap.put(ObjectClusterSensorName.PPG2_A17, SensorPPG.channelPPG2_A17);
+		aChannelMap.put(ObjectClusterSensorName.PPG2_A16, SensorPPG.channelPPG2_A16);
+
+		mChannelMapRef3r = Collections.unmodifiableMap(aChannelMap);
 	}
 	
 // --------------------------- Channel info end ----------------------------------------
@@ -518,8 +787,12 @@ public static class DatabaseConfigHandle{
 	@Override
 	public void generateSensorMap() {
 		//TODO either use createLocalSensorMap or fill in the "processDataCustom" method
-		super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
-		
+		if(getHardwareVersion() == HW_ID.SHIMMER_3R) {
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef3r, mChannelMapRef3r);
+		} else {
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
+		}
+
 		//Update the derived sensor bit index
 		for(Integer sensorId:mSensorMap.keySet()){
 			long derivedSensorBitmapID = 0;
@@ -546,9 +819,17 @@ public static class DatabaseConfigHandle{
 	@Override
 	public void generateConfigOptionsMap() {
 		mConfigOptionsMap.clear();
-		addConfigOption(configOptionPpgAdcSelection);
-		addConfigOption(configOptionPpg1AdcSelection);
-		addConfigOption(configOptionPpg2AdcSelection);
+		if(getHardwareVersion() == HW_ID.SHIMMER_3R) {
+			addConfigOption(configOptionPpgAdcSelection3r);
+			addConfigOption(configOptionPpg1AdcSelection3r);
+			addConfigOption(configOptionPpg2AdcSelection3r);
+		} else {
+			addConfigOption(configOptionPpgAdcSelection);
+			addConfigOption(configOptionPpg1AdcSelection);
+			addConfigOption(configOptionPpg2AdcSelection);
+		}
+
+
 //		mConfigOptionsMap.put(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG, mConfigOptionsMapRef.get(GuiLabelConfig.SAMPLING_RATE_DIVIDER_PPG)); 
 	}
 	

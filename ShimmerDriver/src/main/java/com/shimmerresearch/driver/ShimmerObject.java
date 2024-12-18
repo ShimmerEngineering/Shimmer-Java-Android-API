@@ -5525,8 +5525,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			} 
 			else if (isShimmerGen3() || isShimmerGen3R()//3R SUPPORT TEMP JA-116
 					|| isShimmerGenGq()) { // need isShimmerGenGq() here for parsing GQ data through ShimmerSDLog
-				
-				mChannelMap.putAll(Configuration.Shimmer3.mChannelMapRef);
+				if(isShimmerGen3R()) {
+					mChannelMap.putAll(Configuration.Shimmer3.mChannelMapRef3r);
+				}else {
+					mChannelMap.putAll(Configuration.Shimmer3.mChannelMapRef);
+				}
 
 				//Hack for GSR parsing in GQ from SD files (ideally GQ SD parsing should be done in ShimmerGQ class)
 				if(isShimmerGenGq()){
@@ -5597,8 +5600,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //		createInfoMemLayoutObjectIfNeeded();
 		ConfigByteLayout infoMemLayout = getConfigByteLayout();
 		if(infoMemLayout!=null){
-			
-			Map<Integer,SensorDetailsRef> sensorMapRef = Configuration.Shimmer3.mSensorMapRef;
+			Map<Integer,SensorDetailsRef> sensorMapRef;
+			if(isShimmerGen3R()) {
+				sensorMapRef = Configuration.Shimmer3.mSensorMapRef3r;
+			}else {
+				sensorMapRef = Configuration.Shimmer3.mSensorMapRef;
+			}
+
 			for(Integer key:sensorMapRef.keySet()){
 				
 				//Special cases for derived sensor bitmap ID
@@ -5650,7 +5658,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	private void createConfigOptionMapShimmer3() {
 		generateConfigOptionsMap();
-		Map<String, ConfigOptionDetailsSensor> configOptionsMapRef = Configuration.Shimmer3.mConfigOptionsMapRef;
+		Map<String, ConfigOptionDetailsSensor> configOptionsMapRef;
+		if(isShimmerGen3R()) {
+			configOptionsMapRef = Configuration.Shimmer3.mConfigOptionsMapRef3r;
+		}else {
+			configOptionsMapRef = Configuration.Shimmer3.mConfigOptionsMapRef;
+		}
 		loadCompatibleConfigOptionGroupEntries(configOptionsMapRef);
 	}
 
