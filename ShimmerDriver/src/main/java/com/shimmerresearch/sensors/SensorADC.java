@@ -535,7 +535,7 @@ public class SensorADC extends AbstractSensor {
 		return processMspAdcChannel(sensorDetails, rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 	}
 	
-	public ObjectCluster processMspAdcChannel(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs){
+	public static ObjectCluster processMspAdcChannel(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType, ObjectCluster objectCluster, boolean isTimeSyncEnabled, double pcTimestampMs){
 		sensorDetails.processDataCommon(rawData, commType, objectCluster, isTimeSyncEnabled, pcTimestampMs);
 		
 		if(mEnableCalibration){
@@ -647,7 +647,7 @@ public class SensorADC extends AbstractSensor {
 		return calibrateAdcChannelToVolts(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
 	}
 
-	public double calibrateAdcChannelToVolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
+	public static double calibrateAdcChannelToVolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
 		double calData;
 		if(mShimmerVerObject.isShimmerGen3R()){
 			calData = calibrateU14AdcValueToVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
