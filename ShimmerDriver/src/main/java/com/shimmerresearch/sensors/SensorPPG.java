@@ -106,6 +106,13 @@ public static class DatabaseConfigHandle{
 		public static  String PPG1_A13 = "PPG1_A13";
 		public static  String PPG2_A1 = "PPG2_A1";
 		public static  String PPG2_A14 = "PPG2_A14";
+		
+		public static  String PPG_A10 = "PPG_A10";
+		public static  String PPG_A15 = "PPG_A15";
+		public static  String PPG1_A10 = "PPG1_A10";
+		public static  String PPG1_A15 = "PPG1_A15";
+		public static  String PPG2_A17 = "PPG2_A17";
+		public static  String PPG2_A16 = "PPG2_A16";
 	}
 	//--------- Sensor specific variables End --------------
 
