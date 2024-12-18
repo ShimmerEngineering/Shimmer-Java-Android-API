@@ -464,7 +464,7 @@ public class SensorADC extends AbstractSensor {
     	mChannelMapRef = Collections.unmodifiableMap(aMap);
     }
     
-    public static final Map<String, ChannelDetails> mChannelMapRef3R;
+    public static final Map<String, ChannelDetails> mChannelMapRef3r;
     static {
     	Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
     	// External ADCs
@@ -476,7 +476,7 @@ public class SensorADC extends AbstractSensor {
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A10, channel_INT_EXP_ADC_A10);
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A15, channel_INT_EXP_ADC_A15);
     	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A16, channel_INT_EXP_ADC_A16);
-    	mChannelMapRef3R = Collections.unmodifiableMap(aMap);
+    	mChannelMapRef3r = Collections.unmodifiableMap(aMap);
     }
 
     //--------- Sensor info end --------------
@@ -495,7 +495,7 @@ public class SensorADC extends AbstractSensor {
 	@Override
 	public void generateSensorMap() {
 		if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
-			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef3R);
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef3r);
 		}
 		else {
 			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);

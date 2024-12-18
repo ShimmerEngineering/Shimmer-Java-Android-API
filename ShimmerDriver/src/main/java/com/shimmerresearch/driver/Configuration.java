@@ -590,6 +590,13 @@ public class Configuration {
 			public static final int IntAdc12 				 = 0x11;
 			public static final int IntAdc13 				 = 0x12;
 			public static final int IntAdc14 				 = 0x13;
+			public static final int ExtAdc9					 = 0x0D;
+			public static final int ExtAdc11			     = 0x0E;
+			public static final int ExtAdc12 				 = 0x0F;
+			public static final int IntAdc17			     = 0x10;
+			public static final int IntAdc10 				 = 0x11;
+			public static final int IntAdc15 				 = 0x12;
+			public static final int IntAdc16 				 = 0x13;
 			public static final int XAlterAccel      		 = 0x14; //Alternative Accelerometer
 			public static final int YAlterAccel     		 = 0x15;
 			public static final int ZAlterAccel     		 = 0x16;
@@ -1752,7 +1759,7 @@ public class Configuration {
 			
 
 			aMap.putAll(SensorBattVoltage.mChannelMapRef);
-			aMap.putAll(SensorADC.mChannelMapRef);
+			aMap.putAll(SensorADC.mChannelMapRef3r);
 			aMap.putAll(SensorBridgeAmp.mChannelMapRef);
 			aMap.putAll(SensorGSR.mChannelMapRef);
 			aMap.putAll(SensorEXG.mChannelMapRef);
@@ -1862,6 +1869,96 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION);
 			
 	        mSensorGroupingMapRef = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<Integer, SensorGroupingDetails> mSensorGroupingMapRef3r;
+	    static {
+	        Map<Integer, SensorGroupingDetails> aMap = new TreeMap<Integer, SensorGroupingDetails>();
+		
+			//Sensor Grouping for Configuration Panel 'tile' generation. 
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.STREAMING_PROPERTIES.ordinal(), SensorShimmerClock.sensorGroupStreamingProperties);
+
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BATTERY_MONITORING.ordinal(), SensorBattVoltage.sensorGroupBattVoltage);
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.EXTERNAL_EXPANSION_ADC.ordinal(), SensorADC.sensorGroupExternalExpansionADCs);
+			
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.GSR.ordinal(), new SensorGroupingDetails(
+					SensorGSR.LABEL_SENSOR_TILE.GSR,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+								Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY),
+	//							Configuration.Shimmer3.SENSOR_ID.PPG_A12,
+	//							Configuration.Shimmer3.SENSOR_ID.PPG_A13)
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.EXG.ordinal(), new SensorGroupingDetails(
+					SensorEXG.LABEL_SENSOR_TILE.EXG,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_MINI.ordinal(), new SensorGroupingDetails(
+					SensorADC.LABEL_SENSOR_TILE.PROTO3_MINI,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Mini));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE.ordinal(), new SensorGroupingDetails(
+					SensorADC.LABEL_SENSOR_TILE.PROTO3_DELUXE,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.ordinal(), new SensorGroupingDetails(
+					Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.getTileText(),
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_DUMMY,
+								Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_DUMMY),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER.ordinal(), SensorBridgeAmp.sensorGroupBrAmp);
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER_SUPP.ordinal(), SensorBridgeAmp.sensorGroupBrAmpTemperature);
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.ADXL377_ACCEL_200G.ordinal(), new SensorGroupingDetails(
+					Configuration.Shimmer3.LABEL_SENSOR_TILE.ADXL377_ACCEL_200G.getTileText(),
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12, //X-axis
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13, //Y-axis
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14), //Z-axis
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAdxl377Accel200G)); //unused but accessible
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC.ordinal(), SensorADC.sensorGroupInternalExpansionADCs);
+			
+			//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
+			
+			
+			// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
+			for (SensorGroupingDetails sensorGroup:aMap.values()) {
+//				 Ok to clear here because variable is initiated in the class
+//				sensorGroup.mListOfConfigOptionKeysAssociated.clear();
+//				List<ShimmerVerObject> listOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();
+				for (Integer sensor:sensorGroup.mListOfSensorIdsAssociated) {
+					SensorDetailsRef sensorDetails = Configuration.Shimmer3.mSensorMapRef3r.get(sensor);
+					if(sensorDetails!=null){
+						List<String> associatedConfigOptions = sensorDetails.mListOfConfigOptionKeysAssociated;
+						if (associatedConfigOptions != null) {
+							for (String configOption : associatedConfigOptions) {
+								// do not add duplicates
+								if (!(sensorGroup.mListOfConfigOptionKeysAssociated.contains(configOption))) {
+									sensorGroup.mListOfConfigOptionKeysAssociated.add(configOption);
+								}
+							}
+						}
+//						if(sensorDetails.mListOfCompatibleVersionInfo!=null){
+//							listOfCompatibleVersionInfo.addAll(sensorDetails.mListOfCompatibleVersionInfo);
+//						}
+					}
+				}
+//				sensorGroup.mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
+			}
+			
+//			aMap.get(Configuration.Shimmer3.LABEL_SENSOR_TILE.GSR.ordinal()).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION);
+			
+	        mSensorGroupingMapRef3r = Collections.unmodifiableMap(aMap);
 	    }
 
 	    
