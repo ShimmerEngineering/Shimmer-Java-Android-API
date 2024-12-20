@@ -7,6 +7,9 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
 
 public class CalibDetailsBmp390 extends CalibDetailsBmpX80 {
 
+	/**	 * 	 */
+	private static final long serialVersionUID = 4602512529781344807L;
+
 	public class Bmp3Constants {
 	    // Floating-point constants
 	    public static final double BMP3_MIN_PRES_DOUBLE = 30000.0;
@@ -74,7 +77,7 @@ public class CalibDetailsBmp390 extends CalibDetailsBmpX80 {
 	 public double par_P11 = Bmp3QuantizedCalibData.ParP11;
 	 
 	 public void setPressureCalib(
-				double T1, double T2, double T3,
+			 	double T1, double T2, double T3,
 				double P1, double P2, double P3, 
 				double P4, double P5, double P6, 
 				double P7, double P8, double P9,
@@ -93,7 +96,7 @@ public class CalibDetailsBmp390 extends CalibDetailsBmpX80 {
 			this.par_P9 = P9;
 			this.par_P10 = P10;
 			this.par_P11 = P11;
-		}
+	}
 	 
 	@Override
 	public double[] calibratePressureSensorData(double UP, double UT) {

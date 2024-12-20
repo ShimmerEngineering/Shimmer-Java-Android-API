@@ -672,7 +672,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	// Shimmer3r - Accel LN & Gyro
 	private SensorLSM6DSV mSensorLSM6DSV = new SensorLSM6DSV(this);
 	
-	//Shimmer3r - High-g accel
+	// Shimmer3r - High-g accel
 	protected SensorADXL371 mSensorADXL371 = new SensorADXL371(this);
 	
 	// ----------  ECG/EMG start ---------------
