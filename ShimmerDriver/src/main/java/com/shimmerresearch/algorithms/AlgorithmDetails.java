@@ -130,6 +130,22 @@ public class AlgorithmDetails implements Serializable {
 		mListOfChannelDetails = listOfAlgortihmChannels;
 	}
 	
+	public AlgorithmDetails(
+			String objectClusterName, 
+			String guiFriendlyName, 
+			List<String> listOfAssociatedSensorChannels, 
+			long derivedSensorBitmapId, 
+			List<Integer> listOfRequiredSensors, 
+			String units,
+			SENSOR_CHECK_METHOD sensorCheckMethod,
+			List<ChannelDetails> listOfAlgortihmChannels){
+		this(objectClusterName, guiFriendlyName, listOfAssociatedSensorChannels, derivedSensorBitmapId, listOfRequiredSensors, units);
+		mSensorCheckMethod = sensorCheckMethod;
+		//2016-11-28 MN changed below to override mListOfChannelDetails as this() above attempts to create one from this class
+//		mListOfChannelDetails.addAll(listOfAlgortihmChannels);
+		mListOfChannelDetails = listOfAlgortihmChannels;
+	}
+	
 	/** Just used in PPGtoHR
 	 * @param objectClusterName
 	 * @param guiFriendlyName

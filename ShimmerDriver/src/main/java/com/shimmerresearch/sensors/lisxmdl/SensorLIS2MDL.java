@@ -165,8 +165,8 @@ public class SensorLIS2MDL extends AbstractSensor{
 			0x200000, //== Configuration.Shimmer3.SensorBitmap.SENSOR_MAG will be: SensorBitmap.SENSOR_MAG, 
 			GuiLabelSensors.MAG_WR,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2MDL,
-			Arrays.asList(GuiLabelConfig.LIS2MDL_WR_MAG_RATE),
-
+			Arrays.asList(GuiLabelConfig.LIS2MDL_WR_MAG_RANGE,
+					GuiLabelConfig.LIS2MDL_WR_MAG_RATE),
 			Arrays.asList(ObjectClusterSensorName.MAG_WR_X,
 					ObjectClusterSensorName.MAG_WR_Y,
 					ObjectClusterSensorName.MAG_WR_Z));
@@ -544,6 +544,12 @@ public class SensorLIS2MDL extends AbstractSensor{
 		Object returnValue = null;
 		
 		switch(configLabel){
+		case(GuiLabelConfig.LIS2MDL_WR_MAG_RANGE):
+			setLIS2MDLWRMagRange((int)valueToSet);
+			break;
+		case(GuiLabelConfig.LIS2MDL_WR_MAG_RATE):
+			setLIS2MDLWRMagRate((int)valueToSet);
+			break;
 			case(GuiLabelConfigCommon.RANGE):
 				if(sensorId==mSensorIdWRMag){
 					this.setConfigValueUsingConfigLabel(GuiLabelConfig.LIS2MDL_WR_MAG_RANGE, valueToSet);
@@ -578,7 +584,10 @@ public class SensorLIS2MDL extends AbstractSensor{
 			case(GuiLabelConfig.LIS2MDL_WR_MAG_RANGE): 
 				returnValue = getWRMagRange();
 	    		break;
-	    	
+			case(GuiLabelConfig.LIS2MDL_WR_MAG_RATE): 
+				int configValue = getLIS2MDLWRMagRate(); 
+				returnValue = configValue;
+				break;
 			case(GuiLabelConfigCommon.RANGE):
 				if(sensorId==mSensorIdWRMag){
 					returnValue = this.getConfigValueUsingConfigLabel(GuiLabelConfig.LIS2MDL_WR_MAG_RANGE);

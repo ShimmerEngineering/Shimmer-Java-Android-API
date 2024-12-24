@@ -12,6 +12,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -25,6 +26,7 @@ import com.shimmerresearch.driverUtilities.ShimmerVerObject;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
+import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
 import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP390.DatabaseChannelHandles;
@@ -92,6 +94,35 @@ public class SensorBMP390 extends SensorBMPX80{
 		}
 		//--------- Sensor specific variables end --------------
 		
+		//--------- Bluetooth commands start --------------
+		public static final byte SET_PRESSURE_OVERSAMPLING_RATIO_COMMAND 	= (byte) 0x52;
+		public static final byte PRESSURE_OVERSAMPLING_RATIO_RESPONSE 		= (byte) 0x53;
+		public static final byte GET_PRESSURE_OVERSAMPLING_RATIO_COMMAND 	= (byte) 0x54;
+		
+		public static final byte PRESSURE_CALIBRATION_COEFFICIENTS_RESPONSE 		= (byte) 0xA6;
+		public static final byte GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND 		= (byte) 0xA7;
+		
+		public static final byte SET_PRESSURE_SAMPLING_RATE_COMMAND 	= (byte) 0xB5;
+		public static final byte PRESSURE_SAMPLING_RATE_RESPONSE 		= (byte) 0xB6;
+		public static final byte GET_PRESSURE_SAMPLING_RATE_COMMAND 	= (byte) 0xB7;
+		
+	    public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
+	    static {
+	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	        aMap.put(GET_PRESSURE_OVERSAMPLING_RATIO_COMMAND, new BtCommandDetails(GET_PRESSURE_OVERSAMPLING_RATIO_COMMAND, "GET_PRESSURE_OVERSAMPLING_RATIO_COMMAND", PRESSURE_OVERSAMPLING_RATIO_RESPONSE));
+	        aMap.put(GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND, new BtCommandDetails(GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND, "GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND", PRESSURE_CALIBRATION_COEFFICIENTS_RESPONSE));
+	        aMap.put(GET_PRESSURE_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_PRESSURE_SAMPLING_RATE_COMMAND, "GET_PRESSURE_SAMPLING_RATE_COMMAND", PRESSURE_SAMPLING_RATE_RESPONSE));
+	        mBtGetCommandMap = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
+	    static {
+	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	        aMap.put(SET_PRESSURE_OVERSAMPLING_RATIO_COMMAND, new BtCommandDetails(SET_PRESSURE_OVERSAMPLING_RATIO_COMMAND, "SET_PRESSURE_OVERSAMPLING_RATIO_COMMAND"));
+	        aMap.put(SET_PRESSURE_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_PRESSURE_SAMPLING_RATE_COMMAND, "SET_PRESSURE_SAMPLING_RATE_COMMAND"));
+	        mBtSetCommandMap = Collections.unmodifiableMap(aMap);
+	    }
+	    //--------- Bluetooth commands end --------------
 		
 		//--------- Configuration options start --------------
 		public static final String[] ListofPressureResolutionBMP390 = {"Ultra Low","Low","Standard","High","Ultra High","Highest"};
@@ -234,7 +265,7 @@ public class SensorBMP390 extends SensorBMPX80{
 			mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE_BMP390.ordinal(), sensorGroupBmp390);
 		}
 		super.updateSensorGroupingMap();
-		}
+	}
 
 	@Override
 	public ObjectCluster processDataCustom(SensorDetails sensorDetails, byte[] rawData, COMMUNICATION_TYPE commType,
@@ -275,7 +306,7 @@ public class SensorBMP390 extends SensorBMPX80{
 
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-		if(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE)) {
+		if(!isSensorEnabled(Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMP390_PRESSURE)) {
 			setDefaultBmp390PressureSensorConfig(false);
 		}
 	}
@@ -312,7 +343,7 @@ public class SensorBMP390 extends SensorBMPX80{
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorId)){
-			if(sensorId == Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE) {
+			if(sensorId == Configuration.Shimmer3.SENSOR_ID.SHIMMER_BMP390_PRESSURE) {
 				setDefaultBmp390PressureSensorConfig(isSensorEnabled);
 				return true;
 				}
@@ -432,6 +463,16 @@ public class SensorBMP390 extends SensorBMPX80{
 		else{
 			mPressureResolution = 0;
 		}
+	}
+	
+	public static String parseFromDBColumnToGUIChannel(String databaseChannelHandle) {
+		
+		return AbstractSensor.parseFromDBColumnToGUIChannel(mChannelMapRef, databaseChannelHandle);
+	}
+	
+	public static String parseFromGUIChannelsToDBColumn(String objectClusterName) {
+		
+		return AbstractSensor.parseFromGUIChannelsToDBColumn(mChannelMapRef, objectClusterName);
 	}
 	
 	//--------- Sensor specific methods end --------------

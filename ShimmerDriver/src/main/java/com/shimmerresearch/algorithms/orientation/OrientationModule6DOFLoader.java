@@ -23,12 +23,12 @@ public class OrientationModule6DOFLoader implements AlgorithmLoaderInterface {
 //			mapOfSupportedAlgorithms.put(OrientationModule6DOF.algo6DoFOrientation_WR_Acc.mAlgorithmName, OrientationModule6DOF.algo6DoFOrientation_WR_Acc);
 		}
 		else {
-			if((svo.isShimmerGen3() || svo.isShimmerGen4())){
-//				mapOfSupportedAlgorithms.putAll(OrientationModule6DOF.mAlgorithmMapRef);
+			if((svo.isShimmerGen3() || svo.isShimmerGen3R() || svo.isShimmerGen4())){
 				mapOfSupportedAlgorithms = AlgorithmDetails.loadAlgorithmsWhereSensorsAreAvailable(shimmerDevice, OrientationModule6DOF.mAlgorithmMapRef);
+				
 			}
 		}
-		
+
 		return mapOfSupportedAlgorithms;
 	}
 
