@@ -122,6 +122,10 @@ public class UtilParseData {
 
 				formattedData[i]=(int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8));
 				iData=iData+2;
+			} else if (dataType[i]=="u14") {
+
+				formattedData[i]=(int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8));
+				iData=iData+2;
 			} else if (dataType[i]=="i12>") {
 				formattedData[i]=calculatetwoscomplement((int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8)),16);
 				formattedData[i]=formattedData[i]>>4; // shift right by 4 bits

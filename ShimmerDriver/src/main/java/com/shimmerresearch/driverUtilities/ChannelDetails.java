@@ -25,6 +25,7 @@ public class ChannelDetails implements Serializable {
 		UNKOWN(0, 0, false),
 		UINT8(8, 1, false),
 		UINT12(12, 2, false),
+		UINT14(14, 2, false),
 		UINT16(16, 2, false),
 		UINT24(24, 3, false),
 		UINT32(32, 4, false),
