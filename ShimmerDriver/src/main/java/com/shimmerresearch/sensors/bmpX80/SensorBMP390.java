@@ -203,8 +203,8 @@ public class SensorBMP390 extends SensorBMPX80{
 		public static final Map<String, ChannelDetails> mChannelMapRef;
 	    static {
 	        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-	        aMap.put(ObjectClusterSensorName.PRESSURE_BMP390, SensorBMP390.channelBmp390Press);
-	        aMap.put(ObjectClusterSensorName.TEMPERATURE_BMP390, SensorBMP390.channelBmp390Temp);
+	        aMap.put(ObjectClusterSensorName.PRESSURE_BMP390, channelBmp390Press);
+	        aMap.put(ObjectClusterSensorName.TEMPERATURE_BMP390, channelBmp390Temp);
 			mChannelMapRef = Collections.unmodifiableMap(aMap);
 	    }
 	    
@@ -222,13 +222,6 @@ public class SensorBMP390 extends SensorBMPX80{
 		updateCurrentPressureCalibInUse();
 		
 	}
-	
-//	@Override
-//	public double[] calibratePressureSensorData(double UP, double UT) {
-//		UT = UT * Math.pow(2, 4);
-//		UP=UP/Math.pow(2,4);
-//		return super.calibratePressureSensorData(UP, UT);
-//	}
 
 	@Override
 	public List<Double> getPressTempConfigValuesLegacy() {
