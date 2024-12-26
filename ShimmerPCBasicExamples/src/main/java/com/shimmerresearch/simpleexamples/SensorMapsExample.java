@@ -392,6 +392,16 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
             }
         });
 		frame.getContentPane().add(chckbxWriteDataToFile);
+		
+		JButton btnNewButton_1 = new JButton("Enable CRC 1 byte");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComport);
+				((ShimmerBluetooth)device).enableBtCommsOneByteCrc();
+			}
+		});
+		btnNewButton_1.setBounds(770, 60, 187, 21);
+		frame.getContentPane().add(btnNewButton_1);
 				
 		plotManager.setTitle("Plot");		
 	}
