@@ -5515,9 +5515,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mSensorMpu9x50 = new SensorMPU9150(this);
 				addSensorClass(mSensorMpu9x50);
 				
-				
-				mSensorADXL371 = new SensorADXL371(this);
-				addSensorClass(mSensorADXL371);
 			}
 			
 		} else if(isShimmerGen3R()){
@@ -6664,7 +6661,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setDefaultCalibrationShimmer3WideRangeAccel();
 		setDefaultCalibrationShimmer3Gyro();
 		setDefaultCalibrationShimmer3Mag();
-		setDefaultCalibrationShimmer3WideRangeMag();
 	}
 
 	private void setDefaultCalibrationShimmer3LowNoiseAccel() {
@@ -6677,10 +6673,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	private void setDefaultCalibrationShimmer3Mag() {
 		getCurrentCalibDetailsMag().resetToDefaultParameters();
-	}
-	
-	private void setDefaultCalibrationShimmer3WideRangeMag() {
-		getCurrentCalibDetailsMagWr().resetToDefaultParameters();
 	}
 	
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelWr() {
@@ -8717,6 +8709,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else {
 			return mSensorLSM303.isUsingValidMagParam();
 		}
+	}
+	
+	public boolean isUsingDefaultMagWRParam() {
+		return mSensorLIS2MDL.isUsingDefaultMagWRParam();
+	}
+	
+	public boolean isUsingValidMagWRParam() {
+		return mSensorLIS2MDL.isUsingValidMagWRParam();
 	}
 	
 	/**

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.shimmerresearch.bluetooth.BtCommandDetails;
 import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration;
@@ -27,12 +29,12 @@ import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_ENDIAN;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_DATA_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.sensors.AbstractSensor;
 import com.shimmerresearch.sensors.ActionSetting;
-import com.shimmerresearch.sensors.lis2dw12.SensorLIS2DW12.GuiLabelConfig;
 
 public class SensorLIS2MDL extends AbstractSensor{
 
@@ -45,6 +47,8 @@ public class SensorLIS2MDL extends AbstractSensor{
 	public boolean mIsUsingDefaultWRMagParam = true;
 	protected int mLISWRMagRate = 4;
 	protected int mSensorIdWRMag = -1;
+	
+	public CalibDetailsKinematic mCurrentCalibDetailsMagWr = null;
 	
 	//--------- Sensor specific variables start --------------	
 	
@@ -62,8 +66,6 @@ public class SensorLIS2MDL extends AbstractSensor{
 			DefaultAlignmentMatrixWRMagShimmer3r,
 			DefaultSensitivityMatrixWRMagShimmer3r,
 			DefaultOffsetVectorWRMagShimmer3r);
-	
-	public CalibDetailsKinematic mCurrentCalibDetailsMagWr = calibDetailsMagWr;
 
 	// ----------   Mag end ---------------
 	
@@ -316,16 +318,12 @@ public class SensorLIS2MDL extends AbstractSensor{
 	}
 	
 	public CalibDetailsKinematic getCurrentCalibDetailsMagWr(){
-//		return getCurrentCalibDetails(mSensorIdMag, getMagRange());
-		if(mCurrentCalibDetailsMagWr==null){
-			updateCurrentMagWrCalibInUse();
-		}
 		return mCurrentCalibDetailsMagWr;
 	}
 	
 	public void updateCurrentMagWrCalibInUse(){
 //		mCurrentCalibDetailsMag = getCurrentCalibDetailsMag();
-		mCurrentCalibDetailsMagWr = getCurrentCalibDetailsIfKinematic(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR, getWRMagRange());
+		mCurrentCalibDetailsMagWr = getCurrentCalibDetailsIfKinematic(mSensorIdWRMag, getWRMagRange());
 	}
 	
 	public int getWRMagRange() {
@@ -345,8 +343,11 @@ public class SensorLIS2MDL extends AbstractSensor{
 	}
 	
 	public void setLIS2MDLWRMagRange(int i) {
-		mWRMagRange = i;
-		updateCurrentMagWrCalibInUse();
+		if(ArrayUtils.contains(ListofLIS2MDLWRMagRateConfigValues, i)){
+			mWRMagRange = i;
+			updateCurrentMagWrCalibInUse();
+		}
+
 	}
 
 	@Override
@@ -390,9 +391,9 @@ public class SensorLIS2MDL extends AbstractSensor{
 	public void generateCalibMap() {
 		super.generateCalibMap();
 
-		TreeMap<Integer, CalibDetails> calibMapMag = new TreeMap<Integer, CalibDetails>();
-		calibMapMag.put(calibDetailsMagWr.mRangeValue, calibDetailsMagWr);
-		setCalibrationMapPerSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR, calibMapMag);
+		TreeMap<Integer, CalibDetails> calibMapMagWr = new TreeMap<Integer, CalibDetails>();
+		calibMapMagWr.put(calibDetailsMagWr.mRangeValue, calibDetailsMagWr);
+		setCalibrationMapPerSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR, calibMapMagWr);
 		
 		updateCurrentMagWrCalibInUse();
 	}
@@ -400,6 +401,18 @@ public class SensorLIS2MDL extends AbstractSensor{
 	//--------- Optional methods to override in Sensor Class end --------
 	
 	//--------- Sensor specific methods start --------------
+	
+	public double getCalibTimeMagWR() {
+		return mCurrentCalibDetailsMagWr.getCalibTimeMs();
+	}
+	
+	public boolean isUsingValidMagWRParam() {
+		if(!UtilShimmer.isAllZeros(getAlignmentMatrixMagWr()) && !UtilShimmer.isAllZeros(getSensitivityMatrixMagWr())){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 	public void updateIsUsingDefaultWRMagParam() {
 		mIsUsingDefaultWRMagParam = getCurrentCalibDetailsMagWr().isUsingDefaultParameters();
@@ -513,7 +526,7 @@ public class SensorLIS2MDL extends AbstractSensor{
 	}
 
 	public byte[] generateCalParamLIS2MDLMag(){
-		return getCurrentCalibDetailsMagWr().generateCalParamByteArray();
+		return mCurrentCalibDetailsMagWr.generateCalParamByteArray();
 	}
 
 	@Override
@@ -536,7 +549,7 @@ public class SensorLIS2MDL extends AbstractSensor{
 	}
 	
 	public void parseCalibParamFromPacketMagWr(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
-		getCurrentCalibDetailsMagWr().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
+		mCurrentCalibDetailsMagWr.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 
 	@Override
@@ -637,7 +650,9 @@ public class SensorLIS2MDL extends AbstractSensor{
 	}
 	
 	public void setDefaultLisMagWrSensorConfig(boolean isSensorEnabled) {
-		//no wr mag range
+		if(isSensorEnabled) {
+			setLIS2MDLWRMagRange(0);
+		}
 	}
 
 	@Override
