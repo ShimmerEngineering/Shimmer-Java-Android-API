@@ -619,8 +619,6 @@ public class SensorADXL371 extends AbstractSensor{
 				accelRate = 2; // 1280Hz
 			} else if (freq<=2560){
 				accelRate = 3; // 2560Hz
-			} else {
-				accelRate = 4; // 5120Hz
 			}
 		}
 		return accelRate;
@@ -635,7 +633,7 @@ public class SensorADXL371 extends AbstractSensor{
 	
 	public void setADXL371AnalogAccelRate(int valueToSet) {
 		setADXL371AnalogAccelRateInternal(valueToSet);
-		setADXL371AnalogAccelRateInternal(SensorADXL371.ListofADXL371AccelRateConfigValues[SensorADXL371.ListofADXL371AccelRateConfigValues.length-1]);
+//		setADXL371AnalogAccelRateInternal(SensorADXL371.ListofADXL371AccelRateConfigValues[SensorADXL371.ListofADXL371AccelRateConfigValues.length-1]);
 	}
 	
 	public void setDefaultAdxl371AccelSensorConfig(boolean isSensorEnabled) {
