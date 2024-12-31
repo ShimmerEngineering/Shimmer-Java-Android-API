@@ -12,7 +12,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.shimmerresearch.driver.Configuration.CHANNEL_UNITS;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.Configuration.Shimmer3.CompatibilityInfoForMaps;
+import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.bluetooth.BtCommandDetails;
+import com.shimmerresearch.driver.ConfigByteLayout;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -216,7 +218,7 @@ public class SensorBMP390 extends SensorBMPX80{
 	@Override
 	public void setPressureResolution(int i) {
 		if(ArrayUtils.contains(ListofPressureResolutionConfigValuesBMP390, i)){
-//			System.err.println("New resolution:\t" + ListofPressureResolution[i]);
+			System.err.println("New resolution:\t" + ListofPressureResolutionConfigValuesBMP390[i]);
 			mPressureResolution = i;
 		}
 		updateCurrentPressureCalibInUse();
@@ -476,6 +478,18 @@ public class SensorBMP390 extends SensorBMPX80{
 	}
 	
 	//--------- Sensor specific methods end --------------
+	
+	@Override
+	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
+	        setPressureResolution(
+	        	    ((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftBMP390PressureResolution) & configByteLayoutCast.maskBMP390PressureResolution) << 2 |
+	        	    ((configBytes[configByteLayoutCast.idxConfigSetupByte3] >> configByteLayoutCast.bitShiftBMPX80PressureResolution) & configByteLayoutCast.maskBMPX80PressureResolution)
+	        	);
+		}
+	}
 
 }

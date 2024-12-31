@@ -58,7 +58,7 @@ public abstract class SensorBMPX80 extends AbstractSensor {
 
 	public byte[] getRawCalibrationParameters(ShimmerVerObject svo){        
 		byte[] rawcal=new byte[1];
-		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen4()){
+		if(mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen3R() || mShimmerVerObject.isShimmerGen4()){
 			// Mag + Pressure
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			try {

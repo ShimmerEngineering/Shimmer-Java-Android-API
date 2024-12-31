@@ -472,6 +472,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND  = (byte) 0xA7;//BMP390
 	public static final byte PRESSURE_CALIBRATION_COEFFICIENTS_RESPONSE    = (byte) 0xA6;//BMP390
 	
+	public static final byte SET_PRESSURE_OVERSAMPLING_RATIO_COMMAND 	= (byte) 0x52;
+	public static final byte PRESSURE_OVERSAMPLING_RATIO_RESPONSE 		= (byte) 0x53;
+	public static final byte GET_PRESSURE_OVERSAMPLING_RATIO_COMMAND 	= (byte) 0x54;
+	
+	public static final byte SET_PRESSURE_SAMPLING_RATE_COMMAND 	= (byte) 0xB5;
+	public static final byte PRESSURE_SAMPLING_RATE_RESPONSE 		= (byte) 0xB6;
+	public static final byte GET_PRESSURE_SAMPLING_RATE_COMMAND 	= (byte) 0xB7;
+	
 	//new BT + SD command to set/rsp/get/update_dump_file all calibration parameters using the new byte array structure
 	public static final byte SET_CALIB_DUMP_COMMAND					= (byte) 0x98;
 	public static final byte RSP_CALIB_DUMP_COMMAND					= (byte) 0x99;
