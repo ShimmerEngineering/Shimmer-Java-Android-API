@@ -4039,7 +4039,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24)
 						+((long)(bufferInquiry[6] & 0xFF) << 32)+((long)(bufferInquiry[7] & 0xFF) << 40)+((long)(bufferInquiry[8] & 0xFF) << 48) );
 				setDigitalAccelRange(((int)(mConfigByte0 & 0xC))>>2);
-				setGyroRange(((int)(mConfigByte0 & 196608))>>16);
+//				setGyroRange(((int)(mConfigByte0 & 196608))>>16);
+				int gyroRange = (int)(((mConfigByte0 & 196608) >> 16) & 3);
+				int msbGyroRange = (int)((mConfigByte0 >> 34) & 1);
+				gyroRange = gyroRange + (msbGyroRange << 2);
+				setGyroRange(gyroRange);
 				setLSM303MagRange(((int)(mConfigByte0 & 14680064))>>21);
 				setLSM303DigitalAccelRate(((int)(mConfigByte0 & 0xF0))>>4);
 				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
