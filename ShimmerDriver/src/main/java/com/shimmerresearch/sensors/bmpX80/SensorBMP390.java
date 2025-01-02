@@ -481,15 +481,20 @@ public class SensorBMP390 extends SensorBMPX80{
 	
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
-		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
-			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+	    ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+	    if (configByteLayout instanceof ConfigByteLayoutShimmer3) {
+	        ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
+	        
+	        int lsbPressureResolution = (configBytes[configByteLayoutCast.idxConfigSetupByte3] 
+	                >> configByteLayoutCast.bitShiftBMPX80PressureResolution) 
+	                & configByteLayoutCast.maskBMPX80PressureResolution;
 
-	        setPressureResolution(
-	        	    ((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftBMP390PressureResolution) & configByteLayoutCast.maskBMP390PressureResolution) << 2 |
-	        	    ((configBytes[configByteLayoutCast.idxConfigSetupByte3] >> configByteLayoutCast.bitShiftBMPX80PressureResolution) & configByteLayoutCast.maskBMPX80PressureResolution)
-	        	);
-		}
+	        int msbPressureResolution = (configBytes[configByteLayoutCast.idxConfigSetupByte4] 
+	                >> configByteLayoutCast.bitShiftBMP390PressureResolution) 
+	                & configByteLayoutCast.maskBMP390PressureResolution;
+
+	        setPressureResolution(((msbPressureResolution << 2) | lsbPressureResolution));
+	    }
 	}
 
 }

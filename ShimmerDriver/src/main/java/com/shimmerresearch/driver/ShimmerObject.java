@@ -4052,9 +4052,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setLSM303DigitalAccelRate(((int)(mConfigByte0 & 0xF0))>>4);
 				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
 				setMagRate(((int)(mConfigByte0 & 1835008))>>18); 
-				setPressureResolution((((int)(mConfigByte0 >>28)) & 3));
+//				setPressureResolution((((int)(mConfigByte0 >>28)) & 3));
 				setGSRRange((((int)(mConfigByte0 >>25)) & 7));
 				setInternalExpPower(((int)(mConfigByte0 >>24)) & 1);
+				
+				int pressureResolution = (((int)(mConfigByte0 >>28)) & 3);
+				int msbPressureResolution = (((int)(mConfigByte0 >>32)) & 1);
+				pressureResolution = pressureResolution + (msbPressureResolution << 2);
+				setPressureResolution(pressureResolution);
+				
 				mInquiryResponseBytes = new byte[11+mNChannels];
 				System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
 				if ((getLSM303DigitalAccelRate()==2 && getSamplingRateShimmer()>10)){

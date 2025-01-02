@@ -131,6 +131,9 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 
 	public int bitShiftLSM303DLHCAccelHRM = 			0; // HIGH_RESOLUTION_MODE
 	public int maskLSM303DLHCAccelHRM = 	  			0x01; // HIGH_RESOLUTION_MODE
+	
+	public int bitShiftBMP390PressureResolution = 		0; 
+	public int maskBMP390PressureResolution =           0x01;
 
 	//Config Byte1
 	public int bitShiftMPU9150AccelGyroSamplingRate =	0;
