@@ -322,15 +322,18 @@ public class SensorBMP390 extends SensorBMPX80{
 				returnValue = valueToSet;
 		 		break;
 		}
+		
 		return returnValue;
 	}
-
+	
+	public static int configValueUsingConfigLabel;
 	@Override
 	public Object getConfigValueUsingConfigLabel(Integer sensorId, String configLabel) {
 		Object returnValue = null;
 		switch(configLabel){
 		case(GuiLabelConfig.PRESSURE_RESOLUTION):
 			returnValue = getPressureResolution();
+			configValueUsingConfigLabel = (int) returnValue;
 	 		break;
 		  }
 		return returnValue;
@@ -490,7 +493,7 @@ public class SensorBMP390 extends SensorBMPX80{
 	                & configByteLayoutCast.maskBMPX80PressureResolution;
 
 	        int msbPressureResolution = (configBytes[configByteLayoutCast.idxConfigSetupByte4] 
-	                >> configByteLayoutCast.bitShiftBMP390PressureResolution) 
+	                >> configByteLayoutCast.bitShiftBMPX80PressureResolution) 
 	                & configByteLayoutCast.maskBMP390PressureResolution;
 
 	        setPressureResolution(((msbPressureResolution << 2) | lsbPressureResolution));

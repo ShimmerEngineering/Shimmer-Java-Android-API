@@ -4055,11 +4055,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //				setPressureResolution((((int)(mConfigByte0 >>28)) & 3));
 				setGSRRange((((int)(mConfigByte0 >>25)) & 7));
 				setInternalExpPower(((int)(mConfigByte0 >>24)) & 1);
+
+				// C# Pressure Resolution Implementation
+//				int pressureResolution = (((int)(mConfigByte0 >>28)) & 3);
+//				int msbPressureResolution = (((int)(mConfigByte0 >>32)) & 1);
+//				pressureResolution = pressureResolution + (msbPressureResolution << 2);
+//				setPressureResolution(pressureResolution);
 				
-				int pressureResolution = (((int)(mConfigByte0 >>28)) & 3);
-				int msbPressureResolution = (((int)(mConfigByte0 >>32)) & 1);
-				pressureResolution = pressureResolution + (msbPressureResolution << 2);
-				setPressureResolution(pressureResolution);
+				// Pressure Resolution Temp Fix
+				if (SensorBMP390.configValueUsingConfigLabel > 3) {
+					setPressureResolution((((int)(mConfigByte0 >>28)) & 7)); // 2 Bytes
+				} else {
+					setPressureResolution((((int)(mConfigByte0 >>28)) & 3)); // 3 Bytes
+				}
 				
 				mInquiryResponseBytes = new byte[11+mNChannels];
 				System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
