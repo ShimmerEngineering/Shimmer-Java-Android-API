@@ -3445,7 +3445,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param rate it is a value between 0 and 255; 6 = 1152Hz, 77 = 102.56Hz, 255 = 31.25Hz
 	 */
 	public void writeGyroSamplingRate(int rate) {
-		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+		if(getHardwareVersion()==HW_ID.SHIMMER_3
+				|| getHardwareVersion()==HW_ID.SHIMMER_3R){
 			mTempIntValue=rate;
 			writeInstruction(new byte[]{SET_MPU9150_SAMPLING_RATE_COMMAND, (byte)rate});
 		}
@@ -3607,7 +3608,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param rate it is a value between 1 and 7; 1 = 1 Hz; 2 = 10 Hz; 3 = 25 Hz; 4 = 50 Hz; 5 = 100 Hz; 6 = 200 Hz; 7 = 400 Hz
 	 */
 	public void writeAccelSamplingRate(int rate) {
-		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+		if(getHardwareVersion()==HW_ID.SHIMMER_3
+				|| getHardwareVersion()==HW_ID.SHIMMER_3R){
 			mTempIntValue=rate;
 			writeInstruction(new byte[]{SET_ACCEL_SAMPLING_RATE_COMMAND, (byte)rate});
 		}
@@ -3996,11 +3998,22 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				int samplingByteValue = (int) (1024/getSamplingRateShimmer()); //the equivalent hex setting
 				writeInstruction(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(samplingByteValue), 0x00});
 			} 
-			else if(getHardwareVersion()==HW_ID.SHIMMER_3) {
+			else if(getHardwareVersion()==HW_ID.SHIMMER_3
+					|| getHardwareVersion()==HW_ID.SHIMMER_3R) {
 				
 				writeMagSamplingRate(getMagRate());
-				writeAccelSamplingRate(getLSM303DigitalAccelRate());
-				writeGyroSamplingRate(getMPU9X50GyroAccelRate());
+				try {
+					writeAccelSamplingRate(getWRAccelRate());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					writeGyroSamplingRate(getGyroRate());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				writeExgSamplingRate(rate);
 				
 				byte[] buf = convertSamplingRateFreqToBytes(getSamplingRateShimmer(), getSamplingClockFreq());
