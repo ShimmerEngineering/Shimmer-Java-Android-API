@@ -8586,6 +8586,29 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensorLIS3MDL.setLISMagRate(magRate);
 		}
 	}
+	
+	public int getWRAccelRate() throws Exception {
+		
+			if(isShimmerGen2()){
+				throw new Exception("WR Accel not configurable for Shimmer2");
+			} else if(isShimmerGen3()) {
+				return mSensorLSM303.getLSM303DigitalAccelRate();
+			} else if(isShimmerGen3R()) {
+				return mSensorLIS2DW12.getLIS2DW12DigitalAccelRate();
+			}
+			return (Integer) null;
+	}
+	
+	public int getGyroRate() throws Exception {
+		if(isShimmerGen2()){
+			throw new Exception("Gyro Rate is not configurable for Shimmer2");
+		} else if (isShimmerGen3()) {
+			return mSensorMpu9x50.getMPU9X50GyroAccelRate();
+		} else if (isShimmerGen3R()) {
+			return mSensorLSM6DSV.getLSM6DSVGyroAccelRate();
+		}
+		return (Integer) null;
+	}
 
 	public int getMagRate() {
 		if(isShimmerGen2()){
