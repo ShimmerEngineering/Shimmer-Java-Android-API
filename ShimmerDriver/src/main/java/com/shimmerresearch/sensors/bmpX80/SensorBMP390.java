@@ -496,5 +496,15 @@ public class SensorBMP390 extends SensorBMPX80{
 	        setPressureResolution(((msbPressureResolution << 2) | lsbPressureResolution));
 	    }
 	}
+	
+	public void configBytesGenerate(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
+
+		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
+		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
+			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;		
+			configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) (((getPressureResolution() >> 2)& configByteLayoutCast.maskBMP390PressureResolution) << configByteLayoutCast.bitShiftBMP390PressureResolution);
+			configBytes[configByteLayoutCast.idxConfigSetupByte3] |= (byte) ((getPressureResolution() & configByteLayoutCast.maskBMPX80PressureResolution) << configByteLayoutCast.bitShiftBMPX80PressureResolution);
+		}
+	}
 
 }
