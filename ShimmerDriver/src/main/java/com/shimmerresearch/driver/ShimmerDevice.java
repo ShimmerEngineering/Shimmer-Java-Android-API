@@ -85,7 +85,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public static final String STRING_CONSTANT_UNKNOWN = "Unknown";
 	public static final String STRING_CONSTANT_NOT_AVAILABLE = "N/A";
 	public static final String STRING_CONSTANT_SD_ERROR = "SD Error";
-	
+	public static final double IRREGULAR_SAMPLING_RATE = 0.0;
 	protected static final int MAX_CALIB_DUMP_MAX = 4096;
 	
 	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9._]";

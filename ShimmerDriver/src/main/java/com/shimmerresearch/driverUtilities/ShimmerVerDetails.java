@@ -59,6 +59,7 @@ public class ShimmerVerDetails implements Serializable {
 		public static final int WEBCAM_LOGITECH_HD_C930E	= 1006;
 		public static final int HOST_CPU_USAGE				= 1007;
 		public static final int WEBCAM_DIGIOPTIX_SMART_GLASSES	= 1008;
+		public static final int KEYBOARD 		= 1009;
 		
 		// Any other 'devices' that don't have a ShimmerDevice instance should
 		// go in at >=2000 (currently used in the database for the results
@@ -88,6 +89,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.NONIN_ONYX_II, "Nonin Onyx II");
         aMap.put(HW_ID.QTI_DIRECT_TEMP, "QTI Direct Temp");
         aMap.put(HW_ID.KEYBOARD_AND_MOUSE, "Keyboard and Mouse");
+        aMap.put(HW_ID.KEYBOARD, "Keyboard");
         aMap.put(HW_ID.ARDUINO, "Arduino");
         aMap.put(HW_ID.WEBCAM_GENERIC, "Webcam");
         aMap.put(HW_ID.WEBCAM_LOGITECH_HD_C920, "Webcam");
