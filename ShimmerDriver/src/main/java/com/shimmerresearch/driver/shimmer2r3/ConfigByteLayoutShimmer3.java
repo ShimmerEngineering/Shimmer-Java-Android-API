@@ -158,6 +158,8 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	public int maskLIS2MDLAltMagSamplingRate =				0x03;
 	public int bitShiftADXL371AltAccelSamplingRate =		6;
 	public int maskADXL371AltAccelSamplingRate = 			0x03;
+	public int bitShiftLSM6DSVGyroRangeMSB =				2;
+	public int maskLSM6DSVGyroRangeMSB = 					0x01;
 	
 	// Derived Channels - used by SW not FW
 	public int maskDerivedChannelsByte =				0xFF;
