@@ -110,9 +110,9 @@ public class SensorADXL371 extends AbstractSensor{
 				DatabaseConfigHandle.HIGHG_ACC_ALIGN_ZX, DatabaseConfigHandle.HIGHG_ACC_ALIGN_ZY, DatabaseConfigHandle.HIGHG_ACC_ALIGN_ZZ);
 	}
 
-	public static final double[][] DefaultAlignmentADXL377 = {{0,1,0},{1,0,0},{0,0,-1}};	
+	public static final double[][] DefaultAlignmentADXL371 = {{0,1,0},{1,0,0},{0,0,-1}};			
 
-	public static final double[][] DefaultAlignmentMatrixHighGAccelShimmer3R = DefaultAlignmentADXL377;	
+	public static final double[][] DefaultAlignmentMatrixHighGAccelShimmer3R = DefaultAlignmentADXL371;	
 	public static final double[][] DefaultOffsetVectorHighGAccelShimmer3R = {{0},{0},{0}};	
 	public static final double[][] DefaultSensitivityMatrixHighGAccelShimmer3R = {{16,0,0},{0,16,0},{0,0,16}};
 
@@ -619,8 +619,6 @@ public class SensorADXL371 extends AbstractSensor{
 				accelRate = 2; // 1280Hz
 			} else if (freq<=2560){
 				accelRate = 3; // 2560Hz
-			} else {
-				accelRate = 4; // 5120Hz
 			}
 		}
 		return accelRate;
@@ -635,7 +633,7 @@ public class SensorADXL371 extends AbstractSensor{
 	
 	public void setADXL371AnalogAccelRate(int valueToSet) {
 		setADXL371AnalogAccelRateInternal(valueToSet);
-		setADXL371AnalogAccelRateInternal(SensorADXL371.ListofADXL371AccelRateConfigValues[SensorADXL371.ListofADXL371AccelRateConfigValues.length-1]);
+//		setADXL371AnalogAccelRateInternal(SensorADXL371.ListofADXL371AccelRateConfigValues[SensorADXL371.ListofADXL371AccelRateConfigValues.length-1]);
 	}
 	
 	public void setDefaultAdxl371AccelSensorConfig(boolean isSensorEnabled) {

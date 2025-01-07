@@ -4047,7 +4047,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mConfigByte0 = ((long)(bufferInquiry[2] & 0xFF) +((long)(bufferInquiry[3] & 0xFF) << 8)+((long)(bufferInquiry[4] & 0xFF) << 16) +((long)(bufferInquiry[5] & 0xFF) << 24)
 						+((long)(bufferInquiry[6] & 0xFF) << 32)+((long)(bufferInquiry[7] & 0xFF) << 40)+((long)(bufferInquiry[8] & 0xFF) << 48) );
 				setDigitalAccelRange(((int)(mConfigByte0 & 0xC))>>2);
-				setGyroRange(((int)(mConfigByte0 & 196608))>>16);
+//				setGyroRange(((int)(mConfigByte0 & 196608))>>16);
+				int gyroRange = (int)(((mConfigByte0 & 196608) >> 16) & 3);
+				int msbGyroRange = (int)((mConfigByte0 >> 34) & 1);
+				gyroRange = gyroRange + (msbGyroRange << 2);
+				setGyroRange(gyroRange);
 				setLSM303MagRange(((int)(mConfigByte0 & 14680064))>>21);
 				setLSM303DigitalAccelRate(((int)(mConfigByte0 & 0xF0))>>4);
 				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
@@ -5529,9 +5533,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				mSensorMpu9x50 = new SensorMPU9150(this);
 				addSensorClass(mSensorMpu9x50);
 				
-				
-				mSensorADXL371 = new SensorADXL371(this);
-				addSensorClass(mSensorADXL371);
 			}
 			
 		} else if(isShimmerGen3R()){
@@ -6678,7 +6679,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setDefaultCalibrationShimmer3WideRangeAccel();
 		setDefaultCalibrationShimmer3Gyro();
 		setDefaultCalibrationShimmer3Mag();
-		setDefaultCalibrationShimmer3WideRangeMag();
 	}
 
 	private void setDefaultCalibrationShimmer3LowNoiseAccel() {
@@ -6691,10 +6691,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	private void setDefaultCalibrationShimmer3Mag() {
 		getCurrentCalibDetailsMag().resetToDefaultParameters();
-	}
-	
-	private void setDefaultCalibrationShimmer3WideRangeMag() {
-		getCurrentCalibDetailsMagWr().resetToDefaultParameters();
 	}
 	
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelWr() {
@@ -8754,6 +8750,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else {
 			return mSensorLSM303.isUsingValidMagParam();
 		}
+	}
+	
+	public boolean isUsingDefaultMagWRParam() {
+		return mSensorLIS2MDL.isUsingDefaultMagWRParam();
+	}
+	
+	public boolean isUsingValidMagWRParam() {
+		return mSensorLIS2MDL.isUsingValidMagWRParam();
 	}
 	
 	/**

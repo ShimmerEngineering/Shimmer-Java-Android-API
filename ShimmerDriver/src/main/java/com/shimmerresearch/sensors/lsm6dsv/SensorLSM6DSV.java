@@ -952,6 +952,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 			configBytes[configByteLayoutCast.idxConfigSetupByte1] |= (byte) ((getLSM6DSVGyroAccelRate() & configByteLayoutCast.maskMPU9150AccelGyroSamplingRate) << configByteLayoutCast.bitShiftMPU9150AccelGyroSamplingRate);
 			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getGyroRange() & configByteLayoutCast.maskMPU9150GyroRange) << configByteLayoutCast.bitShiftMPU9150GyroRange);
 			configBytes[configByteLayoutCast.idxConfigSetupByte3] |= (byte) ((getAccelRange() & configByteLayoutCast.maskMPU9150AccelRange) << configByteLayoutCast.bitShiftMPU9150AccelRange);
+			configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) (((getGyroRange() >> 2) & configByteLayoutCast.maskLSM6DSVGyroRangeMSB) << configByteLayoutCast.bitShiftLSM6DSVGyroRangeMSB);
 			
 			// Analog Accel Calibration Parameters
 			byte[] bufferCalibrationParametersAccelLN = generateCalParamByteArrayAccelLn();
@@ -984,7 +985,11 @@ public class SensorLSM6DSV extends AbstractSensor{
 			// Gyro
 			setLSM6DSVGyroAccelRate((configBytes[configByteLayoutCast.idxConfigSetupByte1] >> configByteLayoutCast.bitShiftMPU9150AccelGyroSamplingRate) & configByteLayoutCast.maskMPU9150AccelGyroSamplingRate);
 			checkLowPowerGyro(); // check rate to determine if Sensor is in LPM mode
-			setGyroRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftMPU9150GyroRange) & configByteLayoutCast.maskMPU9150GyroRange);
+			
+			int lsbGyroRange = (configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftMPU9150GyroRange) & configByteLayoutCast.maskMPU9150GyroRange;
+			int msbGyroRange = (configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftLSM6DSVGyroRangeMSB) & configByteLayoutCast.maskLSM6DSVGyroRangeMSB;
+//			setGyroRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftMPU9150GyroRange) & configByteLayoutCast.maskMPU9150GyroRange);
+			setGyroRange((msbGyroRange << 2) | lsbGyroRange);
 			
 			//if bt connected use the infomem, otherwise if its docked the infomem read is skipped when u reset to default using bt
 			if (shimmerDevice.isConnected()){
