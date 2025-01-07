@@ -3,6 +3,8 @@ package com.shimmerresearch.driverUtilities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_ID;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.FW_LABEL;
@@ -355,6 +357,15 @@ public class ShimmerVerObject implements Serializable {
 		return ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID_SR_CODES.UNKNOWN);
 	}
 
+	public static int getHardwareVersion(String hardwareVersion) {
+		for (Entry<Integer, String> entry : ShimmerVerDetails.mMapOfShimmerRevisions.entrySet()) {
+            if (entry.getValue().equals(hardwareVersion)) {
+                return entry.getKey();
+            }
+        }
+        return HW_ID.UNKNOWN; // Return null if no match is found
+	}
+	
 	public int getFirmwareVersionMajor() {
 		return mFirmwareVersionMajor;
 	}
