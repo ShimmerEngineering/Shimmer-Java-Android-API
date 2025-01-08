@@ -245,7 +245,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	private byte[] mMemBuffer;
 	protected HashMap<Byte, MemReadDetails> mMapOfMemReadDetails = new HashMap<Byte, MemReadDetails>();
 
-
+	private long mDurationGetShimmerVersion;
+	private long mDurationGetFWVersion;
+	private long mDurationGetEXPBoard;
+	private long mDurationSetCRC;
+	private long mDurationGetBlinkLED;
+	private long mDurationGetStatusCommand;
+	
+	private long mStartTimeCMD;
+	
 	protected boolean mSync=true;												// Variable to keep track of sync
 	protected boolean mSetupEXG = false;
 	private byte[] cmdcalibrationParameters = new byte [22];  
@@ -750,6 +758,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		
+		public long getEstimatedLatencyDurationinMS() {
+			return (mDurationGetShimmerVersion+mDurationGetBlinkLED+mDurationGetEXPBoard+mDurationGetFWVersion+mDurationGetStatusCommand+mDurationSetCRC)/12; //6 commands and divide by two since it is back and forth
+		}
+		
 		/** Process ACK from a GET or SET command while not streaming */ 
 		private void processNotStreamingWaitForAck() {
 			//JC TEST:: IMPORTANT TO REMOVE // This is to simulate packet loss 
@@ -823,7 +835,28 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 						mWaitForAck=false;
 						printLogDataForDebugging("Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand));
-	
+						if (mBluetoothRadioState.equals(BT_STATE.CONNECTING))	{
+							if (mCurrentCommand==GET_SHIMMER_VERSION_COMMAND_NEW) {
+								mDurationGetShimmerVersion = System.currentTimeMillis() - mStartTimeCMD;
+								printLogDataForDebugging("CONNECTING: Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand) + " " + mDurationGetShimmerVersion);
+							} else if (mCurrentCommand==GET_FW_VERSION_COMMAND) {
+								mDurationGetFWVersion = System.currentTimeMillis() - mStartTimeCMD;
+								printLogDataForDebugging("CONNECTING: Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand) + " " + mDurationGetFWVersion);
+							} else if (mCurrentCommand==GET_DAUGHTER_CARD_ID_COMMAND) {
+								mDurationGetEXPBoard = System.currentTimeMillis() - mStartTimeCMD;
+								printLogDataForDebugging("CONNECTING: Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand) + " " + mDurationGetEXPBoard);
+							} else if (mCurrentCommand==SET_CRC_COMMAND) {
+								mDurationSetCRC = System.currentTimeMillis() - mStartTimeCMD;
+								printLogDataForDebugging("CONNECTING: Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand) + " " + mDurationSetCRC);
+							} else if (mCurrentCommand==GET_BLINK_LED) {
+								mDurationGetBlinkLED = System.currentTimeMillis() - mStartTimeCMD;
+								printLogDataForDebugging("CONNECTING: Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand) + " " + mDurationGetBlinkLED);
+							} else if (mCurrentCommand==GET_STATUS_COMMAND) {
+								mDurationGetStatusCommand = System.currentTimeMillis() - mStartTimeCMD;
+								printLogDataForDebugging("CONNECTING: Ack Received for Command: \t\t" + btCommandToString(mCurrentCommand) + " " + mDurationGetStatusCommand);
+								printLogDataForDebugging("CONNECTING: Estimated Latency " + getEstimatedLatencyDurationinMS());
+							}      
+						}
 						// Send status report if needed by the
 						// application and is not one of the below
 						// commands that are triggered by timers
@@ -3319,6 +3352,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//region --------- READ ONLY FUNCTIONS (NO WRITE EQUIVALENT - implemented anyway) --------- 
 	
 	public void readFWVersion() {
+		if (mBluetoothRadioState.equals(BT_STATE.CONNECTING)) {
+			mStartTimeCMD = System.currentTimeMillis();
+		}
 		writeInstruction(GET_FW_VERSION_COMMAND);
 	}
 
@@ -3333,6 +3369,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			
 //		} 
 //		else if(mFWVersion!=1.2){
+		if (mBluetoothRadioState.equals(BT_STATE.CONNECTING)) {
+			mStartTimeCMD = System.currentTimeMillis();
+		}
 			writeInstruction(GET_SHIMMER_VERSION_COMMAND_NEW);
 //		} 
 //			else {
@@ -3377,6 +3416,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(getFirmwareVersionCode()>=5){ 
 			numBytesToReadFromExpBoard=3;
 			int offset=0;
+			if (mBluetoothRadioState.equals(BT_STATE.CONNECTING)) {
+				mStartTimeCMD = System.currentTimeMillis();
+			}
 			writeInstruction(new byte[]{GET_DAUGHTER_CARD_ID_COMMAND, (byte) numBytesToReadFromExpBoard, (byte) offset});
 		}
 	}
@@ -3393,6 +3435,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	public void readStatusLogAndStream(){
 		if(isSupportedInStreamCmds()){ 
 		//if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){
+			if (mBluetoothRadioState.equals(BT_STATE.CONNECTING)) {
+				mStartTimeCMD = System.currentTimeMillis();
+			}
 			writeInstruction(GET_STATUS_COMMAND);
 			consolePrintLn("GET_STATUS_COMMAND Instruction added to the list");
 		}
@@ -4423,7 +4468,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		writeInstruction(new byte[]{SET_BUFFER_SIZE_COMMAND, (byte)size});
 	}
 	
+	//
 	public void readLEDCommand() {
+		if (mBluetoothRadioState.equals(BT_STATE.CONNECTING)) {
+			mStartTimeCMD = System.currentTimeMillis();
+		}
 		writeInstruction(GET_BLINK_LED);
 	}
 
@@ -4951,6 +5000,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	public boolean writeBtCommsCrcMode(BT_CRC_MODE btCrcMode) {
 		if (getFirmwareVersionCode() >= 8) {
+			if (mBluetoothRadioState.equals(BT_STATE.CONNECTING)) {
+				mStartTimeCMD = System.currentTimeMillis();
+			}
 			writeInstruction(new byte[] { SET_CRC_COMMAND, (byte) (btCrcMode.ordinal()) });
 			return true;
 		}
