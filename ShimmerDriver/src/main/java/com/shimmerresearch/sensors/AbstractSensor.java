@@ -140,7 +140,7 @@ public abstract class AbstractSensor implements Serializable{
 
 	public SENSORS mSensorType = null;
 	protected String mSensorName = "";
-	protected static ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
+	protected ShimmerVerObject mShimmerVerObject = new ShimmerVerObject();
 	
 	protected static boolean mEnableCalibration = true;
 	protected boolean mIsDebugOutput = false;
