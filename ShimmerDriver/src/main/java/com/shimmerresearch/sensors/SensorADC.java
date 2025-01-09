@@ -679,7 +679,7 @@ public class SensorADC extends AbstractSensor {
 	}
 	
 	public static int uncalibrateAdcChannelFromVolts3r(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
-		int calData = uncalibrateU12AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		int calData = uncalibrateU14AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
 		return calData;
 	}
 
