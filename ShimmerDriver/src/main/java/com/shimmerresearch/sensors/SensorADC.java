@@ -631,46 +631,55 @@ public class SensorADC extends AbstractSensor {
 	public static double calibrateMspAdcChannelToMillivolts(double unCalData){
 		return calibrateAdcChannelToMillivolts(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
 	}
+	
+	public static double calibrateMspAdcChannelToMillivolts3r(double unCalData){
+		return calibrateAdcChannelToMillivolts3r(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
+	}
 
 	public static double calibrateAdcChannelToMillivolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
-		double calData;
-		if(mShimmerVerObject.isShimmerGen3R()){
-			calData = calibrateU14AdcValueToMillivolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
-		}
-		else {
-			calData = calibrateU12AdcValueToMillivolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
-		}
+		double calData = calibrateU12AdcValueToMillivolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		return calData;
+	}
+	
+	public static double calibrateAdcChannelToMillivolts3r(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
+		double calData = calibrateU14AdcValueToMillivolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
 		return calData;
 	}
 
-	public double calibrateMspAdcChannelToVolts(double unCalData){
+	public static double calibrateMspAdcChannelToVolts(double unCalData){
+		return calibrateAdcChannelToVolts(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
+	}
+
+	public static double calibrateMspAdcChannelToVolts3r(double unCalData){
 		return calibrateAdcChannelToVolts(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
 	}
 
 	public static double calibrateAdcChannelToVolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
-		double calData;
-		if(mShimmerVerObject.isShimmerGen3R()){
-			calData = calibrateU14AdcValueToVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
-		}
-		else {
-			calData = calibrateU12AdcValueToVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
-		}
+		double calData = calibrateU12AdcValueToVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		
+		return calData;
+	}
+	
+	public static double calibrateAdcChannelToVolts3r(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
+		double calData = calibrateU14AdcValueToVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
 		return calData;
 	}
 
 	public static int uncalibrateMspAdcChannelFromVolts(double unCalData){
 		return uncalibrateAdcChannelFromVolts(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
 	}
+	
+	public static int uncalibrateMspAdcChannelFromVolts3r(double unCalData){
+		return uncalibrateAdcChannelFromVolts3r(unCalData, MICROCONTROLLER_ADC_PROPERTIES.SHIMMER2R3_3V0);
+	}
 
 	public static int uncalibrateAdcChannelFromVolts(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
-		int calData;
-		if(mShimmerVerObject.isShimmerGen3R()){
-			calData = uncalibrateU14AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
-		}
-		else {
-			calData = uncalibrateU12AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
-		}
-
+		int calData = uncalibrateU12AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
+		return calData;
+	}
+	
+	public static int uncalibrateAdcChannelFromVolts3r(double unCalData, MICROCONTROLLER_ADC_PROPERTIES microcontrollerAdcProperties){
+		int calData = uncalibrateU12AdcValueFromVolts(unCalData, microcontrollerAdcProperties.offset, microcontrollerAdcProperties.vRefP, microcontrollerAdcProperties.gain);
 		return calData;
 	}
 
