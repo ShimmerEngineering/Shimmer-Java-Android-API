@@ -79,29 +79,29 @@ public class SensorLIS2MDL extends AbstractSensor{
 		public static final String WR_MAG_RATE = "LIS2MDL_WR_Mag_Rate";
 		public static final String WR_MAG_RANGE = "LIS2MDL_WR_Mag_Range";
 		
-		public static final String MAG_CALIB_TIME = "LIS2MDL_Mag_Calib_Time";
-		public static final String MAG_OFFSET_X = "LIS2MDL_Mag_Offset_X";
-		public static final String MAG_OFFSET_Y = "LIS2MDL_Mag_Offset_Y";
-		public static final String MAG_OFFSET_Z = "LIS2MDL_Mag_Offset_Z";
-		public static final String MAG_GAIN_X = "LIS2MDL_Mag_Gain_X";
-		public static final String MAG_GAIN_Y = "LIS2MDL_Mag_Gain_Y";
-		public static final String MAG_GAIN_Z = "LIS2MDL_Mag_Gain_Z";
-		public static final String MAG_ALIGN_XX = "LIS2MDL_Mag_Align_XX";
-		public static final String MAG_ALIGN_XY = "LIS2MDL_Mag_Align_XY";
-		public static final String MAG_ALIGN_XZ = "LIS2MDL_Mag_Align_XZ";
-		public static final String MAG_ALIGN_YX = "LIS2MDL_Mag_Align_YX";
-		public static final String MAG_ALIGN_YY = "LIS2MDL_Mag_Align_YY";
-		public static final String MAG_ALIGN_YZ = "LIS2MDL_Mag_Align_YZ";
-		public static final String MAG_ALIGN_ZX = "LIS2MDL_Mag_Align_ZX";
-		public static final String MAG_ALIGN_ZY = "LIS2MDL_Mag_Align_ZY";
-		public static final String MAG_ALIGN_ZZ = "LIS2MDL_Mag_Align_ZZ";
+		public static final String MAG_WR_CALIB_TIME = "LIS2MDL_Mag_WR_Calib_Time";
+		public static final String MAG_WR_OFFSET_X = "LIS2MDL_Mag_WR_Offset_X";
+		public static final String MAG_WR_OFFSET_Y = "LIS2MDL_Mag_WR_Offset_Y";
+		public static final String MAG_WR_OFFSET_Z = "LIS2MDL_Mag_WR_Offset_Z";
+		public static final String MAG_WR_GAIN_X = "LIS2MDL_Mag_WR_Gain_X";
+		public static final String MAG_WR_GAIN_Y = "LIS2MDL_Mag_WR_Gain_Y";
+		public static final String MAG_WR_GAIN_Z = "LIS2MDL_Mag_WR_Gain_Z";
+		public static final String MAG_WR_ALIGN_XX = "LIS2MDL_Mag_WR_Align_XX";
+		public static final String MAG_WR_ALIGN_XY = "LIS2MDL_Mag_WR_Align_XY";
+		public static final String MAG_WR_ALIGN_XZ = "LIS2MDL_Mag_WR_Align_XZ";
+		public static final String MAG_WR_ALIGN_YX = "LIS2MDL_Mag_WR_Align_YX";
+		public static final String MAG_WR_ALIGN_YY = "LIS2MDL_Mag_WR_Align_YY";
+		public static final String MAG_WR_ALIGN_YZ = "LIS2MDL_Mag_WR_Align_YZ";
+		public static final String MAG_WR_ALIGN_ZX = "LIS2MDL_Mag_WR_Align_ZX";
+		public static final String MAG_WR_ALIGN_ZY = "LIS2MDL_Mag_WR_Align_ZY";
+		public static final String MAG_WR_ALIGN_ZZ = "LIS2MDL_Mag_WR_Align_ZZ";
 
 		public static final List<String> LIST_OF_CALIB_HANDLES_MAG = Arrays.asList(
-				DatabaseConfigHandle.MAG_OFFSET_X, DatabaseConfigHandle.MAG_OFFSET_Y, DatabaseConfigHandle.MAG_OFFSET_Z,
-				DatabaseConfigHandle.MAG_GAIN_X, DatabaseConfigHandle.MAG_GAIN_Y, DatabaseConfigHandle.MAG_GAIN_Z,
-				DatabaseConfigHandle.MAG_ALIGN_XX, DatabaseConfigHandle.MAG_ALIGN_XY, DatabaseConfigHandle.MAG_ALIGN_XZ,
-				DatabaseConfigHandle.MAG_ALIGN_YX, DatabaseConfigHandle.MAG_ALIGN_YY, DatabaseConfigHandle.MAG_ALIGN_YZ,
-				DatabaseConfigHandle.MAG_ALIGN_ZX, DatabaseConfigHandle.MAG_ALIGN_ZY, DatabaseConfigHandle.MAG_ALIGN_ZZ);
+				DatabaseConfigHandle.MAG_WR_OFFSET_X, DatabaseConfigHandle.MAG_WR_OFFSET_Y, DatabaseConfigHandle.MAG_WR_OFFSET_Z,
+				DatabaseConfigHandle.MAG_WR_GAIN_X, DatabaseConfigHandle.MAG_WR_GAIN_Y, DatabaseConfigHandle.MAG_WR_GAIN_Z,
+				DatabaseConfigHandle.MAG_WR_ALIGN_XX, DatabaseConfigHandle.MAG_WR_ALIGN_XY, DatabaseConfigHandle.MAG_WR_ALIGN_XZ,
+				DatabaseConfigHandle.MAG_WR_ALIGN_YX, DatabaseConfigHandle.MAG_WR_ALIGN_YY, DatabaseConfigHandle.MAG_WR_ALIGN_YZ,
+				DatabaseConfigHandle.MAG_WR_ALIGN_ZX, DatabaseConfigHandle.MAG_WR_ALIGN_ZY, DatabaseConfigHandle.MAG_WR_ALIGN_ZZ);
 		
 	}
 	
@@ -312,7 +312,7 @@ public class SensorLIS2MDL extends AbstractSensor{
 		super.addCalibDetailsToDbMap(mapOfConfig, 
 				getCurrentCalibDetailsMagWr(), 
 				SensorLIS2MDL.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
-				SensorLIS2MDL.DatabaseConfigHandle.MAG_CALIB_TIME);
+				SensorLIS2MDL.DatabaseConfigHandle.MAG_WR_CALIB_TIME);
 
 		return mapOfConfig;
 	}
@@ -365,7 +365,7 @@ public class SensorLIS2MDL extends AbstractSensor{
 				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR, 
 				getWRMagRange(), 
 				SensorLIS2MDL.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_MAG,
-				SensorLIS2MDL.DatabaseConfigHandle.MAG_CALIB_TIME);
+				SensorLIS2MDL.DatabaseConfigHandle.MAG_WR_CALIB_TIME);
 	}
 	
 	@Override
