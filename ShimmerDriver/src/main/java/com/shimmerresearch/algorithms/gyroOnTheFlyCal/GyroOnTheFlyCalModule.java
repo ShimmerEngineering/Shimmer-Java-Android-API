@@ -62,7 +62,8 @@ public class GyroOnTheFlyCalModule extends AbstractAlgorithm {
 	// -------------------  Static Algorithm map start -----------------------
 	public static final AlgorithmDetails algoGyroOnTheFlyCal = new AlgorithmDetails(
 			Arrays.asList(//Configuration.Shimmer2.SENSOR_ID.GYRO,
-					Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO,
+			Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO),
 			CHANNEL_UNITS.NO_UNITS,
 			SENSOR_CHECK_METHOD.ANY);
 	{
