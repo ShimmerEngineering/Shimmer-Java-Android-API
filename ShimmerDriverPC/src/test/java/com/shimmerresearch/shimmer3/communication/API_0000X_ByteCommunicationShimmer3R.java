@@ -318,22 +318,22 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 			mDevice.setDefaultCalibrationShimmer3StandardImus();
 			
 			double[][] magOffset = mDevice.getOffsetVectorMatrixMag();
-    		assertTrue(Arrays.deepEquals(magOffset, SensorLIS3MDL.DefaultOffsetVectorMagShimmer3));
+    		assertTrue(Arrays.deepEquals(magOffset, SensorLIS2MDL.DefaultOffsetVectorMagShimmer3));
     		double[][] magAlignment = mDevice.getAlignmentMatrixMag();
-    		assertTrue(Arrays.deepEquals(magAlignment, SensorLIS3MDL.DefaultAlignmentMatrixMagShimmer3));
+    		assertTrue(Arrays.deepEquals(magAlignment, SensorLIS2MDL.DefaultAlignmentMatrixMagShimmer3));
     		
     		mDevice.setLSM303MagRange(0);
     		double[][] magSensitivity0 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity0, SensorLIS3MDL.DefaultSensitivityMatrixMag4GaShimmer3));
+    		assertTrue(Arrays.deepEquals(magSensitivity0, SensorLIS2MDL.DefaultSensitivityMatrixMag4GaShimmer3));
     		mDevice.setLSM303MagRange(1);
     		double[][] magSensitivity1 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity1, SensorLIS3MDL.DefaultSensitivityMatrixMag8GaShimmer3));
+    		assertTrue(Arrays.deepEquals(magSensitivity1, SensorLIS2MDL.DefaultSensitivityMatrixMag8GaShimmer3));
     		mDevice.setLSM303MagRange(2);
     		double[][] magSensitivity2 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity2, SensorLIS3MDL.DefaultSensitivityMatrixMag12GaShimmer3));
+    		assertTrue(Arrays.deepEquals(magSensitivity2, SensorLIS2MDL.DefaultSensitivityMatrixMag12GaShimmer3));
     		mDevice.setLSM303MagRange(3);
     		double[][] magSensitivity3 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity3, SensorLIS3MDL.DefaultSensitivityMatrixMag16GaShimmer3));
+    		assertTrue(Arrays.deepEquals(magSensitivity3, SensorLIS2MDL.DefaultSensitivityMatrixMag16GaShimmer3));
 	}
 	@Test
 	public void test007_ConnectandTestDefaultHighGAccelCalibParam() {
@@ -384,11 +384,11 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     		mDevice.setDefaultCalibrationShimmer3StandardImus();
 			
 			double[][] wrMagOffset = mDevice.getOffsetVectorMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagOffset, SensorLIS2MDL.DefaultOffsetVectorWRMagShimmer3r));
+    		assertTrue(Arrays.deepEquals(wrMagOffset, SensorLIS3MDL.DefaultOffsetVectorWRMagShimmer3r));
     		double[][] wrMagAlignment = mDevice.getAlignmentMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagAlignment, SensorLIS2MDL.DefaultAlignmentMatrixWRMagShimmer3r)); 
+    		assertTrue(Arrays.deepEquals(wrMagAlignment, SensorLIS3MDL.DefaultAlignmentMatrixWRMagShimmer3r)); 
     		double[][] wrMagSensitivity = mDevice.getSensitivityMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagSensitivity, SensorLIS2MDL.DefaultSensitivityMatrixWRMagShimmer3r));
+    		assertTrue(Arrays.deepEquals(wrMagSensitivity, SensorLIS3MDL.DefaultSensitivityMatrixWRMagShimmer3r));
 	}
 	
 	public static void compareTwoCalibDetails(CalibDetails calibDetails1, CalibDetails calibDetails2) {

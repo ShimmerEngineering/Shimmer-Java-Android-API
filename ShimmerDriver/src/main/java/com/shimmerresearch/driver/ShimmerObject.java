@@ -78,8 +78,8 @@ import com.shimmerresearch.sensors.bmpX80.SensorBMPX80;
 import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXTC92050;
-import com.shimmerresearch.sensors.lisxmdl.SensorLIS2MDL;
 import com.shimmerresearch.sensors.lisxmdl.SensorLIS3MDL;
+import com.shimmerresearch.sensors.lisxmdl.SensorLIS2MDL;
 import com.shimmerresearch.sensors.lsm6dsv.SensorLSM6DSV;
 import com.shimmerresearch.sensors.lis2dw12.SensorLIS2DW12;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
@@ -672,9 +672,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public SensorBMPX80 mSensorBMPX80 = new SensorBMP180(this);
   
 	// Shimmer3r - Mag
-	private SensorLIS3MDL mSensorLIS3MDL = new SensorLIS3MDL(this);
+	private SensorLIS2MDL mSensorLIS2MDL = new SensorLIS2MDL(this);
 	// Shimmer3r - Wide-range Mag
-	private SensorLIS2MDL mSensorLIS2MDL = new SensorLIS2MDL(this);	
+	private SensorLIS3MDL mSensorLIS3MDL = new SensorLIS3MDL(this);	
 	// Shimmer3R - WR Accel
 	private SensorLIS2DW12 mSensorLIS2DW12 = new SensorLIS2DW12(this);
 	// Shimmer3r - Accel LN & Gyro
@@ -1167,9 +1167,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedData[iMagZ]=wrMagCalibratedData[2];
 					
 					if(isShimmerGen3R()) {
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,wrMagCalibratedData[0],mSensorLIS2MDL.mIsUsingDefaultWRMagParam);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,wrMagCalibratedData[1],mSensorLIS2MDL.mIsUsingDefaultWRMagParam);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,wrMagCalibratedData[2],mSensorLIS2MDL.mIsUsingDefaultWRMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,wrMagCalibratedData[0],mSensorLIS3MDL.mIsUsingDefaultWRMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,wrMagCalibratedData[1],mSensorLIS3MDL.mIsUsingDefaultWRMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,wrMagCalibratedData[2],mSensorLIS3MDL.mIsUsingDefaultWRMagParam);
 					}
 					magnetometer.x=wrMagCalibratedData[0];
 					magnetometer.y=wrMagCalibratedData[1];
@@ -1283,9 +1283,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedData[iMagZ]=magCalibratedData[2];
 					
 					if(isShimmerGen3R()) {
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,magCalibratedData[0],mSensorLIS3MDL.mIsUsingDefaultMagParam);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,magCalibratedData[1],mSensorLIS3MDL.mIsUsingDefaultMagParam);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,magCalibratedData[2],mSensorLIS3MDL.mIsUsingDefaultMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,magCalibratedData[0],mSensorLIS2MDL.mIsUsingDefaultMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,magCalibratedData[1],mSensorLIS2MDL.mIsUsingDefaultMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,magCalibratedData[2],mSensorLIS2MDL.mIsUsingDefaultMagParam);
 					}
 					else {
 						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,magCalibratedData[0],mSensorLSM303.mIsUsingDefaultMagParam);
@@ -4851,7 +4851,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if (isShimmerGen3()){
 			return mSensorLSM303.checkLowPowerMag();
 		} else if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.checkLowPowerMag();
+			return mSensorLIS2MDL.checkLowPowerMag();
 		}
 		return false;
 	}
@@ -5529,11 +5529,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensorLIS2DW12 = new SensorLIS2DW12(this);
 			addSensorClass(mSensorLIS2DW12);
 			
-			mSensorLIS3MDL = new SensorLIS3MDL(this);
-			addSensorClass(mSensorLIS3MDL);
-			
 			mSensorLIS2MDL = new SensorLIS2MDL(this);
 			addSensorClass(mSensorLIS2MDL);
+			
+			mSensorLIS3MDL = new SensorLIS3MDL(this);
+			addSensorClass(mSensorLIS3MDL);
 		}
 	}
 
@@ -6690,14 +6690,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if(isShimmerGen3()) {
 			return mSensorLSM303.getCurrentCalibDetailsMag();
 		} else if(isShimmerGen3R()) {
-			return mSensorLIS3MDL.getCurrentCalibDetailsMag();
+			return mSensorLIS2MDL.getCurrentCalibDetailsMag();
 		}
 		return null;
 	}
 	
 	protected CalibDetailsKinematic getCurrentCalibDetailsMagWr() {
 		if(isShimmerGen3R()) {
-			return mSensorLIS2MDL.getCurrentCalibDetailsMagWr();
+			return mSensorLIS3MDL.getCurrentCalibDetailsMagWr();
 		}
 		return null;
 	}
@@ -6742,7 +6742,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public void updateCurrentMagCalibInUse(){
 		if(isShimmerGen3R()) {
-			mSensorLIS3MDL.updateCurrentMagCalibInUse();
+			mSensorLIS2MDL.updateCurrentMagCalibInUse();
 		} else {
 			mSensorLSM303.updateCurrentMagCalibInUse();
 		}
@@ -8463,20 +8463,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensorLSM303.setLowPowerMag(enable);
 		}
 		else if(isShimmerGen3R()){
-			mSensorLIS3MDL.setLowPowerMag(enable);
+			mSensorLIS2MDL.setLowPowerMag(enable);
 		}
 	}
 	
 	protected void setMedPowerMag(boolean enable) {
-		mSensorLIS3MDL.setLowPowerMag(enable);
+		mSensorLIS2MDL.setLowPowerMag(enable);
 	}
 	
 	protected void setHighPowerMag(boolean enable) {
-		mSensorLIS3MDL.setLowPowerMag(enable);
+		mSensorLIS2MDL.setLowPowerMag(enable);
 	}
 	
 	protected void setUltraHighPowerMag(boolean enable) {
-		mSensorLIS3MDL.setLowPowerMag(enable);
+		mSensorLIS2MDL.setLowPowerMag(enable);
 	}
 
 	private void setShimmer2rMagRateFromFreq(double samplingRateShimmer) {
@@ -8495,21 +8495,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if(isShimmerGen3()){
 			return mSensorLSM303.isLowPowerMagEnabled();
 		} else if(isShimmerGen3R()) {
-			return mSensorLIS3MDL.isLowPowerMagEnabled();
+			return mSensorLIS2MDL.isLowPowerMagEnabled();
 		}
 		return false;
 	} 
     
     public boolean isMedPowerMagEnabled() {
-    	return mSensorLIS3MDL.isMedPowerMagEnabled();
+    	return mSensorLIS2MDL.isMedPowerMagEnabled();
     }
     
     public boolean isHighPowerMagEnabled() {
-    	return mSensorLIS3MDL.isMedPowerMagEnabled();
+    	return mSensorLIS2MDL.isMedPowerMagEnabled();
     }
     
     public boolean isUltraHighPowerMagEnabled() {
-    	return mSensorLIS3MDL.isMedPowerMagEnabled();
+    	return mSensorLIS2MDL.isMedPowerMagEnabled();
     }
 
 	public void setAccelRange(int i){
@@ -8553,7 +8553,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen3()) {
 			mSensorLSM303.setLSM303MagRange(i);
 		} else if(isShimmerGen3R()) {
-			mSensorLIS3MDL.setLISMagRange(i);
+			mSensorLIS2MDL.setLISMagRange(i);
 		}
 	}
 
@@ -8566,7 +8566,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	private int setLSM303MagRateFromFreq(double freq) {
 		if(isShimmerGen3R()) {
-			return mSensorLIS3MDL.setLIS3MDLMagRateFromFreq(freq);
+			return mSensorLIS2MDL.setLIS2MDLMagRateFromFreq(freq);
 		} else{
 			return mSensorLSM303.setLSM303MagRateFromFreq(freq);
 		}
@@ -8578,7 +8578,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if (isShimmerGen3()){
 			mSensorLSM303.setLSM303MagRate(magRate);
 		} else if (isShimmerGen3R()) {
-			mSensorLIS3MDL.setLISMagRate(magRate);
+			mSensorLIS2MDL.setLISMagRate(magRate);
 		}
 	}
 	
@@ -8611,7 +8611,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if (isShimmerGen3()){
 			return mSensorLSM303.getLSM303MagRate();
 		} else if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.getLIS3MDLMagRate();
+			return mSensorLIS2MDL.getLIS2MDLMagRate();
 		}
 		return 0;
 	}
@@ -8711,7 +8711,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public double getCalibTimeMag() {
 		if(isShimmerGen3R()) {
-			return mSensorLIS3MDL.getCalibTimeMag();
+			return mSensorLIS2MDL.getCalibTimeMag();
 		} else {
 			return mSensorLSM303.getCalibTimeMag();
 		}
@@ -8719,7 +8719,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public boolean isUsingDefaultMagParam(){
 		if(isShimmerGen3R()) {
-			return mSensorLIS3MDL.isUsingDefaultMagParam();
+			return mSensorLIS2MDL.isUsingDefaultMagParam();
 		} else {
 			return mSensorLSM303.isUsingDefaultMagParam();
 		}
@@ -8727,18 +8727,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public boolean isUsingValidMagParam(){
 		if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.isUsingValidMagParam();
+			return mSensorLIS2MDL.isUsingValidMagParam();
 		} else {
 			return mSensorLSM303.isUsingValidMagParam();
 		}
 	}
 	
 	public boolean isUsingDefaultMagWRParam() {
-		return mSensorLIS2MDL.isUsingDefaultMagWRParam();
+		return mSensorLIS3MDL.isUsingDefaultMagWRParam();
 	}
 	
 	public boolean isUsingValidMagWRParam() {
-		return mSensorLIS2MDL.isUsingValidMagWRParam();
+		return mSensorLIS3MDL.isUsingValidMagWRParam();
 	}
 	
 	/**
@@ -8792,22 +8792,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public int getLowPowerMagEnabled() {
 		if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.getLowPowerMagEnabled();
+			return mSensorLIS2MDL.getLowPowerMagEnabled();
 		} else {
 			return mSensorLSM303.getLowPowerMagEnabled();
 		}
 	}
 	
 	public int getMedPowerMagEnabled() {
-		return mSensorLIS3MDL.getMedPowerMagEnabled();
+		return mSensorLIS2MDL.getMedPowerMagEnabled();
 	}
 	
 	public int getHighPowerMagEnabled() {
-		return mSensorLIS3MDL.getHighPowerMagEnabled();
+		return mSensorLIS2MDL.getHighPowerMagEnabled();
 	}
 	
 	public int getUltraHighPowerMagEnabled() {
-		return mSensorLIS3MDL.getUltraHighPowerMagEnabled();
+		return mSensorLIS2MDL.getUltraHighPowerMagEnabled();
 	}
 
 	/** Shimmer3 -> 0 = +/-2g, 1 = +/-4g, 2 = +/-8g, 3 = +/- 16g */
@@ -8828,7 +8828,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if (isShimmerGen3()){
 			return mSensorLSM303.getMagRange();
 		} else if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.getMagRange();
+			return mSensorLIS2MDL.getMagRange();
 		}
 		return 0;
 	}
@@ -8873,7 +8873,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public double[][] getAlignmentMatrixMag(){
 		if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.getAlignmentMatrixMag();
+			return mSensorLIS2MDL.getAlignmentMatrixMag();
 		} else {
 			return mSensorLSM303.getAlignmentMatrixMag();
 		}
@@ -8881,7 +8881,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public double[][] getSensitivityMatrixMag(){
 		if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.getSensitivityMatrixMag();
+			return mSensorLIS2MDL.getSensitivityMatrixMag();
 		} else {
 			return mSensorLSM303.getSensitivityMatrixMag();
 		}
@@ -8889,7 +8889,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public double[][] getOffsetVectorMatrixMag(){
 		if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.getOffsetVectorMatrixMag();
+			return mSensorLIS2MDL.getOffsetVectorMatrixMag();
 		} else {
 			return mSensorLSM303.getOffsetVectorMatrixMag();
 		}
@@ -8918,21 +8918,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	
 	public double[][] getOffsetVectorMatrixWRMag(){
 		if (isShimmerGen3R()) {
-			return mSensorLIS2MDL.getOffsetVectorMatrixMagWr();
+			return mSensorLIS3MDL.getOffsetVectorMatrixMagWr();
 		}
 		return null; 
 	}
 	
 	public double[][] getAlignmentMatrixWRMag(){
 		if (isShimmerGen3R()) {
-			return mSensorLIS2MDL.getAlignmentMatrixMagWr();
+			return mSensorLIS3MDL.getAlignmentMatrixMagWr();
 		}
 		return null; 
 	}
 	
 	public double[][] getSensitivityMatrixWRMag(){
 		if (isShimmerGen3R()) {
-			return mSensorLIS2MDL.getSensitivityMatrixMagWr();
+			return mSensorLIS3MDL.getSensitivityMatrixMagWr();
 		}
 		return null; 
 	}
@@ -10835,7 +10835,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if(isShimmerGen3R()) {
       mSensorLSM6DSV.updateIsUsingDefaultLNAccelParam();
       mSensorLIS2DW12.updateIsUsingDefaultWRAccelParam(); 
-			mSensorLIS3MDL.updateIsUsingDefaultMagParam();
+      mSensorLIS2MDL.updateIsUsingDefaultMagParam();
       mSensorLSM6DSV.updateIsUsingDefaultGyroParam();  
 		} 
 	}

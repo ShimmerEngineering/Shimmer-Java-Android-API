@@ -24,7 +24,7 @@ public class ConfigOptionDetailsSensor extends ConfigOptionDetails implements Se
 			public static final int NOT_LPM = 0;
 			public static final int IS_LPM = 1;
 		}
-		public static final class LIS3MDL_MAG_RATE{
+		public static final class LIS2MDL_MAG_RATE{
 			public static final int IS_LP = 0;
 			public static final int IS_MP = 1;
 			public static final int IS_HP = 2;
