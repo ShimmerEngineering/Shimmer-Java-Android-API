@@ -317,23 +317,13 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     		//SHIMMER_LIS3MDL_MAG
 			mDevice.setDefaultCalibrationShimmer3StandardImus();
 			
-			double[][] magOffset = mDevice.getOffsetVectorMatrixMag();
-    		assertTrue(Arrays.deepEquals(magOffset, SensorLIS2MDL.DefaultOffsetVectorMagShimmer3));
-    		double[][] magAlignment = mDevice.getAlignmentMatrixMag();
-    		assertTrue(Arrays.deepEquals(magAlignment, SensorLIS2MDL.DefaultAlignmentMatrixMagShimmer3));
-    		
-    		mDevice.setLSM303MagRange(0);
-    		double[][] magSensitivity0 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity0, SensorLIS2MDL.DefaultSensitivityMatrixMag4GaShimmer3));
-    		mDevice.setLSM303MagRange(1);
-    		double[][] magSensitivity1 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity1, SensorLIS2MDL.DefaultSensitivityMatrixMag8GaShimmer3));
-    		mDevice.setLSM303MagRange(2);
-    		double[][] magSensitivity2 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity2, SensorLIS2MDL.DefaultSensitivityMatrixMag12GaShimmer3));
-    		mDevice.setLSM303MagRange(3);
-    		double[][] magSensitivity3 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity3, SensorLIS2MDL.DefaultSensitivityMatrixMag16GaShimmer3));
+			double[][] magOffset = mDevice.getOffsetVectorMatrixWRMag();
+    		assertTrue(Arrays.deepEquals(magOffset, SensorLIS2MDL.DefaultOffsetVectorWRMagShimmer3r));
+    		double[][] magAlignment = mDevice.getAlignmentMatrixWRMag();
+    		assertTrue(Arrays.deepEquals(magAlignment, SensorLIS2MDL.DefaultAlignmentMatrixMagShimmer3r)); 
+    		double[][] magSensitivity = mDevice.getSensitivityMatrixWRMag();
+    		assertTrue(Arrays.deepEquals(magSensitivity, SensorLIS2MDL.DefaultSensitivityMatrixMagShimmer3r));
+			
 	}
 	@Test
 	public void test007_ConnectandTestDefaultHighGAccelCalibParam() {
@@ -382,13 +372,24 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     		//SHIMMER_LIS2MDL_MAG_WR
     		
     		mDevice.setDefaultCalibrationShimmer3StandardImus();
-			
-			double[][] wrMagOffset = mDevice.getOffsetVectorMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagOffset, SensorLIS3MDL.DefaultOffsetVectorWRMagShimmer3r));
-    		double[][] wrMagAlignment = mDevice.getAlignmentMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagAlignment, SensorLIS3MDL.DefaultAlignmentMatrixWRMagShimmer3r)); 
-    		double[][] wrMagSensitivity = mDevice.getSensitivityMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagSensitivity, SensorLIS3MDL.DefaultSensitivityMatrixWRMagShimmer3r));
+    		
+    		double[][] wrMagOffset = mDevice.getOffsetVectorMatrixMag();
+    		assertTrue(Arrays.deepEquals(wrMagOffset, SensorLIS3MDL.DefaultOffsetVectorWrMagShimmer3));
+    		double[][] wrMagAlignment = mDevice.getAlignmentMatrixMag();
+    		assertTrue(Arrays.deepEquals(wrMagAlignment, SensorLIS3MDL.DefaultAlignmentMatrixWrMagShimmer3));
+    		
+    		mDevice.setLSM303MagRange(0);
+    		double[][] wrMagSensitivity0 = mDevice.getSensitivityMatrixMag();
+    		assertTrue(Arrays.deepEquals(wrMagSensitivity0, SensorLIS3MDL.DefaultSensitivityMatrixWrMag4GaShimmer3));
+    		mDevice.setLSM303MagRange(1);
+    		double[][] wrMagSensitivity1 = mDevice.getSensitivityMatrixMag();
+    		assertTrue(Arrays.deepEquals(wrMagSensitivity1, SensorLIS3MDL.DefaultSensitivityMatrixWrMag8GaShimmer3));
+    		mDevice.setLSM303MagRange(2);
+    		double[][] wrMagSensitivity2 = mDevice.getSensitivityMatrixMag();
+    		assertTrue(Arrays.deepEquals(wrMagSensitivity2, SensorLIS3MDL.DefaultSensitivityMatrixWrMag12GaShimmer3));
+    		mDevice.setLSM303MagRange(3);
+    		double[][] wrMagSensitivity3 = mDevice.getSensitivityMatrixMag();
+    		assertTrue(Arrays.deepEquals(wrMagSensitivity3, SensorLIS3MDL.DefaultSensitivityMatrixWrMag16GaShimmer3));
 	}
 	
 	public static void compareTwoCalibDetails(CalibDetails calibDetails1, CalibDetails calibDetails2) {

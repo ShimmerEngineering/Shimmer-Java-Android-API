@@ -26,6 +26,7 @@ import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
 import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.ConfigOptionDetailsSensor;
+import com.shimmerresearch.driverUtilities.ConfigOptionObject;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.SensorDetailsRef;
 import com.shimmerresearch.driverUtilities.SensorGroupingDetails;
@@ -51,24 +52,51 @@ public class SensorLIS3MDL extends AbstractSensor{
 	
 	//--------- Sensor specific variables start --------------	
 	
-	public static final double[][] DefaultAlignmentLIS3MDL = {{-1,0,0},{0,-1,0},{0,0,-1}};	
-	
-// ----------   Mag start ---------------
-	public static final double[][] DefaultAlignmentMatrixWRMagShimmer3r = DefaultAlignmentLIS3MDL; 				
-	public static final double[][] DefaultOffsetVectorWRMagShimmer3r = {{0},{0},{0}};	
+		public static final double[][] DefaultAlignmentLIS3MDL = {{1,0,0},{0,-1,0},{0,0,-1}};	
 
-	public static final double[][] DefaultSensitivityMatrixWRMagShimmer3r = {{667,0,0},{0,667,0},{0,0,667}};
+		// ----------   AltMag start ---------------
+		public static final double[][] DefaultAlignmentMatrixWrMagShimmer3 = DefaultAlignmentLIS3MDL; 				
+		public static final double[][] DefaultOffsetVectorWrMagShimmer3 = {{0},{0},{0}};	
+		// Manufacturer stated: X any Y any Z axis @ 6842 LSB/gauss
+		public static final double[][] DefaultSensitivityMatrixWrMag4GaShimmer3 = {{6842,0,0},{0,6842,0},{0,0,6842}};
+		// Manufacturer stated: X any Y any Z axis @ 3421  LSB/gauss
+		public static final double[][] DefaultSensitivityMatrixWrMag8GaShimmer3 = {{3421 ,0,0},{0,3421 ,0},{0,0,3421 }};
+		// Manufacturer stated: X any Y any Z axis @ 2281  LSB/gauss
+		public static final double[][] DefaultSensitivityMatrixWrMag12GaShimmer3 = {{2281 ,0,0},{0,2281 ,0},{0,0,2281 }};
+		// Manufacturer stated: X any Y any Z axis @ 1711  LSB/gauss
+		public static final double[][] DefaultSensitivityMatrixWrMag16GaShimmer3 = {{1711 ,0,0},{0,1711 ,0},{0,0,1711 }};
 
-	private CalibDetailsKinematic calibDetailsMagWr = new CalibDetailsKinematic(
-			ListofLIS3MDLWRMagRangeConfigValues[0],
-			ListofLIS3MDLWRMagRange[0],
-			DefaultAlignmentMatrixWRMagShimmer3r,
-			DefaultSensitivityMatrixWRMagShimmer3r,
-			DefaultOffsetVectorWRMagShimmer3r);
-	
-	public CalibDetailsKinematic mCurrentCalibDetailsMagWr = calibDetailsMagWr;
+		private CalibDetailsKinematic calibDetailsMag4 = new CalibDetailsKinematic(
+				ListofLIS3MDLWrMagRangeConfigValues[0],
+				ListofLIS3MDLWrMagRange[0],
+				DefaultAlignmentMatrixWrMagShimmer3,
+				DefaultSensitivityMatrixWrMag4GaShimmer3,
+				DefaultOffsetVectorWrMagShimmer3);
+		
+		private CalibDetailsKinematic calibDetailsMag8 = new CalibDetailsKinematic(
+				ListofLIS3MDLWrMagRangeConfigValues[1],
+				ListofLIS3MDLWrMagRange[1],
+				DefaultAlignmentMatrixWrMagShimmer3, 
+				DefaultSensitivityMatrixWrMag8GaShimmer3,
+				DefaultOffsetVectorWrMagShimmer3);
+		
+		private CalibDetailsKinematic calibDetailsMag12 = new CalibDetailsKinematic(
+				ListofLIS3MDLWrMagRangeConfigValues[2], 
+				ListofLIS3MDLWrMagRange[2],
+				DefaultAlignmentMatrixWrMagShimmer3,
+				DefaultSensitivityMatrixWrMag12GaShimmer3, 
+				DefaultOffsetVectorWrMagShimmer3);
+		
+		private CalibDetailsKinematic calibDetailsMag16 = new CalibDetailsKinematic(
+				ListofLIS3MDLWrMagRangeConfigValues[3],
+				ListofLIS3MDLWrMagRange[3],
+				DefaultAlignmentMatrixWrMagShimmer3,
+				DefaultSensitivityMatrixWrMag16GaShimmer3,
+				DefaultOffsetVectorWrMagShimmer3);
+		
+		public CalibDetailsKinematic mCurrentCalibDetailsMagWr = calibDetailsMag4;
 
-	// ----------   Mag end ---------------
+		// ----------   AltMag end ---------------
 	
 	public static class DatabaseChannelHandles{
 		public static final String WR_MAG_X = "LIS3MDL_MAG_X";
@@ -137,29 +165,46 @@ public class SensorLIS3MDL extends AbstractSensor{
 	
 	//--------- Configuration options start --------------
 	
-	public static final String[] ListofLIS3MDLWRMagRate={"10.0Hz","20.0Hz","50.0Hz","100.0Hz"};
-	public static final Integer[] ListofLIS3MDLWRMagRateConfigValues={0,1,2,3};
-	
-	public static final String[] ListofLIS3MDLWRMagRange={"+/- 49.152Ga"}; 
-	public static final Integer[] ListofLIS3MDLWRMagRangeConfigValues={0};  
-	
-	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
-			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_WR_MAG_RANGE,
-			SensorLIS3MDL.DatabaseConfigHandle.WR_MAG_RANGE,
-			ListofLIS3MDLWRMagRange, 
-			ListofLIS3MDLWRMagRangeConfigValues, 
-			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS3MDL);
+		public static final String[] ListofLIS3MDLWrMagRateLp={"0.625Hz","1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","1000Hz"};
+		public static final String[] ListofLIS3MDLWrMagRateMp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","560Hz"};
+		public static final String[] ListofLIS3MDLWrMagRateHp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","300Hz"};
+		public static final String[] ListofLIS3MDLWrMagRateUp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","155Hz"};
+		public static final Integer[] ListofLIS3MDLWrMagRateLpConfigValues = {0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x01};
+		public static final Integer[] ListofLIS3MDLWrMagRateMpConfigValues = {0x12, 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x11};
+		public static final Integer[] ListofLIS3MDLWrMagRateHpConfigValues = {0x22, 0x24, 0x26, 0x28, 0x2A, 0x2C, 0x2E, 0x21};
+		public static final Integer[] ListofLIS3MDLWrMagRateUpConfigValues = {0x32, 0x34, 0x36, 0x38, 0x3A, 0x3C, 0x3E, 0x31};
 
-	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
-			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_WR_MAG_RATE,
-			SensorLIS3MDL.DatabaseConfigHandle.WR_MAG_RATE,
-			ListofLIS3MDLWRMagRate, 
-			ListofLIS3MDLWRMagRateConfigValues, 
-			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS3MDL);
+		public static final String[] ListofLIS3MDLWrMagRange={"+/- 4Ga","+/- 8Ga","+/- 12Ga","+/- 16Ga"}; 
+		public static final Integer[] ListofLIS3MDLWrMagRangeConfigValues={0,1,2,3};
 
-	//--------- Configuration options end --------------
+		public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
+				SensorLIS3MDL.GuiLabelConfig.LIS3MDL_WR_MAG_RANGE,
+				SensorLIS3MDL.DatabaseConfigHandle.WR_MAG_RANGE,
+				ListofLIS3MDLWrMagRange, 
+				ListofLIS3MDLWrMagRangeConfigValues, 
+				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+				CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS3MDL);
+		
+		public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
+				SensorLIS3MDL.GuiLabelConfig.LIS3MDL_WR_MAG_RATE,
+				SensorLIS3MDL.DatabaseConfigHandle.WR_MAG_RATE,
+				ListofLIS3MDLWrMagRateLp, 
+				ListofLIS3MDLWrMagRateLpConfigValues,
+				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+				CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS3MDL,
+			    Arrays.asList(
+			            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS3MDL_WR_MAG_RATE.IS_MP, 
+			                    SensorLIS3MDL.ListofLIS3MDLWrMagRateMp, 
+			                    SensorLIS3MDL.ListofLIS3MDLWrMagRateMpConfigValues),
+			            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS3MDL_WR_MAG_RATE.IS_HP, 
+			                    SensorLIS3MDL.ListofLIS3MDLWrMagRateHp, 
+			                    SensorLIS3MDL.ListofLIS3MDLWrMagRateHpConfigValues),
+			            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS3MDL_WR_MAG_RATE.IS_UP, 
+			                    SensorLIS3MDL.ListofLIS3MDLWrMagRateUp, 
+			                    SensorLIS3MDL.ListofLIS3MDLWrMagRateUpConfigValues)
+			        ));
+
+		//--------- Configuration options end --------------
 	
 	//--------- Sensor info start --------------
 	
@@ -347,7 +392,7 @@ public class SensorLIS3MDL extends AbstractSensor{
 	}
 	
 	public void setLIS3MDLWRMagRange(int i) {
-		if(ArrayUtils.contains(ListofLIS3MDLWRMagRateConfigValues, i)){
+		if(ArrayUtils.contains(ListofLIS3MDLWrMagRangeConfigValues, i)){
 			mWRMagRange = i;
 			updateCurrentMagWrCalibInUse();
 		}
@@ -386,7 +431,7 @@ public class SensorLIS3MDL extends AbstractSensor{
 		mSensorIdWRMag = Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG_ALT;
 		super.initialise();
 		
-		mWRMagRange = ListofLIS3MDLWRMagRangeConfigValues[0];
+		mWRMagRange = ListofLIS3MDLWrMagRangeConfigValues[0];
 		
 		updateCurrentMagWrCalibInUse();
 	}
@@ -396,7 +441,10 @@ public class SensorLIS3MDL extends AbstractSensor{
 		super.generateCalibMap();
 
 		TreeMap<Integer, CalibDetails> calibMapMagWr = new TreeMap<Integer, CalibDetails>();
-		calibMapMagWr.put(calibDetailsMagWr.mRangeValue, calibDetailsMagWr);
+		calibMapMagWr.put(calibDetailsMag4.mRangeValue, calibDetailsMag4);
+		calibMapMagWr.put(calibDetailsMag8.mRangeValue, calibDetailsMag8);
+		calibMapMagWr.put(calibDetailsMag12.mRangeValue, calibDetailsMag12);
+		calibMapMagWr.put(calibDetailsMag16.mRangeValue, calibDetailsMag16);
 		setCalibrationMapPerSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG_ALT, calibMapMagWr);
 		
 		updateCurrentMagWrCalibInUse();

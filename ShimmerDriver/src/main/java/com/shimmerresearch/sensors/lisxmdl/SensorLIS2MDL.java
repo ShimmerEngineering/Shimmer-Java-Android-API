@@ -55,51 +55,24 @@ public class SensorLIS2MDL extends AbstractSensor{
 	
 	//--------- Sensor specific variables start --------------	
 	
-	public static final double[][] DefaultAlignmentLIS2MDL = {{1,0,0},{0,-1,0},{0,0,-1}};	
-
+		public static final double[][] DefaultAlignmentLIS2MDL = {{-1,0,0},{0,-1,0},{0,0,-1}};	
+		
 	// ----------   Mag start ---------------
-	public static final double[][] DefaultAlignmentMatrixMagShimmer3 = DefaultAlignmentLIS2MDL; 				
-	public static final double[][] DefaultOffsetVectorMagShimmer3 = {{0},{0},{0}};	
-	// Manufacturer stated: X any Y any Z axis @ 6842 LSB/gauss
-	public static final double[][] DefaultSensitivityMatrixMag4GaShimmer3 = {{6842,0,0},{0,6842,0},{0,0,6842}};
-	// Manufacturer stated: X any Y any Z axis @ 3421  LSB/gauss
-	public static final double[][] DefaultSensitivityMatrixMag8GaShimmer3 = {{3421 ,0,0},{0,3421 ,0},{0,0,3421 }};
-	// Manufacturer stated: X any Y any Z axis @ 2281  LSB/gauss
-	public static final double[][] DefaultSensitivityMatrixMag12GaShimmer3 = {{2281 ,0,0},{0,2281 ,0},{0,0,2281 }};
-	// Manufacturer stated: X any Y any Z axis @ 1711  LSB/gauss
-	public static final double[][] DefaultSensitivityMatrixMag16GaShimmer3 = {{1711 ,0,0},{0,1711 ,0},{0,0,1711 }};
+		public static final double[][] DefaultAlignmentMatrixMagShimmer3r = DefaultAlignmentLIS2MDL; 				
+		public static final double[][] DefaultOffsetVectorWRMagShimmer3r = {{0},{0},{0}};	
 
-	private CalibDetailsKinematic calibDetailsMag4 = new CalibDetailsKinematic(
-			ListofLIS2MDLMagRangeConfigValues[0],
-			ListofLIS2MDLMagRange[0],
-			DefaultAlignmentMatrixMagShimmer3,
-			DefaultSensitivityMatrixMag4GaShimmer3,
-			DefaultOffsetVectorMagShimmer3);
-	
-	private CalibDetailsKinematic calibDetailsMag8 = new CalibDetailsKinematic(
-			ListofLIS2MDLMagRangeConfigValues[1],
-			ListofLIS2MDLMagRange[1],
-			DefaultAlignmentMatrixMagShimmer3, 
-			DefaultSensitivityMatrixMag8GaShimmer3,
-			DefaultOffsetVectorMagShimmer3);
-	
-	private CalibDetailsKinematic calibDetailsMag12 = new CalibDetailsKinematic(
-			ListofLIS2MDLMagRangeConfigValues[2], 
-			ListofLIS2MDLMagRange[2],
-			DefaultAlignmentMatrixMagShimmer3,
-			DefaultSensitivityMatrixMag12GaShimmer3, 
-			DefaultOffsetVectorMagShimmer3);
-	
-	private CalibDetailsKinematic calibDetailsMag16 = new CalibDetailsKinematic(
-			ListofLIS2MDLMagRangeConfigValues[3],
-			ListofLIS2MDLMagRange[3],
-			DefaultAlignmentMatrixMagShimmer3,
-			DefaultSensitivityMatrixMag16GaShimmer3,
-			DefaultOffsetVectorMagShimmer3);
-	
-	public CalibDetailsKinematic mCurrentCalibDetailsMag = calibDetailsMag4;
+		public static final double[][] DefaultSensitivityMatrixMagShimmer3r = {{667,0,0},{0,667,0},{0,0,667}};
 
-	// ----------   Mag end ---------------
+		private CalibDetailsKinematic calibDetailsMag = new CalibDetailsKinematic(
+				ListofLIS2MDLMagRangeConfigValues[0],
+				ListofLIS2MDLMagRange[0],
+				DefaultAlignmentMatrixMagShimmer3r,
+				DefaultSensitivityMatrixMagShimmer3r,
+				DefaultOffsetVectorWRMagShimmer3r);
+		
+		public CalibDetailsKinematic mCurrentCalibDetailsMag = calibDetailsMag;
+
+		// ----------  Mag end ---------------
 	
 	public static class DatabaseChannelHandles{
 		public static final String MAG_X = "LIS2MDL_MAG_X";
@@ -177,48 +150,33 @@ public class SensorLIS2MDL extends AbstractSensor{
 	
 	//--------- Sensor specific variables end --------------	
 	
+	
 	//--------- Configuration options start --------------
 	
-	public static final String[] ListofLIS2MDLMagRateLp={"0.625Hz","1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","1000Hz"};
-	public static final String[] ListofLIS2MDLMagRateMp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","560Hz"};
-	public static final String[] ListofLIS2MDLMagRateHp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","300Hz"};
-	public static final String[] ListofLIS2MDLMagRateUp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","155Hz"};
-	public static final Integer[] ListofLIS2MDLMagRateLpConfigValues = {0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x01};
-	public static final Integer[] ListofLIS2MDLMagRateMpConfigValues = {0x12, 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x11};
-	public static final Integer[] ListofLIS2MDLMagRateHpConfigValues = {0x22, 0x24, 0x26, 0x28, 0x2A, 0x2C, 0x2E, 0x21};
-	public static final Integer[] ListofLIS2MDLMagRateUpConfigValues = {0x32, 0x34, 0x36, 0x38, 0x3A, 0x3C, 0x3E, 0x31};
+		public static final String[] ListofLIS2MDLMagRate={"10.0Hz","20.0Hz","50.0Hz","100.0Hz"};
+		public static final Integer[] ListofLIS2MDLMagRateConfigValues={0,1,2,3};
+		
+		public static final String[] ListofLIS2MDLMagRange={"+/- 49.152Ga"}; 
+		public static final Integer[] ListofLIS2MDLMagRangeConfigValues={0};  
+		
+		public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
+				SensorLIS2MDL.GuiLabelConfig.LIS2MDL_MAG_RANGE,
+				SensorLIS2MDL.DatabaseConfigHandle.MAG_RANGE,
+				ListofLIS2MDLMagRange, 
+				ListofLIS2MDLMagRangeConfigValues, 
+				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+				CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2MDL);
 
-	public static final String[] ListofLIS2MDLMagRange={"+/- 4Ga","+/- 8Ga","+/- 12Ga","+/- 16Ga"}; 
-	public static final Integer[] ListofLIS2MDLMagRangeConfigValues={0,1,2,3};
+		public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
+				SensorLIS2MDL.GuiLabelConfig.LIS2MDL_MAG_RATE,
+				SensorLIS2MDL.DatabaseConfigHandle.MAG_RATE,
+				ListofLIS2MDLMagRate, 
+				ListofLIS2MDLMagRateConfigValues, 
+				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+				CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2MDL);
 
-	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
-			SensorLIS2MDL.GuiLabelConfig.LIS2MDL_MAG_RANGE,
-			SensorLIS2MDL.DatabaseConfigHandle.MAG_RANGE,
-			ListofLIS2MDLMagRange, 
-			ListofLIS2MDLMagRangeConfigValues, 
-			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2MDL);
-	
-	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
-			SensorLIS2MDL.GuiLabelConfig.LIS2MDL_MAG_RATE,
-			SensorLIS2MDL.DatabaseConfigHandle.MAG_RATE,
-			ListofLIS2MDLMagRateLp, 
-			ListofLIS2MDLMagRateLpConfigValues,
-			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS2MDL,
-		    Arrays.asList(
-		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS2MDL_MAG_RATE.IS_MP, 
-		                    SensorLIS2MDL.ListofLIS2MDLMagRateMp, 
-		                    SensorLIS2MDL.ListofLIS2MDLMagRateMpConfigValues),
-		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS2MDL_MAG_RATE.IS_HP, 
-		                    SensorLIS2MDL.ListofLIS2MDLMagRateHp, 
-		                    SensorLIS2MDL.ListofLIS2MDLMagRateHpConfigValues),
-		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS2MDL_MAG_RATE.IS_UP, 
-		                    SensorLIS2MDL.ListofLIS2MDLMagRateUp, 
-		                    SensorLIS2MDL.ListofLIS2MDLMagRateUpConfigValues)
-		        ));
-
-	//--------- Configuration options end --------------
+		//--------- Configuration options end --------------
+		
 	
 	//--------- Sensor info start --------------
 	
@@ -541,10 +499,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		super.generateCalibMap();
 
 		TreeMap<Integer, CalibDetails> calibMapMag = new TreeMap<Integer, CalibDetails>();
-		calibMapMag.put(calibDetailsMag4.mRangeValue, calibDetailsMag4);
-		calibMapMag.put(calibDetailsMag8.mRangeValue, calibDetailsMag8);
-		calibMapMag.put(calibDetailsMag12.mRangeValue, calibDetailsMag12);
-		calibMapMag.put(calibDetailsMag16.mRangeValue, calibDetailsMag16);
+		calibMapMag.put(calibDetailsMag.mRangeValue, calibDetailsMag);
 		setCalibrationMapPerSensor(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG, calibMapMag);
 		
 		updateCurrentMagCalibInUse();
