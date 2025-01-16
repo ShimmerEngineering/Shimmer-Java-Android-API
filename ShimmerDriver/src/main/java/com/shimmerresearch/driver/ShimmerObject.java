@@ -6675,13 +6675,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelWr() {
-		if (isShimmerGen3()) {
+		if (isShimmerGen3() || isShimmerGenGq()) { //GQ FOR LEGACY SUPPORT
 			return mSensorLSM303.getCurrentCalibDetailsAccelWr();
-		}
-		else if (isShimmerGen3R()) {
+		} else if (isShimmerGen3R()) {
 			return mSensorLIS2DW12.getCurrentCalibDetailsAccelWr();
-		} else if(isShimmerGenGq()) { //FOR LEGACY SUPPORT
-			return mSensorLSM303.getCurrentCalibDetailsAccelWr();
 		}
 		return null;
 	}
