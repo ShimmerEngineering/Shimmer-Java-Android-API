@@ -6680,6 +6680,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		else if (isShimmerGen3R()) {
 			return mSensorLIS2DW12.getCurrentCalibDetailsAccelWr();
+		} else if(isShimmerGenGq()) { //FOR LEGACY SUPPORT
+			return mSensorLSM303.getCurrentCalibDetailsAccelWr();
 		}
 		return null;
 	}
@@ -6691,7 +6693,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return mSensorLSM303.getCurrentCalibDetailsMag();
 		} else if(isShimmerGen3R()) {
 			return mSensorLIS3MDL.getCurrentCalibDetailsMag();
-		}
+		} else if(isShimmerGenGq()) { //FOR LEGACY SUPPORT
+			return mSensorLSM303.getCurrentCalibDetailsMag();
+		} 
 		return null;
 	}
 	
@@ -6709,7 +6713,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return mSensorKionixAccel.getCurrentCalibDetailsAccelLn();
 		} else if (isShimmerGen3R()){
 			return mSensorLSM6DSV.getCurrentCalibDetailsAccelLn();
-		}
+		}else if (isShimmerGenGq()){ //FOR LEGACY SUPPORT
+			return mSensorKionixAccel.getCurrentCalibDetailsAccelLn();
+		} 
 		return null;
 	}
 	
@@ -9023,6 +9029,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return mSensorMpu9x50.getCurrentCalibDetailsGyro();
 		} else if (isShimmerGen3R()) {
 			return mSensorLSM6DSV.getCurrentCalibDetailsGyro();
+		}else if (isShimmerGenGq()){
+			return mSensorMpu9x50.getCurrentCalibDetailsGyro();
 		}
 		return null;
 	}
