@@ -6675,10 +6675,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	}
 	
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelWr() {
-		if (isShimmerGen3()) {
+		if (isShimmerGen3() || isShimmerGenGq()) { //GQ FOR LEGACY SUPPORT
 			return mSensorLSM303.getCurrentCalibDetailsAccelWr();
-		}
-		else if (isShimmerGen3R()) {
+		} else if (isShimmerGen3R()) {
 			return mSensorLIS2DW12.getCurrentCalibDetailsAccelWr();
 		}
 		return null;
@@ -6687,7 +6686,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected CalibDetailsKinematic getCurrentCalibDetailsMag() {
 		if(isShimmerGen2()){
 			return mSensorShimmer2Mag.getCurrentCalibDetailsMag();
-		} else if(isShimmerGen3()) {
+		} else if(isShimmerGen3() || isShimmerGenGq()) { //GQ FOR LEGACY SUPPORT
 			return mSensorLSM303.getCurrentCalibDetailsMag();
 		} else if(isShimmerGen3R()) {
 			return mSensorLIS3MDL.getCurrentCalibDetailsMag();
@@ -6705,7 +6704,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected CalibDetailsKinematic getCurrentCalibDetailsAccelLn() {
 		if(isShimmerGen2()){
 			return mSensorMMA736x.getCurrentCalibDetailsAccelLn();
-		} else if (isShimmerGen3()){
+		} else if (isShimmerGen3() || isShimmerGenGq()){ //GQ FOR LEGACY SUPPORT
 			return mSensorKionixAccel.getCurrentCalibDetailsAccelLn();
 		} else if (isShimmerGen3R()){
 			return mSensorLSM6DSV.getCurrentCalibDetailsAccelLn();
@@ -9019,7 +9018,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public CalibDetailsKinematic getCurrentCalibDetailsGyro() {
 		if (isShimmerGen2()){
 			return mSensorShimmer2Gyro.getCurrentCalibDetailsGyro();
-		} else if (isShimmerGen3()){
+		} else if (isShimmerGen3() || isShimmerGenGq()){ //GQ FOR LEGACY SUPPORT
 			return mSensorMpu9x50.getCurrentCalibDetailsGyro();
 		} else if (isShimmerGen3R()) {
 			return mSensorLSM6DSV.getCurrentCalibDetailsGyro();
