@@ -4851,7 +4851,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if (isShimmerGen3()){
 			return mSensorLSM303.checkLowPowerMag();
 		} else if (isShimmerGen3R()) {
-			return mSensorLIS2MDL.checkLowPowerMag();
+			return mSensorLIS3MDL.checkLowPowerMag();
 		}
 		return false;
 	}
@@ -8463,20 +8463,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensorLSM303.setLowPowerMag(enable);
 		}
 		else if(isShimmerGen3R()){
-			mSensorLIS2MDL.setLowPowerMag(enable);
+			mSensorLIS3MDL.setLowPowerMag(enable);
 		}
 	}
 	
 	protected void setMedPowerMag(boolean enable) {
-		mSensorLIS2MDL.setLowPowerMag(enable);
+		mSensorLIS3MDL.setLowPowerMag(enable);
 	}
 	
 	protected void setHighPowerMag(boolean enable) {
-		mSensorLIS2MDL.setLowPowerMag(enable);
+		mSensorLIS3MDL.setLowPowerMag(enable);
 	}
 	
 	protected void setUltraHighPowerMag(boolean enable) {
-		mSensorLIS2MDL.setLowPowerMag(enable);
+		mSensorLIS3MDL.setLowPowerMag(enable);
 	}
 
 	private void setShimmer2rMagRateFromFreq(double samplingRateShimmer) {
@@ -8495,21 +8495,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		} else if(isShimmerGen3()){
 			return mSensorLSM303.isLowPowerMagEnabled();
 		} else if(isShimmerGen3R()) {
-			return mSensorLIS2MDL.isLowPowerMagEnabled();
+			return mSensorLIS3MDL.isLowPowerMagEnabled();
 		}
 		return false;
 	} 
     
     public boolean isMedPowerMagEnabled() {
-    	return mSensorLIS2MDL.isMedPowerMagEnabled();
+    	return mSensorLIS3MDL.isMedPowerMagEnabled();
     }
     
     public boolean isHighPowerMagEnabled() {
-    	return mSensorLIS2MDL.isMedPowerMagEnabled();
+    	return mSensorLIS3MDL.isMedPowerMagEnabled();
     }
     
     public boolean isUltraHighPowerMagEnabled() {
-    	return mSensorLIS2MDL.isMedPowerMagEnabled();
+    	return mSensorLIS3MDL.isMedPowerMagEnabled();
     }
 
 	public void setAccelRange(int i){
@@ -8792,22 +8792,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public int getLowPowerMagEnabled() {
 		if (isShimmerGen3R()) {
-			return mSensorLIS2MDL.getLowPowerMagEnabled();
+			return mSensorLIS3MDL.getLowPowerMagEnabled();
 		} else {
 			return mSensorLSM303.getLowPowerMagEnabled();
 		}
 	}
 	
 	public int getMedPowerMagEnabled() {
-		return mSensorLIS2MDL.getMedPowerMagEnabled();
+		return mSensorLIS3MDL.getMedPowerMagEnabled();
 	}
 	
 	public int getHighPowerMagEnabled() {
-		return mSensorLIS2MDL.getHighPowerMagEnabled();
+		return mSensorLIS3MDL.getHighPowerMagEnabled();
 	}
 	
 	public int getUltraHighPowerMagEnabled() {
-		return mSensorLIS2MDL.getUltraHighPowerMagEnabled();
+		return mSensorLIS3MDL.getUltraHighPowerMagEnabled();
 	}
 
 	/** Shimmer3 -> 0 = +/-2g, 1 = +/-4g, 2 = +/-8g, 3 = +/- 16g */

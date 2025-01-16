@@ -46,6 +46,10 @@ public class SensorLIS3MDL extends AbstractSensor{
 
 	protected int mWRMagRange = 0;
 	public boolean mIsUsingDefaultWRMagParam = true;
+	protected boolean mLowPowerMag = false;
+	protected boolean mMedPowerMag = false;
+	protected boolean mHighPowerMag = false;
+	protected boolean mUltraHighPowerMag = false;
 	protected int mLISWRMagRate = 4;
 	protected int mSensorIdWRMag = -1;
 	
@@ -107,7 +111,11 @@ public class SensorLIS3MDL extends AbstractSensor{
 	public static final class DatabaseConfigHandle{
 		public static final String WR_MAG_RATE = "LIS3MDL_WR_Mag_Rate";
 		public static final String WR_MAG_RANGE = "LIS3MDL_WR_Mag_Range";
-		
+
+		public static final String MAG_LPM = "LIS3MDL_Mag_LPM";
+		public static final String MAG_MPM = "LIS3MDL_Mag_MPM";
+		public static final String MAG_HPM = "LIS3MDL_Mag_HPM";
+		public static final String MAG_UPM = "LIS3MDL_Mag_UPM";
 		public static final String MAG_WR_CALIB_TIME = "LIS3MDL_Mag_WR_Calib_Time";
 		public static final String MAG_WR_OFFSET_X = "LIS3MDL_Mag_WR_Offset_X";
 		public static final String MAG_WR_OFFSET_Y = "LIS3MDL_Mag_WR_Offset_Y";
@@ -138,7 +146,10 @@ public class SensorLIS3MDL extends AbstractSensor{
 		
 		public static final String LIS3MDL_WR_MAG_RANGE = "Wide Range Mag Range";
 		public static final String LIS3MDL_WR_MAG_RATE = "Wide Range Mag Rate";
-
+		public static final String LIS3MDL_MAG_LP = "Mag Low-Power Mode";
+		public static final String LIS3MDL_MAG_MP = "Mag Med-Power Mode";
+		public static final String LIS3MDL_MAG_HP = "Mag High-Power Mode";
+		public static final String LIS3MDL_MAG_UP = "Mag Ultra High-Power Mode";
 		public static final String LIS3MDL_WR_MAG_DEFAULT_CALIB = "Wide Range Mag Default Calibration";
 
 		//NEW
@@ -360,6 +371,10 @@ public class SensorLIS3MDL extends AbstractSensor{
 
 		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.WR_MAG_RANGE, getWRMagRange());
 		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.WR_MAG_RATE, getLIS3MDLWRMagRate());
+		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.MAG_LPM, getLowPowerMagEnabled());
+		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.MAG_MPM, getMedPowerMagEnabled());
+		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.MAG_HPM, getHighPowerMagEnabled());
+		mapOfConfig.put(SensorLIS3MDL.DatabaseConfigHandle.MAG_UPM, getUltraHighPowerMagEnabled());
 
 		super.addCalibDetailsToDbMap(mapOfConfig, 
 				getCurrentCalibDetailsMagWr(), 
@@ -402,12 +417,84 @@ public class SensorLIS3MDL extends AbstractSensor{
 			mWRMagRange = i;
 			updateCurrentMagWrCalibInUse();
 		}
-
 	}
+	
+	
+	public int getLowPowerMagEnabled(){
+		return (isLowPowerMagEnabled()? 1:0);
+	}
+	
+	public int getMedPowerMagEnabled(){
+		return (isMedPowerMagEnabled()? 1:0);
+	}
+	
+	public int getHighPowerMagEnabled(){
+		return (isHighPowerMagEnabled()? 1:0);
+	}
+	
+	public int getUltraHighPowerMagEnabled(){
+		return (isUltraHighPowerMagEnabled()? 1:0);
+	}
+	
+	public void	setLowPowerMag(boolean enable){
+		mLowPowerMag = enable;
+		if(mShimmerDevice!=null){
+			setLISWRMagRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	public void	setMedPowerMag(boolean enable){
+		mMedPowerMag = enable;
+		if(mShimmerDevice!=null){
+			setLISWRMagRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	public void	setHighPowerMag(boolean enable){
+		mHighPowerMag = enable;
+		if(mShimmerDevice!=null){
+			setLISWRMagRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	public void	setUltraHighPowerMag(boolean enable){
+		mUltraHighPowerMag = enable;
+		if(mShimmerDevice!=null){
+			setLISWRMagRateFromFreq(getSamplingRateShimmer());
+		}
+	}
+	
+	public boolean isLowPowerMagEnabled(){
+		return mLowPowerMag;
+	}
+	
+	public boolean isMedPowerMagEnabled(){
+		return mMedPowerMag;
+	}
+	
+	public boolean isHighPowerMagEnabled(){
+		return mHighPowerMag;
+	}
+	
+	public boolean isUltraHighPowerMagEnabled(){
+		return mUltraHighPowerMag;
+	}
+
 
 	@Override
 	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
-
+		if(mapOfConfigPerShimmer.containsKey(SensorLIS3MDL.DatabaseConfigHandle.MAG_LPM)){
+			setLowPowerMag(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_LPM))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLIS3MDL.DatabaseConfigHandle.MAG_MPM)){
+			setMedPowerMag(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_MPM))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLIS3MDL.DatabaseConfigHandle.MAG_HPM)){
+			setHighPowerMag(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_HPM))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(SensorLIS3MDL.DatabaseConfigHandle.MAG_UPM)){
+			setUltraHighPowerMag(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.MAG_UPM))>0? true:false);
+		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLIS3MDL.DatabaseConfigHandle.WR_MAG_RANGE)){
 			setWRMagRange(((Double) mapOfConfigPerShimmer.get(SensorLIS3MDL.DatabaseConfigHandle.WR_MAG_RANGE)).intValue());
 		}
@@ -476,17 +563,142 @@ public class SensorLIS3MDL extends AbstractSensor{
 		mIsUsingDefaultWRMagParam = getCurrentCalibDetailsMagWr().isUsingDefaultParameters();
 	}
 	
-	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq) {
-		int magRate = 0; // 10Hz
-
-		if (freq<10.0){
-			magRate = 0; // 10Hz
-		} else if (freq<20.0){
-			magRate = 1; // 20Hz
-		} else if (freq<50.0) {
-			magRate = 2; // 50Hz
-		} else {
-			magRate = 3; // 100Hz
+	public boolean checkLowPowerMag() {
+		setLowPowerMag((getLIS3MDLWRMagRate() <= 14)? true:false);
+		return isLowPowerMagEnabled();
+	}
+	
+	public boolean checkMedPowerMag() {
+		setMedPowerMag((getLIS3MDLWRMagRate() >= 17 && getLIS3MDLWRMagRate() <= 30)? true:false);
+		return isMedPowerMagEnabled();
+	}
+	
+	public boolean checkHighPowerMag() {
+		setHighPowerMag((getLIS3MDLWRMagRate() >= 33 && getLIS3MDLWRMagRate() <= 46)? true:false);
+		return isHighPowerMagEnabled();
+	}
+	
+	public boolean checkUltraHighPowerMag() {
+		setUltraHighPowerMag((getLIS3MDLWRMagRate() >= 49 && getLIS3MDLWRMagRate() <= 62)? true:false); 
+		return isUltraHighPowerMagEnabled();
+	}
+	
+	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq, int powerMode) {
+		return SensorLIS3MDL.getMagRateFromFreq(isEnabled, freq, powerMode);
+	}
+	
+	public static int getMagRateFromFreq(boolean isEnabled, double freq, int powerMode) {
+		int magRate = 0; // 0.625Hz
+		
+		if(isEnabled){
+			switch(powerMode) {
+			case 0:
+				magRate = lowPowerMode(freq);
+				break;
+			case 1:
+				magRate = medPowerMode(freq);
+				break;
+			case 2:
+				magRate = highPowerMode(freq);
+				break;
+			case 3:
+				magRate = ultraHighPowerMode(freq);
+				break;
+			}
+		}
+		return magRate;
+	}
+	
+	public static int lowPowerMode(double freq) {
+		int magRate = 0;
+		
+		if (freq<=0.625){
+		magRate = 0; 
+		} else if (freq<=1.25){
+			magRate = 2;
+		} else if (freq<=2.5) {
+			magRate = 4;
+		} else if (freq<=5) {
+			magRate = 6;
+		} else if (freq<=10) {
+			magRate = 8;
+		} else if (freq<=20) {
+			magRate = 10;
+		} else if (freq<=40) {
+			magRate = 12;
+		} else if (freq<=80) {
+			magRate = 14;
+		} else if (freq<=1000) {
+			magRate = 1;
+		}
+		return magRate;
+	}
+	
+	public static int medPowerMode(double freq) {
+		int magRate = 18;
+		
+		if (freq<=1.25){
+			magRate = 18;
+		} else if (freq<=2.5) {
+			magRate = 20;
+		} else if (freq<=5) {
+			magRate = 22;
+		} else if (freq<=10) {
+			magRate = 24;
+		} else if (freq<=20) {
+			magRate = 26;
+		} else if (freq<=40) {
+			magRate = 28;
+		} else if (freq<=80) {
+			magRate = 30;
+		} else if (freq<=560) {
+			magRate = 17;
+		}
+		return magRate;
+	}
+	
+	public static int highPowerMode(double freq) {
+		int magRate = 34;
+		
+		if (freq<=1.25){
+			magRate = 34;
+		} else if (freq<=2.5) {
+			magRate = 36;
+		} else if (freq<=5) {
+			magRate = 38;
+		} else if (freq<=10) {
+			magRate = 40;
+		} else if (freq<=20) {
+			magRate = 42;
+		} else if (freq<=40) {
+			magRate = 44;
+		} else if (freq<=80) {
+			magRate = 46;
+		} else if (freq<=300) {
+			magRate = 33;
+		}
+		return magRate;
+	}
+	
+	public static int ultraHighPowerMode(double freq) {
+		int magRate = 50;
+		
+		if (freq<=1.25){
+			magRate = 50;
+		} else if (freq<=2.5) {
+			magRate = 52;
+		} else if (freq<=5) {
+			magRate = 54;
+		} else if (freq<=10) {
+			magRate = 56;
+		} else if (freq<=20) {
+			magRate = 58;
+		} else if (freq<=40) {
+			magRate = 60;
+		} else if (freq<=80) {
+			magRate = 62;
+		} else if (freq<=155) {
+			magRate = 49;
 		}
 		return magRate;
 	}
@@ -567,7 +779,7 @@ public class SensorLIS3MDL extends AbstractSensor{
 		if(!isSensorEnabled(mSensorIdWRMag)) {
 			setDefaultLisMagWrSensorConfig(false);
 		}
-		
+		setLowPowerMag(false);
 	}
 
 	@Override
@@ -575,7 +787,8 @@ public class SensorLIS3MDL extends AbstractSensor{
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
-
+			
+			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getWRMagRange() & configByteLayoutCast.maskLSM303DLHCMagRange) << configByteLayoutCast.bitShiftLSM303DLHCMagRange);
 			configBytes[configByteLayoutCast.idxConfigSetupByte4] |= (byte) ((getLIS3MDLWRMagRate() & configByteLayoutCast.maskLIS3MDLAltMagSamplingRate) << configByteLayoutCast.bitShiftLIS3MDLAltMagSamplingRate);
 
 			byte[] bufferCalibrationParameters = generateCalParamLIS3MDLMag();
@@ -593,9 +806,11 @@ public class SensorLIS3MDL extends AbstractSensor{
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
-
-			setLIS3MDLWRMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftLIS3MDLAltMagSamplingRate) & configByteLayoutCast.maskLIS3MDLAltMagSamplingRate);
 			
+			setLIS3MDLWRMagRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagRange) & configByteLayoutCast.maskLSM303DLHCMagRange);
+			setLIS3MDLWRMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte4] >> configByteLayoutCast.bitShiftLIS3MDLAltMagSamplingRate) & configByteLayoutCast.maskLIS3MDLAltMagSamplingRate);
+			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
+
 			if (shimmerDevice.isConnected()){
 				getCurrentCalibDetailsMagWr().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 			}
@@ -606,6 +821,7 @@ public class SensorLIS3MDL extends AbstractSensor{
 		}
 	}
 	
+	
 	public void parseCalibParamFromPacketMagWr(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 		mCurrentCalibDetailsMagWr.parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
@@ -615,6 +831,18 @@ public class SensorLIS3MDL extends AbstractSensor{
 		Object returnValue = null;
 		
 		switch(configLabel){
+		case(GuiLabelConfig.LIS3MDL_MAG_LP):
+			setLowPowerMag((boolean)valueToSet);
+			break;
+		case(GuiLabelConfig.LIS3MDL_MAG_MP):
+			setMedPowerMag((boolean)valueToSet);
+			break;
+		case(GuiLabelConfig.LIS3MDL_MAG_HP):
+			setHighPowerMag((boolean)valueToSet);
+			break;
+		case(GuiLabelConfig.LIS3MDL_MAG_UP):
+			setUltraHighPowerMag((boolean)valueToSet);
+			break;
 		case(GuiLabelConfig.LIS3MDL_WR_MAG_RANGE):
 			setLIS3MDLWRMagRange((int)valueToSet);
 			break;
@@ -652,6 +880,18 @@ public class SensorLIS3MDL extends AbstractSensor{
         }
 		
 		switch(configLabel){
+			case(GuiLabelConfig.LIS3MDL_MAG_LP):
+				returnValue = isLowPowerMagEnabled();
+        		break;
+			case(GuiLabelConfig.LIS3MDL_MAG_MP):
+				returnValue = isMedPowerMagEnabled();
+				break;
+			case(GuiLabelConfig.LIS3MDL_MAG_HP):
+				returnValue = isHighPowerMagEnabled();
+				break;
+			case(GuiLabelConfig.LIS3MDL_MAG_UP):
+				returnValue = isUltraHighPowerMagEnabled();
+        		break;
 			case(GuiLabelConfig.LIS3MDL_WR_MAG_RANGE): 
 				returnValue = getWRMagRange();
 	    		break;
@@ -680,22 +920,25 @@ public class SensorLIS3MDL extends AbstractSensor{
 
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
+		setLowPowerMag(false);
 		setLISWRMagRateFromFreq(samplingRateHz);
+		checkLowPowerMag();
 	}
 	
 	public int setLISWRMagRateFromFreq(double freq) {
 		boolean isEnabled = isSensorEnabled(mSensorIdWRMag);
-//		System.out.println("Setting Sampling Rate: " + freq + "\tmLowPowerAccelWR:" + mLowPowerAccelWR);
-		setLISWRMagRateInternal(getMagRateFromFreqForSensor(isEnabled, freq));
+		if(isLowPowerMagEnabled()) {
+			mLISWRMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 0);
+		} else if(isMedPowerMagEnabled()) {
+			mLISWRMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 1);
+		} else if(isHighPowerMagEnabled()) {
+			mLISWRMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 2);
+		} else if(isUltraHighPowerMagEnabled()) {
+			mLISWRMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 3);
+		}
 		return mLISWRMagRate;
 	}
 	
-	public void setLISWRMagRateInternal(int valueToSet) {
-		//System.out.println("Accel Rate:\t" + valueToSet);
-		//UtilShimmer.consolePrintCurrentStackTrace();
-		mLISWRMagRate = valueToSet;
-	}
-
 	@Override
 	public boolean setDefaultConfigForSensor(int sensorId, boolean isSensorEnabled) {
 		if(mSensorMap.containsKey(sensorId)){
@@ -709,8 +952,12 @@ public class SensorLIS3MDL extends AbstractSensor{
 	
 	public void setDefaultLisMagWrSensorConfig(boolean isSensorEnabled) {
 		if(isSensorEnabled) {
-			setLIS3MDLWRMagRange(0);
+			setLowPowerMag(false);
 		}
+		else {
+			setLIS3MDLWRMagRange(1);
+			setLowPowerMag(true);
+		}	
 	}
 
 	@Override
