@@ -9029,7 +9029,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return mSensorMpu9x50.getCurrentCalibDetailsGyro();
 		} else if (isShimmerGen3R()) {
 			return mSensorLSM6DSV.getCurrentCalibDetailsGyro();
-		}else if (isShimmerGenGq()){
+		}else if (isShimmerGenGq()){ //FOR LEGACY SUPPORT
 			return mSensorMpu9x50.getCurrentCalibDetailsGyro();
 		}
 		return null;
