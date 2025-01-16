@@ -273,6 +273,10 @@ public class SensorLIS3MDL extends AbstractSensor{
     
 	//--------- Bluetooth commands start --------------
 	//still not being implemented for wr mag sensor due to unavailability in docs
+    public static final byte SET_MAG_GAIN_COMMAND             		= (byte) 0x37;
+  	public static final byte MAG_GAIN_RESPONSE                		= (byte) 0x38;
+  	public static final byte GET_MAG_GAIN_COMMAND             		= (byte) 0x39;
+  	
 	public static final byte SET_ALT_MAG_CALIBRATION_COMMAND      		= (byte) 0xAF; 
 	public static final byte ALT_MAG_CALIBRATION_RESPONSE         		= (byte) 0xB0; 
 	public static final byte GET_ALT_MAG_CALIBRATION_COMMAND      		= (byte) 0xB1; 
@@ -284,6 +288,7 @@ public class SensorLIS3MDL extends AbstractSensor{
     public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
     static {
         Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+	    aMap.put(GET_MAG_GAIN_COMMAND, new BtCommandDetails(GET_MAG_GAIN_COMMAND, "GET_MAG_GAIN_COMMAND", MAG_GAIN_RESPONSE));
         aMap.put(GET_ALT_MAG_CALIBRATION_COMMAND, new BtCommandDetails(GET_ALT_MAG_CALIBRATION_COMMAND, "GET_ALT_MAG_CALIBRATION_COMMAND", ALT_MAG_CALIBRATION_RESPONSE));
         aMap.put(GET_ALT_MAG_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_ALT_MAG_SAMPLING_RATE_COMMAND, "GET_ALT_MAG_SAMPLING_RATE_COMMAND", ALT_MAG_SAMPLING_RATE_RESPONSE));
         mBtGetCommandMap = Collections.unmodifiableMap(aMap);
@@ -292,6 +297,7 @@ public class SensorLIS3MDL extends AbstractSensor{
     public static final Map<Byte, BtCommandDetails> mBtSetCommandMap;
     static {
         Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
+        aMap.put(SET_MAG_GAIN_COMMAND, new BtCommandDetails(SET_MAG_GAIN_COMMAND, "SET_MAG_GAIN_COMMAND"));
         aMap.put(SET_ALT_MAG_CALIBRATION_COMMAND, new BtCommandDetails(SET_ALT_MAG_CALIBRATION_COMMAND, "SET_ALT_MAG_CALIBRATION_COMMAND"));
         aMap.put(SET_ALT_MAG_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_ALT_MAG_SAMPLING_RATE_COMMAND, "SET_ALT_MAG_SAMPLING_RATE_COMMAND"));
         mBtSetCommandMap = Collections.unmodifiableMap(aMap);

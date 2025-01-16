@@ -8553,7 +8553,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		if(isShimmerGen3()) {
 			mSensorLSM303.setLSM303MagRange(i);
 		} else if(isShimmerGen3R()) {
-			mSensorLIS2MDL.setLISMagRange(i);
+			mSensorLIS3MDL.setLIS3MDLWRMagRange(i);
 		}
 	}
 
