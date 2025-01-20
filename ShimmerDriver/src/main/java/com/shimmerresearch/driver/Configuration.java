@@ -982,6 +982,7 @@ public class Configuration {
 			
 //			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
 			public static final String MAG = SensorLSM303DLHC.GuiLabelSensors.MAG;
+			public static final String WR_MAG_3R = SensorLIS2MDL.GuiLabelSensors.MAG_WR;
 
 //			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
 
