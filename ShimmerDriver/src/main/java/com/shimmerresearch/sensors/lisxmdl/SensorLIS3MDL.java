@@ -569,7 +569,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	}
 	
 	public boolean checkLowPowerMag() {
-		setLowPowerMag((getLIS3MDLMagRate() <= 14)? true:false);
+		setLowPowerMag((getLIS3MDLMagRate() == 0x08)? true:false);	//10Hz
 		return isLowPowerMagEnabled();
 	}
 	
