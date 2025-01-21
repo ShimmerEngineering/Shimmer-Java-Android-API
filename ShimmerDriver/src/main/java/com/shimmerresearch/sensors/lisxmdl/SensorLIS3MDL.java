@@ -596,21 +596,47 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		int magRate = 0; // 0.625Hz
 		
 		if(isEnabled){
-			switch(powerMode) {
-			case 0:
-				magRate = lowPowerMode(freq);
-				break;
-			case 1:
-				magRate = medPowerMode(freq);
-				break;
-			case 2:
-				magRate = highPowerMode(freq);
-				break;
-			case 3:
-				magRate = ultraHighPowerMode(freq);
-				break;
+			if(powerMode == 0)	//low power mode enabled
+			{
+				magRate = 8;
+			}
+			else 
+			{
+				if (freq > 560)
+				{
+					magRate = 0x01; //Low Power Mode (1000Hz)
+				}
+				else if (freq > 300)
+				{
+					magRate = 0x11; //Medium (560Hz)
+				}
+				else if (freq > 155)
+				{
+					magRate = 0x21; //High (300Hz)
+				}
+				else if (freq > 100) 
+				{
+					magRate = 0x31; //Ultra High (155Hz)
+				}
+				else if (freq > 50) 
+				{
+					magRate = 0x31; //Ultra High (155Hz)
+				}
+				else if (freq > 20)
+				{
+					magRate = 0x3E; //Ultra High (80Hz)
+				}
+				else if (freq > 10)
+				{
+					magRate = 0x3A; //Ultra High (20Hz)
+				}
+				else
+				{
+					magRate = 0x38; //Ultra High (10Hz)
+				}
 			}
 		}
+		
 		return magRate;
 	}
 	
@@ -636,6 +662,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		} else if (freq<=1000) {
 			magRate = 1;
 		}
+		
 		return magRate;
 	}
 	
@@ -781,8 +808,6 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		if(!isSensorEnabled(mSensorIdMag)) {
 			setDefaultLisMagSensorConfig(false);
 		}
-
-		setLowPowerMag(false);
 	}
 
 	@Override
@@ -793,6 +818,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 
 			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getMagRange() & configByteLayoutCast.maskLSM303DLHCMagRange) << configByteLayoutCast.bitShiftLSM303DLHCMagRange);
 			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getLIS3MDLMagRate() & configByteLayoutCast.maskLSM303DLHCMagSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate);
+			configBytes[configByteLayoutCast.idxConfigSetupByte5] |= (byte) ((getLIS3MDLMagRate() >> 3 & configByteLayoutCast.maskLIS3MDLMagRateMSB) << configByteLayoutCast.bitShiftLIS3MDLMagRateMSB);
 
 			// LISM3MDL Magnetometer Calibration Parameters
 			byte[] bufferCalibrationParameters = generateCalParamLIS3MDLMag();
@@ -811,7 +837,11 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
 			setLISMagRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagRange) & configByteLayoutCast.maskLSM303DLHCMagRange);
-			setLISMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
+			//setLISMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
+			int lsbMagRate = (configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate;
+			int msbMagRate = (configBytes[configByteLayoutCast.idxConfigSetupByte5] >> configByteLayoutCast.bitShiftLIS3MDLMagRateMSB) & configByteLayoutCast.maskLIS3MDLMagRateMSB;
+			setLISMagRate((msbMagRate << 3) | lsbMagRate);
+
 			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
 			
 			if (shimmerDevice.isConnected()){
@@ -932,10 +962,8 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
 		//set sampling rate of the sensors as close to the Shimmer sampling rate as possible (sensor sampling rate >= shimmer sampling rate)
-		setLowPowerMag(false);
 		
 		setLIS3MDLMagRateFromFreq(samplingRateHz);
-		
 		checkLowPowerMag();
 	}
 	

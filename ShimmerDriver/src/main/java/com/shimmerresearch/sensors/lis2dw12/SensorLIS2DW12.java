@@ -416,8 +416,6 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		if(!isSensorEnabled(mSensorIdAccel)) {
 			setDefaultLIS2DW12AccelSensorConfig(false);
 		}
-		//Added this for Conensys 1.0.0 release - assumes individual sampling rates of each sensor matches the Shimmer sampling
-		setLowPowerAccelWR(false);
 	}
 
 	@Override
@@ -552,8 +550,8 @@ public class SensorLIS2DW12 extends AbstractSensor {
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
 		//set sampling rate of the sensors as close to the Shimmer sampling rate as possible (sensor sampling rate >= shimmer sampling rate)
-		setLowPowerAccelWR(false);
 		setLIS2DW12AccelRateFromFreq(samplingRateHz);
+
 	}
 
 	@Override
@@ -756,36 +754,23 @@ public class SensorLIS2DW12 extends AbstractSensor {
 		
 		if(isEnabled){
 			if(isLowPowerMode){
-				if (freq<1.6){
-					accelRate = 1; // 1.6Hz
-				} else if (freq<12.5){
-					accelRate = 2; // 12.5Hz
-				} else if (freq<25){
-					accelRate = 3; // 25Hz
-				} else if (freq<50){
-					accelRate = 4; // 50Hz
-				} else if (freq<100){
-					accelRate = 5; // 100Hz
-				} else if (freq<200){
-					accelRate = 6; // 200Hz
-				}
-				
+				accelRate = 1; // 1.6Hz
 			} else {
-				if (freq<12.5){
-					accelRate = 2; // 12.5Hz
-				} else if (freq<25){
+				if (freq<=12.5){
+					accelRate = 1; // 12.5Hz
+				} else if (freq<=25){
 					accelRate = 3; // 25Hz
-				} else if (freq<50){
+				} else if (freq<=50){
 					accelRate = 4; // 50Hz
-				} else if (freq<100){
+				} else if (freq<=100){
 					accelRate = 5; // 100Hz
-				} else if (freq<200){
+				} else if (freq<=200){
 					accelRate = 6; // 200Hz
-				} else if (freq<400){
+				} else if (freq<=400){
 					accelRate = 7; // 400Hz
-				} else if (freq<800){
+				} else if (freq<=800){
 					accelRate = 8; // 800Hz
-				} else if (freq<1600){
+				} else{
 					accelRate = 9; // 1600Hz
 				} 
 			}
