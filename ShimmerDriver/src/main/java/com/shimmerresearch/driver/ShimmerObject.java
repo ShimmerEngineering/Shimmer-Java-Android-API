@@ -4041,6 +4041,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 				
 				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
+				checkLowPowerGyro();
 				
 				int magSamplingRate = (int)((mConfigByte0 >> 18) & 0x07);
 				int MSB_MAG_RATE = (int)((mConfigByte0 >> 43) & 0x07); //8+8+8+8+8+3

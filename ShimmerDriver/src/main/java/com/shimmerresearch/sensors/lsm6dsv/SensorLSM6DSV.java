@@ -739,7 +739,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	 * @return boolean, true if low-power mode enabled
 	 */
 	public boolean checkLowPowerGyro() {
-		if(mLSM6DSVGyroAccelRate == 0xFF) {
+		if(mLSM6DSVGyroAccelRate == 1) {
 			mLowPowerGyro = true;
 		}
 		else {
