@@ -4035,11 +4035,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setGyroRange(gyroRange);
 				setLSM303MagRange(((int)(mConfigByte0 & 14680064))>>21);
 				setLIS2DW12DigitalAccelRate(((int)(mConfigByte0 & 0xF0))>>4);
-				if ((getLIS2DW12DigitalAccelRate()==1)){
-					System.out.println("setLowPowerAccelWR() ........ enable = true");
-					setLowPowerAccelWR(true);
-				}
 				
+				setLowPowerAccelWR((getLIS2DW12DigitalAccelRate()==1)? true:false);
 				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
 				checkLowPowerGyro();
 				

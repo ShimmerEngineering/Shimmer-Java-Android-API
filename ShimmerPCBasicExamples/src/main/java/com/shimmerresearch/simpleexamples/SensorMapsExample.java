@@ -177,16 +177,10 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				if(connected) {
 					ShimmerDevice cloneDevice = SD.deepClone();
 
-					if(cbEnableMagLP.isSelected()) {
-						cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_LP, true);
-					}
-					if(cbEnableGyroLP.isSelected()) {
-						cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO, SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM, true);
-					}
-					if(cbEnableWRAccelLP.isSelected()) {
-						cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR, SensorLIS2DW12.GuiLabelConfig.LIS2DW12_ACCEL_LPM, true);
-					}
-					
+					cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_LP, cbEnableMagLP.isSelected());
+					cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO, SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM, cbEnableGyroLP.isSelected());
+					cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR, SensorLIS2DW12.GuiLabelConfig.LIS2DW12_ACCEL_LPM, cbEnableWRAccelLP.isSelected());
+
 					AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
 	                btManager.configureShimmer(cloneDevice);
 				

@@ -556,15 +556,12 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	
 	public int setLIS3MDLMagRateFromFreq(double freq) {
 		boolean isEnabled = isSensorEnabled(mSensorIdMag);
+		
 		if(isLowPowerMagEnabled()) {
 			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 0);
-		} else if(isMedPowerMagEnabled()) {
-			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 1);
-		} else if(isHighPowerMagEnabled()) {
-			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 2);
-		} else if(isUltraHighPowerMagEnabled()) {
-			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 3);
-		}
+		} else {
+			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, -1);
+		} 
 		return mLISMagRate;
 	}
 	
