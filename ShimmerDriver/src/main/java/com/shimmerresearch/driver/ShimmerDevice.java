@@ -1877,7 +1877,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			if(configValue instanceof String){
 				guiValue = (String) configValue;
 			} else if(configValue instanceof Boolean){
-				
+				guiValue = configValue.toString();
 			} else if(configValue instanceof Integer){
 				int configInt = (int) configValue;
 				Map<String, ConfigOptionDetailsSensor> mapOfConfigOptions = getConfigOptionsMap();

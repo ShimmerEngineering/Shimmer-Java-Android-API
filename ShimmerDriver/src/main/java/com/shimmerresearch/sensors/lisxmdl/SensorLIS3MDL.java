@@ -179,14 +179,8 @@ public class SensorLIS3MDL extends AbstractSensor{
 	
 	//--------- Configuration options start --------------
 	
-	public static final String[] ListofLIS3MDLMagRateLp={"0.625Hz","1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","1000Hz"};
-	public static final String[] ListofLIS3MDLMagRateMp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","560Hz"};
-	public static final String[] ListofLIS3MDLMagRateHp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","300Hz"};
-	public static final String[] ListofLIS3MDLMagRateUp={"1.25Hz","2.5Hz","5Hz","10Hz","20Hz","40Hz","80Hz","155Hz"};
-	public static final Integer[] ListofLIS3MDLMagRateLpConfigValues = {0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x01};
-	public static final Integer[] ListofLIS3MDLMagRateMpConfigValues = {0x12, 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x11};
-	public static final Integer[] ListofLIS3MDLMagRateHpConfigValues = {0x22, 0x24, 0x26, 0x28, 0x2A, 0x2C, 0x2E, 0x21};
-	public static final Integer[] ListofLIS3MDLMagRateUpConfigValues = {0x32, 0x34, 0x36, 0x38, 0x3A, 0x3C, 0x3E, 0x31};
+	public static final String[] ListofLIS3MDLMagRate={"1000Hz","560Hz","300Hz","155Hz","80Hz","20Hz", "10Hz"};
+	public static final Integer[] ListofLIS3MDLMagRateConfigValues = {0x01, 0x11, 0x21, 0x31, 0x3E, 0x3A, 0x08};
 
 	public static final String[] ListofLIS3MDLMagRange={"+/- 4Ga","+/- 8Ga","+/- 12Ga","+/- 16Ga"}; 
 	public static final Integer[] ListofLIS3MDLMagRangeConfigValues={0,1,2,3};
@@ -202,21 +196,10 @@ public class SensorLIS3MDL extends AbstractSensor{
 	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
 			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_RATE,
 			SensorLIS3MDL.DatabaseConfigHandle.MAG_RATE,
-			ListofLIS3MDLMagRateLp, 
-			ListofLIS3MDLMagRateLpConfigValues,
+			ListofLIS3MDLMagRate, 
+			ListofLIS3MDLMagRateConfigValues,
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
-			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL,
-		    Arrays.asList(
-		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS3MDL_MAG_RATE.IS_MP, 
-		                    SensorLIS3MDL.ListofLIS3MDLMagRateMp, 
-		                    SensorLIS3MDL.ListofLIS3MDLMagRateMpConfigValues),
-		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS3MDL_MAG_RATE.IS_HP, 
-		                    SensorLIS3MDL.ListofLIS3MDLMagRateHp, 
-		                    SensorLIS3MDL.ListofLIS3MDLMagRateHpConfigValues),
-		            new ConfigOptionObject(ConfigOptionDetailsSensor.VALUE_INDEXES.LIS3MDL_MAG_RATE.IS_UP, 
-		                    SensorLIS3MDL.ListofLIS3MDLMagRateUp, 
-		                    SensorLIS3MDL.ListofLIS3MDLMagRateUpConfigValues)
-		        ));
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLISM3MDL);
 
 	//--------- Configuration options end --------------
 	
@@ -556,20 +539,17 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	
 	public int setLIS3MDLMagRateFromFreq(double freq) {
 		boolean isEnabled = isSensorEnabled(mSensorIdMag);
+		
 		if(isLowPowerMagEnabled()) {
 			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 0);
-		} else if(isMedPowerMagEnabled()) {
-			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 1);
-		} else if(isHighPowerMagEnabled()) {
-			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 2);
-		} else if(isUltraHighPowerMagEnabled()) {
-			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 3);
-		}
+		} else {
+			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, -1);
+		} 
 		return mLISMagRate;
 	}
 	
 	public boolean checkLowPowerMag() {
-		setLowPowerMag((getLIS3MDLMagRate() <= 14)? true:false);
+		setLowPowerMag((getLIS3MDLMagRate() == 0x08)? true:false);	//10Hz
 		return isLowPowerMagEnabled();
 	}
 	
@@ -596,21 +576,47 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		int magRate = 0; // 0.625Hz
 		
 		if(isEnabled){
-			switch(powerMode) {
-			case 0:
-				magRate = lowPowerMode(freq);
-				break;
-			case 1:
-				magRate = medPowerMode(freq);
-				break;
-			case 2:
-				magRate = highPowerMode(freq);
-				break;
-			case 3:
-				magRate = ultraHighPowerMode(freq);
-				break;
+			if(powerMode == 0)	//low power mode enabled
+			{
+				magRate = 0x08;
+			}
+			else 
+			{
+				if (freq > 560)
+				{
+					magRate = 0x01; //Low Power Mode (1000Hz)
+				}
+				else if (freq > 300)
+				{
+					magRate = 0x11; //Medium (560Hz)
+				}
+				else if (freq > 155)
+				{
+					magRate = 0x21; //High (300Hz)
+				}
+				else if (freq > 100) 
+				{
+					magRate = 0x31; //Ultra High (155Hz)
+				}
+				else if (freq > 50) 
+				{
+					magRate = 0x31; //Ultra High (155Hz)
+				}
+				else if (freq > 20)
+				{
+					magRate = 0x3E; //Ultra High (80Hz)
+				}
+				else if (freq > 10)
+				{
+					magRate = 0x3A; //Ultra High (20Hz)
+				}
+				else
+				{
+					magRate = 0x08; //Ultra High (10Hz)
+				}
 			}
 		}
+		
 		return magRate;
 	}
 	
@@ -636,6 +642,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		} else if (freq<=1000) {
 			magRate = 1;
 		}
+		
 		return magRate;
 	}
 	
@@ -781,8 +788,6 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		if(!isSensorEnabled(mSensorIdMag)) {
 			setDefaultLisMagSensorConfig(false);
 		}
-
-		setLowPowerMag(false);
 	}
 
 	@Override
@@ -793,6 +798,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 
 			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getMagRange() & configByteLayoutCast.maskLSM303DLHCMagRange) << configByteLayoutCast.bitShiftLSM303DLHCMagRange);
 			configBytes[configByteLayoutCast.idxConfigSetupByte2] |= (byte) ((getLIS3MDLMagRate() & configByteLayoutCast.maskLSM303DLHCMagSamplingRate) << configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate);
+			configBytes[configByteLayoutCast.idxConfigSetupByte5] |= (byte) ((getLIS3MDLMagRate() >> 3 & configByteLayoutCast.maskLIS3MDLMagRateMSB) << configByteLayoutCast.bitShiftLIS3MDLMagRateMSB);
 
 			// LISM3MDL Magnetometer Calibration Parameters
 			byte[] bufferCalibrationParameters = generateCalParamLIS3MDLMag();
@@ -811,7 +817,11 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 
 			setLISMagRange((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagRange) & configByteLayoutCast.maskLSM303DLHCMagRange);
-			setLISMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
+			//setLISMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
+			int lsbMagRate = (configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate;
+			int msbMagRate = (configBytes[configByteLayoutCast.idxConfigSetupByte5] >> configByteLayoutCast.bitShiftLIS3MDLMagRateMSB) & configByteLayoutCast.maskLIS3MDLMagRateMSB;
+			setLISMagRate((msbMagRate << 3) | lsbMagRate);
+
 			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
 			
 			if (shimmerDevice.isConnected()){
@@ -932,10 +942,8 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
 		//set sampling rate of the sensors as close to the Shimmer sampling rate as possible (sensor sampling rate >= shimmer sampling rate)
-		setLowPowerMag(false);
 		
 		setLIS3MDLMagRateFromFreq(samplingRateHz);
-		
 		checkLowPowerMag();
 	}
 	
