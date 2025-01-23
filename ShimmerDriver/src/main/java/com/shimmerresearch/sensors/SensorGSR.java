@@ -340,13 +340,7 @@ public class SensorGSR extends AbstractSensor {
 				}
 				if(sensorDetails.mListOfChannels.contains(channelGsrAdc)){
 					objectCluster.addUncalData(channelGsrAdc, gsrAdcValueUnCal);
-					if (mShimmerVerObject.isShimmerGen3R()) {
-						objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateAdcChannelToMillivolts3r(gsrAdcValueUnCal, microcontrollerAdcProperties));
-					}
-					else {
-						objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateAdcChannelToMillivolts(gsrAdcValueUnCal, microcontrollerAdcProperties));
-					}
-
+					objectCluster.addCalData(channelGsrAdc, SensorADC.calibrateAdcChannelToMillivolts(gsrAdcValueUnCal, microcontrollerAdcProperties));
 					objectCluster.incrementIndexKeeper();
 				}
 				
