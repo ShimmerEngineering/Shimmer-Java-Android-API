@@ -92,7 +92,7 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 
     
 	@Override
-	public void createComboBox(int numOfOptions,String key,ConfigOptionDetailsSensor cods,Object[] checkBox) {
+	public void createComboBox(int numOfOptions,String key,ConfigOptionDetailsSensor cods,Object[] checkBox, boolean isEnabled) {
 		// TODO Auto-generated method stub
 		String[] cs = cods.getGuiValues();
 		
@@ -121,7 +121,7 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 					
 				}
 			});
-			
+			((JCheckBox) checkBox[i]).setEnabled(isEnabled);
 			box.add((JCheckBox) checkBox[i]);
 			
 		}
@@ -131,7 +131,7 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 
 	
 	@Override
-	public void createEditText(String key) {
+	public void createEditText(String key, boolean isEnabled) {
 
 //		JPanel textPanel = new JPanel();
 //		textPanel.setLayout((LayoutManager) new BoxLayout(textPanel, BoxLayout.X_AXIS));
@@ -145,9 +145,9 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 		textField.setToolTipText("Values are in Hz");
 		textField.setText((String) cloneDevice.getConfigValueUsingConfigLabel(key));
 		textField.setMaximumSize(new Dimension(150, 20));
-		
+		textField.setEnabled(isEnabled);
 		textFieldBox.add(textField);
-		
+		/*
 		JButton saveTextButton = new JButton("set");
 		saveTextButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -164,6 +164,7 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 		});
 		
 		textFieldBox.add(saveTextButton);
+		*/
 
 //		textPanel.add(textField);
 //		textPanel.add(saveTextButton);
@@ -231,8 +232,15 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 	public void showDialog() {
 		//Filter out the sensors we don't want to display before initializing the dialog:
 		List<String> filterList = new ArrayList<String>();
-		filterList.add("Wide Range Accel Rate");
+		//filterList.add("Wide Range Accel Rate");
 		setSensorKeysFilter(filterList, true);
+		
+		//Filter out the sensors config option we want to display but to disable before initializing the dialog:
+		List<String> displayButDisableFilterList = new ArrayList<String>();
+		displayButDisableFilterList.add("Wide Range Accel Rate");
+		displayButDisableFilterList.add("Mag Rate");
+		displayButDisableFilterList.add("Gyro Sampling Rate");
+		setSensorDisplayButDisableKeysFilter(displayButDisableFilterList, true);
 
 		createFrame();
 		initialize();

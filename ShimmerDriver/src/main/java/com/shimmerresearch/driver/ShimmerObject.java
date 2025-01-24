@@ -3936,9 +3936,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				gyroRange = gyroRange + (msbGyroRange << 2);
 				setGyroRange(gyroRange);
 				setLSM303MagRange(((int)(mConfigByte0 & 14680064))>>21);
-				setLSM303DigitalAccelRate(((int)(mConfigByte0 & 0xF0))>>4);
+				setLIS2DW12DigitalAccelRate(((int)(mConfigByte0 & 0xF0))>>4);
+				
+				setLowPowerAccelWR((getLIS2DW12DigitalAccelRate()==1)? true:false);
 				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
-				setMagRate(((int)(mConfigByte0 & 1835008))>>18); 
+				checkLowPowerGyro();
+				
+				int magSamplingRate = (int)((mConfigByte0 >> 18) & 0x07);
+				int MSB_MAG_RATE = (int)((mConfigByte0 >> 43) & 0x07); //8+8+8+8+8+3
+				magSamplingRate = magSamplingRate + (MSB_MAG_RATE << 3);
+				setMagRate(magSamplingRate); 
+				
+				checkLowPowerMag();
+				
 //				setPressureResolution((((int)(mConfigByte0 >>28)) & 3));
 				setGSRRange((((int)(mConfigByte0 >>25)) & 7));
 				setInternalExpPower(((int)(mConfigByte0 >>24)) & 1);
@@ -3950,12 +3960,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				mInquiryResponseBytes = new byte[11+mNChannels];
 				System.arraycopy(bufferInquiry, 0, mInquiryResponseBytes , 0, mInquiryResponseBytes.length);
-				if ((getLSM303DigitalAccelRate()==2 && getSamplingRateShimmer()>10)){
-					setLowPowerAccelWR(true);
-				}
-				checkLowPowerGyro();
-				checkLowPowerMag();
-				
+			
 				if(bufferInquiry.length>=(11+mNChannels)){
 					byte[] signalIdArray = new byte[mNChannels];
 					System.arraycopy(bufferInquiry, 11, signalIdArray, 0, mNChannels);

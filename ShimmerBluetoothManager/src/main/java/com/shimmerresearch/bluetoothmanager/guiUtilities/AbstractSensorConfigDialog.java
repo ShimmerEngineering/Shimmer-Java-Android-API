@@ -19,8 +19,8 @@ public abstract class AbstractSensorConfigDialog {
 	protected ShimmerDevice cloneDevice;
 	protected ShimmerDevice shimmerDevice;
 	protected ShimmerBluetoothManager bluetoothManager;
-	public abstract void createComboBox(int numOfOptions,String key,ConfigOptionDetailsSensor cods,Object[] checkBox);
-	public abstract void createEditText(String key);
+	public abstract void createComboBox(int numOfOptions,String key,ConfigOptionDetailsSensor cods,Object[] checkBox, boolean isEnabled);
+	public abstract void createEditText(String key, boolean isEnabled);
 	public abstract void createLabel(String label);
 	public abstract void createFrame();
 	public abstract void showFrame();
@@ -38,6 +38,8 @@ public abstract class AbstractSensorConfigDialog {
 	
 	protected boolean mEnableFilter = false;
 	protected List<String> keysToFilter = null;
+	protected boolean mDisplayButDisableEnableFilter = false;
+	protected List<String> keysToDisplayButDisableFilter = null;
 	
 	public static void main(String[] args) {
 		
@@ -96,12 +98,26 @@ public abstract class AbstractSensorConfigDialog {
 				int numOfCheckboxes = cs.length;
 				Object[] checkBox = new Object[numOfCheckboxes];
 				if(cods.mGuiComponentType == ConfigOptionDetails.GUI_COMPONENT_TYPE.COMBOBOX) {
-					createComboBox(numOfCheckboxes, key, cods,checkBox);
+					 if(keysToDisplayButDisableFilter.contains(key)) 
+					 {
+							createComboBox(numOfCheckboxes, key, cods,checkBox,false);
+					 }
+					 else 
+					 {
+							createComboBox(numOfCheckboxes, key, cods,checkBox, true);
+					 }
 				}
 			}
 			
 			if(cods.mGuiComponentType == ConfigOptionDetails.GUI_COMPONENT_TYPE.TEXTFIELD) {
-				createEditText(key);
+				 if(keysToDisplayButDisableFilter.contains(key)) 
+				 {
+					createEditText(key, false);
+				 }
+				 else 
+				 {
+					 createEditText(key, true);
+				 }
 			}
 			//scrollPane.add(box);
 			
@@ -125,5 +141,9 @@ public abstract class AbstractSensorConfigDialog {
 		keysToFilter = filterKeys;
 	}
 	
+	public void setSensorDisplayButDisableKeysFilter(List<String> filterKeys, boolean enableFilter) {
+		mDisplayButDisableEnableFilter = enableFilter;
+		keysToDisplayButDisableFilter = filterKeys;
+	}
 }
 

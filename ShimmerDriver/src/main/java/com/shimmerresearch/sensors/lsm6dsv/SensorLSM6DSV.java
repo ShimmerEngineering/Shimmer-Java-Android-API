@@ -275,6 +275,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	//public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,4,5,3,6};
 	public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,2,3,4,5};
 	public static final String[] ListofLSM6DSVGyroRate={"Power-down","1.875Hz","7.5Hz","12.0Hz","30.0Hz","60.0Hz","120.0Hz","240.0Hz","480.0Hz","960.0Hz","1920.0Hz","3840.0Hz","7680.0Hz"};
+	public static final Double[] ListofLSM6DSVGyroRateDouble={0.0,1.875,7.5,12.0,30.0,60.0,120.0,240.0,480.0,960.0,1920.0,3840.0,7680.0};
 	public static final Integer[] ListofLSM6DSVGyroRateConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13};
 
 	public static final List<Integer> mListOfMplChannels = Arrays.asList(
@@ -312,7 +313,9 @@ public class SensorLSM6DSV extends AbstractSensor{
 	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroRate = new ConfigOptionDetailsSensor(
 			SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_RATE,
 			SensorLSM6DSV.DatabaseConfigHandle.GYRO_RATE,
-			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+			ListofLSM6DSVGyroRate, 
+			ListofLSM6DSVGyroRateConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSV);
 
 	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroLpm = new ConfigOptionDetailsSensor(
@@ -653,48 +656,68 @@ public class SensorLSM6DSV extends AbstractSensor{
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	public int setLSM6DSVGyroAccelRateFromFreq(double freq) {
-		if(debugGyroRate && mShimmerDevice!=null){
-			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\t" + freq);
-		}
-		
-		boolean setFreq = false;
-		// Check if channel is enabled 
-		if(checkIfAnyMplChannelEnabled()){
-			setFreq = true;
-		}
-		else if(checkIfAMpuGyroOrAccelEnabled()){
-			setFreq = true;
-		}
-		
-		if(setFreq){
-			// Gyroscope Output Rate = 8kHz when the DLPF (Digital Low-pass filter) is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
-			double numerator = 1000;
-			if(mLSM6DSVLPF == 0) {
-				numerator = 8000;
-			}
+		boolean isEnabled = isSensorEnabled(mSensorIdGyro);
+		setLSM6DSVGyroAccelRate(getGyroRateFromFreqForSensor(isEnabled, freq, mLowPowerGyro));		
+		return mLSM6DSVGyroAccelRate;			
+	}
 	
-			if (!mLowPowerGyro){
-				if(freq<4) {
-					freq = 4;
-				}
-				else if(freq>numerator) {
-					freq = numerator;
-				}
-				int result = (int) Math.floor(((numerator / freq) - 1));
-				if(result>255) {
-					result = 255;
-				}
-				setLSM6DSVGyroAccelRate(result);
+	public int getGyroRateFromFreqForSensor(boolean isEnabled, double freq, boolean isLowPowerMode) {
+		return SensorLSM6DSV.getGyroRateFromFreq(isEnabled, freq, isLowPowerMode);
+	}
 	
+	public static int getGyroRateFromFreq(boolean isEnabled, double freq, boolean isLowPowerMode) {
+		int gyroRate = 0; 
+		
+		if(isEnabled){
+			if(isLowPowerMode)	//low power mode enabled
+			{
+				gyroRate = 1;
 			}
-			else {
-				setLSM6DSVGyroAccelRate(0xFF); // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
+			else 
+			{
+				if (freq <= 7.5)
+				{
+					gyroRate = 2; 
+				}
+				else if (freq <= 30)
+				{
+					gyroRate = 4; 
+				}
+				else if (freq <= 60)
+				{
+					gyroRate = 5; 
+				}
+				else if (freq <= 120) 
+				{
+					gyroRate = 6; 
+				}
+				else if (freq <= 240) 
+				{
+					gyroRate = 7; 
+				}
+				else if (freq <= 480)
+				{
+					gyroRate = 8; 
+				}
+				else if (freq <= 960)
+				{
+					gyroRate = 9; 
+				}
+				else if (freq <= 1920)
+				{
+					gyroRate = 10; 
+				}
+				else if (freq <= 3840)
+				{
+					gyroRate = 11; 
+				}
+				else if (freq <= 7680)
+				{
+					gyroRate = 12; 
+				}
 			}
 		}
-		else {
-			setLSM6DSVGyroAccelRate(0xFF); // Dec. = 255, Freq. = 31.25Hz (or 3.92Hz when LPF enabled)
-		}
-		return getLSM6DSVGyroAccelRate();			
+		return gyroRate;
 	}
 	
 	/**
@@ -705,16 +728,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	 * @param enable
 	 */
 	public void setLowPowerGyro(boolean enable){
-		if(!checkIfAnyMplChannelEnabled()) {
-			mLowPowerGyro = enable;
-		}
-		else{
-			mLowPowerGyro = false;
-		}
-		
-		if(debugGyroRate && mShimmerDevice!=null){
-			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tsetLowPowerGyro\t" + mShimmerDevice.getSamplingRateShimmer());
-		}
+		mLowPowerGyro = enable;
 		if(mShimmerDevice!=null){
 			setLSM6DSVGyroAccelRateFromFreq(getSamplingRateShimmer());
 		}
@@ -728,7 +742,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	 * @return boolean, true if low-power mode enabled
 	 */
 	public boolean checkLowPowerGyro() {
-		if(mLSM6DSVGyroAccelRate == 0xFF) {
+		if(mLSM6DSVGyroAccelRate == 1) {
 			mLowPowerGyro = true;
 		}
 		else {
@@ -1069,8 +1083,9 @@ public class SensorLSM6DSV extends AbstractSensor{
 				returnValue = getAccelRange();
 	        	break;
 			case(GuiLabelConfig.LSM6DSV_GYRO_RATE):
-				returnValue = Double.toString((double)Math.round(getLSM6DSVGyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
-	        	break;
+				//returnValue = Double.toString((double)Math.round(getLSM6DSVGyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+				int configValue = getLSM6DSVGyroAccelRate(); 
+				returnValue = configValue;			break;
 			case(GuiLabelConfig.LSM6DSV_GYRO_RATE_HZ):
 				returnValue = getLSM6DSVGyroAccelRateInHz();
 				break;
@@ -1096,7 +1111,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
-		setLowPowerGyro(false);
 		if(debugGyroRate && mShimmerDevice!=null){
 			System.out.println("Gyro Rate change from freq:\t" + mShimmerDevice.getMacId() + "\tsetSamplingRateSensors\t" + samplingRateHz);
 		}
@@ -1148,12 +1162,9 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-		
-		setLowPowerGyro(false);
 		if(!isSensorEnabled(mSensorIdGyro)){
 			setDefaultLSM6DSVGyroSensorConfig(false);
 		}
-		setLowPowerGyro(false);
 	}
 	
 	//--------- Abstract methods implemented end --------------
@@ -1255,17 +1266,12 @@ public class SensorLSM6DSV extends AbstractSensor{
 	 * @return the mMPU9X50GyroAccelRate in Hz
 	 */
 	public double getLSM6DSVGyroAccelRateInHz() {
-		// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
-		double numerator = 1000.0;
-		if(mLSM6DSVLPF == 0) {
-			numerator = 8000.0;
+	
+		if(ArrayUtils.contains(ListofLSM6DSVGyroRateConfigValues, mLSM6DSVGyroAccelRate)){
+			return ListofLSM6DSVGyroRateDouble[mLSM6DSVGyroAccelRate];
 		}
-		if(getLSM6DSVGyroAccelRate() == 0) {
-			return numerator;
-		}
-		else {
-			return (numerator / (getLSM6DSVGyroAccelRate()+1));
-		}
+
+		return mLSM6DSVGyroAccelRate;
 	}
 	
 	public void setDefaultLSM6DSVGyroSensorConfig(boolean isSensorEnabled) {
