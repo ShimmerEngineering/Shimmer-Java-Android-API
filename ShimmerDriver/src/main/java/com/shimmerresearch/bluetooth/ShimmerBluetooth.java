@@ -3792,6 +3792,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
             setShowErrorLedsRtc(((val >> 4) & 0x01)==1);
         }
         setButtonStart(((val >> 5) & 0x01)==1); // currently FW only supports this
+        setDisableBluetooth(((val >> 3) & 0x01)==1);
         //monitor = ((val >> 10) & 0x01)==1;
         setInternalExpPower(((val >> 11) & 0x01)==1);
         setTCXO(((val >> 12) & 0x01)==1);

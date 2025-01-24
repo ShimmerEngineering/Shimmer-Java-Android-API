@@ -64,6 +64,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 
 	//TODO consider where to handle the below -> carried over from ShimmerObject
 	protected boolean mButtonStart = true;
+	protected boolean mDisableBluetooth = true;
 	protected boolean mShowRtcErrorLeds = true;
 	protected boolean mConfigFileCreationFlag = true;
 	protected boolean mCalibFileCreationFlag = false;
@@ -239,6 +240,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 			}
 			
 			mButtonStart = ((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftButtonStart) & configByteLayoutCast.maskButtonStart)>0? true:false;
+			mDisableBluetooth = ((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftDisableBluetooth) & configByteLayoutCast.maskDisableBluetooth)>0? true:false;
 			mShowRtcErrorLeds = ((configBytes[configByteLayoutCast.idxSDExperimentConfig0] >> configByteLayoutCast.bitShiftShowErrorLedsRwc) & configByteLayoutCast.maskShowErrorLedsRwc)>0? true:false;
 
 			// Configuration from each Sensor settings
@@ -408,6 +410,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 
 		
 		mConfigBytes[infoMemLayout.idxSDExperimentConfig0] = (byte) ((mButtonStart? infoMemLayout.maskButtonStart:0) << infoMemLayout.bitShiftButtonStart);
+		mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((mDisableBluetooth? infoMemLayout.maskDisableBluetooth:0) << infoMemLayout.bitShiftDisableBluetooth);
 		if(this.isOverrideShowRwcErrorLeds){
 			mConfigBytes[infoMemLayout.idxSDExperimentConfig0] |= (byte) ((infoMemLayout.maskShowErrorLedsRwc) << infoMemLayout.bitShiftShowErrorLedsRwc);
 		}
@@ -1100,12 +1103,20 @@ public class Shimmer4sdk extends ShimmerDevice {
 	public boolean isButtonStart() {
 		return mButtonStart;
 	}
+	
+	public boolean isDisableBluetooth() {
+		return mDisableBluetooth;
+	}
 
 	/**
 	 * @param state the mButtonStart state to set
 	 */
 	public void setButtonStart(boolean state) {
 		mButtonStart = state;
+	}
+	
+	public void setDisableBluetooth(boolean state) {
+		mDisableBluetooth = state;
 	}
 	
 	@Override
@@ -1134,6 +1145,9 @@ public class Shimmer4sdk extends ShimmerDevice {
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				setButtonStart((boolean)valueToSet);
 				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SD_STREAM_WHEN_RECORDING):
+				setDisableBluetooth((boolean)valueToSet);
+				break;
 //Integers
 //Strings
 	        default:
@@ -1151,6 +1165,9 @@ public class Shimmer4sdk extends ShimmerDevice {
 //Booleans
 			case(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START):
 				returnValue = isButtonStart();
+				break;
+			case(Configuration.Shimmer3.GuiLabelConfig.SD_STREAM_WHEN_RECORDING):
+				returnValue = isDisableBluetooth();
 				break;
 //Integers
 //Strings
