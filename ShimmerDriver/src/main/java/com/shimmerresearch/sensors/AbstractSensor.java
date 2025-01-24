@@ -51,6 +51,7 @@ public abstract class AbstractSensor implements Serializable{
 		NONIN_ONYX_II("Nonin Onyx II"),
 		QTI_DIRECT_TEMP("QTI DirectTemp"),
 		KEYBOARD_MOUSE("Keyboard/Mouse Listener"),
+		KEYBOARD("KeyboardListener"),
 		BMP280("BMP280"),
 		STC3100("STC3100"),
 		WEBCAM_FRAME_NUMBER("Frame Number"),
@@ -62,7 +63,12 @@ public abstract class AbstractSensor implements Serializable{
 		LSM6DS3("LSM6DS3"),
 		MAX86150("MAX86150"),
 		MAX86916("MAX86916"),
-		BIOZ("MAX30001");
+		BIOZ("MAX30001"),
+		ADXL371("ADXL371"),
+		LIS3MDL("LIS3MDL"), //to be changed
+		LIS2MDL("LIS2MDL"),
+		LSM6DSV("LSM6DSV"),
+		BMP390("BMP390");
 		
 	    private final String text;
 

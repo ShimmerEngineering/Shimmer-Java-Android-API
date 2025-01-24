@@ -85,7 +85,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public static final String STRING_CONSTANT_UNKNOWN = "Unknown";
 	public static final String STRING_CONSTANT_NOT_AVAILABLE = "N/A";
 	public static final String STRING_CONSTANT_SD_ERROR = "SD Error";
-	
+	public static final double IRREGULAR_SAMPLING_RATE = 0.0;
 	protected static final int MAX_CALIB_DUMP_MAX = 4096;
 	
 	public static final String INVALID_TRIAL_NAME_CHAR = "[^A-Za-z0-9._]";
@@ -706,8 +706,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		addCommunicationRoute(COMMUNICATION_TYPE.DOCK);
 	}
 	
-	public void clearDockInfo(){
-		setDockInfo(DEFAULT_DOCKID, DEFAULT_SLOTNUMBER);
+	public void clearDockInfo(String dockId, int slotNumber){
+		setDockInfo(dockId, slotNumber);
+//		setDockInfo(DEFAULT_DOCKID, DEFAULT_SLOTNUMBER);
 	}
 	
 	public void setDockInfo(String dockId, int slotNumber){
@@ -753,7 +754,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
 			setIsDocked(false);
 			setFirstDockRead();
-			clearDockInfo();
+			clearDockInfo(mDockID, mSlotNumber);
 		}
 		
 		//TODO temp here -> check if the best place for it
@@ -1876,7 +1877,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 			if(configValue instanceof String){
 				guiValue = (String) configValue;
 			} else if(configValue instanceof Boolean){
-				
+				guiValue = configValue.toString();
 			} else if(configValue instanceof Integer){
 				int configInt = (int) configValue;
 				Map<String, ConfigOptionDetailsSensor> mapOfConfigOptions = getConfigOptionsMap();

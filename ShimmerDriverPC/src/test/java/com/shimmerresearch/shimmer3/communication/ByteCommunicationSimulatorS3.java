@@ -11,9 +11,17 @@ import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
 public class ByteCommunicationSimulatorS3 implements ByteCommunication{
+	
+	public boolean isGetBmp280CalibrationCoefficientsCommand = false;
+	public boolean isGetPressureCalibrationCoefficientsCommand = false;
+	public boolean mIsNewBMPSupported;
 
 	public ByteCommunicationSimulatorS3(String address) {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public void setIsNewBMPSupported(boolean isNewBMPSupported) {
+		mIsNewBMPSupported = isNewBMPSupported;
 	}
 
 	@Override
@@ -92,7 +100,12 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 		mBuffer.add((byte) 0x00);
 		mBuffer.add((byte) 0x00);
 		mBuffer.add((byte) 0x10);
-		mBuffer.add((byte) 0x09);
+		
+		if(mIsNewBMPSupported) {
+			mBuffer.add((byte) 0x09);
+		}else {
+			mBuffer.add((byte) 0x00);
+		}
 	}
 	
 	@Override
@@ -152,6 +165,7 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 		} else if (buffer[0]==ShimmerObject.GET_INFOMEM_COMMAND){	
 			txInfoMem(buffer);
 		} else if(buffer[0]==ShimmerObject.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND) {
+			isGetBmp280CalibrationCoefficientsCommand = true;
 			mBuffer.add((byte) 0xff);
 			mBuffer.add((byte) 0x9f);
 			byte[] bytes = UtilShimmer.hexStringToByteArray("7A6A0D6632007F9016D7D00BBC1B2AFFF9FF8C3CF8C67017");
@@ -159,6 +173,15 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 				mBuffer.add(b);
 			}
 			mBuffer.add((byte) 0xDF);
+		}else if(buffer[0]==ShimmerObject.GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND) {
+			isGetPressureCalibrationCoefficientsCommand = true;
+			mBuffer.add((byte) 0xff);
+			mBuffer.add((byte) 0xa6);
+			byte[] bytes = UtilShimmer.hexStringToByteArray("19011D6BBA643200859289D6D00BC918CBFFF9FF7B1A1FEE4DFC");
+			for (byte b:bytes) {
+				mBuffer.add(b);
+			}
+			mBuffer.add((byte) 0xDF);			
 		} else if(buffer[0]==ShimmerObject.GET_BLINK_LED) {
 			mBuffer.add((byte) 0xff);
 			mBuffer.add((byte) 0x31);

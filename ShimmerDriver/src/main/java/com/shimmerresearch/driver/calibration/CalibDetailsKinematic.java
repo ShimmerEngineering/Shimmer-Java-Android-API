@@ -109,6 +109,16 @@ public class CalibDetailsKinematic extends CalibDetails implements Serializable 
 		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
 		setSensitivityScaleFactor(sensitivityScaleFactor);
 	}
+	
+	// Added for setCurrentValues
+	public CalibDetailsKinematic(int rangeValue, String rangeString, 
+			double[][] defaultAlignmentMatrix, double[][] defaultSensitivityMatrix, double[][] defaultOffsetVector,
+			double[][] currentAlignmentMatrix, double[][] currentSensitivityMatrix, double[][] currentOffsetVector,
+			CALIBRATION_SCALE_FACTOR sensitivityScaleFactor) {
+		this(rangeValue, rangeString, defaultAlignmentMatrix, defaultSensitivityMatrix, defaultOffsetVector);
+		this.setCurrentValues(currentOffsetVector, currentSensitivityMatrix, currentAlignmentMatrix, true);
+		setSensitivityScaleFactor(sensitivityScaleFactor);
+	}
 
 	
 	/**NOT CURRENTLY USED and could cause problems unless used for a specific purpose as the defaults param etc. will not be set
