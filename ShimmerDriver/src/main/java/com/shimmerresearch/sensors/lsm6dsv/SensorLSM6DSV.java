@@ -313,7 +313,9 @@ public class SensorLSM6DSV extends AbstractSensor{
 	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroRate = new ConfigOptionDetailsSensor(
 			SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_RATE,
 			SensorLSM6DSV.DatabaseConfigHandle.GYRO_RATE,
-			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+			ListofLSM6DSVGyroRate, 
+			ListofLSM6DSVGyroRateConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSV);
 
 	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroLpm = new ConfigOptionDetailsSensor(
@@ -1081,8 +1083,9 @@ public class SensorLSM6DSV extends AbstractSensor{
 				returnValue = getAccelRange();
 	        	break;
 			case(GuiLabelConfig.LSM6DSV_GYRO_RATE):
-				returnValue = Double.toString((double)Math.round(getLSM6DSVGyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
-	        	break;
+				//returnValue = Double.toString((double)Math.round(getLSM6DSVGyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+				int configValue = getLSM6DSVGyroAccelRate(); 
+				returnValue = configValue;			break;
 			case(GuiLabelConfig.LSM6DSV_GYRO_RATE_HZ):
 				returnValue = getLSM6DSVGyroAccelRateInHz();
 				break;
