@@ -1036,11 +1036,11 @@ public class SensorLSM6DSV extends AbstractSensor{
 	        	break;
 			case(SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_RATE):
 	        	double bufDouble = 4.0; // Minimum = 4Hz
-	        	if(((String)valueToSet).isEmpty()) {
+	        	if((String.valueOf(valueToSet)).isEmpty()) {
 	        		bufDouble = 4.0;
 	        	}
 	        	else {
-	        		bufDouble = Double.parseDouble((String)valueToSet);
+	        		bufDouble = Double.parseDouble(String.valueOf(valueToSet));
 	        	}
 	        	// Since user is manually entering a freq., clear low-power mode so that their chosen rate will be set correctly. Tick box will be re-enabled automatically if they enter LPM freq. 
 	        	setLowPowerGyro(false); 
