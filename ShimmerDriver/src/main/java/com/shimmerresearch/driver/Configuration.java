@@ -1705,7 +1705,7 @@ public class Configuration {
 	        aMap.putAll(SensorShimmerClock.mSensorMapRef);
 
 			aMap.putAll(SensorGSR.mSensorMapRef);
-			aMap.putAll(SensorADC.mSensorMapRef);
+			aMap.putAll(SensorADC.mSensorMapRef3r);
 			aMap.putAll(SensorBattVoltage.mSensorMapRef);
 //			aMap.putAll(SensorBMP180.mSensorMapRef);
 			aMap.putAll(SensorEXG.mSensorMapRef);

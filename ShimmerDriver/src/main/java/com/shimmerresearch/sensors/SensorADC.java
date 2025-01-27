@@ -104,10 +104,10 @@ public class SensorADC extends AbstractSensor {
 		public static String EXT_EXP_ADC_A9 = "Ext_Exp_A9";
 		public static String EXT_EXP_ADC_A11 = "Ext_Exp_A11";
 		public static String EXT_EXP_ADC_A12 = "Ext_Exp_A12";
-		public static String INT_EXP_ADC_A17 = "Ext_Exp_A17";
-		public static String INT_EXP_ADC_A10 = "Ext_Exp_A10";
-		public static String INT_EXP_ADC_A15 = "Ext_Exp_A15";
-		public static String INT_EXP_ADC_A16 = "Ext_Exp_A16";
+		public static String INT_EXP_ADC_A17 = "Int_Exp_A17";
+		public static String INT_EXP_ADC_A10 = "Int_Exp_A10";
+		public static String INT_EXP_ADC_A15 = "Int_Exp_A15";
+		public static String INT_EXP_ADC_A16 = "Int_Exp_A16";
 	}
 	
 	
