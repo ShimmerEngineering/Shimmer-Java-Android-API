@@ -1444,7 +1444,7 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog,svoAnyIntExpBoardAndBtStream,svoAnyIntExpBoardAndLogAndStream,
-					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq,
+					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq, svoAnyIntExpBoardAndLogAndStream3R,
 					svoShimmer4Stock, svoArduino, svoSweatch, svoStrokare); 
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBattVoltage = Arrays.asList(
