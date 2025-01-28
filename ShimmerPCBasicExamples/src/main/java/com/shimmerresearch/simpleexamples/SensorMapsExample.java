@@ -13,6 +13,7 @@ import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.grpc.ShimmerGRPC;
 import com.shimmerresearch.guiUtilities.configuration.EnableSensorsDialog;
@@ -84,6 +85,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	JCheckBox cbEnableGyroLP;
 	JCheckBox cbEnableWRAccelLP;
 	String[] options = {"Shimmer3", "Verisense"};
+	boolean isLPModeCBUpdated = false;
 	/**
 	 * Initialize the contents of the frame
 	 * @wbp.parser.entryPoint
@@ -130,7 +132,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JButton btnDisconnect = new JButton("DISCONNECT");
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				isLPModeCBUpdated = false;
 				btManager.disconnectShimmer(btComport);
 				
 			}
@@ -178,7 +180,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				}
 				if(connected) {
 					ShimmerDevice cloneDevice = SD.deepClone();
-
+					
 					cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_LP, cbEnableMagLP.isSelected());
 					cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO, SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM, cbEnableGyroLP.isSelected());
 					cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR, SensorLIS2DW12.GuiLabelConfig.LIS2DW12_ACCEL_LPM, cbEnableWRAccelLP.isSelected());
@@ -498,16 +500,22 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
                     timer = new Timer();
                 }
 				textPaneStatus.setText("connected");
-				
-				ShimmerDevice cloneDevice = btManager.getShimmerDeviceBtConnected(btComport).deepClone();
-				boolean isLowPowerMagEnabled = Boolean.valueOf(cloneDevice.getConfigGuiValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_LP));
-				cbEnableMagLP.setSelected(isLowPowerMagEnabled);
+				if(!isLPModeCBUpdated) {
+					ShimmerDevice cloneDevice = btManager.getShimmerDeviceBtConnected(btComport).deepClone();
+					if(cloneDevice.getHardwareVersion()==HW_ID.SHIMMER_3R) {
+				        cbEnableGyroLP.setText("Enable LN Accel and Gyro LP Mode");
+					}
+					boolean isLowPowerMagEnabled = Boolean.valueOf(cloneDevice.getConfigGuiValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_LP));
+					cbEnableMagLP.setSelected(isLowPowerMagEnabled);
+					
+					boolean isLowPowerGyroEnabled = Boolean.valueOf(cloneDevice.getConfigGuiValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO, SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM));
+					cbEnableGyroLP.setSelected(isLowPowerGyroEnabled);
 
-				boolean isLowPowerGyroEnabled = Boolean.valueOf(cloneDevice.getConfigGuiValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO, SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM));
-				cbEnableGyroLP.setSelected(isLowPowerGyroEnabled);
-
-				boolean isLowPowerWRAccelEnabled = Boolean.valueOf(cloneDevice.getConfigGuiValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR, SensorLIS2DW12.GuiLabelConfig.LIS2DW12_ACCEL_LPM));
-				cbEnableWRAccelLP.setSelected(isLowPowerWRAccelEnabled);
+					boolean isLowPowerWRAccelEnabled = Boolean.valueOf(cloneDevice.getConfigGuiValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR, SensorLIS2DW12.GuiLabelConfig.LIS2DW12_ACCEL_LPM));
+					cbEnableWRAccelLP.setSelected(isLowPowerWRAccelEnabled);
+					
+					isLPModeCBUpdated = true;
+				}
 
 				//shimmer = (ShimmerPC) btManager.getShimmerDeviceBtConnected(btComport);
 //				shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
