@@ -48,6 +48,44 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 		return true;
 	}
 
+	protected void txInfoMem(byte[] buffer) {
+
+		if (buffer[1]==(byte)0x80 && buffer[2]==(byte)0x00 && buffer[3]==(byte)0x00) //0x8E 0x80 0x00 0x00
+		{
+			mBuffer.add((byte) 0xff);
+			mBuffer.add((byte) 0x8D);
+			mBuffer.add((byte) 0x80);
+			byte[] bytes = UtilShimmer.hexStringToByteArray("800201E010004D9B0E08008010000000000002010080100000000000020109000000083C081F0825005300530054019C009C0100FEFF9C0000000000000CD00CD00CD0009C009C000000009C002AFBEDFC21010700E500FD009C0064000000009C00000000000001A201A201A2009C0064000000009C0000000000FFFFFFFFFF");
+			for (byte b:bytes) {
+				mBuffer.add(b);
+			}
+			mBuffer.add((byte) 0x8c);
+		}
+		else if (buffer[1]==(byte)0x80 && buffer[2]==(byte)0x80 && buffer[3]==(byte)0x00) //0x8E 0x80 0x80 0x00
+		{
+			mBuffer.add((byte) 0xff);
+			mBuffer.add((byte) 0x8D);
+			mBuffer.add((byte) 0x80);
+			byte[] bytes = UtilShimmer.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005368696D6D65725F33453336574354455354FFFFFFFFFFFF670773A70000B9003600000000E8EB1B713E360000000000000000000000000000000000000000000000000000");
+			for (byte b:bytes) {
+				mBuffer.add(b);
+			}
+
+			mBuffer.add((byte) 0x32);
+		}	else if (buffer[1]==(byte)0x80 && buffer[2]==(byte)0x00 && buffer[3]==(byte)0x01) //[0x8E 0x80 0x00 0x01]
+		{
+			mBuffer.add((byte) 0xff);
+			mBuffer.add((byte) 0x8D);
+			mBuffer.add((byte) 0x80);
+			byte[] bytes = UtilShimmer.hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+			for (byte b:bytes) {
+				mBuffer.add(b);
+			}
+
+			mBuffer.add((byte) 0x9B);
+		}	
+	}
+	
 	protected void txShimmerVersion() {
 		mBuffer.add((byte) 0xff);
 		mBuffer.add((byte) 0x25);
@@ -124,41 +162,8 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 			mBuffer.add((byte) 0x30);
 			mBuffer.add((byte) 0x04);
 			mBuffer.add((byte) 0x02);
-		} else if (buffer[0]==ShimmerObject.GET_INFOMEM_COMMAND){
-			if (buffer[1]==(byte)0x80 && buffer[2]==(byte)0x00 && buffer[3]==(byte)0x00) //0x8E 0x80 0x00 0x00
-			{
-				mBuffer.add((byte) 0xff);
-				mBuffer.add((byte) 0x8D);
-				mBuffer.add((byte) 0x80);
-				byte[] bytes = UtilShimmer.hexStringToByteArray("800201E010004D9B0E08008010000000000002010080100000000000020109000000083C081F0825005300530054019C009C0100FEFF9C0000000000000CD00CD00CD0009C009C000000009C002AFBEDFC21010700E500FD009C0064000000009C00000000000001A201A201A2009C0064000000009C0000000000FFFFFFFFFF");
-				for (byte b:bytes) {
-					mBuffer.add(b);
-				}
-				mBuffer.add((byte) 0x8c);
-			}
-			else if (buffer[1]==(byte)0x80 && buffer[2]==(byte)0x80 && buffer[3]==(byte)0x00) //0x8E 0x80 0x80 0x00
-			{
-				mBuffer.add((byte) 0xff);
-				mBuffer.add((byte) 0x8D);
-				mBuffer.add((byte) 0x80);
-				byte[] bytes = UtilShimmer.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005368696D6D65725F33453336574354455354FFFFFFFFFFFF670773A70000B9003600000000E8EB1B713E360000000000000000000000000000000000000000000000000000");
-				for (byte b:bytes) {
-					mBuffer.add(b);
-				}
-
-				mBuffer.add((byte) 0x32);
-			}	else if (buffer[1]==(byte)0x80 && buffer[2]==(byte)0x00 && buffer[3]==(byte)0x01) //[0x8E 0x80 0x00 0x01]
-			{
-				mBuffer.add((byte) 0xff);
-				mBuffer.add((byte) 0x8D);
-				mBuffer.add((byte) 0x80);
-				byte[] bytes = UtilShimmer.hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-				for (byte b:bytes) {
-					mBuffer.add(b);
-				}
-
-				mBuffer.add((byte) 0x9B);
-			}			
+		} else if (buffer[0]==ShimmerObject.GET_INFOMEM_COMMAND){	
+			txInfoMem(buffer);
 		} else if(buffer[0]==ShimmerObject.GET_BMP280_CALIBRATION_COEFFICIENTS_COMMAND) {
 			isGetBmp280CalibrationCoefficientsCommand = true;
 			mBuffer.add((byte) 0xff);

@@ -232,7 +232,7 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 	public void showDialog() {
 		//Filter out the sensors we don't want to display before initializing the dialog:
 		List<String> filterList = new ArrayList<String>();
-		filterList.add("Wide Range Accel Rate");
+		//filterList.add("Wide Range Accel Rate");
 		setSensorKeysFilter(filterList, true);
 		
 		//Filter out the sensors config option we want to display but to disable before initializing the dialog:

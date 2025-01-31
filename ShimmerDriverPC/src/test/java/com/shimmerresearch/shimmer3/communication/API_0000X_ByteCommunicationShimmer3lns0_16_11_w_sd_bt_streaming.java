@@ -8,8 +8,8 @@ import org.junit.runners.MethodSorters;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
-import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -26,28 +26,24 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
-public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBack{
+public class API_0000X_ByteCommunicationShimmer3lns0_16_11_w_sd_bt_streaming extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
 	TaskCompletionSource<Boolean> mCalibrationTask;
-	ByteCommunicationSimulatorS3 mByteCommunicationSimulatorS3;
-
 	@Before
     public void setUp() {
-		mByteCommunicationSimulatorS3 = new ByteCommunicationSimulatorS3("COM99");
 		mDevice = new ShimmerPC("COM99");
-		mDevice.setTestRadio(mByteCommunicationSimulatorS3);
+		mDevice.setTestRadio(new ByteCommunicationSimulatorS3LNS0_16_11_w_sd_bt_streaming("COM99"));
 		setWaitForData(mDevice);
     }
     
     @Test
     public void test001_testConnectandDisconnect() {
-    	mByteCommunicationSimulatorS3.setIsNewBMPSupported(false);
     	mCalibrationTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
     		mCalibrationTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(60, TimeUnit.SECONDS);
+				boolean result = mCalibrationTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -56,7 +52,7 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
     	if (!mDevice.isConnected()) {
     		assert(false);
     	}
-    	if (!mDevice.getFirmwareVersionParsed().equals("LogAndStream v0.16.0")) {
+    	if (!mDevice.getFirmwareVersionParsed().equals("LogAndStream v0.16.11")) {
     		assert(false);
     	}
     	if (!(mDevice.getHardwareVersion()==HW_ID.SHIMMER_3)) {
@@ -68,80 +64,30 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
     		assert(false);
     	}
     	
-    	if(!mByteCommunicationSimulatorS3.isGetBmp280CalibrationCoefficientsCommand) {
+    	if (!mDevice.isSupportedSdLogSync()) {
     		assert(false);
     	}
     	
-		if(!mDevice.mSensorBMPX80.mSensorType.equals(SENSORS.BMP280)){
-    		assert(false);
-		}
-		
-		try {
-			mDevice.disconnect();
-		} catch (ShimmerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-    
-    @Test
-    public void test002_testConnectandDisconnect_NewBMPSupported() {
-    	mByteCommunicationSimulatorS3.setIsNewBMPSupported(true);
-    	mCalibrationTask = new TaskCompletionSource<Boolean>();
-    	mDevice.connect("","");
-    	
-    		mCalibrationTask = new TaskCompletionSource<>();
-    		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(60, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-    	if (!mDevice.isConnected()) {
-    		assert(false);
-    	}
-    	if (!mDevice.getFirmwareVersionParsed().equals("LogAndStream v0.16.9")) {
-    		assert(false);
-    	}
-    	if (!(mDevice.getHardwareVersion()==HW_ID.SHIMMER_3)) {
+    	if (mDevice.isMasterShimmer()) {
     		assert(false);
     	}
     	
-    	System.out.println(mDevice.getHardwareVersionParsed());
-    	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3")) {
+    	if (mDevice.isDisableBluetooth()) {
     		assert(false);
     	}
     	
-    	if (mDevice.isSupportedSdLogSync()) {
+    	if (mDevice.isSyncWhenLogging()) {
     		assert(false);
     	}
     	
-    	if(!mByteCommunicationSimulatorS3.isGetPressureCalibrationCoefficientsCommand) {
+    	if (mDevice.getTrialDurationEstimatedInSecs()!=1) {
     		assert(false);
     	}
     	
-		if(!mDevice.mSensorBMPX80.mSensorType.equals(SENSORS.BMP280)){
+    	if (mDevice.getSyncNodesList().size()>0) {
     		assert(false);
-		}
-      
-    	ArrayList<SensorDetails> listofsensorDetails = (ArrayList<SensorDetails>) mDevice.getListOfEnabledSensors();
-    	
-    	for(SensorDetails sd: listofsensorDetails) {
-    		if (sd.isEnabled()) {
-    			for (ChannelDetails cd: sd.getListOfChannels()) {
-    				System.out.print(cd.mGuiName + " ; ");
-    			}
-    			System.out.println();
-    		}
     	}
     	
-    	LinkedHashMap<SENSORS, AbstractSensor> mapOfSensors = mDevice.getMapOfSensorsClasses();
-    	for (AbstractSensor sensor:mapOfSensors.values()) {
-    		if (sensor.getNumberOfEnabledChannels(COMMUNICATION_TYPE.BLUETOOTH)>0) {
-    			System.out.println(sensor.getClass().getName() + " ; " + sensor.getSensorName());
-    		}
-    	}
     }
 
 	@Override
@@ -166,7 +112,6 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
 						mCalibrationTask.setResult(true);
 						mCalibrationTask = null;
 					}
-					
 				}
 		}
 		

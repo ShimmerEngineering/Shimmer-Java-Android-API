@@ -113,8 +113,8 @@ public class SensorADXL371 extends AbstractSensor{
 	public static final double[][] DefaultAlignmentADXL371 = {{0,1,0},{1,0,0},{0,0,-1}};			
 
 	public static final double[][] DefaultAlignmentMatrixHighGAccelShimmer3R = DefaultAlignmentADXL371;	
-	public static final double[][] DefaultOffsetVectorHighGAccelShimmer3R = {{0},{0},{0}};	
-	public static final double[][] DefaultSensitivityMatrixHighGAccelShimmer3R = {{16,0,0},{0,16,0},{0,0,16}};
+	public static final double[][] DefaultOffsetVectorHighGAccelShimmer3R = {{10},{10},{10}};	
+	public static final double[][] DefaultSensitivityMatrixHighGAccelShimmer3R = {{1,0,0},{0,1,0},{0,0,1}};
 
 	private CalibDetailsKinematic calibDetailsAccelHighG = new CalibDetailsKinematic(
 			ListofADXL371AccelRangeConfigValues[0],

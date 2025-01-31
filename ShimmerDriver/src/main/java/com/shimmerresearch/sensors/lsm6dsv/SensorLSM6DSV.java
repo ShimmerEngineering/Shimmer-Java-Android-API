@@ -275,6 +275,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	//public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,4,5,3,6};
 	public static final Integer[] ListofLSM6DSVGyroRangeConfigValues = {0,1,2,3,4,5};
 	public static final String[] ListofLSM6DSVGyroRate={"Power-down","1.875Hz","7.5Hz","12.0Hz","30.0Hz","60.0Hz","120.0Hz","240.0Hz","480.0Hz","960.0Hz","1920.0Hz","3840.0Hz","7680.0Hz"};
+	public static final Double[] ListofLSM6DSVGyroRateDouble={0.0,1.875,7.5,12.0,30.0,60.0,120.0,240.0,480.0,960.0,1920.0,3840.0,7680.0};
 	public static final Integer[] ListofLSM6DSVGyroRateConfigValues={0,1,2,3,4,5,6,7,8,9,10,11,12,13};
 
 	public static final List<Integer> mListOfMplChannels = Arrays.asList(
@@ -312,7 +313,9 @@ public class SensorLSM6DSV extends AbstractSensor{
 	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroRate = new ConfigOptionDetailsSensor(
 			SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_RATE,
 			SensorLSM6DSV.DatabaseConfigHandle.GYRO_RATE,
-			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+			ListofLSM6DSVGyroRate, 
+			ListofLSM6DSVGyroRateConfigValues, 
+			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLSM6DSV);
 
 	public static final ConfigOptionDetailsSensor configOptionLSM6DSVGyroLpm = new ConfigOptionDetailsSensor(
@@ -1080,8 +1083,9 @@ public class SensorLSM6DSV extends AbstractSensor{
 				returnValue = getAccelRange();
 	        	break;
 			case(GuiLabelConfig.LSM6DSV_GYRO_RATE):
-				returnValue = Double.toString((double)Math.round(getLSM6DSVGyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
-	        	break;
+				//returnValue = Double.toString((double)Math.round(getLSM6DSVGyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
+				int configValue = getLSM6DSVGyroAccelRate(); 
+				returnValue = configValue;			break;
 			case(GuiLabelConfig.LSM6DSV_GYRO_RATE_HZ):
 				returnValue = getLSM6DSVGyroAccelRateInHz();
 				break;
@@ -1262,18 +1266,11 @@ public class SensorLSM6DSV extends AbstractSensor{
 	 * @return the mMPU9X50GyroAccelRate in Hz
 	 */
 	public double getLSM6DSVGyroAccelRateInHz() {
-		/*
-		// Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7), and 1kHz when the DLPF is enabled
-		double numerator = 1000.0;
-		if(mLSM6DSVLPF == 0) {
-			numerator = 8000.0;
+	
+		if(ArrayUtils.contains(ListofLSM6DSVGyroRateConfigValues, mLSM6DSVGyroAccelRate)){
+			return ListofLSM6DSVGyroRateDouble[mLSM6DSVGyroAccelRate];
 		}
-		if(getLSM6DSVGyroAccelRate() == 0) {
-			return numerator;
-		}
-		else {
-			return (numerator / (getLSM6DSVGyroAccelRate()+1));
-		}*/
+
 		return mLSM6DSVGyroAccelRate;
 	}
 	
