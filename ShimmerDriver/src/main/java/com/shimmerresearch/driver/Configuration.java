@@ -1313,6 +1313,7 @@ public class Configuration {
 			private static final ShimmerVerObject svoAnyIntExpBoardAndSdlog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoAnyIntExpBoardAndBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoAnyIntExpBoardAndLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			private static final ShimmerVerObject svoAnyIntExpBoardAndLogAndStream3R = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
 			private static final ShimmerVerObject svoNoIntExpBoardSdLog = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.NONE);
 
@@ -1386,6 +1387,7 @@ public class Configuration {
 			private static final ShimmerVerObject svoAdxl377Accel200GSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
 			private static final ShimmerVerObject svoAdxl377Accel200GBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
 			private static final ShimmerVerObject svoAdxl377Accel200GLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
+			private static final ShimmerVerObject svoShimmer3RAdxl377Accel200GLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
 
 			//for using in shimmer test
 			public static final ShimmerVerObject svoInShimmerTestLogAndStream =	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,16,7);
@@ -1444,12 +1446,12 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog,svoAnyIntExpBoardAndBtStream,svoAnyIntExpBoardAndLogAndStream,
-					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq,
+					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq, svoAnyIntExpBoardAndLogAndStream3R,
 					svoShimmer4Stock, svoArduino, svoSweatch, svoStrokare); 
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBattVoltage = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog,svoAnyIntExpBoardAndBtStream,svoAnyIntExpBoardAndLogAndStream,
-					svoShimmer4Stock,
+					svoAnyIntExpBoardAndLogAndStream3R, svoShimmer4Stock,
 					svoSweatch);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
@@ -1605,15 +1607,43 @@ public class Configuration {
 					svoProto3DeluxeSdLog, svoProto3DeluxeBtStream, svoProto3DeluxeLogAndStream, 
 					svoAdxl377Accel200GSdLog, svoAdxl377Accel200GBtStream, svoAdxl377Accel200GLogAndStream, 
 					svoShimmer4Stock);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA10 = Arrays.asList(
+					svoShimmer3RProto3MiniNewImuLogAndStream, 
+					svoShimmer3RProto3DeluxeNewImuLogAndStream, 
+					svoShimmer3RGsrNewImuLogAndStream, 
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RAdxl377Accel200GLogAndStream,
+					svoShimmer4Stock);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA15 = Arrays.asList(
+					svoShimmer3RProto3MiniNewImuLogAndStream, 
+					svoShimmer3RProto3DeluxeNewImuLogAndStream, 
+					svoShimmer3RGsrNewImuLogAndStream, 
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RAdxl377Accel200GLogAndStream,
+					svoShimmer4Stock);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA16 = Arrays.asList(
+					svoShimmer3RProto3MiniNewImuLogAndStream, 
+					svoShimmer3RProto3DeluxeNewImuLogAndStream, 
+					svoShimmer3RAdxl377Accel200GLogAndStream, 
+					svoShimmer4Stock);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA17 = Arrays.asList(
+					svoShimmer3RProto3MiniNewImuLogAndStream, 
+					svoShimmer3RProto3DeluxeNewImuLogAndStream, 
+					svoShimmer3RAdxl377Accel200GLogAndStream, 
+					svoShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntAdcsGeneral = Arrays.asList(
 					svoGsrSdLog, svoGsrBtStream, svoGsrLogAndStream, 
 					svoGsrUnifiedSdLog, svoGsrUnifiedBtStream, svoGsrUnifiedLogAndStream,
-					svoShimmer4Stock);
+					svoShimmer3RGsrUnifiedNewImuLogAndStream, svoShimmer3RGsrNewImuLogAndStream, svoShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExtAdcs = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog, svoAnyIntExpBoardAndBtStream, svoAnyIntExpBoardAndLogAndStream,
-					svoShimmer4Stock);
+					svoAnyIntExpBoardAndLogAndStream3R, svoShimmer4Stock);
 			
 //			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExtAdcs = Arrays.asList(
 //					svoNewImuSdLog, svoNewImuLogAndStream, 
@@ -1677,7 +1707,7 @@ public class Configuration {
 	        aMap.putAll(SensorShimmerClock.mSensorMapRef);
 
 			aMap.putAll(SensorGSR.mSensorMapRef);
-			aMap.putAll(SensorADC.mSensorMapRef);
+			aMap.putAll(SensorADC.mSensorMapRef3r);
 			aMap.putAll(SensorBattVoltage.mSensorMapRef);
 //			aMap.putAll(SensorBMP180.mSensorMapRef);
 			aMap.putAll(SensorEXG.mSensorMapRef);

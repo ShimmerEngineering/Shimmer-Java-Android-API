@@ -50,10 +50,17 @@ public class SensorADC extends AbstractSensor {
 		public static final String EXT_EXP_A7 = "Ext A7";
 		public static final String EXT_EXP_A6 = "Ext A6";
 		public static final String EXT_EXP_A15 = "Ext A15";
+		public static final String EXT_EXP_A9 = "Ext A9";
+		public static final String EXT_EXP_A11 = "Ext A11";
+		public static final String EXT_EXP_A12 = "Ext A12";
 		public static final String INT_EXP_A12 = "Int A12";
 		public static final String INT_EXP_A13 = "Int A13";
 		public static final String INT_EXP_A14 = "Int A14";
 		public static final String INT_EXP_A1 = "Int A1";
+		public static final String INT_EXP_A10 = "Int A10";
+		public static final String INT_EXP_A15 = "Int A15";
+		public static final String INT_EXP_A16 = "Int A16";
+		public static final String INT_EXP_A17 = "Int A17";
 	}
 	
 	// GUI Sensor Tiles
@@ -97,10 +104,10 @@ public class SensorADC extends AbstractSensor {
 		public static String EXT_EXP_ADC_A9 = "Ext_Exp_A9";
 		public static String EXT_EXP_ADC_A11 = "Ext_Exp_A11";
 		public static String EXT_EXP_ADC_A12 = "Ext_Exp_A12";
-		public static String INT_EXP_ADC_A17 = "Ext_Exp_A17";
-		public static String INT_EXP_ADC_A10 = "Ext_Exp_A10";
-		public static String INT_EXP_ADC_A15 = "Ext_Exp_A15";
-		public static String INT_EXP_ADC_A16 = "Ext_Exp_A16";
+		public static String INT_EXP_ADC_A17 = "Int_Exp_A17";
+		public static String INT_EXP_ADC_A10 = "Int_Exp_A10";
+		public static String INT_EXP_ADC_A15 = "Int_Exp_A15";
+		public static String INT_EXP_ADC_A16 = "Int_Exp_A16";
 	}
 	
 	
@@ -175,6 +182,24 @@ public class SensorADC extends AbstractSensor {
 			null,
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A15), 
+			false);
+	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A9Ref = new SensorDetailsRef(0x02<<(0*8), 0x02<<(0*8), GuiLabelSensors.EXT_EXP_A9,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs,
+			null,
+			null,
+			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A9), 
+			false);
+	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A11Ref = new SensorDetailsRef(0x01<<(0*8), 0x01<<(0*8), GuiLabelSensors.EXT_EXP_A11,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs,
+			null,
+			null,
+			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A11), 
+			false);
+	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A12Ref = new SensorDetailsRef(0x08<<(1*8), 0x08<<(1*8), GuiLabelSensors.EXT_EXP_A12,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs,
+			null,
+			null,
+			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A12), 
 			false);
 
 	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A1Ref = new SensorDetailsRef(0x04<<(1*8), 0x04<<(1*8), GuiLabelSensors.INT_EXP_A1,
@@ -282,6 +307,115 @@ public class SensorADC extends AbstractSensor {
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
 			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A14), 
 			false);
+	
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A17Ref = new SensorDetailsRef(
+			0x04<<(1*8), 
+			0x04<<(1*8), 
+			GuiLabelSensors.INT_EXP_A17,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA17,
+			Arrays.asList(
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A1,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.HOST_SKIN_TEMPERATURE_PROBE,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT
+					),
+			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
+			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A17), 
+			false);
+	
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A10Ref = new SensorDetailsRef(
+			0x02<<(1*8), 
+			0x02<<(1*8), 
+			GuiLabelSensors.INT_EXP_A10,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA10,
+			Arrays.asList(
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A12,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A13,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A12,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A13,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
+			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
+			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A10), 
+			false);
+	
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A15Ref = new SensorDetailsRef(
+			0x01<<(1*8), 
+			0x01<<(1*8), 
+			GuiLabelSensors.INT_EXP_A15,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA15,
+			Arrays.asList(
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A12,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_A13,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A12,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_A13,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
+			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
+			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A15), 
+			false);
+	
+	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A16Ref = new SensorDetailsRef(
+			0x80<<(2*8), 
+			0x80<<(2*8), 
+			GuiLabelSensors.INT_EXP_A16,
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA16,
+			Arrays.asList(
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_DUMMY,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A1,
+					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_A14,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+					Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+					Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_16BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG1_24BIT,
+//					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
+			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
+			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A16), 
+			false);
 
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
     static {
@@ -296,6 +430,21 @@ public class SensorADC extends AbstractSensor {
 		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14, sensorADC_INT_EXP_ADC_A14Ref);
 
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
+    }
+    
+    public static final Map<Integer, SensorDetailsRef> mSensorMapRef3r;
+    static {
+        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A7, sensorADC_EXT_EXP_ADC_A9Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A6, sensorADC_EXT_EXP_ADC_A11Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A15, sensorADC_EXT_EXP_ADC_A12Ref);
+		
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1, sensorADC_INT_EXP_ADC_A17Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12, sensorADC_INT_EXP_ADC_A10Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13, sensorADC_INT_EXP_ADC_A15Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14, sensorADC_INT_EXP_ADC_A16Ref);
+
+		mSensorMapRef3r = Collections.unmodifiableMap(aMap);
     }
 
     public static final SensorGroupingDetails sensorGroupExternalExpansionADCs = new SensorGroupingDetails(
@@ -495,7 +644,7 @@ public class SensorADC extends AbstractSensor {
 	@Override
 	public void generateSensorMap() {
 		if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
-			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef3r);
+			super.createLocalSensorMapWithCustomParser(mSensorMapRef3r, mChannelMapRef3r);
 		}
 		else {
 			super.createLocalSensorMapWithCustomParser(mSensorMapRef, mChannelMapRef);
