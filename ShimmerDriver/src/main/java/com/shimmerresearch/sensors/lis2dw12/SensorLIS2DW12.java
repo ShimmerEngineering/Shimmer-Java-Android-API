@@ -121,7 +121,7 @@ public class SensorLIS2DW12 extends AbstractSensor {
 			UtilShimmer.UNICODE_PLUS_MINUS + " 16g"
 	};  
 	
-	public static final double[][] DefaultAlignmentLIS2DW12 = {{0,-1,0},{1,0,0},{0,0,-1}};	
+	public static final double[][] DefaultAlignmentLIS2DW12 = {{0,-1,0},{-1,0,0},{0,0,-1}};	
 	public static final double[][] DefaultAlignmentMatrixWideRangeAccelShimmer3R = DefaultAlignmentLIS2DW12;
 	
 	public static final double[][] DefaultOffsetVectorWideRangeAccelShimmer3R = {{0},{0},{0}};
