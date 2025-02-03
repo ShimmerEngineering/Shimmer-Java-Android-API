@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -19,6 +20,7 @@ import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.FormatCluster;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
@@ -28,19 +30,26 @@ public class ShimmerJavaClass {
     private String comPort;
     private SensorDataReceived sdr = new SensorDataReceived();
     private String[] channelNames;
-    private final Queue<float[]> dataQueue = new ConcurrentLinkedQueue<float[]>();
+    private Queue<Object[]> dataQueue = new LinkedList<>();
+    private List<float[]> collectedData = new ArrayList<>();
+    private String[] signalNameArray;
+    private String[] signalFormatArray;
+    private String[] signalUnitArray;
+//    private int rowIndex = 0;
+    Object[] currentData = null;
     public static BasicShimmerBluetoothManagerPc mBluetoothManager = new BasicShimmerBluetoothManagerPc();
 	
     public ShimmerJavaClass() {
         sdr.setWaitForData(mBluetoothManager.callBackObject);
+        mBluetoothManager.addCallBack(sdr);
+        System.out.println("Callback Registered");
+        System.out.flush();
     }
     
     public static void main(String[] args) {
         ShimmerJavaClass example = new ShimmerJavaClass();
         example.createAndShowGUI();
     }
-
-    
     
     public void createAndShowGUI() {
         JFrame frame = new JFrame("Shimmer Device Controller");
@@ -122,28 +131,32 @@ public class ShimmerJavaClass {
         return channelNamesList.toArray(new String[0]);
     }
 
-    public float receiveData(String channel) { //Receive data for specific Object Cluster
-        float[] data = dataQueue.poll();
-		for (int i = 0; i < channelNames.length; i++) {
-		    if (channelNames[i].equals(channel)) {
-		        return data[i];
-		    }
-		}
-        return Float.NaN;
-    }
-    
-    public float[] receiveData() { //Receive data for all Object Cluster
-        float[] data = dataQueue.poll();
-        return data;
-    }
+   public Object[] receiveData() {
+       while (!dataQueue.isEmpty()) {
+           Object[] currentData = dataQueue.poll();
 
-    private void sendData(float[] data) {
+           float[] newData = (float[]) currentData[0];
+           signalNameArray = (String[]) currentData[1];
+           signalFormatArray = (String[]) currentData[2];
+           signalUnitArray = (String[]) currentData[3];
+
+           collectedData.add(newData);
+       }
+
+       // Convert list to 2D float array (m × n)
+       float[][] dataMatrix = collectedData.toArray(new float[0][0]);
+
+       return new Object[]{dataMatrix, signalNameArray, signalFormatArray, signalUnitArray};
+   }
+
+    private void sendData(Object[] data) {
         dataQueue.add(data);
     }
     
     public void readData() { //Test receive data for all Object Cluster
-    	float[] data = receiveData();
-    	System.out.println("Timestamp : " + data[4] + "\nAccel_LN_X : " + data[0]);
+    	Object[] data = receiveData();
+    	System.out.println("New Data : " + data[0] + "\tChannel Name  : " + data[1]
+    			+ "\tFormat : " + data[2] + "\tUnit : " + data[3]);
     }
 
     public class SensorDataReceived extends BasicProcessWithCallBack {
@@ -157,13 +170,22 @@ public class ShimmerJavaClass {
                 CallbackObject callbackObject = (CallbackObject) object;
 
                 if (callbackObject.mState == BT_STATE.CONNECTING) {
+                    System.out.println("Device State Change: " + callbackObject.mState);
+                    System.out.flush();
                 	
                 } else if (callbackObject.mState == BT_STATE.CONNECTED) {
+                    System.out.println("Device State Change: " + callbackObject.mState);
+                    System.out.flush();
+                    if (comPort == null) {
+                    	comPort = callbackObject.mComPort;
+                    }
                 	channelNames = retrieveSensorChannels();
                 	for(String channel : channelNames) {
                 		System.out.println(channel);
                 	}
                 } else if (callbackObject.mState == BT_STATE.DISCONNECTED || callbackObject.mState == BT_STATE.CONNECTION_LOST) {
+                    System.out.println("Device State Change: " + callbackObject.mState);
+                    System.out.flush();
 
                 }
             } else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
@@ -171,12 +193,24 @@ public class ShimmerJavaClass {
             } else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
                 ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
 
-                float[] data = new float[channelNames.length];
+                float[] newData = new float[channelNames.length];
+                String[] signalNameArray = new String[channelNames.length];
+                String[] signalFormatArray = new String[channelNames.length];
+                String[] signalUnitArray = new String[channelNames.length];
+                
                 for (int i = 0; i < channelNames.length; i++) {
-                    data[i] = (float) objc.getFormatClusterValue(channelNames[i], "CAL");
+                    FormatCluster formatCluster = objc.getFormatCluster(channelNames[i], "CAL");
+                    if (formatCluster != null) {
+                        newData[i] = (float) formatCluster.mData;
+                        signalNameArray[i] = channelNames[i];
+                        signalFormatArray[i] = formatCluster.mFormat;
+                        signalUnitArray[i] = formatCluster.mUnits;
+                    }
                 }
+                
+                Object[] outputData = { newData, signalNameArray, signalFormatArray, signalUnitArray };
 
-                sendData(data);
+                sendData(outputData);
             }
         }
     }

@@ -247,6 +247,15 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		return getFormatClusterValue(channelDetails.mObjectClusterName, channelType.toString());
 	}
 	
+	public FormatCluster getFormatCluster(String channelName, String format) 
+	{
+		FormatCluster formatCluster = getLastFormatCluster(channelName, format);
+		if(formatCluster!=null){
+			return formatCluster;
+		}
+		return null;
+	}
+	
 //	public double getFormatClusterValue(ChannelDetails channelDetails, String format){
 //		return getFormatClusterValue(channelDetails.mObjectClusterName, format);
 //	}
