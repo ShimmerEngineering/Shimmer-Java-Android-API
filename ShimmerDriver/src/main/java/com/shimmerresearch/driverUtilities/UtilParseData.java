@@ -122,6 +122,10 @@ public class UtilParseData {
 
 				formattedData[i]=(int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8));
 				iData=iData+2;
+			} else if (dataType[i]=="u14") {
+
+				formattedData[i]=(int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8));
+				iData=iData+2;
 			} else if (dataType[i]=="i12>") {
 				formattedData[i]=calculatetwoscomplement((int)((int)(data[iData] & 0xFF) + ((int)(data[iData+1] & 0xFF) << 8)),16);
 				formattedData[i]=formattedData[i]>>4; // shift right by 4 bits
@@ -217,6 +221,14 @@ public class UtilParseData {
 				long lsb =(((long)data[iData+1] & 0xFF));
 				formattedData[i]=(1-2*offset)*(eigthmsb + seventhmsb + sixthmsb + fifthmsb+ forthmsb+ thirdmsb + msb + lsb);
 				iData=iData+9;
+			}else if (dataType[i]=="i12*>") {
+			    // MSB byte shifted left 4-bits or'd with upper 4-bits of LSB byte which are bit-shifted right by 4
+			    formattedData[i] = ((long)(data[iData] & 0xFF) << 4) | ((long)(data[iData + 1] & 0xFF) >> 4);
+			    
+			    // Two's complement on the resulting 12-bit number
+			    formattedData[i] = calculatetwoscomplement(formattedData[i], 12);
+			    
+			    iData = iData + 2;
 			}
 		return formattedData;
 	}

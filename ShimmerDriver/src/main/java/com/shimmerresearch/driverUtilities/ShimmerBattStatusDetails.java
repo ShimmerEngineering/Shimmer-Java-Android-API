@@ -49,10 +49,10 @@ public class ShimmerBattStatusDetails implements Serializable {
 	
 	public class CHARGING_STATUS_BYTE{
 		//This are bits that come directly from the Battery Charging chips output pins
-		public static final int SUSPENDED = 0x00;
+		public static final int SUSPENDED = 0xC0;
 		public static final int FULLY_CHARGED = 0x40;
 		public static final int PRECONDITIONING = 0x80;
-		public static final int BAD_BATTERY = 0xC0;
+		public static final int BAD_BATTERY = 0x00;
 		 //Added for devices that don't support the above status bits
 		public static final int UNKNOWN = 0xFF;
 	}

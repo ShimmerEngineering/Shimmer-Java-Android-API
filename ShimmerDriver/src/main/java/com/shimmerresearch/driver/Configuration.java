@@ -81,14 +81,20 @@ import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.sensors.ShimmerStreamingProperties;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP180;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
+import com.shimmerresearch.sensors.bmpX80.SensorBMP390;
 import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
+import com.shimmerresearch.sensors.lisxmdl.SensorLIS2MDL;
+import com.shimmerresearch.sensors.lisxmdl.SensorLIS3MDL;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
+import com.shimmerresearch.sensors.adxl371.SensorADXL371;
+import com.shimmerresearch.sensors.lsm6dsv.SensorLSM6DSV;
+import com.shimmerresearch.sensors.lis2dw12.SensorLIS2DW12;
 import com.shimmerresearch.verisense.sensors.SensorLSM6DS3;
-import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
+//import com.shimmerresearch.verisense.sensors.SensorLIS2DW12;
 import com.shimmerresearch.verisense.sensors.SensorBattVoltageVerisense;
 import com.shimmerresearch.verisense.sensors.SensorGSRVerisense;
 import com.shimmerresearch.verisense.sensors.SensorMAX86916;
@@ -584,6 +590,13 @@ public class Configuration {
 			public static final int IntAdc12 				 = 0x11;
 			public static final int IntAdc13 				 = 0x12;
 			public static final int IntAdc14 				 = 0x13;
+			public static final int ExtAdc9					 = 0x0D;
+			public static final int ExtAdc11			     = 0x0E;
+			public static final int ExtAdc12 				 = 0x0F;
+			public static final int IntAdc17			     = 0x10;
+			public static final int IntAdc10 				 = 0x11;
+			public static final int IntAdc15 				 = 0x12;
+			public static final int IntAdc16 				 = 0x13;
 			public static final int XAlterAccel      		 = 0x14; //Alternative Accelerometer
 			public static final int YAlterAccel     		 = 0x15;
 			public static final int ZAlterAccel     		 = 0x16;
@@ -628,6 +641,8 @@ public class Configuration {
 			public static final int SENSOR_EXG1_16BIT		= 0x100000;
 			public static final int SENSOR_EXG2_16BIT		= 0x080000;
 			public static final int SENSOR_BRIDGE_AMP		= 0x8000;
+			public static final int SENSOR_ALT_ACCEL		= 0x400000; 
+			public static final int SENSOR_ALT_MAG		  	= 0X200000; 
 		}
 
 		public static final String[] ListofBluetoothBaudRates = {"115200","1200","2400","4800","9600","19200","38400","57600","230400","460800","921600"};
@@ -708,7 +723,16 @@ public class Configuration {
 			/** Shimmer3 Alternative magnetometer */
 			public static final int SHIMMER_MPU9X50_MAG = 34;
 			public static final int SHIMMER_MPU9X50_TEMP = 35;
-			public static final int SHIMMER_BMPX80_PRESSURE = 36;
+			public static final int SHIMMER_BMPX80_PRESSURE = 36;	//BMP180 and BMP280
+      
+			/** Shimmer3r Wide-Range Accelerometer **/
+			public static final int SHIMMER_LSM6DSV_ACCEL_LN = 37;
+			public static final int SHIMMER_LSM6DSV_GYRO = 38;			
+			public static final int SHIMMER_LIS2DW12_ACCEL_WR = 39;
+			public static final int SHIMMER_ADXL371_ACCEL_HIGHG = 40;
+			public static final int SHIMMER_LIS3MDL_MAG = 41;
+			public static final int SHIMMER_LIS2MDL_MAG_WR = 42;
+			public static final int SHIMMER_BMP390_PRESSURE = 43;
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
 //			public static final int SHIMMER_EXG2_24BIT = 4;
@@ -719,8 +743,8 @@ public class Configuration {
 			//public static final int SHIMMER_BMP180_TEMPERATURE = 23; // not yet implemented
 			//public static final int SHIMMER_MSP430_TEMPERATURE = 24; // not yet implemented
 			//public static final int SHIMMER_LSM303DLHC_TEMPERATURE = 26; // not yet implemented
-			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 
-			
+			//public static final int SHIMMER_MPU9150_MPL_TEMPERATURE = 1<<17; // same as SENSOR_SHIMMER3_MPU9150_TEMP 			
+
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_6DOF = 50;
 			public static final int SHIMMER_MPU9X50_MPL_QUAT_9DOF = 51;
 			public static final int SHIMMER_MPU9X50_MPL_EULER_6DOF = 52;
@@ -796,6 +820,10 @@ public class Configuration {
 			public final static int PPG_TO_HR1_12_13 			= 1 << 6; // (0*8 + 6);
 			public final static int PPG_TO_HR2_1_14 			= 1 << 7; // (0*8 + 7);
 			
+			public final static int PPG_10_15 					= 1 << 2; // (0*8 + 2);
+			public final static int PPG1_10_15 					= 1 << 3; // (0*8 + 3);
+			public final static int PPG2_17_16 					= 1 << 4; // (0*8 + 4);
+			
 			// -------------- Derived Channels Byte 1 -------------------
 			public final static int ACTIVITY_MODULE 			= 1 << 8; // (1*8 + 0);
 			
@@ -861,9 +889,9 @@ public class Configuration {
 			public static final String ENABLED_SENSORS = "Enabled Sensors Int";
 			public static final String ENABLED_SENSORS_IDS = "Enabled SensorsIds";
 
-			public static final String SD_BT_STREAM_WHEN_RECORDING = "<html>   SD Log and/or<br> Bluetooth Stream<html>";
-			public static final String SD_STREAM_WHEN_RECORDING = "<html>SD Log Recording<br>Only<html>";
-			public static final String SD_SYNC_STREAM_WHEN_RECORDING = "<html>   SD Log with<br> Inter-device Sync<html>";
+			public static final String SD_BT_STREAM_WHEN_RECORDING = "<html>SD Log and/or<br> Bluetooth Stream</html>";
+			public static final String SD_STREAM_WHEN_RECORDING = "<html>SD Log Recording<br>Only</html>";
+			public static final String SD_SYNC_STREAM_WHEN_RECORDING = "<html>SD Log with<br> Inter-device Sync</html>";
 			public static final String USER_BUTTON_START = "User Button";
 			public static final String UNDOCK_START = "Undock/Dock";
 			public static final String SINGLE_TOUCH_START = "Single Touch Start";
@@ -888,11 +916,18 @@ public class Configuration {
 		public enum LABEL_SENSOR_TILE{
 			STREAMING_PROPERTIES(SensorShimmerClock.LABEL_SENSOR_TILE.STREAMING_PROPERTIES),
 			LOW_NOISE_ACCEL(SensorKionixAccel.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL),
+			LOW_NOISE_ACCEL_3R(SensorLSM6DSV.LABEL_SENSOR_TILE.LOW_NOISE_ACCEL),
 			WIDE_RANGE_ACCEL(SensorLSM303.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL),
+			HIGH_G_ACCEL(SensorADXL371.LABEL_SENSOR_TILE.HIGH_G_ACCEL),
+			WIDE_RANGE_ACCEL_3R(SensorLIS2DW12.LABEL_SENSOR_TILE.WIDE_RANGE_ACCEL),
 			GYRO(SensorMPU9X50.LABEL_SENSOR_TILE.GYRO),
+			GYRO_3R(SensorLSM6DSV.LABEL_SENSOR_TILE.GYRO),
 			MAG(SensorLSM303.LABEL_SENSOR_TILE.MAG),
+			MAG_3R(SensorLIS3MDL.LABEL_SENSOR_TILE.MAG),
+			WIDE_RANGE_MAG_3R(SensorLIS2MDL.LABEL_SENSOR_TILE.WIDE_RANGE_MAG),
 			PRESSURE_TEMPERATURE_BMP180(SensorBMP180.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
+			PRESSURE_TEMPERATURE_BMP390(SensorBMP390.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			BATTERY_MONITORING(SensorBattVoltage.LABEL_SENSOR_TILE.BATTERY_MONITORING),
 			EXTERNAL_EXPANSION_ADC(SensorADC.LABEL_SENSOR_TILE.EXTERNAL_EXPANSION_ADC),
 			INTERNAL_EXPANSION_ADC(SensorADC.LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC),
@@ -925,6 +960,7 @@ public class Configuration {
 		//TODO Change over to sensor classes
 		public class GuiLabelSensors{
 //			public static final String ACCEL_LN = SensorKionixKXRB52042.GuiLabelSensors.ACCEL_LN;
+//			public static final String ACCEL_LN = SensorLSM6DSV.GuiLabelSensors.ACCEL_LN;
 			
 //			public static final String BATTERY = SensorBattVoltage.GuiLabelSensors.BATTERY;
 			
@@ -946,6 +982,7 @@ public class Configuration {
 			
 //			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
 			public static final String MAG = SensorLSM303DLHC.GuiLabelSensors.MAG;
+			public static final String WR_MAG_3R = SensorLIS2MDL.GuiLabelSensors.MAG_WR;
 
 //			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
 
@@ -980,6 +1017,8 @@ public class Configuration {
 			public static final String EULER_ANGLES_9DOF = "Euler Angles (9DOF)";   // needed in both MPU and Algorithm???
 
 			public static final String ADXL377_ACCEL_200G = "200g Accel";
+			
+			public static final String ADXL371_ACCEL_HIGHG = "High-G Accel";
 
 //			public static final String PPG_DUMMY = SensorPPG.GuiLabelSensors.PPG_DUMMY;
 //			public static final String PPG_A12 = SensorPPG.GuiLabelSensors.PPG_A12;
@@ -1070,6 +1109,21 @@ public class Configuration {
 			public static String INT_EXP_ADC_A12 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A12;
 			public static String INT_EXP_ADC_A13 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A13;
 			public static String INT_EXP_ADC_A14 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A14;
+			
+			public static String EXT_EXP_ADC_A9 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A9;
+			public static String EXT_EXP_ADC_A11 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A11;
+			public static String EXT_EXP_ADC_A12 = SensorADC.ObjectClusterSensorName.EXT_EXP_ADC_A12;
+			public static String INT_EXP_ADC_A17 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A17;
+			public static String INT_EXP_ADC_A10 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A10;
+			public static String INT_EXP_ADC_A15 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A15;
+			public static String INT_EXP_ADC_A16 = SensorADC.ObjectClusterSensorName.INT_EXP_ADC_A16;
+			
+			public static  String ACCEL_HIGHG_X = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_X;
+			public static  String ACCEL_HIGHG_Y = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Y;
+			public static  String ACCEL_HIGHG_Z= SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Z;
+			public static  String MAG_WR_X = SensorLIS2MDL.ObjectClusterSensorName.MAG_WR_X;
+			public static  String MAG_WR_Y = SensorLIS2MDL.ObjectClusterSensorName.MAG_WR_Y;
+			public static  String MAG_WR_Z= SensorLIS2MDL.ObjectClusterSensorName.MAG_WR_Z;
 			
 			public static String BRIDGE_AMP_HIGH = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_HIGH;
 			public static String BRIDGE_AMP_LOW = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_LOW;
@@ -1259,6 +1313,7 @@ public class Configuration {
 			private static final ShimmerVerObject svoAnyIntExpBoardAndSdlog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoAnyIntExpBoardAndBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoAnyIntExpBoardAndLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
+			private static final ShimmerVerObject svoAnyIntExpBoardAndLogAndStream3R = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 
 			private static final ShimmerVerObject svoNoIntExpBoardSdLog = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.NONE);
 
@@ -1271,10 +1326,13 @@ public class Configuration {
 			private static final ShimmerVerObject svoNewImuLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.SHIMMER3, NEW_IMU_EXP_REV.IMU);
 			private static final ShimmerVerObject svoNewImuAnyExpBrdSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,15,1,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.ANY_EXP_BRD_WITH_SPECIAL_REV);
 			private static final ShimmerVerObject svoNewImuAnyExpBrdLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.IMU);
-
+			private static final ShimmerVerObject svoShimmer3RNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.SHIMMER3, NEW_IMU_EXP_REV.IMU);
+			private static final ShimmerVerObject svoShimmer3RNewImuAnyExpBrdLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.IMU);
+		
 			public static final ShimmerVerObject svoShimmer3RLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			public static final ShimmerVerObject svoShimmer3RSDLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.SDLOG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-			
+			public static final ShimmerVerObject svoShimmer3LogAndStreamWithSDLogSyncSupport = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,16,11,ShimmerVerDetails.ANY_VERSION);
+
 			private static final ShimmerVerObject svoShimmerGq802154Lr = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_LR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoShimmerGq802154Nr = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_NR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			private static final ShimmerVerObject svoShimmer2rGq = 			new ShimmerVerObject(HW_ID.SHIMMER_2R_GQ,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
@@ -1287,7 +1345,8 @@ public class Configuration {
 			private static final ShimmerVerObject svoExgLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_EXG);
 			private static final ShimmerVerObject svoExgUnifiedLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED);
 			private static final ShimmerVerObject svoExgUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED, NEW_IMU_EXP_REV.EXG_UNIFIED);
-			
+			private static final ShimmerVerObject svoShimmer3RExgUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED, NEW_IMU_EXP_REV.EXG_UNIFIED);
+
 			private static final ShimmerVerObject svoGsrSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_GSR);
 			private static final ShimmerVerObject svoGsrUnifiedSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
 			private static final ShimmerVerObject svoGsrUnifiedNewImuSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,15,1,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, NEW_IMU_EXP_REV.GSR_UNIFIED);
@@ -1298,9 +1357,8 @@ public class Configuration {
 			private static final ShimmerVerObject svoGsrUnifiedNewImuLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, NEW_IMU_EXP_REV.GSR_UNIFIED);
 			private static final ShimmerVerObject svoGsrGqBle = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.GQ_BLE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR);
 			private static final ShimmerVerObject svoGsrUnifiedGqBle = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.GQ_BLE,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED);
-			private static final ShimmerVerObject svoShimmer3RGsrUnifiedNewImuLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, NEW_IMU_EXP_REV.GSR_UNIFIED);
+			private static final ShimmerVerObject svoShimmer3RGsrUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED, NEW_IMU_EXP_REV.GSR_UNIFIED);
 			private static final ShimmerVerObject svoShimmer3RGsrNewImuLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,HW_ID_SR_CODES.EXP_BRD_GSR);
-			
 			
 			private static final ShimmerVerObject svoBrAmpSdLog = 			new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP);
 			private static final ShimmerVerObject svoBrAmpUnifiedSdLog = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED);
@@ -1310,22 +1368,26 @@ public class Configuration {
 			private static final ShimmerVerObject svoBrAmpLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_BR_AMP);
 			private static final ShimmerVerObject svoBrAmpUnifiedLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED);
 			private static final ShimmerVerObject svoBrAmpUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED, NEW_IMU_EXP_REV.BRIDGE_AMP);
-			
+			private static final ShimmerVerObject svoShimmer3RBrAmpUnifiedNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED, NEW_IMU_EXP_REV.BRIDGE_AMP);
+
 			private static final ShimmerVerObject svoProto3MiniSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI);
 			private static final ShimmerVerObject svoProto3MiniNewImuSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,15,1,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI, NEW_IMU_EXP_REV.PROTO3_MINI);
 			private static final ShimmerVerObject svoProto3MiniBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI);
 			private static final ShimmerVerObject svoProto3MiniLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI);
 			private static final ShimmerVerObject svoProto3MiniNewImuLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI, NEW_IMU_EXP_REV.PROTO3_MINI);
+			private static final ShimmerVerObject svoShimmer3RProto3MiniNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI, NEW_IMU_EXP_REV.PROTO3_MINI);
 
 			private static final ShimmerVerObject svoProto3DeluxeSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
 			private static final ShimmerVerObject svoProto3DeluxeNewImuSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,15,1,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, NEW_IMU_EXP_REV.PROTO3_DELUXE);
 			private static final ShimmerVerObject svoProto3DeluxeBtStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
 			private static final ShimmerVerObject svoProto3DeluxeLogAndStream =	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE);
 			private static final ShimmerVerObject svoProto3DeluxeNewImuLogAndStream =	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, NEW_IMU_EXP_REV.PROTO3_DELUXE);
+			private static final ShimmerVerObject svoShimmer3RProto3DeluxeNewImuLogAndStream =new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, NEW_IMU_EXP_REV.PROTO3_DELUXE);
 
 			private static final ShimmerVerObject svoAdxl377Accel200GSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,8,0,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
 			private static final ShimmerVerObject svoAdxl377Accel200GBtStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.BTSTREAM,0,5,0,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
 			private static final ShimmerVerObject svoAdxl377Accel200GLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,3,3,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
+			private static final ShimmerVerObject svoShimmer3RAdxl377Accel200GLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.EXP_BRD_ADXL377_ACCEL_200G);
 
 			//for using in shimmer test
 			public static final ShimmerVerObject svoInShimmerTestLogAndStream =	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,16,7);
@@ -1384,12 +1446,12 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoAnyExpBoardStandardFW = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog,svoAnyIntExpBoardAndBtStream,svoAnyIntExpBoardAndLogAndStream,
-					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq,
+					svoShimmerGq802154Lr, svoShimmerGq802154Nr, svoShimmer2rGq, svoAnyIntExpBoardAndLogAndStream3R,
 					svoShimmer4Stock, svoArduino, svoSweatch, svoStrokare); 
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBattVoltage = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog,svoAnyIntExpBoardAndBtStream,svoAnyIntExpBoardAndLogAndStream,
-					svoShimmer4Stock,
+					svoAnyIntExpBoardAndLogAndStream3R, svoShimmer4Stock,
 					svoSweatch);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoGsr = Arrays.asList(
@@ -1411,6 +1473,16 @@ public class Configuration {
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
 					svoShimmer4Stock);  
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP390 = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream,
+					svoShimmer4Stock);  
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoMPU9250 = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
@@ -1422,6 +1494,7 @@ public class Configuration {
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream,
 					svoShimmer4Stock);  
 
+			//Shimmer3 WR Accel & Mag
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM303AH = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
@@ -1430,12 +1503,43 @@ public class Configuration {
 					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
-
+			
+			//Shimmer3r Mag
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLISM3MDL = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r WR Mag
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2MDL = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r High-G Accel
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoADXL371 = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
 			//TODO need to update this list and remove "any"
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXRB52042 = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog, svoAnyIntExpBoardAndBtStream, svoAnyIntExpBoardAndLogAndStream,
 					svoShimmer4Stock);
 
+			//Shimmer3 LN Accel
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoKionixKXTC92050 = Arrays.asList(
 					svoNewImuSdLog, svoNewImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoNewImuAnyExpBrdSdLog, svoNewImuAnyExpBrdLogAndStream,
@@ -1444,6 +1548,26 @@ public class Configuration {
 					svoBrAmpUnifiedNewImuSdLog, svoBrAmpUnifiedNewImuLogAndStream,
 					svoProto3MiniNewImuSdLog, svoProto3MiniNewImuLogAndStream,
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r LN Accel & Gyro
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DSV = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
+			
+			//Shimmer3r WR Accel
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2DW12 = Arrays.asList(
+					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RExgUnifiedNewImuLogAndStream,
+					svoShimmer3RBrAmpUnifiedNewImuLogAndStream,
+					svoShimmer3RProto3MiniNewImuLogAndStream,
+					svoShimmer3RProto3DeluxeNewImuLogAndStream);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBrAmp = Arrays.asList(
 					svoBrAmpSdLog, svoBrAmpBtStream, svoBrAmpLogAndStream,  
@@ -1483,15 +1607,43 @@ public class Configuration {
 					svoProto3DeluxeSdLog, svoProto3DeluxeBtStream, svoProto3DeluxeLogAndStream, 
 					svoAdxl377Accel200GSdLog, svoAdxl377Accel200GBtStream, svoAdxl377Accel200GLogAndStream, 
 					svoShimmer4Stock);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA10 = Arrays.asList(
+					svoShimmer3RProto3MiniNewImuLogAndStream, 
+					svoShimmer3RProto3DeluxeNewImuLogAndStream, 
+					svoShimmer3RGsrNewImuLogAndStream, 
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RAdxl377Accel200GLogAndStream,
+					svoShimmer4Stock);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA15 = Arrays.asList(
+					svoShimmer3RProto3MiniNewImuLogAndStream, 
+					svoShimmer3RProto3DeluxeNewImuLogAndStream, 
+					svoShimmer3RGsrNewImuLogAndStream, 
+					svoShimmer3RGsrUnifiedNewImuLogAndStream,
+					svoShimmer3RAdxl377Accel200GLogAndStream,
+					svoShimmer4Stock);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA16 = Arrays.asList(
+					svoShimmer3RProto3MiniNewImuLogAndStream, 
+					svoShimmer3RProto3DeluxeNewImuLogAndStream, 
+					svoShimmer3RAdxl377Accel200GLogAndStream, 
+					svoShimmer4Stock);
+			
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntExpA17 = Arrays.asList(
+					svoShimmer3RProto3MiniNewImuLogAndStream, 
+					svoShimmer3RProto3DeluxeNewImuLogAndStream, 
+					svoShimmer3RAdxl377Accel200GLogAndStream, 
+					svoShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoIntAdcsGeneral = Arrays.asList(
 					svoGsrSdLog, svoGsrBtStream, svoGsrLogAndStream, 
 					svoGsrUnifiedSdLog, svoGsrUnifiedBtStream, svoGsrUnifiedLogAndStream,
-					svoShimmer4Stock);
+					svoShimmer3RGsrUnifiedNewImuLogAndStream, svoShimmer3RGsrNewImuLogAndStream, svoShimmer4Stock);
 
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExtAdcs = Arrays.asList(
 					svoAnyIntExpBoardAndSdlog, svoAnyIntExpBoardAndBtStream, svoAnyIntExpBoardAndLogAndStream,
-					svoShimmer4Stock);
+					svoAnyIntExpBoardAndLogAndStream3R, svoShimmer4Stock);
 			
 //			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoExtAdcs = Arrays.asList(
 //					svoNewImuSdLog, svoNewImuLogAndStream, 
@@ -1520,7 +1672,6 @@ public class Configuration {
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoShimmer4 = Arrays.asList(svoShimmer4Stock);
 			
-			
 		}
 
 
@@ -1544,6 +1695,28 @@ public class Configuration {
 			aMap.putAll(SensorPPG.mSensorMapRef);
 
 			mSensorMapRef = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<Integer, SensorDetailsRef> mSensorMapRef3r;
+	    static {
+	        Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
+
+//			aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SYSTEM_TIMESTAMP, ShimmerClock.sensorSystemTimeStampRef);
+//	        aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_TIMESTAMP, ShimmerClock.sensorShimmerClock);
+//	        aMap.put(Configuration.Shimmer3.SENSOR_ID.HOST_SHIMMER_STREAMING_PROPERTIES, ShimmerClock.sensorShimmerPacketReception);
+	        aMap.putAll(SensorShimmerClock.mSensorMapRef);
+
+			aMap.putAll(SensorGSR.mSensorMapRef);
+			aMap.putAll(SensorADC.mSensorMapRef3r);
+			aMap.putAll(SensorBattVoltage.mSensorMapRef);
+//			aMap.putAll(SensorBMP180.mSensorMapRef);
+			aMap.putAll(SensorEXG.mSensorMapRef);
+			// Derived Channels - Bridge Amp Board
+			aMap.putAll(SensorBridgeAmp.mSensorMapRef);
+			// Derived Channels - GSR Board/Proto3 Board
+			aMap.putAll(SensorPPG.mSensorMapRef3r);
+
+			mSensorMapRef3r = Collections.unmodifiableMap(aMap);
 	    }
 	    
 	    
@@ -1591,6 +1764,52 @@ public class Configuration {
 							Arrays.asList(CHANNEL_TYPE.CAL)));
 
 			mChannelMapRef = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<String, ChannelDetails> mChannelMapRef3r;
+	    static {
+	        Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
+	        
+			aMap.put(SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE, SensorBattVoltage.channelBattPercentage);
+	        
+			aMap.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, SensorShimmerClock.channelReceptionRateCurrent);
+			aMap.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, SensorShimmerClock.channelReceptionRateTrial);
+			
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.EVENT_MARKER, SensorShimmerClock.channelEventMarker);
+			
+			// All Information required for parsing each of the channels
+			//TODO incorporate 3 byte timestamp change for newer firmware
+			aMap.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP, SensorShimmerClock.channelShimmerClock2byte);
+			
+			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP, SensorShimmerClock.channelSystemTimestamp);
+			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorShimmerClock.channelSystemTimestampPlot);
+			
+			aMap.put(SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, SensorShimmerClock.channelRealTimeClock);
+//			aMap.put(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
+			aMap.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, SensorShimmerClock.channelShimmerClockOffset);
+//			aMap.putAll(ShimmerClock.mChannelMapRef);
+			
+
+			aMap.putAll(SensorBattVoltage.mChannelMapRef);
+			aMap.putAll(SensorADC.mChannelMapRef3r);
+			aMap.putAll(SensorBridgeAmp.mChannelMapRef);
+			aMap.putAll(SensorGSR.mChannelMapRef);
+			aMap.putAll(SensorEXG.mChannelMapRef);
+			aMap.putAll(SensorPPG.mChannelMapRef3r);
+
+			// Algorithm Channels
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.ECG_TO_HR_FW, SensorECGToHRFw.channelEcgToHrFw);
+			
+			//TODO remove below
+			aMap.put(Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR,
+					new ChannelDetails(
+							Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR,
+							Configuration.Shimmer3.ObjectClusterSensorName.PPG_TO_HR,
+							DatabaseChannelHandles.PPG_TO_HR,
+							CHANNEL_UNITS.BEATS_PER_MINUTE,
+							Arrays.asList(CHANNEL_TYPE.CAL)));
+
+			mChannelMapRef3r = Collections.unmodifiableMap(aMap);
 	    }
 
 
@@ -1682,6 +1901,96 @@ public class Configuration {
 			aMap.get(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION);
 			
 	        mSensorGroupingMapRef = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<Integer, SensorGroupingDetails> mSensorGroupingMapRef3r;
+	    static {
+	        Map<Integer, SensorGroupingDetails> aMap = new TreeMap<Integer, SensorGroupingDetails>();
+		
+			//Sensor Grouping for Configuration Panel 'tile' generation. 
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.STREAMING_PROPERTIES.ordinal(), SensorShimmerClock.sensorGroupStreamingProperties);
+
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BATTERY_MONITORING.ordinal(), SensorBattVoltage.sensorGroupBattVoltage);
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.EXTERNAL_EXPANSION_ADC.ordinal(), SensorADC.sensorGroupExternalExpansionADCs);
+			
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.GSR.ordinal(), new SensorGroupingDetails(
+					SensorGSR.LABEL_SENSOR_TILE.GSR,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_GSR,
+								Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY),
+	//							Configuration.Shimmer3.SENSOR_ID.PPG_A12,
+	//							Configuration.Shimmer3.SENSOR_ID.PPG_A13)
+			CompatibilityInfoForMaps.listOfCompatibleVersionInfoGsr));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.EXG.ordinal(), new SensorGroupingDetails(
+					SensorEXG.LABEL_SENSOR_TILE.EXG,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_ECG,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EMG,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_TEST,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_CUSTOM,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION,
+								Configuration.Shimmer3.SENSOR_ID.HOST_EXG_THREE_UNIPOLAR),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoExgGeneral));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_MINI.ordinal(), new SensorGroupingDetails(
+					SensorADC.LABEL_SENSOR_TILE.PROTO3_MINI,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Mini));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE.ordinal(), new SensorGroupingDetails(
+					SensorADC.LABEL_SENSOR_TILE.PROTO3_DELUXE,
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13,
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.ordinal(), new SensorGroupingDetails(
+					Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.getTileText(),
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.HOST_PPG1_DUMMY,
+								Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_DUMMY),
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoProto3Deluxe));
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER.ordinal(), SensorBridgeAmp.sensorGroupBrAmp);
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.BRIDGE_AMPLIFIER_SUPP.ordinal(), SensorBridgeAmp.sensorGroupBrAmpTemperature);
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.ADXL377_ACCEL_200G.ordinal(), new SensorGroupingDetails(
+					Configuration.Shimmer3.LABEL_SENSOR_TILE.ADXL377_ACCEL_200G.getTileText(),
+					Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12, //X-axis
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13, //Y-axis
+								Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14), //Z-axis
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAdxl377Accel200G)); //unused but accessible
+			aMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.INTERNAL_EXPANSION_ADC.ordinal(), SensorADC.sensorGroupInternalExpansionADCs);
+			
+			//Not implemented: GUI_LABEL_CHANNEL_GROUPING_GPS
+			
+			
+			// For loop to automatically inherit associated channel configuration options from mSensorMap in the aMap
+			for (SensorGroupingDetails sensorGroup:aMap.values()) {
+//				 Ok to clear here because variable is initiated in the class
+//				sensorGroup.mListOfConfigOptionKeysAssociated.clear();
+//				List<ShimmerVerObject> listOfCompatibleVersionInfo = new ArrayList<ShimmerVerObject>();
+				for (Integer sensor:sensorGroup.mListOfSensorIdsAssociated) {
+					SensorDetailsRef sensorDetails = Configuration.Shimmer3.mSensorMapRef3r.get(sensor);
+					if(sensorDetails!=null){
+						List<String> associatedConfigOptions = sensorDetails.mListOfConfigOptionKeysAssociated;
+						if (associatedConfigOptions != null) {
+							for (String configOption : associatedConfigOptions) {
+								// do not add duplicates
+								if (!(sensorGroup.mListOfConfigOptionKeysAssociated.contains(configOption))) {
+									sensorGroup.mListOfConfigOptionKeysAssociated.add(configOption);
+								}
+							}
+						}
+//						if(sensorDetails.mListOfCompatibleVersionInfo!=null){
+//							listOfCompatibleVersionInfo.addAll(sensorDetails.mListOfCompatibleVersionInfo);
+//						}
+					}
+				}
+//				sensorGroup.mListOfCompatibleVersionInfo = listOfCompatibleVersionInfo;
+			}
+			
+//			aMap.get(Configuration.Shimmer3.LABEL_SENSOR_TILE.GSR.ordinal()).mListOfConfigOptionKeysAssociated.add(Configuration.Shimmer3.GuiLabelConfig.PPG_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION);
+			aMap.get(Configuration.Shimmer3.LABEL_SENSOR_TILE.PROTO3_DELUXE_SUPP.ordinal()).mListOfConfigOptionKeysAssociated.add(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION);
+			
+	        mSensorGroupingMapRef3r = Collections.unmodifiableMap(aMap);
 	    }
 
 	    
@@ -1828,6 +2137,144 @@ public class Configuration {
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LOW_POWER_AUTOSTOP, configOptionLowPowerAutoStop);
 
 	        mConfigOptionsMapRef = Collections.unmodifiableMap(aMap);
+	    }
+	    
+	    public static final Map<String, ConfigOptionDetailsSensor> mConfigOptionsMapRef3r;
+	    static {
+	        Map<String, ConfigOptionDetailsSensor> aMap = new LinkedHashMap<String, ConfigOptionDetailsSensor>();
+	        
+			// Assemble the channel configuration options map
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SHIMMER_USER_ASSIGNED_NAME,
+					ShimmerDevice.DatabaseConfigHandle.SHIMMER_NAME,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SHIMMER_SAMPLING_RATE,
+					ShimmerDevice.DatabaseConfigHandle.SAMPLE_RATE,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SHIMMER_MAC_FROM_INFOMEM,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.BUFFER_SIZE,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.CONFIG_TIME,
+					ShimmerDevice.DatabaseConfigHandle.CONFIG_TIME,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.TRIAL_NAME,
+					ShimmerDevice.DatabaseConfigHandle.TRIAL_NAME,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_ID,
+					ShimmerDevice.DatabaseConfigHandle.TRIAL_ID,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_NUMBER_OF_SHIMMERS,
+					ShimmerDevice.DatabaseConfigHandle.N_SHIMMER,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_ESTIMATED,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_DURATION_MAXIMUM,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.BROADCAST_INTERVAL,
+					ShimmerDevice.DatabaseConfigHandle.BROADCAST_INTERVAL,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.TEXTFIELD,
+					new ArrayList(){}));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE,
+					ShimmerDevice.DatabaseConfigHandle.BAUD_RATE,
+					Configuration.Shimmer3.ListofBluetoothBaudRates, 
+					Configuration.Shimmer3.ListofBluetoothBaudRatesConfigValues, 
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoStreaming));
+			
+			aMap.put(SensorGSR.GuiLabelConfig.GSR_RANGE, SensorGSR.configOptionGsrRange);
+
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_GAIN, SensorEXG.configOptionExgGain);
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_RESOLUTION, SensorEXG.configOptionExgResolution);
+
+			//Advanced ExG		
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_REFERENCE_ELECTRODE, SensorEXG.configOptionExgRefElectrode);
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_BYTES, SensorEXG.configOptionExgBytes);
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_RATE, SensorEXG.configOptionExgRate);
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_DETECTION, SensorEXG.configOptionExgLeadOffDetection);
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_CURRENT, SensorEXG.configOptionExgLeadOffCurrent);
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_LEAD_OFF_COMPARATOR, SensorEXG.configOptionExgLeadOffComparator);
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_RESOLUTION, SensorEXG.configOptionExgResolution);
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_FREQ, SensorEXG.configOptionExgRespirationDetectFreq);
+			aMap.put(SensorEXG.GuiLabelConfig.EXG_RESPIRATION_DETECT_PHASE, SensorEXG.configOptionExgRespirationDetectPhase);
+
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.USER_BUTTON_START,
+					ShimmerDevice.DatabaseConfigHandle.USER_BUTTON,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoLogging));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.SINGLE_TOUCH_START,
+					ShimmerDevice.DatabaseConfigHandle.SINGLE_TOUCH_START,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_MASTER_SHIMMER,
+					ShimmerDevice.DatabaseConfigHandle.MASTER_CONFIG,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.EXPERIMENT_SYNC_WHEN_LOGGING,
+					ShimmerDevice.DatabaseConfigHandle.SYNC_CONFIG,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoSdLog));
+
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.KINEMATIC_LPM,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardStandardFW));
+			
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_BOOLEAN,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX));
+
+			aMap.put(SensorPPG.GuiLabelConfig.PPG_ADC_SELECTION, SensorPPG.configOptionPpgAdcSelection3r);
+			aMap.put(SensorPPG.GuiLabelConfig.PPG1_ADC_SELECTION, SensorPPG.configOptionPpg1AdcSelection3r);
+			aMap.put(SensorPPG.GuiLabelConfig.PPG2_ADC_SELECTION, SensorPPG.configOptionPpg2AdcSelection3r);
+	        
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_RTC,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12),
+							new ShimmerVerObject(FW_ID.SDLOG, 0, 11, 3))));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.ENABLE_ERROR_LEDS_SD,
+					null,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 7, 12))));
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.TCXO, new ConfigOptionDetailsSensor(
+					Configuration.Shimmer3.GuiLabelConfig.TCXO,
+					ShimmerDevice.DatabaseConfigHandle.TXCO,
+					ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw));
+
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LOW_POWER_AUTOSTOP, configOptionLowPowerAutoStop);
+
+	        mConfigOptionsMapRef3r = Collections.unmodifiableMap(aMap);
 	    }
 	}
 	

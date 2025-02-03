@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.shimmerresearch.algorithms.AlgorithmDetails;
+import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.driver.Configuration;
 import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerDevice;
@@ -291,8 +292,12 @@ public class OrientationModule9DOF extends OrientationModule {
 			(DerivedSensorsBitMask.ORIENTATION_9DOF_LN_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_LN_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO,
-					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG),
 					CHANNEL_UNITS.NO_UNITS,
+					SENSOR_CHECK_METHOD.ANY,
 					listChannelsEuler9DOF_LN);
 
 	public static final AlgorithmDetails algo9DoFOrientation_WR_Acc = new AlgorithmDetails(
@@ -310,8 +315,12 @@ public class OrientationModule9DOF extends OrientationModule {
 			(DerivedSensorsBitMask.ORIENTATION_9DOF_WR_QUAT|DerivedSensorsBitMask.ORIENTATION_9DOF_WR_EULER), 
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO,
-					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO,
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG),
 					CHANNEL_UNITS.NO_UNITS,
+					SENSOR_CHECK_METHOD.ANY,
 					listChannelsQuat9DOF_WR);
 
 
