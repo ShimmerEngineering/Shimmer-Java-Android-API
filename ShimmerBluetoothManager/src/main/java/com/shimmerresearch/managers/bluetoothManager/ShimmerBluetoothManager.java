@@ -55,6 +55,7 @@ public abstract class ShimmerBluetoothManager{
 	protected static final boolean USE_INFOMEM_CONFIG_METHOD = true;
 	public static final long SLEEP_BETWEEN_GROUP_ACTIONS_MS = 50;
 	public static final String COMPORT_PREFIX = "COM";
+	public static final String COMPORT_PREFIX_MAC = "/dev/";
 	protected int mSyncTrainingIntervalInSeconds = 15;
 	protected int msDelayBetweenSetCommands = 0;
 	protected BluetoothProgressReportAll mProgressReportAll;
@@ -502,7 +503,7 @@ public abstract class ShimmerBluetoothManager{
 	}
 
 	protected BluetoothDeviceDetails getBluetoothDeviceDetails(String connectionHandle){
-		if (!connectionHandle.contains(COMPORT_PREFIX)) {
+		if (!connectionHandle.contains(COMPORT_PREFIX) && !connectionHandle.contains(COMPORT_PREFIX_MAC)) {
 			return getBLEDeviceDetails(connectionHandle);
 		}
     	return mMapOfParsedBtComPorts.get(connectionHandle);
@@ -835,7 +836,7 @@ public abstract class ShimmerBluetoothManager{
 						if (shimmerDevice!=null && !(shimmerDevice instanceof ShimmerShell)){
 							printMessage("Connecting to " + shimmerDevice.getClass().getSimpleName() + " with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 							if(connectThroughComPort){
-								if (!comPort.contains(COMPORT_PREFIX)) {
+								if (!comPort.contains(COMPORT_PREFIX) && !comPort.contains(COMPORT_PREFIX_MAC)) {
 									connectShimmer3BleGrpc(bluetoothDetails);
 								}else {
 									connectExistingShimmer(shimmerDevice, comPort, bluetoothAddress);
