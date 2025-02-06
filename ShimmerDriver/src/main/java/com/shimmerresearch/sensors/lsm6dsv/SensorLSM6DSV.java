@@ -634,7 +634,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	}
 	
 	public boolean checkIfAMpuGyroOrAccelEnabled(){
-		if(isSensorEnabled(mSensorIdGyro)) {
+		if(isSensorEnabled(mSensorIdGyro) || isSensorEnabled(mSensorIdAccelLN)) {
 			return true;
 		}
 //		if(isSensorEnabled(mSensorIdAccel)) {
@@ -1165,7 +1165,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	@Override
 	public void checkShimmerConfigBeforeConfiguring() {
-		if(!isSensorEnabled(mSensorIdGyro)){
+		if(!(isSensorEnabled(mSensorIdGyro) || isSensorEnabled(mSensorIdAccelLN))) {
 			setDefaultLSM6DSVGyroSensorConfig(false);
 		}
 	}
