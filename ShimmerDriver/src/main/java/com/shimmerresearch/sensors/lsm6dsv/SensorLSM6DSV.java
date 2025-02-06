@@ -656,7 +656,10 @@ public class SensorLSM6DSV extends AbstractSensor{
 	 * @return int the rate configuration setting for the respective sensor
 	 */
 	public int setLSM6DSVGyroAccelRateFromFreq(double freq) {
-		boolean isEnabled = isSensorEnabled(mSensorIdGyro);
+		boolean isEnabled = false;
+		if(isSensorEnabled(mSensorIdGyro) || isSensorEnabled(mSensorIdAccelLN)) {
+			isEnabled = true;
+		}
 		setLSM6DSVGyroAccelRate(getGyroRateFromFreqForSensor(isEnabled, freq, mLowPowerGyro));		
 		return mLSM6DSVGyroAccelRate;			
 	}
