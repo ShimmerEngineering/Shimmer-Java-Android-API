@@ -92,6 +92,7 @@ public class EnableLowPowerModeDialog {
 
 					AssembleShimmerConfig.generateSingleShimmerConfig(clone, COMMUNICATION_TYPE.BLUETOOTH);
 					bluetoothManager.configureShimmer(clone);
+			 		dialog.dispose();
 
 				} else {
 					JOptionPane.showMessageDialog(dialog, "Device not in a connected state!", "Info",
