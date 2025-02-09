@@ -16,6 +16,7 @@ import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.grpc.ShimmerGRPC;
+import com.shimmerresearch.guiUtilities.configuration.EnableLowPowerModeDialog;
 import com.shimmerresearch.guiUtilities.configuration.EnableSensorsDialog;
 import com.shimmerresearch.guiUtilities.configuration.SensorConfigDialog;
 import com.shimmerresearch.guiUtilities.configuration.SignalsToPlotDialog;
@@ -81,11 +82,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	JLabel lblFilePath;
 	LoggingPC lpc;
 	JCheckBox chckbxWriteDataToFile;
-	JCheckBox cbEnableMagLP;
-	JCheckBox cbEnableGyroLP;
-	JCheckBox cbEnableWRAccelLP;
 	String[] options = {"Shimmer3", "Verisense"};
-	boolean isLPModeCBUpdated = false;
 	/**
 	 * Initialize the contents of the frame
 	 * @wbp.parser.entryPoint
@@ -132,7 +129,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		JButton btnDisconnect = new JButton("DISCONNECT");
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				isLPModeCBUpdated = false;
 				btManager.disconnectShimmer(btComport);
 				
 			}
@@ -140,62 +136,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		btnDisconnect.setToolTipText("disconnect from Shimmer device");
 		btnDisconnect.setBounds(520, 56, 187, 31);
 		frame.getContentPane().add(btnDisconnect);
-		
-		cbEnableMagLP = new JCheckBox("Enable Mag LP Mode");  
-		cbEnableMagLP.setBounds(900,30, 300,50);  
-		cbEnableMagLP.setSelected(false);
-		frame.getContentPane().add(cbEnableMagLP);
-
-        cbEnableWRAccelLP = new JCheckBox("Enable WR Accel LP Mode", true);  
-        cbEnableWRAccelLP.setBounds(900,65, 300,50);  
-        cbEnableWRAccelLP.setSelected(false);
-		frame.getContentPane().add(cbEnableWRAccelLP);
-
-        cbEnableGyroLP = new JCheckBox("Enable Gyro LP Mode", true);  
-        cbEnableGyroLP.setBounds(900,100, 300,50); 
-        cbEnableGyroLP.setSelected(false);
-		frame.getContentPane().add(cbEnableGyroLP);
-		
-		JButton btnSaveLPMode = new JButton("Save LP Mode");
-		btnSaveLPMode.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-
-				ShimmerDevice SD = btManager.getShimmerDeviceBtConnected(btComport);
-				boolean connected = false;
-				if (SD!=null) {
-					if (SD instanceof VerisenseDevice) {
-						VerisenseDevice vd = (VerisenseDevice) SD;
-						if (vd.getBluetoothRadioState().equals(BT_STATE.CONNECTED)){
-							connected = true;
-						}
-						
-			            
-					} else {
-						ShimmerBluetooth sb = (ShimmerBluetooth) SD;
-						if (sb.getBluetoothRadioState().equals(BT_STATE.CONNECTED)){
-							connected = true;
-						}
-					}
-				}
-				if(connected) {
-					ShimmerDevice cloneDevice = SD.deepClone();
-					
-					cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_LP, cbEnableMagLP.isSelected());
-					cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO, SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM, cbEnableGyroLP.isSelected());
-					cloneDevice.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR, SensorLIS2DW12.GuiLabelConfig.LIS2DW12_ACCEL_LPM, cbEnableWRAccelLP.isSelected());
-
-					AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
-	                btManager.configureShimmer(cloneDevice);
-				
-			} else {
-				JOptionPane.showMessageDialog(frame, "Device not in a connected state!", "Info", JOptionPane.WARNING_MESSAGE);
-			}	
-				
-			}
-		});
-		btnSaveLPMode.setBounds(900, 150, 150, 25);
-		frame.getContentPane().add(btnSaveLPMode);
 		
 		JLabel lblShimmerStatus = new JLabel("Shimmer Status");
 		lblShimmerStatus.setBounds(10, 139, 144, 23);
@@ -302,6 +242,40 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			}
 		});
 		mnTools.add(mntmSignalsToPlot);
+	
+		
+		JMenuItem mntmLowPowerMode = new JMenuItem("Low Power Mode");
+		mntmLowPowerMode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				ShimmerDevice SD = btManager.getShimmerDeviceBtConnected(btComport);
+				boolean connected = false;
+				if (SD!=null) {
+					if (SD instanceof VerisenseDevice) {
+						VerisenseDevice vd = (VerisenseDevice) SD;
+						if (vd.getBluetoothRadioState().equals(BT_STATE.CONNECTED)){
+							connected = true;
+						}
+						
+			            
+					} else {
+						ShimmerBluetooth sb = (ShimmerBluetooth) SD;
+						if (sb.getBluetoothRadioState().equals(BT_STATE.CONNECTED)){
+							connected = true;
+						}
+					}
+				}
+				if(connected) {
+					EnableLowPowerModeDialog lpModeDialog = new EnableLowPowerModeDialog(((ShimmerDevice)btManager.getShimmerDeviceBtConnected(btComport)),btManager);
+					lpModeDialog.showDialog();
+				
+			} else {
+				JOptionPane.showMessageDialog(frame, "Device not in a connected state!", "Info", JOptionPane.WARNING_MESSAGE);
+			}	
+				
+			}
+		});
+		mnTools.add(mntmLowPowerMode);
 		
 		JButton btnStartStreaming = new JButton("START STREAMING");
 		btnStartStreaming.addActionListener(new ActionListener() {
@@ -500,22 +474,6 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
                     timer = new Timer();
                 }
 				textPaneStatus.setText("connected");
-				if(!isLPModeCBUpdated) {
-					ShimmerDevice cloneDevice = btManager.getShimmerDeviceBtConnected(btComport).deepClone();
-					if(cloneDevice.getHardwareVersion()==HW_ID.SHIMMER_3R) {
-				        cbEnableGyroLP.setText("Enable LN Accel and Gyro LP Mode");
-					}
-					boolean isLowPowerMagEnabled = Boolean.valueOf(cloneDevice.getConfigGuiValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_LP));
-					cbEnableMagLP.setSelected(isLowPowerMagEnabled);
-					
-					boolean isLowPowerGyroEnabled = Boolean.valueOf(cloneDevice.getConfigGuiValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO, SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM));
-					cbEnableGyroLP.setSelected(isLowPowerGyroEnabled);
-
-					boolean isLowPowerWRAccelEnabled = Boolean.valueOf(cloneDevice.getConfigGuiValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR, SensorLIS2DW12.GuiLabelConfig.LIS2DW12_ACCEL_LPM));
-					cbEnableWRAccelLP.setSelected(isLowPowerWRAccelEnabled);
-					
-					isLPModeCBUpdated = true;
-				}
 
 				//shimmer = (ShimmerPC) btManager.getShimmerDeviceBtConnected(btComport);
 //				shimmerDevice = btManager.getShimmerDeviceBtConnected(btComport);
