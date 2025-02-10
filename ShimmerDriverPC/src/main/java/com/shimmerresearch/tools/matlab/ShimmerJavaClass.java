@@ -18,10 +18,14 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
+import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.FormatCluster;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
@@ -60,6 +64,7 @@ public class ShimmerJavaClass {
 
         JTextField inputComPort = new JTextField("COM3");
         JButton connectButton = new JButton("Connect");
+        JButton configureButton = new JButton("Configure");
         JButton disconnectButton = new JButton("Disconnect");
         JButton startButton = new JButton("Start Streaming");
         JButton stopButton = new JButton("Stop Streaming");
@@ -69,6 +74,17 @@ public class ShimmerJavaClass {
             public void actionPerformed(ActionEvent e) {
             	comPort = inputComPort.getText();
             	mBluetoothManager.connectShimmerThroughCommPort(comPort);
+            }
+        });
+        
+        configureButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	ShimmerDevice cloneDevice = mBluetoothManager.getShimmerDeviceBtConnected(comPort).deepClone();
+            	cloneDevice.setIsAlgorithmEnabledAndSyncGroup("LN_Acc_9DoF", "9DOF", true);
+				AssembleShimmerConfig.generateSingleShimmerConfig(cloneDevice, COMMUNICATION_TYPE.BLUETOOTH);
+				mBluetoothManager.configureShimmer(cloneDevice);
+		 		
             }
         });
 
@@ -111,6 +127,7 @@ public class ShimmerJavaClass {
 
         panel.add(inputComPort);
         panel.add(connectButton);
+        panel.add(configureButton); //testing to enable the algorithm
         panel.add(disconnectButton);
         panel.add(startButton);
         panel.add(stopButton);
@@ -118,17 +135,86 @@ public class ShimmerJavaClass {
         
         frame.setVisible(true);
     }
-
-       public String[] retrieveSensorChannels() {
-        LinkedHashMap<String, ChannelDetails> mapOfAllChannels = mBluetoothManager.getShimmerDeviceBtConnected(comPort).getMapOfAllChannelsForStoringToDB(COMMUNICATION_TYPE.BLUETOOTH, null, false, false);
-        List<ChannelDetails> listOfChannelDetails = new ArrayList<ChannelDetails>(mapOfAllChannels.values());
-
-        List<String> channelNamesList = new ArrayList<String>();
-        for (ChannelDetails channel : listOfChannelDetails) {
-            channelNamesList.add(channel.mObjectClusterName);
+    
+    public int getSensorId(String sensorName) {
+    	Integer hwVersion = mBluetoothManager.getShimmerDeviceBtConnected(comPort).getHardwareVersion();
+        switch (sensorName) {
+            case "LowNoiseAccel":
+                return (hwVersion == HW_ID.SHIMMER_3R) ? 
+                        Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN : 
+                        Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL;
+            case "WideRangeAccel":
+                return (hwVersion == HW_ID.SHIMMER_3R) ? 
+                        Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR : 
+                        Shimmer3.SENSOR_ID.SHIMMER_LSM303_ACCEL;
+            case "AlternativeAccel":
+                return (hwVersion == HW_ID.SHIMMER_3R) ? 
+                        Shimmer3.SENSOR_ID.SHIMMER_ADXL371_ACCEL_HIGHG : 
+                        Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_ACCEL;
+            case "Gyro":
+                return (hwVersion == HW_ID.SHIMMER_3R) ? 
+                        Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO : 
+                        Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_GYRO;
+            case "Mag":
+                return (hwVersion == HW_ID.SHIMMER_3R) ? 
+                        Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG : 
+                        Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG;
+            case "AlternativeMag":
+                return (hwVersion == HW_ID.SHIMMER_3R) ? 
+                        Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG_WR : 
+                        	Shimmer3.SENSOR_ID.SHIMMER_MPU9X50_MAG;
+            case "ECG":
+                return Shimmer3.SENSOR_ID.HOST_ECG;
+            case "EMG":
+                return Shimmer3.SENSOR_ID.HOST_EMG;
+            case "EXG":
+                return Shimmer3.SENSOR_ID.HOST_EXG_TEST;
+            case "GSR":
+                return Shimmer3.SENSOR_ID.SHIMMER_GSR;
+            case "EXT A7":
+            case "EXT A9":
+                return Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A7;
+            case "EXT A6":
+            case "EXT A11":
+                return Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A6;
+            case "EXT A15":
+            case "EXT A2":
+                return Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A15;
+            case "Bridge Amplifier":
+                return Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP;
+            case "BattVolt":
+                return Shimmer3.SENSOR_ID.SHIMMER_VBATT;
+            case "INT A1":
+            case "INT A7":
+                return Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1;
+            case "INT A12":
+            case "INT A10":
+                return Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12;
+            case "INT A13":
+            case "INT A15":
+                return Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13;
+            case "INT A14":
+            case "INT A16":
+                return Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14;
+            case "Pressure":
+                return (hwVersion == HW_ID.SHIMMER_3R) ? 
+                        Shimmer3.SENSOR_ID.SHIMMER_BMP390_PRESSURE : 
+                        Shimmer3.SENSOR_ID.SHIMMER_BMPX80_PRESSURE;
+            default:
+                throw new IllegalArgumentException("Invalid Sensor Name");
         }
+    }
 
-        return channelNamesList.toArray(new String[0]);
+   public String[] retrieveSensorChannels() {
+		LinkedHashMap<String, ChannelDetails> mapOfAllChannels = mBluetoothManager.getShimmerDeviceBtConnected(comPort).getMapOfAllChannelsForStoringToDB(COMMUNICATION_TYPE.BLUETOOTH, null, false, false);
+		List<ChannelDetails> listOfChannelDetails = new ArrayList<ChannelDetails>(mapOfAllChannels.values());
+		
+		List<String> channelNamesList = new ArrayList<String>();
+		for (ChannelDetails channel : listOfChannelDetails) {
+		    channelNamesList.add(channel.mObjectClusterName);
+		}
+
+    return channelNamesList.toArray(new String[0]);
     }
 
    public Object[] receiveData() {
