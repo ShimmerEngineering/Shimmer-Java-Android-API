@@ -290,7 +290,7 @@ public class Configuration {
 		public static final String[] ListofMagRange={"+/- 0.8Ga","+/- 1.3Ga","+/- 1.9Ga","+/- 2.5Ga","+/- 4.0Ga","+/- 4.7Ga","+/- 5.6Ga","+/- 8.1Ga"};
 		public static final String[] ListofGSRRange={"10kOhm to 56kOhm","56kOhm to 220kOhm","220kOhm to 680kOhm","680kOhm to 4.7MOhm","Auto Range"};
 
-		public class SENSOR_ID{
+		public static class SENSOR_ID{
 			public static final int ACCEL = 0;
 			public static final int GYRO = 1;
 			public static final int MAG = 2;
@@ -677,7 +677,7 @@ public class Configuration {
 		 * data packets. The firmware also uses the IMU IDs as Sensor IDs in the
 		 * IMU/BMP calibration bytes. 
 		 */
-		public class SENSOR_ID{
+		public static class SENSOR_ID{
 			public static final int RESERVED_ANY_SENSOR = -1;
 			
 			public static final int HOST_SHIMMER_STREAMING_PROPERTIES = -100;
