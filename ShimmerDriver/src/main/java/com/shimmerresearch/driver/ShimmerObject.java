@@ -6456,7 +6456,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		this.mButtonStart = state;
 	}
 	
-	protected void setDisableBluetooth(int state) {
+	public void setDisableBluetooth(int state) {
 		this.mDisableBluetooth = state;
 	}
 
