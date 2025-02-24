@@ -149,6 +149,8 @@ public class ShimmerJavaClass {
     }
 
    public Object[] receiveData() {
+	   collectedData.clear(); 
+	   
        while (!dataQueue.isEmpty()) {
            Object[] currentData = dataQueue.poll();
 
