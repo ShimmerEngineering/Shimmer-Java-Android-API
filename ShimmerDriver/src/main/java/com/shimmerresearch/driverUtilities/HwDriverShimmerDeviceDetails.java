@@ -77,6 +77,11 @@ public class HwDriverShimmerDeviceDetails {
 //	}
 	
     public static final class SH_SEARCH {
+    	
+    	public static final String[] BASIC_DOCK_OSX = new String[] {
+    			"SHIMMER USB READER",
+    	};
+    	
         public static final String[] DOCK = new String[] {
     		"Shimmer Dock",
         };
