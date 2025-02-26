@@ -505,6 +505,7 @@ public class ShimmerVerObject implements Serializable {
 				|| hwVer == HW_ID.SHIMMER_2 
 				|| hwVer == HW_ID.SHIMMER_2R
 				|| hwVer == HW_ID.SHIMMER_3 
+				|| hwVer == HW_ID.SHIMMER_3R 
 				|| hwVer == HW_ID.SHIMMER_GQ_BLE 
 				|| hwVer == HW_ID.SHIMMER_GQ_802154_LR 
 				|| hwVer == HW_ID.SHIMMER_GQ_802154_NR 
