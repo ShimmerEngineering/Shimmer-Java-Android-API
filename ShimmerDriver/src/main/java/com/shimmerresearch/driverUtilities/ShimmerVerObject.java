@@ -440,6 +440,7 @@ public class ShimmerVerObject implements Serializable {
 		if ((hwVer==HW_ID.SHIMMER_3 && fwId == FW_ID.SDLOG)
 				|| (hwVer==HW_ID.SHIMMER_3 && fwId == FW_ID.LOGANDSTREAM)
 				|| (hwVer==HW_ID.SHIMMER_3 && fwId == FW_ID.STROKARE)
+				|| (hwVer==HW_ID.SHIMMER_3R)
 				|| (hwVer==HW_ID.SHIMMER_GQ_BLE && fwId == FW_ID.GQ_BLE)
 //				|| hwVer==HW_ID.SHIMMER_GQ_802154_NR
 //				|| hwVer==HW_ID.SHIMMER_GQ_802154_LR
