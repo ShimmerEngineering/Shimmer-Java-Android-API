@@ -410,7 +410,8 @@ public class ShimmerVerObject implements Serializable {
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
 				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)
+				|| (hwVer==HW_ID.SHIMMER_3R)){
 			return true;
 		}
 		return false;
@@ -713,6 +714,7 @@ public class ShimmerVerObject implements Serializable {
 				(svo.getHardwareVersion()==HW_ID.SHIMMER_3 
 				&& ebd.getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED 
 				&& ebd.getExpansionBoardRev()>=4)
+				|| (svo.getHardwareVersion()==HW_ID.SHIMMER_3R && ebd.getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED )
 			){
 			return true;
 		}
