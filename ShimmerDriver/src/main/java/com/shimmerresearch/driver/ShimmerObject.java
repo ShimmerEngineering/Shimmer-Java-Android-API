@@ -1347,8 +1347,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					) {
 				int iA7;
 				if (mShimmerVerObject.isShimmerGen3R()) {
-					iA7 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A9);
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A9,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA7]);
+					iA7 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_ADC_0);
+					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_ADC_0,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA7]);
 				}
 				else {
 					iA7 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7);
@@ -1361,7 +1361,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					calibratedData[iA7]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 					if (mShimmerVerObject.isShimmerGen3R()) {
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A9,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_ADC_0,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]);
 					}
 					else {
 						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A7,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA7]);
@@ -1376,8 +1376,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					) {
 				int iA6;
 				if (mShimmerVerObject.isShimmerGen3R()) {
-					iA6 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A11);
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A11,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA6]);
+					iA6 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_ADC_1);
+					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_ADC_1,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA6]);
 				}
 				else {
 					iA6 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6);
@@ -1390,7 +1390,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					calibratedData[iA6]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 					if (mShimmerVerObject.isShimmerGen3R()) {
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A11,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA6]);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_ADC_1,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA6]);
 					}
 					else {
 						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A6,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA6]);
@@ -1405,8 +1405,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					) {
 				int iA15;
 				if (mShimmerVerObject.isShimmerGen3R()) {
-					iA15 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A12);
-					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A12,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA15]);
+					iA15 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_ADC_2);
+					objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_ADC_2,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iA15]);
 				}
 				else {
 					iA15 = getSignalIndex(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15);
@@ -1420,7 +1420,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (mEnableCalibration){
 					calibratedData[iA15]=SensorADC.calibrateU12AdcValueToMillivolts(tempData[0],0,3,1);
 					if (mShimmerVerObject.isShimmerGen3R()) {
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A12,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA15]);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_ADC_2,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA15]);
 					}
 					else {
 						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A15,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MILLIVOLTS,calibratedData[iA15]);
@@ -1436,8 +1436,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					int iA1;
 					String sensorName;
 					if (mShimmerVerObject.isShimmerGen3R()) {
-						iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A17);
-						sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A17;
+						iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_ADC_3);
+						sensorName = Shimmer3.ObjectClusterSensorName.INT_ADC_3;
 					}
 					else {
 						iA1 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A1);
@@ -1480,8 +1480,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				int iA12;
 				String sensorName;
 				if (mShimmerVerObject.isShimmerGen3R()) {
-					iA12 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A10);
-					sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A10;
+					iA12 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_ADC_0);
+					sensorName = Shimmer3.ObjectClusterSensorName.INT_ADC_0;
 				}
 				else {
 					iA12 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A12);
@@ -1493,9 +1493,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					//change name based on derived sensor value
 					if(isShimmerGen3R()) {
 						if ((mDerivedSensors & DerivedSensorsBitMask.PPG_10_15)>0){
-							sensorName = SensorPPG.ObjectClusterSensorName.PPG_A10;
+							sensorName = SensorPPG.ObjectClusterSensorName.PPG_A0;
 						} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_10_15)>0){
-							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A10;
+							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A0;
 						}
 					}else {
 						if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
@@ -1524,8 +1524,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				int iA13;
 				String sensorName;
 				if (mShimmerVerObject.isShimmerGen3R()) {
-					iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A15);
-					sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A15;
+					iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_ADC_1);
+					sensorName = Shimmer3.ObjectClusterSensorName.INT_ADC_1;
 				}
 				else {
 					iA13 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A13);
@@ -1537,9 +1537,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					//change name based on derived sensor value
 					if(isShimmerGen3R()) {
 						if ((mDerivedSensors & DerivedSensorsBitMask.PPG_10_15)>0){
-							sensorName = SensorPPG.ObjectClusterSensorName.PPG_A15;
+							sensorName = SensorPPG.ObjectClusterSensorName.PPG_A1;
 						} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_10_15)>0){
-							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A15;
+							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A1;
 						}
 					}else {
 						if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
@@ -1567,8 +1567,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				int iA14;
 				String sensorName;
 				if (mShimmerVerObject.isShimmerGen3R()) {
-					iA14 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A16);
-					sensorName = Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A16;
+					iA14 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_ADC_2);
+					sensorName = Shimmer3.ObjectClusterSensorName.INT_ADC_2;
 				}
 				else {
 					iA14 = getSignalIndex(Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A14);
@@ -1581,7 +1581,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if ((mDerivedSensors & DerivedSensorsBitMask.PPG2_1_14)>0){
 						sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A14;
 					} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG2_17_16)>0){
-						sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A16;
+						sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A2;
 					}
 				}
 				sensorNames[iA14]=sensorName;
@@ -3210,7 +3210,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if ((byte)signalId[i]==(byte)0x0D){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
-						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A9;
+						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_ADC_0;
 						signalDataTypeArray[i+1] = "u14";
 					}
 					else {
@@ -3231,7 +3231,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if ((byte)signalId[i]==(byte)0x0E){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
-						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A11;
+						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_ADC_1;
 						signalDataTypeArray[i+1] = "u14";
 					}
 					else {
@@ -3252,7 +3252,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if ((byte)signalId[i]==(byte)0x0F){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
-						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_EXP_ADC_A12;
+						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.EXT_ADC_2;
 						signalDataTypeArray[i+1] = "u14";
 					}
 					else {
@@ -3272,7 +3272,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if ((byte)signalId[i]==(byte)0x10){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
-						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A17;
+						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_ADC_3;
 						signalDataTypeArray[i+1] = "u14";
 					}
 					else {
@@ -3293,7 +3293,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if ((byte)signalId[i]==(byte)0x11){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
-						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A10;
+						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_ADC_0;
 						signalDataTypeArray[i+1] = "u14";
 					}
 					else {
@@ -3314,7 +3314,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if ((byte)signalId[i]==(byte)0x12){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
-						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A15;
+						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_ADC_1;
 						signalDataTypeArray[i+1] = "u14";
 					}
 					else {
@@ -3340,7 +3340,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			else if ((byte)signalId[i]==(byte)0x13){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					if (getHardwareVersion()==HW_ID.SHIMMER_3R) {
-						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_EXP_ADC_A16;
+						signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.INT_ADC_2;
 						signalDataTypeArray[i+1] = "u14";
 					}
 					else {
