@@ -6578,10 +6578,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		getCurrentCalibDetailsAccelWr().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
 	
-	public void parseCalibParamFromPacketAccelAlt(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
-		getCurrentCalibDetailsAccelWr().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
-	}
-	
 	public void getCurrentCalibDetailsAccelAlt(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 		getCurrentCalibDetailsAccelAlt().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
