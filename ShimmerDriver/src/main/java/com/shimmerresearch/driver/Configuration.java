@@ -1327,11 +1327,10 @@ public class Configuration {
 			private static final ShimmerVerObject svoNewImuLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,HW_ID_SR_CODES.SHIMMER3, NEW_IMU_EXP_REV.IMU);
 			private static final ShimmerVerObject svoNewImuAnyExpBrdSdLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.SDLOG,0,15,1,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.ANY_EXP_BRD_WITH_SPECIAL_REV);
 			private static final ShimmerVerObject svoNewImuAnyExpBrdLogAndStream = 	new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,8,1,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.IMU);
-			private static final ShimmerVerObject svoShimmer3RNewImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.SHIMMER3, NEW_IMU_EXP_REV.IMU);
-			private static final ShimmerVerObject svoShimmer3RNewImuAnyExpBrdLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.IMU);
+			private static final ShimmerVerObject svoShimmer3RImuLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,HW_ID_SR_CODES.SHIMMER3, NEW_IMU_EXP_REV.IMU);
+			private static final ShimmerVerObject svoShimmer3RImuAnyExpBrdLogAndStream = new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,0,1,0,ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, NEW_IMU_EXP_REV.IMU);
 		
 			public static final ShimmerVerObject svoShimmer3RLogAndStream = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
-			public static final ShimmerVerObject svoShimmer3RSDLog = 		new ShimmerVerObject(HW_ID.SHIMMER_3R,FW_ID.SDLOG,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
 			public static final ShimmerVerObject svoShimmer3LogAndStreamWithSDLogSyncSupport = 		new ShimmerVerObject(HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,16,11,ShimmerVerDetails.ANY_VERSION);
 
 			private static final ShimmerVerObject svoShimmerGq802154Lr = 	new ShimmerVerObject(HW_ID.SHIMMER_GQ_802154_LR,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION,ShimmerVerDetails.ANY_VERSION);
@@ -1475,8 +1474,8 @@ public class Configuration {
 					svoShimmer4Stock);  
 			
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoBMP390 = Arrays.asList(
-					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
-					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedLogAndStream,
 					svoShimmer3RExgUnifiedLogAndStream,
 					svoShimmer3RBrAmpUnifiedLogAndStream,
@@ -1505,8 +1504,8 @@ public class Configuration {
 			
 			//Shimmer3r Mag
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLISM3MDL = Arrays.asList(
-					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
-					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedLogAndStream,
 					svoShimmer3RExgUnifiedLogAndStream,
 					svoShimmer3RBrAmpUnifiedLogAndStream,
@@ -1514,8 +1513,8 @@ public class Configuration {
 			
 			//Shimmer3r WR Mag
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2MDL = Arrays.asList(
-					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
-					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedLogAndStream,
 					svoShimmer3RExgUnifiedLogAndStream,
 					svoShimmer3RBrAmpUnifiedLogAndStream,
@@ -1523,8 +1522,8 @@ public class Configuration {
 			
 			//Shimmer3r High-G Accel
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoADXL371 = Arrays.asList(
-					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
-					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedLogAndStream,
 					svoShimmer3RExgUnifiedLogAndStream,
 					svoShimmer3RBrAmpUnifiedLogAndStream,
@@ -1547,8 +1546,8 @@ public class Configuration {
 			
 			//Shimmer3r LN Accel & Gyro
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLSM6DSV = Arrays.asList(
-					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
-					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedLogAndStream,
 					svoShimmer3RExgUnifiedLogAndStream,
 					svoShimmer3RBrAmpUnifiedLogAndStream,
@@ -1556,8 +1555,8 @@ public class Configuration {
 			
 			//Shimmer3r WR Accel
 			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2DW12 = Arrays.asList(
-					svoShimmer3RNewImuLogAndStream, svoShimmer3RLogAndStream,  
-					svoShimmer3RNewImuAnyExpBrdLogAndStream,
+					svoShimmer3RImuLogAndStream, svoShimmer3RLogAndStream,  
+					svoShimmer3RImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedLogAndStream,
 					svoShimmer3RExgUnifiedLogAndStream,
 					svoShimmer3RBrAmpUnifiedLogAndStream,
