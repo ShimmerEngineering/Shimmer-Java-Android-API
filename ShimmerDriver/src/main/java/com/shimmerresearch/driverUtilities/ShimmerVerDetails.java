@@ -76,7 +76,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID.SHIMMER_2, "Shimmer2");
         aMap.put(HW_ID.SHIMMER_2R, "Shimmer2r");
         aMap.put(HW_ID.SHIMMER_3, "Shimmer3");
-        aMap.put(HW_ID.SHIMMER_3R, "Shimmer3r");
+        aMap.put(HW_ID.SHIMMER_3R, "Shimmer3R");
         aMap.put(HW_ID.SHIMMER_SR30, "Shimmer_SR30");
         aMap.put(HW_ID.SHIMMER_GQ_BLE, "ShimmerGQBle");
         aMap.put(HW_ID.SWEATCH, "SwEatch");
