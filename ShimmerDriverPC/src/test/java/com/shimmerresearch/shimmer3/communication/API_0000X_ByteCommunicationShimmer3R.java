@@ -16,6 +16,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -81,7 +82,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	}
     	
     	System.out.println(mDevice.getHardwareVersionParsed());
-    	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3r")) {
+    	if (!mDevice.getHardwareVersionParsed().equals(ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID.SHIMMER_3R))) {
     		assert(false);
     	}
     	if(!mByteCommunicationSimulatorS3R.isGetPressureCalibrationCoefficientsCommand) {
