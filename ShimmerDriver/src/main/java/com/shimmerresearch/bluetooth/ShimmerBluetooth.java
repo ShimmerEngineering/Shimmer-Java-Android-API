@@ -1089,7 +1089,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/** process responses to in-stream response */
-	protected void processInstreamResponse(boolean clearCrcBytes) {
+	protected void processInstreamResponse(boolean shouldClearCrcFromBuffer) {
 		boolean responseWasParsed = true;
 		
 		byte[] inStreamResponseCommandBuffer = readBytes(1, INSTREAM_CMD_RESPONSE);
@@ -1145,7 +1145,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				responseWasParsed = false;
 			}
 			
-			if (clearCrcBytes && mBtCommsCrcModeCurrent != BT_CRC_MODE.OFF && responseWasParsed) {
+			if (shouldClearCrcFromBuffer && mBtCommsCrcModeCurrent != BT_CRC_MODE.OFF && responseWasParsed) {
 				// The driver doesn't currently support checking of CRC bytes on any response
 				// other then data packets but we still need to clear them from the buffer if
 				// CRC is enabled.
