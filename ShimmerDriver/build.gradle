@@ -93,7 +93,7 @@ dependencies {
     api group: 'com.google.protobuf', name: 'protobuf-java', version: '3.4.0'
 
     // https://mvnrepository.com/artifact/io.grpc/grpc-all
-    api group: 'io.grpc', name: 'grpc-all', version: '1.32.1'
+    api group: 'io.grpc', name: 'grpc-all', version: '1.71.0'
     
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
     api group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.6'
