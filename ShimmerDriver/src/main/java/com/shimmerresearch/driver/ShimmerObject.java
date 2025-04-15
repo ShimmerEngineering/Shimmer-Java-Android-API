@@ -841,6 +841,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			numAdditionalChannels += 1;
 		} 
 		else {
+			if (fwType == COMMUNICATION_TYPE.SD && getHardwareVersion()==HW_ID.SHIMMER_3R) {
+				//plus 1 because of: timestamp, because we are no longer relying on interpretdatapacketformat within ShimmerSDLog
+				numAdditionalChannels += 1;
+			}
+			
 			if (!isRtcDifferenceSet()){
 				//sd log time stamp already included in mnChannels
 			} 
@@ -2922,23 +2927,47 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void interpretDataPacketFormat(int numChannels, byte[] signalId){
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
+		int packetSize=mTimeStampPacketByteSize; // Time stamp
+		
+		int iTS=0;
+		
+		if (getHardwareVersion()==HW_ID.SHIMMER_3R && this.getClass().getSimpleName().equals("ShimmerSDLog") ) {
+			mNChannels = numChannels;
+			if (isSyncWhenLogging() 
+					&& (getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.GQ_802154 
+					||(UtilShimmer.compareVersions(getShimmerVerObject(),Configuration.Shimmer3.CompatibilityInfoForMaps.svoShimmer3LogAndStreamWithSDLogSyncSupport))
+					||(UtilShimmer.compareVersions(getShimmerVerObject(),Configuration.Shimmer3.CompatibilityInfoForMaps.svoShimmer3RLogAndStreamWithSDLogSyncSupport)))){
+				signalNameArray[iTS]=SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET;
+				if (OFFSET_LENGTH==5){
+					signalDataTypeArray[iTS]="u32signed";
+					mNChannels += 1;
+					packetSize+=5;
+				} else if (OFFSET_LENGTH==9){
+					signalDataTypeArray[iTS]="u72";
+					mNChannels += 1;
+					packetSize+=9;
+				}
+				iTS++;
+			} 
+		}
+		
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion() == HW_ID.SHIMMER_3R){
-			signalNameArray[0]=Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP;
+			signalNameArray[iTS]=Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP;
 		}
 		else{
-			signalNameArray[0]=Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP;
+			signalNameArray[iTS]=Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP;
 		}
 		
-		int packetSize=mTimeStampPacketByteSize; // Time stamp
+
 		if (mTimeStampPacketByteSize==2){
-			signalDataTypeArray[0]="u16";
+			signalDataTypeArray[iTS]="u16";
 		} else if (mTimeStampPacketByteSize==3) {
-			signalDataTypeArray[0]="u24";
+			signalDataTypeArray[iTS]="u24";
 		}
 		
 		int enabledSensors= 0x00;
-		for (int i=0;i<numChannels;i++) {
+		for (int i=iTS;i<numChannels+iTS;i++) {
 			if ((byte)signalId[i]==(byte)0x00){
 				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
