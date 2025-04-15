@@ -77,18 +77,12 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 	}
 
 	public void InitializeProcess() {
-		// Define the server host and port
-
-		// Create a channel to connect to the server
-		channel = ManagedChannelBuilder.forAddress(mServerHost, mServerPort)
+		channel = ManagedChannelBuilder.forTarget(mServerHost + ":" + mServerPort)
 				.usePlaintext() // Use plaintext communication (insecure for testing)
 				.build();
+
 		// Create a gRPC client stub
 		blockingStub = ShimmerBLEByteServerGrpc.newBlockingStub(channel);
-
-
-
-
 	}
 
 	
@@ -98,7 +92,7 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 
 		JButton btnNewButton = new JButton("Connect");
 		
-		final ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36","localhost",50052);
+		final ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36","localhost",50052); //On MacOS, the mac address has to be replaced with device name -> e.g. Shimmer3-6813
 
 		SensorDataReceived sdr = shimmer.new SensorDataReceived();
 		sdr.setWaitForData(shimmer);

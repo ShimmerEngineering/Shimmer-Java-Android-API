@@ -3,6 +3,7 @@ package com.shimmerresearch.simpleexamples;
 import javax.swing.JFrame;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
@@ -93,8 +94,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JLabel lblSetComPort = new JLabel("Set COM Port (e.g. COMX or /dev/rfcommX) or Mac Address (e.g. XX:XX:XX:XX:XX:XX , note this requires grpc and BLE)");
-		lblSetComPort.setBounds(10, 25, 1000, 23);
+		JLabel lblSetComPort = new JLabel("Windows: Set COM Port (e.g. COMX or /dev/rfcommX) or Mac Address (e.g. XX:XX:XX:XX:XX:XX , note this requires grpc and BLE)"
+				+ " | MacOS: Set device name (e.g. Shimmer3-XXXX) - gRPC/BLE");
+		lblSetComPort.setBounds(10, 25, 1200, 23);
 		frame.getContentPane().add(lblSetComPort);
 		
 		textField = new JTextField();
@@ -108,7 +110,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				btComport = textField.getText();
-				if (btComport.length()==17) {
+				if (btComport.length()==17 || (btComport.startsWith("Shimmer") && btComport.contains("-"))) {
+					//Mac address			or	device name (e.g. Shimmer3-6813)
 					if (comboBox.getSelectedItem().equals("Shimmer3")) {
 						BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, "Shimmer3BLE");
 						btManager.connectShimmer3BleGrpc(bdd);	
@@ -117,9 +120,9 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 						btManager.connectVerisenseDevice(bdd);	
 					}
 				} else {
+					//COM port
 					btManager.connectShimmerThroughCommPort(btComport);
 				}
-				
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");
