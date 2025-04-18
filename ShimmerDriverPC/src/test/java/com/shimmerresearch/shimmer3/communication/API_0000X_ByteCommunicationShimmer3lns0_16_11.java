@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
 public class API_0000X_ByteCommunicationShimmer3lns0_16_11 extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
-	TaskCompletionSource<Boolean> mCalibrationTask;
+	TaskCompletionSource<Boolean> mWaitTask;
 	@Before
     public void setUp() {
 		mDevice = new ShimmerPC("COM99");
@@ -38,12 +38,12 @@ public class API_0000X_ByteCommunicationShimmer3lns0_16_11 extends BasicProcessW
     
     @Test
     public void test001_testConnectandDisconnect() {
-    	mCalibrationTask = new TaskCompletionSource<Boolean>();
+    	mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -87,10 +87,6 @@ public class API_0000X_ByteCommunicationShimmer3lns0_16_11 extends BasicProcessW
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
-					if (mCalibrationTask!=null) {
-						mCalibrationTask.setResult(true);
-						mCalibrationTask = null;
 					}
 				}
 		}
