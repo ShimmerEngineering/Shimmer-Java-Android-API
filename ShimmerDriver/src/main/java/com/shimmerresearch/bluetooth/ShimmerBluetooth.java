@@ -980,7 +980,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					mWaitForResponse=false;
 					mWaitForAck=false;
 
-					processInstreamResponse();
+					processInstreamResponse(true);
 
 					// Need to remove here because it is an
 					// in-stream response while streaming so not
@@ -1089,7 +1089,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/** process responses to in-stream response */
-	protected void processInstreamResponse() {
+	protected void processInstreamResponse(boolean shouldClearCrcFromBuffer) {
+		boolean responseWasParsed = true;
+		
 		byte[] inStreamResponseCommandBuffer = readBytes(1, INSTREAM_CMD_RESPONSE);
 		if(inStreamResponseCommandBuffer!=null){
 			byte inStreamResponseCommand = inStreamResponseCommandBuffer[0];
@@ -1138,7 +1140,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 							+ "\tBatt %=" + battStatusDetails.getEstimatedChargePercentageParsed());
 				}
 			}
+			else
+			{
+				responseWasParsed = false;
+			}
+			
+			if (shouldClearCrcFromBuffer && mBtCommsCrcModeCurrent != BT_CRC_MODE.OFF && responseWasParsed) {
+				// The driver doesn't currently support checking of CRC bytes on any response
+				// other then data packets but we still need to clear them from the buffer if
+				// CRC is enabled.
+				clearCrcBytesFromBuffer(inStreamResponseCommand);
+			}
 		}
+		
 	}
 
 	private void processFirmwareVerResponse() {
@@ -1675,7 +1689,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 		else if(responseCommand==INSTREAM_CMD_RESPONSE) {
-			processInstreamResponse();
+			processInstreamResponse(false);
 		}
 		else if(responseCommand==LSM303DLHC_ACCEL_LPMODE_RESPONSE) {
 			byte[] responseData = readBytes(1, responseCommand);
