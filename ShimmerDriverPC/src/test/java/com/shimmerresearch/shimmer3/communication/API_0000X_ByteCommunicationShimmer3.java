@@ -8,6 +8,7 @@ import org.junit.runners.MethodSorters;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
@@ -28,7 +29,8 @@ import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
 public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
-	TaskCompletionSource<Boolean> mCalibrationTask;
+	TaskCompletionSource<Boolean> mWaitTask;
+	TaskCompletionSource<Boolean> mStreamingTask;
 	ByteCommunicationSimulatorS3 mByteCommunicationSimulatorS3;
 
 	@Before
@@ -42,12 +44,12 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
     @Test
     public void test001_testConnectandDisconnect() {
     	mByteCommunicationSimulatorS3.setIsNewBMPSupported(false);
-    	mCalibrationTask = new TaskCompletionSource<Boolean>();
+    	mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(60, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS); //Just to give time to connect to finish
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -76,23 +78,18 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
     		assert(false);
 		}
 		
-		try {
-			mDevice.disconnect();
-		} catch (ShimmerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
     }
     
     @Test
     public void test002_testConnectandDisconnect_NewBMPSupported() {
     	mByteCommunicationSimulatorS3.setIsNewBMPSupported(true);
-    	mCalibrationTask = new TaskCompletionSource<Boolean>();
+    	mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(60, TimeUnit.SECONDS);
+				boolean result = mWaitTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -144,6 +141,45 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
     	}
     }
 
+    
+    ArrayList<ObjectCluster> mListOJC;
+    @Test
+    public void test003_testStreaming() {
+    	mListOJC = new ArrayList<ObjectCluster>();
+    	mByteCommunicationSimulatorS3.setIsNewBMPSupported(false);
+    	mWaitTask = new TaskCompletionSource<Boolean>();
+    	mDevice.connect("","");
+    	
+		mWaitTask = new TaskCompletionSource<>();
+		mStreamingTask = new TaskCompletionSource<Boolean>();
+		try {
+			boolean result = mWaitTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			mDevice.startStreaming();
+		} catch (ShimmerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			mStreamingTask.getTask().waitForCompletion(2, TimeUnit.SECONDS);
+			if(mListOJC.size()!=1) {
+	    		assert(false);
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+    }
+    
+    
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {
 		// TODO Auto-generated method stub
@@ -156,21 +192,24 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
 				CallbackObject callbackObject = (CallbackObject)object;
 				
 				if (callbackObject.mState == BT_STATE.CONNECTED) {
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (mCalibrationTask!=null) {
-						mCalibrationTask.setResult(true);
-						mCalibrationTask = null;
+					if (mDevice.isInitialised()) {
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
 					}
 					
 				}
 		}
-		
-		}
-	}
+	} else if (ind == ShimmerPC.MSG_IDENTIFIER_DATA_PACKET) {
+		System.out.println("Shimmer MSG_IDENTIFIER_DATA_PACKET");
+		ObjectCluster objc = (ObjectCluster) shimmerMSG.mB;
+		mListOJC.add(objc);
+	} 
+
+}
    
 }
