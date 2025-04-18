@@ -143,42 +143,6 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
 
     
     ArrayList<ObjectCluster> mListOJC;
-    @Test
-    public void test003_testStreaming() {
-    	mListOJC = new ArrayList<ObjectCluster>();
-    	mByteCommunicationSimulatorS3.setIsNewBMPSupported(false);
-    	mWaitTask = new TaskCompletionSource<Boolean>();
-    	mDevice.connect("","");
-    	
-		mWaitTask = new TaskCompletionSource<>();
-		mStreamingTask = new TaskCompletionSource<Boolean>();
-		try {
-			boolean result = mWaitTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			mDevice.startStreaming();
-		} catch (ShimmerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			mStreamingTask.getTask().waitForCompletion(2, TimeUnit.SECONDS);
-			if(mListOJC.size()!=1) {
-	    		assert(false);
-			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
-    }
-    
     
 	@Override
 	protected void processMsgFromCallback(ShimmerMsg shimmerMSG) {

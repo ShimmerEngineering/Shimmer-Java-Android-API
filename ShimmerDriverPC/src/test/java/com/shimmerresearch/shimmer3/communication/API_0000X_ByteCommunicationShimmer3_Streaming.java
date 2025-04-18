@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
-public class API_0000X_ByteCommunicationShimmer3_CRC_Streaming extends BasicProcessWithCallBack{
+public class API_0000X_ByteCommunicationShimmer3_Streaming extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
 	TaskCompletionSource<Boolean> mCalibrationTask;
 	TaskCompletionSource<Boolean> mStreamingTask;
@@ -35,7 +35,7 @@ public class API_0000X_ByteCommunicationShimmer3_CRC_Streaming extends BasicProc
 
 	@Before
     public void setUp() {
-		mByteCommunicationSimulatorS3 = new ByteCommunicationSimulatorS3_streaming_instream_crc("COM99");
+		mByteCommunicationSimulatorS3 = new ByteCommunicationSimulatorS3_streaming("COM99");
 		mDevice = new ShimmerPC("COM99");
 		mDevice.setTestRadio(mByteCommunicationSimulatorS3);
 		setWaitForData(mDevice);
@@ -66,7 +66,7 @@ public class API_0000X_ByteCommunicationShimmer3_CRC_Streaming extends BasicProc
 		}
 		try {
 			mStreamingTask.getTask().waitForCompletion(2, TimeUnit.SECONDS);
-			if(mListOJC.size()!=3) { //three is expected because every packet is followed by an ack which meets ShimmerBluetooth.processPacket requirements
+			if(mListOJC.size()!=1) {//only one is expected because only the first packet is followed  which meets ShimmerBluetooth.processPacket requirements
 	    		assert(false);
 			}
 		} catch (InterruptedException e) {

@@ -119,7 +119,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	
     		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mWaitTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -160,7 +160,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	
     		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mWaitTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -267,7 +267,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	
     		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mWaitTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -307,7 +307,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	
     		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mWaitTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -344,7 +344,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	
     		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mWaitTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -372,7 +372,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	
     		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mWaitTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

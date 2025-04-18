@@ -10,9 +10,9 @@ import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
-public class ByteCommunicationSimulatorS3_streaming_instream_crc extends ByteCommunicationSimulatorS3{
+public class ByteCommunicationSimulatorS3_streaming extends ByteCommunicationSimulatorS3{
 
-	public ByteCommunicationSimulatorS3_streaming_instream_crc(String address) {
+	public ByteCommunicationSimulatorS3_streaming(String address) {
 		super(address);
 		// TODO Auto-generated constructor stub
 	}
@@ -25,16 +25,13 @@ public class ByteCommunicationSimulatorS3_streaming_instream_crc extends ByteCom
 		}
 	}
 	
-	
 	@Override
 	protected void streaming() {
-		int numberOfPackets = 3;
+		int numberOfPackets = 2;
 		mBuffer.add((byte) 0xff);
 		mBuffer.add((byte) 0xf4);
 		//0x00 0xEF 0xBE 0x1B 0xE7 0x09 0x3C 0x08 0x3F 0x09 0x7A 
-		//byte[] bytes = UtilShimmer.hexStringToByteArray("00EFBE1BE7093C083F097A");
-		
-		byte[] bytes = UtilShimmer.hexStringToByteArray("00EFBE1BE7093C083F097AFF8A94560A8038");
+		byte[] bytes = UtilShimmer.hexStringToByteArray("00EFBE1BE7093C083F097A");
 		/*
 		for (byte b:bytes) {
 			mBuffer.add(b);
@@ -58,8 +55,6 @@ public class ByteCommunicationSimulatorS3_streaming_instream_crc extends ByteCom
 	        }
 	    });
 	    streamingThread.start();
-		
-	
-	}
+    }
 	
 }
