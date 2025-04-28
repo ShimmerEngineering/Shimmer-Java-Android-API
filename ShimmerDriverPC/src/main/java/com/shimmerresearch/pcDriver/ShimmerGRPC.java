@@ -22,6 +22,7 @@ import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.grpc.ShimmerBLEByteServerGrpc;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.BluetoothState;
@@ -36,6 +37,7 @@ import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -73,6 +75,9 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		mUseProcessingThread = true;
 		if (channel==null) {
 			InitializeProcess();
+		}
+		if(UtilShimmer.isOsMac()) {
+			mComPort = mMacAddress;
 		}
 	}
 
@@ -265,11 +270,18 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		// Create a request message
 		WriteBytes request = WriteBytes.newBuilder().setAddress(mMacAddress).setByteToWrite(ByteString.copyFrom(data)).build();
 
-		// Call the remote gRPC service method
-		Reply response = blockingStub.writeBytesShimmer(request);
-
-		// Process the response
-		System.out.println("Received: " + response.getMessage());
+		try {
+			// Call the remote gRPC service method
+			Reply response = blockingStub.writeBytesShimmer(request);
+			
+			// Process the response
+			System.out.println("Received: " + response.getMessage());
+		} catch(StatusRuntimeException sre) {
+			// Remote gRPC service is not available, so disconnect Shimmer device
+			sre.printStackTrace();
+			System.out.println("ERROR: Lost connection to GRPC Server");	
+			connectionLost();
+		}
 	}
 
 	@Override
@@ -504,11 +516,15 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		// Create a request message
 		Request request = Request.newBuilder().setName(mMacAddress).build();
 
-		// Call the remote gRPC service method
-		Reply response = blockingStub.disconnectShimmer(request);
+		try {
+			// Call the remote gRPC service method
+			Reply response = blockingStub.disconnectShimmer(request);
+			// Process the response
+			System.out.println("Received: " + response.getMessage());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 
-		// Process the response
-		System.out.println("Received: " + response.getMessage());
 		closeConnection();
 		setBluetoothRadioState(BT_STATE.DISCONNECTED);
 	}

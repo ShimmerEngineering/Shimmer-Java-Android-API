@@ -15,6 +15,7 @@ import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.grpc.ShimmerGRPC;
 import com.shimmerresearch.guiUtilities.configuration.EnableLowPowerModeDialog;
@@ -113,8 +114,13 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				if (btComport.length()==17 || (btComport.startsWith("Shimmer") && btComport.contains("-"))) {
 					//Mac address			or	device name (e.g. Shimmer3-6813)
 					if (comboBox.getSelectedItem().equals("Shimmer3")) {
-						BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, "Shimmer3BLE");
-						btManager.connectShimmer3BleGrpc(bdd);	
+						if(UtilShimmer.isOsMac()) { //MacOS uses the device name as both com port and friendly name
+							BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, btComport);
+							btManager.connectShimmer3BleGrpc(bdd);
+						} else {
+							BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, "Shimmer3BLE");
+							btManager.connectShimmer3BleGrpc(bdd);	
+						}
 					} else if (comboBox.getSelectedItem().equals("Verisense")) {
 						BluetoothDeviceDetails bdd = new BluetoothDeviceDetails(btComport, btComport, "ShimmerGRPC");
 						btManager.connectVerisenseDevice(bdd);	

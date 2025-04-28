@@ -19,6 +19,7 @@ import com.shimmerresearch.driver.ble.JavelinBLERadioByteCommunication;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.shimmer4sdk.Shimmer4sdk;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.ConnectionExceptionListener;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.grpc.GrpcBLERadioByteCommunication;
@@ -182,8 +183,12 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		ShimmerGRPC shimmer;
 		
 		if(!shimmer3BleMacIdList.contains(bdd.mShimmerMacId)) {
-			
-			shimmer = new ShimmerGRPC(bdd.mShimmerMacId.replace(":", ""),"localhost",mGRPCPort);
+			if(UtilShimmer.isOsMac()) {
+				//Use the mFriendlyName (e.g. Shimmer3-6813), because MacOS doesn't use BT MacID
+				shimmer = new ShimmerGRPC(bdd.mFriendlyName,"localhost",mGRPCPort);
+			} else {
+				shimmer = new ShimmerGRPC(bdd.mShimmerMacId.replace(":", ""),"localhost",mGRPCPort);
+			}
 			shimmer.setShimmerUserAssignedName(bdd.mFriendlyName);
 			shimmer.setMacIdFromUart(bdd.mShimmerMacId);
 			initializeNewShimmerCommon(shimmer);
@@ -193,6 +198,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	    }
 		else {
 			shimmer = shimmer3BleDeviceList.get(shimmer3BleMacIdList.indexOf(bdd.mShimmerMacId));
+			initializeNewShimmerCommon(shimmer);
 		}
 
 		try {
