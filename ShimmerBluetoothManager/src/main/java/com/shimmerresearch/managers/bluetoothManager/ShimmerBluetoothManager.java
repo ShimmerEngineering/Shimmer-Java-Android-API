@@ -55,7 +55,7 @@ public abstract class ShimmerBluetoothManager{
 	protected static final boolean USE_INFOMEM_CONFIG_METHOD = true;
 	public static final long SLEEP_BETWEEN_GROUP_ACTIONS_MS = 50;
 	public static final String COMPORT_PREFIX = "COM";
-//	public static final String COMPORT_PREFIX_MAC = "/dev/";
+//	public static final String COMPORT_PREFIX_MAC = "/dev/"; 	//Commented-out as MacOS is relying on BT device name rather than COM PORT prefix
 	public static final String COMPORT_PREFIX_MAC = "Shimmer";
 	protected int mSyncTrainingIntervalInSeconds = 15;
 	protected int msDelayBetweenSetCommands = 0;
