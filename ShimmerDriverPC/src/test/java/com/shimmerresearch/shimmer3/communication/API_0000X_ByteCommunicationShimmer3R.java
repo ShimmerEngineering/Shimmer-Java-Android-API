@@ -16,6 +16,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -47,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
 public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
-	TaskCompletionSource<Boolean> mCalibrationTask;
+	TaskCompletionSource<Boolean> mWaitTask;
 	ByteCommunicationSimulatorS3R mByteCommunicationSimulatorS3R;
 	@Before
     public void setUp() {
@@ -59,12 +60,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     
     @Test
     public void test001_testConnectandDisconnect() {
-    	mCalibrationTask = new TaskCompletionSource<Boolean>();
+    	mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);//Just to give time to connect to finish
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -81,7 +82,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	}
     	
     	System.out.println(mDevice.getHardwareVersionParsed());
-    	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3r")) {
+    	if (!mDevice.getHardwareVersionParsed().equals(ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID.SHIMMER_3R))) {
     		assert(false);
     	}
     	if(!mByteCommunicationSimulatorS3R.isGetPressureCalibrationCoefficientsCommand) {
@@ -113,12 +114,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 
 	@Test
 	public void test002_ConnectandTestBMP390() {
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -154,12 +155,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test003_ConnectandTestCalibParamRead() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -209,12 +210,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test004_ConnectandTestDefaultLNAccelAndGyroCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -261,12 +262,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test005_ConnectandTestDefaultWRAccelCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -301,12 +302,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test006_ConnectandTestDefaultMagCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -338,12 +339,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test007_ConnectandTestDefaultHighGAccelCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -366,12 +367,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test008_ConnectandTestDefaultWRMagCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -427,10 +428,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (mCalibrationTask!=null) {
-						mCalibrationTask.setResult(true);
-						mCalibrationTask = null;
-					}
+					
 				}
 		}
 		

@@ -50,17 +50,19 @@ public class SensorADC extends AbstractSensor {
 		public static final String EXT_EXP_A7 = "Ext A7";
 		public static final String EXT_EXP_A6 = "Ext A6";
 		public static final String EXT_EXP_A15 = "Ext A15";
-		public static final String EXT_EXP_A9 = "Ext A9";
-		public static final String EXT_EXP_A11 = "Ext A11";
-		public static final String EXT_EXP_A12 = "Ext A12";
 		public static final String INT_EXP_A12 = "Int A12";
 		public static final String INT_EXP_A13 = "Int A13";
 		public static final String INT_EXP_A14 = "Int A14";
 		public static final String INT_EXP_A1 = "Int A1";
-		public static final String INT_EXP_A10 = "Int A10";
-		public static final String INT_EXP_A15 = "Int A15";
-		public static final String INT_EXP_A16 = "Int A16";
-		public static final String INT_EXP_A17 = "Int A17";
+		
+		//Generalised ADC channel name and number
+		public static final String EXT_ADC_0 = "Ext A0";
+		public static final String EXT_ADC_1 = "Ext A1";
+		public static final String EXT_ADC_2 = "Ext A2";
+		public static final String INT_ADC_0 = "Int A0";
+		public static final String INT_ADC_1 = "Int A1";
+		public static final String INT_ADC_2 = "Int A2";
+		public static final String INT_ADC_3 = "Int A3";
 	}
 	
 	// GUI Sensor Tiles
@@ -82,13 +84,14 @@ public class SensorADC extends AbstractSensor {
 		public static final String INT_ADC_A13 = "F5437a_Int_A13";
 		public static final String INT_ADC_A14 = "F5437a_Int_A14";
 		
-		public static final String EXT_ADC_A9 = "F5437a_Ext_A9";
-		public static final String EXT_ADC_A11 = "F5437a_Ext_A11";
-		public static final String EXT_ADC_A12 = "F5437a_Ext_A12";
-		public static final String INT_ADC_A17 = "F5437a_Int_A17";
-		public static final String INT_ADC_A10 = "F5437a_Int_A10";
-		public static final String INT_ADC_A15 = "F5437a_Int_A15";
-		public static final String INT_ADC_A16 = "F5437a_Int_A16";
+		//Generalised ADC channel name and number
+		public static final String EXT_ADC_0 = "F5437a_Ext_A0";
+		public static final String EXT_ADC_1 = "F5437a_Ext_A1";
+		public static final String EXT_ADC_2 = "F5437a_Ext_A2";
+		public static final String INT_ADC_0 = "F5437a_Int_A0";
+		public static final String INT_ADC_1 = "F5437a_Int_A1";
+		public static final String INT_ADC_2 = "F5437a_Int_A2";
+		public static final String INT_ADC_3 = "F5437a_Int_A3";
 	}
 	
 	//GUI AND EXPORT CHANNELS
@@ -101,13 +104,15 @@ public class SensorADC extends AbstractSensor {
 		public static String INT_EXP_ADC_A13 = "Int_Exp_A13";
 		public static String INT_EXP_ADC_A14 = "Int_Exp_A14";
 		
-		public static String EXT_EXP_ADC_A9 = "Ext_Exp_A9";
-		public static String EXT_EXP_ADC_A11 = "Ext_Exp_A11";
-		public static String EXT_EXP_ADC_A12 = "Ext_Exp_A12";
-		public static String INT_EXP_ADC_A17 = "Int_Exp_A17";
-		public static String INT_EXP_ADC_A10 = "Int_Exp_A10";
-		public static String INT_EXP_ADC_A15 = "Int_Exp_A15";
-		public static String INT_EXP_ADC_A16 = "Int_Exp_A16";
+		//Generalised ADC channel name and number
+		public static String EXT_ADC_0 = "Ext_Exp_A0";
+		public static String EXT_ADC_1 = "Ext_Exp_A1";
+		public static String EXT_ADC_2 = "Ext_Exp_A2";
+		public static String INT_ADC_0 = "Int_Exp_A0";
+		public static String INT_ADC_1 = "Int_Exp_A1";
+		public static String INT_ADC_2 = "Int_Exp_A2";
+		public static String INT_ADC_3 = "Int_Exp_A3";
+		
 	}
 	
 	
@@ -183,23 +188,23 @@ public class SensorADC extends AbstractSensor {
 			null,
 			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A15), 
 			false);
-	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A9Ref = new SensorDetailsRef(0x02<<(0*8), 0x02<<(0*8), GuiLabelSensors.EXT_EXP_A9,
+	public static final SensorDetailsRef sensorADC_EXT_ADC_0Ref = new SensorDetailsRef(0x02<<(0*8), 0x02<<(0*8), GuiLabelSensors.EXT_ADC_0,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs,
 			null,
 			null,
-			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A9), 
+			Arrays.asList(ObjectClusterSensorName.EXT_ADC_0), 
 			false);
-	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A11Ref = new SensorDetailsRef(0x01<<(0*8), 0x01<<(0*8), GuiLabelSensors.EXT_EXP_A11,
+	public static final SensorDetailsRef sensorADC_EXT_ADC_1Ref = new SensorDetailsRef(0x01<<(0*8), 0x01<<(0*8), GuiLabelSensors.EXT_ADC_1,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs,
 			null,
 			null,
-			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A11), 
+			Arrays.asList(ObjectClusterSensorName.EXT_ADC_1), 
 			false);
-	public static final SensorDetailsRef sensorADC_EXT_EXP_ADC_A12Ref = new SensorDetailsRef(0x08<<(1*8), 0x08<<(1*8), GuiLabelSensors.EXT_EXP_A12,
+	public static final SensorDetailsRef sensorADC_EXT_ADC_2Ref = new SensorDetailsRef(0x08<<(1*8), 0x08<<(1*8), GuiLabelSensors.EXT_ADC_2,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoExtAdcs,
 			null,
 			null,
-			Arrays.asList(ObjectClusterSensorName.EXT_EXP_ADC_A12), 
+			Arrays.asList(ObjectClusterSensorName.EXT_ADC_2), 
 			false);
 
 	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A1Ref = new SensorDetailsRef(0x04<<(1*8), 0x04<<(1*8), GuiLabelSensors.INT_EXP_A1,
@@ -308,10 +313,10 @@ public class SensorADC extends AbstractSensor {
 			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A14), 
 			false);
 	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A17Ref = new SensorDetailsRef(
+	public static final SensorDetailsRef sensorADC_INT_ADC_3Ref = new SensorDetailsRef(
 			0x04<<(1*8), 
 			0x04<<(1*8), 
-			GuiLabelSensors.INT_EXP_A17,
+			GuiLabelSensors.INT_ADC_3,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA17,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_DUMMY,
@@ -332,13 +337,13 @@ public class SensorADC extends AbstractSensor {
 //					Configuration.Shimmer3.SENSOR_ID.EXG2_24BIT
 					),
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
-			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A17), 
+			Arrays.asList(ObjectClusterSensorName.INT_ADC_3), 
 			false);
 	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A10Ref = new SensorDetailsRef(
+	public static final SensorDetailsRef sensorADC_INT_ADC_0Ref = new SensorDetailsRef(
 			0x02<<(1*8), 
 			0x02<<(1*8), 
-			GuiLabelSensors.INT_EXP_A10,
+			GuiLabelSensors.INT_ADC_0,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA10,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY,
@@ -360,13 +365,13 @@ public class SensorADC extends AbstractSensor {
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
-			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A10), 
+			Arrays.asList(ObjectClusterSensorName.INT_ADC_0), 
 			false);
 	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A15Ref = new SensorDetailsRef(
+	public static final SensorDetailsRef sensorADC_INT_ADC_1Ref = new SensorDetailsRef(
 			0x01<<(1*8), 
 			0x01<<(1*8), 
-			GuiLabelSensors.INT_EXP_A15,
+			GuiLabelSensors.INT_ADC_1,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA15,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.HOST_PPG_DUMMY,
@@ -388,13 +393,13 @@ public class SensorADC extends AbstractSensor {
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
-			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A15), 
+			Arrays.asList(ObjectClusterSensorName.INT_ADC_1), 
 			false);
 	
-	public static final SensorDetailsRef sensorADC_INT_EXP_ADC_A16Ref = new SensorDetailsRef(
+	public static final SensorDetailsRef sensorADC_INT_ADC_2Ref = new SensorDetailsRef(
 			0x80<<(2*8), 
 			0x80<<(2*8), 
-			GuiLabelSensors.INT_EXP_A16,
+			GuiLabelSensors.INT_ADC_2,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoIntExpA16,
 			Arrays.asList(
 					Configuration.Shimmer3.SENSOR_ID.HOST_PPG2_DUMMY,
@@ -414,7 +419,7 @@ public class SensorADC extends AbstractSensor {
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_RESISTANCE_AMP,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_BRIDGE_AMP),
 			Arrays.asList(Configuration.Shimmer3.GuiLabelConfig.INT_EXP_BRD_POWER_INTEGER),
-			Arrays.asList(ObjectClusterSensorName.INT_EXP_ADC_A16), 
+			Arrays.asList(ObjectClusterSensorName.INT_ADC_2), 
 			false);
 
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
@@ -435,14 +440,14 @@ public class SensorADC extends AbstractSensor {
     public static final Map<Integer, SensorDetailsRef> mSensorMapRef3r;
     static {
         Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A7, sensorADC_EXT_EXP_ADC_A9Ref);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A6, sensorADC_EXT_EXP_ADC_A11Ref);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A15, sensorADC_EXT_EXP_ADC_A12Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A7, sensorADC_EXT_ADC_0Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A6, sensorADC_EXT_ADC_1Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_EXT_EXP_ADC_A15, sensorADC_EXT_ADC_2Ref);
 		
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1, sensorADC_INT_EXP_ADC_A17Ref);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12, sensorADC_INT_EXP_ADC_A10Ref);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13, sensorADC_INT_EXP_ADC_A15Ref);
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14, sensorADC_INT_EXP_ADC_A16Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A1, sensorADC_INT_ADC_3Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A12, sensorADC_INT_ADC_0Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A13, sensorADC_INT_ADC_1Ref);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_INT_EXP_ADC_A14, sensorADC_INT_ADC_2Ref);
 
 		mSensorMapRef3r = Collections.unmodifiableMap(aMap);
     }
@@ -474,10 +479,10 @@ public class SensorADC extends AbstractSensor {
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0D);
     
-    public static final ChannelDetails channel_EXT_EXP_ADC_A9 = new ChannelDetails(
-    		ObjectClusterSensorName.EXT_EXP_ADC_A9,
-    		ObjectClusterSensorName.EXT_EXP_ADC_A9,
-    		DatabaseChannelHandles.EXT_ADC_A9,
+    public static final ChannelDetails channel_EXT_ADC_0 = new ChannelDetails(
+    		ObjectClusterSensorName.EXT_ADC_0,
+    		ObjectClusterSensorName.EXT_ADC_0,
+    		DatabaseChannelHandles.EXT_ADC_0,
     		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -492,10 +497,10 @@ public class SensorADC extends AbstractSensor {
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0E);
     
-    public static final ChannelDetails channel_EXT_EXP_ADC_A11 = new ChannelDetails(
-    		ObjectClusterSensorName.EXT_EXP_ADC_A11,
-    		ObjectClusterSensorName.EXT_EXP_ADC_A11,
-    		DatabaseChannelHandles.EXT_ADC_A11,
+    public static final ChannelDetails channel_EXT_ADC_1 = new ChannelDetails(
+    		ObjectClusterSensorName.EXT_ADC_1,
+    		ObjectClusterSensorName.EXT_ADC_1,
+    		DatabaseChannelHandles.EXT_ADC_1,
     		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -514,10 +519,10 @@ public class SensorADC extends AbstractSensor {
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x0F);
     
-    public static final ChannelDetails channel_EXT_EXP_ADC_A12 = new ChannelDetails(
-    		ObjectClusterSensorName.EXT_EXP_ADC_A12,
-    		ObjectClusterSensorName.EXT_EXP_ADC_A12,
-    		DatabaseChannelHandles.EXT_ADC_A12,
+    public static final ChannelDetails channel_EXT_ADC_2 = new ChannelDetails(
+    		ObjectClusterSensorName.EXT_ADC_2,
+    		ObjectClusterSensorName.EXT_ADC_2,
+    		DatabaseChannelHandles.EXT_ADC_2,
     		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -533,10 +538,10 @@ public class SensorADC extends AbstractSensor {
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x10);
     
-    public static final ChannelDetails channel_INT_EXP_ADC_A17 = new ChannelDetails(
-    		ObjectClusterSensorName.INT_EXP_ADC_A17,
-    		ObjectClusterSensorName.INT_EXP_ADC_A17,
-    		DatabaseChannelHandles.INT_ADC_A17,
+    public static final ChannelDetails channel_INT_ADC_3 = new ChannelDetails(
+    		ObjectClusterSensorName.INT_ADC_3,
+    		ObjectClusterSensorName.INT_ADC_3,
+    		DatabaseChannelHandles.INT_ADC_3,
     		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -552,10 +557,10 @@ public class SensorADC extends AbstractSensor {
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x11);
     
-    public static final ChannelDetails channel_INT_EXP_ADC_A10 = new ChannelDetails(
-    		ObjectClusterSensorName.INT_EXP_ADC_A10,
-    		ObjectClusterSensorName.INT_EXP_ADC_A10,
-    		DatabaseChannelHandles.INT_ADC_A10,
+    public static final ChannelDetails channel_INT_ADC_0 = new ChannelDetails(
+    		ObjectClusterSensorName.INT_ADC_0,
+    		ObjectClusterSensorName.INT_ADC_0,
+    		DatabaseChannelHandles.INT_ADC_0,
     		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -571,10 +576,10 @@ public class SensorADC extends AbstractSensor {
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x12);
 
-    public static final ChannelDetails channel_INT_EXP_ADC_A15 = new ChannelDetails(
-    		ObjectClusterSensorName.INT_EXP_ADC_A15,
-    		ObjectClusterSensorName.INT_EXP_ADC_A15,
-    		DatabaseChannelHandles.INT_ADC_A15,
+    public static final ChannelDetails channel_INT_ADC_1 = new ChannelDetails(
+    		ObjectClusterSensorName.INT_ADC_1,
+    		ObjectClusterSensorName.INT_ADC_1,
+    		DatabaseChannelHandles.INT_ADC_1,
     		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -589,10 +594,10 @@ public class SensorADC extends AbstractSensor {
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
     		0x13);
     
-    public static final ChannelDetails channel_INT_EXP_ADC_A16 = new ChannelDetails(
-    		ObjectClusterSensorName.INT_EXP_ADC_A16,
-    		ObjectClusterSensorName.INT_EXP_ADC_A16,
-    		DatabaseChannelHandles.INT_ADC_A16,
+    public static final ChannelDetails channel_INT_ADC_2 = new ChannelDetails(
+    		ObjectClusterSensorName.INT_ADC_2,
+    		ObjectClusterSensorName.INT_ADC_2,
+    		DatabaseChannelHandles.INT_ADC_2,
     		CHANNEL_DATA_TYPE.UINT14, 2, CHANNEL_DATA_ENDIAN.LSB,
     		CHANNEL_UNITS.MILLIVOLTS,
     		Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
@@ -617,14 +622,14 @@ public class SensorADC extends AbstractSensor {
     static {
     	Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
     	// External ADCs
-    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A9,  channel_EXT_EXP_ADC_A9);
-    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A11,  channel_EXT_EXP_ADC_A11);
-    	aMap.put(ObjectClusterSensorName.EXT_EXP_ADC_A12, channel_EXT_EXP_ADC_A12);
+    	aMap.put(ObjectClusterSensorName.EXT_ADC_0,  channel_EXT_ADC_0);
+    	aMap.put(ObjectClusterSensorName.EXT_ADC_1,  channel_EXT_ADC_1);
+    	aMap.put(ObjectClusterSensorName.EXT_ADC_2, channel_EXT_ADC_2);
     	// Internal ADCs
-    	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A17,  channel_INT_EXP_ADC_A17);
-    	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A10, channel_INT_EXP_ADC_A10);
-    	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A15, channel_INT_EXP_ADC_A15);
-    	aMap.put(ObjectClusterSensorName.INT_EXP_ADC_A16, channel_INT_EXP_ADC_A16);
+    	aMap.put(ObjectClusterSensorName.INT_ADC_3,  channel_INT_ADC_3);
+    	aMap.put(ObjectClusterSensorName.INT_ADC_0, channel_INT_ADC_0);
+    	aMap.put(ObjectClusterSensorName.INT_ADC_1, channel_INT_ADC_1);
+    	aMap.put(ObjectClusterSensorName.INT_ADC_2, channel_INT_ADC_2);
     	mChannelMapRef3r = Collections.unmodifiableMap(aMap);
     }
 
