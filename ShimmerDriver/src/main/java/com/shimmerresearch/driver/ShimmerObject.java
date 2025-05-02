@@ -2854,7 +2854,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 		
 		//RAW RTC
-		if (fwType==COMMUNICATION_TYPE.SD && isRtcDifferenceSet()) {
+		if (fwType==COMMUNICATION_TYPE.SD && 
+				(isRtcDifferenceSet() 
+						|| getHardwareVersion() == HW_ID.SHIMMER_3R)) {
 			double rtcTimestampTicks = timestampUnwrappedWithOffsetTicks + getRTCDifferenceInTicks();
 			
 //			System.out.println("\tRtcDiff: " + UtilShimmer.convertMilliSecondsToDateString((mRTCDifferenceInTicks+mInitialTsTicks)/32768*1000, true));
