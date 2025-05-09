@@ -308,4 +308,53 @@ public class UtilParseData {
 
 		return newData;
 	}
+	
+	public static int countBytesFromDataTypes(String[] dataType) {
+	    int totalBytes = 0;
+
+	    for (String type : dataType) {
+	    	if(type==null) {
+	    		continue;
+	    	}
+	        switch (type) {
+	            case "u8":
+	            case "i8":
+	                totalBytes += 1;
+	                break;
+	            case "u12":
+	            case "u14":
+	            case "i12>":
+	            case "i12*>":
+	            case "u16":
+	            case "u16r":
+	            case "i16":
+	            case "i16r":
+	                totalBytes += 2;
+	                break;
+	            case "u24":
+	            case "u24r":
+	            case "i24r":
+	                totalBytes += 3;
+	                break;
+	            case "u32":
+	            case "u32r":
+	            case "i32":
+	            case "i32r":
+	                totalBytes += 4;
+	                break;
+	            case "u32signed":
+	                totalBytes += 5;
+	                break;
+	            case "u72":
+	                totalBytes += 9;
+	                break;
+	            default:
+	                throw new IllegalArgumentException("Unknown data type: " + type);
+	        }
+	    }
+
+	    return totalBytes;
+	}
+
+	
 }
