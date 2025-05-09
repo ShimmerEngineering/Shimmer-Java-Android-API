@@ -92,6 +92,20 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 		mBuffer.add((byte) 0x03);
 	}
 	
+	protected void streaming() {
+		//not implemented for connect test please see ByteCommunicationS3_streaming.java
+	}
+	
+	protected void inquiryResponse() {
+		mBuffer.add((byte) 0xff);
+		mBuffer.add((byte) 0x02);
+		byte[] bytes = UtilShimmer.hexStringToByteArray("800202FF01080001");
+		for (byte b:bytes) {
+			mBuffer.add(b);
+		}
+		mBuffer.add((byte) 0x86);
+	}
+	
 	protected void txFirmwareVersion() {
 		mBuffer.add((byte) 0xff);
 		mBuffer.add((byte) 0x2f);
@@ -194,13 +208,7 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 			mBuffer.add((byte) 0x21);
 			mBuffer.add((byte) 0xF4);
 		} else if(buffer[0]==ShimmerObject.INQUIRY_COMMAND) {
-			mBuffer.add((byte) 0xff);
-			mBuffer.add((byte) 0x02);
-			byte[] bytes = UtilShimmer.hexStringToByteArray("800202FF01080001");
-			for (byte b:bytes) {
-				mBuffer.add(b);
-			}
-			mBuffer.add((byte) 0x86);
+			inquiryResponse();
 		} else if(buffer[0]==ShimmerObject.GET_BT_FW_VERSION_STR_COMMAND) {
 			mBuffer.add((byte) 0xff);
 			mBuffer.add((byte) 0xa2);
@@ -242,6 +250,18 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 		} else if(buffer[0]==ShimmerObject.SET_RWC_COMMAND) {
 			mBuffer.add((byte) 0xff);
 			mBuffer.add((byte) 0xf4);
+		} 
+		else if(buffer[0]==ShimmerObject.GET_RWC_COMMAND) {
+			mBuffer.add((byte) 0xff);
+			mBuffer.add((byte) 0x90);
+			//0x00 0xEF 0xBE 0x1B 0xE7 0x09 0x3C 0x08 0x3F 0x09 0x7A 
+			byte[] bytes = UtilShimmer.hexStringToByteArray("A7D7555200340000");
+			for (byte b:bytes) {
+				mBuffer.add(b);
+			}
+			mBuffer.add((byte) 0x8E);
+		}else if(buffer[0]==ShimmerObject.START_STREAMING_COMMAND) {
+			streaming();
 		}
 		else {
 		
