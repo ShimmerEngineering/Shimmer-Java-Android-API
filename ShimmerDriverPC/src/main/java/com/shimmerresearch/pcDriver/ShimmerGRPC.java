@@ -66,21 +66,29 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 5029128107276324956L;
-
+	
 	public ShimmerGRPC(String macAddress, String serverHost, int serverPort) {
 		super();
 		mServerHost = serverHost;
 		mServerPort = serverPort;
 		mMacAddress = macAddress;
+		mMyBluetoothAddress = "";
 		mUseProcessingThread = true;
 		if (channel==null) {
 			InitializeProcess();
 		}
-		if(UtilShimmer.isOsMac()) {
-			mComPort = mMacAddress;
-		}
 	}
-
+	
+	/**
+	 *  This constructor is used for MacOS for BLE where the mFriendlyName is the BT device name (e.g. Shimmer3-6813). 
+	 *  BT device name is used in place of COM Port which is Classic BT only
+	 */
+	public ShimmerGRPC(String macAddress, String mFriendlyName, String serverHost, int serverPort) {
+		this(mFriendlyName, serverHost, serverPort);
+		mMyBluetoothAddress = macAddress;
+		mComPort = mFriendlyName;
+	}
+	
 	public void InitializeProcess() {
 		channel = ManagedChannelBuilder.forTarget(mServerHost + ":" + mServerPort)
 				.usePlaintext() // Use plaintext communication (insecure for testing)
@@ -97,8 +105,10 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 
 		JButton btnNewButton = new JButton("Connect");
 		
-		final ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36","localhost",50052); //On MacOS, the mac address has to be replaced with device name -> e.g. Shimmer3-6813
-
+		final ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36","localhost",50052); 
+		//Use constructor below instead for MacOS, which uses the BT device name to connect, e.g. Shimmer3-6813
+		//final ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36","Shimmer3-3E36","localhost",50052);
+		
 		SensorDataReceived sdr = shimmer.new SensorDataReceived();
 		sdr.setWaitForData(shimmer);
 
