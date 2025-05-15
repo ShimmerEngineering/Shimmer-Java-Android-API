@@ -841,6 +841,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			numAdditionalChannels += 1;
 		} 
 		else {
+			if (fwType == COMMUNICATION_TYPE.SD && getHardwareVersion()==HW_ID.SHIMMER_3R) {
+				//plus 1 because of: timestamp, because we are no longer relying on interpretdatapacketformat within ShimmerSDLog
+				numAdditionalChannels += 1;
+			}
+			
 			if (!isRtcDifferenceSet()){
 				//sd log time stamp already included in mnChannels
 			} 
@@ -1101,7 +1106,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 //					}	
 				}
 			}
-			if ((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.ACCEL_ALT) > 0) {
+			if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.ACCEL_ALT) > 0) 
+				|| ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.ACCEL_MPU) > 0)) {
 				int iAccelX=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_HIGHG_X); //find index
 				int iAccelY=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_HIGHG_Y); //find index
 				int iAccelZ=getSignalIndex(Shimmer3.ObjectClusterSensorName.ACCEL_HIGHG_Z); //find index
@@ -1142,8 +1148,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					accelerometer.z=altAccelCalibratedData[2];
 				}
 			}
-			if ((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.MAG_ALT) > 0) {
-				
+			if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.MAG_ALT) > 0) 
+				|| ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.MAG_MPU) > 0)) {
 				int iMagX=getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_WR_X);
 				int iMagY=getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_WR_Y);
 				int iMagZ=getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_WR_Z);
@@ -2921,23 +2927,47 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void interpretDataPacketFormat(int numChannels, byte[] signalId){
 		String [] signalNameArray=new String[MAX_NUMBER_OF_SIGNALS];
 		String [] signalDataTypeArray=new String[MAX_NUMBER_OF_SIGNALS];
+		int packetSize=mTimeStampPacketByteSize; // Time stamp
+		
+		int iTS=0;
+		
+		if (getHardwareVersion()==HW_ID.SHIMMER_3R && this.getClass().getSimpleName().equals("ShimmerSDLog") ) {
+			mNChannels = numChannels;
+			if (isSyncWhenLogging() 
+					&& (getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.GQ_802154 
+					||(UtilShimmer.compareVersions(getShimmerVerObject(),Configuration.Shimmer3.CompatibilityInfoForMaps.svoShimmer3LogAndStreamWithSDLogSyncSupport))
+					||(UtilShimmer.compareVersions(getShimmerVerObject(),Configuration.Shimmer3.CompatibilityInfoForMaps.svoShimmer3RLogAndStreamWithSDLogSyncSupport)))){
+				signalNameArray[iTS]=SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET;
+				if (OFFSET_LENGTH==5){
+					signalDataTypeArray[iTS]="u32signed";
+					mNChannels += 1;
+					packetSize+=5;
+				} else if (OFFSET_LENGTH==9){
+					signalDataTypeArray[iTS]="u72";
+					mNChannels += 1;
+					packetSize+=9;
+				}
+				iTS++;
+			} 
+		}
+		
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion() == HW_ID.SHIMMER_3R){
-			signalNameArray[0]=Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP;
+			signalNameArray[iTS]=Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP;
 		}
 		else{
-			signalNameArray[0]=Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP;
+			signalNameArray[iTS]=Configuration.Shimmer2.ObjectClusterSensorName.TIMESTAMP;
 		}
 		
-		int packetSize=mTimeStampPacketByteSize; // Time stamp
+
 		if (mTimeStampPacketByteSize==2){
-			signalDataTypeArray[0]="u16";
+			signalDataTypeArray[iTS]="u16";
 		} else if (mTimeStampPacketByteSize==3) {
-			signalDataTypeArray[0]="u24";
+			signalDataTypeArray[iTS]="u24";
 		}
 		
 		int enabledSensors= 0x00;
-		for (int i=0;i<numChannels;i++) {
+		for (int i=iTS;i<numChannels+iTS;i++) {
 			if ((byte)signalId[i]==(byte)0x00){
 				if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ACCEL_LN_X;
@@ -3940,7 +3970,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				setLIS2DW12DigitalAccelRate(((int)(mConfigByte0 & 0xF0))>>4);
 				
 				setLowPowerAccelWR((getLIS2DW12DigitalAccelRate()==1)? true:false);
-				setMPU9150GyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
+				setLSM6DSVGyroAccelRate(((int)(mConfigByte0 & 65280))>>8);
 				checkLowPowerGyro();
 				
 				int magSamplingRate = (int)((mConfigByte0 >> 18) & 0x07);
@@ -6576,7 +6606,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public void parseCalibParamFromPacketAccelLsm(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 		getCurrentCalibDetailsAccelWr().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
+	
+	public void getCurrentCalibDetailsAccelAlt(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
+		getCurrentCalibDetailsAccelAlt().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
+	}
 
+	public void getCurrentCalibDetailsMagWr(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
+		getCurrentCalibDetailsMagWr().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
+	}
+	
 	public void parseCalibParamFromPacketMag(byte[] bufferCalibrationParameters, CALIB_READ_SOURCE calibReadSource) {
 		getCurrentCalibDetailsMag().parseCalParamByteArray(bufferCalibrationParameters, calibReadSource);
 	}
@@ -8441,6 +8479,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		setDigitalAccelRange(i);
 	}
 	
+	public void setDigitalAccelRate(int i) {
+		if(isShimmerGen3()) {
+			mSensorLSM303.setLSM303DigitalAccelRate(i);
+		} else if(isShimmerGen3R()) {
+			mSensorLIS2DW12.setLIS2DW12DigitalAccelRate(i);
+		}
+	}
+	
 	public void setDigitalAccelRange(int i){
 		if(isShimmerGen2()) {
 			mSensorMMA736x.setAccelRange(i);
@@ -8466,14 +8512,19 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 	}
 	
-	/** Use setLSM303MagRange() instead
+
+	public void setMagRange(int i){
+		if(isShimmerGen3()) {
+			mSensorLSM303.setLSM303MagRange(i);
+		} else if(isShimmerGen3R()) {
+			mSensorLIS3MDL.setLISMagRange(i);
+		}
+	}
+
+	/** Use setMagRange() instead
 	 * @param i
 	 */
 	@Deprecated
-	public void setMagRange(int i){
-		setLSM303MagRange(i);
-	}
-	
 	public void setLSM303MagRange(int i){
 		if(isShimmerGen3()) {
 			mSensorLSM303.setLSM303MagRange(i);
