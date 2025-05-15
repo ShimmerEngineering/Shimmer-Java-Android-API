@@ -311,32 +311,32 @@ public class ExGConfigBytesDetails implements Serializable {
 				public static final ExGConfigOption ON = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_MOD_CIRCUITRY, "ON", 1);
 			}
 			public static final class RESPIRATION_PHASE_AT_32KHZ{
-				public static final ExGConfigOption PHASE_0 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "0°", 0);
-				public static final ExGConfigOption PHASE_11_25 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "11.25°", 1);
-				public static final ExGConfigOption PHASE_22_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "22.5°", 2);
-				public static final ExGConfigOption PHASE_33_75 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "33.75°", 3);
-				public static final ExGConfigOption PHASE_45 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "45°", 4);
-				public static final ExGConfigOption PHASE_56_25 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "56.25°", 5);
-				public static final ExGConfigOption PHASE_67_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "67.5°", 6);
-				public static final ExGConfigOption PHASE_78_75 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "78.75°", 7);
-				public static final ExGConfigOption PHASE_90 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "90°", 8);
-				public static final ExGConfigOption PHASE_101_25 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "101.25°", 9);
-				public static final ExGConfigOption PHASE_112_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "112.5°", 10);
-				public static final ExGConfigOption PHASE_123_75 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "123.75°", 11);
-				public static final ExGConfigOption PHASE_135 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "135°", 12);
-				public static final ExGConfigOption PHASE_146_25 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "146.25°", 13);
-				public static final ExGConfigOption PHASE_157_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "157.5°", 14);
-				public static final ExGConfigOption PHASE_168_75 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "168.75°", 15);
+				public static final ExGConfigOption PHASE_0 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "0\u00B0", 0);
+				public static final ExGConfigOption PHASE_11_25 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "11.25\u00B0", 1);
+				public static final ExGConfigOption PHASE_22_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "22.5\u00B0", 2);
+				public static final ExGConfigOption PHASE_33_75 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "33.75\u00B0", 3);
+				public static final ExGConfigOption PHASE_45 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "45\u00B0", 4);
+				public static final ExGConfigOption PHASE_56_25 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "56.25\u00B0", 5);
+				public static final ExGConfigOption PHASE_67_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "67.5\u00B0", 6);
+				public static final ExGConfigOption PHASE_78_75 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "78.75\u00B0", 7);
+				public static final ExGConfigOption PHASE_90 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "90\u00B0", 8);
+				public static final ExGConfigOption PHASE_101_25 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "101.25\u00B0", 9);
+				public static final ExGConfigOption PHASE_112_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "112.5\u00B0", 10);
+				public static final ExGConfigOption PHASE_123_75 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "123.75\u00B0", 11);
+				public static final ExGConfigOption PHASE_135 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "135\u00B0", 12);
+				public static final ExGConfigOption PHASE_146_25 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "146.25\u00B0", 13);
+				public static final ExGConfigOption PHASE_157_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "157.5\u00B0", 14);
+				public static final ExGConfigOption PHASE_168_75 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "168.75\u00B0", 15);
 			}
 			public static final class RESPIRATION_PHASE_AT_64KHZ{
-				public static final ExGConfigOption PHASE_0 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "0°", 0);
-				public static final ExGConfigOption PHASE_22_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "22.5°", 1);
-				public static final ExGConfigOption PHASE_45 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "45°", 2);
-				public static final ExGConfigOption PHASE_67_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "67.5°", 3);
-				public static final ExGConfigOption PHASE_90 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "90°", 4);
-				public static final ExGConfigOption PHASE_112_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "112.5°", 5);
-				public static final ExGConfigOption PHASE_135 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "135°", 6);
-				public static final ExGConfigOption PHASE_157_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "157.5°", 7);
+				public static final ExGConfigOption PHASE_0 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "0\u00B0", 0);
+				public static final ExGConfigOption PHASE_22_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "22.5\u00B0", 1);
+				public static final ExGConfigOption PHASE_45 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "45\u00B0", 2);
+				public static final ExGConfigOption PHASE_67_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "67.5\u00B0", 3);
+				public static final ExGConfigOption PHASE_90 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "90\u00B0", 4);
+				public static final ExGConfigOption PHASE_112_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "112.5\u00B0", 5);
+				public static final ExGConfigOption PHASE_135 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "135\u00B0", 6);
+				public static final ExGConfigOption PHASE_157_5 = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_PHASE, "157.5\u00B0", 7);
 			}
 			public static final class RESPIRATION_CONTROL{
 				public static final ExGConfigOption INTERNAL_CLOCK = new ExGConfigOption(EXG_SETTINGS.REG9_RESPIRATION_CONTROL, "Internal clock", 0);
