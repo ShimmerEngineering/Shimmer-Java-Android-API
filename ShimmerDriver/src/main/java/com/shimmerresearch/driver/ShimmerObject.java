@@ -1166,21 +1166,21 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				uncalibratedDataUnits[iMagY]=CHANNEL_UNITS.NO_UNITS;
 				uncalibratedDataUnits[iMagZ]=CHANNEL_UNITS.NO_UNITS;
 				if (mEnableCalibration){
-					double[] wrMagCalibratedData;
+					double[] altMagCalibratedData;
 //					magCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, mAlignmentMatrixMagnetometer, mSensitivityMatrixMagnetometer, mOffsetVectorMagnetometer);
-					wrMagCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, getCurrentCalibDetailsMagAlt());
-					calibratedData[iMagX]=wrMagCalibratedData[0];
-					calibratedData[iMagY]=wrMagCalibratedData[1];
-					calibratedData[iMagZ]=wrMagCalibratedData[2];
+					altMagCalibratedData=UtilCalibration.calibrateInertialSensorData(tempData, getCurrentCalibDetailsMagAlt());
+					calibratedData[iMagX]=altMagCalibratedData[0];
+					calibratedData[iMagY]=altMagCalibratedData[1];
+					calibratedData[iMagZ]=altMagCalibratedData[2];
 					
 					if(isShimmerGen3R()) {
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,wrMagCalibratedData[0],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,wrMagCalibratedData[1],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,wrMagCalibratedData[2],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,altMagCalibratedData[0],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,altMagCalibratedData[1],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,altMagCalibratedData[2],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
 					}
-					magnetometer.x=wrMagCalibratedData[0];
-					magnetometer.y=wrMagCalibratedData[1];
-					magnetometer.z=wrMagCalibratedData[2];
+					magnetometer.x=altMagCalibratedData[0];
+					magnetometer.y=altMagCalibratedData[1];
+					magnetometer.z=altMagCalibratedData[2];
 					calibratedDataUnits[iMagX]=CHANNEL_UNITS.MAG_CAL_UNIT;
 					calibratedDataUnits[iMagY]=CHANNEL_UNITS.MAG_CAL_UNIT;
 					calibratedDataUnits[iMagZ]=CHANNEL_UNITS.MAG_CAL_UNIT;

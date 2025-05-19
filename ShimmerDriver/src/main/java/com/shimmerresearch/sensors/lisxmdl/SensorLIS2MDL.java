@@ -362,18 +362,22 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		}
 	}
 	
-	public void setLISMagRateInternal(double samplingRateHz){
-		mLISMagRate = (int) samplingRateHz;
+	public void setLIS2MDLMagRate(int valueToSet){
+		mLISMagRate = valueToSet;
+	}
+	
+	public void setLISMagRateInternal(int samplingRateHz){
+		mLISMagRate = samplingRateHz;
 	}
 	
 	@Override
 	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
 		if(mapOfConfigPerShimmer.containsKey(SensorLIS2MDL.DatabaseConfigHandle.MAG_RANGE)){
-			setLISMagRateInternal(((Double) mapOfConfigPerShimmer.get(SensorLIS2MDL.DatabaseConfigHandle.MAG_RANGE)).intValue());
+			setLISMagRange(((Double) mapOfConfigPerShimmer.get(SensorLIS2MDL.DatabaseConfigHandle.MAG_RANGE)).intValue());
 		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLIS2MDL.DatabaseConfigHandle.MAG_RATE)){
-			setLISMagRange(((Double) mapOfConfigPerShimmer.get(SensorLIS2MDL.DatabaseConfigHandle.MAG_RATE)).intValue());
+			setLIS2MDLMagRate(((Double) mapOfConfigPerShimmer.get(SensorLIS2MDL.DatabaseConfigHandle.MAG_RATE)).intValue());
 		}
 		
 		//Magnetometer Calibration Configuration
@@ -435,6 +439,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		} else if (freq<50.0) {
 			magRate = 2; // 50Hz
 		} else {
+			magRate = 3; // 100Hz
 		}
 		return magRate;
 	}
@@ -544,7 +549,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 			//setLISMagRate((configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate);
 			int magRate = (configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate;
 			//int msbMagRate = (configBytes[configByteLayoutCast.idxConfigSetupByte5] >> configByteLayoutCast.bitShiftLIS2MDLMagRateMSB) & configByteLayoutCast.maskLIS2MDLMagRateMSB;
-			setLISMagRateInternal(magRate);
+			setLIS2MDLMagRate(magRate);
 			
 			if (shimmerDevice.isConnected()){
 				getCurrentCalibDetailsMag().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
@@ -570,7 +575,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 				setLISMagRange((int)valueToSet);
 				break;
 			case(GuiLabelConfig.LIS2MDL_MAG_RATE):
-				setLISMagRateInternal((int)valueToSet);
+				setLIS2MDLMagRate((int)valueToSet);
 				break;
 				
 //			case(GuiLabelConfigCommon.KINEMATIC_CALIBRATION_ALL):
@@ -639,7 +644,7 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 
 	@Override
 	public void setSensorSamplingRate(double samplingRateHz) {
-		setLISMagRateInternal(samplingRateHz);
+		setLIS2MDLAltMagRateFromFreq(samplingRateHz);
 	}
 	
 	public void setDefaultLisMagSensorConfig(boolean isSensorEnabled) {

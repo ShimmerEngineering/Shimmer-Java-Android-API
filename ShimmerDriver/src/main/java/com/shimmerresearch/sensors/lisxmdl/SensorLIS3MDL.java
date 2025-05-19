@@ -45,7 +45,7 @@ public class SensorLIS3MDL extends AbstractSensor {
 
 	protected int mAltMagRange = 0;
 	public boolean mIsUsingDefaultAltMagParam = true;
-	protected int mLISAltMagRate = 0;
+	protected int mLISAltMagRate = 4;
 	protected int mSensorIdAltMag = -1;
 	protected boolean mLowPowerMag = false;
 	protected boolean mMedPowerMag = false;
@@ -174,19 +174,18 @@ public class SensorLIS3MDL extends AbstractSensor {
 
 	// --------- Configuration options start --------------
 
-	public static final String[] ListofLIS3MDLAltMagRate = { "1000Hz", "560Hz", "300Hz", "155Hz", "80Hz", "20Hz",
-			"10Hz" };
+	public static final String[] ListofLIS3MDLAltMagRate = { "1000Hz", "560Hz", "300Hz", "155Hz", "80Hz", "20Hz","10Hz" };
 	public static final Integer[] ListofLIS3MDLAltMagRateConfigValues = { 0x01, 0x11, 0x21, 0x31, 0x3E, 0x3A, 0x08 };
 	public static final String[] ListofLIS3MDLAltMagRange = { "+/- 4Ga", "+/- 8Ga", "+/- 12Ga", "+/- 16Ga" };
 	public static final Integer[] ListofLIS3MDLAltMagRangeConfigValues = { 0, 1, 2, 3 };
 
-	public static final ConfigOptionDetailsSensor configOptionMagRange = new ConfigOptionDetailsSensor(
+	public static final ConfigOptionDetailsSensor configOptionAltMagRange = new ConfigOptionDetailsSensor(
 			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_ALT_MAG_RANGE, SensorLIS3MDL.DatabaseConfigHandle.ALT_MAG_RANGE,
 			ListofLIS3MDLAltMagRange, ListofLIS3MDLAltMagRangeConfigValues,
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS3MDL);
 
-	public static final ConfigOptionDetailsSensor configOptionMagRate = new ConfigOptionDetailsSensor(
+	public static final ConfigOptionDetailsSensor configOptionAltMagRate = new ConfigOptionDetailsSensor(
 			SensorLIS3MDL.GuiLabelConfig.LIS3MDL_ALT_MAG_RATE, SensorLIS3MDL.DatabaseConfigHandle.ALT_MAG_RATE,
 			ListofLIS3MDLAltMagRate, ListofLIS3MDLAltMagRateConfigValues,
 			ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.COMBOBOX,
@@ -196,7 +195,7 @@ public class SensorLIS3MDL extends AbstractSensor {
 
 	// --------- Sensor info start --------------
 
-	public static final SensorDetailsRef sensorLIS3MDLMag = new SensorDetailsRef(0x200000, // ==
+	public static final SensorDetailsRef sensorLIS3MDLAltMag = new SensorDetailsRef(0x200000, // ==
 																							// Configuration.Shimmer3.SensorBitmap.SENSOR_MAG
 																							// will be:
 																							// SensorBitmap.SENSOR_MAG,
@@ -210,24 +209,24 @@ public class SensorLIS3MDL extends AbstractSensor {
 	public static final Map<Integer, SensorDetailsRef> mSensorMapRef;
 	static {
 		Map<Integer, SensorDetailsRef> aMap = new LinkedHashMap<Integer, SensorDetailsRef>();
-		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG_ALT, SensorLIS3MDL.sensorLIS3MDLMag);
+		aMap.put(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG_ALT, SensorLIS3MDL.sensorLIS3MDLAltMag);
 		mSensorMapRef = Collections.unmodifiableMap(aMap);
 	}
 	// --------- Sensor info end --------------
 
 	// --------- Channel info start --------------
 
-	public static final ChannelDetails channelLIS3MDLMagX = new ChannelDetails(ObjectClusterSensorName.MAG_ALT_X,
+	public static final ChannelDetails channelLIS3MDLAltMagX = new ChannelDetails(ObjectClusterSensorName.MAG_ALT_X,
 			ObjectClusterSensorName.MAG_ALT_X, DatabaseChannelHandles.ALT_MAG_X, CHANNEL_DATA_TYPE.INT12, 2,
 			CHANNEL_DATA_ENDIAN.LSB, CHANNEL_UNITS.LOCAL_FLUX, Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x17);
 
-	public static final ChannelDetails channelLIS3MDLMagY = new ChannelDetails(ObjectClusterSensorName.MAG_ALT_Y,
+	public static final ChannelDetails channelLIS3MDLAltMagY = new ChannelDetails(ObjectClusterSensorName.MAG_ALT_Y,
 			ObjectClusterSensorName.MAG_ALT_Y, DatabaseChannelHandles.ALT_MAG_Y, CHANNEL_DATA_TYPE.INT12, 2,
 			CHANNEL_DATA_ENDIAN.LSB, CHANNEL_UNITS.LOCAL_FLUX, Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x18);
 
-	public static final ChannelDetails channelLIS3MDLMagZ = new ChannelDetails(ObjectClusterSensorName.MAG_ALT_Z,
+	public static final ChannelDetails channelLIS3MDLAltMagZ = new ChannelDetails(ObjectClusterSensorName.MAG_ALT_Z,
 			ObjectClusterSensorName.MAG_ALT_Z, DatabaseChannelHandles.ALT_MAG_Z, CHANNEL_DATA_TYPE.INT12, 2,
 			CHANNEL_DATA_ENDIAN.LSB, CHANNEL_UNITS.LOCAL_FLUX, Arrays.asList(CHANNEL_TYPE.CAL, CHANNEL_TYPE.UNCAL),
 			0x19);
@@ -235,14 +234,14 @@ public class SensorLIS3MDL extends AbstractSensor {
 	public static final Map<String, ChannelDetails> mChannelMapRef;
 	static {
 		Map<String, ChannelDetails> aMap = new LinkedHashMap<String, ChannelDetails>();
-		aMap.put(SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_X, SensorLIS3MDL.channelLIS3MDLMagX);
-		aMap.put(SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Z, SensorLIS3MDL.channelLIS3MDLMagZ);
-		aMap.put(SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Y, SensorLIS3MDL.channelLIS3MDLMagY);
+		aMap.put(SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_X, SensorLIS3MDL.channelLIS3MDLAltMagX);
+		aMap.put(SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Z, SensorLIS3MDL.channelLIS3MDLAltMagZ);
+		aMap.put(SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Y, SensorLIS3MDL.channelLIS3MDLAltMagY);
 		mChannelMapRef = Collections.unmodifiableMap(aMap);
 	}
 	// --------- Channel info end --------------
 
-	public static final SensorGroupingDetails sensorGroupLisMag = new SensorGroupingDetails(LABEL_SENSOR_TILE.ALT_MAG,
+	public static final SensorGroupingDetails sensorGroupLisAltMag = new SensorGroupingDetails(LABEL_SENSOR_TILE.ALT_MAG,
 			Arrays.asList(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG_ALT),
 			CompatibilityInfoForMaps.listOfCompatibleVersionInfoLIS3MDL);
 
@@ -303,14 +302,15 @@ public class SensorLIS3MDL extends AbstractSensor {
 
 	@Override
 	public void generateConfigOptionsMap() {
-		addConfigOption(configOptionMagRange);
-		addConfigOption(configOptionMagRate);
+		mConfigOptionsMap.clear();
+		addConfigOption(configOptionAltMagRange);
+		addConfigOption(configOptionAltMagRate);
 	}
 
 	@Override
 	public void generateSensorGroupMapping() {
 		mSensorGroupingMap = new LinkedHashMap<Integer, SensorGroupingDetails>();
-		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.ALT_MAG_3R.ordinal(), sensorGroupLisMag);
+		mSensorGroupingMap.put(Configuration.Shimmer3.LABEL_SENSOR_TILE.ALT_MAG_3R.ordinal(), sensorGroupLisAltMag);
 		super.updateSensorGroupingMap();
 	}
 
@@ -407,28 +407,28 @@ public class SensorLIS3MDL extends AbstractSensor {
 	public void setLowPowerMag(boolean enable) {
 		mLowPowerMag = enable;
 		if (mShimmerDevice != null) {
-			setLIS3MDLAltMagRateInternal(getSamplingRateShimmer());
+			setLIS3MDLAltMagRateFromFreq(getSamplingRateShimmer());
 		}
 	}
 
 	public void setMedPowerMag(boolean enable) {
 		mMedPowerMag = enable;
 		if (mShimmerDevice != null) {
-			setLIS3MDLAltMagRateInternal(getSamplingRateShimmer());
+			setLIS3MDLAltMagRateFromFreq(getSamplingRateShimmer());
 		}
 	}
 
 	public void setHighPowerMag(boolean enable) {
 		mHighPowerMag = enable;
 		if (mShimmerDevice != null) {
-			setLIS3MDLAltMagRateInternal(getSamplingRateShimmer());
+			setLIS3MDLAltMagRateFromFreq(getSamplingRateShimmer());
 		}
 	}
 
 	public void setUltraHighPowerMag(boolean enable) {
 		mUltraHighPowerMag = enable;
 		if (mShimmerDevice != null) {
-			setLIS3MDLAltMagRateInternal(getSamplingRateShimmer());
+			setLIS3MDLAltMagRateFromFreq(getSamplingRateShimmer());
 		}
 	}
 
@@ -541,7 +541,7 @@ public class SensorLIS3MDL extends AbstractSensor {
 		mIsUsingDefaultAltMagParam = getCurrentCalibDetailsMagAlt().isUsingDefaultParameters();
 	}
 
-	public int setLIS3MDLMagRateFromFreq(double freq) {
+	public int setLIS3MDLAltMagRateFromFreq(double freq) {
 		boolean isEnabled = isSensorEnabled(mSensorIdAltMag);
 
 		if (isLowPowerMagEnabled()) {
@@ -814,7 +814,6 @@ public class SensorLIS3MDL extends AbstractSensor {
 
 	@Override
 	public void configBytesParse(ShimmerDevice shimmerDevice, byte[] configBytes, COMMUNICATION_TYPE commType) {
-		// still not being implemented for Alt mag sensor
 		ConfigByteLayout configByteLayout = shimmerDevice.getConfigByteLayout();
 		if (configByteLayout instanceof ConfigByteLayoutShimmer3) {
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
@@ -939,21 +938,8 @@ public class SensorLIS3MDL extends AbstractSensor {
 		// set sampling rate of the sensors as close to the Shimmer sampling rate as
 		// possible (sensor sampling rate >= shimmer sampling rate)
 
-		setLIS3MDLMagRateFromFreq(samplingRateHz);
+		setLIS3MDLAltMagRateFromFreq(samplingRateHz);
 		checkLowPowerMag();
-	}
-
-	public int setLIS3MDLAltMagRateFromFreq(double freq) {
-		boolean isEnabled = isSensorEnabled(mSensorIdAltMag);
-//		System.out.println("Setting Sampling Rate: " + freq + "\tmLowPowerAccelAlt:" + mLowPowerAccelAlt);
-		setLIS3MDLAltMagRate(getMagRateFromFreqForSensor(isEnabled, freq, -1));
-		return mLISAltMagRate;
-	}
-
-	public void setLIS3MDLAltMagRateInternal(double d) {
-		// System.out.println("Accel Rate:\t" + valueToSet);
-		// UtilShimmer.consolePrintCurrentStackTrace();
-		mLISAltMagRate = (int) d;
 	}
 
 	@Override
