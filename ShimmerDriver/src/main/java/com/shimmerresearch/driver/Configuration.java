@@ -84,8 +84,8 @@ import com.shimmerresearch.sensors.bmpX80.SensorBMP280;
 import com.shimmerresearch.sensors.bmpX80.SensorBMP390;
 import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 import com.shimmerresearch.sensors.kionix.SensorKionixKXRB52042;
-import com.shimmerresearch.sensors.lisxmdl.SensorLIS2MDL;
 import com.shimmerresearch.sensors.lisxmdl.SensorLIS3MDL;
+import com.shimmerresearch.sensors.lisxmdl.SensorLIS2MDL;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303DLHC;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9150;
@@ -730,8 +730,8 @@ public class Configuration {
 			public static final int SHIMMER_LSM6DSV_GYRO = 38;			
 			public static final int SHIMMER_LIS2DW12_ACCEL_WR = 39;
 			public static final int SHIMMER_ADXL371_ACCEL_HIGHG = 40;
-			public static final int SHIMMER_LIS3MDL_MAG = 41;
-			public static final int SHIMMER_LIS2MDL_MAG_WR = 42;
+			public static final int SHIMMER_LIS2MDL_MAG = 42;
+			public static final int SHIMMER_LIS3MDL_MAG_ALT = 41;
 			public static final int SHIMMER_BMP390_PRESSURE = 43;
 			
 //			public static final int SHIMMER_EXG1_24BIT = 3;
@@ -923,8 +923,8 @@ public class Configuration {
 			GYRO(SensorMPU9X50.LABEL_SENSOR_TILE.GYRO),
 			GYRO_3R(SensorLSM6DSV.LABEL_SENSOR_TILE.GYRO),
 			MAG(SensorLSM303.LABEL_SENSOR_TILE.MAG),
-			MAG_3R(SensorLIS3MDL.LABEL_SENSOR_TILE.MAG),
-			WIDE_RANGE_MAG_3R(SensorLIS2MDL.LABEL_SENSOR_TILE.WIDE_RANGE_MAG),
+			MAG_3R(SensorLIS2MDL.LABEL_SENSOR_TILE.MAG),
+			ALT_MAG_3R(SensorLIS3MDL.LABEL_SENSOR_TILE.ALT_MAG),
 			PRESSURE_TEMPERATURE_BMP180(SensorBMP180.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP280(SensorBMP280.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
 			PRESSURE_TEMPERATURE_BMP390(SensorBMP390.LABEL_SENSOR_TILE.PRESSURE_TEMPERATURE),
@@ -982,7 +982,7 @@ public class Configuration {
 			
 //			public static final String ACCEL_WR = SensorLSM303.GuiLabelSensors.ACCEL_WR;
 			public static final String MAG = SensorLSM303DLHC.GuiLabelSensors.MAG;
-			public static final String WR_MAG_3R = SensorLIS2MDL.GuiLabelSensors.MAG_WR;
+			public static final String WR_MAG_3R = SensorLIS3MDL.GuiLabelSensors.MAG_ALT;
 
 //			public static final String PRESS_TEMP_BMP180 = 	SensorBMP180.GuiLabelSensors.PRESS_TEMP_BMP180;
 
@@ -1122,9 +1122,9 @@ public class Configuration {
 			public static  String ACCEL_HIGHG_X = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_X;
 			public static  String ACCEL_HIGHG_Y = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Y;
 			public static  String ACCEL_HIGHG_Z= SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Z;
-			public static  String MAG_WR_X = SensorLIS2MDL.ObjectClusterSensorName.MAG_WR_X;
-			public static  String MAG_WR_Y = SensorLIS2MDL.ObjectClusterSensorName.MAG_WR_Y;
-			public static  String MAG_WR_Z= SensorLIS2MDL.ObjectClusterSensorName.MAG_WR_Z;
+			public static  String MAG_WR_X = SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_X;
+			public static  String MAG_WR_Y = SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Y;
+			public static  String MAG_WR_Z= SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Z;
 			
 			public static String BRIDGE_AMP_HIGH = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_HIGH;
 			public static String BRIDGE_AMP_LOW = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_LOW;
@@ -1504,7 +1504,7 @@ public class Configuration {
 					svoProto3DeluxeNewImuSdLog, svoProto3DeluxeNewImuLogAndStream);
 			
 			//Shimmer3r Mag
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLISM3MDL = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2MDL = Arrays.asList(
 					svoShimmer3RImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoShimmer3RImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedLogAndStream,
@@ -1513,7 +1513,7 @@ public class Configuration {
 					svoShimmer3RProto3DeluxeLogAndStream);
 			
 			//Shimmer3r WR Mag
-			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS2MDL = Arrays.asList(
+			public static final List<ShimmerVerObject> listOfCompatibleVersionInfoLIS3MDL = Arrays.asList(
 					svoShimmer3RImuLogAndStream, svoShimmer3RLogAndStream,  
 					svoShimmer3RImuAnyExpBrdLogAndStream,
 					svoShimmer3RGsrUnifiedLogAndStream,

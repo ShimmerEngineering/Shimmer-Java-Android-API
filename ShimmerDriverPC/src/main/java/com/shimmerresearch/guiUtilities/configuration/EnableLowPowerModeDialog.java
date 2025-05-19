@@ -21,6 +21,7 @@ import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
 import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 import com.shimmerresearch.sensors.lis2dw12.SensorLIS2DW12;
+import com.shimmerresearch.sensors.lisxmdl.SensorLIS2MDL;
 import com.shimmerresearch.sensors.lisxmdl.SensorLIS3MDL;
 import com.shimmerresearch.sensors.lsm6dsv.SensorLSM6DSV;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
@@ -83,8 +84,8 @@ public class EnableLowPowerModeDialog {
 					}
 				}
 				if (connected) {
-					clone.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG,
-							SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_LP, cbEnableMagLP.isSelected());
+					clone.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG,
+							SensorLIS3MDL.GuiLabelConfig.LIS3MDL_ALT_MAG_LP, cbEnableMagLP.isSelected());
 					clone.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO,
 							SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM, cbEnableGyroLP.isSelected());
 					clone.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR,
@@ -123,7 +124,7 @@ public class EnableLowPowerModeDialog {
 			cbEnableGyroLP.setText("Enable LN Accel and Gyro LP Mode");
 		}
 		boolean isLowPowerMagEnabled = Boolean.valueOf(clone.getConfigGuiValueUsingConfigLabel(
-				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_MAG_LP));
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG_ALT, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_ALT_MAG_LP));
 		cbEnableMagLP.setSelected(isLowPowerMagEnabled);
 
 		boolean isLowPowerGyroEnabled = Boolean.valueOf(clone.getConfigGuiValueUsingConfigLabel(
