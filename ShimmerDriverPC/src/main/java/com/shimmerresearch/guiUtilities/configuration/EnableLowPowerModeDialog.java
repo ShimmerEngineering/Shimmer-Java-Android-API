@@ -84,8 +84,8 @@ public class EnableLowPowerModeDialog {
 					}
 				}
 				if (connected) {
-					clone.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG_ALT,
-							SensorLIS3MDL.GuiLabelConfig.LIS3MDL_ALT_MAG_LP, cbEnableMagLP.isSelected());
+					clone.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG,
+							SensorLIS2MDL.GuiLabelConfig.LIS2MDL_MAG_LP, cbEnableMagLP.isSelected());
 					clone.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO,
 							SensorLSM6DSV.GuiLabelConfig.LSM6DSV_GYRO_LPM, cbEnableGyroLP.isSelected());
 					clone.setConfigValueUsingConfigLabel(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR,
@@ -124,7 +124,7 @@ public class EnableLowPowerModeDialog {
 			cbEnableGyroLP.setText("Enable LN Accel and Gyro LP Mode");
 		}
 		boolean isLowPowerMagEnabled = Boolean.valueOf(clone.getConfigGuiValueUsingConfigLabel(
-				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG_ALT, SensorLIS3MDL.GuiLabelConfig.LIS3MDL_ALT_MAG_LP));
+				Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG, SensorLIS2MDL.GuiLabelConfig.LIS2MDL_MAG_LP));
 		cbEnableMagLP.setSelected(isLowPowerMagEnabled);
 
 		boolean isLowPowerGyroEnabled = Boolean.valueOf(clone.getConfigGuiValueUsingConfigLabel(

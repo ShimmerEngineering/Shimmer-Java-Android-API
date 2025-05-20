@@ -48,6 +48,7 @@ public class SensorLIS2MDL extends AbstractSensor{
 	protected int mLISMagRate = 0;
 	public boolean mIsUsingDefaultMagParam = true;
 	protected int mSensorIdMag = -1;
+	protected boolean mLowPowerMag = false;
 	
 	public CalibDetailsKinematic mCurrentCalibDetailsMag = null;
 
@@ -80,6 +81,9 @@ public class SensorLIS2MDL extends AbstractSensor{
 	public static final class DatabaseConfigHandle{
 		public static final String MAG_RANGE = "LIS2MDL_Mag_Range";
 		public static final String MAG_RATE = "LIS2MDL_Mag_Rate";
+		
+		public static final String MAG_LPM = "LIS2MDL_Mag_LPM";
+
 //		public static final String MAG = "LIS2MDL_Mag";
 		
 		public static final String MAG_CALIB_TIME = "LIS2MDL_Mag_Calib_Time";
@@ -112,6 +116,7 @@ public class SensorLIS2MDL extends AbstractSensor{
 		public static final String LIS2MDL_MAG_RANGE = "Mag Range";
 		public static final String LIS2MDL_MAG_RATE = "Mag Rate";
 
+		public static final String LIS2MDL_MAG_LP = "Mag Low-Power Mode";
 		public static final String LIS2MDL_MAG_DEFAULT_CALIB = "Mag Default Calibration";
 
 		//NEW
@@ -373,6 +378,11 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	@Override
 	public void parseConfigMap(LinkedHashMap<String, Object> mapOfConfigPerShimmer) {
 		
+		if (mapOfConfigPerShimmer.containsKey(SensorLIS2MDL.DatabaseConfigHandle.MAG_LPM)) {
+			setLowPowerMag(
+					((Double) mapOfConfigPerShimmer.get(SensorLIS2MDL.DatabaseConfigHandle.MAG_LPM)) > 0 ? true
+							: false);
+		}
 		if(mapOfConfigPerShimmer.containsKey(SensorLIS2MDL.DatabaseConfigHandle.MAG_RANGE)){
 			setLISMagRange(((Double) mapOfConfigPerShimmer.get(SensorLIS2MDL.DatabaseConfigHandle.MAG_RANGE)).intValue());
 		}
@@ -425,22 +435,55 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 	public int setLIS2MDLAltMagRateFromFreq(double freq) {
 		boolean isEnabled = isSensorEnabled(mSensorIdMag);
 //		System.out.println("Setting Sampling Rate: " + freq + "\tmLowPowerAccelAlt:" + mLowPowerAccelAlt);
-		setLISMagRateInternal(getMagRateFromFreqForSensor(isEnabled, freq));
+		//setLISMagRateInternal(getMagRateFromFreqForSensor(isEnabled, freq));
+		if (isLowPowerMagEnabled()) {
+			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, 0);
+		} else {
+			mLISMagRate = getMagRateFromFreqForSensor(isEnabled, freq, -1);
+		}
 		return mLISMagRate;
 	}
 	
-	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq) {
-		int magRate = 0; // 10Hz
-
-		if (freq<10.0){
-			magRate = 0; // 10Hz
-		} else if (freq<20.0){
-			magRate = 1; // 20Hz
-		} else if (freq<50.0) {
-			magRate = 2; // 50Hz
-		} else {
-			magRate = 3; // 100Hz
+	public boolean checkLowPowerMag() {
+		setLowPowerMag((getLIS2MDLMagRate() == 0) ? true : false); // 10Hz
+		return isLowPowerMagEnabled();
+	}
+	
+	public boolean isLowPowerMagEnabled() {
+		return mLowPowerMag;
+	}
+	
+	public int getLowPowerMagEnabled() {
+		return (isLowPowerMagEnabled() ? 1 : 0);
+	}
+	
+	public void setLowPowerMag(boolean enable) {
+		mLowPowerMag = enable;
+		if (mShimmerDevice != null) {
+			setLIS2MDLAltMagRateFromFreq(getSamplingRateShimmer());
 		}
+	}
+	
+	public int getMagRateFromFreqForSensor(boolean isEnabled, double freq, int powerMode) {
+		int magRate = 0; // 10Hz
+		
+		if (isEnabled) {
+			if (powerMode == 0) // low power mode enabled
+			{
+				magRate = 0; // 10Hz
+			} else {
+				if (freq<10.0){
+					magRate = 0; // 10Hz
+				} else if (freq<20.0){
+					magRate = 1; // 20Hz
+				} else if (freq<50.0) {
+					magRate = 2; // 50Hz
+				} else {
+					magRate = 3; // 100Hz
+				}
+			}
+		}
+		
 		return magRate;
 	}
 	
@@ -550,7 +593,8 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 			int magRate = (configBytes[configByteLayoutCast.idxConfigSetupByte2] >> configByteLayoutCast.bitShiftLSM303DLHCMagSamplingRate) & configByteLayoutCast.maskLSM303DLHCMagSamplingRate;
 			//int msbMagRate = (configBytes[configByteLayoutCast.idxConfigSetupByte5] >> configByteLayoutCast.bitShiftLIS2MDLMagRateMSB) & configByteLayoutCast.maskLIS2MDLMagRateMSB;
 			setLIS2MDLMagRate(magRate);
-			
+			checkLowPowerMag(); // check rate to determine if Sensor is in LPM mode
+
 			if (shimmerDevice.isConnected()){
 				getCurrentCalibDetailsMag().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
 			}
@@ -571,7 +615,10 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		Object returnValue = null;
 		
 		switch(configLabel){
-			case(GuiLabelConfig.LIS2MDL_MAG_RANGE):
+		case (GuiLabelConfig.LIS2MDL_MAG_LP):
+			setLowPowerMag((boolean) valueToSet);
+			break;	
+		case(GuiLabelConfig.LIS2MDL_MAG_RANGE):
 				setLISMagRange((int)valueToSet);
 				break;
 			case(GuiLabelConfig.LIS2MDL_MAG_RATE):
@@ -614,6 +661,9 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
         }
 		
 		switch(configLabel){
+			case (GuiLabelConfig.LIS2MDL_MAG_LP):
+				returnValue = isLowPowerMagEnabled();
+				break;
 			case(GuiLabelConfig.LIS2MDL_MAG_RATE): 
 				returnValue = getLIS2MDLMagRate();
 		    	break;
