@@ -240,6 +240,8 @@ public class SensorConfigDialog extends AbstractSensorConfigDialog {
 		displayButDisableFilterList.add("Wide Range Accel Rate");
 		displayButDisableFilterList.add("Mag Rate");
 		displayButDisableFilterList.add("Gyro Sampling Rate");
+		displayButDisableFilterList.add("Alternate Mag Rate");
+		displayButDisableFilterList.add("High G Accel Rate");
 		setSensorDisplayButDisableKeysFilter(displayButDisableFilterList, true);
 
 		createFrame();
