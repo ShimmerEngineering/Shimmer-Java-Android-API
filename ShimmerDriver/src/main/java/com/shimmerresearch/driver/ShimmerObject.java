@@ -8778,7 +8778,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public int getLowPowerMagEnabled() {
 		if (isShimmerGen3R()) {
-			return mSensorLIS3MDL.getLowPowerMagEnabled();
+			return mSensorLIS2MDL.getLowPowerMagEnabled();
 		} else {
 			return mSensorLSM303.getLowPowerMagEnabled();
 		}
