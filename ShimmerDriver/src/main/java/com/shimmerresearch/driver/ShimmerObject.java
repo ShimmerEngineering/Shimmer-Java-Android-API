@@ -1150,15 +1150,15 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			if (((fwType == COMMUNICATION_TYPE.BLUETOOTH) && (mEnabledSensors & BTStream.MAG_ALT) > 0) 
 				|| ((fwType == COMMUNICATION_TYPE.SD) && (mEnabledSensors & SDLogHeader.MAG_MPU) > 0)) {
-				int iMagX=getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_WR_X);
-				int iMagY=getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_WR_Y);
-				int iMagZ=getSignalIndex(Shimmer3.ObjectClusterSensorName.MAG_WR_Z);
+				int iMagX=getSignalIndex(Shimmer3.ObjectClusterSensorName.ALT_MAG_X);
+				int iMagY=getSignalIndex(Shimmer3.ObjectClusterSensorName.ALT_MAG_Y);
+				int iMagZ=getSignalIndex(Shimmer3.ObjectClusterSensorName.ALT_MAG_Z);
 				tempData[0]=(double)newPacketInt[iMagX];
 				tempData[1]=(double)newPacketInt[iMagY];
 				tempData[2]=(double)newPacketInt[iMagZ];
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_X,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iMagX]);
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Y,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iMagY]);
-				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Z,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iMagZ]);
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ALT_MAG_X,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iMagX]);
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ALT_MAG_Y,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iMagY]);
+				objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ALT_MAG_Z,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.NO_UNITS,(double)newPacketInt[iMagZ]);
 				uncalibratedData[iMagX]=(double)newPacketInt[iMagX];
 				uncalibratedData[iMagY]=(double)newPacketInt[iMagY];
 				uncalibratedData[iMagZ]=(double)newPacketInt[iMagZ];
@@ -1174,9 +1174,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					calibratedData[iMagZ]=altMagCalibratedData[2];
 					
 					if(isShimmerGen3R()) {
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,altMagCalibratedData[0],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,altMagCalibratedData[1],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
-						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.MAG_WR_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,altMagCalibratedData[2],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ALT_MAG_X,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,altMagCalibratedData[0],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ALT_MAG_Y,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,altMagCalibratedData[1],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
+						objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.ALT_MAG_Z,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.MAG_CAL_UNIT,altMagCalibratedData[2],mSensorLIS3MDL.mIsUsingDefaultAltMagParam);
 					}
 					magnetometer.x=altMagCalibratedData[0];
 					magnetometer.y=altMagCalibratedData[1];
@@ -3408,7 +3408,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if ((byte)signalId[i]==(byte)0x17){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3R){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_WR_X;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ALT_MAG_X;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_ALT_MAG;
@@ -3416,7 +3416,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if ((byte)signalId[i]==(byte)0x18){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3R){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_WR_Y;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ALT_MAG_Y;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_ALT_MAG;
@@ -3424,7 +3424,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			}
 			else if ((byte)signalId[i]==(byte)0x19){
 				if (getHardwareVersion()==HW_ID.SHIMMER_3R){
-					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.MAG_WR_Z;
+					signalNameArray[i+1]=Shimmer3.ObjectClusterSensorName.ALT_MAG_Z;
 					signalDataTypeArray[i+1] = "i16";
 					packetSize=packetSize+2;
 					enabledSensors |= Configuration.Shimmer3.SensorBitmap.SENSOR_ALT_MAG;

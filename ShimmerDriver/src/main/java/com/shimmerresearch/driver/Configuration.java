@@ -1122,9 +1122,9 @@ public class Configuration {
 			public static  String ACCEL_HIGHG_X = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_X;
 			public static  String ACCEL_HIGHG_Y = SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Y;
 			public static  String ACCEL_HIGHG_Z= SensorADXL371.ObjectClusterSensorName.ACCEL_HIGHG_Z;
-			public static  String MAG_WR_X = SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_X;
-			public static  String MAG_WR_Y = SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Y;
-			public static  String MAG_WR_Z= SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Z;
+			public static  String ALT_MAG_X = SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_X;
+			public static  String ALT_MAG_Y = SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Y;
+			public static  String ALT_MAG_Z= SensorLIS3MDL.ObjectClusterSensorName.MAG_ALT_Z;
 			
 			public static String BRIDGE_AMP_HIGH = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_HIGH;
 			public static String BRIDGE_AMP_LOW = SensorBridgeAmp.ObjectClusterSensorName.BRIDGE_AMP_LOW;
