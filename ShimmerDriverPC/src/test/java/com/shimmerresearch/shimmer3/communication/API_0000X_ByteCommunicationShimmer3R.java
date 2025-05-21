@@ -381,16 +381,16 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     		double[][] altMagAlignment = mDevice.getAlignmentMatrixAltMag();
     		assertTrue(Arrays.deepEquals(altMagAlignment, SensorLIS3MDL.DefaultAlignmentMatrixAltMagShimmer3r));
     		
-    		mDevice.setLSM303MagRange(0);
+    		mDevice.setAltMagRange(0);
     		double[][] altMagSensitivity0 = mDevice.getSensitivityMatrixAltMag();
     		assertTrue(Arrays.deepEquals(altMagSensitivity0, SensorLIS3MDL.DefaultSensitivityMatrixAltMag4GaShimmer3r));
-    		mDevice.setLSM303MagRange(1);
+    		mDevice.setAltMagRange(1);
     		double[][] altMagSensitivity1 = mDevice.getSensitivityMatrixAltMag();
     		assertTrue(Arrays.deepEquals(altMagSensitivity1, SensorLIS3MDL.DefaultSensitivityMatrixAltMag8GaShimmer3r));
-    		mDevice.setLSM303MagRange(2);
+    		mDevice.setAltMagRange(2);
     		double[][] altMagSensitivity2 = mDevice.getSensitivityMatrixAltMag();
     		assertTrue(Arrays.deepEquals(altMagSensitivity2, SensorLIS3MDL.DefaultSensitivityMatrixAltMag12GaShimmer3r));
-    		mDevice.setLSM303MagRange(3);
+    		mDevice.setAltMagRange(3);
     		double[][] altMagSensitivity3 = mDevice.getSensitivityMatrixAltMag();
     		assertTrue(Arrays.deepEquals(altMagSensitivity3, SensorLIS3MDL.DefaultSensitivityMatrixAltMag16GaShimmer3r));
 	}
