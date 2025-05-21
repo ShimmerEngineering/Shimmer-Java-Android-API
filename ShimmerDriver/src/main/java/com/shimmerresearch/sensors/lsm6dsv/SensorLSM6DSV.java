@@ -1088,7 +1088,8 @@ public class SensorLSM6DSV extends AbstractSensor{
 			case(GuiLabelConfig.LSM6DSV_GYRO_RATE):
 				//returnValue = Double.toString((double)Math.round(getLSM6DSVGyroAccelRateInHz() * 100) / 100); // round sampling rate to two decimal places
 				int configValue = getLSM6DSVGyroAccelRate(); 
-				returnValue = configValue;			break;
+				returnValue = configValue;			
+				break;
 			case(GuiLabelConfig.LSM6DSV_GYRO_RATE_HZ):
 				returnValue = getLSM6DSVGyroAccelRateInHz();
 				break;
