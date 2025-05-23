@@ -5466,14 +5466,18 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			mSensorLSM6DSV = new SensorLSM6DSV(this);
 			addSensorClass(mSensorLSM6DSV);
 
-			mSensorADXL371 = new SensorADXL371(this);
-			addSensorClass(mSensorADXL371);
+			if(isShimmer3RwithHighGAccelSupport()){
+				mSensorADXL371 = new SensorADXL371(this);
+				addSensorClass(mSensorADXL371);
+			}
       
 			mSensorLIS2DW12 = new SensorLIS2DW12(this);
 			addSensorClass(mSensorLIS2DW12);
 			
-			mSensorLIS3MDL = new SensorLIS3MDL(this);
-			addSensorClass(mSensorLIS3MDL);
+			if(isShimmer3RwithAltMagSupport()){
+				mSensorLIS3MDL = new SensorLIS3MDL(this);
+				addSensorClass(mSensorLIS3MDL);
+			}
 			
 			mSensorLIS2MDL = new SensorLIS2MDL(this);
 			addSensorClass(mSensorLIS2MDL);
@@ -10731,6 +10735,63 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	 */
 	public boolean isSupportedNewImuSensors() {
 		return isSupportedNewImuSensors(getShimmerVerObject(), getExpansionBoardDetails());
+	}
+	
+	public boolean isShimmer3RwithHighGAccelSupport() {
+		return isShimmer3RwithHighGAccelSupport(getShimmerVerObject(), getExpansionBoardDetails());
+	}
+	
+	public static boolean isShimmer3RwithHighGAccelSupport(ShimmerVerObject svo, ExpansionBoardDetails ebd) {
+				
+		if(svo==null || ebd==null){
+			return false;
+		}
+		
+		int expBrdId = ebd.getExpansionBoardId();
+		int expBrdRev = ebd.getExpansionBoardRev();
+		int expBrdRevSpecial = ebd.getExpansionBoardRevSpecial();
+		
+		if((svo.getHardwareVersion()==HW_ID.SHIMMER_3R) && (
+				(expBrdId == HW_ID_SR_CODES.SHIMMER3)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE && expBrdRev == 4 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev == 4 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 6 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 8 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 8 && expBrdRevSpecial == 0))){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public boolean isShimmer3RwithAltMagSupport() {
+		return isShimmer3RwithAltMagSupport(getShimmerVerObject(), getExpansionBoardDetails());
+	}
+	
+	public static boolean isShimmer3RwithAltMagSupport(ShimmerVerObject svo, ExpansionBoardDetails ebd) {
+		if(svo==null || ebd==null){
+			return false;
+		}
+		int expBrdId = ebd.getExpansionBoardId();
+		int expBrdRev = ebd.getExpansionBoardRev();
+		int expBrdRevSpecial = ebd.getExpansionBoardRevSpecial();
+		
+		if((svo.getHardwareVersion()==HW_ID.SHIMMER_3R) && (
+				(expBrdId == HW_ID_SR_CODES.SHIMMER3 && expBrdRev == 11 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE && expBrdRev == 4 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev == 4 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 6 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 8 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 8 && expBrdRevSpecial == 0))){
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	public static boolean isSupportedNewImuSensors(ShimmerVerObject svo, ExpansionBoardDetails ebd) {
