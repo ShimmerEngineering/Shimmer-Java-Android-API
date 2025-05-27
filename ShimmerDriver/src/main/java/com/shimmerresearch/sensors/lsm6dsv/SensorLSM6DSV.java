@@ -48,7 +48,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 	private static final long serialVersionUID = -1336807717590498430L;
 	// LN ACCEL
 	protected int mSensorIdAccelLN = -1;
-	private int mAccelRange = 1;	
+	private int mAccelRange = 0;	
 	public boolean mIsUsingDefaultLNAccelParam = true;
 	public static final double[][] AlignmentMatrixLowNoiseAccelShimmer3r = {{-1,0,0},{0,1,0},{0,0,-1}};
 	public static final double[][] OffsetVectorLowNoiseAccelShimmer3r = {{0},{0},{0}}; 
@@ -99,7 +99,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 
 	// GYRO
 	public boolean mIsUsingDefaultGyroParam = true;
-	private int mGyroRange = 1;	
+	private int mGyroRange = 0;	
 	protected int mLSM6DSVGyroAccelRate=0;
 	protected int mSensorIdGyro = -1;
 	
@@ -549,9 +549,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 	public int getAccelRange(){
 		return mAccelRange;
 	}
-	public void setAccelRange(int accelRange){
-		setLSM6DSVAccelRange(accelRange);
-	}
 	
 	public void setLSM6DSVAccelRange(int i){
 		if(ArrayUtils.contains(ListofLSM6DSVAccelRangeConfigValues, i)){	
@@ -812,6 +809,9 @@ public class SensorLSM6DSV extends AbstractSensor{
 				SensorLSM6DSV.DatabaseConfigHandle.LIST_OF_CALIB_HANDLES_LN_ACC,
 				SensorLSM6DSV.DatabaseConfigHandle.LN_ACC_CALIB_TIME);
 		
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.ACCEL_RANGE)){
+			setLSM6DSVAccelRange(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.ACCEL_RANGE)).intValue());
+		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.GYRO_RATE)){
 			setLSM6DSVGyroAccelRate(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.GYRO_RATE)).intValue());
 		}
@@ -987,7 +987,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 		if(configByteLayout instanceof ConfigByteLayoutShimmer3){
 			ConfigByteLayoutShimmer3 configByteLayoutCast = (ConfigByteLayoutShimmer3) configByteLayout;
 			
-			setAccelRange((configBytes[configByteLayoutCast.idxConfigSetupByte3] >> configByteLayoutCast.bitShiftMPU9150AccelRange) & configByteLayoutCast.maskMPU9150AccelRange);
+			setLSM6DSVAccelRange((configBytes[configByteLayoutCast.idxConfigSetupByte3] >> configByteLayoutCast.bitShiftMPU9150AccelRange) & configByteLayoutCast.maskMPU9150AccelRange);
 
 			if (shimmerDevice.isConnected()){
 				getCurrentCalibDetailsAccelLn().mCalibReadSource=CALIB_READ_SOURCE.INFOMEM;
@@ -1222,7 +1222,7 @@ public class SensorLSM6DSV extends AbstractSensor{
 		if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN){
 			return isUsingDefaultLNAccelParam();
 		}
-		if(sensorId==mSensorIdGyro){
+		if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO){
 			return isUsingDefaultGyroParam();
 		}
 		return false;
