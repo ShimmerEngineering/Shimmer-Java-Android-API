@@ -45,4 +45,8 @@ public class Version {
         }
         return null; // Return null if the format is invalid
     }
+	
+	public String getVersion() {
+		return mMajor+"."+mMinor+"."+mInternal;
+	}
 }
