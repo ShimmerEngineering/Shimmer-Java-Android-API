@@ -16,8 +16,9 @@ public class GrpcBLERadioByteTools {
 
 	private Process runningProcess;
 	String mExeName = "ShimmerBLEGrpc.exe";
+	String mExePathAltWindows = System.getProperty("user.dir") + "/libs/ShimmerBLEGrpcWindows/" + mExeName;
 	String mExePath = "C:\\Github\\Shimmer-C-API\\ShimmerAPI\\ShimmerBLEGrpc\\bin\\Debug\\" + mExeName; // Replace with the path to your .exe file
-	//String exePath = "C:\\Users\\JC\\Desktop\\testgrpc\\ShimmerBLEGrpc.exe"; // Replace with the path to your .exe file
+//	String exePath = "C:\\Users\\JC\\Desktop\\testgrpc\\ShimmerBLEGrpc.exe"; // Replace with the path to your .exe file
 
 	public GrpcBLERadioByteTools() {
 		
@@ -68,8 +69,6 @@ public class GrpcBLERadioByteTools {
 		}
 	}
 	public int startServer() throws Exception {
-
-
 		int port = getFreePort();
 
 		System.out.println(port + " is free");
@@ -80,7 +79,23 @@ public class GrpcBLERadioByteTools {
 		command.add(Integer.toString(port));
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		processBuilder.redirectErrorStream(true); // Redirect standard error to the input stream
-		runningProcess = processBuilder.start();
+		
+		try {
+			runningProcess = processBuilder.start();
+		} catch(Exception e) {
+			System.err.println("Failed to start gRPC server at default path -> " + mExePath);
+			e.printStackTrace();
+			
+			//Try alternative gRPC server path
+			System.err.println("Trying alternative gRPC server path -> " + mExePathAltWindows);
+			command = new ArrayList<>();
+			command.add(mExePathAltWindows);
+			command.add(Integer.toString(port));
+			processBuilder = new ProcessBuilder(command);
+			processBuilder.redirectErrorStream(true);
+			runningProcess = processBuilder.start();
+		}
+		
 		Thread processThread = new Thread(() -> {
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(runningProcess.getInputStream()))) {
 				String line;
@@ -96,7 +111,6 @@ public class GrpcBLERadioByteTools {
 		processThread.start();
 		return port;
 		// You can continue with other tasks here
-
 	}
 
 	public void stopServer() {
