@@ -428,6 +428,14 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 		updateCurrentMagCalibInUse();
 	}
 	
+	@Override
+	public boolean isSensorUsingDefaultCal(int sensorId) {
+		if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG){
+			return isUsingDefaultMagParam();
+		}
+		return false;
+	}
+	
 	//--------- Optional methods to override in Sensor Class end --------
 	
 	//--------- Sensor specific methods start --------------

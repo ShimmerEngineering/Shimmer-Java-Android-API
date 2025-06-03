@@ -519,6 +519,14 @@ public class SensorLIS3MDL extends AbstractSensor {
 
 		updateCurrentMagAltCalibInUse();
 	}
+	
+	@Override
+	public boolean isSensorUsingDefaultCal(int sensorId) {
+		if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG_ALT){
+			return isUsingDefaultMagAltParam();
+		}
+		return false;
+	}
 
 	// --------- Optional methods to override in Sensor Class end --------
 
