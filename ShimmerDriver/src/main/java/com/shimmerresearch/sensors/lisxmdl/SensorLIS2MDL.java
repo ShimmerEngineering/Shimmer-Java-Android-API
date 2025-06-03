@@ -472,11 +472,11 @@ LinkedHashMap<String, Object> mapOfConfig = new LinkedHashMap<String, Object>();
 			{
 				magRate = 0; // 10Hz
 			} else {
-				if (freq<10.0){
+				if (freq <= 10.0){
 					magRate = 0; // 10Hz
-				} else if (freq<20.0){
+				} else if (freq <= 20.0){
 					magRate = 1; // 20Hz
-				} else if (freq<50.0) {
+				} else if (freq <= 50.0) {
 					magRate = 2; // 50Hz
 				} else {
 					magRate = 3; // 100Hz
