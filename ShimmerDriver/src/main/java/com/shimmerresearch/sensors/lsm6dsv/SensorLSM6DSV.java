@@ -566,7 +566,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 		}
 	}
 	
-	
 	//--------- LN Accel methods end --------------
 	
 	
@@ -1143,14 +1142,6 @@ public class SensorLSM6DSV extends AbstractSensor{
 			}
 			return true;
 		}
-
-		if(sensorId==mSensorIdGyro || sensorId == Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN){
-			setDefaultLSM6DSVGyroSensorConfig(isSensorEnabled);
-		}
-		if(sensorId==mSensorIdAccelLN || sensorId == Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO){
-			setDefaultLSM6DSVAccelSensorConfig(isSensorEnabled);
-		}
-		
 		return false;
 	}
 
@@ -1235,10 +1226,10 @@ public class SensorLSM6DSV extends AbstractSensor{
 	
 	@Override
 	public boolean isSensorUsingDefaultCal(int sensorId) {
-		if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN || sensorId == mSensorIdAccelLN){
+		if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN){
 			return isUsingDefaultLNAccelParam();
 		}
-		if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO || sensorId == mSensorIdGyro){
+		else if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO){
 			return isUsingDefaultGyroParam();
 		}
 		return false;
