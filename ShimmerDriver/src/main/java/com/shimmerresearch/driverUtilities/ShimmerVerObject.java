@@ -265,7 +265,7 @@ public class ShimmerVerObject implements Serializable {
 				&&mFirmwareVersionInternal!=FW_ID.UNKNOWN){
 			// Handle FW version code.
 			mFirmwareVersionCode = -1;
-			if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,1,0,23)) {
+			if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3R,FW_ID.LOGANDSTREAM,1,0,24)) {
 				mFirmwareVersionCode = 10;
 			}else if(UtilShimmer.compareVersions(mHardwareVersion,mFirmwareIdentifier,mFirmwareVersionMajor,mFirmwareVersionMinor,mFirmwareVersionInternal,HW_ID.SHIMMER_3,FW_ID.LOGANDSTREAM,0,16,6)) {
 				mFirmwareVersionCode = 9;

@@ -1111,7 +1111,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 			}
 			else if(inStreamResponseCommand==STATUS_RESPONSE){
-				byte[] responseData = readBytes(2, inStreamResponseCommand);
+				int statusBytesToRead = 0;
+				if(getHardwareVersion()==HW_ID.SHIMMER_3R && getFirmwareVersionCode()>=10) {
+					statusBytesToRead = 2;
+				}else {
+					statusBytesToRead = 1;
+				}
+				byte[] responseData = readBytes(statusBytesToRead, inStreamResponseCommand);
 				if(responseData!=null){
 					parseStatusByte(responseData);
 		
@@ -2414,10 +2420,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if(isSupportedRedLedStateInStatus()){
 			mIsRedLedOn = ((statusByte[0] & (0x01 << 7)) > 0)? true:false;
 		}
-		
-		if(getHardwareVersion()==HW_ID.SHIMMER_3R && getFirmwareVersionCode()>=10) {
-			setIsUsbPluggedIn(((statusByte[1] & (0x01 << 0)) > 0)? true:false);
-		}
 
 		consolePrintLn("\nStatus Response = \n" + UtilShimmer.byteToHexStringFormatted(statusByte[0]) 
 				+ "\t" + "IsDocked = " + isDocked()
@@ -2429,8 +2431,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				+ "\t" + "mIsSdPresent = " + isSDPresent()
 				+ "\t" + "mIsRedLedOn = " + mIsRedLedOn);
 		
-		consolePrintLn("\nStatus Response = \n" + UtilShimmer.byteToHexStringFormatted(statusByte[1]) 
-		+ "\t" + "IsUsbPluggedIn = " + isUsbPluggedIn());
+		if(statusByte.length > 1) {
+			setIsUsbPluggedIn(((statusByte[1] & (0x01 << 0)) > 0)? true:false);
+			
+			consolePrintLn("\nStatus Response = \n" + UtilShimmer.byteToHexStringFormatted(statusByte[1]) 
+			+ "\t" + "IsUsbPluggedIn = " + isUsbPluggedIn());
+			
+		}
 		
 		if(savedDockedState!=isDocked()){
 			dockedStateChange();
