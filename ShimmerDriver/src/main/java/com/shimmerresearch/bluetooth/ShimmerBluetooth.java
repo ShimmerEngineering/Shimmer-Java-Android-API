@@ -1112,7 +1112,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 			else if(inStreamResponseCommand==STATUS_RESPONSE){
 				int statusBytesToRead = 0;
-				if(getHardwareVersion()==HW_ID.SHIMMER_3R && getFirmwareVersionCode()>=10) {
+				if(isSupportedUSBPluggedInStatus()) {
 					statusBytesToRead = 2;
 				}else {
 					statusBytesToRead = 1;
@@ -2454,6 +2454,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 
 	public boolean isSupportedSdInfoInStatus() {
 		return isThisVerCompatibleWith(FW_ID.LOGANDSTREAM, 0, 7, 12);
+	}
+	
+	public boolean isSupportedUSBPluggedInStatus() {
+		return isThisVerCompatibleWith(HW_ID.SHIMMER_3R, FW_ID.LOGANDSTREAM, 1,0, 24);
 	}
 	
 	protected boolean isSupportedInStreamCmds() {
