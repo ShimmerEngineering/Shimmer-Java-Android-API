@@ -10757,8 +10757,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev == 4 && expBrdRevSpecial == 0)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 6 && expBrdRevSpecial == 0)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 1)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 8 && expBrdRevSpecial == 0)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 1)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 8 && expBrdRevSpecial == 0))){
 			return true;
 		}
@@ -10784,8 +10786,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_BR_AMP_UNIFIED && expBrdRev == 4 && expBrdRevSpecial == 0)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 6 && expBrdRevSpecial == 0)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 1)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_GSR_UNIFIED && expBrdRev == 8 && expBrdRevSpecial == 0)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 0)
+				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 7 && expBrdRevSpecial == 1)
 				|| (expBrdId==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED && expBrdRev == 8 && expBrdRevSpecial == 0))){
 			return true;
 		}
