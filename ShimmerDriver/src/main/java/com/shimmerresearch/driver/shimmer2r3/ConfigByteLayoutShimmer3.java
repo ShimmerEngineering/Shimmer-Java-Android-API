@@ -355,8 +355,8 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 			idxMPU9150GyroCalibration =     55;
 			idxLSM303DLHCMagCalibration =   76;
 			idxLSM303DLHCAccelCalibration = 97;
-			idxADXL371AltAccelCalibration = 	256;
-			idxLIS3MDLAltMagCalibration = 		285;
+			idxADXL371AltAccelCalibration = 	133;
+			idxLIS3MDLAltMagCalibration = 		154;
 		}
 
 		if(mShimmerVerObject.mHardwareVersion == HW_ID.SHIMMER_3R 
