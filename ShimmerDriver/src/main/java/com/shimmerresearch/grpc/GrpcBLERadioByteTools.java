@@ -1,6 +1,7 @@
 package com.shimmerresearch.grpc;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -8,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+
+import com.shimmerresearch.driverUtilities.UtilShimmer;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -15,17 +19,23 @@ import java.awt.event.ActionEvent;
 public class GrpcBLERadioByteTools {
 
 	private Process runningProcess;
-	String mExeName = "ShimmerBLEGrpc.exe";
-	String mExePath = "C:\\Github\\Shimmer-C-API\\ShimmerAPI\\ShimmerBLEGrpc\\bin\\Debug\\" + mExeName; // Replace with the path to your .exe file
+	String mExeNameWindows = "ShimmerBLEGrpc.exe";
+	String mExePathWindows = "C:\\Github\\Shimmer-C-API\\ShimmerAPI\\ShimmerBLEGrpc\\bin\\Debug\\" + mExeNameWindows; // Replace with the path to your .exe file
 	//String exePath = "C:\\Users\\JC\\Desktop\\testgrpc\\ShimmerBLEGrpc.exe"; // Replace with the path to your .exe file
+
+	//Below used by Consensys MacOS
+	String mExeNameMac = "ShimmerBLEGrpc";
+	String mExePathMac = System.getProperty("user.dir") + "/libs/ShimmerBLEGrpc/Products/usr/local/bin/" + mExeNameMac;
 
 	public GrpcBLERadioByteTools() {
 		
 	}
 	
 	public GrpcBLERadioByteTools(String exeName, String exePath) {
-		mExeName = exeName;
-		mExePath = exePath;
+		mExeNameWindows = exeName;
+		mExeNameMac = exeName;
+		mExePathWindows = exePath;
+		mExePathMac = exePath;
 	}
 	
 
@@ -76,8 +86,14 @@ public class GrpcBLERadioByteTools {
 		List<String> command = new ArrayList<>();
 
 		// Add the command itself
-		command.add(mExePath);
+		if(UtilShimmer.isOsMac()) {
+			command.add(mExePathMac);
+			command.add("--port");
+		} else {
+			command.add(mExePathWindows);
+		}
 		command.add(Integer.toString(port));
+
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		processBuilder.redirectErrorStream(true); // Redirect standard error to the input stream
 		runningProcess = processBuilder.start();
@@ -85,7 +101,7 @@ public class GrpcBLERadioByteTools {
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(runningProcess.getInputStream()))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
-					System.out.println(line);
+					System.out.println("[BLEGrpcServer] " + line);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -142,7 +158,7 @@ public class GrpcBLERadioByteTools {
 		JButton btnCheck = new JButton("checkServerApp");
 		btnCheck.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (grpcTools.isExeRunning(grpcTools.mExeName)) {
+				if (grpcTools.isExeRunning(grpcTools.mExeNameWindows)) {
 					System.out.println("EXE RUNNING");	
 				} else {
 					System.out.println("EXE NOT RUNNING");
