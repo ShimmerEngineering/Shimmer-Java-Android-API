@@ -101,7 +101,7 @@ public class GrpcBLERadioByteTools {
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(runningProcess.getInputStream()))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
-					System.out.println(line);
+					System.out.println("[BLEGrpcServer] " + line);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
