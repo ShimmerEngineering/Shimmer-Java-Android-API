@@ -66,7 +66,7 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	public int idxLSM303DLHCMagCalibration =      	73;
 	public int idxLSM303DLHCAccelCalibration =    	94; //94->114
 	public int idxADXL371AltAccelCalibration = 		256;
-	public int idxLIS2MDLAltMagCalibration = 			285;
+	public int idxLIS3MDLAltMagCalibration = 			285;
 
 	// Derived Channels - used by SW not FW
 	public int idxDerivedSensors0 =		    		0;
@@ -157,16 +157,16 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 	public int maskEXPPowerEnable =                     0x01;
 	//Unused bits 3-0
 	//Config Byte4
-	public int bitShiftLIS2MDLAltMagSamplingRate =			4;
-	public int maskLIS2MDLAltMagSamplingRate =				0x03;
+	public int bitShiftLIS3MDLAltMagSamplingRate =			0;
+	public int maskLIS3MDLAltMagSamplingRate =				0x3F;
 	public int bitShiftADXL371AltAccelSamplingRate =		6;
 	public int maskADXL371AltAccelSamplingRate = 			0x03;
 	public int bitShiftLSM6DSVGyroRangeMSB =				2;
 	public int maskLSM6DSVGyroRangeMSB = 					0x01;
 	
 	//Config Byte5
-	public int maskLIS3MDLMagRateMSB = 					0x07;
-	public int bitShiftLIS3MDLMagRateMSB =				3;
+	public int maskLIS2MDLMagRateMSB = 					0x07;
+	public int bitShiftLIS2MDLMagRateMSB =				3;
 
 	// Derived Channels - used by SW not FW
 	public int maskDerivedChannelsByte =				0xFF;
@@ -355,8 +355,8 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 			idxMPU9150GyroCalibration =     55;
 			idxLSM303DLHCMagCalibration =   76;
 			idxLSM303DLHCAccelCalibration = 97;
-			idxADXL371AltAccelCalibration = 	256;
-			idxLIS2MDLAltMagCalibration = 		285;
+			idxADXL371AltAccelCalibration = 	133;
+			idxLIS3MDLAltMagCalibration = 		154;
 		}
 
 		if(mShimmerVerObject.mHardwareVersion == HW_ID.SHIMMER_3R 
@@ -482,7 +482,7 @@ public class ConfigByteLayoutShimmer3 extends ConfigByteLayout implements Serial
 		mapOfByteDescriptions.put(idxLSM303DLHCMagCalibration, "idxLSM303DLHCMagCalibration");
 		mapOfByteDescriptions.put(idxLSM303DLHCAccelCalibration, "idxLSM303DLHCAccelCalibration");
 		mapOfByteDescriptions.put(idxADXL371AltAccelCalibration, "idxADXL371AccelCalibration");
-		mapOfByteDescriptions.put(idxLIS2MDLAltMagCalibration, "idxLIS2MDLMagCalibration");
+		mapOfByteDescriptions.put(idxLIS3MDLAltMagCalibration, "idxLIS3MDLMagCalibration");
 		
 		if(idxDerivedSensors0>0){
 			mapOfByteDescriptions.put(idxDerivedSensors0, "DerivedSensors0");

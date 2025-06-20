@@ -1064,7 +1064,10 @@ public class UtilShimmer implements Serializable {
 		}
 		return bytesToHexString(bytesArray);
 	}
-
+	public static String convertLongToHexString(long longNumber) {
+		byte[] bytesArray = convertLongToByteArray(longNumber);
+		return bytesToHexString(bytesArray);
+	}
 	public static String doubleArrayToString(double[][] doubleArray) {
 		String returnString = "";
 		for(int x=0;x<doubleArray.length;x++){
