@@ -47,8 +47,8 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		startGrpc();
 	}
 	
-	public BasicShimmerBluetoothManagerPc(boolean isInternalUse) {
-		if(isInternalUse) {
+	public BasicShimmerBluetoothManagerPc(boolean startGrpc) {
+		if(startGrpc) {
 			startGrpc();
 		}
 	}
