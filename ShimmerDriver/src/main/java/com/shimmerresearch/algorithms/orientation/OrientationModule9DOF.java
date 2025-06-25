@@ -295,7 +295,7 @@ public class OrientationModule9DOF extends OrientationModule {
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO,
-					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG),
 					CHANNEL_UNITS.NO_UNITS,
 					SENSOR_CHECK_METHOD.ANY,
 					listChannelsEuler9DOF_LN);
@@ -318,7 +318,7 @@ public class OrientationModule9DOF extends OrientationModule {
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM303_MAG,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2DW12_ACCEL_WR,
 					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO,
-					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS3MDL_MAG),
+					Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG),
 					CHANNEL_UNITS.NO_UNITS,
 					SENSOR_CHECK_METHOD.ANY,
 					listChannelsQuat9DOF_WR);

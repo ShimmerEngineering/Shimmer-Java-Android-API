@@ -148,6 +148,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
 	protected boolean mIsInitialised = false;
 	private boolean mIsDocked = false;
+	private boolean mIsUsbPluggedIn= false;
 	protected boolean mHaveAttemptedToReadConfig = false;
 
 	//BSL related start
@@ -1048,6 +1049,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return changed;
 	}
+	
+	public boolean setIsUsbPluggedIn(boolean usbPluggedIn) {
+		boolean changed=false;
+		if (mIsUsbPluggedIn!=usbPluggedIn){
+			changed = true;
+		}
+		mIsUsbPluggedIn = usbPluggedIn;
+		return changed;
+
+	}
 
 	public void stateHandler(Object obj){
 		
@@ -1058,6 +1069,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public boolean isDocked() {
 		return mIsDocked;
+	}
+	
+	public boolean isUsbPluggedIn() {
+		return mIsUsbPluggedIn;
 	}
 
 	public void setIsConnected(boolean state) {

@@ -140,9 +140,9 @@ public class SensorEXG extends AbstractSensor{
 	public static final String[] ListOfExGRespirationDetectFreq = {"32 kHz","64 kHz"};
 	public static final Integer[] ListOfExGRespirationDetectFreqConfigValues = {0,1};
 
-	public static final String[] ListOfExGRespirationDetectPhase32khz = {"0°","11.25°","22.5°","33.75°","45°","56.25°","67.5°","78.75°","90°","101.25°","112.5°","123.75°","135°","146.25°","157.5°","168.75°"};
+	public static final String[] ListOfExGRespirationDetectPhase32khz = {"0\u00B0","11.25\u00B0","22.5\u00B0","33.75\u00B0","45\u00B0","56.25\u00B0","67.5\u00B0","78.75\u00B0","90\u00B0","101.25\u00B0","112.5\u00B0","123.75\u00B0","135\u00B0","146.25\u00B0","157.5\u00B0","168.75\u00B0"};
 	public static final Integer[] ListOfExGRespirationDetectPhase32khzConfigValues = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-	public static final String[] ListOfExGRespirationDetectPhase64khz = {"0°","22.5°","45°","67.5°","90°","112.5°","135°","157.5°"};
+	public static final String[] ListOfExGRespirationDetectPhase64khz = {"0\u00B0","22.5\u00B0","45\u00B0","67.5\u00B0","90\u00B0","112.5\u00B0","135\u00B0","157.5\u00B0"};
 	public static final Integer[] ListOfExGRespirationDetectPhase64khzConfigValues = {0,1,2,3,4,5,6,7};
 
 	public static final String[] ListOfExGRate = {"125 Hz","250 Hz","500 Hz","1 kHz","2 kHz","4 kHz","8 kHz"};
