@@ -1385,7 +1385,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						}
 					}
 				} 
-				else if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) {
+				else if(isShimmerGen3or3R()) {
 					byte[] bufferSR = readBytes(2, responseCommand); //read the sampling rate
 					if(bufferSR!=null){
 						setSamplingRateShimmer(convertSamplingRateBytesToFreq(bufferSR[0], bufferSR[1], getSamplingClockFreq()));
@@ -1430,7 +1430,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} 
 
 		else if(responseCommand==ALL_CALIBRATION_RESPONSE) {
-			if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) {
+			if(isShimmerGen3or3R()) {
 				processAccelCalReadBytes();
 				processGyroCalReadBytes();
 				processMagCalReadBytes();
@@ -2112,7 +2112,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				} 
 				else if(currentCommand==SET_SENSORS_COMMAND) {
 					mEnabledSensors=tempEnabledSensors;
-					if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+					if(isShimmerGen3or3R()){
 						checkExgResolutionFromEnabledSensorsVar();
 					}
 					byteStack.clear(); // Always clear the packetStack after setting the sensors, this is to ensure a fresh start
@@ -3301,7 +3301,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					writeInstruction(GET_BMP180_CALIBRATION_COEFFICIENTS_COMMAND);
 				}
 			}
-		}else if(getHardwareVersion()==HW_ID.SHIMMER_3R) {
+		} else if (getHardwareVersion() == HW_ID.SHIMMER_3R) {
 			writeInstruction(GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND);
 		}
 	}
@@ -3364,8 +3364,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param rate it is a value between 0 and 255; 6 = 1152Hz, 77 = 102.56Hz, 255 = 31.25Hz
 	 */
 	public void writeGyroSamplingRate(int rate) {
-		if(getHardwareVersion()==HW_ID.SHIMMER_3
-				|| getHardwareVersion()==HW_ID.SHIMMER_3R){
+		if(isShimmerGen3or3R()){
 			mTempIntValue=rate;
 			writeInstruction(new byte[]{SET_MPU9150_SAMPLING_RATE_COMMAND, (byte)rate});
 		}
@@ -3408,7 +3407,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		byte firstByte=(byte)(enabledSensors & 0xFF);
 
 		//write(new byte[]{SET_SENSORS_COMMAND,(byte) lowByte, highByte});
-		if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+		if(isShimmerGen3or3R()){
 			byte thirdByte=(byte)((enabledSensors & 0xFF0000)>>16);
 			writeInstruction(new byte[]{SET_SENSORS_COMMAND,(byte) firstByte,(byte) secondByte,(byte) thirdByte});
 		} 
@@ -3515,7 +3514,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * Used to retrieve the data rate of the Accelerometer on Shimmer 3
 	 */
 	public void readAccelSamplingRate() {
-		if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+		if(isShimmerGen3or3R()){
 			writeInstruction(GET_ACCEL_SAMPLING_RATE_COMMAND);
 		} 
 	}
@@ -3525,8 +3524,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param rate it is a value between 1 and 7; 1 = 1 Hz; 2 = 10 Hz; 3 = 25 Hz; 4 = 50 Hz; 5 = 100 Hz; 6 = 200 Hz; 7 = 400 Hz
 	 */
 	public void writeAccelSamplingRate(int rate) {
-		if(getHardwareVersion()==HW_ID.SHIMMER_3
-				|| getHardwareVersion()==HW_ID.SHIMMER_3R){
+		if(isShimmerGen3or3R()){
 			mTempIntValue=rate;
 			writeInstruction(new byte[]{SET_ACCEL_SAMPLING_RATE_COMMAND, (byte)rate});
 		}
@@ -3878,7 +3876,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param range is a numeric value defining the desired gyroscope range. 
 	 */
 	public void writeGyroRange(int range) {
-		if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+		if(isShimmerGen3or3R()){
 			writeInstruction(new byte[]{SET_MPU9150_GYRO_RANGE_COMMAND, (byte)range});
 			setGyroRange((int)range);
 		}
@@ -3916,8 +3914,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				int samplingByteValue = (int) (1024/getSamplingRateShimmer()); //the equivalent hex setting
 				writeInstruction(new byte[]{SET_SAMPLING_RATE_COMMAND, (byte)Math.rint(samplingByteValue), 0x00});
 			} 
-			else if(getHardwareVersion()==HW_ID.SHIMMER_3
-					|| getHardwareVersion()==HW_ID.SHIMMER_3R) {
+			else if(isShimmerGen3or3R()) {
 				
 				writeMagSamplingRate(getMagRate());
 				try {
@@ -4194,7 +4191,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * @param range numeric value defining the desired GSR range. Valid range settings are 0 (10kOhm to 56kOhm), 1 (56kOhm to 220kOhm), 2 (220kOhm to 680kOhm), 3 (680kOhm to 4.7MOhm) and 4 (Auto Range).
 	 */
 	public void writeGSRRange(int range) {
-		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+		if(isShimmerGen3or3R()){
 			if(getFirmwareVersionCode()!=1 || getFirmwareVersionInternal() >4){
 				writeInstruction(new byte[]{SET_GSR_RANGE_COMMAND, (byte)range});
 			}
@@ -4279,7 +4276,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	public void writeWRAccelCalibrationParameters(byte[] calibrationParameters) {
-		if(getHardwareVersion()==HW_ID.SHIMMER_3){
+		if(isShimmerGen3or3R()){
 			cmdcalibrationParameters[0] = SET_LSM303DLHC_ACCEL_CALIBRATION_COMMAND;
 			System.arraycopy(calibrationParameters, 0, cmdcalibrationParameters, 1, 21);
 			writeInstruction(cmdcalibrationParameters);	
@@ -5069,7 +5066,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 
-		else if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+		else if(isShimmerGen3or3R()){
 			
 			if((sensorToCheck & SENSOR_GSR) >0){
 				enabledSensors = disableBit(enabledSensors,SENSOR_INT_ADC_A1);
@@ -5501,7 +5498,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 			hardwareSensorBitmap  = enabledSensors;
 		} 
-		else if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
+		else if(isShimmerGen3or3R()){
 			if(((enabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL;
 			}
@@ -5578,7 +5575,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	@Override
 	protected void checkBattery(){
 		if(mIsStreaming ){
-			if((getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) && getFirmwareVersionCode()==FW_ID.LOGANDSTREAM){
+			if((isShimmerGen3or3R()) && getFirmwareVersionCode()==FW_ID.LOGANDSTREAM){
 				if(!mWaitForAck) {	
 					if(mVSenseBattMA.getMean()<mLowBattLimit*1000*0.8) {
 						if(mCurrentLEDStatus!=2) {
