@@ -730,5 +730,17 @@ public class ShimmerVerObject implements Serializable {
 		return "HW_ID: " + getHardwareVersion() + "\tHardwareVersionParsed: " + getHardwareVersionParsed() 
 		+ "\tFW_ID: " + getFirmwareIdentifier() + "\tFirmwareVersionParsed: " + getFirmwareVersionParsed();
 	}
+
+	public boolean isSupportedBtStatusRequest() {
+		return (mHardwareVersion==HW_ID.SHIMMER_3R
+				||compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2) 
+				|| compareVersions(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1));
+	}
+
+	public boolean isSupportedBtBatteryRequest() {
+		return (mHardwareVersion==HW_ID.SHIMMER_3R
+				|| compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9)
+				|| compareVersions(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1));
+	}
 	
 }

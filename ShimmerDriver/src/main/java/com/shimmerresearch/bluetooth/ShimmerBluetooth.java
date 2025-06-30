@@ -1385,7 +1385,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						}
 					}
 				} 
-				else if(getHardwareVersion()==HW_ID.SHIMMER_3){
+				else if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) {
 					byte[] bufferSR = readBytes(2, responseCommand); //read the sampling rate
 					if(bufferSR!=null){
 						setSamplingRateShimmer(convertSamplingRateBytesToFreq(bufferSR[0], bufferSR[1], getSamplingClockFreq()));
@@ -1430,11 +1430,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		} 
 
 		else if(responseCommand==ALL_CALIBRATION_RESPONSE) {
-			if(getHardwareVersion()==HW_ID.SHIMMER_3){
+			if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R) {
 				processAccelCalReadBytes();
 				processGyroCalReadBytes();
 				processMagCalReadBytes();
 				processLsm303dlhcAccelCalReadBytes();
+				if (getHardwareVersion() == HW_ID.SHIMMER_3R) {
+					//TODO added support for Shimmer3R alt accel and alt mag if needed but this has been replaced by calib dump
+				}
 			} 
 			else { //Shimmer2R etc.
 				processAccelCalReadBytes();
@@ -2585,129 +2588,15 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 
 	private void initializeShimmer3R(){
-
-		setHardwareVersionAndCreateSensorMaps(HW_ID.SHIMMER_3R);
-//		initialise(HW_ID.SHIMMER_3);
-		
-		setHaveAttemptedToReadConfig(true);
-		
-		if(mSendProgressReport){
-			operationPrepare();
-			setBluetoothRadioState(BT_STATE.CONNECTING);
-		}
-		
-		//readExpansionBoardID();
-		
-		if (isBtCrcModeSupported()) {
-			writeBtCommsCrcMode(DEFAULT_BT_CRC_MODE_IF_SUPPORTED);
-		}
-		
-		if (isSetupDeviceWhileConnecting()){
-			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
-				boolean triggerConfig = setFixedConfigWhenConnecting();
-				if(triggerConfig){
-					writeConfigBytes(false);
-				}
-			}
-			else {
-				if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
-					writeConfigBytes(false);
-				}
-				else {
-					if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
-						writeShimmerUserAssignedName(getShimmerUserAssignedName());
-					}
-					if(mSetupEXG){
-						writeEXGConfiguration();
-						mSetupEXG = false;
-					}
-					writeGSRRange(getGSRRange());
-					writeAccelRange(getAccelRange());
-					writeGyroRange(getGyroRange());
-					writeMagRange(getMagRange());
-					writeShimmerAndSensorsSamplingRate(getSamplingRateShimmer());	
-					writeInternalExpPower(1);
-					//		setContinuousSync(mContinousSync);
-				}
-			}
-		}
-		
-		if(this.mUseInfoMemConfigMethod && getFirmwareVersionCode()>=6){
-			readConfigBytes();
-			readPressureCalibrationCoefficients();
-		}
-		else {
-			readSamplingRate();
-			readMagRange();
-			readAccelRange();
-			readGyroRange();
-			readAccelSamplingRate();
-			readCalibrationParameters("All");
-			readPressureCalibrationCoefficients();
-			readEXGConfigurations();
-			//enableLowPowerMag(mLowPowerMag);
-			
-			readDerivedChannelBytes();
-			
-			if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2)){
-				readTrial();
-				readConfigTime();
-				readShimmerName();
-				readExperimentName();
-			}
-		}
-		
-		readLEDCommand();
-
-		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2) ||
-				isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1)){
-			readStatusLogAndStream();
-		}
-		
-		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9) ||
-				isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1)){
-			readBattery();
-		}
-		
-		if(getShimmerVerObject().isSupportedBtFwVerRequest()) {
-			readBtFwVersion();
-		}
-		
-		// Only read calibration dump over bluetooth if the Shimmer is not
-		// docked as the Shimmer won't have access to the SD card
-		if(!isDocked()){
-			readCalibrationDump();
-		}
-		
-		if(isSetupDeviceWhileConnecting()){
-			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
-				writeEnabledSensors(mEnabledSensors); //this should always be the last command
-			} else {
-				//writeAccelRange(mDigitalAccelRange);
-				writeEnabledSensors(mSetEnabledSensors); //this should always be the last command
-			}
-		} 
-		else {
-			inquiry();
-		}
-
-		if(mSendProgressReport){
-			// Just unlock instruction stack and leave logAndStream timer as
-			// this is handled in the next step, i.e., no need for
-			// operationStart() here
-			startOperation(BT_STATE.CONNECTING, getListofInstructions().size());
-			
-			setInstructionStackLock(false);
-		}
-		
-		startTimerReadStatus();	// if shimmer is using LogAndStream FW, read its status periodically
-		startTimerReadBattStatus(); // if shimmer is using LogAndStream FW, read its status periodically
-		
-	
+		initializeShimmer3or3R(HW_ID.SHIMMER_3R);
 	}
 	
 	private void initializeShimmer3(){
-		setHardwareVersionAndCreateSensorMaps(HW_ID.SHIMMER_3);
+		initializeShimmer3or3R(HW_ID.SHIMMER_3);
+	}
+	
+	private void initializeShimmer3or3R(int hardwareVersion){
+		setHardwareVersionAndCreateSensorMaps(hardwareVersion);
 //		initialise(HW_ID.SHIMMER_3);
 		
 		setHaveAttemptedToReadConfig(true);
@@ -2780,13 +2669,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		readLEDCommand();
 
-		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2) ||
-				isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1)){
+		if(getShimmerVerObject().isSupportedBtStatusRequest()) {
 			readStatusLogAndStream();
 		}
-		
-		if(isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9) ||
-				isThisVerCompatibleWith(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1)){
+
+		if(getShimmerVerObject().isSupportedBtBatteryRequest()) {
 			readBattery();
 		}
 		
@@ -2794,9 +2681,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			readBtFwVersion();
 		}
 		
-		// Only read calibration dump over bluetooth if the Shimmer is not
-		// docked as the Shimmer won't have access to the SD card
-		if(!isDocked()){
+		//TODO this could actually be causing a lot of misunderstanding and a disconnect between what the user thinks is set and what is actually set.
+		// Only read calibration dump over bluetooth if the Shimmer3 is not
+		// docked as the Shimmer3 won't have access to the SD card. The Shimmer3R does.
+		if(hardwareVersion==HW_ID.SHIMMER_3R || !isDocked()){
 			readCalibrationDump();
 		}
 		
@@ -2823,7 +2711,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		startTimerReadStatus();	// if shimmer is using LogAndStream FW, read its status periodically
 		startTimerReadBattStatus(); // if shimmer is using LogAndStream FW, read its status periodically
-		
 	}
 	
 	@Override
@@ -3628,11 +3515,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	 * Used to retrieve the data rate of the Accelerometer on Shimmer 3
 	 */
 	public void readAccelSamplingRate() {
-		if(getHardwareVersion()!=HW_ID.SHIMMER_3){
-		} 
-		else {
+		if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 			writeInstruction(GET_ACCEL_SAMPLING_RATE_COMMAND);
-		}
+		} 
 	}
 
 	/**
@@ -5184,7 +5069,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 		}
 
-		else if(getHardwareVersion()==HW_ID.SHIMMER_3){
+		else if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 			
 			if((sensorToCheck & SENSOR_GSR) >0){
 				enabledSensors = disableBit(enabledSensors,SENSOR_INT_ADC_A1);
@@ -5262,7 +5147,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	//TODO: MN -> replace with sensormap conflict checks? unfinished for Shimmer2R
 	public boolean sensorConflictCheck(long enabledSensors){
 		boolean pass=true;
-		if(getHardwareVersion()!=HW_ID.SHIMMER_3){
+		if(getHardwareVersion()!=HW_ID.SHIMMER_3 && getHardwareVersion()!=HW_ID.SHIMMER_3R){
 			if(((enabledSensors & 0xFF)& SENSOR_GYRO) > 0){
 				if(((enabledSensors & 0xFF)& SENSOR_EMG) > 0){
 					pass=false;
@@ -5616,7 +5501,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			}
 			hardwareSensorBitmap  = enabledSensors;
 		} 
-		else if(getHardwareVersion()==HW_ID.SHIMMER_3){
+		else if(getHardwareVersion()==HW_ID.SHIMMER_3 || getHardwareVersion()==HW_ID.SHIMMER_3R){
 			if(((enabledSensors & 0xFF)& SENSOR_ACCEL) > 0){
 				hardwareSensorBitmap = hardwareSensorBitmap|Configuration.Shimmer3.SensorBitmap.SENSOR_A_ACCEL;
 			}
