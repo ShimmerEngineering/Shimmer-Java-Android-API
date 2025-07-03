@@ -1455,7 +1455,11 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					if (isSupportedDerivedSensors()){
 						//change name based on derived sensor value
 						if ((mDerivedSensors & DerivedSensorsBitMask.PPG2_1_14)>0){
-							sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A1;
+							if(isShimmerGen3R()) {
+								sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A3;
+							} else {
+								sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A1;
+							}
 						}else if ((mDerivedSensors & DerivedSensorsBitMask.RES_AMP)>0){
 							sensorName = Shimmer3.ObjectClusterSensorName.RESISTANCE_AMP;
 						}else if((mDerivedSensors & DerivedSensorsBitMask.SKIN_TEMP)>0){
@@ -1497,20 +1501,20 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//to Support derived sensor renaming
 				if (isSupportedDerivedSensors()){
 					//change name based on derived sensor value
-					if(isShimmerGen3R()) {
-						if ((mDerivedSensors & DerivedSensorsBitMask.PPG_10_15)>0){
+					if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
+						if (isShimmerGen3R()) {
 							sensorName = SensorPPG.ObjectClusterSensorName.PPG_A0;
-						} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_10_15)>0){
-							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A0;
-						}
-					}else {
-						if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
+						} else {
 							sensorName = SensorPPG.ObjectClusterSensorName.PPG_A12;
-						} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_12_13)>0){
+						}
+					} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_12_13)>0){
+						if (isShimmerGen3R()) {
+							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A0;
+						} else {
 							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A12;
 						}
 					}
-				
+
 				}
 				
 				sensorNames[iA12]=sensorName;
@@ -1541,16 +1545,16 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				//to Support derived sensor renaming
 				if (isSupportedDerivedSensors()){
 					//change name based on derived sensor value
-					if(isShimmerGen3R()) {
-						if ((mDerivedSensors & DerivedSensorsBitMask.PPG_10_15)>0){
+					if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
+						if(isShimmerGen3R()) {
 							sensorName = SensorPPG.ObjectClusterSensorName.PPG_A1;
-						} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_10_15)>0){
-							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A1;
-						}
-					}else {
-						if ((mDerivedSensors & DerivedSensorsBitMask.PPG_12_13)>0){
+						} else {
 							sensorName = SensorPPG.ObjectClusterSensorName.PPG_A13;
-						} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_12_13)>0){
+						}
+					} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG1_12_13)>0){
+						if(isShimmerGen3R()) {
+							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A1;
+						} else {
 							sensorName = SensorPPG.ObjectClusterSensorName.PPG1_A13;
 						}
 					}
@@ -1585,9 +1589,12 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if (isSupportedDerivedSensors()){
 					//change name based on derived sensor value
 					if ((mDerivedSensors & DerivedSensorsBitMask.PPG2_1_14)>0){
-						sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A14;
-					} else if ((mDerivedSensors & DerivedSensorsBitMask.PPG2_17_16)>0){
-						sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A2;
+						if(isShimmerGen3R()) {
+							sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A2;
+						}
+						else {
+							sensorName = SensorPPG.ObjectClusterSensorName.PPG2_A14;
+						}
 					}
 				}
 				sensorNames[iA14]=sensorName;

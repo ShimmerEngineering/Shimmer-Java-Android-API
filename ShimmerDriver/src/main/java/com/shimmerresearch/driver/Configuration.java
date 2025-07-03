@@ -820,10 +820,6 @@ public class Configuration {
 			public final static int PPG_TO_HR1_12_13 			= 1 << 6; // (0*8 + 6);
 			public final static int PPG_TO_HR2_1_14 			= 1 << 7; // (0*8 + 7);
 			
-			public final static int PPG_10_15 					= 1 << 2; // (0*8 + 2);
-			public final static int PPG1_10_15 					= 1 << 3; // (0*8 + 3);
-			public final static int PPG2_17_16 					= 1 << 4; // (0*8 + 4);
-			
 			// -------------- Derived Channels Byte 1 -------------------
 			public final static int ACTIVITY_MODULE 			= 1 << 8; // (1*8 + 0);
 			

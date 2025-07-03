@@ -2061,7 +2061,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public boolean isSupportedSrProgViaDock() {
 		if(mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 13)
-				|| mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 8, 1)){
+				|| mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 8, 1)
+				|| isShimmerGen3R()){
 			return true;
 		}
 		return false;
@@ -2093,6 +2094,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if((isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 0))
 			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 8, 69))
 			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 3, 17))
+			||(svo.isShimmerGen3R())
 			||(svo.isShimmerGenGq())
 			||(svo.isShimmerGen4())){
 //			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_4_SDK, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION))){
