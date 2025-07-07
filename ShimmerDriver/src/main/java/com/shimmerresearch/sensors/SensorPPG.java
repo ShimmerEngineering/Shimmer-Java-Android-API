@@ -108,7 +108,7 @@ public class SensorPPG extends AbstractSensor {
 		public static final String PPG2_A3 = "F5437a_PPG2_A3";
 	}
 	
-public static class DatabaseConfigHandle{
+	public static class DatabaseConfigHandle{
 		public static final String PPG_ADC_SELECTION_BOARD = "PPG_ADC_Selection_Board";
 		public static final String PPG1_ADC_SELECTION_BOARD = "PPG1_ADC_Selection_Board";
 		public static final String PPG2_ADC_SELECTION_BOARD = "PPG2_ADC_Selection_Board";
