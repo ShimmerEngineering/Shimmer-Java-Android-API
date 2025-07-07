@@ -17,7 +17,6 @@ import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
 
 import bolts.TaskCompletionSource;
-import junit.framework.Test;
 
 /**Driver for managing and configuring the Shimmer through the Dock using the 
  * Shimmer's dock connected UART.
@@ -88,92 +87,8 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		ShimmerVerObject shimmerVerDetails = new ShimmerVerObject(rxBuf);
 		return shimmerVerDetails;
 	}
-	
-	public void addTestStringListener(StringListener stringTestListener) {
-		mStringTestListener = stringTestListener;
-	}
-	boolean ackNotReceivedForTestCommand = true;
-	/**
-	 * @param timeoutInSeconds
-	 * @return
-	 * @throws ExecutionException
-	 */
-	public boolean readMainTest(UartComponentPropertyDetails details) throws ExecutionException {
-		int errorCode = ErrorCodesWiredProtocol.SHIMMERUART_CMD_ERR_VERSION_INFO_GET;
-		//rxBuf = processShimmerSetCommand(compPropDetails, txBuf, errorCode);(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, -1);
-		TaskCompletionSource tcs = new TaskCompletionSource<>();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		ackNotReceivedForTestCommand = true;
-		setListener(new ByteCommunicationListener() {
-			
-			@Override
-			public void eventNewBytesReceived(byte[] rxBytes) {
-				// TODO Auto-generated method stub
-				System.out.println("Test : " + UtilShimmer.bytesToHexString(rxBytes));
-				try {
-					outputStream.write(rxBytes);
-					String result = new String(outputStream.toByteArray());
-					if (ackNotReceivedForTestCommand) {
-						byte[] originalBytes = outputStream.toByteArray();
-						boolean match = UtilShimmer.doesFirstBytesMatch(originalBytes, TEST_ACK);
-						if (match) {
-							outputStream.reset();
-							outputStream.write(originalBytes, TEST_ACK.length, originalBytes.length - TEST_ACK.length);
-							result = new String(outputStream.toByteArray());
-							ackNotReceivedForTestCommand = false;
-						}
-						
-						
-					}
-					
-					System.out.println(result);
-					if (mStringTestListener!=null){
-						mStringTestListener.eventNewStringRx(result);
-					}
-					if (result.contains(TEST_ENDING)) {
-						tcs.setResult(true);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					tcs.setResult(false);
-				}
-				
-			}
-			
-			@Override
-			public void eventDisconnected() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void eventConnected() {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-        // Parse response string
-		mTestStreaming = true;
-		//processShimmerSetCommandNoWait(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, errorCode, null);
-		processShimmerSetCommandNoWait(details, errorCode, null);
-		boolean completed = false;
-		try {
-			completed = tcs.getTask().waitForCompletion(TIMEOUT_IN_SHIMMER_TEST, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			mTestStreaming = false;
-			return false;
-		}
-		mTestStreaming = false;
-		return completed;
-	}
-	
-	public boolean isTestStreaming() {
-		return mTestStreaming;
-	}
-	
+
+
 	/** Read the real time clock config time of the Shimmer
 	 * @return long the Shimmer RTC configure time in milliseconds UNIX time (since 1970-Jan-01 00:00:00 UTC)
 	 * @throws ExecutionException
@@ -352,6 +267,100 @@ public class CommsProtocolWiredShimmerViaDock extends AbstractCommsProtocolWired
 		bluetoothModuleVersionDetails.parseBtModuleVerBytes(rxBuf);
 
 		return bluetoothModuleVersionDetails;
+	}
+
+	public void addTestStringListener(StringListener stringTestListener) {
+		mStringTestListener = stringTestListener;
+	}
+	boolean ackNotReceivedForTestCommand = true;
+	/**
+	 * @param timeoutInSeconds
+	 * @return
+	 * @throws ExecutionException
+	 */
+	public boolean readMainTest(UartComponentPropertyDetails details) throws ExecutionException {
+		int errorCode = ErrorCodesWiredProtocol.SHIMMERUART_CMD_ERR_VERSION_INFO_GET;
+		//rxBuf = processShimmerSetCommand(compPropDetails, txBuf, errorCode);(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, -1);
+		TaskCompletionSource tcs = new TaskCompletionSource<>();
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		ackNotReceivedForTestCommand = true;
+		setListener(new ByteCommunicationListener() {
+			
+			@Override
+			public void eventNewBytesReceived(byte[] rxBytes) {
+				// TODO Auto-generated method stub
+				System.out.println("Test : " + UtilShimmer.bytesToHexString(rxBytes));
+				try {
+					outputStream.write(rxBytes);
+					String result = new String(outputStream.toByteArray());
+					if (ackNotReceivedForTestCommand) {
+						byte[] originalBytes = outputStream.toByteArray();
+						boolean match = UtilShimmer.doesFirstBytesMatch(originalBytes, TEST_ACK);
+						if (match) {
+							outputStream.reset();
+							outputStream.write(originalBytes, TEST_ACK.length, originalBytes.length - TEST_ACK.length);
+							result = new String(outputStream.toByteArray());
+							ackNotReceivedForTestCommand = false;
+						}
+						
+						
+					}
+					
+					System.out.println(result);
+					if (mStringTestListener!=null){
+						mStringTestListener.eventNewStringRx(result);
+					}
+					if (result.contains(TEST_ENDING)) {
+						tcs.setResult(true);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					tcs.setResult(false);
+				}
+				
+			}
+			
+			@Override
+			public void eventDisconnected() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void eventConnected() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+        // Parse response string
+		mTestStreaming = true;
+		//processShimmerSetCommandNoWait(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.DEVICE_TEST.MAIN_TEST, errorCode, null);
+		processShimmerSetCommandNoWait(details, errorCode, null);
+		boolean completed = false;
+		try {
+			completed = tcs.getTask().waitForCompletion(TIMEOUT_IN_SHIMMER_TEST, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			mTestStreaming = false;
+			return false;
+		}
+		mTestStreaming = false;
+		return completed;
+	}
+	
+	public boolean isTestStreaming() {
+		return mTestStreaming;
+	}
+	
+	/** Read the BT FW version 
+	 * @return String in bytes format
+	 * @throws ExecutionException
+	 */
+	public void writeJumpToBootloaderMode(byte secondsDelay) throws ExecutionException {
+		int errorCode = ErrorCodesWiredProtocol.SHIMMERUART_CMD_ERR_ENTER_BOOTLOADER_SET;
+		processShimmerSetCommand(UartPacketDetails.UART_COMPONENT_AND_PROPERTY.MAIN_PROCESSOR.ENTER_BOOTLOADER, new byte[] {secondsDelay}, errorCode);
 	}
 
 	@Override

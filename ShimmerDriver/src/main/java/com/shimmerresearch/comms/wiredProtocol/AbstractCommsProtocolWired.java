@@ -384,7 +384,7 @@ public abstract class AbstractCommsProtocolWired extends BasicProcessWithCallBac
 	private void txPacket(UART_PACKET_CMD packetCmd, UartComponentPropertyDetails msgArg, byte[] valueBuffer) throws DockException {
 		consolePrintTxPacketInfo(packetCmd, msgArg, valueBuffer);
     	byte[] txPacket = assembleTxPacket(packetCmd.toCmdByte(), msgArg, valueBuffer);
-//		System.out.println(UtilShimmer.bytesToHexStringWithSpacesFormatted(txPacket));
+		mUtilShimmer.consolePrintLn(mUniqueId + " TX(" + txPacket.length + ")" + UtilShimmer.bytesToHexStringWithSpacesFormatted(txPacket));
     	try {
     		mSerialPortInterface.txBytes(txPacket);
 		} catch (ShimmerException devE) {
