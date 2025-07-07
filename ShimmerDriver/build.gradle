@@ -47,7 +47,7 @@ publishing {
 
             groupId = 'com.shimmerresearch' // Replace with your package's group/organization name
             artifactId = 'shimmerdriver' // Replace with the name of your package
-            version = '0.11.3_beta' // Replace with your package version
+            version = '0.11.4_beta' // Replace with your package version
 
             // Jar publication
             //(
