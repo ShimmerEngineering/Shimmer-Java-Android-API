@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +23,11 @@ public class GrpcBLERadioByteTools {
 	String mExePath = "C:\\Github\\Shimmer-C-API\\ShimmerAPI\\ShimmerBLEGrpc\\bin\\Debug\\" + mExeName; // Replace with the path to your .exe file
 	//String exePath = "C:\\Users\\JC\\Desktop\\testgrpc\\ShimmerBLEGrpc.exe"; // Replace with the path to your .exe file
 
+	//Below used by Consensys MacOS
+	String userDir = System.getProperty("user.dir").equals("/") ? (getApplicationPath().toString() + "/libs/") : (System.getProperty("user.dir") + "/libs/");
+	String mExeNameMac = "ShimmerBLEGrpc";
+	String mExePathMac = userDir + "ShimmerBLEGrpc/Products/usr/local/bin/" + mExeNameMac;
+	
 	public GrpcBLERadioByteTools() {
 		
 	}
@@ -106,6 +115,18 @@ public class GrpcBLERadioByteTools {
 		} else {
 			System.err.println("No external process is currently running.");
 		}
+	}
+	
+	public static Path getApplicationPath() {
+		try {
+			URL codeSourceUrl = GrpcBLERadioByteTools.class.getProtectionDomain().getCodeSource().getLocation();
+			Path codeSourcePath = Paths.get(codeSourceUrl.toURI());
+			if (codeSourcePath.toFile().isFile())
+				return codeSourcePath.getParent(); 
+			return codeSourcePath;
+		} catch (URISyntaxException e) {
+			throw new IllegalStateException("Failed to determine application path due to a URI syntax error.", e);
+		} 
 	}
 
 	public static void main(String[] args) {
