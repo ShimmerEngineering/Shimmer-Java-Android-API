@@ -19,6 +19,7 @@ import com.shimmerresearch.driver.ble.JavelinBLERadioByteCommunication;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.shimmer4sdk.Shimmer4sdk;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.ConnectionExceptionListener;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.grpc.GrpcBLERadioByteCommunication;
@@ -46,8 +47,8 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		startGrpc();
 	}
 	
-	public BasicShimmerBluetoothManagerPc(boolean isInternalUse) {
-		if(isInternalUse) {
+	public BasicShimmerBluetoothManagerPc(boolean startGrpc) {
+		if(startGrpc) {
 			startGrpc();
 		}
 	}
@@ -191,19 +192,25 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	@Override
 	public void connectShimmer3BleGrpc(BluetoothDeviceDetails bdd) {
 		ShimmerGRPC shimmer;
+		String macId = bdd.mShimmerMacId.replaceAll(":", "");
 		
-		if(!shimmer3BleMacIdList.contains(bdd.mShimmerMacId)) {
-			
-			shimmer = new ShimmerGRPC(bdd.mShimmerMacId.replace(":", ""),"localhost",mGRPCPort);
+		if(!shimmer3BleMacIdList.contains(macId)) {
+			if(UtilShimmer.isOsMac()) {
+				//Use the mFriendlyName (e.g. Shimmer3-6813), because MacOS doesn't use BT MacID
+				shimmer = new ShimmerGRPC(macId, bdd.mFriendlyName, "localhost", mGRPCPort);
+			} else {
+				shimmer = new ShimmerGRPC(macId, "localhost", mGRPCPort);
+			}
 			shimmer.setShimmerUserAssignedName(bdd.mFriendlyName);
-			shimmer.setMacIdFromUart(bdd.mShimmerMacId);
+			shimmer.setMacIdFromUart(macId);
 			initializeNewShimmerCommon(shimmer);
 			
 			shimmer3BleDeviceList.add(shimmer);
-			shimmer3BleMacIdList.add(bdd.mShimmerMacId);
+			shimmer3BleMacIdList.add(macId);
 	    }
 		else {
-			shimmer = shimmer3BleDeviceList.get(shimmer3BleMacIdList.indexOf(bdd.mShimmerMacId));
+			shimmer = shimmer3BleDeviceList.get(shimmer3BleMacIdList.indexOf(macId));
+			initializeNewShimmerCommon(shimmer);
 		}
 
 		try {
@@ -215,6 +222,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 			e.printStackTrace();
 		}
 	}
+	
 	@Override
 	public void connectShimmerThroughCommPort(String comPort){
 		directConnectUnknownShimmer=true;

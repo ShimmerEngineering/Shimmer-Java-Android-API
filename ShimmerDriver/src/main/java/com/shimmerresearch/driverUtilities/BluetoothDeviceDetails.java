@@ -33,13 +33,18 @@ public class BluetoothDeviceDetails {
 	}
 
 	public void setMacId(String mac){
-
-		mac = mac.replace("-", "");
-
-		if(mac.length()>=12) {
-			mShimmerMacId = mac.toUpperCase();
-			mac = mac.replace(":", "").toUpperCase();
-			mShimmerMacIdParsed = mac.substring(8);
+		if(mac.startsWith("Shimmer") && mac.contains("-")) {
+			//If using device name (e.g. Shimmer3-6813), then leave as is
+			mShimmerMacId = mac;
+			mShimmerMacId = mac;
+		} else {
+			mac = mac.replace("-", "");
+	
+			if(mac.length()>=12) {
+				mShimmerMacId = mac.toUpperCase();
+				mac = mac.replace(":", "").toUpperCase();
+				mShimmerMacIdParsed = mac.substring(8);
+			}
 		}
 	}
 
