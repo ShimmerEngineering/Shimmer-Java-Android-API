@@ -148,6 +148,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
 	protected boolean mIsInitialised = false;
 	private boolean mIsDocked = false;
+	private boolean mIsUsbPluggedIn= false;
 	protected boolean mHaveAttemptedToReadConfig = false;
 
 	//BSL related start
@@ -1048,6 +1049,16 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 		return changed;
 	}
+	
+	public boolean setIsUsbPluggedIn(boolean usbPluggedIn) {
+		boolean changed=false;
+		if (mIsUsbPluggedIn!=usbPluggedIn){
+			changed = true;
+		}
+		mIsUsbPluggedIn = usbPluggedIn;
+		return changed;
+
+	}
 
 	public void stateHandler(Object obj){
 		
@@ -1058,6 +1069,10 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	 */
 	public boolean isDocked() {
 		return mIsDocked;
+	}
+	
+	public boolean isUsbPluggedIn() {
+		return mIsUsbPluggedIn;
 	}
 
 	public void setIsConnected(boolean state) {
@@ -2027,7 +2042,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean isShimmerGen3R(){
 		return mShimmerVerObject.isShimmerGen3R();
 	}
-	
+
+	public boolean isShimmerGen3or3R(){
+		return mShimmerVerObject.isShimmerGen3() || mShimmerVerObject.isShimmerGen3R();
+	}
+
 	public boolean isShimmerGen4(){
 		return mShimmerVerObject.isShimmerGen4();
 	}
@@ -2042,7 +2061,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public boolean isSupportedSrProgViaDock() {
 		if(mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 13)
-				|| mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 8, 1)){
+				|| mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 8, 1)
+				|| isShimmerGen3R()){
 			return true;
 		}
 		return false;
@@ -2074,6 +2094,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if((isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 7, 0))
 			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.SDLOG, 0, 8, 69))
 			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 3, 17))
+			||(svo.isShimmerGen3R())
 			||(svo.isShimmerGenGq())
 			||(svo.isShimmerGen4())){
 //			||(isVerCompatibleWith(svo, HW_ID.SHIMMER_4_SDK, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION, ShimmerVerDetails.ANY_VERSION))){

@@ -135,6 +135,10 @@ public class ShimmerBattStatusDetails implements Serializable {
         }
 	}
 
+	public CHARGING_STATUS getChargingStatus() {
+		return mChargingStatus;
+	}
+
 	public static double adcValToBattVoltage(int adcVal){
 		double calibratedData = SensorADC.calibrateU12AdcValueToMillivolts(adcVal, 0.0, 3.0, 1.0);
 		double battVoltage = ((calibratedData * 1.988)) / 1000; // 1.988 is due to components on the Shimmmer, 1000 is to convert to volts

@@ -410,7 +410,8 @@ public class ShimmerVerObject implements Serializable {
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_NR)
 				|| (hwVer==HW_ID.SHIMMER_GQ_802154_LR)
 				|| (hwVer==HW_ID.SHIMMER_2R_GQ)
-				|| (hwVer==HW_ID.SHIMMER_4_SDK)){
+				|| (hwVer==HW_ID.SHIMMER_4_SDK)
+				|| (hwVer==HW_ID.SHIMMER_3R)){
 			return true;
 		}
 		return false;
@@ -440,6 +441,7 @@ public class ShimmerVerObject implements Serializable {
 		if ((hwVer==HW_ID.SHIMMER_3 && fwId == FW_ID.SDLOG)
 				|| (hwVer==HW_ID.SHIMMER_3 && fwId == FW_ID.LOGANDSTREAM)
 				|| (hwVer==HW_ID.SHIMMER_3 && fwId == FW_ID.STROKARE)
+				|| (hwVer==HW_ID.SHIMMER_3R)
 				|| (hwVer==HW_ID.SHIMMER_GQ_BLE && fwId == FW_ID.GQ_BLE)
 //				|| hwVer==HW_ID.SHIMMER_GQ_802154_NR
 //				|| hwVer==HW_ID.SHIMMER_GQ_802154_LR
@@ -504,6 +506,7 @@ public class ShimmerVerObject implements Serializable {
 				|| hwVer == HW_ID.SHIMMER_2 
 				|| hwVer == HW_ID.SHIMMER_2R
 				|| hwVer == HW_ID.SHIMMER_3 
+				|| hwVer == HW_ID.SHIMMER_3R 
 				|| hwVer == HW_ID.SHIMMER_GQ_BLE 
 				|| hwVer == HW_ID.SHIMMER_GQ_802154_LR 
 				|| hwVer == HW_ID.SHIMMER_GQ_802154_NR 
@@ -710,7 +713,9 @@ public class ShimmerVerObject implements Serializable {
 		if(svo.getHardwareVersion()==HW_ID.SHIMMER_4_SDK || 
 				(svo.getHardwareVersion()==HW_ID.SHIMMER_3 
 				&& ebd.getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED 
-				&& ebd.getExpansionBoardRev()>=4)
+				&& ebd.getExpansionBoardRev()>=4) ||
+				(svo.getHardwareVersion()==HW_ID.SHIMMER_3R
+				&& ebd.getExpansionBoardId()==HW_ID_SR_CODES.EXP_BRD_EXG_UNIFIED) 
 			){
 			return true;
 		}
@@ -724,6 +729,18 @@ public class ShimmerVerObject implements Serializable {
 	public String generateDebugString() {
 		return "HW_ID: " + getHardwareVersion() + "\tHardwareVersionParsed: " + getHardwareVersionParsed() 
 		+ "\tFW_ID: " + getFirmwareIdentifier() + "\tFirmwareVersionParsed: " + getFirmwareVersionParsed();
+	}
+
+	public boolean isSupportedBtStatusRequest() {
+		return (mHardwareVersion==HW_ID.SHIMMER_3R
+				||compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 2) 
+				|| compareVersions(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1));
+	}
+
+	public boolean isSupportedBtBatteryRequest() {
+		return (mHardwareVersion==HW_ID.SHIMMER_3R
+				|| compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 0, 5, 9)
+				|| compareVersions(HW_ID.SHIMMER_3, FW_ID.BTSTREAM, 0, 8, 1));
 	}
 	
 }

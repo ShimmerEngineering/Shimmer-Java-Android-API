@@ -16,6 +16,7 @@ import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
 import com.shimmerresearch.driver.ShimmerMsg;
 import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
 import com.shimmerresearch.driverUtilities.UtilParseData;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
@@ -25,8 +26,8 @@ import com.shimmerresearch.sensors.AbstractSensor.SENSORS;
 import com.shimmerresearch.sensors.adxl371.SensorADXL371;
 import com.shimmerresearch.sensors.bmpX80.CalibDetailsBmp390;
 import com.shimmerresearch.sensors.lis2dw12.SensorLIS2DW12;
-import com.shimmerresearch.sensors.lisxmdl.SensorLIS2MDL;
 import com.shimmerresearch.sensors.lisxmdl.SensorLIS3MDL;
+import com.shimmerresearch.sensors.lisxmdl.SensorLIS2MDL;
 import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.lsm6dsv.SensorLSM6DSV;
 import com.shimmerresearch.sensors.AbstractSensor;
@@ -47,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
 public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
-	TaskCompletionSource<Boolean> mCalibrationTask;
+	TaskCompletionSource<Boolean> mWaitTask;
 	ByteCommunicationSimulatorS3R mByteCommunicationSimulatorS3R;
 	@Before
     public void setUp() {
@@ -59,12 +60,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     
     @Test
     public void test001_testConnectandDisconnect() {
-    	mCalibrationTask = new TaskCompletionSource<Boolean>();
+    	mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);//Just to give time to connect to finish
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -81,7 +82,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     	}
     	
     	System.out.println(mDevice.getHardwareVersionParsed());
-    	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3r")) {
+    	if (!mDevice.getHardwareVersionParsed().equals(ShimmerVerDetails.mMapOfShimmerRevisions.get(HW_ID.SHIMMER_3R))) {
     		assert(false);
     	}
     	if(!mByteCommunicationSimulatorS3R.isGetPressureCalibrationCoefficientsCommand) {
@@ -113,12 +114,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 
 	@Test
 	public void test002_ConnectandTestBMP390() {
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -154,12 +155,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test003_ConnectandTestCalibParamRead() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -209,12 +210,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test004_ConnectandTestDefaultLNAccelAndGyroCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -261,12 +262,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test005_ConnectandTestDefaultWRAccelCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -301,12 +302,12 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Test
 	public void test006_ConnectandTestDefaultMagCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -314,36 +315,28 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     		if (!mDevice.isConnected()) {
         		assert(false);
         	}	
-    		//SHIMMER_LIS3MDL_MAG
-			mDevice.setDefaultCalibrationShimmer3StandardImus();
+    		//SHIMMER_LIS2MDL_MAG
+    		
+    		mDevice.setDefaultCalibrationShimmer3StandardImus();
 			
 			double[][] magOffset = mDevice.getOffsetVectorMatrixMag();
-    		assertTrue(Arrays.deepEquals(magOffset, SensorLIS3MDL.DefaultOffsetVectorMagShimmer3));
+    		assertTrue(Arrays.deepEquals(magOffset, SensorLIS2MDL.DefaultOffsetVectorMagShimmer3r));
     		double[][] magAlignment = mDevice.getAlignmentMatrixMag();
-    		assertTrue(Arrays.deepEquals(magAlignment, SensorLIS3MDL.DefaultAlignmentMatrixMagShimmer3));
+    		assertTrue(Arrays.deepEquals(magAlignment, SensorLIS2MDL.DefaultAlignmentMatrixMagShimmer3r)); 
+    		double[][] magSensitivity = mDevice.getSensitivityMatrixMag();
+    		assertTrue(Arrays.deepEquals(magSensitivity, SensorLIS2MDL.DefaultSensitivityMatrixMagShimmer3r));
     		
-    		mDevice.setLSM303MagRange(0);
-    		double[][] magSensitivity0 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity0, SensorLIS3MDL.DefaultSensitivityMatrixMag4GaShimmer3));
-    		mDevice.setLSM303MagRange(1);
-    		double[][] magSensitivity1 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity1, SensorLIS3MDL.DefaultSensitivityMatrixMag8GaShimmer3));
-    		mDevice.setLSM303MagRange(2);
-    		double[][] magSensitivity2 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity2, SensorLIS3MDL.DefaultSensitivityMatrixMag12GaShimmer3));
-    		mDevice.setLSM303MagRange(3);
-    		double[][] magSensitivity3 = mDevice.getSensitivityMatrixMag();
-    		assertTrue(Arrays.deepEquals(magSensitivity3, SensorLIS3MDL.DefaultSensitivityMatrixMag16GaShimmer3));
+    		
 	}
 	@Test
 	public void test007_ConnectandTestDefaultHighGAccelCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -364,14 +357,14 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	}
 	
 	@Test
-	public void test008_ConnectandTestDefaultWRMagCalibParam() {
+	public void test008_ConnectandTestDefaultAltMagCalibParam() {
 		
-		mCalibrationTask = new TaskCompletionSource<Boolean>();
+		mWaitTask = new TaskCompletionSource<Boolean>();
     	mDevice.connect("","");
     	
-    		mCalibrationTask = new TaskCompletionSource<>();
+    		mWaitTask = new TaskCompletionSource<>();
     		try {
-				boolean result = mCalibrationTask.getTask().waitForCompletion(15, TimeUnit.SECONDS);
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -379,16 +372,27 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
     		if (!mDevice.isConnected()) {
         		assert(false);
         	}	
-    		//SHIMMER_LIS2MDL_MAG_WR
     		
-    		mDevice.setDefaultCalibrationShimmer3StandardImus();
+    		//SHIMMER_LIS3MDL_MAG
+			mDevice.setDefaultCalibrationShimmer3StandardImus();
 			
-			double[][] wrMagOffset = mDevice.getOffsetVectorMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagOffset, SensorLIS2MDL.DefaultOffsetVectorWRMagShimmer3r));
-    		double[][] wrMagAlignment = mDevice.getAlignmentMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagAlignment, SensorLIS2MDL.DefaultAlignmentMatrixWRMagShimmer3r)); 
-    		double[][] wrMagSensitivity = mDevice.getSensitivityMatrixWRMag();
-    		assertTrue(Arrays.deepEquals(wrMagSensitivity, SensorLIS2MDL.DefaultSensitivityMatrixWRMagShimmer3r));
+			double[][] altMagOffset = mDevice.getOffsetVectorMatrixAltMag();
+    		assertTrue(Arrays.deepEquals(altMagOffset, SensorLIS3MDL.DefaultOffsetVectorAltMagShimmer3r));
+    		double[][] altMagAlignment = mDevice.getAlignmentMatrixAltMag();
+    		assertTrue(Arrays.deepEquals(altMagAlignment, SensorLIS3MDL.DefaultAlignmentMatrixAltMagShimmer3r));
+    		
+    		mDevice.setAltMagRange(0);
+    		double[][] altMagSensitivity0 = mDevice.getSensitivityMatrixAltMag();
+    		assertTrue(Arrays.deepEquals(altMagSensitivity0, SensorLIS3MDL.DefaultSensitivityMatrixAltMag4GaShimmer3r));
+    		mDevice.setAltMagRange(1);
+    		double[][] altMagSensitivity1 = mDevice.getSensitivityMatrixAltMag();
+    		assertTrue(Arrays.deepEquals(altMagSensitivity1, SensorLIS3MDL.DefaultSensitivityMatrixAltMag8GaShimmer3r));
+    		mDevice.setAltMagRange(2);
+    		double[][] altMagSensitivity2 = mDevice.getSensitivityMatrixAltMag();
+    		assertTrue(Arrays.deepEquals(altMagSensitivity2, SensorLIS3MDL.DefaultSensitivityMatrixAltMag12GaShimmer3r));
+    		mDevice.setAltMagRange(3);
+    		double[][] altMagSensitivity3 = mDevice.getSensitivityMatrixAltMag();
+    		assertTrue(Arrays.deepEquals(altMagSensitivity3, SensorLIS3MDL.DefaultSensitivityMatrixAltMag16GaShimmer3r));
 	}
 	
 	public static void compareTwoCalibDetails(CalibDetails calibDetails1, CalibDetails calibDetails2) {
@@ -427,10 +431,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (mCalibrationTask!=null) {
-						mCalibrationTask.setResult(true);
-						mCalibrationTask = null;
-					}
+					
 				}
 		}
 		

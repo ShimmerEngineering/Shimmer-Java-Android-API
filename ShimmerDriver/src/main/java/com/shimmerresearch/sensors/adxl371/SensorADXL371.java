@@ -546,6 +546,14 @@ public class SensorADXL371 extends AbstractSensor{
 		updateCurrentAccelHighGCalibInUse();
 	}
 	
+	@Override
+	public boolean isSensorUsingDefaultCal(int sensorId) {
+		if(sensorId==Configuration.Shimmer3.SENSOR_ID.SHIMMER_ADXL371_ACCEL_HIGHG){
+			return isUsingDefaultHighGAccelParam();
+		}
+		return false;
+	}
+	
 	//--------- Optional methods to override in Sensor Class end --------	
 	
 	//--------- Sensor specific methods start --------------

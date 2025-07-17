@@ -25,6 +25,9 @@ public class BluetoothModuleVersionDetails implements Serializable {
 		RN4678_VERSION_RESPONSE_V1_22_0("RN4678 V1.22 12/08/2020 (c)Microchip Technology Inc   ", "RN4678 V1.22 ", "RN4678 v1.23"),
 		RN4678_VERSION_RESPONSE_V1_23_0("RN4678 V1.23 06/30/2021 (c)Microchip Technology Inc", "RN4678 V1.23 ", "RN4678 v1.23"),
 
+		VELA_IF820_V01_04_12_12("CYW20820 app=v01.04.12.12", "CYW20820 app=v01.04.12.12", "IF820 v01.04.12.12"),
+		VELA_IF820_V01_04_16_16("CYW20820 app=v01.04.16.16", "CYW20820 app=v01.04.16.16", "IF820 v01.04.16.16"),
+
 		UNKNOWN("Unknown", "Unknown", "Unknown");
 
 		public String btModuleVerStrFull = "";
@@ -46,8 +49,15 @@ public class BluetoothModuleVersionDetails implements Serializable {
 		
 		mBtModuleVersionParsed = BT_MODULE_VERSION.UNKNOWN;
 		for (BT_MODULE_VERSION btModuleVersion : BT_MODULE_VERSION.values()) {
-			if(mBtModuleVersionReceived.contains(btModuleVersion.btModuleVerStrComparison)) {
+			if(btModuleVersion == BT_MODULE_VERSION.NOT_READ) {
+				if(mBtModuleVersionReceived.isEmpty()) {
+					mBtModuleVersionParsed = BT_MODULE_VERSION.NOT_READ;
+					break;
+				}
+			}
+			else if(mBtModuleVersionReceived.contains(btModuleVersion.btModuleVerStrComparison)) {
 				mBtModuleVersionParsed = btModuleVersion;
+				break;
 			}
 		}
 	}
@@ -58,6 +68,10 @@ public class BluetoothModuleVersionDetails implements Serializable {
 		} else {
 			return mBtModuleVersionParsed.btModuleVerStrUserFriendly;
 		}
+	}
+
+	public String getBtModuleVersionReceived() {
+		return mBtModuleVersionReceived;
 	}
 
 }
