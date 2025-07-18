@@ -25,6 +25,7 @@ import com.shimmerresearch.driverUtilities.ChannelDetails;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.tools.bluetooth.BasicShimmerBluetoothManagerPc;
+import com.shimmerresearch.algorithms.*;
 
 public class ShimmerJavaClass {
     private String comPort;
@@ -35,15 +36,20 @@ public class ShimmerJavaClass {
     private String[] signalNameArray;
     private String[] signalFormatArray;
     private String[] signalUnitArray;
+    
+    private boolean mDebug = false;
+    
 //    private int rowIndex = 0;
     Object[] currentData = null;
-    public static BasicShimmerBluetoothManagerPc mBluetoothManager = new BasicShimmerBluetoothManagerPc();
+    public static BasicShimmerBluetoothManagerPc mBluetoothManager = new BasicShimmerBluetoothManagerPc(false);
 	
     public ShimmerJavaClass() {
         sdr.setWaitForData(mBluetoothManager.callBackObject);
         mBluetoothManager.addCallBack(sdr);
-        System.out.println("Callback Registered");
-        System.out.flush();
+        if (mDebug) {
+	        System.out.println("Callback Registered");
+	        System.out.flush();
+        }
     }
     
     public static void main(String[] args) {
@@ -155,8 +161,10 @@ public class ShimmerJavaClass {
     
     public void readData() { //Test receive data for all Object Cluster
     	Object[] data = receiveData();
-    	System.out.println("New Data : " + data[0] + "\tChannel Name  : " + data[1]
+    	if (mDebug) {
+    		System.out.println("New Data : " + data[0] + "\tChannel Name  : " + data[1]
     			+ "\tFormat : " + data[2] + "\tUnit : " + data[3]);
+    	}
     }
 
     public class SensorDataReceived extends BasicProcessWithCallBack {
@@ -180,8 +188,10 @@ public class ShimmerJavaClass {
                     	comPort = callbackObject.mComPort;
                     }
                 	channelNames = retrieveSensorChannels();
-                	for(String channel : channelNames) {
-                		System.out.println(channel);
+                	if (mDebug) {
+	                	for(String channel : channelNames) {
+	                		System.out.println(channel);
+	                	}
                 	}
                 } else if (callbackObject.mState == BT_STATE.DISCONNECTED || callbackObject.mState == BT_STATE.CONNECTION_LOST) {
                     System.out.println("Device State Change: " + callbackObject.mState);
