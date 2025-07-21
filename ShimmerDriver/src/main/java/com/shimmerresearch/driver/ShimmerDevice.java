@@ -4465,6 +4465,13 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		return mComPort;
 	}
 	
+	/**This method will only return the comport name
+	 * @return
+	 */
+	public String getComPortName() {
+		return mComPort;
+	}
+	
 	public boolean isReadyToConnect() {
 		if (mCommsProtocolRadio==null 
 				||mCommsProtocolRadio.mRadioHal==null
