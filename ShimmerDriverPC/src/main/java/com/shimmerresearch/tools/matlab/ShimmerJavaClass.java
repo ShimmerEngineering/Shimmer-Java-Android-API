@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JButton;
@@ -31,19 +32,19 @@ public class ShimmerJavaClass {
     private String comPort;
     private SensorDataReceived sdr = new SensorDataReceived();
     private String[] channelNames;
-    private Queue<Object[]> dataQueue = new LinkedList<>();
+    private final ConcurrentLinkedQueue<String> connectedDevices = new ConcurrentLinkedQueue<>();
+    private final ConcurrentHashMap<String, Queue<Object[]>> dataQueues = new ConcurrentHashMap<>();
     private List<float[]> collectedData = new ArrayList<>();
-    private String[] signalNameArray;
-    private String[] signalFormatArray;
-    private String[] signalUnitArray;
+
     
-    private boolean mDebug = false;
+    private boolean mDebug = true;
     
 //    private int rowIndex = 0;
     Object[] currentData = null;
-    public static BasicShimmerBluetoothManagerPc mBluetoothManager = new BasicShimmerBluetoothManagerPc(false);
+    public static BasicShimmerBluetoothManagerPc mBluetoothManager;
 	
     public ShimmerJavaClass() {
+    	mBluetoothManager = new BasicShimmerBluetoothManagerPc(false);
         sdr.setWaitForData(mBluetoothManager.callBackObject);
         mBluetoothManager.addCallBack(sdr);
         if (mDebug) {
@@ -96,13 +97,16 @@ public class ShimmerJavaClass {
 				}
                 
               while(true) {
-            	if(!dataQueue.isEmpty()) {
+            	if (hasDataToRead(comPort)) {
                     readData();
             	}
+            	
             }
             }
         });
 
+        
+        
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,37 +140,56 @@ public class ShimmerJavaClass {
 
         return channelNamesList.toArray(new String[0]);
     }
-
-   public Object[] receiveData() {
-       while (!dataQueue.isEmpty()) {
-           Object[] currentData = dataQueue.poll();
-
-           float[] newData = (float[]) currentData[0];
-           signalNameArray = (String[]) currentData[1];
-           signalFormatArray = (String[]) currentData[2];
-           signalUnitArray = (String[]) currentData[3];
-
-           collectedData.add(newData);
-       }
-
-       // Convert list to 2D float array (m × n)
-       float[][] dataMatrix = collectedData.toArray(new float[0][0]);
-
-       return new Object[]{dataMatrix, signalNameArray, signalFormatArray, signalUnitArray};
-   }
-
-    private void sendData(Object[] data) {
-        dataQueue.add(data);
-    }
+   public boolean hasDataToRead(String comPort) {
+	    Queue<Object[]> queue = dataQueues.get(comPort);
+	    return queue != null && !queue.isEmpty();
+	}
+   private void sendData(String comPort, Object[] data) {
+	    dataQueues.computeIfAbsent(comPort, k -> new LinkedList<>()).add(data);
+	}
     
-    public void readData() { //Test receive data for all Object Cluster
-    	Object[] data = receiveData();
-    	if (mDebug) {
-    		System.out.println("New Data : " + data[0] + "\tChannel Name  : " + data[1]
-    			+ "\tFormat : " + data[2] + "\tUnit : " + data[3]);
-    	}
+   public void readData() {
+	    for (String comPort : dataQueues.keySet()) {
+	        Object[] data = receiveData(comPort);
+	        if (data != null && mDebug) {
+	            float[][] matrix = (float[][]) data[0];
+	            String[] signalNames = (String[]) data[1];
+	            String[] formats = (String[]) data[2];
+	            String[] units = (String[]) data[3];
+
+	            System.out.println("==== Data from device: " + comPort + " ====");
+	            for (int i = 0; i < matrix.length; i++) {
+	                System.out.print("Row " + i + ": ");
+	                for (int j = 0; j < matrix[i].length; j++) {
+	                    System.out.print(matrix[i][j] + " " + units[j] + " [" + signalNames[j] + "] | ");
+	                }
+	                System.out.println();
+	            }
+	        }
+	    }
+	}
+
+    public Object[] receiveData(String comPort) {
+        Queue<Object[]> queue = dataQueues.get(comPort);
+        if (queue == null || queue.isEmpty()) return null;
+
+        List<float[]> deviceData = new ArrayList<>();
+        String[] signalNameArray = null, signalFormatArray = null, signalUnitArray = null;
+
+        while (!queue.isEmpty()) {
+            Object[] data = queue.poll();
+            float[] values = (float[]) data[1];
+            signalNameArray = (String[]) data[2];
+            signalFormatArray = (String[]) data[3];
+            signalUnitArray = (String[]) data[4];
+            deviceData.add(values);
+        }
+
+        float[][] dataMatrix = deviceData.toArray(new float[0][0]);
+        return new Object[] { dataMatrix, signalNameArray, signalFormatArray, signalUnitArray };
     }
 
+    
     public class SensorDataReceived extends BasicProcessWithCallBack {
 
         @Override
@@ -218,9 +241,9 @@ public class ShimmerJavaClass {
                     }
                 }
                 
-                Object[] outputData = { newData, signalNameArray, signalFormatArray, signalUnitArray };
-
-                sendData(outputData);
+                String comPort = objc.getComPort();
+                Object[] outputData = { comPort, newData, signalNameArray, signalFormatArray, signalUnitArray };
+                sendData(comPort, outputData);
             }
         }
     }

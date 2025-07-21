@@ -812,6 +812,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		objectCluster.setShimmerName(mShimmerUserAssignedName);
 		objectCluster.setMacAddress(mMyBluetoothAddress);
+		objectCluster.setComPort(getComPortName());
 		objectCluster.mRawData = newPacket;
 						
 		if(fwType!=COMMUNICATION_TYPE.BLUETOOTH && fwType!=COMMUNICATION_TYPE.SD){
