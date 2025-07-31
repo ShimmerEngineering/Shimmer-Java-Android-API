@@ -1941,6 +1941,12 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).readLoggedData();
 	}
 	
+	public void deleteData() throws Exception {
+		
+			mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).eraseDataTask().waitForCompletion();
+		
+	}
+	
 	/**
 	 * @return Null if sensor not supported by current hardware
 	 * @see SensorLIS2DW12
