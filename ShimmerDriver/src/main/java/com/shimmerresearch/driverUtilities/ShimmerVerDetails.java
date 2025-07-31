@@ -146,7 +146,7 @@ public class ShimmerVerDetails implements Serializable {
         aMap.put(HW_ID_SR_CODES.EXP_BRD_BR_AMP, "Bridge Amplifier+");
         aMap.put(HW_ID_SR_CODES.SPAN, "Span");//not used
         aMap.put(HW_ID_SR_CODES.EXP_BRD_GSR, "GSR+");
-        aMap.put(HW_ID_SR_CODES.SHIMMER3, "Shimmer3");//not used
+        aMap.put(HW_ID_SR_CODES.SHIMMER3, "IMU");//not used
         aMap.put(HW_ID_SR_CODES.EXP_BRD_PROTO3_MINI, "PROTO3 Mini");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_EXG, "ECG/EMG");
         aMap.put(HW_ID_SR_CODES.EXP_BRD_PROTO3_DELUXE, "PROTO3 Deluxe");
