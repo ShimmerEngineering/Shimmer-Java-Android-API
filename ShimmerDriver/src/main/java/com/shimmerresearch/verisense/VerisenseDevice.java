@@ -1941,6 +1941,10 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).readLoggedData();
 	}
 	
+	public void setRootPathForBinFile(String path) {
+		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).setRootPathForBinFile(path);
+	}
+	
 	public void deleteData() throws Exception {
 		
 			mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).eraseDataTask().waitForCompletion();
