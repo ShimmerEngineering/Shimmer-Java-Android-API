@@ -1686,8 +1686,8 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			}
 
 			@Override
-			public void hasStopStreamLoggedDataCallback() {
-				mDeviceCallbackAdapter.readLoggedDataCompleted();
+			public void hasStopStreamLoggedDataCallback(String binFilePath) {
+				mDeviceCallbackAdapter.readLoggedDataCompleted(binFilePath);
 				// TODO Auto-generated method stub
 				setBluetoothRadioState(BT_STATE.CONNECTED);
 			}
