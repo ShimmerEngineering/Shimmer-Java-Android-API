@@ -75,7 +75,8 @@ public class ShimmerBattStatusDetails implements Serializable {
 		if(rxBuf.length >= 3) {
 			// Parse response string
             int battAdcValue = (((rxBuf[1]&0xFF) << 8) + (rxBuf[0]&0xFF));
-            int chargingStatus = rxBuf[2] & 0xC0;
+            // Parse as unsigned byte and let full byte through to handle UNKNOWN status
+            int chargingStatus = rxBuf[2] & 0xFF; 
             update(battAdcValue, chargingStatus);
 		}
 	}

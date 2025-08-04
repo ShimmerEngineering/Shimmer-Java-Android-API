@@ -37,7 +37,7 @@ publishing {
 
             groupId = 'com.shimmerresearch' // Replace with your package's group/organization name
             artifactId = 'shimmerdriverpc' // Replace with the name of your package
-            version = '0.11.3_beta' // Replace with your package version
+            version = '0.11.4_beta' // Replace with your package version
 
             // Jar publication
             //(
@@ -95,4 +95,10 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testImplementation 'junit:junit:4.12'
     implementation 'com.parse.bolts:bolts-tasks:1.4.0'
+    
+    // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
+	implementation("org.bouncycastle:bcpkix-jdk15on:1.61")
+    
+    // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
+	implementation("org.bouncycastle:bcprov-jdk15on:1.61")
 }
