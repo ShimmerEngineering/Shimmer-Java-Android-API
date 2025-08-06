@@ -50,7 +50,7 @@ public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 	public GrpcBLERadioByteCommunication(BluetoothDeviceDetails bdd, String serverHost, int serverPort) {
 		mServerHost = serverHost;
 		mServerPort = serverPort;
-		mMacAddress = bdd.mComPort.toUpperCase().replace(":", "");
+		mMacAddress = bdd.mShimmerMacId.toUpperCase().replace(":", "");
 		InitializeProcess();
 	}
 	
