@@ -1686,7 +1686,8 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 			}
 
 			@Override
-			public void hasStopStreamLoggedDataCallback() {
+			public void hasStopStreamLoggedDataCallback(String binFilePath) {
+				mDeviceCallbackAdapter.readLoggedDataCompleted(binFilePath);
 				// TODO Auto-generated method stub
 				setBluetoothRadioState(BT_STATE.CONNECTED);
 			}
@@ -1940,6 +1941,16 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).readLoggedData();
 	}
 	
+	public void setRootPathForBinFile(String path) {
+		mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).setRootPathForBinFile(path);
+	}
+	
+	public void deleteData() throws Exception {
+		
+			mapOfVerisenseProtocolByteCommunication.get(currentStreamingCommsRoute).eraseDataTask().waitForCompletion();
+		
+	}
+	
 	/**
 	 * @return Null if sensor not supported by current hardware
 	 * @see SensorLIS2DW12
@@ -2187,7 +2198,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	/**
-	 * The number of minute’s interval the ASM sensor will wait after a failed connection attempt before turning on the scheduler again
+	 * The number of minuteï¿½s interval the ASM sensor will wait after a failed connection attempt before turning on the scheduler again
 	 * @return interval in minutes, if this value is set to either 0 or 65535 then the adaptive scheduler will never be turned on.
 	 */
 	public int getAdaptiveSchedulerInterval() {
@@ -2195,7 +2206,7 @@ public class VerisenseDevice extends ShimmerDevice implements Serializable{
 	}
 
 	/**
-	 * The number of minute’s interval the ASM sensor will wait after a failed connection attempt before turning on the scheduler again
+	 * The number of minuteï¿½s interval the ASM sensor will wait after a failed connection attempt before turning on the scheduler again
 	 * @param adaptiveSchedulerInterval interval in minutes, if this value is set to either 0 or 65535 then the adaptive scheduler will never be turned on.
 	 */
 	public void setAdaptiveSchedulerInterval(int adaptiveSchedulerInterval) {

@@ -188,7 +188,7 @@ public class BleRadioByteCommunication extends AbstractByteCommunication {
 		WriteDataToProcess("Connect");
 		mTaskConnect = new TaskCompletionSource<>();
 		try {
-			boolean result = mTaskConnect.getTask().waitForCompletion(2, TimeUnit.SECONDS);
+			boolean result = mTaskConnect.getTask().waitForCompletion(6, TimeUnit.SECONDS);
 			if (result) {
 				
 			} else {

@@ -195,7 +195,7 @@ public class VerisenseProtocolByteCommunication implements Serializable{
 					resetFileNameOnStreamingLoggedDataFinish();
 					stateChange(VerisenseProtocolState.Connected);
 					for (RadioListener rl : mRadioListenerList) {
-						rl.hasStopStreamLoggedDataCallback();
+						rl.hasStopStreamLoggedDataCallback(getDataFilePath());
 					}
 				}
 				
