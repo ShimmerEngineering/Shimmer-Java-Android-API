@@ -74,4 +74,29 @@ public class BluetoothModuleVersionDetails implements Serializable {
 		return mBtModuleVersionReceived;
 	}
 
+	public boolean isBtModuleVersionKnown() {
+		return mBtModuleVersionParsed != BT_MODULE_VERSION.UNKNOWN && mBtModuleVersionParsed != BT_MODULE_VERSION.NOT_READ;
+	}
+	
+	public boolean isBtModuleVersionRn42() {
+		return mBtModuleVersionParsed == BT_MODULE_VERSION.RN42_VERSION_RESPONSE_V4_77 ||
+				mBtModuleVersionParsed == BT_MODULE_VERSION.RN42_VERSION_RESPONSE_V6_15;
+	}
+	
+	public boolean isBtModuleVersionRn41() {
+		return mBtModuleVersionParsed == BT_MODULE_VERSION.RN41_VERSION_RESPONSE_V4_77;
+	}
+
+	public boolean isBtModuleVersionRn4678() {
+		return mBtModuleVersionParsed == BT_MODULE_VERSION.RN4678_VERSION_RESPONSE_V1_00_5
+				|| mBtModuleVersionParsed == BT_MODULE_VERSION.RN4678_VERSION_RESPONSE_V1_11_0
+				|| mBtModuleVersionParsed == BT_MODULE_VERSION.RN4678_VERSION_RESPONSE_V1_13_5
+				|| mBtModuleVersionParsed == BT_MODULE_VERSION.RN4678_VERSION_RESPONSE_V1_22_0
+				|| mBtModuleVersionParsed == BT_MODULE_VERSION.RN4678_VERSION_RESPONSE_V1_23_0;
+	}
+	
+	public boolean isBtModuleVersionVelaIf820() {
+		return mBtModuleVersionParsed == BT_MODULE_VERSION.VELA_IF820_V01_04_12_12
+				|| mBtModuleVersionParsed == BT_MODULE_VERSION.VELA_IF820_V01_04_16_16;
+	}
 }
