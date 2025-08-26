@@ -505,6 +505,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	public static final int MSG_IDENTIFIER_VERISENSE_ERASE_DATA_COMPLETED = 14;
 	public static final int MSG_IDENTIFIER_VERISENSE_WRITE_OPCONFIG_COMPLETED = 15;
+	public static final int MSG_IDENTIFIER_SYNC_COMPLETED = 16;
 
 	//	private boolean mVerboseMode = true;
 	//	private String mParentClassName = "ShimmerPC";

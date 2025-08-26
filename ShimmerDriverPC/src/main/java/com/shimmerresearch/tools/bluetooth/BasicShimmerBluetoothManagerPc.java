@@ -40,16 +40,24 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	List<String> shimmer3BleMacIdList = new ArrayList<String>();
 	List<VerisenseDevice> verisenseDeviceList = new ArrayList<VerisenseDevice>();
 	List<ShimmerGRPC> shimmer3BleDeviceList = new ArrayList<ShimmerGRPC>();
-	private boolean mInternalUse = true;
 	public static int mGRPCPort;
 	
 	public BasicShimmerBluetoothManagerPc() {
 		startGrpc();
 	}
 	
-	public BasicShimmerBluetoothManagerPc(boolean startGrpc) {
-		if(startGrpc) {
+	public BasicShimmerBluetoothManagerPc(boolean enableGRPC) {
+		if(enableGRPC) {
 			startGrpc();
+		}
+	}
+	
+	protected void startGrpc(String path) {
+		try {
+			GrpcBLERadioByteTools grpcTool = new GrpcBLERadioByteTools("ShimmerBLEGrpc.exe",path);
+			mGRPCPort = grpcTool.startServer();
+		}  catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
