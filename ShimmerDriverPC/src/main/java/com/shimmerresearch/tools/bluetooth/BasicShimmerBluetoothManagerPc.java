@@ -61,7 +61,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		}
 	}
 	
-	private void startGrpc() {
+	protected void startGrpc() {
 		try {
 			GrpcBLERadioByteTools grpcTool = new GrpcBLERadioByteTools();
 			mGRPCPort = grpcTool.startServer();
