@@ -2807,6 +2807,13 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+	@Override
+	public void startDataLogWhileStreaming() {
+		if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM){ // if shimmer is using LogAndStream FW, stop reading its status periodically
+			writeInstruction(START_SDBT_COMMAND);
+		}
+	}
+	
 	private void initialiseStreaming(){
 		stopTimerReadStatus(); // if shimmer is using LogAndStream FW, stop reading its status periodically
 		

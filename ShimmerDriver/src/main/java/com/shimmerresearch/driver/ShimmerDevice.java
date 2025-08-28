@@ -4476,6 +4476,12 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 	
+	public void startDataLogWhileStreaming() {
+		if(mCommsProtocolRadio!=null){
+			mCommsProtocolRadio.startDataLogAndStreaming();
+		}
+	}
+	
 	public void stopStreamingAndLogging() {
 		if(mCommsProtocolRadio!=null){
 			mCommsProtocolRadio.stopLoggingAndStreaming();

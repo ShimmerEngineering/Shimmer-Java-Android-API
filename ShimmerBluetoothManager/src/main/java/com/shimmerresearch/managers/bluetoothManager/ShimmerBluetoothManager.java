@@ -234,6 +234,13 @@ public abstract class ShimmerBluetoothManager{
 			threadSleep(SLEEP_BETWEEN_GROUP_ACTIONS_MS);
 		}
 	}
+
+	public void startLoggingWhileStreaming(List<ShimmerDevice> listOfShimmers) {
+		for(ShimmerDevice shimmerDevice:listOfShimmers){
+			startLoggingWhileStreaming(shimmerDevice);
+			threadSleep(SLEEP_BETWEEN_GROUP_ACTIONS_MS);
+		}
+	}
 	
 	public void stopSDLogging(ShimmerDevice shimmerDevice) {
 		//Remove check?
@@ -249,6 +256,11 @@ public abstract class ShimmerBluetoothManager{
 		}
 	}
 
+	public void startLoggingWhileStreaming(ShimmerDevice shimmerDevice){
+		if(shimmerDevice.isConnected()){
+			shimmerDevice.startDataLogWhileStreaming();
+		}
+	}
 
 	public void startStreamingAndLogging(ShimmerDevice shimmerDevice){
 		if(shimmerDevice.isConnected()){
