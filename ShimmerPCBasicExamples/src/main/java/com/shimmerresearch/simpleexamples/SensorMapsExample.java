@@ -451,7 +451,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				}
 			}
 		});
-		btnStartSDLogging.setBounds(951, 181, 91, 31);
+		btnStartSDLogging.setBounds(951, 181, 106, 31);
 		frame.getContentPane().add(btnStartSDLogging);
 		
 		JButton btnStopSd = new JButton("STOP SD");
@@ -472,7 +472,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			
 			}
 		});
-		btnStopSd.setBounds(1043, 181, 82, 31);
+		btnStopSd.setBounds(1067, 181, 107, 31);
 		frame.getContentPane().add(btnStopSd);
 				
 		plotManager.setTitle("Plot");		
