@@ -423,7 +423,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(lblFilePath);
 		
 		chckbxWriteDataToFile = new JCheckBox("Write Data to File");
-		chckbxWriteDataToFile.setBounds(829, 185, 116, 23);
+		chckbxWriteDataToFile.setBounds(829, 185, 135, 23);
 		chckbxWriteDataToFile.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -451,7 +451,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				}
 			}
 		});
-		btnStartSDLogging.setBounds(951, 181, 106, 31);
+		btnStartSDLogging.setBounds(965, 181, 106, 31);
 		frame.getContentPane().add(btnStartSDLogging);
 		
 		JButton btnStopSd = new JButton("STOP SD");
@@ -472,7 +472,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			
 			}
 		});
-		btnStopSd.setBounds(1067, 181, 107, 31);
+		btnStopSd.setBounds(1075, 181, 107, 31);
 		frame.getContentPane().add(btnStopSd);
 				
 		plotManager.setTitle("Plot");		
