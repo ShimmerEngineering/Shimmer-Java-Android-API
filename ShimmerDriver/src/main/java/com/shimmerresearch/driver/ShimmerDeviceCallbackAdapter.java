@@ -107,6 +107,11 @@ public class ShimmerDeviceCallbackAdapter implements Serializable {
 		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_SYNC_PROGRESS, callBackObject);
 	}
 	
+	public void readLoggedDataCompleted(String binFilePath) {
+		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), new SyncProgressDetails(binFilePath));
+		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_SYNC_COMPLETED, callBackObject);
+	}
+	
 	public void eraseDataCompleted() {
 		CallbackObject callBackObject = new CallbackObject(getMacId(), getComPort(), true);
 		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_VERISENSE_ERASE_DATA_COMPLETED, callBackObject);
@@ -121,7 +126,11 @@ public class ShimmerDeviceCallbackAdapter implements Serializable {
 		// Send a notification msg to the UI through a callback (use a msg identifier notification message)
 		CallbackObject callBackObject = new CallbackObject(ShimmerBluetooth.NOTIFICATION_SHIMMER_STOP_STREAMING, getMacId(), getComPort());
 		mShimmerDevice.sendCallBackMsg(ShimmerBluetooth.MSG_IDENTIFIER_NOTIFICATION_MESSAGE, callBackObject);
-		mShimmerDevice.setBluetoothRadioState(BT_STATE.CONNECTED);
+		if (mShimmerDevice.isSDLogging()) {
+			mShimmerDevice.setBluetoothRadioState(BT_STATE.SDLOGGING);
+		} else {
+			mShimmerDevice.setBluetoothRadioState(BT_STATE.CONNECTED);
+		}
 	}
 	
 	public void startStreaming() {

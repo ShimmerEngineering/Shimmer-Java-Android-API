@@ -693,7 +693,7 @@ public class Shimmer4sdk extends ShimmerDevice {
 				}
 
 				@Override
-				public void hasStopStreamLoggedDataCallback() {
+				public void hasStopStreamLoggedDataCallback(String binPath) {
 					// TODO Auto-generated method stub
 					
 				}

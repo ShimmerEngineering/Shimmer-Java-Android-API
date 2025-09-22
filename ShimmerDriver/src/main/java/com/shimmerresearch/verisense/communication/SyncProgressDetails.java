@@ -12,4 +12,7 @@ public class SyncProgressDetails {
 		mTransferRateBytes = transferRateBytes;
 		mBinFilePath = binFilePath;
 	}
+	public SyncProgressDetails(String binFilePath) {
+		mBinFilePath = binFilePath;
+	}
 }

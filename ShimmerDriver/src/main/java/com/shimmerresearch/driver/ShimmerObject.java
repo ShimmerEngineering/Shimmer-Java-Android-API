@@ -10831,6 +10831,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			return false;
 		}
 	}
+	
+	public boolean isSupportedBtBleControl() {
+		//TODO check S3/S3R FW version in-which command was introduced?
+		BluetoothModuleVersionDetails bluetoothModuleVersionDetails = getBtFwVerDetails();
+		return (bluetoothModuleVersionDetails.isBtModuleVersionKnown()
+				&& !bluetoothModuleVersionDetails.isBtModuleVersionRn41()
+				&& !bluetoothModuleVersionDetails.isBtModuleVersionRn42());
+	}
 
 	@Override
 	public LinkedHashMap<String, ChannelDetails> getMapOfAllChannelsForStoringToDB(COMMUNICATION_TYPE commType, CHANNEL_TYPE channelType, boolean isKeyOJCName, boolean showDisabledChannels) {

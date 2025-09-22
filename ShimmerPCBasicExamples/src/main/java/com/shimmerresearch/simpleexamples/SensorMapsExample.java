@@ -286,7 +286,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				}
 				
 				try {
-					ShimmerDevice device = btManager.getShimmerDeviceBtConnected(btComport);
+					ShimmerDevice device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
+					if (btComport.contains(PREFIX_COM) || btComport.contains(PREFIX_DEV)) {
+						device = btManager.getShimmerDeviceBtConnected(btComport);
+					} else {
+						device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
+					}
 					if (device instanceof VerisenseDevice) {
 						((VerisenseDevice)device).startStreaming();
 					}else{
@@ -418,7 +423,7 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 		frame.getContentPane().add(lblFilePath);
 		
 		chckbxWriteDataToFile = new JCheckBox("Write Data to File");
-		chckbxWriteDataToFile.setBounds(829, 185, 242, 23);
+		chckbxWriteDataToFile.setBounds(829, 185, 135, 23);
 		chckbxWriteDataToFile.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -429,6 +434,46 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
             }
         });
 		frame.getContentPane().add(chckbxWriteDataToFile);
+		
+		JButton btnStartSDLogging = new JButton("START SD");
+		btnStartSDLogging.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ShimmerDevice device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
+				if (btComport.contains(PREFIX_COM) || btComport.contains(PREFIX_DEV)) {
+					device = btManager.getShimmerDeviceBtConnected(btComport);
+				} else {
+					device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
+				}
+				if (device instanceof VerisenseDevice) {
+					((VerisenseDevice)device).startSDLogging();
+				}else{
+					((ShimmerBluetooth)device).startSDLogging();
+				}
+			}
+		});
+		btnStartSDLogging.setBounds(965, 181, 106, 31);
+		frame.getContentPane().add(btnStartSDLogging);
+		
+		JButton btnStopSd = new JButton("STOP SD");
+		btnStopSd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				ShimmerDevice device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
+				if (btComport.contains(PREFIX_COM) || btComport.contains(PREFIX_DEV)) {
+					device = btManager.getShimmerDeviceBtConnected(btComport);
+				} else {
+					device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
+				}
+				if (device instanceof VerisenseDevice) {
+					((VerisenseDevice)device).stopSDLogging();
+				}else{
+					((ShimmerBluetooth)device).stopSDLogging();
+				}
+			
+			}
+		});
+		btnStopSd.setBounds(1075, 181, 107, 31);
+		frame.getContentPane().add(btnStopSd);
 				
 		plotManager.setTitle("Plot");		
 	}
@@ -514,6 +559,8 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 				ShimmerDevice device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
 				if (btComport.contains(PREFIX_COM) || btComport.contains(PREFIX_DEV)) {
 					device = btManager.getShimmerDeviceBtConnected(btComport);
+				} else {
+					device = btManager.getShimmerDeviceBtConnectedFromMac(btComport);
 				}
 				
 				if (device instanceof VerisenseDevice) {
