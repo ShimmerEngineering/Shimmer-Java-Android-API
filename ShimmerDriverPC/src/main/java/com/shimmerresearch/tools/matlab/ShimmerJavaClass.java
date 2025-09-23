@@ -178,7 +178,11 @@ public class ShimmerJavaClass {
 
         while (!queue.isEmpty()) {
             Object[] data = queue.poll();
+            if (data == null) continue;  // skip this iteration safely
+            
             float[] values = (float[]) data[1];
+            if (values == null) continue;
+            
             signalNameArray = (String[]) data[2];
             signalFormatArray = (String[]) data[3];
             signalUnitArray = (String[]) data[4];
