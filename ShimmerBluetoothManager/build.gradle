@@ -12,6 +12,8 @@ Rev0.2
 
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
+//sourceCompatibility = '1.8'  // Ensure code is compiled with Java 8 when compiling ShimmerJavaClass for Matlab see ShimmerDriverPC (build.gradle)
+//targetCompatibility = '1.8'  // Ensure bytecode is compatible with Java 8 when compiling ShimmerJavaClass for Matlab see ShimmerDriverPC (build.gradle)
 
 repositories {
     mavenCentral()
