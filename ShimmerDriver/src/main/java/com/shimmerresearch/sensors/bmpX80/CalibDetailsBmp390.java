@@ -25,56 +25,55 @@ public class CalibDetailsBmp390 extends CalibDetailsBmpX80 {
 	    public static final byte BMP3_W_MAX_PRES = 6;
 	}
 	
-	 private static final class Bmp3QuantizedCalibData  {
-		 public static double ParT1;
-	        public static double ParT2;
-	        public static double ParT3;
-	        public static double ParP1;
-	        public static double ParP2;
-	        public static double ParP3;
-	        public static double ParP4;
-	        public static double ParP5;
-	        public static double ParP6;
-	        public static double ParP7;
-	        public static double ParP8;
-	        public static double ParP9;
-	        public static double ParP10;
-	        public static double ParP11;
-	        public static double TLin;
-	 }
 	 
-	 private static final class Bmp3RegCalibData {
-		    // Trim Variables
-		 public static short ParT1;
-	        public static short ParT2;
-	        public static byte ParT3;
-	        public static short ParP1;
-	        public static short ParP2;
-	        public static byte ParP3;
-	        public static byte ParP4;
-	        public static int ParP5;
-	        public static int ParP6;
-	        public static byte ParP7;
-	        public static byte ParP8;
-	        public static short ParP9;
-	        public static byte ParP10;
-	        public static byte ParP11;
-	 }
+ 	 public double Bmp3QuantizedCalibData_ParT1;
+     public double Bmp3QuantizedCalibData_ParT2;
+     public double Bmp3QuantizedCalibData_ParT3;
+     public double Bmp3QuantizedCalibData_ParP1;
+     public double Bmp3QuantizedCalibData_ParP2;
+     public double Bmp3QuantizedCalibData_ParP3;
+     public double Bmp3QuantizedCalibData_ParP4;
+     public double Bmp3QuantizedCalibData_ParP5;
+     public double Bmp3QuantizedCalibData_ParP6;
+     public double Bmp3QuantizedCalibData_ParP7;
+     public double Bmp3QuantizedCalibData_ParP8;
+     public double Bmp3QuantizedCalibData_ParP9;
+     public double Bmp3QuantizedCalibData_ParP10;
+     public double Bmp3QuantizedCalibData_ParP11;
+     public double Bmp3QuantizedCalibData_TLin;
+ 
+ 
+	    // Trim Variables
+     public short Bmp3RegCalibData_ParT1;
+     public short Bmp3RegCalibData_ParT2;
+     public byte Bmp3RegCalibData_ParT3;
+     public short Bmp3RegCalibData_ParP1;
+     public short Bmp3RegCalibData_ParP2;
+     public byte Bmp3RegCalibData_ParP3;
+     public byte Bmp3RegCalibData_ParP4;
+     public int Bmp3RegCalibData_ParP5;
+     public int Bmp3RegCalibData_ParP6;
+     public byte Bmp3RegCalibData_ParP7;
+     public byte Bmp3RegCalibData_ParP8;
+     public short Bmp3RegCalibData_ParP9;
+     public byte Bmp3RegCalibData_ParP10;
+     public byte Bmp3RegCalibData_ParP11;
 	 
-	 public double par_T1 = Bmp3QuantizedCalibData.ParT1; 
-	 public double par_T2 = Bmp3QuantizedCalibData.ParT2; 
-	 public double par_T3 = Bmp3QuantizedCalibData.ParT3; 
-	 public double par_P1 = Bmp3QuantizedCalibData.ParP1;
-	 public double par_P2 = Bmp3QuantizedCalibData.ParP2;
-	 public double par_P3 = Bmp3QuantizedCalibData.ParP3;
-	 public double par_P4 = Bmp3QuantizedCalibData.ParP4;
-	 public double par_P5 = Bmp3QuantizedCalibData.ParP5;
-	 public double par_P6 = Bmp3QuantizedCalibData.ParP6;
-	 public double par_P7 = Bmp3QuantizedCalibData.ParP7;
-	 public double par_P8 = Bmp3QuantizedCalibData.ParP8;
-	 public double par_P9 =Bmp3QuantizedCalibData.ParP9;
-	 public double par_P10 = Bmp3QuantizedCalibData.ParP10;
-	 public double par_P11 = Bmp3QuantizedCalibData.ParP11;
+	 
+	 public double par_T1 ; 
+	 public double par_T2 ; 
+	 public double par_T3 ; 
+	 public double par_P1 ;
+	 public double par_P2 ;
+	 public double par_P3 ;
+	 public double par_P4 ;
+	 public double par_P5 ;
+	 public double par_P6 ;
+	 public double par_P7 ;
+	 public double par_P8 ;
+	 public double par_P9 ;
+	 public double par_P10;
+	 public double par_P11;
 	 
 	 public void setPressureCalib(
 			 	double T1, double T2, double T3,
@@ -106,18 +105,18 @@ public class CalibDetailsBmp390 extends CalibDetailsBmpX80 {
         double partialDataT1;
         double partialDataT2;
 
-        partialDataT1 = uncompTemp - Bmp3QuantizedCalibData.ParT1;
-        partialDataT2 = partialDataT1 * Bmp3QuantizedCalibData.ParT2;
+        partialDataT1 = uncompTemp - Bmp3QuantizedCalibData_ParT1;
+        partialDataT2 = partialDataT1 * Bmp3QuantizedCalibData_ParT2;
 
-        Bmp3QuantizedCalibData.TLin = partialDataT2 + (partialDataT1 * partialDataT1) * Bmp3QuantizedCalibData.ParT3;
+        Bmp3QuantizedCalibData_TLin = partialDataT2 + (partialDataT1 * partialDataT1) * Bmp3QuantizedCalibData_ParT3;
 
-        if (Bmp3QuantizedCalibData.TLin < Bmp3Constants.BMP3_MIN_TEMP_DOUBLE) {
-            Bmp3QuantizedCalibData.TLin = Bmp3Constants.BMP3_MIN_TEMP_DOUBLE;
+        if (Bmp3QuantizedCalibData_TLin < Bmp3Constants.BMP3_MIN_TEMP_DOUBLE) {
+            Bmp3QuantizedCalibData_TLin = Bmp3Constants.BMP3_MIN_TEMP_DOUBLE;
             rslt = Bmp3Constants.BMP3_W_MIN_TEMP;
         }
 
-        if (Bmp3QuantizedCalibData.TLin > Bmp3Constants.BMP3_MAX_TEMP_DOUBLE) {
-            Bmp3QuantizedCalibData.TLin = Bmp3Constants.BMP3_MAX_TEMP_DOUBLE;
+        if (Bmp3QuantizedCalibData_TLin > Bmp3Constants.BMP3_MAX_TEMP_DOUBLE) {
+            Bmp3QuantizedCalibData_TLin = Bmp3Constants.BMP3_MAX_TEMP_DOUBLE;
             rslt = Bmp3Constants.BMP3_W_MAX_TEMP;
         }		
         
@@ -135,20 +134,20 @@ public class CalibDetailsBmp390 extends CalibDetailsBmpX80 {
         double partialOut1;
         double partialOut2;
 
-        partialData1 = Bmp3QuantizedCalibData.ParP6 * Bmp3QuantizedCalibData.TLin;
-        partialData2 = Bmp3QuantizedCalibData.ParP7 * powBmp3(Bmp3QuantizedCalibData.TLin, 2);
-        partialData3 = Bmp3QuantizedCalibData.ParP8 * powBmp3(Bmp3QuantizedCalibData.TLin, 3);
-        partialOut1 = Bmp3QuantizedCalibData.ParP5 + partialData1 + partialData2 + partialData3;
+        partialData1 = Bmp3QuantizedCalibData_ParP6 * Bmp3QuantizedCalibData_TLin;
+        partialData2 = Bmp3QuantizedCalibData_ParP7 * powBmp3(Bmp3QuantizedCalibData_TLin, 2);
+        partialData3 = Bmp3QuantizedCalibData_ParP8 * powBmp3(Bmp3QuantizedCalibData_TLin, 3);
+        partialOut1 = Bmp3QuantizedCalibData_ParP5 + partialData1 + partialData2 + partialData3;
 
-        partialData1 = Bmp3QuantizedCalibData.ParP2 * Bmp3QuantizedCalibData.TLin;
-        partialData2 = Bmp3QuantizedCalibData.ParP3 * powBmp3(Bmp3QuantizedCalibData.TLin, 2);
-        partialData3 = Bmp3QuantizedCalibData.ParP4 * powBmp3(Bmp3QuantizedCalibData.TLin, 3);
-        partialOut2 = UP * (Bmp3QuantizedCalibData.ParP1 + partialData1 + partialData2 + partialData3);
+        partialData1 = Bmp3QuantizedCalibData_ParP2 * Bmp3QuantizedCalibData_TLin;
+        partialData2 = Bmp3QuantizedCalibData_ParP3 * powBmp3(Bmp3QuantizedCalibData_TLin, 2);
+        partialData3 = Bmp3QuantizedCalibData_ParP4 * powBmp3(Bmp3QuantizedCalibData_TLin, 3);
+        partialOut2 = UP * (Bmp3QuantizedCalibData_ParP1 + partialData1 + partialData2 + partialData3);
 
         partialData1 = powBmp3(UP, 2);
-        partialData2 = Bmp3QuantizedCalibData.ParP9 + Bmp3QuantizedCalibData.ParP10 * Bmp3QuantizedCalibData.TLin;
+        partialData2 = Bmp3QuantizedCalibData_ParP9 + Bmp3QuantizedCalibData_ParP10 * Bmp3QuantizedCalibData_TLin;
         partialData3 = partialData1 * partialData2;
-        partialData4 = partialData3 + powBmp3(UP, 3) * Bmp3QuantizedCalibData.ParP11;
+        partialData4 = partialData3 + powBmp3(UP, 3) * Bmp3QuantizedCalibData_ParP11;
         compPress = partialOut1 + partialOut2 + partialData4;
 
         if (compPress < Bmp3Constants.BMP3_MIN_PRES_DOUBLE) {
@@ -163,7 +162,7 @@ public class CalibDetailsBmp390 extends CalibDetailsBmpX80 {
 
         double[] caldata = new double[2];
 		caldata[0]=compPress;
-		caldata[1]=Bmp3QuantizedCalibData.TLin;
+		caldata[1]=Bmp3QuantizedCalibData_TLin;
 		return caldata;
 	}
 
@@ -194,77 +193,77 @@ public class CalibDetailsBmp390 extends CalibDetailsBmpX80 {
 
 	        // 1 / 2^8
 	        tempVar = 0.00390625;
-	        Bmp3RegCalibData.ParT1 = (short) concatenateBytes(pressureResoResTest[1], pressureResoResTest[0]);
-	        Bmp3QuantizedCalibData.ParT1 = ((double) Bmp3RegCalibData.ParT1 / tempVar);
+	        Bmp3RegCalibData_ParT1 = (short) concatenateBytes(pressureResoResTest[1], pressureResoResTest[0]);
+	        Bmp3QuantizedCalibData_ParT1 = ((double) Bmp3RegCalibData_ParT1 / tempVar);
 
-	        Bmp3RegCalibData.ParT2 = (short) concatenateBytes(pressureResoResTest[3], pressureResoResTest[2]);
+	        Bmp3RegCalibData_ParT2 = (short) concatenateBytes(pressureResoResTest[3], pressureResoResTest[2]);
 	        tempVar = 1073741824.0;
-	        Bmp3QuantizedCalibData.ParT2 = ((double) Bmp3RegCalibData.ParT2 / tempVar);
+	        Bmp3QuantizedCalibData_ParT2 = ((double) Bmp3RegCalibData_ParT2 / tempVar);
 
-	        Bmp3RegCalibData.ParT3 = (byte) pressureResoResTest[4];
+	        Bmp3RegCalibData_ParT3 = (byte) pressureResoResTest[4];
 	        tempVar = 281474976710656.0;
-	        Bmp3QuantizedCalibData.ParT3 = ((double) Bmp3RegCalibData.ParT3 / tempVar);
+	        Bmp3QuantizedCalibData_ParT3 = ((double) Bmp3RegCalibData_ParT3 / tempVar);
 
-	        Bmp3RegCalibData.ParP1 = (short) concatenateBytes(pressureResoResTest[6], pressureResoResTest[5]);
+	        Bmp3RegCalibData_ParP1 = (short) concatenateBytes(pressureResoResTest[6], pressureResoResTest[5]);
 	        tempVar = 1048576.0;
-	        Bmp3QuantizedCalibData.ParP1 = ((double) (Bmp3RegCalibData.ParP1 - 16384) / tempVar);
+	        Bmp3QuantizedCalibData_ParP1 = ((double) (Bmp3RegCalibData_ParP1 - 16384) / tempVar);
 
-	        Bmp3RegCalibData.ParP2 = (short) concatenateBytes(pressureResoResTest[8], pressureResoResTest[7]);
+	        Bmp3RegCalibData_ParP2 = (short) concatenateBytes(pressureResoResTest[8], pressureResoResTest[7]);
 	        tempVar = 536870912.0;
-	        Bmp3QuantizedCalibData.ParP2 = ((double) (Bmp3RegCalibData.ParP2 - 16384) / tempVar);
+	        Bmp3QuantizedCalibData_ParP2 = ((double) (Bmp3RegCalibData_ParP2 - 16384) / tempVar);
 
-	        Bmp3RegCalibData.ParP3 = (byte) pressureResoResTest[9];
+	        Bmp3RegCalibData_ParP3 = (byte) pressureResoResTest[9];
 	        tempVar = 4294967296.0;
-	        Bmp3QuantizedCalibData.ParP3 = ((double) Bmp3RegCalibData.ParP3 / tempVar);
+	        Bmp3QuantizedCalibData_ParP3 = ((double) Bmp3RegCalibData_ParP3 / tempVar);
 
-	        Bmp3RegCalibData.ParP4 = (byte) pressureResoResTest[10];
+	        Bmp3RegCalibData_ParP4 = (byte) pressureResoResTest[10];
 	        tempVar = 137438953472.0;
-	        Bmp3QuantizedCalibData.ParP4 = ((double) Bmp3RegCalibData.ParP4 / tempVar);
+	        Bmp3QuantizedCalibData_ParP4 = ((double) Bmp3RegCalibData_ParP4 / tempVar);
 
-	        Bmp3RegCalibData.ParP5 = concatenateBytes(pressureResoResTest[12], pressureResoResTest[11]);
+	        Bmp3RegCalibData_ParP5 = concatenateBytes(pressureResoResTest[12], pressureResoResTest[11]);
 
 	        // 1 / 2^3
 	        tempVar = 0.125;
-	        Bmp3QuantizedCalibData.ParP5 = ((double) Bmp3RegCalibData.ParP5 / tempVar);
+	        Bmp3QuantizedCalibData_ParP5 = ((double) Bmp3RegCalibData_ParP5 / tempVar);
 
-	        Bmp3RegCalibData.ParP6 = concatenateBytes(pressureResoResTest[14], pressureResoResTest[13]);
+	        Bmp3RegCalibData_ParP6 = concatenateBytes(pressureResoResTest[14], pressureResoResTest[13]);
 	        tempVar = 64.0;
-	        Bmp3QuantizedCalibData.ParP6 = ((double) Bmp3RegCalibData.ParP6 / tempVar);
+	        Bmp3QuantizedCalibData_ParP6 = ((double) Bmp3RegCalibData_ParP6 / tempVar);
 
-	        Bmp3RegCalibData.ParP7 = (byte) pressureResoResTest[15];
+	        Bmp3RegCalibData_ParP7 = (byte) pressureResoResTest[15];
 	        tempVar = 256.0;
-	        Bmp3QuantizedCalibData.ParP7 = ((double) Bmp3RegCalibData.ParP7 / tempVar);
+	        Bmp3QuantizedCalibData_ParP7 = ((double) Bmp3RegCalibData_ParP7 / tempVar);
 
-	        Bmp3RegCalibData.ParP8 = (byte) pressureResoResTest[16];
+	        Bmp3RegCalibData_ParP8 = (byte) pressureResoResTest[16];
 	        tempVar = 32768.0;
-	        Bmp3QuantizedCalibData.ParP8 = ((double) Bmp3RegCalibData.ParP8 / tempVar);
+	        Bmp3QuantizedCalibData_ParP8 = ((double) Bmp3RegCalibData_ParP8 / tempVar);
 
-	        Bmp3RegCalibData.ParP9 = (short) concatenateBytes(pressureResoResTest[18], pressureResoResTest[17]);
+	        Bmp3RegCalibData_ParP9 = (short) concatenateBytes(pressureResoResTest[18], pressureResoResTest[17]);
 	        tempVar = 281474976710656.0;
-	        Bmp3QuantizedCalibData.ParP9 = ((double) Bmp3RegCalibData.ParP9 / tempVar);
+	        Bmp3QuantizedCalibData_ParP9 = ((double) Bmp3RegCalibData_ParP9 / tempVar);
 
-	        Bmp3RegCalibData.ParP10 = (byte) pressureResoResTest[19];
+	        Bmp3RegCalibData_ParP10 = (byte) pressureResoResTest[19];
 	        tempVar = 281474976710656.0;
-	        Bmp3QuantizedCalibData.ParP10 = ((double) Bmp3RegCalibData.ParP10 / tempVar);
+	        Bmp3QuantizedCalibData_ParP10 = ((double) Bmp3RegCalibData_ParP10 / tempVar);
 
-	        Bmp3RegCalibData.ParP11 = (byte) pressureResoResTest[20];
+	        Bmp3RegCalibData_ParP11 = (byte) pressureResoResTest[20];
 	        tempVar = 36893488147419103232.0;
-	        Bmp3QuantizedCalibData.ParP11 = ((double) Bmp3RegCalibData.ParP11 / tempVar);
+	        Bmp3QuantizedCalibData_ParP11 = ((double) Bmp3RegCalibData_ParP11 / tempVar);
 
-	        System.out.println("par_T1 = " + Bmp3QuantizedCalibData.ParT1);
-	        System.out.println("par_T2 = " + Bmp3QuantizedCalibData.ParT2);
-	        System.out.println("par_T3 = " + Bmp3QuantizedCalibData.ParT3);
-	        System.out.println("par_P1 = " + Bmp3QuantizedCalibData.ParP1);
-	        System.out.println("par_P2 = " + Bmp3QuantizedCalibData.ParP2);
-	        System.out.println("par_P3 = " + Bmp3QuantizedCalibData.ParP3);
-	        System.out.println("par_P4 = " + Bmp3QuantizedCalibData.ParP4);
-	        System.out.println("par_P5 = " + Bmp3QuantizedCalibData.ParP5);
-	        System.out.println("par_P6 = " + Bmp3QuantizedCalibData.ParP6);
-	        System.out.println("par_P7 = " + Bmp3QuantizedCalibData.ParP7);
-	        System.out.println("par_P8 = " + Bmp3QuantizedCalibData.ParP8);
-	        System.out.println("par_P9 = " + Bmp3QuantizedCalibData.ParP9);
-	        System.out.println("par_P10 = " + Bmp3QuantizedCalibData.ParP10);
-	        System.out.println("par_P11 = " + Bmp3QuantizedCalibData.ParP11);
+	        System.out.println("par_T1 = " + Bmp3QuantizedCalibData_ParT1);
+	        System.out.println("par_T2 = " + Bmp3QuantizedCalibData_ParT2);
+	        System.out.println("par_T3 = " + Bmp3QuantizedCalibData_ParT3);
+	        System.out.println("par_P1 = " + Bmp3QuantizedCalibData_ParP1);
+	        System.out.println("par_P2 = " + Bmp3QuantizedCalibData_ParP2);
+	        System.out.println("par_P3 = " + Bmp3QuantizedCalibData_ParP3);
+	        System.out.println("par_P4 = " + Bmp3QuantizedCalibData_ParP4);
+	        System.out.println("par_P5 = " + Bmp3QuantizedCalibData_ParP5);
+	        System.out.println("par_P6 = " + Bmp3QuantizedCalibData_ParP6);
+	        System.out.println("par_P7 = " + Bmp3QuantizedCalibData_ParP7);
+	        System.out.println("par_P8 = " + Bmp3QuantizedCalibData_ParP8);
+	        System.out.println("par_P9 = " + Bmp3QuantizedCalibData_ParP9);
+	        System.out.println("par_P10 = " + Bmp3QuantizedCalibData_ParP10);
+	        System.out.println("par_P11 = " + Bmp3QuantizedCalibData_ParP11);
 		}
 	}
 
