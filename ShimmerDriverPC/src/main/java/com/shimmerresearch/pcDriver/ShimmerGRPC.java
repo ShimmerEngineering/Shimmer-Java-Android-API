@@ -543,15 +543,13 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 	    try {
 	        if (mIOThread != null) {
 	            mIOThread.stop = true;
-	            
 	            mIOThread.interrupt();
 	            mIOThread.join();  // Wait until the thread terminates
-
 	            mIOThread = null;
 	            
 	            if (mUseProcessingThread) {
 	                mPThread.stop = true;
-		            mIOThread.interrupt();
+	                mPThread.interrupt();
 	                mPThread.join();
 	                mPThread = null;
 	            }
