@@ -86,36 +86,22 @@ public class GrpcBLERadioByteTools {
 	
     public boolean isExeRunningMacOS(String exeName) {
         try {
-            // Use 'pgrep -x' for an exact match of the process name.
-            // 'pgrep' returns the PIDs of matching processes, or nothing if not found.
-            // The '-x' flag ensures an exact match to the process name.
             Process process = Runtime.getRuntime().exec(new String[]{"pgrep", "-x", exeName});
-            // Read the output. If any line is read, it means a PID was found.
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            // Check if there's any output. If readLine() returns null, no process was found.
             boolean found = reader.readLine() != null;
 
-            // It's good practice to wait for the process to complete to release resources
-            // and to check its exit value if needed for more robust error handling.
-            // We'll add a timeout to prevent indefinite blocking.
             if (!process.waitFor(5, TimeUnit.SECONDS)) { // Wait up to 5 seconds
                 process.destroy(); // Terminate the process if it doesn't exit
                 System.err.println("pgrep process timed out.");
                 return false; // Consider it not found or an error
             }
 
-            // Optionally, you could check the exit code: pgrep returns 0 if matches are found, 1 if none.
-            // int exitCode = process.exitValue();
-            // return exitCode == 0; // This is an alternative way to check if found
-
-            return found; // Return true if any line was read, false otherwise
+            return found;
         } catch (IOException e) {
-            // Handle cases where the command cannot be executed (e.g., pgrep not found in PATH, permissions)
             System.err.println("Error executing pgrep command: " + e.getMessage());
             e.printStackTrace();
             return false;
         } catch (InterruptedException e) {
-            // Handle cases where the current thread is interrupted while waiting for the process
             System.err.println("Thread interrupted while waiting for pgrep process: " + e.getMessage());
             Thread.currentThread().interrupt(); // Restore the interrupted status
             return false;
@@ -123,7 +109,11 @@ public class GrpcBLERadioByteTools {
     }
 
 	public boolean isServerRunning() {
-		return false;
+		if(UtilShimmer.isOsMac()) {
+			return isExeRunningMacOS(mExeNameMac);
+		} else {
+			return isExeRunning(mExeNameWindows);
+		}
 	}
 	
 	public int startServer() throws Exception {
