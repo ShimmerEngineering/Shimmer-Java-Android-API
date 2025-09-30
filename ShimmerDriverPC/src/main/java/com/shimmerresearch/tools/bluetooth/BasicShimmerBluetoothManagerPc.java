@@ -41,6 +41,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	List<VerisenseDevice> verisenseDeviceList = new ArrayList<VerisenseDevice>();
 	List<ShimmerGRPC> shimmer3BleDeviceList = new ArrayList<ShimmerGRPC>();
 	public static int mGRPCPort;
+	private GrpcBLERadioByteTools grpcTool;
 	
 	public BasicShimmerBluetoothManagerPc() {
 		startGrpc();
@@ -54,7 +55,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	
 	protected void startGrpc(String path) {
 		try {
-			GrpcBLERadioByteTools grpcTool = new GrpcBLERadioByteTools("ShimmerBLEGrpc.exe",path);
+			grpcTool = new GrpcBLERadioByteTools("ShimmerBLEGrpc.exe",path);
 			mGRPCPort = grpcTool.startServer();
 		}  catch(Exception e) {
 			e.printStackTrace();
@@ -63,11 +64,15 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	
 	protected void startGrpc() {
 		try {
-			GrpcBLERadioByteTools grpcTool = new GrpcBLERadioByteTools();
+			grpcTool = new GrpcBLERadioByteTools();
 			mGRPCPort = grpcTool.startServer();
 		}  catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isGrpcServerRunning() {
+		return grpcTool.isServerRunning();
 	}
 		
 	public void setPathToVeriBLEApp(String path) {

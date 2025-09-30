@@ -539,29 +539,29 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		setBluetoothRadioState(BT_STATE.DISCONNECTED);
 	}
 
-	private void closeConnection(){
-		try {
-			if (mIOThread != null) {
-				mIOThread.stop = true;
-				
-				// Closing serial port before before thread is finished stopping throws an error so waiting here
-				while(mIOThread != null && mIOThread.isAlive());
+	private void closeConnection() {
+	    try {
+	        if (mIOThread != null) {
+	            mIOThread.stop = true;
+	            mIOThread.interrupt();
+	            mIOThread.join();  // Wait until the thread terminates
+	            mIOThread = null;
+	            
+	            if (mUseProcessingThread) {
+	                mPThread.stop = true;
+	                mPThread.interrupt();
+	                mPThread.join();
+	                mPThread = null;
+	            }
+	        }
+	        mIsStreaming = false;
+	        mIsInitialised = false;
 
-				mIOThread = null;
-				
-				if(mUseProcessingThread){
-					mPThread.stop = true;
-					mPThread = null;
-				}
-			}
-			mIsStreaming = false;
-			mIsInitialised = false;
-
-			setBluetoothRadioState(BT_STATE.DISCONNECTED);
-		} catch (Exception ex) {
-			consolePrintException(ex.getMessage(), ex.getStackTrace());
-			setBluetoothRadioState(BT_STATE.DISCONNECTED);
-		}			
+	        setBluetoothRadioState(BT_STATE.DISCONNECTED);
+	    } catch (Exception ex) {
+	        consolePrintException(ex.getMessage(), ex.getStackTrace());
+	        setBluetoothRadioState(BT_STATE.DISCONNECTED);
+	    }			
 	}
 	
 	//Need to override here because ShimmerDevice class uses a different map
