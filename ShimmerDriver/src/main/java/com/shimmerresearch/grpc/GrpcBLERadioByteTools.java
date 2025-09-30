@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
@@ -82,9 +83,40 @@ public class GrpcBLERadioByteTools {
 			return false;
 		}
 	}
+	
+    public boolean isExeRunningMacOS(String exeName) {
+        try {
+            Process process = Runtime.getRuntime().exec(new String[]{"pgrep", "-x", exeName});
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            boolean found = reader.readLine() != null;
+
+            if (!process.waitFor(5, TimeUnit.SECONDS)) { // Wait up to 5 seconds
+                process.destroy(); // Terminate the process if it doesn't exit
+                System.err.println("pgrep process timed out.");
+                return false; // Consider it not found or an error
+            }
+
+            return found;
+        } catch (IOException e) {
+            System.err.println("Error executing pgrep command: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } catch (InterruptedException e) {
+            System.err.println("Thread interrupted while waiting for pgrep process: " + e.getMessage());
+            Thread.currentThread().interrupt(); // Restore the interrupted status
+            return false;
+        }
+    }
+
+	public boolean isServerRunning() {
+		if(UtilShimmer.isOsMac()) {
+			return isExeRunningMacOS(mExeNameMac);
+		} else {
+			return isExeRunning(mExeNameWindows);
+		}
+	}
+	
 	public int startServer() throws Exception {
-
-
 		int port = getFreePort();
 
 		System.out.println(port + " is free");
@@ -117,7 +149,6 @@ public class GrpcBLERadioByteTools {
 		processThread.start();
 		return port;
 		// You can continue with other tasks here
-
 	}
 
 	public void stopServer() {
