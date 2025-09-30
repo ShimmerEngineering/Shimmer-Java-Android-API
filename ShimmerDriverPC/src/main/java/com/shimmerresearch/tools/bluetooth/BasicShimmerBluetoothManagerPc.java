@@ -37,9 +37,9 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 
 	String mPathToVeriBLEApp = "bleconsoleapp\\BLEConsoleApp1.exe";
 	List<String> verisenseMacIdList = new ArrayList<String>();
-	List<String> shimmer3BleMacIdList = new ArrayList<String>();
+	protected List<String> shimmer3BleMacIdList = new ArrayList<String>();
 	List<VerisenseDevice> verisenseDeviceList = new ArrayList<VerisenseDevice>();
-	List<ShimmerGRPC> shimmer3BleDeviceList = new ArrayList<ShimmerGRPC>();
+	protected List<ShimmerGRPC> shimmer3BleDeviceList = new ArrayList<ShimmerGRPC>();
 	public static int mGRPCPort;
 	
 	public BasicShimmerBluetoothManagerPc() {
