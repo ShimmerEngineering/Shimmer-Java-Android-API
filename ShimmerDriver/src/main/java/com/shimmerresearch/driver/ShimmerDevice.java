@@ -2107,9 +2107,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	}
 	
 	public boolean isHWAndFWSupportedBtBleControl() {
-		if(getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.LOGANDSTREAM
+		if((getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.LOGANDSTREAM
 				&& mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 1, 0, 4)
-						&& isShimmerGen3()){
+						&& isShimmerGen3()
+			|| (isShimmerGen3R() && getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.LOGANDSTREAM
+					&& mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3R, FW_ID.LOGANDSTREAM, 1, 0, 39) 			))){
 			return true;
 		}
 		return false;
