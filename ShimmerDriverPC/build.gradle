@@ -8,13 +8,17 @@
  */
 
 // Apply the java plugin to add support for Java
-apply plugin: 'java'
-apply plugin: 'java-library'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'eclipse'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'  // Apply the Shadow plugin
+}
 sourceCompatibility = 1.11
-
+targetCompatibility = 1.11
+//sourceCompatibility = '1.8'  // Ensure code is compiled with Java 8 when compiling ShimmerJavaClass for Matlab see ShimmerDriverPC (build.gradle)
+//targetCompatibility = '1.8'  // Ensure bytecode is compatible with Java 8 when compiling ShimmerJavaClass for Matlab see ShimmerDriverPC (build.gradle)
 /*
 Rev0.2
 - switch to using jfrog
@@ -95,4 +99,21 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testImplementation 'junit:junit:4.12'
     implementation 'com.parse.bolts:bolts-tasks:1.4.0'
+}
+
+// Shadow JAR task to create a runnable JAR with dependencies
+/*
+Change to using the following below for ShimmerDriverPC/ShimmerDriver/ShimmerBluetoothManager
+sourceCompatibility = '1.8'  // Ensure code is compiled with Java 8
+targetCompatibility = '1.8'  // Ensure bytecode is compatible with Java 8
+*/
+shadowJar {
+    archiveBaseName.set('ShimmerJavaClass')  // Use archiveBaseName instead of baseName
+    archiveClassifier.set('')  // Remove classifier so it’s named shimmerjavaclass.jar
+    
+    manifest {
+        attributes 'Main-Class': 'com.shimmerresearch.tools.matlab.ShimmerJavaClass'  // Specify the main class
+    }
+
+    mergeServiceFiles()  // Merges service files (if any)
 }
