@@ -492,7 +492,7 @@ public abstract class ShimmerBluetoothManager{
 		Iterator<ShimmerDevice> iterator = mMapOfBtConnectedShimmers.values().iterator();
 		while(iterator.hasNext()){
 			ShimmerDevice shimmerDevice = iterator.next();
-			if(shimmerDevice.getMacId().equals(macAddress)){
+			if(shimmerDevice.getMacId().toUpperCase().equals(macAddress.toUpperCase())){
 				return shimmerDevice;
 			}
 		}
