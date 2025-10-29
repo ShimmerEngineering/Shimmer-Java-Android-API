@@ -145,6 +145,11 @@ public class GrpcBLERadioByteTools {
 				e.printStackTrace();
 			}
 		});
+		runningProcess.onExit().thenAccept(p -> {
+		    int code = p.exitValue();
+		    System.err.println("[BLEGrpcServer] exited: code=" + code +
+		        (code >= 128 ? " (likely signal " + (code - 128) + ")" : ""));
+		});
 
 		processThread.start();
 		return port;
