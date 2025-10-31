@@ -134,6 +134,14 @@ public class GrpcBLERadioByteTools {
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		processBuilder.redirectErrorStream(true); // Redirect standard error to the input stream
 		runningProcess = processBuilder.start();
+		
+	    // Add shutdown hook to ensure server is closed when Java app exits
+	    try {
+	        Runtime.getRuntime().addShutdownHook(shutdownHook);
+	    } catch (IllegalStateException ignored) {
+	        // JVM is already shutting down
+	    }
+		
 		Thread processThread = new Thread(() -> {
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(runningProcess.getInputStream()))) {
 				String line;
@@ -145,11 +153,35 @@ public class GrpcBLERadioByteTools {
 				e.printStackTrace();
 			}
 		});
+		runningProcess.onExit().thenAccept(p -> {
+		    int code = p.exitValue();
+		    System.err.println("[BLEGrpcServer] exited: code=" + code +
+		        (code >= 128 ? " (likely signal " + (code - 128) + ")" : ""));
+		});
 
 		processThread.start();
 		return port;
 		// You can continue with other tasks here
 	}
+	
+	private final Thread shutdownHook = new Thread(() -> {
+	    Process p = runningProcess;
+	    if (p == null) return;
+
+	    try {
+	        // Try graceful termination first
+	        p.destroy(); // sends SIGTERM on Unix, WM_CLOSE/CTRL_BREAK semantics vary on Windows
+	        if (!p.waitFor(3, java.util.concurrent.TimeUnit.SECONDS)) {
+	            // Fall back to force kill
+	            p.destroyForcibly();
+	            p.waitFor(2, java.util.concurrent.TimeUnit.SECONDS);
+	        }
+	    } catch (InterruptedException ie) {
+	        Thread.currentThread().interrupt();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	});
 
 	public void stopServer() {
 		if (runningProcess != null) {
