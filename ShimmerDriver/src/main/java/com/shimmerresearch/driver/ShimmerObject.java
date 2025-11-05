@@ -4845,7 +4845,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			clearExgConfig(); // this currently must be called before sensorAndConfigMapsCreate() as it controls ExG booleans which affect EnabledSensors
 			sensorAndConfigMapsCreate();
 			
-			if (getHardwareVersion() == HW_ID.SHIMMER_3){
+			int hwVersion = getHardwareVersion();
+			if (hwVersion == HW_ID.SHIMMER_3){
 				if(getExpansionBoardId()==HW_ID_SR_CODES.SHIMMER_ECG_MD){
 					setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.HOST_ECG, true);
 				} else {
@@ -4856,6 +4857,13 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 					
 					setIsAlgorithmEnabled(GyroOnTheFlyCalModule.GENERAL_ALGORITHM_NAME, true);
 				}
+			} else if (hwVersion == HW_ID.SHIMMER_3R) {
+				setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN, true);
+				setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_GYRO, true);
+				setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LIS2MDL_MAG, true);
+				setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_VBATT, true);
+				
+				setIsAlgorithmEnabled(GyroOnTheFlyCalModule.GENERAL_ALGORITHM_NAME, true);
 			}
 
 			mTrialName = DEFAULT_EXPERIMENT_NAME;
