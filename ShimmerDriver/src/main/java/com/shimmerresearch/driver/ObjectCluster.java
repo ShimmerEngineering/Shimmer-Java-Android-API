@@ -88,6 +88,7 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 	private String mMyName;
 	private String mBluetoothAddress;
+	private String mComPort;
 	
 	// ------- Old Array approach - Start -----------
 	public byte[] mRawData;
@@ -220,6 +221,13 @@ final public class ObjectCluster implements Cloneable,Serializable{
 		mBluetoothAddress = macAddress;
 	}
 	
+	public  void setComPort(String comport) {
+		mComPort = comport;
+	}
+	
+	public String getComPort() {
+		return mComPort;
+	}
 	/**
 	 * Takes in a collection of Format Clusters and returns the Format Cluster specified by the string format
 	 * @param collectionFormatCluster
@@ -245,6 +253,15 @@ final public class ObjectCluster implements Cloneable,Serializable{
 
 	public double getFormatClusterValue(ChannelDetails channelDetails, CHANNEL_TYPE channelType){
 		return getFormatClusterValue(channelDetails.mObjectClusterName, channelType.toString());
+	}
+	
+	public FormatCluster getFormatCluster(String channelName, String format) 
+	{
+		FormatCluster formatCluster = getLastFormatCluster(channelName, format);
+		if(formatCluster!=null){
+			return formatCluster;
+		}
+		return null;
 	}
 	
 //	public double getFormatClusterValue(ChannelDetails channelDetails, String format){
