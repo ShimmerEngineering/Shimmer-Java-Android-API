@@ -677,7 +677,7 @@ public class Configuration {
 		 * data packets. The firmware also uses the IMU IDs as Sensor IDs in the
 		 * IMU/BMP calibration bytes. 
 		 */
-		public class SENSOR_ID{
+		public static class SENSOR_ID{
 			public static final int RESERVED_ANY_SENSOR = -1;
 			
 			public static final int HOST_SHIMMER_STREAMING_PROPERTIES = -100;
