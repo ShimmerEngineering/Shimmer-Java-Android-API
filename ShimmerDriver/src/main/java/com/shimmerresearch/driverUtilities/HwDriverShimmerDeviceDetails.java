@@ -153,9 +153,9 @@ public class HwDriverShimmerDeviceDetails {
     		"shimmer",
         };
 
-		public static final String[] SHIMMER3R_COMPOSITE_DEVICE = new String[] { "SHIMMER COMPOSITE DEVICE" };
+		public static final String[] SHIMMER3R_COMPOSITE_DEVICE = new String[] { "SHIMMER COMPOSITE DEVICE","STM32 COMPOSITE DEVICE"};
 
-		public static final String[] SHIMMER3R_MSC_DEVICE = new String[] { "SHIMMER MSC DEVICE" };
+		public static final String[] SHIMMER3R_MSC_DEVICE = new String[] { "SHIMMER MSC DEVICE","STM32 MSC DEVICE" };
 
 		public static final class SERVICE_DESCRIPTION {
 			public static final String[] COMPOSITE_DEVICE = new String[]{"USB Composite Device"};
