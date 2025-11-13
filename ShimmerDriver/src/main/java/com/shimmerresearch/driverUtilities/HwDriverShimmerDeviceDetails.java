@@ -152,6 +152,14 @@ public class HwDriverShimmerDeviceDetails {
 		public static final String[] SHIMMER = new String[] {
     		"shimmer",
         };
+		
+		public static final String[] VERISENSE_USB = new String[] {
+	    	"VID_1915&PID_520F",
+	    };
+		
+		public static final String[] VERISENSE = new String[] {
+		    "verisense",
+		};
 
 		public static final String[] SHIMMER3R_COMPOSITE_DEVICE = new String[] { "SHIMMER COMPOSITE DEVICE","STM32 COMPOSITE DEVICE"};
 
