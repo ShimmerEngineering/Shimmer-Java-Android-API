@@ -22,6 +22,7 @@ import com.shimmerresearch.driver.shimmer2r3.ConfigByteLayoutShimmer3;
 import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.driverUtilities.ChannelDetails.CHANNEL_TYPE;
 import com.shimmerresearch.grpc.ShimmerBLEByteServerGrpc;
 import com.shimmerresearch.grpc.ShimmerBLEGRPC.BluetoothState;
@@ -36,6 +37,7 @@ import com.shimmerresearch.sensors.kionix.SensorKionixAccel;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
@@ -64,31 +66,36 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 5029128107276324956L;
-
+	
 	public ShimmerGRPC(String macAddress, String serverHost, int serverPort) {
 		super();
 		mServerHost = serverHost;
 		mServerPort = serverPort;
 		mMacAddress = macAddress;
+		mMyBluetoothAddress = "";
 		mUseProcessingThread = true;
 		if (channel==null) {
 			InitializeProcess();
 		}
 	}
-
+	
+	/**
+	 *  This constructor is used for MacOS for BLE where the mFriendlyName is the BT device name (e.g. Shimmer3-6813). 
+	 *  BT device name is used in place of COM Port which is Classic BT only
+	 */
+	public ShimmerGRPC(String macAddress, String mFriendlyName, String serverHost, int serverPort) {
+		this(mFriendlyName, serverHost, serverPort);
+		mMyBluetoothAddress = macAddress;
+		mComPort = mFriendlyName;
+	}
+	
 	public void InitializeProcess() {
-		// Define the server host and port
-
-		// Create a channel to connect to the server
-		channel = ManagedChannelBuilder.forAddress(mServerHost, mServerPort)
+		channel = ManagedChannelBuilder.forTarget(mServerHost + ":" + mServerPort)
 				.usePlaintext() // Use plaintext communication (insecure for testing)
 				.build();
+
 		// Create a gRPC client stub
 		blockingStub = ShimmerBLEByteServerGrpc.newBlockingStub(channel);
-
-
-
-
 	}
 
 	
@@ -98,8 +105,10 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 
 		JButton btnNewButton = new JButton("Connect");
 		
-		final ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36","localhost",50052);
-
+		final ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36","localhost",50052); 
+		//Use constructor below instead for MacOS, which uses the BT device name to connect, e.g. Shimmer3-6813
+		//final ShimmerGRPC shimmer = new ShimmerGRPC("E8EB1B713E36","Shimmer3-3E36","localhost",50052);
+		
 		SensorDataReceived sdr = shimmer.new SensorDataReceived();
 		sdr.setWaitForData(shimmer);
 
@@ -271,11 +280,18 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		// Create a request message
 		WriteBytes request = WriteBytes.newBuilder().setAddress(mMacAddress).setByteToWrite(ByteString.copyFrom(data)).build();
 
-		// Call the remote gRPC service method
-		Reply response = blockingStub.writeBytesShimmer(request);
-
-		// Process the response
-		System.out.println("Received: " + response.getMessage());
+		try {
+			// Call the remote gRPC service method
+			Reply response = blockingStub.writeBytesShimmer(request);
+			
+			// Process the response
+			System.out.println("Received: " + response.getMessage());
+		} catch(StatusRuntimeException sre) {
+			// Remote gRPC service is not available, so disconnect Shimmer device
+			sre.printStackTrace();
+			System.out.println("ERROR: Lost connection to GRPC Server");	
+			connectionLost();
+		}
 	}
 
 	@Override
@@ -510,38 +526,42 @@ public class ShimmerGRPC extends ShimmerBluetooth implements Serializable{
 		// Create a request message
 		Request request = Request.newBuilder().setName(mMacAddress).build();
 
-		// Call the remote gRPC service method
-		Reply response = blockingStub.disconnectShimmer(request);
+		try {
+			// Call the remote gRPC service method
+			Reply response = blockingStub.disconnectShimmer(request);
+			// Process the response
+			System.out.println("Received: " + response.getMessage());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 
-		// Process the response
-		System.out.println("Received: " + response.getMessage());
 		closeConnection();
 		setBluetoothRadioState(BT_STATE.DISCONNECTED);
 	}
 
-	private void closeConnection(){
-		try {
-			if (mIOThread != null) {
-				mIOThread.stop = true;
-				
-				// Closing serial port before before thread is finished stopping throws an error so waiting here
-				while(mIOThread != null && mIOThread.isAlive());
+	private void closeConnection() {
+	    try {
+	        if (mIOThread != null) {
+	            mIOThread.stop = true;
+	            mIOThread.interrupt();
+	            mIOThread.join();  // Wait until the thread terminates
+	            mIOThread = null;
+	            
+	            if (mUseProcessingThread) {
+	                mPThread.stop = true;
+	                mPThread.interrupt();
+	                mPThread.join();
+	                mPThread = null;
+	            }
+	        }
+	        mIsStreaming = false;
+	        mIsInitialised = false;
 
-				mIOThread = null;
-				
-				if(mUseProcessingThread){
-					mPThread.stop = true;
-					mPThread = null;
-				}
-			}
-			mIsStreaming = false;
-			mIsInitialised = false;
-
-			setBluetoothRadioState(BT_STATE.DISCONNECTED);
-		} catch (Exception ex) {
-			consolePrintException(ex.getMessage(), ex.getStackTrace());
-			setBluetoothRadioState(BT_STATE.DISCONNECTED);
-		}			
+	        setBluetoothRadioState(BT_STATE.DISCONNECTED);
+	    } catch (Exception ex) {
+	        consolePrintException(ex.getMessage(), ex.getStackTrace());
+	        setBluetoothRadioState(BT_STATE.DISCONNECTED);
+	    }			
 	}
 	
 	//Need to override here because ShimmerDevice class uses a different map
