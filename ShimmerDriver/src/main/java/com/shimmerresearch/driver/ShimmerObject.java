@@ -2822,7 +2822,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 		double timestampUnwrappedTicks = unwrapTimeStamp(shimmerTimestampTicks);
 		double timestampUnwrappedMilliSecs = timestampUnwrappedTicks/getRtcClockFreq()*1000;   // to convert into mS
-		objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SHIMMER_CLOCK,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,shimmerTimestampTicks);
+		objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SHIMMER_CLOCK,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,timestampUnwrappedTicks);
 		
 		incrementPacketsReceivedCounters();
 		calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
