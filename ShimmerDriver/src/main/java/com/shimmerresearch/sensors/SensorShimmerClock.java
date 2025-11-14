@@ -93,7 +93,7 @@ public class SensorShimmerClock extends AbstractSensor {
 		public static final String OFFSET_TIMESTAMP = "OFFSET";//"Offset";
 		
 		public static final String REAL_TIME_CLOCK = "Real_Time_Clock";
-		public static final String SHIMMER_CLOCK = "SHIMMER_Clock";
+		public static final String SHIMMER_CLOCK = "Clock_3-LSB";
 	}
 	
 	public static final class DatabaseConfigHandle{
@@ -226,7 +226,7 @@ public class SensorShimmerClock extends AbstractSensor {
 			ObjectClusterSensorName.SHIMMER_CLOCK,
 			ObjectClusterSensorName.SHIMMER_CLOCK,
 			DatabaseChannelHandles.SHIMMER_CLOCK,
-			CHANNEL_UNITS.MILLISECONDS,
+			CHANNEL_UNITS.CLOCK_UNIT,
 			Arrays.asList(CHANNEL_TYPE.UNCAL ,CHANNEL_TYPE.CAL), false, true);
 	{
 		//TODO put into above constructor
