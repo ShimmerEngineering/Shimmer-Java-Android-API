@@ -83,7 +83,7 @@ public class SensorShimmerClock extends AbstractSensor {
 		
 		public static final String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
 		public static final String REAL_TIME_CLOCK = "RealTime";
-		public static final String SHIMMER_CLOCK = "Shimmer Clock 3-LSB";
+		public static final String SHIMMER_CLOCK = "Clock 3_LSB";
 		public static final String TIMESTAMP_OFFSET = "Offset";
 	}
 	
@@ -93,7 +93,7 @@ public class SensorShimmerClock extends AbstractSensor {
 		public static final String OFFSET_TIMESTAMP = "OFFSET";//"Offset";
 		
 		public static final String REAL_TIME_CLOCK = "Real_Time_Clock";
-		public static final String SHIMMER_CLOCK = "Clock_3-LSB";
+		public static final String SHIMMER_CLOCK = "Clock_3_LSB";
 	}
 	
 	public static final class DatabaseConfigHandle{
