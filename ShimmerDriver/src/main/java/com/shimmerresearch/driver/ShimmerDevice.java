@@ -1402,6 +1402,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		else if(mDockID.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASE6.getLabel())){
 			mDockType = DEVICE_TYPE.BASE6;
 		}
+		else if(mDockID.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.SHIMMER3R.getLabel())){
+			mDockType = DEVICE_TYPE.SHIMMER3R;
+		} 
 		else {
 			mDockType = DEVICE_TYPE.UNKOWN;
 		}
