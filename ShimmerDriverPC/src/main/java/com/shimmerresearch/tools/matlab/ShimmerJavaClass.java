@@ -64,6 +64,10 @@ public class ShimmerJavaClass {
         }
     }
     
+    public void setDebugMode(boolean debug) {
+		mDebug = debug;
+	}
+    
     public static void main(String[] args) {
         ShimmerJavaClass example = new ShimmerJavaClass();
         example.createAndShowGUI();
