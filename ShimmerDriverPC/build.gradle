@@ -99,6 +99,12 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testImplementation 'junit:junit:4.12'
     implementation 'com.parse.bolts:bolts-tasks:1.4.0'
+    
+    // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
+	implementation("org.bouncycastle:bcpkix-jdk15on:1.61")
+    
+    // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
+	implementation("org.bouncycastle:bcprov-jdk15on:1.61")
 }
 
 // Shadow JAR task to create a runnable JAR with dependencies
