@@ -494,7 +494,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final int MAX_NUMBER_OF_SIGNALS = 77;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
-	public static final int CONTIGUOUS_TIMESTAMP_TICKS_LIMIT = (10*32768); // 10 seconds worth of ticks
+	public static final int CONTIGUOUS_TIMESTAMP_TICKS_LIMIT = (10*32768); // 10 seconds worth of ticks. Set to 0 to disable the feature
 	
 	public enum TEST_MODE {
 	    MAIN_TEST((byte)0, "Main Test"),
@@ -934,7 +934,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			 * check help to make sure the time stamp ticks are contiguous before parsing the
 			 * packet.
 			 */
-			if (fwType == COMMUNICATION_TYPE.BLUETOOTH)
+			if (fwType == COMMUNICATION_TYPE.BLUETOOTH && CONTIGUOUS_TIMESTAMP_TICKS_LIMIT != 0)
 			{
 				double shimmerTimestampTicks = (double)newPacketInt[getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP)];
 				if(mLastReceivedTimeStampTicks!=0 && Math.abs(shimmerTimestampTicks - mLastReceivedTimeStampTicks) > CONTIGUOUS_TIMESTAMP_TICKS_LIMIT) {
