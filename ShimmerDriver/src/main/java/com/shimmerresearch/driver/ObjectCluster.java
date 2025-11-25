@@ -156,6 +156,8 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public int mIndexCal = 0;
 	public int mIndexUncal = 0;
 	public boolean mEnableArraysDataStructure = false;
+
+	public boolean successfullyParsed = true;
 	
 	public class SensorDataPerType {
 		
