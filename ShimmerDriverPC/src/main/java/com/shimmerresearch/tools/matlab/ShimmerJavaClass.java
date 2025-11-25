@@ -236,13 +236,13 @@ public class ShimmerJavaClass {
 	                	}
                 	}
                 	System.out.println("Device State Change: CONNECTED");
-                    pcs.firePropertyChange("ConnectedState", null, "CONNECTED");
+                    pcs.firePropertyChange("ConnectedState", null, new MatlabConnectionEvent("CONNECTED", callbackObject.mComPort));
                     
                 } else if (callbackObject.mState == BT_STATE.DISCONNECTED || callbackObject.mState == BT_STATE.CONNECTION_LOST) {
                     System.out.println("Device State Change: " + callbackObject.mState);
                     System.out.flush();
                     System.out.println("Device State Change: DISCONNECTED");
-                    pcs.firePropertyChange("ConnectedState", null, "DISCONNECTED");
+                    pcs.firePropertyChange("ConnectedState", null, new MatlabConnectionEvent("DISCONNECTED", callbackObject.mComPort));
 
                 }
             } else if (ind == ShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE) {
@@ -271,4 +271,14 @@ public class ShimmerJavaClass {
             }
         }
     }
+    public class MatlabConnectionEvent {
+        public String state;
+        public String comPort;
+
+        public MatlabConnectionEvent(String state, String comPort) {
+            this.state = state;
+            this.comPort = comPort;
+        }
+    }
+
 }
