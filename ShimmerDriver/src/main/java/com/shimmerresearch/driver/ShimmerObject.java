@@ -931,7 +931,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			/*
 			 * Even with checking for start and stop of packets while parsing and performing
 			 * CRC checks, some corrupted packets can still slip through. This is a final
-			 * check help to make sure the time stamp ticks are contiguous before parsing the
+			 * check to help make sure the time stamp ticks are contiguous before parsing the
 			 * packet.
 			 */
 			if (fwType == COMMUNICATION_TYPE.BLUETOOTH && CONTIGUOUS_TIMESTAMP_TICKS_LIMIT != 0)
