@@ -2818,6 +2818,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		initialiseStreaming();
 
+		super.mLastReceivedTimeStampTicks = 0;
 		mByteArrayOutputStream.reset();
 		mListofPCTimeStamps.clear();
 		writeInstruction(START_STREAMING_COMMAND);

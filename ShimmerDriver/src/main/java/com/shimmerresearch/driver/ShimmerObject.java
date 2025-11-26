@@ -494,7 +494,22 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final int MAX_NUMBER_OF_SIGNALS = 77;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 
-	public static int CONTIGUOUS_TIMESTAMP_TICKS_LIMIT = (10*32768); // 10 seconds worth of ticks. Set to 0 to disable the feature
+	/**
+	 * Maximum allowed gap between consecutive packet timestamps in ticks (10 seconds at 32768 Hz).
+	 * Used to detect corrupted packets that pass CRC checks.
+	 * <p>
+	 * Why 10 seconds: Empirically chosen to balance between catching data corruption and allowing for
+	 * occasional transmission delays. This value can be tuned based on expected packet arrival rates.
+	 * <p>
+	 * Setting to 0 disables this check entirely.
+	 * <p>
+	 * Relationship to timestamp rollover: This value must be less than half the timestamp rollover period
+	 * (i.e., the maximum value before the timestamp counter wraps) to avoid false positives due to rollover.
+	 * <p>
+	 * Sampling rate: The value is calculated for a 32768 Hz sampling rate. If a different sampling rate is used,
+	 * this value should be adjusted accordingly (ticks = seconds * sampling rate).
+	 */
+	public static int CONTIGUOUS_TIMESTAMP_TICKS_LIMIT = (10*32768);
 	
 	public enum TEST_MODE {
 	    MAIN_TEST((byte)0, "Main Test"),
@@ -788,7 +803,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	// ---------- GSR end ------------------
     
-	private double mLastReceivedTimeStampTicks = 0;
+	/**
+	 * Stores the last received timestamp in ticks (for detecting corrupted packets).
+	 */
+	protected double mLastReceivedTimeStampTicks = 0;
 
 	public ObjectCluster setLSLTimeIfAvailable(ObjectCluster ojc) {
 		return ojc;
@@ -937,8 +955,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			if (fwType == COMMUNICATION_TYPE.BLUETOOTH && CONTIGUOUS_TIMESTAMP_TICKS_LIMIT != 0)
 			{
 				double shimmerTimestampTicks = (double)newPacketInt[getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP)];
-				if(mLastReceivedTimeStampTicks!=0 && Math.abs(shimmerTimestampTicks - mLastReceivedTimeStampTicks) > CONTIGUOUS_TIMESTAMP_TICKS_LIMIT) {
-					mLastReceivedTimeStampTicks = shimmerTimestampTicks;
+				if(mLastReceivedTimeStampTicks!=0 
+						&& Math.abs(shimmerTimestampTicks - mLastReceivedTimeStampTicks) > CONTIGUOUS_TIMESTAMP_TICKS_LIMIT) {
 					objectCluster.successfullyParsed = false;
 					return objectCluster; //discard packet
 				}
