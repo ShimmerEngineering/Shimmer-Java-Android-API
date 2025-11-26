@@ -157,6 +157,10 @@ final public class ObjectCluster implements Cloneable,Serializable{
 	public int mIndexUncal = 0;
 	public boolean mEnableArraysDataStructure = false;
 
+	/**
+	 * Indicates whether the packet was successfully parsed. Set to false when validation checks 
+	 * fail (e.g., timestamp contiguity check) to signal that the ObjectCluster should be discarded.
+	 */
 	public boolean successfullyParsed = true;
 	
 	public class SensorDataPerType {
