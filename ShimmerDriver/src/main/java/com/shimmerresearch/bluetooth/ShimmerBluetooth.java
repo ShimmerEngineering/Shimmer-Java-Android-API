@@ -1309,7 +1309,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		offset = (offset == -1) ? 1 : offset;
 		
 		mByteArrayOutputStream.reset();
-		mByteArrayOutputStream.write(bTemp, offset, bTemp.length-offset); //this will throw the first byte away
+		mByteArrayOutputStream.write(bTemp, offset, bTemp.length-offset); // discard first 'offset' bytes
 		if(mEnablePCTimeStamps) {
 			// Remove first `offset` elements from the original list (destructive, modifies same list)
 			mListofPCTimeStamps.subList(0, offset).clear();
