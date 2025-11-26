@@ -1317,9 +1317,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		consolePrintLn("Throw Bytes " + UtilShimmer.bytesToHexStringWithSpacesFormatted(Arrays.copyOfRange(bTemp, 0, offset)));
 	}
 	
-	private static int findOffsetOfNextZeroOrFF(byte[] a) {
-		for (int i = 1; i < a.length; i++) {
-			byte b = a[i];
+	private static int findOffsetOfNextZeroOrFF(byte[] buffer) {
+		for (int i = 1; i < buffer.length; i++) {
+			byte b = buffer[i];
 			if (b == 0 || b == (byte) 0xFF)
 				return i;
 		}
