@@ -1190,10 +1190,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		ObjectCluster objectCluster = null;
 		try {
 			objectCluster = buildMsg(packet, fwType, timeSync, pcTimeStamp);
-			if(objectCluster.successfullyParsed==false){
-				printLogDataForDebugging("Packet timestamp is not contiguous - skipping:\t\t" + UtilShimmer.bytesToHexStringWithSpacesFormatted(packet));
-				return;
-			}
 			objectCluster = systemTimestampPlot.processSystemTimestampPlot(objectCluster);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2818,7 +2814,6 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		
 		initialiseStreaming();
 
-		super.mLastReceivedTimeStampTicks = 0;
 		mByteArrayOutputStream.reset();
 		mListofPCTimeStamps.clear();
 		writeInstruction(START_STREAMING_COMMAND);
