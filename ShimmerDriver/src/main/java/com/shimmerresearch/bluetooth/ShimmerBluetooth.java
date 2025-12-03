@@ -715,7 +715,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 					}
 					threadSleep((int)((Math.random()+.1)*100.0));
 					writeBytes(insBytes);
-					printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(insBytes));
+					printLogDataForDebugging("Command Transmitted: \t\t\t" + btCommandToString(mCurrentCommand) + ", len=" + insBytes.length + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(insBytes));
 
 					//TODO: are the two stops needed here? better to wait for ack from Shimmer
 					if(mCurrentCommand==STOP_STREAMING_COMMAND 
@@ -880,7 +880,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 						mWaitForResponse=false;
 						mTransactionCompleted=true;
 						setInstructionStackLock(false);
-						printLogDataForDebugging("Response Received:\t\t\t" + btCommandToString(responseCommand));
+						printLogDataForDebugging("Response Received:\t\t\t" + btCommandToString(responseCommand) + ", len=" + byteBuffer.length + " " + UtilShimmer.bytesToHexStringWithSpacesFormatted(byteBuffer));
 						
 						// Special case for FW_VERSION_RESPONSE because it
 						// needs to initialize the Shimmer after releasing
@@ -939,7 +939,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				&& bufferTemp[getPacketSizeWithCrc()+1]==DATA_PACKET){
 			
 			if (mBtCommsCrcModeCurrent != BT_CRC_MODE.OFF && !checkCrc(bufferTemp, getPacketSize() + 1)) {
-				discardFirstBufferByte();
+				discardBufferBytesToNextPacket();
 				return;
 			}
 			
@@ -1002,17 +1002,19 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				}
 			} 
 			if(mByteArrayOutputStream.size()>getPacketSizeWithCrc()+2){
-				printLogDataForDebugging("Unknown packet error (check with JC):\tExpected: " + (getPacketSizeWithCrc()+2) + "bytes but buffer contains " + mByteArrayOutputStream.size() + "bytes");
-				discardFirstBufferByte(); //throw the first byte away
+				printLogDataForDebugging("Unknown packet error: \tExpected: " + (getPacketSizeWithCrc()+2) + "bytes but buffer contains " + mByteArrayOutputStream.size() + "bytes");
+				discardBufferBytesToNextPacket(); // Skip to start of next packet
 			}
 			
 		} 
 		//TODO: ACK in bufferTemp[0] not handled
 		//else if
 		else {
-			printLogDataForDebugging("Packet syncing problem:\tExpected: " + (getPacketSizeWithCrc()+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes" 
-									+ "\nBuffer = " + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
-			discardFirstBufferByte(); //throw the first byte away
+			printLogDataForDebugging("Unexpected packet header bytes. Expected size: " + getPacketSizeWithCrc()
+					+ ", Packet 1 header: " + UtilShimmer.byteToHexStringFormatted(bufferTemp[0])
+					+ ", Packet 2 header: " + UtilShimmer.byteToHexStringFormatted(bufferTemp[getPacketSizeWithCrc() + 1]) 
+					+ "\nBuffer: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
+			discardBufferBytesToNextPacket(); // Skip to start of next packet
 		}
 	}
 	
@@ -1052,7 +1054,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		if (mBtCommsCrcModeCurrent == BT_CRC_MODE.TWO_BYTE_CRC) {
 			// + 2 as this is the location of the CRC's MSB
 			if (bufferTemp[getPacketSize() + 2] != crcCalc[1]) {
-				discardFirstBufferByte();
+				discardBufferBytesToNextPacket();
 				return false;
 			}
 		}
@@ -1294,16 +1296,38 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	}
 	
 	/**
-	 * 
+	 * Next packet start should begin with DATA_PACKET or ACK_COMMAND_PROCESSED byte so skip to that point
 	 */
-	protected void discardFirstBufferByte(){
+	protected void discardBufferBytesToNextPacket(){
 		byte[] bTemp = mByteArrayOutputStream.toByteArray();
+		
+		//Find index of first DATA_PACKET or ACK byte within the buffer
+		int offset = findOffsetOfNextZeroOrFF(bTemp);
+		//If not found, just skip one byte
+		offset = (offset == -1) ? 1 : offset;
+		
 		mByteArrayOutputStream.reset();
-		mByteArrayOutputStream.write(bTemp, 1, bTemp.length-1); //this will throw the first byte away
+		mByteArrayOutputStream.write(bTemp, offset, bTemp.length-offset); // discard first 'offset' bytes
 		if(mEnablePCTimeStamps) {
-			mListofPCTimeStamps.remove(0);
+			// Remove first `offset` elements from the original list (destructive, modifies same list)
+			mListofPCTimeStamps.subList(0, Math.min(offset, mListofPCTimeStamps.size())).clear();
 		}
-		consolePrintLn("Throw Byte" + UtilShimmer.bytesToHexStringWithSpacesFormatted(bTemp));
+		consolePrintLn("Throw Bytes " + UtilShimmer.bytesToHexStringWithSpacesFormatted(Arrays.copyOfRange(bTemp, 0, offset)));
+	}
+	
+	/**
+	 * Finds the offset/index of the next DATA_PACKET (0x00) or ACK_COMMAND_PROCESSED (0xFF) byte.
+	 * 
+	 * @param buffer a byte array to search within
+	 * @return index of the first 0x00 or 0xFF byte found after position 0, or -1 if not found
+	 */
+	private static int findOffsetOfNextZeroOrFF(byte[] buffer) {
+		for (int i = 1; i < buffer.length; i++) {
+			byte b = buffer[i];
+			if (b == 0 || b == (byte) 0xFF)
+				return i;
+		}
+		return -1;
 	}
 	
 	/**
