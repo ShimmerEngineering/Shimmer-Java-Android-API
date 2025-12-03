@@ -1310,7 +1310,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		mByteArrayOutputStream.write(bTemp, offset, bTemp.length-offset); // discard first 'offset' bytes
 		if(mEnablePCTimeStamps) {
 			// Remove first `offset` elements from the original list (destructive, modifies same list)
-			mListofPCTimeStamps.subList(0, offset).clear();
+			mListofPCTimeStamps.subList(0, Math.min(offset, mListofPCTimeStamps.size())).clear();
 		}
 		consolePrintLn("Throw Bytes " + UtilShimmer.bytesToHexStringWithSpacesFormatted(Arrays.copyOfRange(bTemp, 0, offset)));
 	}
