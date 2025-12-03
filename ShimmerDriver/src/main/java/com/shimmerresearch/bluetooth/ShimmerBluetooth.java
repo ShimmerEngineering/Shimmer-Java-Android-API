@@ -1318,7 +1318,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	/**
 	 * Finds the offset/index of the next DATA_PACKET (0x00) or ACK_COMMAND_PROCESSED (0xFF) byte.
 	 * 
-	 * @param a byte array to search within
+	 * @param buffer a byte array to search within
 	 * @return index of the first 0x00 or 0xFF byte found after position 0, or -1 if not found
 	 */
 	private static int findOffsetOfNextZeroOrFF(byte[] buffer) {
