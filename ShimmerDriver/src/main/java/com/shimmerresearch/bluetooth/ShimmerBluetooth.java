@@ -1010,8 +1010,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		//TODO: ACK in bufferTemp[0] not handled
 		//else if
 		else {
-			printLogDataForDebugging("Packet syncing problem:\tExpected: " + (getPacketSizeWithCrc()+2) + "bytes. Buffer contains " + mByteArrayOutputStream.size() + "bytes" 
-									+ "\nBuffer = " + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
+			printLogDataForDebugging("Unexpected packet header bytes. Expected size: " + getPacketSizeWithCrc()
+					+ ", Packet 1 header: " + UtilShimmer.byteToHexStringFormatted(bufferTemp[0])
+					+ ", Packet 2 header: " + UtilShimmer.byteToHexStringFormatted(bufferTemp[getPacketSizeWithCrc() + 1]) 
+					+ "\nBuffer: " + UtilShimmer.bytesToHexStringWithSpacesFormatted(mByteArrayOutputStream.toByteArray()));
 			discardBufferBytesToNextPacket(); // Skip to start of next packet
 		}
 	}

@@ -785,7 +785,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected boolean mPastGSRFirstTime=true; 	// this is to fix a bug with SDLog v0.9
 
 	// ---------- GSR end ------------------
-
+    
 	public ObjectCluster setLSLTimeIfAvailable(ObjectCluster ojc) {
 		return ojc;
 	}
@@ -923,6 +923,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		
 		if (getHardwareVersion()==HW_ID.SHIMMER_SR30 || getHardwareVersion()==HW_ID.SHIMMER_3  || getHardwareVersion()==HW_ID.SHIMMER_3R  
 				|| getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_LR || getHardwareVersion()==HW_ID.SHIMMER_GQ_802154_NR || getHardwareVersion()==HW_ID.SHIMMER_2R_GQ){
+			
 			parseTimestampShimmer3(fwType, objectCluster, uncalibratedData, uncalibratedDataUnits, calibratedData, calibratedDataUnits, sensorNames, newPacketInt);
 			
 			//OFFSET
