@@ -38,6 +38,7 @@ import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunic
 
 public abstract class ShimmerBluetoothManager{
 
+	protected boolean mVerbose = true;
 	protected boolean directConnectUnknownShimmer=false;
 	
 	/** Key is the COM port in PC and BT address for Android*/
@@ -289,6 +290,10 @@ public abstract class ShimmerBluetoothManager{
 	}
 	
 
+	public void setVerbose(boolean verbose){
+		mVerbose = verbose;
+	}
+	
 	/** Use setFixedConfigWhenConnecting instead
 	 * 
 	 * @param device
@@ -474,6 +479,7 @@ public abstract class ShimmerBluetoothManager{
 		String connectionHandle = shimmerDevice.getBtConnectionHandle();
 		ShimmerDevice existingShimmer = getShimmerDeviceBtConnected(connectionHandle);
 		if (existingShimmer==null){
+			shimmerDevice.mVerboseMode = this.mVerbose;
 			System.err.println("Putting Shimmer in BT connected map with connectionHandle:" + (connectionHandle.isEmpty()? "EMPTY":connectionHandle));
 			mMapOfBtConnectedShimmers.put(connectionHandle, shimmerDevice);
 		}
