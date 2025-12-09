@@ -148,6 +148,11 @@ public class HwDriverShimmerDeviceDetails {
         public static final String[] SHIMMER_3R = new String[] {
     		"VID_0483&PID_52A4",
         };
+        
+        public static final String[] SHIMMER_3R_USB_DFU = new String[] {
+        	"VID_0483&PID_DF11",
+        };
+
 
 		public static final String[] SHIMMER = new String[] {
     		"shimmer",
