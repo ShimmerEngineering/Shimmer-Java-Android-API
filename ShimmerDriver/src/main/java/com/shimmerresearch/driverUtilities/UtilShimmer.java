@@ -1385,5 +1385,10 @@ public class UtilShimmer implements Serializable {
 //		System.err.println(milliSeconds);
 //		System.err.println(UtilShimmer.bytesToHexStringWithSpacesFormatted(convertMilliSecondsToShimmerRtcDataBytesLSB(milliSeconds)));
 //	}
+	
+	public static boolean isOsMac() {
+		return System.getProperty("os.name").toLowerCase().contains("mac");
+	}
+
 
 }
