@@ -135,7 +135,7 @@ public class GrpcBLERadioByteCommunication extends AbstractByteCommunication {
 			@Override
 			public void onNext(StateStatus value) {
 				// TODO Auto-generated method stub
-				System.out.println(value.getMessage() + " " + value.getState().toString());
+//				System.out.println(value.getMessage() + " " + value.getState().toString());
 				if (value.getState().equals(BluetoothState.Connected)) {
 					mConnectTask.setResult(true);
 			        
