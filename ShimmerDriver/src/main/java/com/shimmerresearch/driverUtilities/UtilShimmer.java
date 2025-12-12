@@ -793,6 +793,23 @@ public class UtilShimmer implements Serializable {
 	    return false;
 	}
 	
+	public static boolean stringOnlyContainsItemFromListUpperCaseCheck(String inputString, String[] items) {
+		
+	    for(int i =0; i < items.length; i++) {
+
+	    	String[] words = items[i].toUpperCase().split("\\s+");
+		    String target = inputString.toUpperCase();
+		    
+		    for (String w : words) {
+		        if (!target.contains(w)) {
+		            return false;
+		        }
+		    }   
+		    return true;
+	    }	    
+	    return false;
+	}
+	
 	public static boolean stringContainsItemFromList(String inputString, String[] items) {
 	    for(int i =0; i < items.length; i++) {
 	        if(inputString.contains(items[i])) {
