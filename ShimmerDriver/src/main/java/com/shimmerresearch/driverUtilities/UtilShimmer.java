@@ -802,7 +802,7 @@ public class UtilShimmer implements Serializable {
 	    return false;
 	}
 	
-	public static boolean stringContainsOnlyWordsItemFromListUpperCaseCheck(String inputString, String[] items) {
+	public static boolean stringContainsOnlyWordsItemFromList(String inputString, String[] items) {
 
 	    boolean allMatched = true;
 	    String target = inputString.toUpperCase();
