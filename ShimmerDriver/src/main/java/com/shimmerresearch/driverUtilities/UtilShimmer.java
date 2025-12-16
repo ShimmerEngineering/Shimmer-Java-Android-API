@@ -810,11 +810,7 @@ public class UtilShimmer implements Serializable {
 	    for (String item : items) {
 
 	        String[] words = item.toUpperCase().split("\\s+");
-
-	        System.out.println("target : " + target);
 	        for (String w : words) {
-		        System.out.println("words = " + w);
-
 	            if (!target.contains(w)) {
 	                allMatched = false;
 	            }
