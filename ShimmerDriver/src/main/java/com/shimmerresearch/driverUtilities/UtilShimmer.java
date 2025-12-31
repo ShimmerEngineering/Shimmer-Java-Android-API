@@ -801,6 +801,28 @@ public class UtilShimmer implements Serializable {
 	    }
 	    return false;
 	}
+	
+	public static boolean stringContainsOnlyWordsItemFromList(String inputString, String[] items) {
+
+	    boolean allMatched = true;
+	    String target = inputString.toUpperCase();
+
+	    for (String item : items) {
+
+	        String[] words = item.toUpperCase().split("\\s+");
+	        for (String w : words) {
+	            if (!target.contains(w)) {
+	                allMatched = false;
+	            }
+	        }
+	        
+	        if(allMatched) {
+	    	    return true;
+	        }
+	    }
+	    
+	    return false;
+	}
 
 	public void threadSleep(long millis) {
 		millisecondDelay(millis);
@@ -1368,5 +1390,10 @@ public class UtilShimmer implements Serializable {
 //		System.err.println(milliSeconds);
 //		System.err.println(UtilShimmer.bytesToHexStringWithSpacesFormatted(convertMilliSecondsToShimmerRtcDataBytesLSB(milliSeconds)));
 //	}
+	
+	public static boolean isOsMac() {
+		return System.getProperty("os.name").toLowerCase().contains("mac");
+	}
+
 
 }

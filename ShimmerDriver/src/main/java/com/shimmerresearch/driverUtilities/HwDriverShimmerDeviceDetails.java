@@ -148,14 +148,27 @@ public class HwDriverShimmerDeviceDetails {
         public static final String[] SHIMMER_3R = new String[] {
     		"VID_0483&PID_52A4",
         };
+        
+        public static final String[] SHIMMER_3R_USB_DFU = new String[] {
+        	"VID_0483&PID_DF11",
+        };
+
 
 		public static final String[] SHIMMER = new String[] {
     		"shimmer",
         };
+		
+		public static final String[] VERISENSE_USB = new String[] {
+	    	"VID_1915&PID_520F",
+	    };
+		
+		public static final String[] VERISENSE = new String[] {
+		    "verisense",
+		};
 
-		public static final String[] SHIMMER3R_COMPOSITE_DEVICE = new String[] { "SHIMMER COMPOSITE DEVICE" };
+		public static final String[] SHIMMER3R_COMPOSITE_DEVICE = new String[] { "SHIMMER COMPOSITE DEVICE","STM32 COMPOSITE DEVICE"};
 
-		public static final String[] SHIMMER3R_MSC_DEVICE = new String[] { "SHIMMER MSC DEVICE" };
+		public static final String[] SHIMMER3R_MSC_DEVICE = new String[] { "SHIMMER MSC","STM32 MSC DEVICE" };
 
 		public static final class SERVICE_DESCRIPTION {
 			public static final String[] COMPOSITE_DEVICE = new String[]{"USB Composite Device"};

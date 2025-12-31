@@ -3,6 +3,7 @@ package com.shimmerresearch.simpleexamples;
 import javax.swing.JFrame;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.comms.radioProtocol.ShimmerLiteProtocolInstructionSet.LiteProtocolInstructionSet.InstructionsGet;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.Configuration;
@@ -14,6 +15,7 @@ import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
 import com.shimmerresearch.driverUtilities.BluetoothDeviceDetails;
 import com.shimmerresearch.driverUtilities.SensorDetails;
 import com.shimmerresearch.driverUtilities.ShimmerVerDetails.HW_ID;
+import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.exceptions.ShimmerException;
 import com.shimmerresearch.grpc.ShimmerGRPC;
 import com.shimmerresearch.guiUtilities.configuration.EnableLowPowerModeDialog;
@@ -88,13 +90,17 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	 * @wbp.parser.entryPoint
 	 */
 	public void initialize() {
+		//Set the default port to 50052, this is used if the software cannot start the gRPC server automatically
+		BasicShimmerBluetoothManagerPc.mGRPCPort = 50052;
+		
 		frame = new JFrame("Shimmer SensorMaps Example");
 		frame.setBounds(100, 100, 1200, 591);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JLabel lblSetComPort = new JLabel("Set COM Port (e.g. COMX or /dev/rfcommX) or Mac Address (e.g. XX:XX:XX:XX:XX:XX , note this requires grpc and BLE)");
-		lblSetComPort.setBounds(10, 25, 1000, 23);
+		JLabel lblSetComPort = new JLabel("Windows: Set COM Port (e.g. COMX or /dev/rfcommX) or Mac Address (e.g. XX:XX:XX:XX:XX:XX , note this requires grpc and BLE)"
+				+ " | MacOS: Set device name (e.g. Shimmer3-XXXX) - gRPC/BLE");
+		lblSetComPort.setBounds(10, 25, 1200, 23);
 		frame.getContentPane().add(lblSetComPort);
 		
 		textField = new JTextField();
@@ -108,18 +114,24 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				btComport = textField.getText();
-				if (btComport.length()==17) {
+				if (btComport.length()==17 || (btComport.startsWith("Shimmer") && btComport.contains("-"))) {
+					//Mac address			or	device name (e.g. Shimmer3-6813)
 					if (comboBox.getSelectedItem().equals("Shimmer3")) {
-						BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, "Shimmer3BLE");
-						btManager.connectShimmer3BleGrpc(bdd);	
+						if(UtilShimmer.isOsMac()) { //MacOS uses the device name as both com port and friendly name
+							BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, btComport);
+							btManager.connectShimmer3BleGrpc(bdd);
+						} else {
+							BluetoothDeviceDetails bdd = new BluetoothDeviceDetails("", btComport, "Shimmer3BLE");
+							btManager.connectShimmer3BleGrpc(bdd);	
+						}
 					} else if (comboBox.getSelectedItem().equals("Verisense")) {
 						BluetoothDeviceDetails bdd = new BluetoothDeviceDetails(btComport, btComport, "ShimmerGRPC");
 						btManager.connectVerisenseDevice(bdd);	
 					}
 				} else {
+					//COM port
 					btManager.connectShimmerThroughCommPort(btComport);
 				}
-				
 			}
 		});
 		btnConnect.setToolTipText("attempt connection to Shimmer device");

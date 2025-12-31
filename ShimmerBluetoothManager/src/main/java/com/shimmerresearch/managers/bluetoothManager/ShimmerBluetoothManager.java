@@ -38,6 +38,7 @@ import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunic
 
 public abstract class ShimmerBluetoothManager{
 
+	protected boolean mVerbose = true;
 	protected boolean directConnectUnknownShimmer=false;
 	
 	/** Key is the COM port in PC and BT address for Android*/
@@ -55,7 +56,8 @@ public abstract class ShimmerBluetoothManager{
 	protected static final boolean USE_INFOMEM_CONFIG_METHOD = true;
 	public static final long SLEEP_BETWEEN_GROUP_ACTIONS_MS = 50;
 	public static final String COMPORT_PREFIX = "COM";
-	public static final String COMPORT_PREFIX_MAC = "/dev/";
+//	public static final String COMPORT_PREFIX_MAC = "/dev/"; 	//Commented-out as MacOS is relying on BT device name rather than COM PORT prefix
+	public static final String COMPORT_PREFIX_MAC = "Shimmer";
 	protected int mSyncTrainingIntervalInSeconds = 15;
 	protected int msDelayBetweenSetCommands = 0;
 	protected BluetoothProgressReportAll mProgressReportAll;
@@ -288,6 +290,10 @@ public abstract class ShimmerBluetoothManager{
 	}
 	
 
+	public void setVerbose(boolean verbose){
+		mVerbose = verbose;
+	}
+	
 	/** Use setFixedConfigWhenConnecting instead
 	 * 
 	 * @param device
@@ -473,6 +479,7 @@ public abstract class ShimmerBluetoothManager{
 		String connectionHandle = shimmerDevice.getBtConnectionHandle();
 		ShimmerDevice existingShimmer = getShimmerDeviceBtConnected(connectionHandle);
 		if (existingShimmer==null){
+			shimmerDevice.mVerboseMode = this.mVerbose;
 			System.err.println("Putting Shimmer in BT connected map with connectionHandle:" + (connectionHandle.isEmpty()? "EMPTY":connectionHandle));
 			mMapOfBtConnectedShimmers.put(connectionHandle, shimmerDevice);
 		}
@@ -836,7 +843,8 @@ public abstract class ShimmerBluetoothManager{
 						if (shimmerDevice!=null && !(shimmerDevice instanceof ShimmerShell)){
 							printMessage("Connecting to " + shimmerDevice.getClass().getSimpleName() + " with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 							if(connectThroughComPort){
-								if (!comPort.contains(COMPORT_PREFIX) && !comPort.contains(COMPORT_PREFIX_MAC)) {
+								if (!comPort.contains(COMPORT_PREFIX)) {
+									//Besides Windows, this is used on MacOS to connect Shimmer over BLE, as MacOS does not use BT Classic
 									connectShimmer3BleGrpc(bluetoothDetails);
 								}else {
 									connectExistingShimmer(shimmerDevice, comPort, bluetoothAddress);
