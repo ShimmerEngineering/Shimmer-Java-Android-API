@@ -9,7 +9,7 @@ public class ShimmerCrc {
 	 * @param b the byte to calculate the CRC on
 	 * @return the new CRC value
 	 */
-	protected static int shimmerUartCrcByte(int crc, byte b) {
+	public static int shimmerUartCrcByte(int crc, byte b) {
     	crc &= 0xFFFF;
         crc = ((crc & 0xFFFF) >>> 8) | ((crc & 0xFFFF) << 8);
         crc ^= (b&0xFF);
