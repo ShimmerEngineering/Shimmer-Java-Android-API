@@ -3090,9 +3090,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean isECGAlgoEnabled(AbstractAlgorithm abstractAlgorithm){
 		SensorDetails ecgSensorDetails = getSensorDetails(Configuration.Shimmer3.SENSOR_ID.HOST_ECG);
 		SensorDetails respSensorDetails = getSensorDetails(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION);
-		if((ecgSensorDetails.isEnabled() || respSensorDetails.isEnabled()) && abstractAlgorithm.mAlgorithmName.contains("ECGtoHR")){
+		
+		if (ecgSensorDetails!=null && ecgSensorDetails.isEnabled() && abstractAlgorithm.mAlgorithmName.contains("ECGtoHR")) {
 			return true;
 		}
+		if (respSensorDetails!=null && ecgSensorDetails.isEnabled() && abstractAlgorithm.mAlgorithmName.contains("ECGtoHR")) {
+			return true;
+		}
+		
 		return false;
 	}
 		
