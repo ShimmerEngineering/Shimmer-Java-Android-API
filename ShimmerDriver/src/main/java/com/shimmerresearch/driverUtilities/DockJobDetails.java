@@ -99,16 +99,15 @@ public class DockJobDetails extends AbstractErrorCodes {
         aMap.put(getJobErrorCode(DOCK_JOB_TYPE.SET_INDICATOR_LEDS_STATE), "INDICATOR_LEDS_SET");        
         aMap.put(getJobErrorCode(DOCK_JOB_TYPE.GET_INDICATOR_LEDS_STATE), "INDICATOR_LEDS_GET"); 
         aMap.put(getJobErrorCode(DOCK_JOB_TYPE.ACCESS_SD_CARD), "ACCESS_SD_CARD"); 
-        
-        aMap.put(getJobErrorCode(DOCK_JOB_TYPE.FW_DOCK), "FW_DOCK");
 
-        
-        aMap.put(getJobErrorCode(DOCK_JOB_TYPE.SHIMMER_WRITE_EXP_BRD_MEMORY), "SHIMMER_WRITE_EXP"); 
-
-        
         aMap.put(getJobErrorCode(DOCK_JOB_TYPE.DOCK_BOOT), "Fail to detect bootup");
         aMap.put(getJobErrorCode(DOCK_JOB_TYPE.DOCK_RESET_VIA_FW), "Failed to reset Base");
         aMap.put(getJobErrorCode(DOCK_JOB_TYPE.DOCK_RESET_VIA_BSL), "Failed to reset Base");
+
+        aMap.put(getJobErrorCode(DOCK_JOB_TYPE.FW_DOCK), "FW_DOCK");
+
+        aMap.put(getJobErrorCode(DOCK_JOB_TYPE.SHIMMER_WRITE_EXP_BRD_MEMORY), "SHIMMER_WRITE_EXP"); 
+        aMap.put(getJobErrorCode(DOCK_JOB_TYPE.SHIMMER_WRITE_DAUGHTER_CARD_ID), "SHIMMER_WRITE_DAUGHTER_CARD_ID"); 
 
 		//Experimental
         aMap.put(getJobErrorCode(DOCK_JOB_TYPE.DOCK_MANAGER_RELOAD), "DOCK_MANAGER_RELOAD");
