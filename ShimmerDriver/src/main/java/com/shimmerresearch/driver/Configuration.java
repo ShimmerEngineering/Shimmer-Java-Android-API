@@ -1084,6 +1084,7 @@ public class Configuration {
 			
 			public static String TIMESTAMP = 			SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP;//"Timestamp";
 			public static String REAL_TIME_CLOCK = 		SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK;//"RealTime";
+			public static String SHIMMER_CLOCK = 		SensorShimmerClock.ObjectClusterSensorName.SHIMMER_CLOCK;//"RealTime";
 //			public static String REAL_TIME_CLOCK_SYNC = TimeSyncModule.ObjectClusterSensorName.REAL_TIME_CLOCK_SYNC;//"RealTime_Sync";
 //			public static String TIMESTAMP_SYNC = 		TimeSyncModule.ObjectClusterSensorName.TIMESTAMP_SYNC;//"Timestamp_Sync";
 			public static String SYSTEM_TIMESTAMP = 	SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP;//"System_Timestamp";
@@ -1727,6 +1728,7 @@ public class Configuration {
 			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorShimmerClock.channelSystemTimestampPlot);
 			
 			aMap.put(SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, SensorShimmerClock.channelRealTimeClock);
+			aMap.put(SensorShimmerClock.ObjectClusterSensorName.SHIMMER_CLOCK, SensorShimmerClock.channelShimmerClock3LSB);
 //			aMap.put(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
 			aMap.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, SensorShimmerClock.channelShimmerClockOffset);
 //			aMap.putAll(ShimmerClock.mChannelMapRef);
@@ -1773,6 +1775,7 @@ public class Configuration {
 			aMap.put(SensorSystemTimeStamp.ObjectClusterSensorName.SYSTEM_TIMESTAMP_PLOT, SensorShimmerClock.channelSystemTimestampPlot);
 			
 			aMap.put(SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, SensorShimmerClock.channelRealTimeClock);
+			aMap.put(SensorShimmerClock.ObjectClusterSensorName.SHIMMER_CLOCK, SensorShimmerClock.channelShimmerClock3LSB);
 //			aMap.put(ShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, ShimmerClock.channelRealTimeClockSync);
 			aMap.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, SensorShimmerClock.channelShimmerClockOffset);
 //			aMap.putAll(ShimmerClock.mChannelMapRef);
