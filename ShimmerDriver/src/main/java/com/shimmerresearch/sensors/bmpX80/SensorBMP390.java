@@ -301,7 +301,7 @@ public class SensorBMP390 extends SensorBMPX80{
 	
 	@Override
 	public void generateCalibMap() {
-		mCalibDetailsBmpX80 = new CalibDetailsBmp390();
+		mCalibDetailsBmpX80 = new CalibDetailsBmp390(mShimmerDevice.mMacIdFromUart);
 		mCalibDetailsBmp390Lcl = (CalibDetailsBmp390) mCalibDetailsBmpX80;
 		super.generateCalibMap();
 	}
