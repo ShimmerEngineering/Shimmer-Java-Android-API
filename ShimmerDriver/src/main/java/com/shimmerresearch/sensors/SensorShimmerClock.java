@@ -83,7 +83,7 @@ public class SensorShimmerClock extends AbstractSensor {
 		
 		public static final String TIMESTAMP_DIFFERENCE = "Timestamp Difference";
 		public static final String REAL_TIME_CLOCK = "RealTime";
-		
+		public static final String SHIMMER_CLOCK = "Clock 3_LSB";
 		public static final String TIMESTAMP_OFFSET = "Offset";
 	}
 	
@@ -93,6 +93,7 @@ public class SensorShimmerClock extends AbstractSensor {
 		public static final String OFFSET_TIMESTAMP = "OFFSET";//"Offset";
 		
 		public static final String REAL_TIME_CLOCK = "Real_Time_Clock";
+		public static final String SHIMMER_CLOCK = "Clock_3_LSB";
 	}
 	
 	public static final class DatabaseConfigHandle{
@@ -106,7 +107,8 @@ public class SensorShimmerClock extends AbstractSensor {
 			Arrays.asList(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP,
 					SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE,
 					SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK,
-					SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET
+					SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET,
+					SensorShimmerClock.ObjectClusterSensorName.SHIMMER_CLOCK
 					));
 	{
 		sensorShimmerClock.mIsApiSensor = true; // Even though TIMESTAMP channel is an API channel, there is no enabledSensor bit for it
@@ -220,6 +222,17 @@ public class SensorShimmerClock extends AbstractSensor {
 		channelRealTimeClock.mChannelSource = CHANNEL_SOURCE.API;
 	}
 
+	public static final ChannelDetails channelShimmerClock3LSB = new ChannelDetails(
+			ObjectClusterSensorName.SHIMMER_CLOCK,
+			ObjectClusterSensorName.SHIMMER_CLOCK,
+			DatabaseChannelHandles.SHIMMER_CLOCK,
+			CHANNEL_UNITS.CLOCK_UNIT,
+			Arrays.asList(CHANNEL_TYPE.UNCAL ,CHANNEL_TYPE.CAL), false, true);
+	{
+		//TODO put into above constructor
+		channelRealTimeClock.mChannelSource = CHANNEL_SOURCE.API;
+	}
+	
 	//TODO: Move to separate class
 	public static final ChannelDetails channelBattPercentage = new ChannelDetails(
 			Configuration.Shimmer3.ObjectClusterSensorName.BATT_PERCENTAGE,
@@ -301,9 +314,8 @@ public class SensorShimmerClock extends AbstractSensor {
 			channelMapRef.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_DIFFERENCE, SensorShimmerClock.channelShimmerTsDiffernce);
 			channelMapRef.put(SensorShimmerClock.ObjectClusterSensorName.TIMESTAMP_OFFSET, SensorShimmerClock.channelShimmerClockOffset);
 			channelMapRef.put(SensorShimmerClock.ObjectClusterSensorName.REAL_TIME_CLOCK, SensorShimmerClock.channelRealTimeClock);
-			
+			channelMapRef.put(SensorShimmerClock.ObjectClusterSensorName.SHIMMER_CLOCK, SensorShimmerClock.channelShimmerClock3LSB);
 			channelMapRef.put(SensorBattVoltage.ObjectClusterSensorName.BATT_PERCENTAGE, SensorShimmerClock.channelBattPercentage);
-			
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_CURRENT, SensorShimmerClock.channelReceptionRateCurrent);
 			channelMapRef.put(ShimmerStreamingProperties.ObjectClusterSensorName.PACKET_RECEPTION_RATE_OVERALL, SensorShimmerClock.channelReceptionRateTrial);
 		}
