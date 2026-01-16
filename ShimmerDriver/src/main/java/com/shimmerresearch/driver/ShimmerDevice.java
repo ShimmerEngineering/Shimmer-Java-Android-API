@@ -142,6 +142,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	private boolean mConfigurationReadSuccess = false;
 	public boolean mReadDaughterIDSuccess = false;
 	public boolean writeRealWorldClockFromPcTimeSuccess = false;
+	public boolean mReadBtVerSuccess = false;
+	public boolean mReadBtModeSuccess = false;
 	
 	protected boolean mIsConnected = false;
 	protected boolean mIsSensing = false;
@@ -1691,7 +1693,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mReadHwFwSuccess = false;
 		mReadDaughterIDSuccess = false;
 		writeRealWorldClockFromPcTimeSuccess = false;
-	}
+		mReadBtVerSuccess = false;
+		mReadBtModeSuccess = false;
+		}
 	
 	// ----------------- Overrides from ShimmerDevice end -------------
 
