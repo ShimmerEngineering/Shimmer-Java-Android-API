@@ -1695,7 +1695,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		writeRealWorldClockFromPcTimeSuccess = false;
 		mReadBtVerSuccess = false;
 		mReadBtModeSuccess = false;
-		}
+	}
 	
 	// ----------------- Overrides from ShimmerDevice end -------------
 
