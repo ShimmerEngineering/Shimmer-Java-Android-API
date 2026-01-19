@@ -3,6 +3,7 @@ package com.shimmerresearch.shimmer3.communication;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import com.shimmerresearch.comms.wiredProtocol.ShimmerCrc;
 import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
@@ -294,5 +295,57 @@ public class ByteCommunicationSimulatorS3 implements ByteCommunication{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	protected byte[] buildPacket(int timestamp) {
+
+	    byte ts0 = (byte)(timestamp & 0xFF);
+	    byte ts1 = (byte)((timestamp >> 8) & 0xFF);
+	    byte ts2 = (byte)((timestamp >> 16) & 0xFF);
+
+	    byte[] body = new byte[] {
+	        0x00,              // DATA marker
+	        ts0, ts1, ts2,     // 24-bit timestamp
+	        (byte)0xE7,
+	        (byte)0x09,
+	        (byte)0x3C,
+	        (byte)0x08,
+	        (byte)0x3F,
+	        (byte)0x09
+	    };
+
+	    // Full 16-bit CRC result (LSB/MSB)
+	    byte[] crc = shimmerCrc16(body, body.length);
+
+	    // ONE-BYTE CRC packet → 10 bytes body + 1 byte CRC = 11 total
+	    byte[] packet = new byte[body.length + 1];
+
+	    System.arraycopy(body, 0, packet, 0, body.length);
+
+	    // Only append CRC LSB (crc[0])
+	    packet[10] = crc[0];
+
+	    return packet;
+	}
+
+
+	
+	private byte[] shimmerCrc16(byte[] msg, int len) {
+	    int CRC_INIT = 0xB0CA;
+	    int crc = ShimmerCrc.shimmerUartCrcByte(CRC_INIT, msg[0]);
+
+	    for (int i = 1; i < len; i++) {
+	        crc = ShimmerCrc.shimmerUartCrcByte(crc, msg[i]);
+	    }
+
+	    if (len % 2 > 0) {
+	        crc = ShimmerCrc.shimmerUartCrcByte(crc, (byte)0x00);
+	    }
+
+	    byte[] out = new byte[2];
+	    out[0] = (byte)(crc & 0xFF);      // LSB
+	    out[1] = (byte)((crc >> 8) & 0xFF); // MSB
+	    return out;
+	}
+
 
 }

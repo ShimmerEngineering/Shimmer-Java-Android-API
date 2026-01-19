@@ -1402,6 +1402,9 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		else if(mDockID.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.BASE6.getLabel())){
 			mDockType = DEVICE_TYPE.BASE6;
 		}
+		else if(mDockID.contains(HwDriverShimmerDeviceDetails.DEVICE_TYPE.SHIMMER3R.getLabel())){
+			mDockType = DEVICE_TYPE.SHIMMER3R;
+		} 
 		else {
 			mDockType = DEVICE_TYPE.UNKOWN;
 		}
@@ -3087,9 +3090,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	public boolean isECGAlgoEnabled(AbstractAlgorithm abstractAlgorithm){
 		SensorDetails ecgSensorDetails = getSensorDetails(Configuration.Shimmer3.SENSOR_ID.HOST_ECG);
 		SensorDetails respSensorDetails = getSensorDetails(Configuration.Shimmer3.SENSOR_ID.HOST_EXG_RESPIRATION);
-		if((ecgSensorDetails.isEnabled() || respSensorDetails.isEnabled()) && abstractAlgorithm.mAlgorithmName.contains("ECGtoHR")){
+		
+		if (ecgSensorDetails!=null && ecgSensorDetails.isEnabled() && abstractAlgorithm.mAlgorithmName.contains("ECGtoHR")) {
 			return true;
 		}
+		if (respSensorDetails!=null && ecgSensorDetails.isEnabled() && abstractAlgorithm.mAlgorithmName.contains("ECGtoHR")) {
+			return true;
+		}
+		
 		return false;
 	}
 		

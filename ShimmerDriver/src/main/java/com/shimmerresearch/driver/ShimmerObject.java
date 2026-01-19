@@ -2804,7 +2804,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	protected void parseTimestampShimmer3(COMMUNICATION_TYPE fwType, ObjectCluster objectCluster, double[] uncalibratedData, String[] uncalibratedDataUnits, double[] calibratedData, String[] calibratedDataUnits, String[] sensorNames, long[] newPacketInt) {
 		int iTimeStamp=getSignalIndex(Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP); //find index
 		double shimmerTimestampTicks = (double)newPacketInt[iTimeStamp];
-		
+		objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SHIMMER_CLOCK,CHANNEL_TYPE.UNCAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,shimmerTimestampTicks);
+		objectCluster.addDataToMap(Shimmer3.ObjectClusterSensorName.SHIMMER_CLOCK,CHANNEL_TYPE.CAL.toString(),CHANNEL_UNITS.CLOCK_UNIT,shimmerTimestampTicks);
 		if(mFirstTime && fwType==COMMUNICATION_TYPE.SD){
 			//this is to make sure the Raw starts from zero for SD data. See comment for mFirstTsOffsetFromInitialTsTicks. 
 			mFirstTsOffsetFromInitialTsTicks = shimmerTimestampTicks;
@@ -2822,7 +2823,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 		double timestampUnwrappedTicks = unwrapTimeStamp(shimmerTimestampTicks);
 		double timestampUnwrappedMilliSecs = timestampUnwrappedTicks/getRtcClockFreq()*1000;   // to convert into mS
-
+		
 		incrementPacketsReceivedCounters();
 		calculateTrialPacketLoss(timestampUnwrappedMilliSecs);
 		
