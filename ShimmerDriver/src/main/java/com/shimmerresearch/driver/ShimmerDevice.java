@@ -756,7 +756,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		Collections.sort(mListOfAvailableCommunicationTypes);
 		
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
-			setIsDocked(true);
+			if(mDockID.contains(DEVICE_TYPE.SHIMMER3R.toString())) {
+				setIsUsbPluggedIn(true);
+			}else {
+				setIsDocked(true);
+			}
 		}
 		
 		//TODO temp here -> check if the best place for it
@@ -782,7 +786,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 //		Collections.sort(mListOfAvailableCommunicationTypes);
 		
-		if(communicationType==COMMUNICATION_TYPE.DOCK){
+		if(communicationType==COMMUNICATION_TYPE.DOCK){			
+			setIsUsbPluggedIn(false);
 			setIsDocked(false);
 			setFirstDockRead();
 			clearDockInfo(mDockID, mSlotNumber);
