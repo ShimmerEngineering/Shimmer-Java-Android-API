@@ -151,6 +151,7 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected boolean mIsInitialised = false;
 	private boolean mIsDocked = false;
 	private boolean mIsUsbPluggedIn= false;
+	public boolean mIsUsbDfuMode= false;
 	protected boolean mHaveAttemptedToReadConfig = false;
 
 	//BSL related start
@@ -1108,6 +1109,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public boolean isUsbPluggedIn() {
 		return mIsUsbPluggedIn;
+	}
+	
+	public boolean isUsbDfuMode(){
+		return mIsUsbDfuMode;
+	}
+
+	public void setUsbDfuMode(boolean state) {
+		mIsUsbDfuMode = state;
 	}
 
 	public void setIsConnected(boolean state) {
