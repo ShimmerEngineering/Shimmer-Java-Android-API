@@ -476,10 +476,6 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	public static final byte PRESSURE_OVERSAMPLING_RATIO_RESPONSE 		= (byte) 0x53;
 	public static final byte GET_PRESSURE_OVERSAMPLING_RATIO_COMMAND 	= (byte) 0x54;
 	
-	public static final byte SET_PRESSURE_SAMPLING_RATE_COMMAND 	= (byte) 0xB5;
-	public static final byte PRESSURE_SAMPLING_RATE_RESPONSE 		= (byte) 0xB6;
-	public static final byte GET_PRESSURE_SAMPLING_RATE_COMMAND 	= (byte) 0xB7;
-	
 	//new BT + SD command to set/rsp/get/update_dump_file all calibration parameters using the new byte array structure
 	public static final byte SET_CALIB_DUMP_COMMAND					= (byte) 0x98;
 	public static final byte RSP_CALIB_DUMP_COMMAND					= (byte) 0x99;
@@ -490,7 +486,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public static final byte GET_BT_FW_VERSION_STR_COMMAND			= (byte) 0xA1;
 	public static final byte BT_FW_VERSION_STR_RESPONSE				= (byte) 0xA2;
-	public static final byte SET_TEST				= (byte) 0xA8;
+	public static final byte SET_TEST								= (byte) 0xA8;
+	
+	public static final byte SET_FEATURE							= (byte) 0xB7;
+	
 	public static final int MAX_NUMBER_OF_SIGNALS = 77;//50; //used to be 11 but now 13 because of the SR30 + 8 for 3d orientation
 	public static final int MAX_INQUIRY_PACKET_SIZE = 47;
 

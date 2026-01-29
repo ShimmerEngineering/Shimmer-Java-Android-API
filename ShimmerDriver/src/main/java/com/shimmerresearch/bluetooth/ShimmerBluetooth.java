@@ -275,6 +275,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected boolean mEnablePCTimeStamps = true;
 	protected BT_CRC_MODE mBtCommsCrcModeCurrent = BT_CRC_MODE.OFF;
 	protected static BT_CRC_MODE DEFAULT_BT_CRC_MODE_IF_SUPPORTED = BT_CRC_MODE.ONE_BYTE_CRC;
+	public static boolean RN4678_ERROR_DETECTION_ENABLED = false;
 	
 	public enum BT_CRC_MODE {
 		OFF(0),
@@ -292,6 +293,11 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+	public enum SHIMMER_FEATURE {
+		NONE,
+		RN4678_ERROR_DETECTION,
+	}
+
     public static final Map<Byte, BtCommandDetails> mBtCommandMapOther;
     static {
         Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
@@ -420,7 +426,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
         aMap.put(UPD_SDLOG_CFG_COMMAND, 		new BtCommandDetails(UPD_SDLOG_CFG_COMMAND, "UPD_SDLOG_CFG_COMMAND"));
         aMap.put(SET_CRC_COMMAND, 				new BtCommandDetails(SET_CRC_COMMAND, "SET_CRC_COMMAND"));
         aMap.put(SET_RWC_COMMAND, 				new BtCommandDetails(SET_RWC_COMMAND, "SET_RWC_COMMAND"));
-        aMap.put(SET_TEST, 				new BtCommandDetails(SET_TEST, "SET_TEST_COMMAND"));
+        aMap.put(SET_TEST, 						new BtCommandDetails(SET_TEST, "SET_TEST_COMMAND"));
+        aMap.put(SET_FEATURE, 					new BtCommandDetails(SET_FEATURE, "SET_FEATURE_COMMAND"));
         mBtSetCommandMap = Collections.unmodifiableMap(aMap);
     }
 
@@ -2637,6 +2644,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			writeBtCommsCrcMode(DEFAULT_BT_CRC_MODE_IF_SUPPORTED);
 		}
 		
+		if (RN4678_ERROR_DETECTION_ENABLED && isSupportedRn4678ErrorTest()) {
+			wristSetFeatureCommand(SHIMMER_FEATURE.RN4678_ERROR_DETECTION.ordinal(), 1);
+		}
+		
 		if (isSetupDeviceWhileConnecting()){
 			if(mFixedShimmerConfigMode!=null && mFixedShimmerConfigMode!=FIXED_SHIMMER_CONFIG_MODE.NONE){
 				boolean triggerConfig = setFixedConfigWhenConnecting();
@@ -4630,6 +4641,10 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			
 			writeInstruction(instructionBuffer);
 		}
+	}
+	
+	public void wristSetFeatureCommand(int feature, int setting){
+		writeInstruction(new byte[]{SET_FEATURE, (byte)feature, (byte)setting});
 	}
 
 	//endregion --------- READ/WRITE FUNCTIONS --------- 
