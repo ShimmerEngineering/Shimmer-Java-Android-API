@@ -147,7 +147,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	protected boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
 	protected boolean mIsInitialised = false;
 	private boolean mIsDocked = false;
-	private boolean mIsUsbPluggedIn= false;
+	private boolean mIsUsbPluggedIn = false;
+	private boolean mIsDockCommsSuccessful = false;
 	public boolean mIsUsbDfuMode= false;
 	protected boolean mHaveAttemptedToReadConfig = false;
 
@@ -4785,6 +4786,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public String getRadioModel() {
 		return "";
+	}
+
+	public boolean isDockCommsSuccessful() {
+		return mIsDockCommsSuccessful;
+	}
+	
+	public void setDockCommsSuccessful(boolean isDockCommsSuccessful) {
+		mIsDockCommsSuccessful = isDockCommsSuccessful;
 	}
 
 }
