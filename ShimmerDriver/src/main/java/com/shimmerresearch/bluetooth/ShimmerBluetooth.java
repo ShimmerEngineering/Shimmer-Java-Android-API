@@ -2309,6 +2309,9 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 				else if(currentCommand==SET_TEST){
 					InShimmerTest = true;
 				}
+				else if (currentCommand == SET_FEATURE) {
+					// TODO: do something?
+				}
 				else {
 					//unhandled set command
 					printLogDataForDebugging("Unhandled set command: " + btCommandToString(currentCommand));
@@ -2644,8 +2647,8 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			writeBtCommsCrcMode(DEFAULT_BT_CRC_MODE_IF_SUPPORTED);
 		}
 		
-		if (RN4678_ERROR_DETECTION_ENABLED && isSupportedRn4678ErrorTest()) {
-			wristSetFeatureCommand(SHIMMER_FEATURE.RN4678_ERROR_DETECTION.ordinal(), 1);
+		if (RN4678_ERROR_DETECTION_ENABLED && isSupportedRn4678ErrorDetection()) {
+			writeSetFeatureCommand(SHIMMER_FEATURE.RN4678_ERROR_DETECTION.ordinal(), 1);
 		}
 		
 		if (isSetupDeviceWhileConnecting()){
@@ -4643,7 +4646,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
-	public void wristSetFeatureCommand(int feature, int setting){
+	/**
+	 * writeSetFeatureCommand(feature, setting) sets a particular feature on the Shimmer device to the desired setting.
+	 * @param feature is a numeric value defining the feature to be set. 
+	 * @param setting is a numeric value defining the desired setting for the feature. Example valid settings values are 0 (Disable feature) and 1 (Enable feature)
+	 */
+	public void writeSetFeatureCommand(int feature, int setting){
 		writeInstruction(new byte[]{SET_FEATURE, (byte)feature, (byte)setting});
 	}
 

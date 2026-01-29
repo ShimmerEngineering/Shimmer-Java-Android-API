@@ -104,16 +104,11 @@ public class SensorBMP390 extends SensorBMPX80{
 		public static final byte PRESSURE_CALIBRATION_COEFFICIENTS_RESPONSE 		= (byte) 0xA6;
 		public static final byte GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND 		= (byte) 0xA7;
 		
-		public static final byte SET_PRESSURE_SAMPLING_RATE_COMMAND 	= (byte) 0xB5;
-		public static final byte PRESSURE_SAMPLING_RATE_RESPONSE 		= (byte) 0xB6;
-		public static final byte GET_PRESSURE_SAMPLING_RATE_COMMAND 	= (byte) 0xB7;
-		
 	    public static final Map<Byte, BtCommandDetails> mBtGetCommandMap;
 	    static {
 	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
 	        aMap.put(GET_PRESSURE_OVERSAMPLING_RATIO_COMMAND, new BtCommandDetails(GET_PRESSURE_OVERSAMPLING_RATIO_COMMAND, "GET_PRESSURE_OVERSAMPLING_RATIO_COMMAND", PRESSURE_OVERSAMPLING_RATIO_RESPONSE));
 	        aMap.put(GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND, new BtCommandDetails(GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND, "GET_PRESSURE_CALIBRATION_COEFFICIENTS_COMMAND", PRESSURE_CALIBRATION_COEFFICIENTS_RESPONSE));
-	        aMap.put(GET_PRESSURE_SAMPLING_RATE_COMMAND, new BtCommandDetails(GET_PRESSURE_SAMPLING_RATE_COMMAND, "GET_PRESSURE_SAMPLING_RATE_COMMAND", PRESSURE_SAMPLING_RATE_RESPONSE));
 	        mBtGetCommandMap = Collections.unmodifiableMap(aMap);
 	    }
 	    
@@ -121,7 +116,6 @@ public class SensorBMP390 extends SensorBMPX80{
 	    static {
 	        Map<Byte, BtCommandDetails> aMap = new LinkedHashMap<Byte, BtCommandDetails>();
 	        aMap.put(SET_PRESSURE_OVERSAMPLING_RATIO_COMMAND, new BtCommandDetails(SET_PRESSURE_OVERSAMPLING_RATIO_COMMAND, "SET_PRESSURE_OVERSAMPLING_RATIO_COMMAND"));
-	        aMap.put(SET_PRESSURE_SAMPLING_RATE_COMMAND, new BtCommandDetails(SET_PRESSURE_SAMPLING_RATE_COMMAND, "SET_PRESSURE_SAMPLING_RATE_COMMAND"));
 	        mBtSetCommandMap = Collections.unmodifiableMap(aMap);
 	    }
 	    //--------- Bluetooth commands end --------------
