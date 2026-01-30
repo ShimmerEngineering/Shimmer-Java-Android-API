@@ -235,10 +235,7 @@ public abstract class BasicProcessWithCallBack {
 		}
 		
 		mWaitForData = null;
-    	Iterator<WaitForData> entries = mListWaitForData.iterator();
-		while (entries.hasNext()) {
-			entries.remove();
-		}
+	    mListWaitForData.clear();
 	}
 
 	public void setWaitForDataWithSingleInstanceCheck(BasicProcessWithCallBack b){
