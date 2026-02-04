@@ -2182,6 +2182,15 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 	}
 
+	public boolean isSupportedRn4678ErrorDetection() {
+		if((isShimmerGen3() && getFirmwareIdentifier()==ShimmerVerDetails.FW_ID.LOGANDSTREAM
+				&& mShimmerVerObject.compareVersions(HW_ID.SHIMMER_3, FW_ID.LOGANDSTREAM, 1, 0, 17))){
+			return true;
+		}
+		return false;
+	}
+
+	
 	/**
 	 * Check each entry in the passed in list to see if the current Shimmer
 	 * version information in this instance of ShimmerDevice is compatible with
