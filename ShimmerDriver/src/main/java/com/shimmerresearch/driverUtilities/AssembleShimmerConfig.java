@@ -141,7 +141,7 @@ public class AssembleShimmerConfig {
 		        for(ShimmerDevice shimmerDevice:listOfShimmersToConfigureClone) {
 					// Configure for docks.
 					if(commType==COMMUNICATION_TYPE.DOCK 
-							&& shimmerDevice.isDocked()  
+							&& (shimmerDevice.isDocked() || shimmerDevice.isUsbPluggedIn())
 							&& !shimmerDevice.isStreaming()){
 						listForConfiguringDocked.add(shimmerDevice.deepClone());
 					}

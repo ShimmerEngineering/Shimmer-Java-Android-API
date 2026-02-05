@@ -20,12 +20,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.shimmerresearch.driver.Configuration;
-import com.shimmerresearch.driver.ObjectCluster;
 import com.shimmerresearch.algorithms.AbstractAlgorithm;
 import com.shimmerresearch.algorithms.AlgorithmResultObject;
 import com.shimmerresearch.algorithms.gyroOnTheFlyCal.GyroOnTheFlyCalLoader;
 import com.shimmerresearch.algorithms.AlgorithmDetails;
+import com.shimmerresearch.algorithms.AlgorithmDetails.SENSOR_CHECK_METHOD;
 import com.shimmerresearch.algorithms.AlgorithmLoaderInterface;
 import com.shimmerresearch.algorithms.orientation.OrientationModule6DOFLoader;
 import com.shimmerresearch.algorithms.orientation.OrientationModule9DOFLoader;
@@ -36,7 +35,6 @@ import com.shimmerresearch.comms.radioProtocol.CommsProtocolRadio;
 import com.shimmerresearch.comms.serialPortInterface.AbstractSerialPortHal;
 import com.shimmerresearch.comms.wiredProtocol.UartComponentPropertyDetails;
 import com.shimmerresearch.driver.Configuration.COMMUNICATION_TYPE;
-import com.shimmerresearch.driver.Configuration.Shimmer3;
 import com.shimmerresearch.driver.calibration.CalibDetails;
 import com.shimmerresearch.driver.calibration.CalibDetailsKinematic;
 import com.shimmerresearch.driver.calibration.CalibDetails.CALIB_READ_SOURCE;
@@ -67,7 +65,6 @@ import com.shimmerresearch.sensors.SensorSystemTimeStamp;
 import com.shimmerresearch.sensors.SensorShimmerClock;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
-import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 import com.shimmerresearch.verisense.sensors.ISensorConfig;
 
 public abstract class ShimmerDevice extends BasicProcessWithCallBack implements Serializable{
@@ -142,13 +139,17 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	private boolean mConfigurationReadSuccess = false;
 	public boolean mReadDaughterIDSuccess = false;
 	public boolean writeRealWorldClockFromPcTimeSuccess = false;
+	public boolean mReadBtVerSuccess = false;
+	public boolean mReadBtModeSuccess = false;
 	
 	protected boolean mIsConnected = false;
 	protected boolean mIsSensing = false;
 	protected boolean mIsStreaming = false;											// This is used to monitor whether the device is in streaming mode
 	protected boolean mIsInitialised = false;
 	private boolean mIsDocked = false;
-	private boolean mIsUsbPluggedIn= false;
+	private boolean mIsUsbPluggedIn = false;
+	private boolean mIsDockCommsSuccessful = false;
+	public boolean mIsUsbDfuMode= false;
 	protected boolean mHaveAttemptedToReadConfig = false;
 
 	//BSL related start
@@ -754,7 +755,11 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 //		Collections.sort(mListOfAvailableCommunicationTypes);
 		
 		if(communicationType==COMMUNICATION_TYPE.DOCK){
-			setIsDocked(true);
+			if(mDockID.contains(DEVICE_TYPE.SHIMMER3R.toString())) {
+				setIsUsbPluggedIn(true);
+			}else {
+				setIsDocked(true);
+			}
 		}
 		
 		//TODO temp here -> check if the best place for it
@@ -780,7 +785,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		}
 //		Collections.sort(mListOfAvailableCommunicationTypes);
 		
-		if(communicationType==COMMUNICATION_TYPE.DOCK){
+		if(communicationType==COMMUNICATION_TYPE.DOCK){			
+			setIsUsbPluggedIn(false);
 			setIsDocked(false);
 			setFirstDockRead();
 			clearDockInfo(mDockID, mSlotNumber);
@@ -1101,6 +1107,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 	
 	public boolean isUsbPluggedIn() {
 		return mIsUsbPluggedIn;
+	}
+	
+	public boolean isUsbDfuMode(){
+		return mIsUsbDfuMode;
+	}
+
+	public void setUsbDfuMode(boolean state) {
+		mIsUsbDfuMode = state;
 	}
 
 	public void setIsConnected(boolean state) {
@@ -1691,6 +1705,8 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		mReadHwFwSuccess = false;
 		mReadDaughterIDSuccess = false;
 		writeRealWorldClockFromPcTimeSuccess = false;
+		mReadBtVerSuccess = false;
+		mReadBtModeSuccess = false;
 	}
 	
 	// ----------------- Overrides from ShimmerDevice end -------------
@@ -3076,9 +3092,22 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 		if(abstractAlgorithm!=null && abstractAlgorithm.mAlgorithmDetails!=null){
 			if(state){ 
 				//switch on the required sensors
-				//TODO add support for ANY/ALL sensors
 				for (Integer sensorId:abstractAlgorithm.mAlgorithmDetails.mListOfRequiredSensors) {
-					setSensorEnabledState(sensorId, true);
+					if (abstractAlgorithm.mAlgorithmDetails.mSensorCheckMethod==SENSOR_CHECK_METHOD.ANY) {
+						
+						int tempSensorId = handleSpecCasesBeforeSetSensorState(sensorId,state);
+						SensorDetails sensorDetails = getSensorDetails(tempSensorId);
+						if(sensorDetails!=null){
+							setSensorEnabledState(sensorId, true);
+						}
+					}
+					else if (abstractAlgorithm.mAlgorithmDetails.mSensorCheckMethod==SENSOR_CHECK_METHOD.ALL) {
+						boolean success = setSensorEnabledState(sensorId, true);
+						if(!success){
+							consolePrintErrLn("Failed to enable required sensor ID " + sensorId + " for algorithm:\t" + abstractAlgorithm.getAlgorithmName());
+							return;
+						}
+					}
 				}
 			}
 			abstractAlgorithm.setIsEnabled(state);
@@ -4766,6 +4795,14 @@ public abstract class ShimmerDevice extends BasicProcessWithCallBack implements 
 
 	public String getRadioModel() {
 		return "";
+	}
+
+	public boolean isDockCommsSuccessful() {
+		return mIsDockCommsSuccessful;
+	}
+	
+	public void setDockCommsSuccessful(boolean isDockCommsSuccessful) {
+		mIsDockCommsSuccessful = isDockCommsSuccessful;
 	}
 
 }

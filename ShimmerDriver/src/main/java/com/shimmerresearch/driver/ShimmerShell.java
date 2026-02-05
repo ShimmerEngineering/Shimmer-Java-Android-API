@@ -26,6 +26,8 @@ public class ShimmerShell extends ShimmerDevice {
 	/** * */
 	private static final long serialVersionUID = 3505947289367382624L;
 
+	public String macIDParsed = "";
+	
 	public ShimmerShell() {
 		setFirstDockRead();
 	}
@@ -146,6 +148,24 @@ public class ShimmerShell extends ShimmerDevice {
 	protected void dataHandler(ObjectCluster ojc) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public String getMacIdFromUartParsed() {
+		if(!macIDParsed.isEmpty()) {
+			return macIDParsed;
+		} else {
+			return super.getMacIdFromUartParsed();
+		}
+	}
+	
+	@Override
+	public String getMacIdParsed() {
+		if(!macIDParsed.isEmpty()) {
+			return macIDParsed;
+		} else {
+			return super.getMacIdParsed();
+		}
 	}
 
 }

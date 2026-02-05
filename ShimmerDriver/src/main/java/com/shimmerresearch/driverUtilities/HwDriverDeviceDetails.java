@@ -40,5 +40,6 @@ public class HwDriverDeviceDetails {
 	public String deviceDriverVersion = "";
 	
 	public String devInterfaceGuid = "";
-    
+	
+    public String deviceInstanceId = "";
 }

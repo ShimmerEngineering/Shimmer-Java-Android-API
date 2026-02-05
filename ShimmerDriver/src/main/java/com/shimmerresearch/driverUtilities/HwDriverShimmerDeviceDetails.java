@@ -145,14 +145,9 @@ public class HwDriverShimmerDeviceDetails {
     		"VID_0424&PID_2640",
         };
         
-        public static final String[] SHIMMER_3R = new String[] {
-    		"VID_0483&PID_52A4",
-        };
-        
         public static final String[] SHIMMER_3R_USB_DFU = new String[] {
         	"VID_0483&PID_DF11",
         };
-
 
 		public static final String[] SHIMMER = new String[] {
     		"shimmer",
@@ -169,6 +164,8 @@ public class HwDriverShimmerDeviceDetails {
 		public static final String[] SHIMMER3R_COMPOSITE_DEVICE = new String[] { "SHIMMER COMPOSITE DEVICE","STM32 COMPOSITE DEVICE"};
 
 		public static final String[] SHIMMER3R_MSC_DEVICE = new String[] { "SHIMMER MSC","STM32 MSC DEVICE" };
+
+		public static final String[] SHIMMER3R_DFU_DEVICE_BUS_DESCRITION = new String[] { "DFU in HS Mode" };
 
 		public static final class SERVICE_DESCRIPTION {
 			public static final String[] COMPOSITE_DEVICE = new String[]{"USB Composite Device"};
@@ -203,6 +200,10 @@ public class HwDriverShimmerDeviceDetails {
 	        public static final String FTDI_FT4232H_PROD_ID = "6011";
 	        
 	        public static final String VIRTUAL_PORT = "COM0COM";
+	        
+	        public static final String[] SHIMMER_3R = new String[] {
+	        		"VID_0483&PID_52A4"
+	        };
         }
 
         public static final class BT {
@@ -272,6 +273,8 @@ public class HwDriverShimmerDeviceDetails {
 	public HwDriverDeviceDetails portableDevice = null;
 	public HwDriverDeviceDetails storageVolume = null;
 
+	public HwDriverDeviceDetails dfuDevice = null;
+
 	public String mDockID= "";
 	public String mSmartDockFwComPort= "";
 	public String mSmartDockUartComPort= "";
@@ -282,8 +285,8 @@ public class HwDriverShimmerDeviceDetails {
 	
 	public HIDDeviceInfo mHidDeviceInfo = null;
 	
-	/** Normally used to store the FTDI serial ID. */
-    public String mFtdiSerialID = "";
+	/** Unique HW ID (e.g., FTDI serial ID or location path). */
+    public String mUniqueHwID = "";
 	public SPAN_VERSION mSpanVersion = SPAN_VERSION.UNKNOWN;
 
 	public HwDriverShimmerDeviceDetails() {
