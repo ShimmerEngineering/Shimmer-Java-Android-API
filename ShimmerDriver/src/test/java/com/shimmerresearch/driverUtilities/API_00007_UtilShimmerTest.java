@@ -7,6 +7,62 @@ import org.junit.Test;
 public class API_00007_UtilShimmerTest {
 
 	@Test
+    public void testValidMacWithColons() {
+        // Upper case
+        assertTrue("Should be valid: Uppercase with colons", 
+            UtilShimmer.isValidMacAddress("00:1A:2B:3C:4D:5E"));
+        // Lower case
+        assertTrue("Should be valid: Lowercase with colons", 
+        		UtilShimmer.isValidMacAddress("00:1a:2b:3c:4d:5e"));
+    }
+
+    @Test
+    public void testValidMacWithoutColons() {
+        // Pure Hex string
+        assertTrue("Should be valid: Plain hex string", 
+        		UtilShimmer.isValidMacAddress("001A2B3C4D5E"));
+        assertTrue("Should be valid: Lowercase plain hex", 
+        		UtilShimmer.isValidMacAddress("001a2b3c4d5e"));
+    }
+
+    @Test
+    public void testInvalidCharacters() {
+        // Contains 'G' (non-hex)
+        assertFalse("Should be invalid: Contains non-hex character G", 
+        		UtilShimmer.isValidMacAddress("00:1A:2B:3C:4D:5G"));
+        // Contains special characters
+        assertFalse("Should be invalid: Contains symbols", 
+        		UtilShimmer.isValidMacAddress("00:1A:2B:3C:4D:5#"));
+    }
+
+    @Test
+    public void testInvalidLength() {
+        // Too short
+        assertFalse("Should be invalid: Too short", 
+        		UtilShimmer.isValidMacAddress("00:1A:2B"));
+        // Too long
+        assertFalse("Should be invalid: Too long", 
+        		UtilShimmer.isValidMacAddress("00:1A:2B:3C:4D:5E:6F"));
+    }
+
+    @Test
+    public void testMixedFormats() {
+        // Cannot mix "no-colon" with "colons" halfway through
+        assertFalse("Should be invalid: Inconsistent colon usage", 
+        		UtilShimmer.isValidMacAddress("001A2B:3C:4D:5E"));
+    }
+
+    @Test
+    public void testEdgeCases() {
+        assertFalse("Should be invalid: Null input", 
+        		UtilShimmer.isValidMacAddress(null));
+        assertFalse("Should be invalid: Empty string", 
+        		UtilShimmer.isValidMacAddress(""));
+        assertFalse("Should be invalid: Spaces included", 
+        		UtilShimmer.isValidMacAddress("00 1A 2B 3C 4D 5E"));
+    }
+	
+	@Test
     public void testRoundZeroDecimalPoints() {
         assertTrue(UtilShimmer.round(5.567, 0) == 6.0);
         assertTrue(UtilShimmer.round(5.444, 0) == 5.0);
