@@ -135,14 +135,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	@Override
 	protected ShimmerDevice createNewShimmer3(ShimmerRadioInitializer radioInitializer, String bluetoothAddress) {
     	AbstractSerialPortHal serialPortComm = radioInitializer.getSerialCommPort();
-    	String comPort = "";
-    	
-    	// Support both JSSC and jSerialComm
-    	if (serialPortComm instanceof SerialPortCommJSerialComm) {
-    		comPort = ((SerialPortCommJSerialComm) serialPortComm).mComPort;
-    	} else if (serialPortComm instanceof SerialPortCommJssc) {
-    		comPort = ((SerialPortCommJssc) serialPortComm).mComPort;
-    	}
+    	String comPort = extractComPortFromSerialPortHal(serialPortComm);
     	
     	ShimmerPC shimmerDevice = (ShimmerPC)createNewShimmer3(comPort, bluetoothAddress);
     	
@@ -170,14 +163,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	@Override
 	protected Shimmer4sdk createNewShimmer4(ShimmerRadioInitializer radioInitializer, String bluetoothAddress) {
     	AbstractSerialPortHal serialPortComm = radioInitializer.getSerialCommPort();
-    	String comPort = "";
-    	
-    	// Support both JSSC and jSerialComm
-    	if (serialPortComm instanceof SerialPortCommJSerialComm) {
-    		comPort = ((SerialPortCommJSerialComm) serialPortComm).mComPort;
-    	} else if (serialPortComm instanceof SerialPortCommJssc) {
-    		comPort = ((SerialPortCommJssc) serialPortComm).mComPort;
-    	}
+    	String comPort = extractComPortFromSerialPortHal(serialPortComm);
 
 		Shimmer4sdk shimmer4 = createNewShimmer4(comPort, bluetoothAddress);
 		if(serialPortComm!=null){
@@ -186,6 +172,23 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		}
 
     	return shimmer4;
+    }
+    
+    /**
+     * Helper method to extract COM port name from serial port HAL
+     * Supports both JSSC and jSerialComm implementations
+     * @param serialPortComm AbstractSerialPortHal instance
+     * @return COM port name as String
+     */
+    private String extractComPortFromSerialPortHal(AbstractSerialPortHal serialPortComm) {
+    	String comPort = "";
+    	// Support both JSSC and jSerialComm
+    	if (serialPortComm instanceof SerialPortCommJSerialComm) {
+    		comPort = ((SerialPortCommJSerialComm) serialPortComm).mComPort;
+    	} else if (serialPortComm instanceof SerialPortCommJssc) {
+    		comPort = ((SerialPortCommJssc) serialPortComm).mComPort;
+    	}
+    	return comPort;
     }
     
     /**
