@@ -83,6 +83,8 @@ dependencies {
     //implementation group: 'org.scream3r', name: 'jssc', version: '2.9.1'
     api group: 'io.github.java-native', name: 'jssc', version: '2.9.6'
     
+    // https://mvnrepository.com/artifact/com.fazecast/jSerialComm
+    api group: 'com.fazecast', name: 'jSerialComm', version: '2.11.0'
 
     // https://mvnrepository.com/artifact/net.sf.bluecove/bluecove
     implementation group: 'net.sf.bluecove', name: 'bluecove', version: '2.1.0'

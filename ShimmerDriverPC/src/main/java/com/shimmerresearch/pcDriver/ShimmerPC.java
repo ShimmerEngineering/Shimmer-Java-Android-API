@@ -82,6 +82,7 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.shimmer3.communication.ByteCommunication;
 import com.shimmerresearch.shimmer3.communication.ByteCommunicationJSSC;
+import com.shimmerresearch.shimmer3.communication.ByteCommunicationJSerialComm;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -355,7 +356,8 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				if (mByteCommunication==null || mTesting){
 					setComPort(address);
 					if (!mTesting) {
-						mByteCommunication = new ByteCommunicationJSSC(address);
+						// Use jSerialComm for better compatibility, especially on macOS
+						mByteCommunication = new ByteCommunicationJSerialComm(address);
 					} else { // do nothingit should already be set
 						
 					}
@@ -638,9 +640,29 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 	
 	public void setSerialPort(SerialPort sp){
 		if (mByteCommunication == null) {
-			mByteCommunication = new ByteCommunicationJSSC(sp);
+			// Use jSerialComm for better compatibility, especially on macOS
+			mByteCommunication = new ByteCommunicationJSerialComm(convertJsscToJSerialComm(sp));
 		}
-		if(mByteCommunication instanceof ByteCommunicationJSSC) {
+		if(mByteCommunication instanceof ByteCommunicationJSerialComm) {
+			((ByteCommunicationJSerialComm)mByteCommunication).setSerialPort(convertJsscToJSerialComm(sp));
+			getSamplingRateShimmer();
+		
+			if (mByteCommunication.isOpened()){
+				setBluetoothRadioState(BT_STATE.CONNECTING);
+			}
+			if (mByteCommunication.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
+				setIsConnected(true);
+	
+				mIOThread = new IOThread();
+				mIOThread.start();
+				if(mUseProcessingThread){
+					mPThread = new ProcessingThread();
+					mPThread.start();
+				}
+				initialize();
+			}
+		} else if(mByteCommunication instanceof ByteCommunicationJSSC) {
+			// Fallback to JSSC if needed
 			((ByteCommunicationJSSC)mByteCommunication).setSerialPort(sp);
 			getSamplingRateShimmer();
 		
@@ -661,6 +683,16 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 				initialize();
 			}
 		}
+	}
+	
+	/**
+	 * Helper method to convert JSSC SerialPort to jSerialComm SerialPort
+	 * @param jsscPort JSSC SerialPort object
+	 * @return jSerialComm SerialPort object for the same port
+	 */
+	private com.fazecast.jSerialComm.SerialPort convertJsscToJSerialComm(jssc.SerialPort jsscPort) {
+		String portName = jsscPort.getPortName();
+		return com.fazecast.jSerialComm.SerialPort.getCommPort(portName);
 	}
 
 	@Override
