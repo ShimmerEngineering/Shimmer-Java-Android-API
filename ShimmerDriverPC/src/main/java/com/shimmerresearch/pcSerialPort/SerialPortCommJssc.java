@@ -47,7 +47,7 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 		mUniqueId = uniqueId;
 		mComPort = comPort;
 		// On MacOS, prefer cu.* over tty.* to avoid blocking on carrier detect
-		if(UtilShimmer.isOsMac() && mComPort.contains("/dev/tty.")) {
+		if(UtilShimmer.isOsMac() && mComPort.startsWith("/dev/tty.")) {
 			mComPort = mComPort.replace("/dev/tty.", "/dev/cu.");
 			consolePrintLn("MacOS detected: Using cu port instead of tty: " + mComPort);
 		}

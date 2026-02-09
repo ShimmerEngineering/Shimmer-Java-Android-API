@@ -242,7 +242,7 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 		
 		// On MacOS, normalize tty to cu for consistent key management
 		String normalizedComPort = comPort;
-		if(UtilShimmer.isOsMac() && comPort.contains("/dev/tty.")) {
+		if(UtilShimmer.isOsMac() && comPort.startsWith("/dev/tty.")) {
 			normalizedComPort = comPort.replace("/dev/tty.", "/dev/cu.");
 		}
 		
