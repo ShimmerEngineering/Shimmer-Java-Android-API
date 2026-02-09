@@ -512,11 +512,7 @@ public abstract class ShimmerBluetoothManager{
 	protected BluetoothDeviceDetails getBluetoothDeviceDetails(String connectionHandle){
 		// Check if this is a serial port (Windows COM or MacOS /dev/) or a BLE device name
 		if (!connectionHandle.contains(COMPORT_PREFIX) && !connectionHandle.startsWith(COMPORT_PREFIX_MAC)) {
-			// If it doesn't start with /dev/ and doesn't contain COM, it's likely a BLE device name
-			if (!connectionHandle.contains(COMPORT_PREFIX_MAC_BLE)) {
-				return getBLEDeviceDetails(connectionHandle);
-			}
-			// MacOS BLE device names (e.g., "Shimmer3-6813") should be treated as BLE
+			// If it doesn't start with /dev/ and doesn't contain COM, it's a BLE device name
 			return getBLEDeviceDetails(connectionHandle);
 		}
     	return mMapOfParsedBtComPorts.get(connectionHandle);

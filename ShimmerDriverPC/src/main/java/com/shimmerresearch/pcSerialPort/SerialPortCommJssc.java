@@ -51,7 +51,7 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 			mComPort = mComPort.replace("/dev/tty.", "/dev/cu.");
 			consolePrintLn("MacOS detected: Using cu port instead of tty: " + mComPort);
 		}
-		setConnectionHandle(comPort);
+		setConnectionHandle(mComPort);  // Use modified port name for consistent tracking
 		mBaudToUse = baudToUse;
         mSerialPort = new SerialPort(mComPort);
         jsscByteWriter = new JsscByteWriter(mSerialPort);
