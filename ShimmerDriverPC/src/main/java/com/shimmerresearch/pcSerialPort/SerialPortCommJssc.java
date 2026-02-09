@@ -31,6 +31,9 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;
 	private boolean setRtsOnConnect = true;
 	private boolean setDtrOnConnect = false;
+	
+	/** MacOS serial ports require initialization time after opening */
+	private static final int MACOS_PORT_INIT_DELAY_MS = 100;
 
 	private transient ShimmerUartListener mShimmerUartListener;
 	private boolean mIsSerialPortReaderStarted = false;
@@ -94,10 +97,11 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
             // On MacOS, serial ports need a brief settling time after opening
             if(UtilShimmer.isOsMac()) {
             	try {
-            		Thread.sleep(100); // 100ms delay for port initialization
-            		consolePrintLn("MacOS: Waited for port initialization");
+            		Thread.sleep(MACOS_PORT_INIT_DELAY_MS);
+            		consolePrintLn("MacOS: Port initialization delay completed (" + MACOS_PORT_INIT_DELAY_MS + "ms)");
             	} catch (InterruptedException e) {
             		Thread.currentThread().interrupt();
+            		consolePrintLn("MacOS: Port initialization delay interrupted");
             	}
             }
             // Don't call eventDeviceConnected() yet - wait until serial port reader is set up
