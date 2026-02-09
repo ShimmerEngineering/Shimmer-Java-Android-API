@@ -240,9 +240,15 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	public void connectShimmerThroughCommPort(String comPort){
 		directConnectUnknownShimmer=true;
 		
-		if (mMapOfBtConnectedShimmers.containsKey(comPort)){
-			if(!mMapOfBtConnectedShimmers.get(comPort).isConnected()) {
-				mMapOfBtConnectedShimmers.remove(comPort);
+		// On MacOS, normalize tty to cu for consistent key management
+		String normalizedComPort = comPort;
+		if(UtilShimmer.isOsMac() && comPort.startsWith("/dev/tty.")) {
+			normalizedComPort = comPort.replace("/dev/tty.", "/dev/cu.");
+		}
+		
+		if (mMapOfBtConnectedShimmers.containsKey(normalizedComPort)){
+			if(!mMapOfBtConnectedShimmers.get(normalizedComPort).isConnected()) {
+				mMapOfBtConnectedShimmers.remove(normalizedComPort);
 			} 
 		}
 

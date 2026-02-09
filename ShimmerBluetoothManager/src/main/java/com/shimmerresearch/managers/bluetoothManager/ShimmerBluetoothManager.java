@@ -56,8 +56,8 @@ public abstract class ShimmerBluetoothManager{
 	protected static final boolean USE_INFOMEM_CONFIG_METHOD = true;
 	public static final long SLEEP_BETWEEN_GROUP_ACTIONS_MS = 50;
 	public static final String COMPORT_PREFIX = "COM";
-//	public static final String COMPORT_PREFIX_MAC = "/dev/"; 	//Commented-out as MacOS is relying on BT device name rather than COM PORT prefix
-	public static final String COMPORT_PREFIX_MAC = "Shimmer";
+	public static final String COMPORT_PREFIX_MAC = "/dev/";
+	public static final String COMPORT_PREFIX_MAC_BLE = "Shimmer";
 	protected int mSyncTrainingIntervalInSeconds = 15;
 	protected int msDelayBetweenSetCommands = 0;
 	protected BluetoothProgressReportAll mProgressReportAll;
@@ -510,7 +510,9 @@ public abstract class ShimmerBluetoothManager{
 	}
 
 	protected BluetoothDeviceDetails getBluetoothDeviceDetails(String connectionHandle){
-		if (!connectionHandle.contains(COMPORT_PREFIX) && !connectionHandle.contains(COMPORT_PREFIX_MAC)) {
+		// Check if this is a serial port (Windows COM or MacOS /dev/) or a BLE device name
+		if (!connectionHandle.contains(COMPORT_PREFIX) && !connectionHandle.startsWith(COMPORT_PREFIX_MAC)) {
+			// If it doesn't start with /dev/ and doesn't contain COM, it's a BLE device name
 			return getBLEDeviceDetails(connectionHandle);
 		}
     	return mMapOfParsedBtComPorts.get(connectionHandle);
@@ -843,10 +845,12 @@ public abstract class ShimmerBluetoothManager{
 						if (shimmerDevice!=null && !(shimmerDevice instanceof ShimmerShell)){
 							printMessage("Connecting to " + shimmerDevice.getClass().getSimpleName() + " with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 							if(connectThroughComPort){
-								if (!comPort.contains(COMPORT_PREFIX)) {
-									//Besides Windows, this is used on MacOS to connect Shimmer over BLE, as MacOS does not use BT Classic
+								// Check if this is a serial port connection (Windows COM or MacOS /dev/)
+								if (!comPort.contains(COMPORT_PREFIX) && !comPort.startsWith(COMPORT_PREFIX_MAC)) {
+									//This is used on MacOS to connect Shimmer over BLE using device name (e.g., Shimmer3-6813)
 									connectShimmer3BleGrpc(bluetoothDetails);
 								}else {
+									// Windows COM or MacOS /dev/ serial port connection
 									connectExistingShimmer(shimmerDevice, comPort, bluetoothAddress);
 								}
 							}
@@ -914,7 +918,11 @@ public abstract class ShimmerBluetoothManager{
 			printMessage("Connecting to new Shimmer with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 			
 			//radio address will be the com port in case of the PC and the BT address in case of Android
-			shimmerRadioInitializer = new ShimmerRadioInitializer();
+			// On MacOS, enable delay between command transmission and response reading.
+			// This enables a 200ms delay in ShimmerRadioInitializer.readHardwareVersion() 
+			// to give the device time to process commands and prepare responses.
+			boolean requiresCommandResponseDelay = UtilShimmer.isOsMac();
+			shimmerRadioInitializer = new ShimmerRadioInitializer(null, requiresCommandResponseDelay);
 			final AbstractSerialPortHal serialPortComm = createNewSerialPortComm(comPort, bluetoothAddress);
 			shimmerRadioInitializer.setSerialCommPort(serialPortComm);
 			serialPortComm.addByteLevelDataCommListener(new ByteLevelDataCommListener(){

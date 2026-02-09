@@ -12,7 +12,9 @@ public class ShimmerRadioInitializer {
 
 	protected AbstractSerialPortHal serialCommPort;
 	
-	private static boolean mUseLegacyDelayToDelayForResponse = false;
+	// Changed from static to instance variable to ensure per-instance delay control
+	// This prevents instances from interfering with each other's delay settings
+	private boolean mUseLegacyDelayToDelayForResponse = false;
 	
 	private ShimmerVerObject shimmerVerObject = null;
 	private ExpansionBoardDetails expansionBoardDetails = null;
@@ -25,6 +27,7 @@ public class ShimmerRadioInitializer {
 	}
 
 	public ShimmerRadioInitializer(AbstractSerialPortHal serialCommPort, boolean useLegacyDelayBeforeBtRead){
+		System.out.println("ShimmerRadioInitializer: Constructor called with delay flag = " + useLegacyDelayBeforeBtRead);
 		mUseLegacyDelayToDelayForResponse = useLegacyDelayBeforeBtRead;
 		this.serialCommPort = serialCommPort;
 	}
@@ -53,8 +56,12 @@ public class ShimmerRadioInitializer {
 		byte[] instruction = {InstructionsGet.GET_SHIMMER_VERSION_COMMAND_VALUE}; 
 		
 		serialCommPort.txBytes(instruction);
-		if(mUseLegacyDelayToDelayForResponse)
-			Thread.sleep(200);
+		if(mUseLegacyDelayToDelayForResponse) {
+			System.out.println("ShimmerRadioInitializer: Applying command-response delay (500ms)");
+			Thread.sleep(500);  // Increased from 200ms to 500ms for MacOS
+		} else {
+			System.out.println("ShimmerRadioInitializer: No command-response delay (flag is false)");
+		}
 		byte[] response = serialCommPort.rxBytes(3);
 		if (response==null){
 			serialCommPort.disconnect();
@@ -71,7 +78,7 @@ public class ShimmerRadioInitializer {
 		serialCommPort.txBytes(instruction);
 		byte[] bufferInquiry = new byte[6]; 
 		if(mUseLegacyDelayToDelayForResponse)
-			Thread.sleep(200);
+			Thread.sleep(500);  // Increased from 200ms to 500ms for MacOS
 		serialCommPort.rxBytes(1);
 		serialCommPort.rxBytes(1);
 		bufferInquiry = serialCommPort.rxBytes(6);
@@ -99,7 +106,7 @@ public class ShimmerRadioInitializer {
 				
 				serialCommPort.txBytes(instruction);
 				if(mUseLegacyDelayToDelayForResponse)
-					Thread.sleep(200);
+					Thread.sleep(500);  // Increased from 200ms to 500ms for MacOS
 				byte[] response = serialCommPort.rxBytes(3+1);
 	
 				if(response!=null){
@@ -123,9 +130,16 @@ public class ShimmerRadioInitializer {
 		return this.serialCommPort;
 	}
 
-
+	/**
+	 * @deprecated This method is deprecated as mUseLegacyDelayToDelayForResponse is now an instance variable.
+	 * Use the constructor ShimmerRadioInitializer(AbstractSerialPortHal, boolean) instead to set the delay per instance.
+	 */
+	@Deprecated
 	public static void useLegacyDelayBeforeBtRead(boolean useLegacyDelayBeforeBtRead){
-		mUseLegacyDelayToDelayForResponse = useLegacyDelayBeforeBtRead;
+		// No-op: Cannot set instance variable from static method
+		// Log warning to alert developers
+		System.err.println("WARNING: ShimmerRadioInitializer.useLegacyDelayBeforeBtRead() is deprecated and has no effect. "
+				+ "Use the constructor ShimmerRadioInitializer(AbstractSerialPortHal, boolean) instead to set delay per instance.");
 	}
 	
 	public void setSerialCommPort(AbstractSerialPortHal serialPortComm) {

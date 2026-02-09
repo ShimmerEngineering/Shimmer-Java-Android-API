@@ -31,6 +31,9 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 	private int mBaudToUse = SerialPort.BAUDRATE_115200;
 	private boolean setRtsOnConnect = true;
 	private boolean setDtrOnConnect = false;
+	
+	/** MacOS serial ports require initialization time after opening */
+	private static final int MACOS_PORT_INIT_DELAY_MS = 500;  // Increased from 100ms to 500ms
 
 	private transient ShimmerUartListener mShimmerUartListener;
 	private boolean mIsSerialPortReaderStarted = false;
@@ -46,10 +49,25 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 	public SerialPortCommJssc(String comPort, String uniqueId, int baudToUse) {
 		mUniqueId = uniqueId;
 		mComPort = comPort;
-		setConnectionHandle(comPort);
+		// On MacOS, prefer cu.* over tty.* to avoid blocking on carrier detect
+		if(UtilShimmer.isOsMac() && mComPort.startsWith("/dev/tty.")) {
+			mComPort = mComPort.replace("/dev/tty.", "/dev/cu.");
+			consolePrintLn("MacOS detected: Using cu port instead of tty: " + mComPort);
+		}
+		setConnectionHandle(mComPort);  // Use modified port name for consistent tracking
 		mBaudToUse = baudToUse;
         mSerialPort = new SerialPort(mComPort);
         jsscByteWriter = new JsscByteWriter(mSerialPort);
+        
+        // On MacOS, increase timeout to accommodate command-response delay
+        if(UtilShimmer.isOsMac()) {
+        	setTimeout(SERIAL_PORT_TIMEOUT_2000);
+        	// On MacOS, DTR signal may be needed for device to respond
+        	setDtrOnConnect = true;
+        	consolePrintLn("MacOS: Using extended serial port timeout (2000ms) and DTR enabled");
+        } else {
+        	consolePrintLn("Using standard serial port timeout (500ms)");
+        }
 	}
 
 	public SerialPortCommJssc(String comPort, String uniqueId, int baudToUse, SerialPortListener shimmerSerialEventCallback) {
@@ -85,7 +103,42 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 //			            		true,
 //			            		false);//Set params.
             mSerialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-            eventDeviceConnected();
+            
+            // On MacOS, purge buffers to clear any stale data before communication
+            if(UtilShimmer.isOsMac()) {
+            	try {
+            		mSerialPort.purgePort(SerialPort.PURGE_RXCLEAR | SerialPort.PURGE_TXCLEAR);
+            		consolePrintLn("MacOS: Purged serial port buffers");
+            	} catch (SerialPortException e) {
+            		consolePrintLn("MacOS: Warning - failed to purge buffers: " + e.getMessage());
+            	}
+            	
+            	// Explicitly set DTR and RTS signals after port configuration
+            	// Setting them in setParams() may not be sufficient on MacOS
+            	try {
+            		mSerialPort.setRTS(true);
+            		mSerialPort.setDTR(true);
+            		consolePrintLn("MacOS: Explicitly set RTS=true and DTR=true");
+            		// Give signals time to stabilize before continuing
+            		Thread.sleep(50);
+            	} catch (SerialPortException e) {
+            		consolePrintLn("MacOS: Warning - failed to set DTR/RTS: " + e.getMessage());
+            	} catch (InterruptedException e) {
+            		Thread.currentThread().interrupt();
+            	}
+            }
+            
+            // On MacOS, serial ports need a longer settling time after opening
+            if(UtilShimmer.isOsMac()) {
+            	try {
+            		Thread.sleep(MACOS_PORT_INIT_DELAY_MS);
+            		consolePrintLn("MacOS: Port initialization delay completed (" + MACOS_PORT_INIT_DELAY_MS + "ms)");
+            	} catch (InterruptedException e) {
+            		Thread.currentThread().interrupt();
+            		consolePrintLn("MacOS: Port initialization delay interrupted");
+            	}
+            }
+            // Don't call eventDeviceConnected() yet - wait until serial port reader is set up
         }
         catch (SerialPortException e) {
         	eventDeviceDisconnected();
@@ -101,6 +154,10 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
         }
         
 		startSerialPortReader();
+		
+		// Fire connected event only after serial port reader is fully set up
+		// This prevents race conditions where callbacks try to read before setup is complete
+		eventDeviceConnected();
         
 	}
 	
