@@ -132,7 +132,9 @@ public class ShimmerRadioInitializer {
 	@Deprecated
 	public static void useLegacyDelayBeforeBtRead(boolean useLegacyDelayBeforeBtRead){
 		// No-op: Cannot set instance variable from static method
-		// Use constructor with boolean parameter instead
+		// Log warning to alert developers
+		System.err.println("WARNING: ShimmerRadioInitializer.useLegacyDelayBeforeBtRead() is deprecated and has no effect. "
+				+ "Use the constructor ShimmerRadioInitializer(AbstractSerialPortHal, boolean) instead to set delay per instance.");
 	}
 	
 	public void setSerialCommPort(AbstractSerialPortHal serialPortComm) {
