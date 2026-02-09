@@ -12,7 +12,9 @@ public class ShimmerRadioInitializer {
 
 	protected AbstractSerialPortHal serialCommPort;
 	
-	private static boolean mUseLegacyDelayToDelayForResponse = false;
+	// Changed from static to instance variable to ensure per-instance delay control
+	// This prevents instances from interfering with each other's delay settings
+	private boolean mUseLegacyDelayToDelayForResponse = false;
 	
 	private ShimmerVerObject shimmerVerObject = null;
 	private ExpansionBoardDetails expansionBoardDetails = null;
@@ -123,9 +125,14 @@ public class ShimmerRadioInitializer {
 		return this.serialCommPort;
 	}
 
-
+	/**
+	 * @deprecated This method is deprecated as mUseLegacyDelayToDelayForResponse is now an instance variable.
+	 * Use the constructor ShimmerRadioInitializer(AbstractSerialPortHal, boolean) instead to set the delay per instance.
+	 */
+	@Deprecated
 	public static void useLegacyDelayBeforeBtRead(boolean useLegacyDelayBeforeBtRead){
-		mUseLegacyDelayToDelayForResponse = useLegacyDelayBeforeBtRead;
+		// No-op: Cannot set instance variable from static method
+		// Use constructor with boolean parameter instead
 	}
 	
 	public void setSerialCommPort(AbstractSerialPortHal serialPortComm) {
