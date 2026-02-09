@@ -645,43 +645,33 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 		}
 		if(mByteCommunication instanceof ByteCommunicationJSerialComm) {
 			((ByteCommunicationJSerialComm)mByteCommunication).setSerialPort(convertJsscToJSerialComm(sp));
-			getSamplingRateShimmer();
-		
-			if (mByteCommunication.isOpened()){
-				setBluetoothRadioState(BT_STATE.CONNECTING);
-			}
-			if (mByteCommunication.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
-				setIsConnected(true);
-	
-				mIOThread = new IOThread();
-				mIOThread.start();
-				if(mUseProcessingThread){
-					mPThread = new ProcessingThread();
-					mPThread.start();
-				}
-				initialize();
-			}
+			initializeConnectionAndThreads();
 		} else if(mByteCommunication instanceof ByteCommunicationJSSC) {
 			// Fallback to JSSC if needed
 			((ByteCommunicationJSSC)mByteCommunication).setSerialPort(sp);
-			getSamplingRateShimmer();
-		
-			if (mByteCommunication.isOpened()){
-				setBluetoothRadioState(BT_STATE.CONNECTING);
-			}
-			if (mByteCommunication.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
-				//			if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
-				//				setState(BT_STATE.CONNECTED);
-				setIsConnected(true);
+			initializeConnectionAndThreads();
+		}
+	}
 	
-				mIOThread = new IOThread();
-				mIOThread.start();
-				if(mUseProcessingThread){
-					mPThread = new ProcessingThread();
-					mPThread.start();
-				}
-				initialize();
+	/**
+	 * Helper method to initialize connection and start IO threads after setting serial port
+	 */
+	private void initializeConnectionAndThreads() {
+		getSamplingRateShimmer();
+		
+		if (mByteCommunication.isOpened()){
+			setBluetoothRadioState(BT_STATE.CONNECTING);
+		}
+		if (mByteCommunication.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
+			setIsConnected(true);
+
+			mIOThread = new IOThread();
+			mIOThread.start();
+			if(mUseProcessingThread){
+				mPThread = new ProcessingThread();
+				mPThread.start();
 			}
+			initialize();
 		}
 	}
 	
