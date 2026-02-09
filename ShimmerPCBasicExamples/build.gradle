@@ -56,6 +56,9 @@ dependencies {
 //    compile(group: 'com.shimmerresearch', name: 'shimmerdriver', version: '0.10.0_alpha')
 //    compile(group: 'com.shimmerresearch', name: 'shimmerdriverpc', version: '0.10.0_alpha')
     
+    // Required for Bluetooth serial communications via jSerialComm
+    implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.11.0'
+    
     implementation name: 'ShimmerBiophysicalProcessingLibrary_Rev_0_11'
     implementation 'com.parse.bolts:bolts-tasks:1.4.0'
 }
