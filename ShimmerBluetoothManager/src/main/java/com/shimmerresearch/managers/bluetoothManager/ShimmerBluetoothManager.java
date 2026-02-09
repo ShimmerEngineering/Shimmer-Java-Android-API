@@ -918,7 +918,9 @@ public abstract class ShimmerBluetoothManager{
 			printMessage("Connecting to new Shimmer with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 			
 			//radio address will be the com port in case of the PC and the BT address in case of Android
-			shimmerRadioInitializer = new ShimmerRadioInitializer();
+			// On MacOS, enable legacy delay to allow time for device to process commands and respond
+			boolean useLegacyDelay = UtilShimmer.isOsMac();
+			shimmerRadioInitializer = new ShimmerRadioInitializer(null, useLegacyDelay);
 			final AbstractSerialPortHal serialPortComm = createNewSerialPortComm(comPort, bluetoothAddress);
 			shimmerRadioInitializer.setSerialCommPort(serialPortComm);
 			serialPortComm.addByteLevelDataCommListener(new ByteLevelDataCommListener(){
