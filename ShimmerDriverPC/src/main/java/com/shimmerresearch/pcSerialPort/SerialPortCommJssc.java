@@ -90,6 +90,16 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 //			            		true,
 //			            		false);//Set params.
             mSerialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+            
+            // On MacOS, serial ports need a brief settling time after opening
+            if(UtilShimmer.isOsMac()) {
+            	try {
+            		Thread.sleep(100); // 100ms delay for port initialization
+            		consolePrintLn("MacOS: Waited for port initialization");
+            	} catch (InterruptedException e) {
+            		Thread.currentThread().interrupt();
+            	}
+            }
             // Don't call eventDeviceConnected() yet - wait until serial port reader is set up
         }
         catch (SerialPortException e) {
