@@ -918,8 +918,9 @@ public abstract class ShimmerBluetoothManager{
 			printMessage("Connecting to new Shimmer with connection handle = " + (connectThroughComPort? comPort:bluetoothAddress));
 			
 			//radio address will be the com port in case of the PC and the BT address in case of Android
-			// On MacOS, enable delay between command transmission and response reading
-			// This gives the device time to process commands (200ms per command)
+			// On MacOS, enable delay between command transmission and response reading.
+			// This enables a 200ms delay in ShimmerRadioInitializer.readHardwareVersion() 
+			// to give the device time to process commands and prepare responses.
 			boolean requiresCommandResponseDelay = UtilShimmer.isOsMac();
 			shimmerRadioInitializer = new ShimmerRadioInitializer(null, requiresCommandResponseDelay);
 			final AbstractSerialPortHal serialPortComm = createNewSerialPortComm(comPort, bluetoothAddress);
