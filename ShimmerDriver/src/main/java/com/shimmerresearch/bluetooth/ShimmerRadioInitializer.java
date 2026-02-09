@@ -57,8 +57,8 @@ public class ShimmerRadioInitializer {
 		
 		serialCommPort.txBytes(instruction);
 		if(mUseLegacyDelayToDelayForResponse) {
-			System.out.println("ShimmerRadioInitializer: Applying command-response delay (200ms)");
-			Thread.sleep(200);
+			System.out.println("ShimmerRadioInitializer: Applying command-response delay (500ms)");
+			Thread.sleep(500);  // Increased from 200ms to 500ms for MacOS
 		} else {
 			System.out.println("ShimmerRadioInitializer: No command-response delay (flag is false)");
 		}
@@ -78,7 +78,7 @@ public class ShimmerRadioInitializer {
 		serialCommPort.txBytes(instruction);
 		byte[] bufferInquiry = new byte[6]; 
 		if(mUseLegacyDelayToDelayForResponse)
-			Thread.sleep(200);
+			Thread.sleep(500);  // Increased from 200ms to 500ms for MacOS
 		serialCommPort.rxBytes(1);
 		serialCommPort.rxBytes(1);
 		bufferInquiry = serialCommPort.rxBytes(6);
@@ -106,7 +106,7 @@ public class ShimmerRadioInitializer {
 				
 				serialCommPort.txBytes(instruction);
 				if(mUseLegacyDelayToDelayForResponse)
-					Thread.sleep(200);
+					Thread.sleep(500);  // Increased from 200ms to 500ms for MacOS
 				byte[] response = serialCommPort.rxBytes(3+1);
 	
 				if(response!=null){

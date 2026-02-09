@@ -33,7 +33,7 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 	private boolean setDtrOnConnect = false;
 	
 	/** MacOS serial ports require initialization time after opening */
-	private static final int MACOS_PORT_INIT_DELAY_MS = 100;
+	private static final int MACOS_PORT_INIT_DELAY_MS = 500;  // Increased from 100ms to 500ms
 
 	private transient ShimmerUartListener mShimmerUartListener;
 	private boolean mIsSerialPortReaderStarted = false;
@@ -119,12 +119,16 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
             		mSerialPort.setRTS(true);
             		mSerialPort.setDTR(true);
             		consolePrintLn("MacOS: Explicitly set RTS=true and DTR=true");
+            		// Give signals time to stabilize before continuing
+            		Thread.sleep(50);
             	} catch (SerialPortException e) {
             		consolePrintLn("MacOS: Warning - failed to set DTR/RTS: " + e.getMessage());
+            	} catch (InterruptedException e) {
+            		Thread.currentThread().interrupt();
             	}
             }
             
-            // On MacOS, serial ports need a brief settling time after opening
+            // On MacOS, serial ports need a longer settling time after opening
             if(UtilShimmer.isOsMac()) {
             	try {
             		Thread.sleep(MACOS_PORT_INIT_DELAY_MS);
