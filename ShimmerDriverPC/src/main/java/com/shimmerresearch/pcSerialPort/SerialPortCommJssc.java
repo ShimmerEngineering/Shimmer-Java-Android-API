@@ -62,7 +62,11 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
         // On MacOS, increase timeout to accommodate command-response delay
         if(UtilShimmer.isOsMac()) {
         	setTimeout(SERIAL_PORT_TIMEOUT_2000);
-        	consolePrintLn("MacOS: Using extended serial port timeout (2000ms)");
+        	// On MacOS, DTR signal may be needed for device to respond
+        	setDtrOnConnect = true;
+        	consolePrintLn("MacOS: Using extended serial port timeout (2000ms) and DTR enabled");
+        } else {
+        	consolePrintLn("Using standard serial port timeout (500ms)");
         }
 	}
 
@@ -99,6 +103,16 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 //			            		true,
 //			            		false);//Set params.
             mSerialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+            
+            // On MacOS, purge buffers to clear any stale data before communication
+            if(UtilShimmer.isOsMac()) {
+            	try {
+            		mSerialPort.purgePort(SerialPort.PURGE_RXCLEAR | SerialPort.PURGE_TXCLEAR);
+            		consolePrintLn("MacOS: Purged serial port buffers");
+            	} catch (SerialPortException e) {
+            		consolePrintLn("MacOS: Warning - failed to purge buffers: " + e.getMessage());
+            	}
+            }
             
             // On MacOS, serial ports need a brief settling time after opening
             if(UtilShimmer.isOsMac()) {
