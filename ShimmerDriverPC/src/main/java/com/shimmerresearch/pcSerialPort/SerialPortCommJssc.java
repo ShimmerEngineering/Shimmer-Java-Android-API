@@ -90,7 +90,7 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 //			            		true,
 //			            		false);//Set params.
             mSerialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-            eventDeviceConnected();
+            // Don't call eventDeviceConnected() yet - wait until serial port reader is set up
         }
         catch (SerialPortException e) {
         	eventDeviceDisconnected();
@@ -106,6 +106,10 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
         }
         
 		startSerialPortReader();
+		
+		// Fire connected event only after serial port reader is fully set up
+		// This prevents race conditions where callbacks try to read before setup is complete
+		eventDeviceConnected();
         
 	}
 	
