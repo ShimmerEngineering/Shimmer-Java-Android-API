@@ -112,6 +112,16 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
             	} catch (SerialPortException e) {
             		consolePrintLn("MacOS: Warning - failed to purge buffers: " + e.getMessage());
             	}
+            	
+            	// Explicitly set DTR and RTS signals after port configuration
+            	// Setting them in setParams() may not be sufficient on MacOS
+            	try {
+            		mSerialPort.setRTS(true);
+            		mSerialPort.setDTR(true);
+            		consolePrintLn("MacOS: Explicitly set RTS=true and DTR=true");
+            	} catch (SerialPortException e) {
+            		consolePrintLn("MacOS: Warning - failed to set DTR/RTS: " + e.getMessage());
+            	}
             }
             
             // On MacOS, serial ports need a brief settling time after opening
