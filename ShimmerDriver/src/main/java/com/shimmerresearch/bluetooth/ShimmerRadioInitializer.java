@@ -27,6 +27,7 @@ public class ShimmerRadioInitializer {
 	}
 
 	public ShimmerRadioInitializer(AbstractSerialPortHal serialCommPort, boolean useLegacyDelayBeforeBtRead){
+		System.out.println("ShimmerRadioInitializer: Constructor called with delay flag = " + useLegacyDelayBeforeBtRead);
 		mUseLegacyDelayToDelayForResponse = useLegacyDelayBeforeBtRead;
 		this.serialCommPort = serialCommPort;
 	}
@@ -55,8 +56,12 @@ public class ShimmerRadioInitializer {
 		byte[] instruction = {InstructionsGet.GET_SHIMMER_VERSION_COMMAND_VALUE}; 
 		
 		serialCommPort.txBytes(instruction);
-		if(mUseLegacyDelayToDelayForResponse)
+		if(mUseLegacyDelayToDelayForResponse) {
+			System.out.println("ShimmerRadioInitializer: Applying command-response delay (200ms)");
 			Thread.sleep(200);
+		} else {
+			System.out.println("ShimmerRadioInitializer: No command-response delay (flag is false)");
+		}
 		byte[] response = serialCommPort.rxBytes(3);
 		if (response==null){
 			serialCommPort.disconnect();

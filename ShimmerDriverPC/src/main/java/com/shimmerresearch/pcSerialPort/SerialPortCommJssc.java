@@ -58,6 +58,12 @@ public class SerialPortCommJssc extends AbstractSerialPortHal implements SerialP
 		mBaudToUse = baudToUse;
         mSerialPort = new SerialPort(mComPort);
         jsscByteWriter = new JsscByteWriter(mSerialPort);
+        
+        // On MacOS, increase timeout to accommodate command-response delay
+        if(UtilShimmer.isOsMac()) {
+        	setTimeout(SERIAL_PORT_TIMEOUT_2000);
+        	consolePrintLn("MacOS: Using extended serial port timeout (2000ms)");
+        }
 	}
 
 	public SerialPortCommJssc(String comPort, String uniqueId, int baudToUse, SerialPortListener shimmerSerialEventCallback) {
