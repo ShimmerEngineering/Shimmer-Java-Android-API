@@ -194,7 +194,8 @@ public class SerialPortCommJSerialComm extends AbstractSerialPortHal implements 
 			
 			// Read with timeout
 			while (totalBytesRead < numBytes) {
-				int bytesRead = mSerialPort.readBytes(rxBuf, numBytes - totalBytesRead, totalBytesRead);
+				int bytesToRead = numBytes - totalBytesRead;
+				int bytesRead = mSerialPort.readBytes(rxBuf, bytesToRead, totalBytesRead);
 				totalBytesRead += bytesRead;
 				
 				// Check for timeout

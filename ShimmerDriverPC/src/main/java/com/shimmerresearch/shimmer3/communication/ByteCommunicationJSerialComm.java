@@ -4,6 +4,8 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.shimmerresearch.driverUtilities.UtilShimmer;
 import com.shimmerresearch.verisense.communication.ByteCommunicationListener;
 
+// Note: JSSC exceptions are used to maintain API compatibility with ByteCommunication interface
+// This allows jSerialComm implementation to be a drop-in replacement for JSSC
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
@@ -79,7 +81,8 @@ public class ByteCommunicationJSerialComm implements ByteCommunication {
 			long startTime = System.currentTimeMillis();
 			
 			while (totalBytesRead < byteCount) {
-				int bytesRead = mSerialPort.readBytes(rxbytes, byteCount - totalBytesRead, totalBytesRead);
+				int bytesToRead = byteCount - totalBytesRead;
+				int bytesRead = mSerialPort.readBytes(rxbytes, bytesToRead, totalBytesRead);
 				totalBytesRead += bytesRead;
 				
 				// Check for timeout
