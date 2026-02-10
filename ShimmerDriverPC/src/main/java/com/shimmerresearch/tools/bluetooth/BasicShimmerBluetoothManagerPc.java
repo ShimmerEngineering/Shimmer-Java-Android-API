@@ -141,6 +141,9 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
     		comPort = ((SerialPortCommJSerialComm) serialPortComm).mComPort;
     	} else if (serialPortComm instanceof SerialPortCommJssc) {
     		comPort = ((SerialPortCommJssc) serialPortComm).mComPort;
+    	} else {
+    		throw new IllegalArgumentException("Unsupported serial port type: " + 
+    			(serialPortComm != null ? serialPortComm.getClass().getName() : "null"));
     	}
     	
     	ShimmerPC shimmerDevice = (ShimmerPC)createNewShimmer3(comPort, bluetoothAddress);
@@ -175,6 +178,9 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
     		comPort = ((SerialPortCommJSerialComm) serialPortComm).mComPort;
     	} else if (serialPortComm instanceof SerialPortCommJssc) {
     		comPort = ((SerialPortCommJssc) serialPortComm).mComPort;
+    	} else {
+    		throw new IllegalArgumentException("Unsupported serial port type: " + 
+    			(serialPortComm != null ? serialPortComm.getClass().getName() : "null"));
     	}
 
 		Shimmer4sdk shimmer4 = createNewShimmer4(comPort, bluetoothAddress);

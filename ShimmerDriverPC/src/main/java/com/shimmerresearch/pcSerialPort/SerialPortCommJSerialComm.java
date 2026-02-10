@@ -204,7 +204,8 @@ public class SerialPortCommJSerialComm extends AbstractSerialPortHal implements 
 					throw(de);
 				}
 				
-				// Small delay to avoid busy waiting
+				// Small delay to avoid busy waiting on serial port
+				// 10ms is appropriate for serial communication polling
 				if (bytesRead == 0 && totalBytesRead < numBytes) {
 					try {
 						Thread.sleep(10);

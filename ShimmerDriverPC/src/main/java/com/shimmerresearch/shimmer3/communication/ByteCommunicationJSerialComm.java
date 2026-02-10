@@ -90,7 +90,8 @@ public class ByteCommunicationJSerialComm implements ByteCommunication {
 					throw new SerialPortTimeoutException(mAddress, "readBytes", timeout);
 				}
 				
-				// Small delay to avoid busy waiting
+				// Small delay to avoid busy waiting on serial port
+				// 10ms is appropriate for serial communication polling
 				if (bytesRead == 0 && totalBytesRead < byteCount) {
 					Thread.sleep(10);
 				}
