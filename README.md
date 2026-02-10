@@ -6,6 +6,15 @@ Best examples to start with are
 
 For help with using on Ubuntu please check the [wiki](https://github.com/ShimmerEngineering/Shimmer-Java-Android-API/wiki).
 
+## Recent Updates
+
+**macOS Bluetooth Classic Support Improvement**
+- Added jSerialComm library support for better macOS Bluetooth Classic communications
+- Resolves port connection and response issues on macOS
+- Both JSSC and jSerialComm implementations are supported
+- Default implementation now uses jSerialComm for improved reliability
+- See [ShimmerDriverPC/JSERIALCOMM_IMPLEMENTATION.md](ShimmerDriverPC/JSERIALCOMM_IMPLEMENTATION.md) for details
+
 Rev 3.00
 - Change to Handler MSGs
 
