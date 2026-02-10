@@ -82,6 +82,7 @@ import com.shimmerresearch.sensors.lsm303.SensorLSM303;
 import com.shimmerresearch.sensors.mpu9x50.SensorMPU9X50;
 import com.shimmerresearch.shimmer3.communication.ByteCommunication;
 import com.shimmerresearch.shimmer3.communication.ByteCommunicationJSSC;
+import com.shimmerresearch.shimmer3.communication.ByteCommunicationJSerialComm;
 import com.shimmerresearch.shimmerConfig.FixedShimmerConfigs.FIXED_SHIMMER_CONFIG_MODE;
 import com.shimmerresearch.driver.CallbackObject;
 import com.shimmerresearch.driver.ObjectCluster;
@@ -650,6 +651,35 @@ public class ShimmerPC extends ShimmerBluetooth implements Serializable{
 			if (mByteCommunication.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
 				//			if (mSerialPort.isOpened() && mState!=BT_STATE.NONE && mState!=BT_STATE.DISCONNECTED){
 				//				setState(BT_STATE.CONNECTED);
+				setIsConnected(true);
+	
+				mIOThread = new IOThread();
+				mIOThread.start();
+				if(mUseProcessingThread){
+					mPThread = new ProcessingThread();
+					mPThread.start();
+				}
+				initialize();
+			}
+		}
+	}
+	
+	/**
+	 * Sets the serial port for jSerialComm (better macOS support)
+	 * @param sp jSerialComm SerialPort object
+	 */
+	public void setSerialPort(com.fazecast.jSerialComm.SerialPort sp){
+		if (mByteCommunication == null) {
+			mByteCommunication = new ByteCommunicationJSerialComm(sp);
+		}
+		if(mByteCommunication instanceof ByteCommunicationJSerialComm) {
+			((ByteCommunicationJSerialComm)mByteCommunication).setSerialPort(sp);
+			getSamplingRateShimmer();
+		
+			if (mByteCommunication.isOpened()){
+				setBluetoothRadioState(BT_STATE.CONNECTING);
+			}
+			if (mByteCommunication.isOpened() && mBluetoothRadioState!=BT_STATE.DISCONNECTED){
 				setIsConnected(true);
 	
 				mIOThread = new IOThread();
