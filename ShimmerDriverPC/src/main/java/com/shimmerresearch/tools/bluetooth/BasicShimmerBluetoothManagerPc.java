@@ -28,6 +28,7 @@ import com.shimmerresearch.managers.bluetoothManager.ShimmerBluetoothManager;
 import com.shimmerresearch.pcDriver.ShimmerGRPC;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.pcSerialPort.SerialPortCommJssc;
+import com.shimmerresearch.pcSerialPort.SerialPortCommJSerialComm;
 import com.shimmerresearch.verisense.VerisenseDevice;
 import com.shimmerresearch.verisense.communication.VerisenseProtocolByteCommunication;
 
@@ -105,9 +106,10 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 
 	@Override
 	protected AbstractSerialPortHal createNewSerialPortComm(String comPort, String bluetoothAddress) {
-		SerialPortCommJssc serialPortCommJssc = new SerialPortCommJssc(comPort, comPort, SerialPort.BAUDRATE_115200);
-		serialPortCommJssc.setTimeout(AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_500);
-		return serialPortCommJssc;
+		// Use jSerialComm for better macOS Bluetooth support
+		SerialPortCommJSerialComm serialPortCommJSerialComm = new SerialPortCommJSerialComm(comPort, comPort, 115200);
+		serialPortCommJSerialComm.setTimeout(AbstractSerialPortHal.SERIAL_PORT_TIMEOUT_500);
+		return serialPortCommJSerialComm;
 	}
 
 	@Override
@@ -132,14 +134,25 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 	 */
 	@Override
 	protected ShimmerDevice createNewShimmer3(ShimmerRadioInitializer radioInitializer, String bluetoothAddress) {
-    	SerialPortCommJssc serialPortComm = (SerialPortCommJssc) radioInitializer.getSerialCommPort();
-    	String comPort = serialPortComm.mComPort;
+    	AbstractSerialPortHal serialPortComm = radioInitializer.getSerialCommPort();
+    	String comPort = "";
+    	
+    	if (serialPortComm instanceof SerialPortCommJSerialComm) {
+    		comPort = ((SerialPortCommJSerialComm) serialPortComm).mComPort;
+    	} else if (serialPortComm instanceof SerialPortCommJssc) {
+    		comPort = ((SerialPortCommJssc) serialPortComm).mComPort;
+    	} else {
+    		throw new IllegalArgumentException("Unsupported serial port type: " + 
+    			(serialPortComm != null ? serialPortComm.getClass().getName() : "null"));
+    	}
     	
     	ShimmerPC shimmerDevice = (ShimmerPC)createNewShimmer3(comPort, bluetoothAddress);
     	
     	setupShimmer3BluetoothForBtManager(shimmerDevice);
-		if(serialPortComm!=null){
-			shimmerDevice.setSerialPort(serialPortComm.getSerialPort());
+		if(serialPortComm instanceof SerialPortCommJSerialComm){
+			shimmerDevice.setSerialPort(((SerialPortCommJSerialComm) serialPortComm).getSerialPort());
+		} else if(serialPortComm instanceof SerialPortCommJssc){
+			shimmerDevice.setSerialPort(((SerialPortCommJssc) serialPortComm).getSerialPort());
 		}
     	return shimmerDevice;
     }
@@ -158,8 +171,17 @@ public class BasicShimmerBluetoothManagerPc extends ShimmerBluetoothManager {
 
 	@Override
 	protected Shimmer4sdk createNewShimmer4(ShimmerRadioInitializer radioInitializer, String bluetoothAddress) {
-    	SerialPortCommJssc serialPortComm = (SerialPortCommJssc) radioInitializer.getSerialCommPort();
-    	String comPort = serialPortComm.mComPort;
+    	AbstractSerialPortHal serialPortComm = radioInitializer.getSerialCommPort();
+    	String comPort = "";
+    	
+    	if (serialPortComm instanceof SerialPortCommJSerialComm) {
+    		comPort = ((SerialPortCommJSerialComm) serialPortComm).mComPort;
+    	} else if (serialPortComm instanceof SerialPortCommJssc) {
+    		comPort = ((SerialPortCommJssc) serialPortComm).mComPort;
+    	} else {
+    		throw new IllegalArgumentException("Unsupported serial port type: " + 
+    			(serialPortComm != null ? serialPortComm.getClass().getName() : "null"));
+    	}
 
 		Shimmer4sdk shimmer4 = createNewShimmer4(comPort, bluetoothAddress);
 		if(serialPortComm!=null){
