@@ -122,7 +122,7 @@ public class CalibDetailsBmp280 extends CalibDetailsBmpX80 {
 		double adc_T = UT;
 		double adc_P = UP;
 		
-		// Returns temperature in DegC, double precision. Output value of “51.23” equals 51.23 DegC.
+		// Returns temperature in DegC, double precision. Output value of 51.23 equals 51.23 DegC.
 		// t_fine carries fine temperature as global value
 		double var1 = ((adc_T)/16384.0 - dig_T1/1024.0) * dig_T2;
 		double var2 = (((adc_T)/131072.0 - dig_T1/8192.0) * (adc_T/131072.0 - dig_T1/8192.0)) * dig_T3;
@@ -131,7 +131,7 @@ public class CalibDetailsBmp280 extends CalibDetailsBmpX80 {
 //		double fTemp = T * 1.8 + 32; // Fahrenheit
 //		T = T/100.0;
 		
-		// Returns pressure in Pa as double. Output value of “96386.2” equals 96386.2 Pa = 963.862 hPa
+		// Returns pressure in Pa as double. Output value of 96386.2 equals 96386.2 Pa = 963.862 hPa
 		var1 = (t_fine/2.0) - 64000.0;
 		var2 = var1 * var1 * dig_P6 / 32768.0;
 		var2 = var2 + var1 * dig_P5 * 2.0;

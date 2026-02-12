@@ -494,6 +494,17 @@ public abstract class ShimmerBluetoothManager{
 		return shimmerDevice;
 	}
 
+	public boolean checkIfAlgoEnabledonAnyConnectedDevice(String algoName) {
+		for (String comPort:mMapOfBtConnectedShimmers.keySet()) {
+			ShimmerDevice device = getShimmerDeviceBtConnected(comPort);
+			boolean algoenabled = device.isAlgorithmEnabled(algoName);
+			if(algoenabled) {
+				return true;
+			}
+		}
+		return false;		
+	}
+	
 	public ShimmerDevice getShimmerDeviceBtConnectedFromMac(String macAddress){
 		Iterator<ShimmerDevice> iterator = mMapOfBtConnectedShimmers.values().iterator();
 		while(iterator.hasNext()){

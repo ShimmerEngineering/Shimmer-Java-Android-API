@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -938,7 +939,19 @@ public class UtilShimmer implements Serializable {
         }
         return new ArrayList<Double>(sortedMap.keySet());
     }
+	// Regex breakdown:
+    // ^          : Start of string
+    // [0-9a-fA-F]{2} : Two hex characters
+    // ( (:[0-9a-fA-F]{2}){5} | ([0-9a-fA-F]{2}){5} ) : Either 5 groups preceded by colons OR 5 groups with nothing
+    // $          : End of string
+    private static final String MAC_REGEX = "^([0-9a-fA-F]{2})((:[0-9a-fA-F]{2}){5}|([0-9a-fA-F]{2}){5})$";
+    private static final Pattern MAC_PATTERN = Pattern.compile(MAC_REGEX);
 
+    public static boolean isValidMacAddress(String mac) {
+        if (mac == null) return false;
+        return MAC_PATTERN.matcher(mac).matches();
+    }
+    
 	public static boolean isValidMac(String mac) {
 		if(mac==null){
 			return false;
@@ -954,7 +967,7 @@ public class UtilShimmer implements Serializable {
 		
 		return true;
 	}
-
+	
 	public static String getDayString(int dayIndex) {
 		switch (dayIndex) {
 		    case Calendar.SUNDAY:
