@@ -14,7 +14,7 @@ import com.shimmerresearch.guiUtilities.AbstractPlotManager;
 
 /** References 
 *
-*[1] Angkoon Phinyomark, Pornchai Phukpattaranont, Chusak Limsakul (2012) “Feature Reduction and Selection for EMG Signal Classification” Elsevier, Expert Systems with Applications 39, P7420–7431
+*[1] Angkoon Phinyomark, Pornchai Phukpattaranont, Chusak Limsakul (2012) Feature Reduction and Selection for EMG Signal Classification Elsevier, Expert Systems with Applications 39, P7420 7431
 *[2] http://luscinia.sourceforge.net/page26/page35/page35.html
 * */
 
