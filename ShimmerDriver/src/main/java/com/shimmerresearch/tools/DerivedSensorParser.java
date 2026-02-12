@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.shimmerresearch.driver.Configuration.Shimmer3.DerivedSensorsBitMask;
 
-public class SensorParser {
+public class DerivedSensorParser {
     private static final Map<Integer, String> SENSOR_MAP = new LinkedHashMap<>();
 
     static {
