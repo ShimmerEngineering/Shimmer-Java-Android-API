@@ -43,7 +43,7 @@ public class API_0000X_ByteCommunicationShimmer3lns0_16_11_w_sd_only extends Bas
     	
     		mWaitTask = new TaskCompletionSource<>();
     		try {
-				mWaitTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);//Just to give time to connect to finish
+				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS);//Just to give time to connect to finish
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
