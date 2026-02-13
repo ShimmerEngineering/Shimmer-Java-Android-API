@@ -34,6 +34,7 @@ test {
     exclude '**/API_00001_ShimmerPC_GeneralBluetoothShimmer2R.class'
     exclude '**/API_0000X_ByteCommunicationShimmer3lns0_16_11_w_sd_only.class'
     exclude '**/API_0000X_ByteCommunicationShimmer3lns0_16_11_w_sync_master.class'
+    exclude '**/API_0000X_ByteCommunicationShimmer3lns0_16_11_w_sync_slave.class'
 }
 
 publishing {
