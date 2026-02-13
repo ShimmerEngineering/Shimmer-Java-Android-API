@@ -90,8 +90,12 @@ public class SensorMapsExample extends BasicProcessWithCallBack {
 	 * @wbp.parser.entryPoint
 	 */
 	public void initialize() {
-		//Set the default port to 50000, this is used if the software cannot start the gRPC server automatically
-		BasicShimmerBluetoothManagerPc.mGRPCPort = 50000;
+		//Set the default port to 500XX, this is used if the software cannot start the gRPC server automatically
+		if(UtilShimmer.isOsMac()) {
+			BasicShimmerBluetoothManagerPc.mGRPCPort = 50000; //the bundled /libs/ShimmerBLEGrpc/ for Mac uses port 50000
+		} else {
+			BasicShimmerBluetoothManagerPc.mGRPCPort = 50052;
+		}
 		
 		frame = new JFrame("Shimmer SensorMaps Example");
 		frame.setBounds(100, 100, 1200, 591);
