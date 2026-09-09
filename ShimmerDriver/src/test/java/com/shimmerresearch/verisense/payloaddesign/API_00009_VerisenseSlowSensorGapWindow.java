@@ -2,6 +2,7 @@ package com.shimmerresearch.verisense.payloaddesign;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -517,11 +518,14 @@ public class API_00009_VerisenseSlowSensorGapWindow {
 	}
 
 	/**
-	 * Because the MLX90632 fails that gate it takes the pre-DEV-979 per-payload
-	 * path, so a payload holding a SINGLE temp block must be left completely
-	 * alone - no cross-payload measurement, no rate change, no window put. This is
-	 * what makes skin-temp byte-identity hold by construction (the DEV-927
-	 * reference CSVs cannot be reached from here).
+	 * The MLX90632 fails the cross-payload gate, and at the DEV-927 16 Hz
+	 * configuration a 16-sample block spans ~1 s, so it takes the pre-DEV-979
+	 * per-payload path. A payload holding a SINGLE temp block must then be left
+	 * completely alone - no cross-payload measurement, no rate change, no window
+	 * put. This is what makes skin-temp byte-identity hold by construction (the
+	 * DEV-927 reference CSVs cannot be reached from here). The slower 0.25 Hz
+	 * configuration is routed elsewhere - see
+	 * {@link #test020_skinTempAtSlowestRateSeedsTheWindowFromTheHeaderNotTheWrappedTickDelta()}.
 	 */
 	@Test
 	public void test016_skinTempSingleBlockPayloadsAreLeftAlone() {
@@ -576,6 +580,46 @@ public class API_00009_VerisenseSlowSensorGapWindow {
 				samplingRateLimits[0], 1e-6);
 		assertEquals((1.0/(0.875/SKIN_TEMP_SAMPLES_PER_BLOCK))*UtilCsvSplitting.FILE_GAP_TOLERANCE_MULTIPLIER.UPPER,
 				samplingRateLimits[1], 1e-6);
+	}
+
+	/**
+	 * The MLX90632 at its slowest configuration (refresh code 0 = 0.5 Hz refresh
+	 * -> 0.25 Hz medical output, a 16-sample block spanning ~64 s). Two such
+	 * blocks CAN land in one payload, and the pre-DEV-979 per-payload path would
+	 * difference their SUB-MINUTE end-tick counters: a real 64 s gap re-bases by
+	 * one minute to ~4 s, i.e. an apparent ~4 Hz, and gets written unconditionally
+	 * into the window (fast side ~4.8 Hz) - after which every real 0.25 Hz
+	 * boundary reads as a time-gap and the CSV splits per block.
+	 * <p>
+	 * The refresh code is in the header, so this configuration is instead routed
+	 * to a window seeded straight from the header rate, and no tick differencing
+	 * is done.
+	 */
+	@Test
+	public void test020_skinTempAtSlowestRateSeedsTheWindowFromTheHeaderNotTheWrappedTickDelta() {
+		VerisenseDevice device = setupGen2Device(0); // refresh code 0 -> 0.5 Hz refresh -> 0.25 Hz output
+		assertEquals("slowest configuration is 0.25 Hz output", 0.25,
+				device.getSamplingRateForSensor(SENSORS.MLX90632), 1e-9);
+
+		// Two 16-sample blocks 64 s apart in one payload - the shape that aliased.
+		DataBlockDetails[] payload = refinePayload(device, DATABLOCK_SENSOR_ID.SKIN_TEMP,
+				newBlock(device, DATABLOCK_SENSOR_ID.SKIN_TEMP, ticks(10)),
+				newBlock(device, DATABLOCK_SENSOR_ID.SKIN_TEMP, ticks(74)));
+
+		assertEquals("the block keeps its header-derived rate, not the wrapped ~4 Hz",
+				0.25, payload[0].getSamplingRate(), 1e-9);
+		assertEquals(0.25, payload[1].getSamplingRate(), 1e-9);
+		assertEquals("no per-payload tick differencing, no cross-payload history",
+				0, UtilCsvSplitting.getSlowSensorObservationCount(DATABLOCK_SENSOR_ID.SKIN_TEMP));
+
+		double[] samplingRateLimits = UtilCsvSplitting.SAMPLING_RATE_LIMITS_PER_SENSOR.get(SENSORS.MLX90632);
+		assertNotNull("the gap window is seeded from the header rate", samplingRateLimits);
+		assertTrue("the window sits around 0.25 Hz, not the wrapped ~4 Hz (fast side was ~4.8 with the bug)",
+				samplingRateLimits[1] < 1.0);
+
+		// A genuine 64 s boundary between 0.25 Hz blocks must NOT split.
+		UtilCsvSplitting.clearMapOfSamplingRateLimitsPerSensor();
+		walkStream(device, DATABLOCK_SENSOR_ID.SKIN_TEMP, 10, 64, 64, 64);
 	}
 
 	/** The median helper averages the two middle values for an even-sized input. */

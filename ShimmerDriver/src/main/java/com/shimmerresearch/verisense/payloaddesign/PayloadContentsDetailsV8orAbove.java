@@ -331,46 +331,70 @@ public class PayloadContentsDetailsV8orAbove extends PayloadContentsDetails {
 	/**
 	 * Refine a slow sensor's achieved per-sample period from the data and
 	 * (re)derive its CSV gap-splitting window, choosing between the cross-payload
-	 * treatment DEV-979 added and the per-payload one that came before it.
+	 * treatment DEV-979 added, the per-payload one that came before it, and - for
+	 * the MLX90632 at a slow enough rate - a window seeded straight from the
+	 * header.
 	 * <p>
-	 * The choice is made by
-	 * {@link UtilCsvSplitting#isSlowSensorSpanUnambiguousAcrossPayloads(DATABLOCK_SENSOR_ID, int)}
-	 * and it is not a preference: a block's stored end time is a counter that
-	 * wraps every minute, so measuring across a payload boundary is only
-	 * recoverable while the sensor's largest legitimate block span is under a
-	 * minute. The VD6283 qualifies (a 10-sample block spans at most 20 s) and
-	 * needs it, because its configured rate is not in the payload at all. The
-	 * MLX90632 does not qualify (a 16-sample block spans 64 s at the common
-	 * medical-mode worst case of 0.25 Hz output, and 96 s at the extended-mode
-	 * worst case of 0.167 Hz - both beyond the 60 s wrap) and does not
-	 * need it, because its refresh code is in the payload - so it keeps the
-	 * pre-DEV-979 code path verbatim.
-	 * 
+	 * A block's stored end time is a counter that wraps every minute, so
+	 * differencing two blocks' end ticks is only sound while the true spacing is
+	 * under a minute. {@link UtilCsvSplitting#isSlowSensorSpanUnambiguousAcrossPayloads(DATABLOCK_SENSOR_ID, int)}
+	 * asks whether that holds for the sensor's SLOWEST legitimate rate: the VD6283
+	 * qualifies (a 10-sample block spans at most 20 s) and needs the cross-payload
+	 * measurement because its configured rate is not in the payload at all.
+	 * <p>
+	 * The MLX90632 fails that gate on its slowest rates, but its refresh code IS
+	 * in the payload, so its ACTUAL configured output rate is known
+	 * ({@link com.shimmerresearch.verisense.sensors.SensorMLX90632#getRateFreq()},
+	 * the value written to the CSV "Configured" line):
+	 * <ul>
+	 * <li>when a 16-sample block spans under a minute at that rate (the DEV-927
+	 *     16 Hz configuration - block spans ~1 s), the sub-minute tick delta is
+	 *     unambiguous and the pre-DEV-979 per-payload path is safe, so it is kept
+	 *     verbatim - it also gives the blocks their measured +/-12.5%-slip rate;
+	 * <li>when a block spans a minute or more (the 0.25 Hz configuration - a
+	 *     16-sample block spans ~64 s), two such blocks CAN land in one payload
+	 *     and the per-payload path would re-base a real 64 s end-tick gap by one
+	 *     minute to ~4 s, i.e. an apparent ~4 Hz, and write it UNCONDITIONALLY
+	 *     into {@code SAMPLING_RATE_LIMITS_PER_SENSOR}. Every genuine 0.25 Hz
+	 *     boundary then reads as a time-gap: one CSV per block, and
+	 *     {@code verisenseDevice.resetAlgorithmBuffers()} on every split (which
+	 *     also clears the unrelated accel non-wear buffer). For that case the gap
+	 *     window is seeded from the header rate via the a-priori branch of
+	 *     {@link UtilCsvSplitting#refineSlowSensorGapWindow(VerisenseDevice, DATABLOCK_SENSOR_ID, int)}
+	 *     and no per-payload tick differencing is done.
+	 * </ul>
+	 *
 	 * @param slowSensorId the slow sensor's data block id
 	 * @param samplesPerBlock the sensor's fixed samples per block
 	 */
 	void refineSlowSensorSamplingRateFromBlockTicks(DATABLOCK_SENSOR_ID slowSensorId, int samplesPerBlock) {
 		if(UtilCsvSplitting.isSlowSensorSpanUnambiguousAcrossPayloads(slowSensorId, samplesPerBlock)) {
 			refineSlowSensorSamplingRateAcrossPayloads(slowSensorId, samplesPerBlock);
-		} else if(slowSensorId==DATABLOCK_SENSOR_ID.SKIN_TEMP) {
-			// MLX90632: the refresh code in the payload header yields the true configured
-			// output rate directly (SensorMLX90632.getRateFreq(), the value written to the
-			// CSV "Configured" line), so the CSV gap window is seeded straight from it via
-			// the a-priori branch of refineSlowSensorGapWindow.
-			//
-			// The pre-DEV-979 per-payload path is NOT safe here: at the slowest configured
-			// rate (0.25 Hz output => a 16-sample block spans ~64 s) two consecutive
-			// skin-temp blocks can land in one payload, and refineSlowSensorSamplingRatePerPayload
-			// then differences their SUB-MINUTE end-tick counters. A real 64 s gap re-bases
-			// (deltaTicks += TICKS_PER_MINUTE) to ~4 s, i.e. an apparent ~4 Hz, which it
-			// writes UNCONDITIONALLY into SAMPLING_RATE_LIMITS_PER_SENSOR. Every genuine
-			// 0.25 Hz boundary then reads as a time-gap: a CSV is split per block and
-			// verisenseDevice.resetAlgorithmBuffers() is called on each split, which also
-			// wipes the (unrelated) accel non-wear buffer so it never fills.
+		} else if(slowSensorId==DATABLOCK_SENSOR_ID.SKIN_TEMP
+				&& !isSkinTempBlockSpanUnderAMinute(samplesPerBlock)) {
 			UtilCsvSplitting.refineSlowSensorGapWindow(verisenseDevice, slowSensorId, samplesPerBlock);
 		} else {
 			refineSlowSensorSamplingRatePerPayload(slowSensorId);
 		}
+	}
+
+	/**
+	 * Whether the MLX90632's ACTUAL configured output rate (from the refresh code
+	 * in the payload header) puts a full block's span under the one-minute
+	 * end-tick wrap - i.e. whether the per-payload tick-differencing path is safe
+	 * for this recording. Unknown/zero rate is treated as NOT under a minute (the
+	 * safe direction: use the header-seeded window, not the tick path).
+	 *
+	 * @param samplesPerBlock the MLX90632's fixed samples per block
+	 * @return true when {@code samplesPerBlock / configuredOutputRateHz < 60 s}
+	 */
+	private boolean isSkinTempBlockSpanUnderAMinute(int samplesPerBlock) {
+		double configuredRateHz = verisenseDevice.getSamplingRateForSensor(SENSORS.MLX90632);
+		if(!(configuredRateHz > 0)) {
+			return false;
+		}
+		double blockSpanS = samplesPerBlock / configuredRateHz;
+		return blockSpanS < (AsmBinaryFileConstants.TICKS_PER_MINUTE / AsmBinaryFileConstants.TICKS_PER_SECOND);
 	}
 
 	/**
@@ -526,26 +550,23 @@ public class PayloadContentsDetailsV8orAbove extends PayloadContentsDetails {
 	}
 
 	/**
-	 * The PER-PAYLOAD refinement as it stood before DEV-979, kept VERBATIM (body
-	 * unchanged from master 6d27fb2, including the {@code size()/2} upper-middle
-	 * median and the early return below two blocks) for every slow sensor that
-	 * fails
+	 * The PER-PAYLOAD refinement as it stood before DEV-979, body unchanged from
+	 * master 6d27fb2 (including the {@code size()/2} upper-middle median and the
+	 * early return below two blocks). Reached for a slow sensor that fails
 	 * {@link UtilCsvSplitting#isSlowSensorSpanUnambiguousAcrossPayloads(DATABLOCK_SENSOR_ID, int)}
-	 * - i.e. the MLX90632, whose 16-sample block spans 64 s at the common
-	 * medical-mode worst case (0.25 Hz output) and 96 s at the extended-mode worst
-	 * case (0.167 Hz), so its sub-minute tick delta across a payload boundary
-	 * would be ambiguous either way.
+	 * AND whose block genuinely spans under a minute - i.e. the MLX90632 at the
+	 * DEV-927 16 Hz configuration (a 16-sample block spans ~1 s), where the
+	 * sub-minute tick delta is unambiguous. The MLX90632 at 0.25 Hz output (a
+	 * 16-sample block spans ~64 s) is routed away from here by
+	 * {@link #refineSlowSensorSamplingRateFromBlockTicks(DATABLOCK_SENSOR_ID, int)}
+	 * because its tick delta across a payload boundary WOULD alias.
 	 * <p>
-	 * Byte-identity for the skin temp holds BY CONSTRUCTION this way: the applied
+	 * Byte-identity for the DEV-927 skin temp holds by construction: the applied
 	 * period is still this payload's own median, not a whole-file one, and the
 	 * window is still seeded with the old formula. The DEV-927 reference CSVs
 	 * (ASM_PC Test_065) cannot be reached from this environment, so nothing about
 	 * that sensor's timing is changed on trust.
-	 * <p>
-	 * The MLX90632 also does not need the cross-payload treatment: its refresh
-	 * code IS stored in the payload header, so its header-derived rate is already
-	 * correct, which is exactly what the VD6283's is not.
-	 * 
+	 *
 	 * @param slowSensorId the slow sensor's data block id
 	 */
 	void refineSlowSensorSamplingRatePerPayload(DATABLOCK_SENSOR_ID slowSensorId) {
