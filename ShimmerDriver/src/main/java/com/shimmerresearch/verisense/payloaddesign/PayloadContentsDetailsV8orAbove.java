@@ -352,6 +352,22 @@ public class PayloadContentsDetailsV8orAbove extends PayloadContentsDetails {
 	void refineSlowSensorSamplingRateFromBlockTicks(DATABLOCK_SENSOR_ID slowSensorId, int samplesPerBlock) {
 		if(UtilCsvSplitting.isSlowSensorSpanUnambiguousAcrossPayloads(slowSensorId, samplesPerBlock)) {
 			refineSlowSensorSamplingRateAcrossPayloads(slowSensorId, samplesPerBlock);
+		} else if(slowSensorId==DATABLOCK_SENSOR_ID.SKIN_TEMP) {
+			// MLX90632: the refresh code in the payload header yields the true configured
+			// output rate directly (SensorMLX90632.getRateFreq(), the value written to the
+			// CSV "Configured" line), so the CSV gap window is seeded straight from it via
+			// the a-priori branch of refineSlowSensorGapWindow.
+			//
+			// The pre-DEV-979 per-payload path is NOT safe here: at the slowest configured
+			// rate (0.25 Hz output => a 16-sample block spans ~64 s) two consecutive
+			// skin-temp blocks can land in one payload, and refineSlowSensorSamplingRatePerPayload
+			// then differences their SUB-MINUTE end-tick counters. A real 64 s gap re-bases
+			// (deltaTicks += TICKS_PER_MINUTE) to ~4 s, i.e. an apparent ~4 Hz, which it
+			// writes UNCONDITIONALLY into SAMPLING_RATE_LIMITS_PER_SENSOR. Every genuine
+			// 0.25 Hz boundary then reads as a time-gap: a CSV is split per block and
+			// verisenseDevice.resetAlgorithmBuffers() is called on each split, which also
+			// wipes the (unrelated) accel non-wear buffer so it never fills.
+			UtilCsvSplitting.refineSlowSensorGapWindow(verisenseDevice, slowSensorId, samplesPerBlock);
 		} else {
 			refineSlowSensorSamplingRatePerPayload(slowSensorId);
 		}
