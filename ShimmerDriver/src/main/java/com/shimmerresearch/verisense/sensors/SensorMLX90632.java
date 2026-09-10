@@ -55,6 +55,19 @@ public class SensorMLX90632 extends AbstractSensor {
 	public static final int SUB_MEASUREMENTS_MEDICAL = 2;
 	public static final int SUB_MEASUREMENTS_EXTENDED = 3;
 
+	/**
+	 * Output-rate bounds implied by the refresh table across BOTH modes: the
+	 * slowest configuration is REFRESH_HZ_TABLE[0] (0.5 Hz) divided by
+	 * {@link #SUB_MEASUREMENTS_EXTENDED} (3) = 0.167 Hz, and the fastest is
+	 * REFRESH_HZ_TABLE[7] (64 Hz) divided by {@link #SUB_MEASUREMENTS_MEDICAL}
+	 * (2) = 32 Hz. Unlike the VD6283 before FW v2.02.000, this sensor refresh
+	 * code has always been stored in the payload header, so {@link
+	 * #getRateFreq()} is the real configured output rate and these bounds are
+	 * only needed as a fallback when that rate cannot be read.
+	 */
+	public static final double MIN_OUTPUT_RATE_HZ = 0.5/3;
+	public static final double MAX_OUTPUT_RATE_HZ = 32.0;
+
 	private int refreshRateCode = 5; // 16 Hz chip refresh (firmware default)
 	private boolean extendedMode = false;
 
