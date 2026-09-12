@@ -167,9 +167,8 @@ public class UtilCsvSplitting {
 	 */
 	public static double[] getSlowSensorPlausibleRateRangeHz(VerisenseDevice verisenseDevice, DATABLOCK_SENSOR_ID slowSensorId) {
 		if(slowSensorId==DATABLOCK_SENSOR_ID.LIGHT) {
-			SensorVD6283 sensorVd6283 = verisenseDevice.getSensorVD6283();
-			if(sensorVd6283!=null && sensorVd6283.isConfiguredRateKnown()) {
-				double configuredRateHz = sensorVd6283.getRateFreq();
+			if(isSlowSensorConfiguredRateKnown(verisenseDevice, slowSensorId)) {
+				double configuredRateHz = verisenseDevice.getSensorVD6283().getRateFreq();
 				if(isRateUsable(configuredRateHz)) {
 					return new double[] {configuredRateHz, configuredRateHz};
 				}
@@ -179,6 +178,21 @@ public class UtilCsvSplitting {
 		if(slowSensorId==DATABLOCK_SENSOR_ID.SKIN_TEMP) {
 			double configuredRateHz = verisenseDevice.getSamplingRateForSensor(SENSORS.MLX90632);
 			if(isRateUsable(configuredRateHz)) {
+				// Both sides are widened, and the slow side is the uncomfortable one.
+				// It puts the gap edge at cfg/1.725, while a dropped block landing on a
+				// 12.5% catch-up presents cfg/1.75 - so that case is reported, but by
+				// 1.4%, and it stops being reported at all once a catch-up reaches
+				// 13.75%.
+				//
+				// Narrowing the slow side to cfg/1.5, as the VD6283 uses, was tried and
+				// reverted: the Test_065 recording contains a healthy skin-temp boundary
+				// at 1.63x nominal spacing during start-up settling, which then split. So
+				// this sensor's healthy behaviour genuinely overlaps the region a dropped
+				// block would land in, and no single threshold separates them cleanly.
+				// 1.725 is the midpoint that was chosen with that data in hand: 6% above
+				// the worst healthy boundary observed, 14% below a clean dropped block.
+				// Moving it in either direction trades false splits against missed loss,
+				// so change it only against a measurement, not an intuition.
 				return new double[] {
 					configuredRateHz/FILE_GAP_TOLERANCE_MULTIPLIER.SLOW_SENSOR_CONVERSION_SLIP_TOLERANCE,
 					configuredRateHz*FILE_GAP_TOLERANCE_MULTIPLIER.SLOW_SENSOR_CONVERSION_SLIP_TOLERANCE};
@@ -201,6 +215,14 @@ public class UtilCsvSplitting {
 	 * clock step. Worked through at 1 Hz the window is [0.667, 1.1] Hz: a dropped
 	 * block presents 0.5 Hz and splits, a block that took one extra period after
 	 * a failed I2C read presents 0.909 Hz and does not.
+	 * <p>
+	 * The VD6283 gets a clean 25% margin on a dropped block. The MLX90632 does
+	 * not, and cannot: its window is {@code [f/1.725, f*1.265]}, so a dropped
+	 * block presents {@code 0.5f} and splits comfortably, but a dropped block
+	 * landing on the chip's documented 12.5% catch-up presents {@code 0.571f}
+	 * against an edge of {@code 0.580f} and splits by 1.4%. That is not slack
+	 * left lying around - see {@link #getSlowSensorPlausibleRateRangeHz} for the
+	 * measurement that pins the edge where it is.
 	 * <p>
 	 * Nothing here depends on previously seen data, so unlike a measured window
 	 * this cannot be pulled onto a wrong cadence by the very loss it is meant to
@@ -227,8 +249,57 @@ public class UtilCsvSplitting {
 		}
 	}
 
+	/**
+	 * Set once a file has reported a missing light rate field, so the warning is
+	 * one line per recording rather than one per payload. Cleared with the limits
+	 * map, which {@code AsmBinaryFileParse} does at the start and end of a file.
+	 */
+	private static boolean hasWarnedLightRateFieldMissing = false;
+
 	public static void clearMapOfSamplingRateLimitsPerSensor() {
 		SAMPLING_RATE_LIMITS_PER_SENSOR.clear();
+		hasWarnedLightRateFieldMissing = false;
+	}
+
+	/**
+	 * Reports, once per file, a payload that claims firmware new enough to store
+	 * the ambient-light rate index yet carries light blocks with the field clear.
+	 * <p>
+	 * This is the one failure the header-driven design cannot otherwise see. A
+	 * zero field is indistinguishable from an old recording, so the parser falls
+	 * back to the wide rate-table window, the light data still comes out, and
+	 * nothing anywhere says that the gap detection for this file is nearly blind
+	 * - see {@link #getSlowSensorPlausibleRateRangeHz} for how wide that fallback
+	 * is. If the firmware ever ships with the field broken, this line is the only
+	 * thing that will say so.
+	 * <p>
+	 * Nothing about parsing keys on the firmware version: the field is
+	 * self-describing and {@link SensorVD6283#isConfiguredRateKnown()} alone
+	 * decides behaviour. The version is read HERE and nowhere else, purely to tell
+	 * "old recording, as expected" apart from "new recording, firmware bug". A
+	 * wrong value in {@link VerisenseDevice.FW_CHANGES#CCF_GEN2_LIGHT_RATE} can
+	 * therefore only make this warning fire at the wrong boundary; it cannot
+	 * change a parse.
+	 *
+	 * @param verisenseDevice the device being parsed
+	 */
+	public static void warnIfLightRateFieldMissingOnNewFirmware(VerisenseDevice verisenseDevice) {
+		if(hasWarnedLightRateFieldMissing || !verisenseDevice.isPayloadDesignV14orAbove()) {
+			return;
+		}
+		SensorVD6283 sensorVd6283 = verisenseDevice.getSensorVD6283();
+		if(sensorVd6283==null || sensorVd6283.isConfiguredRateKnown()) {
+			return;
+		}
+		hasWarnedLightRateFieldMissing = true;
+		double[] fallbackRangeHz = getSlowSensorPlausibleRateRangeHz(verisenseDevice, DATABLOCK_SENSOR_ID.LIGHT);
+		System.out.println("WARNING!!! Firmware " + verisenseDevice.getFirmwareVersionParsed()
+				+ " stores the VD6283 sample rate in payload header byte 30 bits 6:3, but this"
+				+ " recording carries ambient light blocks with that field clear. This is a"
+				+ " firmware fault, not an old recording."
+				+ " Falling back to the whole rate table, " + fallbackRangeHz[0] + " to "
+				+ fallbackRangeHz[1] + " Hz, so light blocks are timed from the exposure bound"
+				+ " and gap detection for this file is close to blind.");
 	}
 	
 	public static String isDataBlockContinuous(SENSORS sensorClassKey, DataSegmentDetails dataSegmentDetailsPrevious, DataBlockDetails nextDataBlockDetails) {

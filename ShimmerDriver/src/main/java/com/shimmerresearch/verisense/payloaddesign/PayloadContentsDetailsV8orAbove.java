@@ -94,9 +94,19 @@ public class PayloadContentsDetailsV8orAbove extends PayloadContentsDetails {
 
 		// The slow sensors carry their configured sample rate in the payload header
 		// (MLX90632 refresh code in byte 32; VD6283 rate index in byte 30 bits 6:3
-		// from FW v2.02.000), so the blocks are already correctly timed and only
-		// the CSV gap window has to be derived from it - see the method javadoc for
-		// why this is no longer measured from the data.
+		// from FW v2.02.000), so where the rate is known the blocks are already
+		// correctly timed and only the CSV gap window has to be derived from it -
+		// see the method javadoc for why this is no longer measured from the data.
+		//
+		// Where it is NOT known - an ambient light recording from firmware earlier
+		// than v2.02.000 - the blocks are timed from the exposure bound, which only
+		// bounds the rate from above and is ten times too fast at the 1 Hz default.
+		// That is a real loss against measuring the spacing, and it is deliberate:
+		// it costs the CSV header start time on those recordings (up to 8.1 s at
+		// 1 Hz), while measuring cost the ability to report data loss at all. No
+		// per-sample timestamps are affected, because the light and skin-temp CSVs
+		// carry none. Second-generation firmware never shipped to a customer, so
+		// this only touches internal recordings.
 		seedSlowSensorGapWindow(DATABLOCK_SENSOR_ID.LIGHT);
 		seedSlowSensorGapWindow(DATABLOCK_SENSOR_ID.SKIN_TEMP);
 
@@ -338,7 +348,28 @@ public class PayloadContentsDetailsV8orAbove extends PayloadContentsDetails {
 	 * @param slowSensorId the slow sensor data block id
 	 */
 	private void seedSlowSensorGapWindow(DATABLOCK_SENSOR_ID slowSensorId) {
+		if(!containsDataBlockForSensor(slowSensorId)) {
+			// No blocks of this sensor in this payload, so there is no boundary to
+			// judge and nothing to seed. Seeding regardless would ask the device for
+			// the sensor-class keys behind this data block id, and that lookup CREATES
+			// and caches them - so parsing a first-generation file, which has neither
+			// slow sensor, would quietly populate mappings and rate limits for
+			// hardware the recording does not have.
+			return;
+		}
+		if(slowSensorId==DATABLOCK_SENSOR_ID.LIGHT) {
+			UtilCsvSplitting.warnIfLightRateFieldMissingOnNewFirmware(verisenseDevice);
+		}
 		UtilCsvSplitting.seedSlowSensorGapWindow(verisenseDevice, slowSensorId);
+	}
+
+	private boolean containsDataBlockForSensor(DATABLOCK_SENSOR_ID slowSensorId) {
+		for(DataBlockDetails dataBlockDetails:listOfDataBlocksInOrder) {
+			if(dataBlockDetails.datablockSensorId==slowSensorId) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void backfillDataBlockRwcTimestamps() {

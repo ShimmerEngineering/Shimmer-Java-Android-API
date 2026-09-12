@@ -36,8 +36,10 @@ import com.shimmerresearch.verisense.payloaddesign.AsmBinaryFileConstants.PAYLOA
  * refresh-rate code (0..7 = 0.5/1/2/4/8/16/32/64 Hz). The OUTPUT sample rate
  * the firmware delivers is refresh / sub-measurements (medical = 2,
  * extended = 3) - mirrors the web SDK's SensorMLX90632.ts. As with the
- * ambient light, the parser refines the achieved rate per payload from
- * temp-block tick spacing; the header-derived value seeds the timing.
+ * ambient light, the header-derived value IS the timing: nothing is measured
+ * back out of the data. Refining the achieved rate from temp-block tick spacing
+ * was removed with DEV-974, because it could only work on healthy data and so
+ * went blind exactly when a recording had lost samples.
  */
 public class SensorMLX90632 extends AbstractSensor {
 
@@ -187,9 +189,14 @@ public class SensorMLX90632 extends AbstractSensor {
 
 	/**
 	 * Header-derived output sample rate (Hz): the chip refresh rate divided by
-	 * the sub-measurements per output (medical = 2, extended = 3). Seeds
-	 * data-block timing; the parser refines the achieved rate per payload from
-	 * temp-block tick spacing.
+	 * the sub-measurements per output (medical = 2, extended = 3). This times the
+	 * data blocks directly; nothing refines it from the data afterwards.
+	 * <p>
+	 * It is the CONFIGURED rate. Conversions slip by several refresh periods and
+	 * then catch up, so an individual boundary can read up to about 12.5% either
+	 * side of it while losing no samples at all - which is why the CSV gap window
+	 * built from this widens the fast side by
+	 * {@code SLOW_SENSOR_CONVERSION_SLIP_TOLERANCE}.
 	 */
 	public double getRateFreq() {
 		return getRefreshHz() / (extendedMode ? SUB_MEASUREMENTS_EXTENDED : SUB_MEASUREMENTS_MEDICAL);

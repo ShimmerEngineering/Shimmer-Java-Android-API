@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -78,12 +80,19 @@ public class API_00009_VerisenseSlowSensorGapWindow {
 	 * @param skinTempConfigByte header byte 32: measType bit 0, refresh code 3:1
 	 */
 	private VerisenseDevice setupGen2Device(int lightGainAndDarkByte, int skinTempConfigByte) {
+		return setupGen2Device(lightGainAndDarkByte, skinTempConfigByte, 2, 0, 9);
+	}
+
+	private VerisenseDevice setupGen2Device(int lightGainAndDarkByte, int skinTempConfigByte,
+			int fwMajor, int fwMinor, int fwInternal) {
 		VerisenseDevice device = new VerisenseDevice(COMMUNICATION_TYPE.SD);
 
 		byte[] configBytes = new byte[32];
 		configBytes[0] = (byte) 0x10; // extended-config flag
-		configBytes[2] = 2;  // FW major
-		configBytes[4] = 9;  // FW internal LSB (v2.00.009)
+		configBytes[2] = (byte) fwMajor;
+		configBytes[3] = (byte) fwMinor;
+		configBytes[4] = (byte) (fwInternal & 0xFF);
+		configBytes[5] = (byte) ((fwInternal>>8) & 0xFF);
 		configBytes[6] = (byte) 0xFF; // reset reason
 		configBytes[11] = HW_ID.VERISENSE_PULSE_PLUS; // SR68
 		configBytes[12] = 9;  // SR68-9 (second generation)
@@ -186,7 +195,16 @@ public class API_00009_VerisenseSlowSensorGapWindow {
 	/** Every index in the firmware rate table must decode to its rate. */
 	@Test
 	public void test001_everyConfiguredRateIndexIsDecoded() {
+		// hal_slowSensorSampler.c: slowSensorRateMs[] = {0, 2000, 1000, 500, 200, 100, 50}.
+		// The table is a STORED-DATA CONTRACT shared with the firmware across two
+		// repositories with no build-time link between them, so pin the conversion
+		// here: an index renumbered on either side silently re-times recordings.
+		double[] firmwarePeriodMs = {2000, 1000, 500, 200, 100, 50};
 		double[] expectedHz = {0.5, 1.0, 2.0, 5.0, 10.0, 20.0};
+		for(int i=0;i<expectedHz.length;i++) {
+			assertEquals("index " + (i+1) + " must be 1000/" + firmwarePeriodMs[i] + " Hz",
+					1000.0/firmwarePeriodMs[i], expectedHz[i], 1e-9);
+		}
 		for (int rateIndex = 1; rateIndex <= 6; rateIndex++) {
 			VerisenseDevice device = setupLightDevice(rateIndex);
 			SensorVD6283 sensor = device.getSensorVD6283();
@@ -431,6 +449,48 @@ public class API_00009_VerisenseSlowSensorGapWindow {
 	}
 
 	/**
+	 * The skin-temp gap edge is tight, and this states exactly how tight so that
+	 * nobody has to rediscover it.
+	 * <p>
+	 * A dropped block normally doubles the spacing. Landing on a boundary that had
+	 * already caught up by the chip's documented 12.5% makes the spacing
+	 * {@code 2 x 0.875} nominal periods instead, so the block presents itself as
+	 * {@code cfg/1.75} rather than {@code cfg/2} - much healthier than it is. The
+	 * gap edge is {@code cfg/1.725}, so it is still reported, by 1.4%.
+	 * <p>
+	 * The obvious repair is to narrow the slow side to {@code cfg/1.5}, as the
+	 * VD6283 uses. That was tried and reverted: Test_065 contains a HEALTHY
+	 * skin-temp boundary at 1.63x nominal spacing during start-up settling, and
+	 * narrowing split it. This sensor's healthy behaviour genuinely reaches into
+	 * the region a dropped block occupies, so the two assertions below are the
+	 * real constraint from both sides, 1.63x must not split and 1.75x must.
+	 */
+	@Test
+	public void test017_skinTempGapEdgeSeparatesRealLossFromStartUpSettling() {
+		VerisenseDevice device = setupGen2Device(lightHeaderByte(2), SKIN_TEMP_CONFIG_32HZ_REFRESH);
+		seedWindow(device, DATABLOCK_SENSOR_ID.SKIN_TEMP);
+		double[] window = windowFor(DATABLOCK_SENSOR_ID.SKIN_TEMP);
+
+		double configuredHz = 16.0;
+
+		// Measured on Test_065: a 16-sample block boundary 1531 ms after the
+		// previous block ended, against a nominal 937.5 ms. No samples were lost.
+		assertFalse("the 1.63x start-up boundary observed on Test_065 must NOT split",
+				UtilCsvSplitting.isSamplingRateOutsideOfLimits(window, configuredHz/1.633));
+
+		// A dropped block, even hidden by a 12.5% catch-up, must still split.
+		assertTrue("a dropped block landing on a catch-up must split",
+				UtilCsvSplitting.isSamplingRateOutsideOfLimits(window, configuredHz/(2.0*0.875)));
+
+		// A clean dropped block has proper margin; it is only the catch-up case
+		// that is close.
+		assertTrue(UtilCsvSplitting.isSamplingRateOutsideOfLimits(window, configuredHz/2.0));
+		assertTrue("the catch-up case is deliberately close - if this margin ever grows"
+				+ " past 10% somebody has widened the window without saying so",
+				(window[0]-configuredHz/(2.0*0.875))/window[0] < 0.10);
+	}
+
+	/**
 	 * The slowest skin-temp configuration, 0.25 Hz output, where a 16-sample
 	 * block spans about 64 s. Two such blocks can land in one payload, and
 	 * differencing their SUB-MINUTE end ticks re-bases a real 64 s gap to about
@@ -440,7 +500,7 @@ public class API_00009_VerisenseSlowSensorGapWindow {
 	 * header removes the tick arithmetic entirely.
 	 */
 	@Test
-	public void test017_skinTempAtSlowestRateUsesTheHeaderRateNotWrappedTicks() {
+	public void test018_skinTempAtSlowestRateUsesTheHeaderRateNotWrappedTicks() {
 		VerisenseDevice device = setupGen2Device(lightHeaderByte(2), SKIN_TEMP_CONFIG_0HZ5_REFRESH);
 		assertEquals("slowest configuration is 0.25 Hz output", 0.25, device.getSamplingRateForSensor(SENSORS.MLX90632), 1e-9);
 		seedWindow(device, DATABLOCK_SENSOR_ID.SKIN_TEMP);
@@ -457,9 +517,101 @@ public class API_00009_VerisenseSlowSensorGapWindow {
 
 	// ------------------------------------------------------------- other
 
+	// ------------------------------------------- the firmware-fault diagnostic
+
+	/**
+	 * Captures whatever the parser prints while {@code runnable} runs.
+	 * <p>
+	 * Worth the awkwardness: the warning below is the ONLY signal that would
+	 * exist if the firmware shipped with the rate field broken, so "does it
+	 * actually print" is the whole point of it.
+	 */
+	private String captureConsole(Runnable runnable) {
+		PrintStream original = System.out;
+		ByteArrayOutputStream captured = new ByteArrayOutputStream();
+		try {
+			System.setOut(new PrintStream(captured));
+			runnable.run();
+		} finally {
+			System.setOut(original);
+		}
+		return captured.toString();
+	}
+
+	/**
+	 * A recording from firmware that predates the field is the ordinary case and
+	 * must stay silent. Warning on every old recording would train people to
+	 * ignore the line that matters.
+	 */
+	@Test
+	public void test023_oldFirmwareWithNoStoredRateIsNotReported() {
+		final VerisenseDevice device = setupGen2Device(lightHeaderByte(0), SKIN_TEMP_CONFIG_32HZ_REFRESH, 2, 0, 9);
+		assertFalse("fixture must have no stored rate", device.getSensorVD6283().isConfiguredRateKnown());
+		assertFalse("and must predate the field", device.isPayloadDesignV14orAbove());
+
+		String printed = captureConsole(new Runnable() {
+			@Override
+			public void run() {
+				UtilCsvSplitting.warnIfLightRateFieldMissingOnNewFirmware(device);
+			}
+		});
+		assertEquals("an old recording must print nothing", "", printed.trim());
+	}
+
+	/**
+	 * The case this exists for: firmware new enough to store the rate, carrying
+	 * light blocks, with the field clear. That is a firmware fault, and without
+	 * this line it would be indistinguishable from an old recording - the file
+	 * would parse, the light data would come out, and the near-blind fallback
+	 * window would never be mentioned.
+	 */
+	@Test
+	public void test024_newFirmwareWithNoStoredRateIsReportedOncePerFile() {
+		final VerisenseDevice device = setupGen2Device(lightHeaderByte(0), SKIN_TEMP_CONFIG_32HZ_REFRESH, 2, 2, 0);
+		assertTrue("fixture must claim firmware that stores the field", device.isPayloadDesignV14orAbove());
+		assertFalse("but carry no rate", device.getSensorVD6283().isConfiguredRateKnown());
+
+		String printed = captureConsole(new Runnable() {
+			@Override
+			public void run() {
+				// Three payloads of the same file: the warning is per recording.
+				UtilCsvSplitting.warnIfLightRateFieldMissingOnNewFirmware(device);
+				UtilCsvSplitting.warnIfLightRateFieldMissingOnNewFirmware(device);
+				UtilCsvSplitting.warnIfLightRateFieldMissingOnNewFirmware(device);
+			}
+		});
+		assertTrue("it must say the firmware is at fault: " + printed, printed.contains("firmware fault"));
+		assertEquals("exactly one line per file", 1, printed.split("WARNING", -1).length-1);
+
+		// A new file clears the state, so the next recording is reported too.
+		UtilCsvSplitting.clearMapOfSamplingRateLimitsPerSensor();
+		String nextFile = captureConsole(new Runnable() {
+			@Override
+			public void run() {
+				UtilCsvSplitting.warnIfLightRateFieldMissingOnNewFirmware(device);
+			}
+		});
+		assertTrue("the next file must warn again", nextFile.contains("WARNING"));
+	}
+
+	/** New firmware that DID store the rate is the healthy case: silent. */
+	@Test
+	public void test025_newFirmwareWithAStoredRateIsNotReported() {
+		final VerisenseDevice device = setupGen2Device(lightHeaderByte(2), SKIN_TEMP_CONFIG_32HZ_REFRESH, 2, 2, 0);
+		assertTrue(device.getSensorVD6283().isConfiguredRateKnown());
+
+		String printed = captureConsole(new Runnable() {
+			@Override
+			public void run() {
+				UtilCsvSplitting.warnIfLightRateFieldMissingOnNewFirmware(device);
+			}
+		});
+		assertEquals("", printed.trim());
+	}
+
 	/** Nothing here may disturb a fast sensor's own band. */
 	@Test
-	public void test018_fastSensorLimitsAreUntouched() {
+	public void test019_fastSensorLimitsAreUntouched() {
 		VerisenseDevice device = setupLightDevice(2);
 		double[] fastSensorLimits = UtilCsvSplitting.calculateSamplingRateLimits(960);
 		UtilCsvSplitting.SAMPLING_RATE_LIMITS_PER_SENSOR.put(SENSORS.LSM6DSV, fastSensorLimits);
@@ -477,7 +629,7 @@ public class API_00009_VerisenseSlowSensorGapWindow {
 	 * state at a CSV-set boundary loses nothing that cannot be recomputed.
 	 */
 	@Test
-	public void test019_windowIsStatelessAndReproducible() {
+	public void test020_windowIsStatelessAndReproducible() {
 		VerisenseDevice device = setupLightDevice(2);
 		seedWindow(device, DATABLOCK_SENSOR_ID.LIGHT);
 		double[] first = windowFor(DATABLOCK_SENSOR_ID.LIGHT).clone();
@@ -534,7 +686,7 @@ public class API_00009_VerisenseSlowSensorGapWindow {
 	 * exposure-derived guess.
 	 */
 	@Test
-	public void test020_csvConfigLineReportsConfiguredOnlyWhenKnown() {
+	public void test022_csvConfigLineReportsConfiguredOnlyWhenKnown() {
 		String known = setupLightDevice(2).generateSensorConfigStrSingleSensor(SENSORS.VD6283, 0.993);
 		assertTrue("known rate must report Configured: " + known, known.contains("Configured = 1.0 Hz"));
 		assertTrue(known.contains("Calculated = 0.993 Hz"));
