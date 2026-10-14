@@ -1,10 +1,12 @@
 package com.shimmerresearch.shimmer3.communication;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_CRC_MODE;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.driver.BasicProcessWithCallBack;
 import com.shimmerresearch.driver.CallbackObject;
@@ -29,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) // Test methods will be run in alphabetical order
 public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBack{
 	ShimmerPC mDevice;
-	TaskCompletionSource<Boolean> mWaitTask;
 	TaskCompletionSource<Boolean> mStreamingTask;
 	ByteCommunicationSimulatorS3 mByteCommunicationSimulatorS3;
 
@@ -40,20 +41,16 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
 		mDevice.setTestRadio(mByteCommunicationSimulatorS3);
 		setWaitForData(mDevice);
     }
+
+	@After
+	public void tearDown() {
+		mDevice.disconnectNoException();
+	}
     
     @Test
     public void test001_testConnectandDisconnect() {
     	mByteCommunicationSimulatorS3.setIsNewBMPSupported(false);
-    	mWaitTask = new TaskCompletionSource<Boolean>();
-    	mDevice.connect("","");
-    	
-    		mWaitTask = new TaskCompletionSource<>();
-    		try {
-				mWaitTask.getTask().waitForCompletion(3, TimeUnit.SECONDS); //Just to give time to connect to finish
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    	ByteCommunicationTestUtils.connectAndWaitUntilInitialised(mDevice);
 			
     	if (!mDevice.isConnected()) {
     		assert(false);
@@ -64,6 +61,9 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
     	if (!(mDevice.getHardwareVersion()==HW_ID.SHIMMER_3)) {
     		assert(false);
     	}
+    	// A Shimmer3 keeps the link CRC when sensing stops, so connecting turns
+    	// on the driver default (DEV-976)
+    	assertEquals(BT_CRC_MODE.ONE_BYTE_CRC, mDevice.getCurrentBtCommsCrcMode());
     	
     	System.out.println(mDevice.getHardwareVersionParsed());
     	if (!mDevice.getHardwareVersionParsed().equals("Shimmer3")) {
@@ -84,16 +84,7 @@ public class API_0000X_ByteCommunicationShimmer3 extends BasicProcessWithCallBac
     @Test
     public void test002_testConnectandDisconnect_NewBMPSupported() {
     	mByteCommunicationSimulatorS3.setIsNewBMPSupported(true);
-    	mWaitTask = new TaskCompletionSource<Boolean>();
-    	mDevice.connect("","");
-    	
-    		mWaitTask = new TaskCompletionSource<>();
-    		try {
-				boolean result = mWaitTask.getTask().waitForCompletion(5, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    	ByteCommunicationTestUtils.connectAndWaitUntilInitialised(mDevice);
 			
     	if (!mDevice.isConnected()) {
     		assert(false);
