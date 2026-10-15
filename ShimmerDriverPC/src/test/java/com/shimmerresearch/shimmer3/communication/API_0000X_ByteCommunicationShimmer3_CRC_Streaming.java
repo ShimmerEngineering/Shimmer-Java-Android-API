@@ -36,7 +36,7 @@ public class API_0000X_ByteCommunicationShimmer3_CRC_Streaming extends BasicProc
 	@Before
     public void setUp() {
 		mByteCommunicationSimulatorS3 = new ByteCommunicationSimulatorS3_streaming_instream_crc("COM99");
-		mDevice = new ShimmerPC("COM99");
+		mDevice = ByteCommunicationTestUtils.newShimmerPCWithoutStatusTimer("COM99");
 		mDevice.setTestRadio(mByteCommunicationSimulatorS3);
 		setWaitForData(mDevice);
     }
