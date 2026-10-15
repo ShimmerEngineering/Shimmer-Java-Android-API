@@ -36,7 +36,7 @@ public class API_0000X_ByteCommunicationShimmer3_Streaming_Throw_Bytes extends B
 	@Before
     public void setUp() {
 		mByteCommunicationSimulatorS3 = new ByteCommunicationSimulatorS3_streaming_with_improved_throw_bytes("COM99");
-		mDevice = new ShimmerPC("COM99");
+		mDevice = ByteCommunicationTestUtils.newShimmerPCWithoutStatusTimer("COM99");
 		mDevice.setTestRadio(mByteCommunicationSimulatorS3);
 		setWaitForData(mDevice);
     }

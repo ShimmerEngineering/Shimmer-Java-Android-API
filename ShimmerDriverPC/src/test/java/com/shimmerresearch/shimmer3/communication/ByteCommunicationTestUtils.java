@@ -19,6 +19,26 @@ public class ByteCommunicationTestUtils {
 	public static final long CONNECT_TIMEOUT_MS = 30000;
 
 	/**
+	 * A ShimmerPC for the simulator tests whose periodic read-status timer never starts.
+	 * <p>
+	 * The connect sequence unlocks the instruction stack and then starts that timer with no delay,
+	 * so its first readStatusTask (which locks the device, then the instruction list) runs just as
+	 * the IOThread takes the first post-connect instruction in ShimmerBluetooth.getInstruction()
+	 * (which locks the list, then the device). When the two meet they deadlock and the connect never
+	 * finishes. That hung these tests on Linux CI every time (DEV-1198). The driver is deliberately
+	 * left as it is; the tests only lose the 5 s status poll, and the connect sequence still reads
+	 * the status once.
+	 */
+	public static ShimmerPC newShimmerPCWithoutStatusTimer(String comPort) {
+		return new ShimmerPC(comPort) {
+			@Override
+			public void startTimerReadStatus() {
+				// Deliberately empty - see above
+			}
+		};
+	}
+
+	/**
 	 * Connects and blocks until the device has finished its post-connect config read (infomem,
 	 * calibration, etc.), i.e. isInitialised() is set and the state has moved to CONNECTED.
 	 * isConnected() alone is not enough - it turns true before that read has run, so a fixed

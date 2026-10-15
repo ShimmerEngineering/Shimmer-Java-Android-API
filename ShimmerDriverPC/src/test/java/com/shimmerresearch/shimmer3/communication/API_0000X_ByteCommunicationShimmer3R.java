@@ -54,7 +54,7 @@ public class API_0000X_ByteCommunicationShimmer3R extends BasicProcessWithCallBa
 	@Before
     public void setUp() {
 		mByteCommunicationSimulatorS3R = new ByteCommunicationSimulatorS3R("COM99");
-		mDevice = new ShimmerPC("COM99");
+		mDevice = ByteCommunicationTestUtils.newShimmerPCWithoutStatusTimer("COM99");
 		mDevice.setTestRadio(mByteCommunicationSimulatorS3R);
 		setWaitForData(mDevice);
     }
