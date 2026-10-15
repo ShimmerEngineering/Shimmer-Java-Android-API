@@ -36,7 +36,7 @@ public class API_0000X_ByteCommunicationShimmer3_Streaming extends BasicProcessW
 	@Before
     public void setUp() {
 		mByteCommunicationSimulatorS3 = new ByteCommunicationSimulatorS3_streaming("COM99");
-		mDevice = new ShimmerPC("COM99");
+		mDevice = ByteCommunicationTestUtils.newShimmerPCWithoutStatusTimer("COM99");
 		mDevice.setTestRadio(mByteCommunicationSimulatorS3);
 		setWaitForData(mDevice);
     }

@@ -31,7 +31,7 @@ public class API_0000X_ByteCommunicationShimmer3lns0_16_11 extends BasicProcessW
 	ShimmerPC mDevice;
 	@Before
     public void setUp() {
-		mDevice = new ShimmerPC("COM99");
+		mDevice = ByteCommunicationTestUtils.newShimmerPCWithoutStatusTimer("COM99");
 		mDevice.setTestRadio(new ByteCommunicationSimulatorS3LNS0_16_11("COM99"));
 		setWaitForData(mDevice);
     }
