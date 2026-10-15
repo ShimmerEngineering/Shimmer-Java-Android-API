@@ -91,8 +91,12 @@ jobs:
         done
         TAG="API_v$VERSION"
         if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-          echo "::error::$TAG already exists. Bump the version with an uprev PR first."
-          exit 1
+          if [ "$DRY_RUN" = true ]; then
+            echo "::warning::$TAG already exists, so a real release would stop here. Dry run continues."
+          else
+            echo "::error::$TAG already exists. Bump the version with an uprev PR first."
+            exit 1
+          fi
         fi
         PREVIOUS_TAG=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 200 --json tagName,createdAt \
           --jq '[.[] | select(.tagName | startswith("API_v"))] | sort_by(.createdAt) | last | .tagName // ""')
