@@ -2,6 +2,12 @@ package com.shimmerresearch.shimmer3.communication;
 
 import static org.junit.Assert.fail;
 
+import java.lang.management.LockInfo;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MonitorInfo;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 
@@ -23,6 +29,9 @@ public class ByteCommunicationTestUtils {
 		long deadline = System.currentTimeMillis() + CONNECT_TIMEOUT_MS;
 		while (!(device.isInitialised() && device.getBluetoothRadioState()==BT_STATE.CONNECTED)) {
 			if (System.currentTimeMillis() > deadline) {
+				// A hang here has so far only reproduced on CI, so print where every thread is
+				// before failing - the log is the only evidence there is.
+				System.out.println(dumpAllThreads());
 				fail("Device did not finish initialising within " + CONNECT_TIMEOUT_MS + " ms (state: " + device.getBluetoothRadioState() + ")");
 			}
 			try {
@@ -32,6 +41,50 @@ public class ByteCommunicationTestUtils {
 				fail("Interrupted while waiting for the device to initialise");
 			}
 		}
+	}
+
+	/** Every thread's full stack with the monitors it holds and the lock it waits on, plus any
+	 *  deadlock the JVM can see. ThreadInfo.toString() stops at 8 frames, too few for the driver. */
+	public static String dumpAllThreads() {
+		ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
+		StringBuilder sb = new StringBuilder("==== Thread dump ====\n");
+
+		long[] deadlocked = mxBean.findDeadlockedThreads();
+		if (deadlocked != null) {
+			sb.append("DEADLOCK between thread ids:");
+			for (long id : deadlocked) {
+				sb.append(' ').append(id);
+			}
+			sb.append('\n');
+		}
+
+		for (ThreadInfo ti : mxBean.dumpAllThreads(true, true)) {
+			sb.append('"').append(ti.getThreadName()).append("\" id=").append(ti.getThreadId())
+					.append(' ').append(ti.getThreadState());
+			if (ti.getLockName() != null) {
+				sb.append(" on ").append(ti.getLockName());
+			}
+			if (ti.getLockOwnerName() != null) {
+				sb.append(" owned by \"").append(ti.getLockOwnerName()).append("\" id=").append(ti.getLockOwnerId());
+			}
+			sb.append('\n');
+
+			StackTraceElement[] stack = ti.getStackTrace();
+			MonitorInfo[] monitors = ti.getLockedMonitors();
+			for (int i = 0; i < stack.length; i++) {
+				sb.append("\tat ").append(stack[i]).append('\n');
+				for (MonitorInfo mi : monitors) {
+					if (mi.getLockedStackDepth() == i) {
+						sb.append("\t- locked ").append(mi).append('\n');
+					}
+				}
+			}
+			for (LockInfo li : ti.getLockedSynchronizers()) {
+				sb.append("\t- locked synchronizer ").append(li).append('\n');
+			}
+			sb.append('\n');
+		}
+		return sb.append("==== End of thread dump ====").toString();
 	}
 
 }
