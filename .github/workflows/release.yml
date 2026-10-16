@@ -1,15 +1,16 @@
 # One-click release of the Java API: GitHub Packages, a GitHub Release, and the MATLAB jar.
 #
 # How to release
-#   1. Merge the usual uprev PR, which bumps the publishing `version` in ShimmerDriver,
-#      ShimmerBluetoothManager and ShimmerDriverPC build.gradle. master is protected, so this
-#      workflow cannot commit the bump itself.
-#   2. Actions -> "Release Java API" -> Run workflow (on master).
-#   3. Review and merge the ShimmerJavaClass.jar PR it opens in Shimmer-MATLAB-ID.
+#   1. Actions -> "Release Java API" -> Run workflow (on master). Leave `version` blank for the next
+#      patch after the last API_v release (0.11.8_beta -> 0.11.9_beta), or type one.
+#   2. Review and merge the ShimmerJavaClass.jar PR it opens in Shimmer-MATLAB-ID.
+#   3. Run "Release Android API" in ShimmerAndroidAPI, which builds against this version by default.
+#
+# The version is not kept in the source. The build files read it from -PreleaseVersion, which this
+# workflow passes, and say 'local' otherwise; the API_v tags record what was released.
 #
 # One run does, in order, and creates nothing public until the build and tests have passed:
-#   build        reads the version from the three build.gradle files and fails if they disagree;
-#                fails if API_v<version> is already tagged; tests ShimmerDriver and builds
+#   build        picks the version; fails if API_v<version> is already tagged; tests ShimmerDriver and builds
 #                ShimmerDriverPC exactly as gradle.yml does; then publishes shimmerdriver,
 #                shimmerbluetoothmanager and shimmerdriverpc together with one `gradlew publish`
 #                (DEV-1115: publishing them one at a time by hand left shimmerbluetoothmanager
@@ -27,7 +28,8 @@
 # repeated. A failed publish can leave some of the three versions in GitHub Packages: delete those
 # versions under the repo's Packages before re-running, or bump the version.
 #
-# dry_run runs build and matlab-jar without publishing, from any branch. The workflow also
+# dry_run runs build and matlab-jar without publishing, from any branch; a blank version still picks
+# the next one, so the run shows what a real release would be called. The workflow also
 # dry-runs on any PR that changes this file.
 
 name: Release Java API
@@ -35,6 +37,10 @@ name: Release Java API
 on:
   workflow_dispatch:
     inputs:
+      version:
+        description: 'Version, e.g. 0.12.0_beta. Blank = next patch after the last release'
+        type: string
+        required: false
       dry_run:
         description: 'Build and test only; publish nothing'
         type: boolean
@@ -70,36 +76,38 @@ jobs:
       with:
         fetch-depth: 0 # tags, to refuse a version that is already released
 
-    - name: Read the version from the build files
+    - name: Choose the version
       id: version
       env:
         GH_TOKEN: ${{ github.token }}
+        REQUESTED: ${{ inputs.version }}
       run: |
-        VERSION=
-        for p in ShimmerDriver ShimmerBluetoothManager ShimmerDriverPC; do
-          v=$(sed -nE "s/^[[:space:]]*version = '([^']+)'.*/\1/p" "$p/build.gradle")
-          echo "$p: ${v:-<none>}"
-          if [ "$(printf '%s\n' "$v" | grep -c .)" -ne 1 ]; then
-            echo "::error file=$p/build.gradle::Expected exactly one publishing version = '...' line"
+        PREVIOUS_TAG=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 200 --json tagName,createdAt \
+          --jq '[.[] | select(.tagName | startswith("API_v"))] | sort_by(.createdAt) | last | .tagName // ""')
+        if [ -n "$REQUESTED" ]; then
+          VERSION=$REQUESTED
+        else
+          # Next patch after the last release, keeping its suffix: 0.11.8_beta -> 0.11.9_beta.
+          last=${PREVIOUS_TAG#API_v}
+          if ! [[ "$last" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(.*)$ ]]; then
+            echo "::error::Cannot work out the next version from '${PREVIOUS_TAG:-no previous release}'. Type one in the version box."
             exit 1
           fi
-          if [ -n "$VERSION" ] && [ "$v" != "$VERSION" ]; then
-            echo "::error file=$p/build.gradle::$p is at $v but ShimmerDriver is at $VERSION. The uprev must bump all three."
-            exit 1
-          fi
-          VERSION=$v
-        done
+          VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.$((BASH_REMATCH[3] + 1))${BASH_REMATCH[4]}"
+        fi
+        if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9_.-]*$ ]]; then
+          echo "::error::'$VERSION' is not a version like 0.11.9_beta."
+          exit 1
+        fi
         TAG="API_v$VERSION"
         if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
           if [ "$DRY_RUN" = true ]; then
             echo "::warning::$TAG already exists, so a real release would stop here. Dry run continues."
           else
-            echo "::error::$TAG already exists. Bump the version with an uprev PR first."
+            echo "::error::$TAG already exists. Leave the version blank for the next one, or type another."
             exit 1
           fi
         fi
-        PREVIOUS_TAG=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 200 --json tagName,createdAt \
-          --jq '[.[] | select(.tagName | startswith("API_v"))] | sort_by(.createdAt) | last | .tagName // ""')
         {
           echo "version=$VERSION"
           echo "tag=$TAG"
@@ -128,14 +136,16 @@ jobs:
       run: ./gradlew build
 
     # `publish` runs in every project of the ShimmerDriverPC build, so all three artifacts go
-    # out in one invocation. The build files read these credentials from USERNAME and TOKEN.
+    # out in one invocation, and -PreleaseVersion versions all three (and their POM
+    # dependencies on each other). The build files read the credentials from USERNAME and TOKEN.
     - name: Publish to GitHub Packages
       if: env.DRY_RUN != 'true'
       working-directory: ShimmerDriverPC
       env:
         USERNAME: ${{ github.actor }}
         TOKEN: ${{ github.token }}
-      run: ./gradlew publish
+        VERSION: ${{ steps.version.outputs.version }}
+      run: ./gradlew publish -PreleaseVersion="$VERSION"
 
     - name: Collect the release jars
       env:
@@ -232,7 +242,7 @@ jobs:
           echo "### Released Java API $VERSION"
           echo "- Release: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$TAG"
           echo "- Packages: com.shimmerresearch:shimmerdriver, shimmerbluetoothmanager and shimmerdriverpc at $VERSION"
-          echo "- Next: bump the shimmerdriver and shimmerbluetoothmanager pins in ShimmerAndroidAPI to $VERSION, then run its Release workflow."
+          echo "- Next: merge the MATLAB PR, then run Release Android API in ShimmerAndroidAPI; it builds against $VERSION unless you pick another driver version."
         } >> "$GITHUB_STEP_SUMMARY"
 
   update-matlab:
