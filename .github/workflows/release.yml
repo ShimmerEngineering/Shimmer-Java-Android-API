@@ -76,6 +76,10 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # tags, to refuse a version that is already released
+        # Keep this job's packages:write token out of .git/config, where the Gradle build (and any
+        # plugin or dependency it runs) could read it. Nothing here needs git credentials after
+        # checkout: publish gets the token explicitly, and gh uses GH_TOKEN.
+        persist-credentials: false
 
     - name: Choose the version
       id: version
@@ -172,6 +176,8 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false # the Gradle build needs no git credentials
 
     - name: Set up JDK 11
       uses: actions/setup-java@v4
@@ -266,6 +272,8 @@ jobs:
         echo "::error::Secret MATLAB_REPO_TOKEN is not set, so the Shimmer-MATLAB-ID PR cannot be opened. Add a fine-grained token for $MATLAB_REPO (Contents and Pull requests: read/write) as a repo secret, then re-run this job."
         exit 1
 
+    # Credentials stay persisted here on purpose: the git push below uses them. Nothing else runs
+    # in this job.
     - uses: actions/checkout@v4
       with:
         repository: ${{ env.MATLAB_REPO }}
