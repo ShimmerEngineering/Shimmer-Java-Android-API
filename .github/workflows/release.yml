@@ -215,19 +215,41 @@ jobs:
       working-directory: ShimmerDriverPC
       run: ./gradlew shadowJar -PmatlabJava8
 
-    - name: Check the jar is Java 8 bytecode
+    # Every class in the jar, dependencies included, since a dependency built for a later Java
+    # breaks MATLAB just as surely as our own code would (~32,500 classes, about 2 s).
+    - name: Check every class in the jar is Java 8 bytecode
       run: |
         jar=ShimmerDriverPC/build/libs/ShimmerJavaClass.jar
-        for c in com/shimmerresearch/tools/matlab/ShimmerJavaClass.class \
-                 com/shimmerresearch/driver/ShimmerObject.class \
-                 com/shimmerresearch/managers/bluetoothManager/ShimmerBluetoothManager.class; do
-          major=$(unzip -p "$jar" "$c" | head -c 8 | od -An -tu1 | awk '{print $7 * 256 + $8}')
-          echo "$c: class file major version $major"
-          if [ "$major" != 52 ]; then
-            echo "::error::$c is class version $major, not 52 (Java 8); MATLAB on Java 8 cannot load it."
-            exit 1
-          fi
-        done
+        python3 - "$jar" <<'EOF'
+        import struct, sys, zipfile
+
+        MAIN = "com/shimmerresearch/tools/matlab/ShimmerJavaClass.class"
+        jar = sys.argv[1]
+        checked, bad = 0, []
+        with zipfile.ZipFile(jar) as z:
+            names = z.namelist()
+            if MAIN not in names:
+                print(f"::error::{jar} does not contain {MAIN}.")
+                sys.exit(1)
+            for name in names:
+                # Java 8 never loads module descriptors or multi-release entries for later Javas.
+                if (not name.endswith(".class") or name.startswith("META-INF/versions/")
+                        or name.endswith("module-info.class")):
+                    continue
+                with z.open(name) as f:
+                    head = f.read(8)
+                checked += 1
+                if len(head) < 8 or head[:4] != b"\xca\xfe\xba\xbe":
+                    bad.append((name, "not a class file"))
+                elif struct.unpack(">H", head[6:8])[0] > 52:
+                    bad.append((name, f"class version {struct.unpack('>H', head[6:8])[0]}"))
+        print(f"Checked {checked} classes; {len(bad)} newer than Java 8 (class version 52).")
+        for name, why in bad[:20]:
+            print(f"::error::{name}: {why}. MATLAB on Java 8 cannot load it.")
+        if len(bad) > 20:
+            print(f"::error::...and {len(bad) - 20} more.")
+        sys.exit(1 if bad else 0)
+        EOF
         mkdir -p matlab-jar
         cp "$jar" matlab-jar/ShimmerJavaClass.jar
         ls -l matlab-jar
