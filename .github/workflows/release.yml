@@ -11,10 +11,11 @@
 #
 # One run does, in order, and creates nothing public until the build and tests have passed:
 #   build        picks the version; fails if API_v<version> is already tagged; tests ShimmerDriver and builds
-#                ShimmerDriverPC exactly as gradle.yml does; then publishes shimmerdriver,
+#                ShimmerDriverPC exactly as gradle.yml does. Read-only: it runs on PRs too.
+#   publish      real releases only, and the only job with packages:write. Publishes shimmerdriver,
 #                shimmerbluetoothmanager and shimmerdriverpc together with one `gradlew publish`
 #                (DEV-1115: publishing them one at a time by hand left shimmerbluetoothmanager
-#                0.11.8_beta unpublished)
+#                0.11.8_beta unpublished), and keeps the jars it published for the release
 #   matlab-jar   builds ShimmerJavaClass.jar as Java 8 bytecode (`shadowJar -PmatlabJava8`), on a
 #                separate runner so its Java 8 classes cannot end up in the published jars
 #   release      tags API_v<version> on the commit it built and creates the GitHub Release, with
@@ -57,9 +58,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30 # a hung Gradle daemon otherwise holds the runner for 6 hours
+    # Read-only on purpose: this job also runs on PRs, and any code in a job can recover that
+    # job's token. Only the publish job, which runs on real releases alone, can write packages.
     permissions:
       contents: read
-      packages: write
     env:
       DRY_RUN: ${{ github.event_name != 'workflow_dispatch' || inputs.dry_run }}
     outputs:
@@ -76,9 +78,8 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # tags, to refuse a version that is already released
-        # Keep this job's packages:write token out of .git/config, where the Gradle build (and any
-        # plugin or dependency it runs) could read it. Nothing here needs git credentials after
-        # checkout: publish gets the token explicitly, and gh uses GH_TOKEN.
+        # Keep the token out of .git/config, where the Gradle build (and any plugin or dependency
+        # it runs) could read it. Nothing here needs git credentials after checkout; gh uses GH_TOKEN.
         persist-credentials: false
 
     - name: Choose the version
@@ -140,21 +141,43 @@ jobs:
       working-directory: ShimmerDriverPC
       run: ./gradlew build
 
+  publish:
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
+    runs-on: ubuntu-latest
+    timeout-minutes: 30 # a hung Gradle daemon otherwise holds the runner for 6 hours
+    permissions:
+      contents: read
+      packages: write
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false # publish gets its token explicitly, below
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
+
     # `publish` runs in every project of the ShimmerDriverPC build, so all three artifacts go
     # out in one invocation, and -PreleaseVersion versions all three (and their POM
-    # dependencies on each other). The build files read the credentials from USERNAME and TOKEN.
+    # dependencies on each other). It builds the jars but does not re-run the tests, which the
+    # build job ran on this same commit. The build files read the credentials from USERNAME and TOKEN.
     - name: Publish to GitHub Packages
-      if: env.DRY_RUN != 'true'
       working-directory: ShimmerDriverPC
       env:
         USERNAME: ${{ github.actor }}
         TOKEN: ${{ github.token }}
-        VERSION: ${{ steps.version.outputs.version }}
       run: ./gradlew publish -PreleaseVersion="$VERSION"
 
-    - name: Collect the release jars
-      env:
-        VERSION: ${{ steps.version.outputs.version }}
+    # The jars just published, so the GitHub Release carries the same files as GitHub Packages.
+    - name: Collect the published jars
       run: |
         mkdir -p release-assets
         cp ShimmerDriver/build/libs/ShimmerDriver.jar                     "release-assets/shimmerdriver-$VERSION.jar"
@@ -216,7 +239,7 @@ jobs:
         if-no-files-found: error
 
   release:
-    needs: [build, matlab-jar]
+    needs: [build, publish, matlab-jar]
     if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
     runs-on: ubuntu-latest
     timeout-minutes: 10
