@@ -902,6 +902,7 @@ public class Configuration {
 			public static final String ENABLE_ERROR_LEDS_RTC = "RTC Error LEDs";
 			public static final String ENABLE_ERROR_LEDS_SD = "SD Error LEDs";
 			public static final String LOW_POWER_AUTOSTOP = "Low-power Autostop";
+			public static final String RAW_AUDIO = "Store Raw Audio";
 
 			public static final String KINEMATIC_LPM = "Kinematic Sensors Low-Power Mode";//XXX-RS-LSM-SensorClass? What about HighResolutionMode?!
 			public static final String CALIBRATION_ALL = AbstractSensor.GuiLabelConfigCommon.CALIBRATION_ALL;
@@ -2002,6 +2003,13 @@ public class Configuration {
 				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 				Arrays.asList(new ShimmerVerObject(FW_ID.LOGANDSTREAM, 0, 9, 6),
 						new ShimmerVerObject(FW_ID.SDLOG, 0, 17, 3)));
+
+	    /** Bench audio recorder (audiorec9): also store the microphone WAV beside the fingerprint. */
+	    public static final ConfigOptionDetailsSensor configOptionRawAudio = new ConfigOptionDetailsSensor(
+				Configuration.Shimmer3.GuiLabelConfig.RAW_AUDIO,
+				null,
+				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
+				Arrays.asList(new ShimmerVerObject(HW_ID.SHIMMER_3R, FW_ID.LOGANDSTREAM, 1, 1, 21)));
 	    
 	    public static final Map<String, ConfigOptionDetailsSensor> mConfigOptionsMapRef;
 	    static {
@@ -2275,6 +2283,7 @@ public class Configuration {
 					CompatibilityInfoForMaps.listOfCompatibleVersionInfoAnyExpBoardAndFw));
 
 			aMap.put(Configuration.Shimmer3.GuiLabelConfig.LOW_POWER_AUTOSTOP, configOptionLowPowerAutoStop);
+			aMap.put(Configuration.Shimmer3.GuiLabelConfig.RAW_AUDIO, configOptionRawAudio);
 
 	        mConfigOptionsMapRef3r = Collections.unmodifiableMap(aMap);
 	    }

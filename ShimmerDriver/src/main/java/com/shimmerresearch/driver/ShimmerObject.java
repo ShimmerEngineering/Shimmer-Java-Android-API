@@ -574,6 +574,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private boolean isOverrideShowErrorLedsSd = false;
 	private int mShowErrorLedsSd = 0;
 	private boolean mLowBattAutoStop = false;
+	private boolean mRawAudio = false;
 
 	protected int mTrialId = 0;
 	protected int mTrialNumberOfShimmers = 0;
@@ -5160,6 +5161,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				if(isVerCompatibleWithAnyOf(Configuration.Shimmer3.configOptionLowPowerAutoStop.mListOfCompatibleVersionInfo)) {
 					setLowBattAutoStop((configBytes[configByteLayoutCast.idxSDExperimentConfig1] >> configByteLayoutCast.bitShiftLowBattStop) & configByteLayoutCast.maskLowBattStop);
 				}
+
+				if(isVerCompatibleWithAnyOf(Configuration.Shimmer3.configOptionRawAudio.mListOfCompatibleVersionInfo)) {
+					setRawAudio(((configBytes[configByteLayoutCast.idxSDExperimentConfig1] >> configByteLayoutCast.bitShiftRawAudio) & configByteLayoutCast.maskRawAudio) > 0);
+				}
 					
 				byte[] macIdBytes = new byte[configByteLayoutCast.lengthMacIdBytes];
 				System.arraycopy(configBytes, configByteLayoutCast.idxMacAddress, macIdBytes, 0 , configByteLayoutCast.lengthMacIdBytes);
@@ -5417,6 +5422,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				
 				if(isVerCompatibleWithAnyOf(Configuration.Shimmer3.configOptionLowPowerAutoStop.mListOfCompatibleVersionInfo)) {
 					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] |= (byte) ((isLowBattAutoStop()?1:0 & configByteLayoutCast.maskLowBattStop) << configByteLayoutCast.bitShiftLowBattStop);
+				}
+
+				if(isVerCompatibleWithAnyOf(Configuration.Shimmer3.configOptionRawAudio.mListOfCompatibleVersionInfo)) {
+					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] |= (byte) (((isRawAudio()?1:0) & configByteLayoutCast.maskRawAudio) << configByteLayoutCast.bitShiftRawAudio);
 				}
 
 				if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.STROKARE) {
@@ -6205,6 +6214,14 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	private boolean isLowBattAutoStop() {
 		return mLowBattAutoStop;
+	}
+
+	public void setRawAudio(boolean state) {
+		mRawAudio = state;
+	}
+
+	public boolean isRawAudio() {
+		return mRawAudio;
 	}
 
 	/**
@@ -9735,6 +9752,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			case(Configuration.Shimmer3.GuiLabelConfig.LOW_POWER_AUTOSTOP):
 				returnValue = isLowBattAutoStop();
 	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.RAW_AUDIO):
+				returnValue = isRawAudio();
+	        	break;
 
 			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
 				returnValue = getBluetoothBaudRate();
@@ -9902,6 +9922,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 			case(Configuration.Shimmer3.GuiLabelConfig.LOW_POWER_AUTOSTOP):
             	setLowBattAutoStop((boolean)valueToSet);
+	        	break;
+			case(Configuration.Shimmer3.GuiLabelConfig.RAW_AUDIO):
+            	setRawAudio((boolean)valueToSet);
 	        	break;
 
 			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
