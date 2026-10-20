@@ -575,6 +575,8 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 	private int mShowErrorLedsSd = 0;
 	private boolean mLowBattAutoStop = false;
 	private boolean mRawAudio = false;
+	/** Only internal apps may switch raw audio on; any other app writes it off. */
+	private static boolean sIsRawAudioAllowed = false;
 
 	protected int mTrialId = 0;
 	protected int mTrialNumberOfShimmers = 0;
@@ -5426,7 +5428,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 				}
 
 				if(isVerCompatibleWithAnyOf(Configuration.Shimmer3.configOptionRawAudio.mListOfCompatibleVersionInfo)) {
-					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] |= (byte) (((isRawAudio()?1:0) & configByteLayoutCast.maskRawAudio) << configByteLayoutCast.bitShiftRawAudio);
+					mConfigBytes[configByteLayoutCast.idxSDExperimentConfig1] |= (byte) ((((sIsRawAudioAllowed && isRawAudio())?1:0) & configByteLayoutCast.maskRawAudio) << configByteLayoutCast.bitShiftRawAudio);
 				}
 
 				if(getFirmwareIdentifier()==FW_ID.LOGANDSTREAM || getFirmwareIdentifier()==FW_ID.SDLOG || getFirmwareIdentifier()==FW_ID.STROKARE) {
@@ -6223,6 +6225,10 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 
 	public boolean isRawAudio() {
 		return mRawAudio;
+	}
+
+	public static void setRawAudioAllowed(boolean isAllowed) {
+		sIsRawAudioAllowed = isAllowed;
 	}
 
 	/**
