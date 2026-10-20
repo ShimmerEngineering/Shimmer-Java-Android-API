@@ -2007,7 +2007,7 @@ public class Configuration {
 	    /** Bench audio recorder (audiorec9): also store the microphone WAV beside the fingerprint. */
 	    public static final ConfigOptionDetailsSensor configOptionRawAudio = new ConfigOptionDetailsSensor(
 				Configuration.Shimmer3.GuiLabelConfig.RAW_AUDIO,
-				null,
+				ShimmerDevice.DatabaseConfigHandle.RAW_AUDIO,
 				ConfigOptionDetailsSensor.GUI_COMPONENT_TYPE.CHECKBOX,
 				Arrays.asList(new ShimmerVerObject(HW_ID.SHIMMER_3R, FW_ID.LOGANDSTREAM, 1, 1, 21)));
 	    

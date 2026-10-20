@@ -4990,6 +4990,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 			setSingleTouch(false);
 			setTCXO(false);
 			setLowBattAutoStop(false);
+			setRawAudio(false);
 			
 			setPacketSize(0);
 			mConfigByte0=0;
@@ -9924,7 +9925,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
             	setLowBattAutoStop((boolean)valueToSet);
 	        	break;
 			case(Configuration.Shimmer3.GuiLabelConfig.RAW_AUDIO):
-            	setRawAudio((boolean)valueToSet);
+            	setRawAudio((boolean)valueToSet && isVerCompatibleWithAnyOf(Configuration.Shimmer3.configOptionRawAudio.mListOfCompatibleVersionInfo));
 	        	break;
 
 			case(Configuration.Shimmer3.GuiLabelConfig.BLUETOOTH_BAUD_RATE):
@@ -10174,6 +10175,7 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		configMapForDb.put(DatabaseConfigHandleShimmerObject.TRIAL_DURATION_MAXIMUM, (double) getTrialDurationMaximumInSecs());
 
 		configMapForDb.put(ShimmerDevice.DatabaseConfigHandle.LOW_POWER_AUTOSTOP, (double) (isLowBattAutoStop()? 1:0));
+		configMapForDb.put(ShimmerDevice.DatabaseConfigHandle.RAW_AUDIO, (double) (isRawAudio()? 1:0));
 
 		//Now handled in the algorithm class in super
 		/**
@@ -10222,6 +10224,9 @@ public abstract class ShimmerObject extends ShimmerDevice implements Serializabl
 		}
 		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.LOW_POWER_AUTOSTOP)){
 			setLowBattAutoStop(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.LOW_POWER_AUTOSTOP))>0? true:false);
+		}
+		if(mapOfConfigPerShimmer.containsKey(DatabaseConfigHandle.RAW_AUDIO)){
+			setRawAudio(((Double) mapOfConfigPerShimmer.get(DatabaseConfigHandle.RAW_AUDIO))>0);
 		}
 		
 		//EXG Configuration
