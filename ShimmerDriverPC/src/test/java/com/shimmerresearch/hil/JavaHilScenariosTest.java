@@ -41,8 +41,11 @@ public class JavaHilScenariosTest {
 	private static final double GRAVITY = 9.81;
 	/** At 256 Hz a second without a packet is ~256 packets the gap count cannot see. */
 	private static final double MAX_SILENCE_AT_END_MS = 1000;
-	/** The ACK/response timer's own line when a command gets no reply: "Command:	<NAME> timeout". */
-	private static final java.util.regex.Pattern COMMAND_TIMEOUT = java.util.regex.Pattern.compile("Command:\t\\S+ timeout");
+	/**
+	 * The ACK/response timer's own line when a command gets no reply: "Command:	[0x72] GET_STATUS_COMMAND
+	 * timeout", or "[0x..]UNKNOWN" for an opcode the driver doesn't know.
+	 */
+	private static final java.util.regex.Pattern COMMAND_TIMEOUT = java.util.regex.Pattern.compile("Command:\t\\[0x[0-9A-F]{2}\\] ?\\S+ timeout");
 
 	private HilSession session;
 	private HilReport report;
