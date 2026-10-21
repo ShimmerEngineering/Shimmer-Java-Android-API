@@ -104,6 +104,7 @@ public class JavaHilScenariosTest {
 	/** What the driver did in this session: replies by type, decodes, timer requests, connects. */
 	private void putDriverCounts() {
 		report.put("connects", session.connects);
+		report.put("connectRetries", session.connectRetries);
 		report.put("inStreamReplies", device.inStreamReplies());
 		report.put("statusesDecoded", device.statusesDecoded());
 		report.put("batteryReadings", device.batteryReadings());
@@ -175,6 +176,60 @@ public class JavaHilScenariosTest {
 		}
 	}
 
+	/**
+	 * Judges a stream recorded in stretches, split where the test stopped and restarted streaming on
+	 * purpose, so the pause is not taken for loss. Each stretch gets the timestamp checks; loss within
+	 * 1 s of an SD logging stop is reported, not failed (the unit pauses while it closes its file);
+	 * loss near a battery read, or more than maxLossPercent anywhere else, fails.
+	 */
+	private void checkStretches(List<List<StreamAnalysis.Sample>> stretches, double stoppedAtMs, double deviceRateHz,
+			double maxLossPercent, List<Double> sdStops, List<Double> batteryMoments) {
+		int received = 0;
+		int missing = 0;
+		int nearSd = 0;
+		int nearBattery = 0;
+		List<StreamAnalysis.Sample> all = new ArrayList<>();
+		List<String> summaries = new ArrayList<>();
+		for (int k = 0; k < stretches.size(); k++) {
+			List<StreamAnalysis.Sample> stretch = stretches.get(k);
+			String what = "stretch " + (k + 1);
+			all.addAll(stretch);
+			StreamAnalysis a = StreamAnalysis.analyse(stretch, deviceRateHz);
+			session.event(what + ": " + a);
+			summaries.add(what + ": " + a);
+			report.check(a.received > 0, what + ": no packets received");
+			int[] attributed = a.attribute(new double[][] {toArray(sdStops), toArray(batteryMoments)}, 1000);
+			received += a.received;
+			missing += a.missing;
+			nearSd += attributed[0];
+			nearBattery += attributed[1];
+			report.check(a.nonIncreasing == 0, what + ": " + a.nonIncreasing + " timestamps did not increase");
+			checkJumps(a, what);
+			// The rate needs a second or so of stream; only the last stretch can go silent before a stop
+			// the test did not make itself.
+			if (a.received >= deviceRateHz) {
+				double end = k == stretches.size() - 1 ? stoppedAtMs : stretch.get(stretch.size() - 1).receivedMs;
+				checkTimeline(a, stretch, end, deviceRateHz, what);
+			}
+		}
+		report.put("stretches", summaries);
+		report.put("received", received);
+		report.put("missing", missing);
+		report.put("missingNearSdLoggingStops", nearSd);
+		report.put("missingNearBatteryReads", nearBattery);
+		report.samples(all);
+		if (nearSd > 0) {
+			session.event(nearSd + " packets not received within 1 s of an SD logging stop (firmware side; not failed)");
+		}
+		report.check(nearBattery == 0, nearBattery + " packets lost within 1 s of a battery read while streaming");
+		int elsewhere = missing - nearSd - nearBattery;
+		double elsewherePercent = 100.0 * elsewhere / Math.max(1, received + missing);
+		report.put("missingElsewhere", elsewhere);
+		report.check(elsewherePercent <= maxLossPercent, String.format(Locale.ROOT,
+				"stream: %.3f%% packets lost away from SD logging stops and battery reads (%d), limit %.2f%%",
+				elsewherePercent, elsewhere, maxLossPercent));
+	}
+
 	/** Parser errors and command timeouts the driver logged since index from. */
 	private void checkDriverLog(int from, String what) {
 		int parserErrors = device.countSince(from, "Unknown parsing error", "Unknown packet error", "Throw Bytes");
@@ -227,8 +282,10 @@ public class JavaHilScenariosTest {
 	}
 
 	/**
-	 * Commands while streaming: start and stop SD logging (SET_RWC and the logging commands, with
-	 * their bare ACKs) and read the battery, each waited on. Needs an SD card in the unit.
+	 * SD logging and battery reads on a streaming unit, in the order Consensys uses (DEV-436): SD
+	 * logging starts with streaming stopped (stop streaming, SET_RWC and START_LOGGING_ONLY on the
+	 * quiet link, stream again), stops mid-stream (STOP_LOGGING_ONLY), and the battery is read
+	 * mid-stream. Each call and reply is waited on. Needs an SD card in the unit.
 	 */
 	@Test
 	public void midStreamSet() throws Exception {
@@ -243,62 +300,36 @@ public class JavaHilScenariosTest {
 			session.startRecording();
 			report.check(session.startStreaming(10000), "streaming did not start within 10 s");
 			Thread.sleep(3000);
-			List<Double> sdMoments = new ArrayList<>();
+			List<List<StreamAnalysis.Sample>> stretches = new ArrayList<>();
+			List<Double> sdStops = new ArrayList<>();
 			List<Double> batteryMoments = new ArrayList<>();
 			for (int i = 1; i <= cycles && session.hung == null; i++) {
-				session.event("cycle " + i);
-				sdMoments.add(session.nowMs());
-				boolean started = session.call("startSDLogging", 10000, device::startSDLogging);
-				report.check(started, "cycle " + i + ": startSDLogging did not complete: it threw, hung or was skipped (see the events)");
-				if (started) {
-					report.check(session.waitFor(() -> session.state() == BT_STATE.STREAMING_AND_SDLOGGING, 5000),
-							"cycle " + i + ": SD logging did not start while streaming (state " + session.state() + "; is there an SD card?)");
-				}
+				String what = "cycle " + i;
+				session.event(what);
+				stretches.add(session.startSdLoggingLikeConsensys(what, report));
 				Thread.sleep(2000);
-				sdMoments.add(session.nowMs());
+				sdStops.add(session.nowMs());
 				boolean stopped = session.call("stopSDLogging", 10000, device::stopSDLogging);
-				report.check(stopped, "cycle " + i + ": stopSDLogging did not complete: it threw, hung or was skipped (see the events)");
+				report.check(stopped, what + ": stopSDLogging did not complete: it threw, hung or was skipped (see the events)");
 				if (stopped) {
 					report.check(session.waitFor(() -> session.state() == BT_STATE.STREAMING, 5000),
-							"cycle " + i + ": SD logging did not stop (state " + session.state() + ")");
+							what + ": SD logging did not stop (state " + session.state() + ")");
 				}
 				Thread.sleep(1000);
 				batteryMoments.add(session.nowMs());
 				int readingsBefore = device.batteryReadings();
 				boolean asked = session.call("readBattery", 10000, device::readBattery);
-				report.check(asked, "cycle " + i + ": readBattery did not complete: it threw, hung or was skipped (see the events)");
+				report.check(asked, what + ": readBattery did not complete: it threw, hung or was skipped (see the events)");
 				if (asked) {
 					report.check(session.waitFor(() -> device.batteryReadings() > readingsBefore, 5000),
-							"cycle " + i + ": no battery reply decoded within 5 s of readBattery");
+							what + ": no battery reply decoded within 5 s of readBattery");
 				}
 				Thread.sleep(2000);
 			}
 			double stoppedAtMs = session.nowMs();
-			List<StreamAnalysis.Sample> samples = session.stopRecording();
+			stretches.add(session.stopRecording());
 			report.check(session.stopStreaming(10000), "streaming did not stop within 10 s");
-			StreamAnalysis a = StreamAnalysis.analyse(samples, deviceRate);
-			session.event("stream: " + a);
-			report.putStream("stream", a);
-			report.putGaps(a);
-			report.samples(samples);
-			// Loss around SD logging start/stop is reported, not failed: the unit itself pauses while it
-			// opens or closes its file. Loss anywhere else is the driver's.
-			int[] attributed = a.attribute(new double[][] {toArray(sdMoments), toArray(batteryMoments)}, 1000);
-			report.put("missingNearSdLoggingStartStop", attributed[0]);
-			report.put("missingNearBatteryReads", attributed[1]);
-			if (attributed[0] > 0) {
-				session.event(attributed[0] + " packets not received within 1 s of SD logging start/stop (firmware side; not failed)");
-			}
-			report.check(attributed[1] == 0, attributed[1] + " packets lost within 1 s of a battery read while streaming");
-			int elsewhere = a.missing - attributed[0];
-			double elsewherePercent = 100.0 * elsewhere / Math.max(1, a.received + a.missing);
-			report.put("missingElsewhere", elsewhere);
-			report.check(elsewherePercent <= maxLoss, String.format(Locale.ROOT,
-					"stream: %.3f%% packets lost away from SD logging start/stop (%d), limit %.2f%%", elsewherePercent, elsewhere, maxLoss));
-			report.check(a.received > 0, "stream: no packets received");
-			report.check(a.nonIncreasing == 0, "stream: " + a.nonIncreasing + " timestamps did not increase");
-			checkJumps(a, "stream");
-			checkTimeline(a, samples, stoppedAtMs, deviceRate, "stream");
+			checkStretches(stretches, stoppedAtMs, deviceRate, maxLoss, sdStops, batteryMoments);
 			checkDriverLog(logMark, "stream");
 			report.check(session.disconnect(10000), "did not disconnect within 10 s");
 		}
@@ -344,10 +375,11 @@ public class JavaHilScenariosTest {
 
 	/**
 	 * In-stream commands while streaming. First each reply on its own: status (0x8A 0x71), directory
-	 * (0x8A 0x88) and battery (0x8A 0x94), each checked to be decoded. Then the overlap: SET_RWC
-	 * followed at once by status and battery requests, so a reply arrives while another command
-	 * waits for its ACK (DEV-1262). Every command must complete, with its own reply, and none may
-	 * time out. Packets the unit drops right after an RTC write are reported; timestamp faults fail.
+	 * (0x8A 0x88) and battery (0x8A 0x94), each checked to be decoded. Then the overlap, as Consensys
+	 * meets it: with the unit streaming and logging (logging started the Consensys way), stop SD
+	 * logging mid-stream (STOP_LOGGING_ONLY) and request status and battery at once, so in-stream
+	 * replies, including any status the unit pushes as logging stops, arrive while that command waits
+	 * for its ACK (DEV-1262). Every command must complete, with its own reply, and none may time out.
 	 */
 	@Test
 	public void inStream() throws Exception {
@@ -373,17 +405,20 @@ public class JavaHilScenariosTest {
 				expectReply(what, "battery", "VBATT", device::readBattery, () -> device.batteryReadings() > batteryBefore);
 				Thread.sleep(500);
 			}
-			List<Double> rtcWrites = new ArrayList<>();
+			List<List<StreamAnalysis.Sample>> stretches = new ArrayList<>();
+			List<Double> sdStops = new ArrayList<>();
 			for (int i = 1; i <= overlaps && session.hung == null; i++) {
 				String what = "overlap " + i;
-				rtcWrites.add(session.nowMs());
+				stretches.add(session.startSdLoggingLikeConsensys(what, report));
+				Thread.sleep(1000);
 				int statusReplies = device.inStreamReplies("STATUS");
 				int batteryReplies = device.inStreamReplies("VBATT");
 				int statusBefore = device.statusesDecoded();
 				int batteryBefore = device.batteryReadings();
 				int timeoutsBefore = device.countSince(logMark, COMMAND_TIMEOUT);
-				boolean sent = session.call(what + ": SET_RWC, GET_STATUS and GET_VBATT back to back", 10000, () -> {
-					device.writeRealTimeClock();
+				sdStops.add(session.nowMs());
+				boolean sent = session.call(what + ": STOP_LOGGING_ONLY, GET_STATUS and GET_VBATT back to back", 10000, () -> {
+					device.stopSDLogging();
 					device.readStatusLogAndStream();
 					device.readBattery();
 				});
@@ -391,11 +426,11 @@ public class JavaHilScenariosTest {
 				if (sent) {
 					boolean done = session.waitFor(() -> device.inStreamReplies("STATUS") > statusReplies
 							&& device.inStreamReplies("VBATT") > batteryReplies
-							&& session.queuedInstructions() == 0, 5000);
+							&& session.queuedInstructions() == 0 && session.state() == BT_STATE.STREAMING, 5000);
 					report.check(done, String.format(Locale.ROOT,
-							"%s: not every command completed within 5 s (status replies +%d, battery replies +%d, %d still queued)",
+							"%s: not every command completed within 5 s (status replies +%d, battery replies +%d, %d still queued, state %s)",
 							what, device.inStreamReplies("STATUS") - statusReplies, device.inStreamReplies("VBATT") - batteryReplies,
-							session.queuedInstructions()));
+							session.queuedInstructions(), session.state()));
 					report.check(device.statusesDecoded() > statusBefore, what + ": the status reply was not decoded");
 					report.check(device.batteryReadings() > batteryBefore, what + ": the battery reply was not decoded");
 					int timeouts = device.countSince(logMark, COMMAND_TIMEOUT) - timeoutsBefore;
@@ -404,32 +439,11 @@ public class JavaHilScenariosTest {
 				Thread.sleep(1000);
 			}
 			double stoppedAtMs = session.nowMs();
-			List<StreamAnalysis.Sample> samples = session.stopRecording();
+			stretches.add(session.stopRecording());
 			report.check(session.stopStreaming(10000), "streaming did not stop within 10 s");
 			report.check(session.waitFor(() -> session.state() == BT_STATE.CONNECTED, 3000),
 					"after streaming the unit is " + session.state() + ", not CONNECTED");
-			StreamAnalysis a = StreamAnalysis.analyse(samples, deviceRate);
-			session.event("stream: " + a);
-			report.putStream("stream", a);
-			report.putGaps(a);
-			report.samples(samples);
-			// Loss right after an RTC write is reported, not failed: the unit itself drops packets when
-			// its clock is set while streaming (firmware side, as at SD logging start in midStreamSet).
-			// Timestamps that go backwards or leap ahead still fail: the API hands them to apps.
-			int nearRtc = a.attribute(new double[][] {toArray(rtcWrites)}, 1000)[0];
-			report.put("missingNearRtcWrites", nearRtc);
-			if (nearRtc > 0) {
-				session.event(nearRtc + " packets not received within 1 s of an RTC write (firmware side; not failed)");
-			}
-			int elsewhere = a.missing - nearRtc;
-			double elsewherePercent = 100.0 * elsewhere / Math.max(1, a.received + a.missing);
-			report.put("missingElsewhere", elsewhere);
-			report.check(elsewherePercent <= maxLoss, String.format(Locale.ROOT,
-					"stream: %.3f%% packets lost away from the RTC writes (%d), limit %.2f%%", elsewherePercent, elsewhere, maxLoss));
-			report.check(a.received > 0, "stream: no packets received");
-			report.check(a.nonIncreasing == 0, "stream: " + a.nonIncreasing + " timestamps did not increase");
-			checkJumps(a, "stream");
-			checkTimeline(a, samples, stoppedAtMs, deviceRate, "stream");
+			checkStretches(stretches, stoppedAtMs, deviceRate, maxLoss, sdStops, new ArrayList<>());
 			checkDriverLog(logMark, "stream");
 			report.check(session.disconnect(10000), "did not disconnect within 10 s");
 		}

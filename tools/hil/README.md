@@ -40,18 +40,24 @@ If anything merges after step 1, the commit changes, so test again. In an emerge
 | Scenario | What it does | Fails when |
 |---|---|---|
 | `streamRest` | Connects, writes an accel-only config at `-Rate` (default 256 Hz) the way Consensys's Bluetooth manager does, streams for `-Seconds` (default 30) with the unit lying still, then stops and disconnects. | It can't connect or configure; more than `-MaxLossPercent` (1 %) of packets are lost; a timestamp doesn't increase, or leaps more than a second ahead of when it arrived (a bad unwrap, not loss); the timestamps give no rate, or one more than 1 % off the configured rate; the stream goes silent for over a second before the test stops it; accel is more than 1 m/s² from 9.81; or the driver logs a parser error or a command timeout. |
-| `midStreamSet` | While streaming, starts and stops SD logging and reads the battery, three times. | One of those calls fails, or a battery reply isn't decoded within 5 s; logging doesn't start or stop; a packet is lost around a battery read, or more than `-MaxLossPercent` away from the SD transitions; the timestamps fail the checks above; or the driver logs a parser error or a command timeout. Packets missing around SD logging start/stop are reported, not failed: the unit itself pauses while it opens its file. Needs an SD card in the unit. |
+| `midStreamSet` | On a streaming unit, three times: starts SD logging **the way Consensys does** (stop streaming, start logging on the quiet link, stream again; DEV-436), stops it mid-stream, and reads the battery mid-stream. | One of those calls fails, or a battery reply isn't decoded within 5 s; logging doesn't start or stop, or streaming doesn't come back; a packet is lost around a battery read, or more than `-MaxLossPercent` elsewhere; a timestamp fault in any stretch between restarts; or the driver logs a parser error or a command timeout. Packets missing around an SD logging stop are reported, not failed: the unit pauses while it closes its file. Needs an SD card in the unit. |
 | `reconnectLoop` | Connects, streams for 5 s and disconnects, five times on the same `ShimmerPC`. Every connect starts the driver's status timer, which is when the DEV-1266 lock inversion is most likely. | Any cycle fails to connect within 30 s, loses packets, fails the timestamp checks, or the driver logs a parser error or command timeout. |
-| `inStream` | While streaming: first each in-stream reply on its own, three rounds: status (`0x8A 0x71`), directory (`0x8A 0x88`) and battery (`0x8A 0x94`). Then five overlaps: `SET_RWC`, a status request and a battery request back to back, so replies arrive while another command waits for its ACK (DEV-1262). | A reply doesn't arrive within 3 s or isn't decoded; an overlap doesn't complete within 5 s (both replies decoded, the queue empty); the driver logs a command timeout; or the stream fails the checks above. Packets missing within 1 s of an RTC write are reported, not failed (the unit itself drops them; see DEV-1245), but timestamp faults fail. |
+| `inStream` | While streaming: first each in-stream reply on its own, three rounds: status (`0x8A 0x71`), directory (`0x8A 0x88`) and battery (`0x8A 0x94`). Then five overlaps as Consensys meets them: with the unit streaming and logging (logging started the Consensys way), stop SD logging mid-stream and request status and battery at once, so in-stream replies, including any status the unit pushes as logging stops, arrive while that command waits for its ACK (DEV-1262). | A reply doesn't arrive within 3 s or isn't decoded; an overlap doesn't complete within 5 s (both replies decoded, logging stopped, the queue empty); the driver logs a command timeout; or the stream fails the checks above. |
 
 Every API call runs under a watchdog. If one doesn't return within 10 s, the scenario stops, and its
 events hold every thread's stack with the locks each holds and waits on, plus any deadlock the JVM
 detects (DEV-1266). If the whole run still doesn't finish, the runner stops Gradle after
 `-ScenarioTimeoutSeconds` (900) and records TIMEOUT.
 
+If Windows can't open the Bluetooth link at all (the driver reports CONNECTION_FAILED, and jssc logs
+"Port busy" after paging the unit for about 5 s), a connect is tried once more, as a user would.
+That happens on a minority of first connects; `connectRetries` in the report counts them.
+
 Each report counts what the session covered: connects, in-stream replies by type, statuses and
 battery readings decoded, the status timer's requests, and command timeouts. Its events also say
 which driver timers were running after connect, after configure and while streaming.
+
+Starting SD logging mid-stream (`startSDLogging()` while streaming) writes the RTC mid-stream, which a Shimmer3R answers with out-of-order timestamps (DEV-1245). Consensys never does that, and neither do these scenarios.
 
 The stream checks are the Android HIL's (`StreamAnalysis`, the same class in ShimmerAndroidAPI's
 `shimmerHilTest`), so the two judge a stream by the same rules. `StreamAnalysisTest` runs in CI.

@@ -56,10 +56,14 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 	});
 	private volatile boolean recording;
 	private volatile BT_STATE lastState;
+	/** State changes reported so far, so a connect can tell its own CONNECTION_FAILED from the last one's. */
+	private volatile int stateChanges;
 	/** The call that never returned, if one did not. */
 	volatile String hung;
 	/** Connects made in this session, for the report: each is a chance for the connect-time race. */
 	int connects;
+	/** Connects that failed to open the Bluetooth link and were tried again. */
+	int connectRetries;
 
 	HilSession(String port, String mac, String type) {
 		this.port = port;
@@ -93,6 +97,7 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 			BT_STATE state = ((CallbackObject) msg.mB).mState;
 			if (state != null) {
 				lastState = state;
+				stateChanges++;
 				event("state " + state);
 			}
 		} else if (msg.mIdentifier == HilShimmerPC.MSG_IDENTIFIER_DATA_PACKET && msg.mB instanceof ObjectCluster) {
@@ -168,15 +173,29 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 		}
 	}
 
-	/** Connects and waits until the driver has read the unit's configuration. */
+	/**
+	 * Connects and waits until the driver has read the unit's configuration. If Windows cannot open
+	 * the Bluetooth link at all (CONNECTION_FAILED, which jssc reports as "Port busy" after paging the
+	 * unit for about 5 s), it tries once more, as a user would; connectRetries counts those.
+	 */
 	boolean connect(long timeoutMs) throws InterruptedException {
-		connects++;
-		if (!call("connect on " + port, 10000, () -> device.connect(port, ""))) {
-			return false;
+		for (int attempt = 1; ; attempt++) {
+			connects++;
+			int mark = stateChanges;
+			Condition failed = () -> stateChanges > mark && device.getBluetoothRadioState() == BT_STATE.CONNECTION_FAILED;
+			if (!call("connect on " + port, 10000, () -> device.connect(port, ""))) {
+				return false;
+			}
+			boolean ready = waitFor(() -> (device.isInitialised() && device.getBluetoothRadioState() == BT_STATE.CONNECTED)
+					|| failed.holds(), timeoutMs) && !failed.holds();
+			if (ready || attempt > 1 || !failed.holds()) {
+				event("connected: timers " + device.timers());
+				return ready;
+			}
+			connectRetries++;
+			event("the Bluetooth link could not be opened (CONNECTION_FAILED); trying once more in 5 s");
+			Thread.sleep(5000);
 		}
-		boolean ready = waitFor(() -> device.isInitialised() && device.getBluetoothRadioState() == BT_STATE.CONNECTED, timeoutMs);
-		event("connected: timers " + device.timers());
-		return ready;
 	}
 
 	/**
@@ -230,6 +249,38 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 		synchronized (samples) {
 			return new ArrayList<>(samples);
 		}
+	}
+
+	/**
+	 * Ends one stretch of the recording and starts the next, for when the test stops and restarts
+	 * streaming on purpose: each stretch is judged on its own, so the pause is not taken for loss.
+	 */
+	List<StreamAnalysis.Sample> nextSegment() {
+		synchronized (samples) {
+			List<StreamAnalysis.Sample> done = new ArrayList<>(samples);
+			samples.clear();
+			return done;
+		}
+	}
+
+	/**
+	 * Starts SD logging on a streaming unit the way Consensys does (PanelLiveData, DEV-436): stop
+	 * streaming, start logging on the quiet link (SET_RWC, then START_LOGGING_ONLY), then stream
+	 * again. The RTC is therefore never written mid-stream. The stretch recorded before the stop is
+	 * returned, and recording carries on into a new one.
+	 */
+	List<StreamAnalysis.Sample> startSdLoggingLikeConsensys(String what, HilReport report) throws InterruptedException {
+		report.check(stopStreaming(10000), what + ": streaming did not stop before starting SD logging");
+		List<StreamAnalysis.Sample> before = nextSegment();
+		boolean started = call("startSDLogging", 10000, device::startSDLogging);
+		report.check(started, what + ": startSDLogging did not complete: it threw, hung or was skipped (see the events)");
+		if (started) {
+			report.check(waitFor(device::isSDLogging, 5000), what + ": SD logging did not start (state " + state() + "; is there an SD card?)");
+		}
+		report.check(startStreaming(10000), what + ": streaming did not restart after starting SD logging");
+		report.check(waitFor(() -> state() == BT_STATE.STREAMING_AND_SDLOGGING, 5000),
+				what + ": not streaming and logging after the restart (state " + state() + ")");
+		return before;
 	}
 
 	boolean startStreaming(long timeoutMs) throws InterruptedException {
