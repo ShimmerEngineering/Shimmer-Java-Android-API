@@ -1,0 +1,276 @@
+package com.shimmerresearch.hil;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import com.shimmerresearch.bluetooth.ShimmerBluetooth;
+import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.BasicProcessWithCallBack;
+import com.shimmerresearch.driver.CallbackObject;
+import com.shimmerresearch.driver.Configuration;
+import com.shimmerresearch.driver.FormatCluster;
+import com.shimmerresearch.driver.ObjectCluster;
+import com.shimmerresearch.driver.ShimmerDevice;
+import com.shimmerresearch.driver.ShimmerMsg;
+import com.shimmerresearch.driverUtilities.AssembleShimmerConfig;
+import com.shimmerresearch.driverUtilities.ShimmerVerDetails;
+import com.shimmerresearch.shimmer3.communication.ByteCommunicationTestUtils;
+
+/**
+ * One unit on one serial port, driven through ShimmerPC as an app drives it. Every API call runs
+ * under a watchdog: if one does not return, the session records which, dumps every thread (with
+ * the locks each holds and waits on) and refuses further calls, so a deadlock ends the scenario
+ * with evidence instead of hanging the run.
+ */
+class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
+
+	interface Call {
+		void run() throws Exception;
+	}
+
+	interface Condition {
+		boolean holds();
+	}
+
+	final String port;
+	final String mac;
+	final String type;
+	final HilShimmerPC device;
+	private final long t0 = System.nanoTime();
+	private final List<String> events = new ArrayList<>();
+	private final List<StreamAnalysis.Sample> samples = new ArrayList<>();
+	private final Set<Integer> otherMessagesSeen = new HashSet<>();
+	private final ExecutorService calls = Executors.newSingleThreadExecutor(r -> {
+		Thread t = new Thread(r, "HilCall");
+		t.setDaemon(true);
+		return t;
+	});
+	private volatile boolean recording;
+	private volatile BT_STATE lastState;
+	/** The call that never returned, if one did not. */
+	volatile String hung;
+	/** Connects made in this session, for the report: each is a chance for the connect-time race. */
+	int connects;
+
+	HilSession(String port, String mac, String type) {
+		this.port = port;
+		this.mac = mac;
+		this.type = type;
+		this.device = new HilShimmerPC(port, t0);
+		setWaitForData(device);
+	}
+
+	double nowMs() {
+		return (System.nanoTime() - t0) / 1e6;
+	}
+
+	void event(String text) {
+		String line = String.format(Locale.ROOT, "%9.0f %s", nowMs(), text);
+		synchronized (events) {
+			events.add(line);
+		}
+		System.out.println(port + " " + line);
+	}
+
+	List<String> events() {
+		synchronized (events) {
+			return new ArrayList<>(events);
+		}
+	}
+
+	@Override
+	protected void processMsgFromCallback(ShimmerMsg msg) {
+		if (msg.mIdentifier == HilShimmerPC.MSG_IDENTIFIER_STATE_CHANGE && msg.mB instanceof CallbackObject) {
+			BT_STATE state = ((CallbackObject) msg.mB).mState;
+			if (state != null) {
+				lastState = state;
+				event("state " + state);
+			}
+		} else if (msg.mIdentifier == HilShimmerPC.MSG_IDENTIFIER_DATA_PACKET && msg.mB instanceof ObjectCluster) {
+			if (recording) {
+				recordPacket((ObjectCluster) msg.mB);
+			}
+		} else if (otherMessagesSeen.add(msg.mIdentifier)) {
+			event("message " + msg.mIdentifier + (msg.mB == null ? "" : " " + msg.mB.getClass().getSimpleName()));
+		}
+	}
+
+	private void recordPacket(ObjectCluster oc) {
+		StreamAnalysis.Sample s = new StreamAnalysis.Sample(nowMs(),
+				cal(oc, Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP),
+				cal(oc, Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X),
+				cal(oc, Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y),
+				cal(oc, Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z));
+		synchronized (samples) {
+			samples.add(s);
+		}
+	}
+
+	private static double cal(ObjectCluster oc, String channel) {
+		Collection<FormatCluster> formats = oc.getCollectionOfFormatClusters(channel);
+		FormatCluster c = (FormatCluster) ObjectCluster.returnFormatCluster(formats, "CAL");
+		return c == null ? Double.NaN : c.mData;
+	}
+
+	BT_STATE state() {
+		BT_STATE s = device.getBluetoothRadioState();
+		return s != null ? s : lastState;
+	}
+
+	boolean waitFor(Condition condition, long timeoutMs) throws InterruptedException {
+		long deadline = System.nanoTime() + timeoutMs * 1_000_000L;
+		while (System.nanoTime() < deadline) {
+			if (condition.holds()) {
+				return true;
+			}
+			Thread.sleep(20);
+		}
+		return condition.holds();
+	}
+
+	/**
+	 * Runs an API call under the watchdog. After a hung call nothing more is run: the driver is in
+	 * an unknown state, and queuing calls behind the stuck one only adds stuck threads.
+	 */
+	boolean call(String what, long timeoutMs, Call call) {
+		if (hung != null) {
+			event("skipped " + what + ": " + hung + " never returned");
+			return false;
+		}
+		event(what);
+		Future<?> f = calls.submit(() -> {
+			call.run();
+			return null;
+		});
+		try {
+			f.get(timeoutMs, TimeUnit.MILLISECONDS);
+			return true;
+		} catch (TimeoutException e) {
+			hung = what;
+			event(what + " did not return within " + timeoutMs + " ms; every thread:\n"
+					+ ByteCommunicationTestUtils.dumpAllThreads());
+			return false;
+		} catch (java.util.concurrent.ExecutionException e) {
+			event(what + " threw " + e.getCause());
+			return false;
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			return false;
+		}
+	}
+
+	/** Connects and waits until the driver has read the unit's configuration. */
+	boolean connect(long timeoutMs) throws InterruptedException {
+		connects++;
+		if (!call("connect on " + port, 10000, () -> device.connect(port, ""))) {
+			return false;
+		}
+		boolean ready = waitFor(() -> device.isInitialised() && device.getBluetoothRadioState() == BT_STATE.CONNECTED, timeoutMs);
+		event("connected: timers " + device.timers());
+		return ready;
+	}
+
+	/**
+	 * Accel only (the low-noise accel on Shimmer3, the LSM6DSV's on Shimmer3R) at rateHz, written the
+	 * way Consensys's Bluetooth manager does it: a clone, AssembleShimmerConfig, then
+	 * operationPrepare, configureFromClone and operationStart(CONFIGURING) on the connected device,
+	 * except that the calibration is not written back.
+	 */
+	boolean configureAccelOnly(double rateHz, long timeoutMs) throws InterruptedException {
+		ShimmerDevice clone = device.deepClone();
+		clone.disableAllSensors();
+		if (clone.getHardwareVersion() == ShimmerVerDetails.HW_ID.SHIMMER_3) {
+			clone.setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_ANALOG_ACCEL, true);
+		} else {
+			clone.setSensorEnabledState(Configuration.Shimmer3.SENSOR_ID.SHIMMER_LSM6DSV_ACCEL_LN, true);
+		}
+		clone.setShimmerAndSensorsSamplingRate(rateHz);
+		AssembleShimmerConfig.generateSingleShimmerConfig(clone, Configuration.COMMUNICATION_TYPE.BLUETOOTH);
+		// Leave the unit's stored calibration alone. configureFromClone otherwise writes the clone's
+		// calibration dump back (AA-246), which would rewrite the bench units' calibration on every run.
+		((ShimmerBluetooth) clone).setWriteCalibrationDumpWhenConfiguringForClone(false);
+		int logMark = device.logSize();
+		boolean sent = call(String.format(Locale.ROOT, "configure accel only at %.1f Hz", rateHz), 10000, () -> {
+			device.operationPrepare();
+			device.configureFromClone(clone);
+			device.operationStart(BT_STATE.CONFIGURING);
+		});
+		if (!sent) {
+			return false;
+		}
+		// The operation ends by reading the configuration back, finishing with an INQUIRY. Wait for that
+		// reply (logged after this configure began), an empty queue and the requested rate read back:
+		// state and rate alone can already hold before the write starts, if the unit kept them.
+		boolean done = waitFor(() -> device.countSince(logMark, "Inquiry Response Received") > 0
+				&& device.queuedInstructions() == 0 && state() == BT_STATE.CONNECTED
+				&& Math.abs(device.getSamplingRateShimmer() - rateHz) < 0.5, timeoutMs);
+		event(String.format(Locale.ROOT, "configure %s: rate on device %.2f Hz, timers %s", done ? "finished" : "timed out",
+				device.getSamplingRateShimmer(), device.timers()));
+		return done;
+	}
+
+	void startRecording() {
+		synchronized (samples) {
+			samples.clear();
+		}
+		recording = true;
+	}
+
+	List<StreamAnalysis.Sample> stopRecording() {
+		recording = false;
+		synchronized (samples) {
+			return new ArrayList<>(samples);
+		}
+	}
+
+	boolean startStreaming(long timeoutMs) throws InterruptedException {
+		return call("startStreaming", 10000, device::startStreaming) && waitFor(device::isStreaming, timeoutMs);
+	}
+
+	boolean stopStreaming(long timeoutMs) throws InterruptedException {
+		event("while streaming: timers " + device.timers());
+		return call("stopStreaming", 10000, device::stopStreaming) && waitFor(() -> !device.isStreaming(), timeoutMs);
+	}
+
+	boolean disconnect(long timeoutMs) throws InterruptedException {
+		return call("disconnect", 10000, device::disconnect) && waitFor(() -> {
+			BT_STATE s = state();
+			return s == BT_STATE.DISCONNECTED || s == BT_STATE.CONNECTION_LOST;
+		}, timeoutMs);
+	}
+
+	/** Instructions waiting to be sent, read as the driver's own accessors read them. */
+	int queuedInstructions() {
+		return device.queuedInstructions();
+	}
+
+	@Override
+	public void close() {
+		try {
+			// After a hung call leave the unit alone; the runner's timeout ends the JVM.
+			if (hung == null) {
+				BT_STATE s = state();
+				if (s != null && s != BT_STATE.DISCONNECTED && s != BT_STATE.CONNECTION_LOST) {
+					if (device.isStreaming()) {
+						stopStreaming(5000);
+					}
+					disconnect(10000);
+				}
+			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		} finally {
+			removeSetWaitForData(device);
+			calls.shutdownNow();
+		}
+	}
+}

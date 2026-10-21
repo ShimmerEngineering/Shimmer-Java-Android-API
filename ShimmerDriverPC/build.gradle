@@ -32,6 +32,26 @@ repositories {
 test {
     // this test requires a physical Shimmer2r to run
     exclude '**/API_00001_ShimmerPC_GeneralBluetoothShimmer2R.class'
+    // the hardware-in-the-loop scenarios need a unit; hilTest runs them (tools/hil/run-java-hil.ps1)
+    exclude '**/hil/JavaHilScenariosTest.class'
+}
+
+// Hardware-in-the-loop scenarios on a real Shimmer over a paired Bluetooth serial port, run by
+// tools/hil/run-java-hil.ps1 (see tools/hil/README.md). Each -Phil.<name>=<value> reaches the tests
+// as the system property hil.<name>.
+tasks.register('hilTest', Test) {
+    description = 'Runs the hardware-in-the-loop scenarios on a real unit (tools/hil/run-java-hil.ps1)'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    include '**/hil/JavaHilScenariosTest.class'
+    dependsOn 'testClasses'
+    systemProperties project.properties.findAll { k, v -> k.startsWith('hil.') }
+    outputs.upToDateWhen { false }
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        showStandardStreams = true
+        exceptionFormat 'full'
+    }
 }
 
 publishing {
@@ -103,6 +123,8 @@ dependencies {
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     testImplementation 'junit:junit:4.12'
+    // the HIL reports (src/test/java/com/shimmerresearch/hil)
+    testImplementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.parse.bolts:bolts-tasks:1.4.0'
     
     // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
