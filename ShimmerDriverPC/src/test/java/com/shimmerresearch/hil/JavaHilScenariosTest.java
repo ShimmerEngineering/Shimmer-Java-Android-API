@@ -274,10 +274,10 @@ public class JavaHilScenariosTest {
 			report.putGaps(a);
 			report.samples(samples);
 			checkStream(a, samples, stoppedAtMs, maxLoss, deviceRate, "stream");
-			if (!Double.isNaN(a.accelMagnitudeMean)) {
-				report.check(Math.abs(a.accelMagnitudeMean - GRAVITY) <= 1.0, String.format(Locale.ROOT,
-						"accel at rest %.3f m/s^2, expected %.2f±1.00 (is the unit lying still?)", a.accelMagnitudeMean, GRAVITY));
-			}
+			// NaN fails too: the scenario configured the accel, so a stream without calibrated accel is a fault
+			report.check(Math.abs(a.accelMagnitudeMean - GRAVITY) <= 1.0, String.format(Locale.ROOT,
+					"accel at rest %.3f m/s^2, expected %.2f±1.00 (NaN: no calibrated accel; otherwise is the unit lying still?)",
+					a.accelMagnitudeMean, GRAVITY));
 			checkDriverLog(logMark, "stream");
 			report.check(session.disconnect(10000), "did not disconnect within 10 s");
 		}
