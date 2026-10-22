@@ -43,6 +43,7 @@ If anything merges after step 1, the commit changes, so test again. In an emerge
 | `midStreamSet` | On a streaming unit, three times: starts SD logging **the way Consensys does** (stop streaming, start logging on the quiet link, stream again; DEV-436), stops it mid-stream, and reads the battery mid-stream. | One of those calls fails, or a battery reply isn't decoded within 5 s; logging doesn't start or stop, or streaming doesn't come back; a packet is lost around a battery read, or more than `-MaxLossPercent` elsewhere; a timestamp fault in any stretch between restarts; or the driver logs a parser error or a command timeout. Packets missing around an SD logging stop are reported, not failed: the unit pauses while it closes its file. Needs an SD card in the unit. |
 | `reconnectLoop` | Connects, streams for 5 s and disconnects, five times on the same `ShimmerPC`. Every connect starts the driver's status timer, which is when the DEV-1266 lock inversion is most likely. | Any cycle fails to connect within 30 s, loses packets, fails the timestamp checks, or the driver logs a parser error or command timeout. |
 | `inStream` | While streaming: first each in-stream reply on its own, three rounds: status (`0x8A 0x71`), directory (`0x8A 0x88`) and battery (`0x8A 0x94`). Then five overlaps as Consensys meets them: with the unit streaming and logging (logging started the Consensys way), stop SD logging mid-stream and request status and battery at once, so in-stream replies, including any status the unit pushes as logging stops, arrive while that command waits for its ACK (DEV-1262). | A reply doesn't arrive within 3 s or isn't decoded; an overlap doesn't complete within 5 s (both replies decoded, logging stopped, the queue empty); the driver logs a command timeout; or the stream fails the checks above. |
+| `queueStress` | While streaming, four app threads call `readBattery()` and `readStatusLogAndStream()` and check the queue length, in tight loops for 60 s, keeping the queue under 8. Each of those calls locks the device and then the instruction list, so one is nearly always under way while the IO thread fetches the next instruction. That is the window DEV-1266's lock inversion needs (#334). No SD logging is involved. | The calls and replies stop for 10 s, or the JVM finds a deadlock; the queue doesn't drain afterwards. Without the DEV-1266 fix a Shimmer3R deadlocked within 0.3 s in every run. |
 
 Every API call runs under a watchdog. If one doesn't return within 10 s, the scenario stops, and its
 events hold every thread's stack with the locks each holds and waits on, plus any deadlock the JVM
@@ -76,7 +77,7 @@ The stream checks are the Android HIL's (`StreamAnalysis`, the same class in Shi
 | | Default | Option |
 |---|---|---|
 | Units | every unit in the rig file | `-Unit s3r-86f8` |
-| Scenarios | all four | `-Scenario inStream` |
+| Scenarios | all five | `-Scenario inStream` |
 | Sampling rate, stream duration | 256 Hz, 30 s | `-Rate 512`, `-Seconds 60` |
 | Link CRC | the driver's default (1 byte) | `-Crc off`, `-Crc 2` |
 | Pause between runs | 10 s | `-SettleSeconds 30` |

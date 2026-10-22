@@ -31,6 +31,10 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
  *   hil.seconds         streamRest duration, default 30
  *   hil.cycles          midStreamSet / reconnectLoop / inStream repetitions, default 3 / 5 / 3
  *   hil.overlaps        inStream overlap rounds, default 5
+ *   hil.threads         queueStress app threads, default 4
+ *   hil.stressSeconds   queueStress duration, default 60
+ *   hil.maxQueued       queueStress queue length the threads keep below, default 8
+ *   hil.stallSeconds    queueStress: no progress for this long is a hang, default 10
  *   hil.crc             off, 1 or 2; default: the driver's own default
  *   hil.maxLossPercent  default 1.0
  *   hil.outDir          where reports go, default build/hil
@@ -467,5 +471,99 @@ public class JavaHilScenariosTest {
 		if (arrived) {
 			report.check(session.waitFor(decoded, 1000), round + ": the " + what + " reply arrived but was not decoded");
 		}
+	}
+
+	/**
+	 * DEV-1266 on hardware, with no SD logging. While streaming, app threads queue harmless reads
+	 * (GET_VBATT_COMMAND and GET_STATUS_COMMAND) in tight loops, and check the queue length between
+	 * them. Each of those calls locks the device and then the instruction list, so one is nearly
+	 * always under way while the IO thread, holding the list, fetches the next instruction. That is
+	 * the window the lock inversion needs. The queue is kept short so the unit is not flooded.
+	 * <p>
+	 * Fails if the threads and the replies stop for hil.stallSeconds (default 10), or if the JVM
+	 * finds a deadlock. The events then hold every thread's stack. Without the DEV-1266 fix (#334) a
+	 * Shimmer3R deadlocked within 0.3 s in every run; with it, 60 s ran clean.
+	 */
+	@Test
+	public void queueStress() throws Exception {
+		begin("queue_stress");
+		double rate = arg("rate", 256.0);
+		int threads = arg("threads", 4);
+		int seconds = arg("stressSeconds", 60);
+		int maxQueued = arg("maxQueued", 8);
+		int stallSeconds = arg("stallSeconds", 10);
+		if (connectAndConfigure(rate)) {
+			report.check(session.startStreaming(10000), "streaming did not start within 10 s");
+			java.util.concurrent.atomic.AtomicLong calls = new java.util.concurrent.atomic.AtomicLong();
+			java.util.concurrent.atomic.AtomicBoolean stop = new java.util.concurrent.atomic.AtomicBoolean();
+			List<Thread> workers = new ArrayList<>();
+			for (int t = 0; t < threads; t++) {
+				Thread worker = new Thread(() -> {
+					while (!stop.get()) {
+						if (device.queuedInstructions() < maxQueued) {
+							if (calls.incrementAndGet() % 2 == 0) {
+								device.readBattery();
+							} else {
+								device.readStatusLogAndStream();
+							}
+						} else {
+							Thread.yield();
+						}
+					}
+				}, "HilStress-" + t);
+				worker.setDaemon(true);
+				workers.add(worker);
+			}
+			session.event("queueStress: " + threads + " threads for up to " + seconds + " s, at most " + maxQueued + " queued");
+			long start = System.nanoTime();
+			workers.forEach(Thread::start);
+			long lastCalls = -1;
+			int lastReplies = -1;
+			long lastProgress = System.nanoTime();
+			String hang = null;
+			while (System.nanoTime() - start < seconds * 1_000_000_000L) {
+				Thread.sleep(250);
+				long[] deadlocked = java.lang.management.ManagementFactory.getThreadMXBean().findDeadlockedThreads();
+				if (deadlocked != null) {
+					hang = "the JVM found a deadlock";
+					break;
+				}
+				long c = calls.get();
+				int replies = device.statusesDecoded() + device.batteryReadings();
+				if (c != lastCalls || replies != lastReplies) {
+					lastCalls = c;
+					lastReplies = replies;
+					lastProgress = System.nanoTime();
+				} else if (System.nanoTime() - lastProgress > stallSeconds * 1_000_000_000L) {
+					hang = "no call returned and no reply arrived for " + stallSeconds + " s";
+					break;
+				}
+			}
+			double ranSeconds = (System.nanoTime() - start) / 1e9;
+			stop.set(true);
+			for (Thread worker : workers) {
+				worker.join(5000);
+			}
+			report.put("stressSeconds", Math.round(ranSeconds * 10) / 10.0);
+			report.put("stressCalls", calls.get());
+			report.put("stressReplies", device.statusesDecoded() + device.batteryReadings());
+			if (hang == null && workers.stream().anyMatch(Thread::isAlive)) {
+				hang = "the stress threads did not stop";
+			}
+			if (hang != null) {
+				session.hung = "queueStress";
+				session.event("queueStress hung after " + String.format(Locale.ROOT, "%.1f", ranSeconds) + " s: " + hang
+						+ "; every thread:\n" + com.shimmerresearch.shimmer3.communication.ByteCommunicationTestUtils.dumpAllThreads());
+				report.check(false, String.format(Locale.ROOT, "hung after %.1f s and %d calls: %s (thread dump in the events)",
+						ranSeconds, calls.get(), hang));
+			} else {
+				session.event(String.format(Locale.ROOT, "queueStress: %d calls, %d replies decoded in %.1f s, no hang",
+						calls.get(), device.statusesDecoded() + device.batteryReadings(), ranSeconds));
+				report.check(session.waitFor(() -> session.queuedInstructions() == 0, 10000), "the queue did not drain after the stress");
+				report.check(session.stopStreaming(10000), "streaming did not stop within 10 s");
+				report.check(session.disconnect(10000), "did not disconnect within 10 s");
+			}
+		}
+		finish();
 	}
 }
