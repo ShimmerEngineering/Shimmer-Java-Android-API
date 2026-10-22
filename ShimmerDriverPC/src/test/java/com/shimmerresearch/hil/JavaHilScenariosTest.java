@@ -107,7 +107,6 @@ public class JavaHilScenariosTest {
 	/** What the driver did in this session: replies by type, decodes, timer requests, connects. */
 	private void putDriverCounts() {
 		report.put("connects", session.connects);
-		report.put("connectRetries", session.connectRetries);
 		report.put("inStreamReplies", device.inStreamReplies());
 		report.put("statusesDecoded", device.statusesDecoded());
 		report.put("batteryReadings", device.batteryReadings());
@@ -121,7 +120,7 @@ public class JavaHilScenariosTest {
 		long start = System.currentTimeMillis();
 		boolean connected = session.connect(30000);
 		report.put("connectMs", System.currentTimeMillis() - start);
-		report.check(connected, "did not connect and initialise within 30 s (state " + session.state() + ")");
+		report.check(connected, String.valueOf(session.connectFailure));
 		if (!connected) {
 			return false;
 		}
@@ -352,7 +351,9 @@ public class JavaHilScenariosTest {
 			long start = System.currentTimeMillis();
 			boolean ready = i == 1 ? connectAndConfigure(rate) : session.connect(30000);
 			connectTimes.add(System.currentTimeMillis() - start);
-			report.check(ready, what + ": did not connect within 30 s (state " + session.state() + ")");
+			// In cycle 1 a failed configure is reported by connectAndConfigure, with connectFailure null
+			report.check(ready, what + ": " + (session.connectFailure != null ? session.connectFailure
+					: "not ready to stream (state " + session.state() + ")"));
 			if (!ready) {
 				break;
 			}

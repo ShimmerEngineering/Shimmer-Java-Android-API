@@ -65,6 +65,13 @@ class HilShimmerPC extends ShimmerPC {
 		super.consolePrintErrLn(message);
 	}
 
+	/** The driver prints an exception's message to System.out, past consolePrintLn; keep it in the log too. */
+	@Override
+	protected void consolePrintException(String message, StackTraceElement[] stackTrace) {
+		record("EXCEPTION " + message);
+		super.consolePrintException(message, stackTrace);
+	}
+
 	private void record(String message) {
 		String line = String.format(Locale.ROOT, "%9.0f %s", (System.nanoTime() - t0) / 1e6, message);
 		synchronized (log) {

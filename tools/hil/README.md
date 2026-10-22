@@ -49,9 +49,11 @@ events hold every thread's stack with the locks each holds and waits on, plus an
 detects (DEV-1266). If the whole run still doesn't finish, the runner stops Gradle after
 `-ScenarioTimeoutSeconds` (900) and records TIMEOUT.
 
-If Windows can't open the Bluetooth link at all (the driver reports CONNECTION_FAILED, and jssc logs
-"Port busy" after paging the unit for about 5 s), a connect is tried once more, as a user would.
-That happens on a minority of first connects; `connectRetries` in the report counts them.
+A connect is never retried. If the COM port can't be opened, the scenario fails and says why:
+- **"Port busy"**: another program on this PC already has the port open: another HIL, Consensys, a
+  serial terminal. The unit is in use, so a retry would only produce results from a shared unit.
+- **CONNECTION_FAILED** for any other reason: the unit is off, out of range, or connected to
+  another host such as a phone.
 
 Each report counts what the session covered: connects, in-stream replies by type, statuses and
 battery readings decoded, the status timer's requests, and command timeouts. Its events also say
@@ -99,8 +101,18 @@ The stream checks are the Android HIL's (`StreamAnalysis`, the same class in Shi
 5. **JDK 11 or newer.** The script uses `JAVA_HOME` if it qualifies, otherwise the first one it finds
    under Amazon Corretto, Eclipse Adoptium or Java in Program Files.
 
-A Shimmer holds one Bluetooth link at a time. Don't run this while Consensys, the Android HIL's phone
-or anything else is connected to the same unit.
+**Nothing else may use the units during a run.** That includes Consensys, the Android HIL's phone,
+and the other HILs that share this bench (C#, shimmer-logandstream).
+
+Only a second Classic connection is refused outright, as "Port busy". A second host connecting over
+BLE is not:
+- a Shimmer3R that is streaming over Classic accepts the BLE link;
+- it runs the commands sent over BLE and replies down the Classic link, which corrupts this run's
+  stream;
+- the BLE host sees no replies at all.
+
+On 2026-10-21 that is how two HILs sharing a unit produced a bug report about the unit locking up
+after a radio switch (DEV-1276).
 
 ## Output
 

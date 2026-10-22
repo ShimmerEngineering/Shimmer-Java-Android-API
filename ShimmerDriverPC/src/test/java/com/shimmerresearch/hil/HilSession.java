@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Pattern;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth;
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
@@ -62,8 +63,10 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 	volatile String hung;
 	/** Connects made in this session, for the report: each is a chance for the connect-time race. */
 	int connects;
-	/** Connects that failed to open the Bluetooth link and were tried again. */
-	int connectRetries;
+	/** Why the last connect failed, as a sentence for the report; null after one that succeeded. */
+	volatile String connectFailure;
+	/** jssc's message when Windows refuses to open a COM port that another program already has open. */
+	private static final Pattern PORT_BUSY = Pattern.compile("Port busy");
 
 	HilSession(String port, String mac, String type) {
 		this.port = port;
@@ -174,28 +177,39 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 	}
 
 	/**
-	 * Connects and waits until the driver has read the unit's configuration. If Windows cannot open
-	 * the Bluetooth link at all (CONNECTION_FAILED, which jssc reports as "Port busy" after paging the
-	 * unit for about 5 s), it tries once more, as a user would; connectRetries counts those.
+	 * Connects and waits until the driver has read the unit's configuration. A connect is never
+	 * retried. When the port can't be opened, connectFailure says why. jssc's "Port busy" means
+	 * another program on this PC has the port open (another HIL, Consensys, a serial terminal), so
+	 * the unit is in use. Results taken while another host shares the unit mean nothing, and that is
+	 * how DEV-1276 was misread.
 	 */
 	boolean connect(long timeoutMs) throws InterruptedException {
-		for (int attempt = 1; ; attempt++) {
-			connects++;
-			int mark = stateChanges;
-			Condition failed = () -> stateChanges > mark && device.getBluetoothRadioState() == BT_STATE.CONNECTION_FAILED;
-			if (!call("connect on " + port, 10000, () -> device.connect(port, ""))) {
-				return false;
-			}
-			boolean ready = waitFor(() -> (device.isInitialised() && device.getBluetoothRadioState() == BT_STATE.CONNECTED)
-					|| failed.holds(), timeoutMs) && !failed.holds();
-			if (ready || attempt > 1 || !failed.holds()) {
-				event("connected: timers " + device.timers());
-				return ready;
-			}
-			connectRetries++;
-			event("the Bluetooth link could not be opened (CONNECTION_FAILED); trying once more in 5 s");
-			Thread.sleep(5000);
+		connects++;
+		connectFailure = null;
+		int mark = stateChanges;
+		int logMark = device.logSize();
+		Condition failed = () -> stateChanges > mark && device.getBluetoothRadioState() == BT_STATE.CONNECTION_FAILED;
+		if (!call("connect on " + port, 10000, () -> device.connect(port, ""))) {
+			connectFailure = "connect on " + port + " did not return (see the events)";
+			return false;
 		}
+		boolean ready = waitFor(() -> (device.isInitialised() && device.getBluetoothRadioState() == BT_STATE.CONNECTED)
+				|| failed.holds(), timeoutMs) && !failed.holds();
+		if (ready) {
+			event("connected: timers " + device.timers());
+		} else {
+			if (device.countSince(logMark, PORT_BUSY) > 0) {
+				connectFailure = port + " is open in another program (another HIL, Consensys, a serial terminal?): "
+						+ "jssc reports \"Port busy\". Nothing else may use the unit during a run.";
+			} else if (failed.holds()) {
+				connectFailure = "the Bluetooth link on " + port + " could not be opened (CONNECTION_FAILED): "
+						+ "is the unit on, in range, and not connected to another host?";
+			} else {
+				connectFailure = "did not connect and initialise within " + timeoutMs / 1000 + " s (state " + state() + ")";
+			}
+			event(connectFailure);
+		}
+		return ready;
 	}
 
 	/**
