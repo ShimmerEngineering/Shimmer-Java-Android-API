@@ -46,6 +46,11 @@ public class JavaHilScenariosTest {
 	/** At 256 Hz a second without a packet is ~256 packets the gap count cannot see. */
 	private static final double MAX_SILENCE_AT_END_MS = 1000;
 	/**
+	 * How close the packet after a one-sample gap must arrive to a decoded battery reply for the gap to
+	 * count as the sample a Shimmer3 skips to send that reply (DEV-1297). Measured: 1-7 ms.
+	 */
+	private static final double BATTERY_REPLY_WINDOW_MS = 25;
+	/**
 	 * The ACK/response timer's own line when a command gets no reply: "Command:	[0x72] GET_STATUS_COMMAND
 	 * timeout", or "[0x..]UNKNOWN" for an opcode the driver doesn't know.
 	 */
@@ -184,9 +189,17 @@ public class JavaHilScenariosTest {
 
 	/**
 	 * Judges a stream recorded in stretches, split where the test stopped and restarted streaming on
-	 * purpose, so the pause is not taken for loss. Each stretch gets the timestamp checks; loss within
-	 * 1 s of an SD logging stop is reported, not failed (the unit pauses while it closes its file);
-	 * loss near a battery read, or more than maxLossPercent anywhere else, fails.
+	 * purpose, so the pause is not taken for loss. Each stretch gets the timestamp checks. Each gap
+	 * is charged, as StreamAnalysis.attribute() does, to the nearest SD logging stop or battery read
+	 * within 1 s:
+	 * <ul>
+	 * <li>loss near an SD logging stop is reported, not failed (the unit pauses while it closes its
+	 * file);</li>
+	 * <li>a single sample skipped right where a battery reply was decoded is reported, not failed: a
+	 * Shimmer3 gives up a sample slot to answer GET_VBATT mid-stream (DEV-1297). Had the driver lost
+	 * that packet, it would have left bytes behind, which checkDriverLog() fails on;</li>
+	 * <li>any other loss near a battery read, or more than maxLossPercent anywhere else, fails.</li>
+	 * </ul>
 	 */
 	private void checkStretches(List<List<StreamAnalysis.Sample>> stretches, double stoppedAtMs, double deviceRateHz,
 			double maxLossPercent, List<Double> sdStops, List<Double> batteryMoments) {
@@ -194,6 +207,10 @@ public class JavaHilScenariosTest {
 		int missing = 0;
 		int nearSd = 0;
 		int nearBattery = 0;
+		int skippedAtBatteryReplies = 0;
+		double[] sd = toArray(sdStops);
+		double[] battery = toArray(batteryMoments);
+		double[] batteryReplies = toArray(device.batteryReplyTimesMs());
 		List<StreamAnalysis.Sample> all = new ArrayList<>();
 		List<String> summaries = new ArrayList<>();
 		for (int k = 0; k < stretches.size(); k++) {
@@ -204,11 +221,22 @@ public class JavaHilScenariosTest {
 			session.event(what + ": " + a);
 			summaries.add(what + ": " + a);
 			report.check(a.received > 0, what + ": no packets received");
-			int[] attributed = a.attribute(new double[][] {toArray(sdStops), toArray(batteryMoments)}, 1000);
 			received += a.received;
 			missing += a.missing;
-			nearSd += attributed[0];
-			nearBattery += attributed[1];
+			for (StreamAnalysis.Gap g : a.gaps) {
+				double toSd = distanceToNearest(sd, g.afterReceivedMs);
+				double toBattery = distanceToNearest(battery, g.afterReceivedMs);
+				if (Math.min(toSd, toBattery) > 1000) {
+					continue;
+				}
+				if (toSd <= toBattery) {
+					nearSd += g.missing;
+				} else if (g.missing == 1 && distanceToNearest(batteryReplies, g.afterReceivedMs) <= BATTERY_REPLY_WINDOW_MS) {
+					skippedAtBatteryReplies++;
+				} else {
+					nearBattery += g.missing;
+				}
+			}
 			report.check(a.nonIncreasing == 0, what + ": " + a.nonIncreasing + " timestamps did not increase");
 			checkJumps(a, what);
 			// The rate needs a second or so of stream; only the last stretch can go silent before a stop
@@ -223,12 +251,17 @@ public class JavaHilScenariosTest {
 		report.put("missing", missing);
 		report.put("missingNearSdLoggingStops", nearSd);
 		report.put("missingNearBatteryReads", nearBattery);
+		report.put("skippedAtBatteryReplies", skippedAtBatteryReplies);
 		report.samples(all);
 		if (nearSd > 0) {
 			session.event(nearSd + " packets not received within 1 s of an SD logging stop (firmware side; not failed)");
 		}
+		if (skippedAtBatteryReplies > 0) {
+			session.event(skippedAtBatteryReplies + " single samples skipped where the unit sent a battery reply"
+					+ " (firmware side, DEV-1297; not failed)");
+		}
 		report.check(nearBattery == 0, nearBattery + " packets lost within 1 s of a battery read while streaming");
-		int elsewhere = missing - nearSd - nearBattery;
+		int elsewhere = missing - nearSd - nearBattery - skippedAtBatteryReplies;
 		double elsewherePercent = 100.0 * elsewhere / Math.max(1, received + missing);
 		report.put("missingElsewhere", elsewhere);
 		report.check(elsewherePercent <= maxLossPercent, String.format(Locale.ROOT,
@@ -250,6 +283,15 @@ public class JavaHilScenariosTest {
 			out[i] = values.get(i);
 		}
 		return out;
+	}
+
+	/** The distance from t to the nearest of the moments; infinite when there are none. */
+	private static double distanceToNearest(double[] momentsMs, double t) {
+		double nearest = Double.POSITIVE_INFINITY;
+		for (double m : momentsMs) {
+			nearest = Math.min(nearest, Math.abs(t - m));
+		}
+		return nearest;
 	}
 
 	// --- scenarios -----------------------------------------------------------------------------

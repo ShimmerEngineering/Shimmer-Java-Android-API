@@ -27,6 +27,8 @@ class HilShimmerPC extends ShimmerPC {
 	private final List<String> log = new ArrayList<>();
 	private volatile int statusesDecoded;
 	private volatile int batteryReadings;
+	/** When each battery reply was decoded, in ms on the session's clock (HilSession.nowMs()). */
+	private final List<Double> batteryReplyTimesMs = new ArrayList<>();
 
 	HilShimmerPC(String comPort, long t0Nanos) {
 		super(comPort);
@@ -50,7 +52,16 @@ class HilShimmerPC extends ShimmerPC {
 	@Override
 	public void setBattStatusDetails(ShimmerBattStatusDetails s) {
 		batteryReadings++;
+		synchronized (batteryReplyTimesMs) {
+			batteryReplyTimesMs.add((System.nanoTime() - t0) / 1e6);
+		}
 		super.setBattStatusDetails(s);
+	}
+
+	List<Double> batteryReplyTimesMs() {
+		synchronized (batteryReplyTimesMs) {
+			return new ArrayList<>(batteryReplyTimesMs);
+		}
 	}
 
 	@Override
