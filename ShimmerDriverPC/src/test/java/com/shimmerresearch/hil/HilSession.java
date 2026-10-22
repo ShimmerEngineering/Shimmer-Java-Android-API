@@ -67,6 +67,17 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 	volatile String connectFailure;
 	/** jssc's message when Windows refuses to open a COM port that another program already has open. */
 	private static final Pattern PORT_BUSY = Pattern.compile("Port busy");
+	/**
+	 * Per connect: whether the driver has sent NOTIFICATION_SHIMMER_FULLY_INITIALIZED (the end of
+	 * its connect sequence), and whether the first CONNECTED state is still to come.
+	 */
+	private volatile boolean fullyInitialisedSinceConnect;
+	private volatile boolean awaitingFirstConnected;
+	/**
+	 * Connects whose first CONNECTED came before the end of the connect sequence: the app was told
+	 * the unit was ready while the sequence was still queued (DEV-1275).
+	 */
+	volatile int connectedBeforeReady;
 
 	HilSession(String port, String mac, String type) {
 		this.port = port;
@@ -102,7 +113,18 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 				lastState = state;
 				stateChanges++;
 				event("state " + state);
+				if (state == BT_STATE.CONNECTED && awaitingFirstConnected) {
+					awaitingFirstConnected = false;
+					if (!fullyInitialisedSinceConnect) {
+						connectedBeforeReady++;
+						event("CONNECTED reported before the connect sequence ended (no FULLY_INITIALIZED yet; DEV-1275)");
+					}
+				}
 			}
+		} else if (msg.mIdentifier == HilShimmerPC.MSG_IDENTIFIER_NOTIFICATION_MESSAGE && msg.mB instanceof CallbackObject
+				&& ((CallbackObject) msg.mB).mIndicator == HilShimmerPC.NOTIFICATION_SHIMMER_FULLY_INITIALIZED) {
+			fullyInitialisedSinceConnect = true;
+			event("fully initialised");
 		} else if (msg.mIdentifier == HilShimmerPC.MSG_IDENTIFIER_DATA_PACKET && msg.mB instanceof ObjectCluster) {
 			if (recording) {
 				recordPacket((ObjectCluster) msg.mB);
@@ -186,6 +208,8 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 	boolean connect(long timeoutMs) throws InterruptedException {
 		connects++;
 		connectFailure = null;
+		fullyInitialisedSinceConnect = false;
+		awaitingFirstConnected = true;
 		int mark = stateChanges;
 		int logMark = device.logSize();
 		Condition failed = () -> stateChanges > mark && device.getBluetoothRadioState() == BT_STATE.CONNECTION_FAILED;

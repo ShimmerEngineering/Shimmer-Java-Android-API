@@ -104,6 +104,8 @@ public class JavaHilScenariosTest {
 	}
 
 	private void finish() {
+		report.check(session.connectedBeforeReady == 0, session.connectedBeforeReady + " of " + session.connects
+				+ " connects reported CONNECTED before the connect sequence ended (DEV-1275)");
 		if (session.hung != null) {
 			report.put("hungCall", session.hung);
 			report.check(false, session.hung + " never returned: the API call blocked (thread dump in the report's events)");
@@ -116,6 +118,7 @@ public class JavaHilScenariosTest {
 	/** What the driver did in this session: replies by type, decodes, timer requests, connects. */
 	private void putDriverCounts() {
 		report.put("connects", session.connects);
+		report.put("connectedBeforeReady", session.connectedBeforeReady);
 		report.put("inStreamReplies", device.inStreamReplies());
 		report.put("statusesDecoded", device.statusesDecoded());
 		report.put("batteryReadings", device.batteryReadings());
