@@ -56,6 +56,8 @@ A connect is never retried. If the COM port can't be opened, the scenario fails 
 - **CONNECTION_FAILED** for any other reason: the unit is off, out of range, or connected to
   another host such as a phone.
 
+Every connect, in every scenario, is also checked for DEV-1275: the first CONNECTED must come only after the driver's NOTIFICATION_SHIMMER_FULLY_INITIALIZED, which marks the end of its connect sequence. `connectedBeforeReady` counts the connects that broke this, and any one fails the scenario.
+
 Each report counts what the session covered: connects, in-stream replies by type, statuses and
 battery readings decoded, the status timer's requests, and command timeouts. Its events also say
 which driver timers were running after connect, after configure and while streaming.
