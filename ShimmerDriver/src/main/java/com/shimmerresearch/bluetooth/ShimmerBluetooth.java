@@ -1119,10 +1119,89 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 			printLogDataForDebugging("readbyte null");
 		}
 
+		if(processAckAtStartOfBuffer()){
+			return;
+		}
+
 		//If there is a full packet and the subsequent sequence number of following packet
 		if(mByteArrayOutputStream.size()>=getPacketSizeWithCrc()+2){ // +2 because there are two acks
 			processPacket();
-		} 
+		}
+	}
+
+	/**
+	 * Handles an ACK at the very start of the buffer, with no data packet before
+	 * it. The unit sends one when it answers while its data packets are paused, as
+	 * they are for about 100 ms while it closes its SD file after
+	 * STOP_LOGGING_ONLY_COMMAND (DEV-1291). processPacket() only looks for an ACK
+	 * after a data packet, so it threw such a reply away; the command then timed
+	 * out, and the timeout dropped every queued instruction.
+	 * <p>
+	 * It is taken only while a command waits for its ACK, and only when the bytes
+	 * after it are what that command expects: its own in-stream reply (FF 8A and
+	 * then its response opcode), or for a SET command a bare ACK whose link CRC
+	 * checks out. A 0xFF data byte the parser resyncs onto is therefore not taken
+	 * for one. Without a link CRC a bare ACK can't be told from a data byte, but
+	 * then the previous ACK isn't processed until the stream resumes either, so the
+	 * next command never goes out during the pause.
+	 *
+	 * @return true while the bytes so far are taken, or may still turn out to be
+	 *         such an ACK. The buffer is then at most 3 bytes, too short for
+	 *         processPacket() anyway.
+	 */
+	private boolean processAckAtStartOfBuffer() {
+		if(!mWaitForAck || mByteArrayOutputStream.size()==0){
+			return false;
+		}
+		byte[] bufferTemp = mByteArrayOutputStream.toByteArray();
+		if(bufferTemp[0]!=ACK_COMMAND_PROCESSED){
+			return false;
+		}
+		if(bufferTemp.length==1){
+			return true; //wait for what follows the ACK
+		}
+
+		//The in-stream reply to the GET command in flight
+		if(isSupportedInStreamCmds() && bufferTemp[1]==INSTREAM_CMD_RESPONSE){
+			if(bufferTemp.length==2){
+				return true; //wait for the response opcode
+			}
+			if(bufferTemp.length>3 || !isReplyToCommandInFlight(bufferTemp[2])){
+				return false;
+			}
+			printLogDataForDebugging("COMMAND TXed and ACK RECEIVED IN STREAM, with no data packet before it");
+			stopTimerCheckForAckOrResp(); //cancel the ack timer
+			mWaitForResponse=false;
+			mWaitForAck=false;
+
+			//Reads the rest of the response, and its CRC, from the port
+			processInstreamResponse(bufferTemp[2], true);
+
+			if(getListofInstructions().size()>0){
+				removeInstruction(0);
+			}
+			mTransactionCompleted=true;
+			setInstructionStackLock(false);
+			clearBuffers();
+			return true;
+		}
+
+		//A bare ACK to the SET command in flight
+		if(isKnownSetCommand(mCurrentCommand) && mBtCommsCrcModeCurrent!=BT_CRC_MODE.OFF){
+			int numCrcBytes = mBtCommsCrcModeCurrent.getNumCrcBytes();
+			for(int i=1;i<bufferTemp.length && i<=numCrcBytes;i++){
+				if(bufferTemp[i]!=BARE_ACK_CRC[i-1]){
+					return false;
+				}
+			}
+			if(bufferTemp.length<1+numCrcBytes){
+				return true; //wait for the rest of the ACK's CRC
+			}
+			clearBytesFromStartOfBuffers(bufferTemp, 1+numCrcBytes);
+			processAckWhileStreaming();
+			return true;
+		}
+		return false;
 	}
 	
 	private static boolean isKnownResponse(byte response) {
