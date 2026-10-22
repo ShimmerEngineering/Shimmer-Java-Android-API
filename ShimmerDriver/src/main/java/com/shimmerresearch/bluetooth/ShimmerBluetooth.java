@@ -6088,11 +6088,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+	/**
+	 * Called by the IO thread for the next instruction. It locks only the list:
+	 * everything else locks the device first and the list second, so taking the
+	 * device here, through the synchronized getListofInstructions(), deadlocked
+	 * the IO thread against the timers that queue and clear instructions
+	 * (DEV-1266).
+	 */
 	private byte[] getInstruction(){
 		synchronized(mListofInstructions){
 			if(!mListofInstructions.isEmpty()){
 				if(mListofInstructions.get(0)!=null) {
-					byte[] insBytes = (byte[]) getListofInstructions().get(0);
+					byte[] insBytes = (byte[]) mListofInstructions.get(0);
 					return insBytes;
 				} else{
 					return mListofInstructions.remove(0);
