@@ -49,6 +49,8 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 	private final long t0 = System.nanoTime();
 	private final List<String> events = new ArrayList<>();
 	private final List<StreamAnalysis.Sample> samples = new ArrayList<>();
+	/** Each recorded packet's raw device ticks (TIMESTAMP, UNCAL), since startRecording, across stretches. */
+	private final List<Double> rawTicks = new ArrayList<>();
 	private final Set<Integer> otherMessagesSeen = new HashSet<>();
 	private final ExecutorService calls = Executors.newSingleThreadExecutor(r -> {
 		Thread t = new Thread(r, "HilCall");
@@ -140,14 +142,20 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 				cal(oc, Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_X),
 				cal(oc, Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Y),
 				cal(oc, Configuration.Shimmer3.ObjectClusterSensorName.ACCEL_LN_Z));
+		double ticks = value(oc, Configuration.Shimmer3.ObjectClusterSensorName.TIMESTAMP, "UNCAL");
 		synchronized (samples) {
 			samples.add(s);
+			rawTicks.add(ticks);
 		}
 	}
 
 	private static double cal(ObjectCluster oc, String channel) {
+		return value(oc, channel, "CAL");
+	}
+
+	private static double value(ObjectCluster oc, String channel, String format) {
 		Collection<FormatCluster> formats = oc.getCollectionOfFormatClusters(channel);
-		FormatCluster c = (FormatCluster) ObjectCluster.returnFormatCluster(formats, "CAL");
+		FormatCluster c = (FormatCluster) ObjectCluster.returnFormatCluster(formats, format);
 		return c == null ? Double.NaN : c.mData;
 	}
 
@@ -278,8 +286,19 @@ class HilSession extends BasicProcessWithCallBack implements AutoCloseable {
 	void startRecording() {
 		synchronized (samples) {
 			samples.clear();
+			rawTicks.clear();
 		}
 		recording = true;
+	}
+
+	/**
+	 * The raw device ticks of every packet recorded since startRecording, in arrival order: the
+	 * unit's own 3-byte counter, before the driver unwraps it (TimestampWraps counts its wraps).
+	 */
+	List<Double> rawTicksRecorded() {
+		synchronized (samples) {
+			return new ArrayList<>(rawTicks);
+		}
 	}
 
 	List<StreamAnalysis.Sample> stopRecording() {
