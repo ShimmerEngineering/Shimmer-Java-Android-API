@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Test;
 
 import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
+import com.shimmerresearch.driver.ShimmerObject;
 import com.shimmerresearch.pcDriver.ShimmerPC;
 import com.shimmerresearch.shimmer3.communication.ByteCommunicationSimulatorS3;
 import com.shimmerresearch.shimmer3.communication.ByteCommunicationTestUtils;
@@ -20,7 +21,8 @@ import com.shimmerresearch.shimmer3.communication.ByteCommunicationTestUtils;
  * its instruction list while it was copied: the status timer queues GET_STATUS every
  * 5 s, the battery timer queues a battery read, and the IO thread removes each
  * instruction it sends. A change mid-copy threw ConcurrentModificationException out of
- * deepClone(), and the configure failed. The Java HIL saw it about once in 30 configures.
+ * deepClone(), and the configure failed. While streaming the same happened with the PC
+ * timestamp list, and a packet waiting for the processing thread made deepClone() return null.
  * <p>
  * A clone is a copy of the configuration, not of the connection, so it now starts with
  * none of the connection's queues.
@@ -69,6 +71,52 @@ public class API_00034_DeepCloneWhileBusyTest {
 			timer.join(5000);
 		}
 		assertFalse("the queue was not copied away from the device", device.getListofInstructions().isEmpty());
+	}
+
+	/**
+	 * While streaming, the IO thread notes the PC time as each packet starts and drops it once the
+	 * packet is parsed. On a Shimmer3 streaming at 256 Hz that raced about one clone in a hundred.
+	 */
+	@Test
+	public void clonesWhileTheIoThreadTimestampsPackets() throws Exception {
+		ShimmerPC device = new ShimmerPC("COM99");
+		for(int i=0;i<2000;i++){
+			device.mListofPCTimeStamps.add(System.currentTimeMillis());
+		}
+		AtomicBoolean stop = new AtomicBoolean();
+		Thread ioThread = daemon("IO thread", () -> {
+			while(!stop.get()){
+				device.mListofPCTimeStamps.add(System.currentTimeMillis());
+				device.mListofPCTimeStamps.remove(0);
+			}
+		});
+		ioThread.start();
+		try {
+			for(int i=1;i<=CLONES;i++){
+				ShimmerPC clone = device.deepClone();
+				assertNotNull("clone " + i, clone);
+				assertTrue("clone " + i + " carries no PC timestamps", clone.mListofPCTimeStamps.isEmpty());
+			}
+		} finally {
+			stop.set(true);
+			ioThread.join(5000);
+		}
+	}
+
+	/**
+	 * With the processing thread on, parsed packets wait in a queue for it. Its packets can't be
+	 * serialised, so deepClone() returned null whenever one was waiting.
+	 */
+	@Test
+	public void clonesWithPacketsWaitingForTheProcessingThread() {
+		ShimmerPC device = new ShimmerPC("COM99");
+		// The queue is package-private to ShimmerBluetooth, so reach it through that type
+		ShimmerBluetooth original = device;
+		original.mABQPacketByeArray.add(new RawBytePacketWithPCTimeStamp(new byte[] {ShimmerObject.DATA_PACKET, 0x01, 0x02}, System.currentTimeMillis()));
+		ShimmerBluetooth clone = device.deepClone();
+		assertNotNull("a device with a packet waiting can be copied", clone);
+		assertTrue("the copy has no packets waiting", clone.mABQPacketByeArray.isEmpty());
+		assertEquals("the device keeps its packet", 1, original.mABQPacketByeArray.size());
 	}
 
 	/**
