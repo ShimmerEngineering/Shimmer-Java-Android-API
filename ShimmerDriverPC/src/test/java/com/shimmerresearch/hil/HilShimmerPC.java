@@ -1,5 +1,7 @@
 package com.shimmerresearch.hil;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -23,16 +25,27 @@ class HilShimmerPC extends ShimmerPC {
 	private static final int MAX_LOG_LINES = 50000;
 
 	private final long t0;
-	private final Map<String, Integer> inStreamReplies = new TreeMap<>();
-	private final List<String> log = new ArrayList<>();
+	// What the session counted is transient: the driver's threads add to it all the time, and
+	// configureAccelOnly copies this device by serialising it (deepClone()), which threw
+	// ConcurrentModificationException when a line was logged mid-copy (DEV-1310).
+	private transient Map<String, Integer> inStreamReplies = new TreeMap<>();
+	private transient List<String> log = new ArrayList<>();
 	private volatile int statusesDecoded;
 	private volatile int batteryReadings;
 	/** When each battery reply was decoded, in ms on the session's clock (HilSession.nowMs()). */
-	private final List<Double> batteryReplyTimesMs = new ArrayList<>();
+	private transient List<Double> batteryReplyTimesMs = new ArrayList<>();
 
 	HilShimmerPC(String comPort, long t0Nanos) {
 		super(comPort);
 		this.t0 = t0Nanos;
+	}
+
+	/** A copy starts counting from nothing; a deserialised object runs no field initialisers. */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		inStreamReplies = new TreeMap<>();
+		log = new ArrayList<>();
+		batteryReplyTimesMs = new ArrayList<>();
 	}
 
 	@Override
