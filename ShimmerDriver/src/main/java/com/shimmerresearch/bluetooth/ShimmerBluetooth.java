@@ -186,7 +186,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	protected byte mCurrentCommand;	
 	protected boolean mWaitForAck=false;                                          // This indicates whether the device is waiting for an acknowledge packet from the Shimmer Device  
 	protected boolean mWaitForResponse=false; 									// This indicates whether the device is waiting for a response packet from the Shimmer Device 
-	protected boolean mTransactionCompleted=true;									// Variable is used to ensure a command has finished execution prior to executing the next command (see initialize())
+	protected volatile boolean mTransactionCompleted=true;							// Variable is used to ensure a command has finished execution prior to executing the next command (see initialize()). Volatile: operationPrepare() waits on it from an app thread
 	transient protected IOThread mIOThread;
 	transient protected ProcessingThread mPThread;
 	@Deprecated // mContinousSync doesn't do anything
@@ -858,13 +858,21 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 						clearSerialBuffer();
 						
-						hasStopStreaming();					
+						hasStopStreaming();
 						removeInstruction(0);
 						removeAllNulls();
 						if (mCurrentCommand==STOP_SDBT_COMMAND){
-							eventLogAndStreamStatusChanged(mCurrentCommand);	
+							eventLogAndStreamStatusChanged(mCurrentCommand);
 						}
 						setInstructionStackLock(false);
+						// The stop is handled and the STOP retired. The byte that started the handling
+						// must not also go on to the ACK processing below: when it was the unit's ACK,
+						// that retired the next instruction as well, a command queued straight after
+						// stopStreaming() that was never sent (DEV-1306)
+						if((byte)byteBuffer[0]==ACK_COMMAND_PROCESSED){
+							printLogDataForDebugging("Stop handled on its ACK, the first byte back");
+						}
+						return;
 					}
 	//				//TODO: ACK is probably now working for STOP_STREAMING_COMMAND so merge in with others?
 	//				if(mCurrentCommand==STOP_SDBT_COMMAND) { //due to not receiving the ack from stop streaming command we will skip looking for it.
@@ -2988,6 +2996,14 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	@Override
 	public void operationPrepare(){
 		stopAllTimers();
+
+		// Let a command already sent finish first. Clearing the list now would remove it while it is
+		// still in flight, and its reply, which retires the head of the list (removeInstruction(0)),
+		// would then remove this operation's first instruction in its place. After stopStreaming() the
+		// STOP is in flight for about 400 ms, as its stop handling sleeps that long, so a configuration
+		// started straight after a stop lost its first SET_INFOMEM, the chunk that holds the sampling
+		// rate (DEV-1306).
+		waitForInstructionInFlight(OPERATION_PREPARE_WAIT_MS);
 
 		//make sure no more instructions
 		//shouldnt matter since the configuration are being rewritten by consensys
@@ -6065,6 +6081,46 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 		}
 	}
 	
+	/** How long operationPrepare() waits for a command in flight: past its 2 s ACK timeout */
+	private static final long OPERATION_PREPARE_WAIT_MS = 3000;
+
+	/**
+	 * Waits until the instruction at the head of the list, if it has been sent and is waiting for its
+	 * reply, has been answered and retired, or until the timeout. Returns at once on the IOThread,
+	 * which is the thread that would retire it.
+	 */
+	private void waitForInstructionInFlight(long timeoutMs) {
+		byte[] inFlight;
+		synchronized(mListofInstructions){
+			inFlight = (!mTransactionCompleted && !mListofInstructions.isEmpty()) ? mListofInstructions.get(0) : null;
+		}
+		if(inFlight==null || Thread.currentThread()==mIOThread){
+			return;
+		}
+		long end = System.currentTimeMillis()+timeoutMs;
+		while(System.currentTimeMillis()<end){
+			synchronized(mListofInstructions){
+				boolean stillListed = false;
+				for(byte[] instruction:mListofInstructions){
+					if(instruction==inFlight){
+						stillListed = true;
+						break;
+					}
+				}
+				if(mTransactionCompleted && !stillListed){
+					return;
+				}
+			}
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				return;
+			}
+		}
+		printLogDataForDebugging("operationPrepare: " + btCommandToString(inFlight[0]) + " was still in flight after " + timeoutMs + " ms; clearing it");
+	}
+
 	private synchronized void clearAllInstructions(){
 		synchronized(mListofInstructions){
 			getListofInstructions().clear();
