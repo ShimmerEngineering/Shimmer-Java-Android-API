@@ -22,8 +22,8 @@ Before "Release Java API": the full run on this commit, recorded on GitHub as th
 #>
 param(
     [string]$Rig = (Join-Path $PSScriptRoot 'rig-java.json'),
-    [ValidateSet('streamRest', 'midStreamSet', 'reconnectLoop', 'inStream', 'queueStress')]
-    [string[]]$Scenario = @('streamRest', 'midStreamSet', 'reconnectLoop', 'inStream', 'queueStress'),
+    [ValidateSet('streamRest', 'midStreamSet', 'reconnectLoop', 'inStream', 'queueStress', 'rollover', 'idleStart', 'samplingRates')]
+    [string[]]$Scenario = @('streamRest', 'midStreamSet', 'reconnectLoop', 'inStream', 'queueStress', 'rollover', 'idleStart', 'samplingRates'),
     [string[]]$Unit,
     [double]$Rate = 256,
     [int]$Seconds = 30,

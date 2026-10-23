@@ -35,6 +35,8 @@ import com.shimmerresearch.bluetooth.ShimmerBluetooth.BT_STATE;
  *   hil.stressSeconds   queueStress duration, default 60
  *   hil.maxQueued       queueStress queue length the threads keep below, default 8
  *   hil.stallSeconds    queueStress: no progress for this long is a hang, default 10
+ *   hil.rolloverSeconds rollover duration, default 600 (past the 512 s wrap from any start)
+ *   hil.idleSeconds     idleStart: how long the link is left idle, default 60
  *   hil.crc             off, 1 or 2; default: the driver's own default
  *   hil.maxLossPercent  default 1.0
  *   hil.outDir          where reports go, default build/hil
@@ -55,6 +57,10 @@ public class JavaHilScenariosTest {
 	 * timeout", or "[0x..]UNKNOWN" for an opcode the driver doesn't know.
 	 */
 	private static final java.util.regex.Pattern COMMAND_TIMEOUT = java.util.regex.Pattern.compile("Command:\t\\[0x[0-9A-F]{2}\\] ?\\S+ timeout");
+	/** The slowest start idleStart accepts after the wait, as the C# and shimmer-logandstream HILs do. */
+	private static final double MAX_START_AFTER_IDLE_MS = 500;
+	/** The rates samplingRates writes in turn, as the shimmer-logandstream HIL's config.sampling_rate does. */
+	private static final double[] SAMPLING_RATES_HZ = {51.2, 256, 512};
 
 	private HilSession session;
 	private HilReport report;
@@ -129,6 +135,17 @@ public class JavaHilScenariosTest {
 	// --- shared checks -------------------------------------------------------------------------
 
 	private boolean connectAndConfigure(double rateHz) throws Exception {
+		if (!connectAndDescribe()) {
+			return false;
+		}
+		boolean configured = session.configureAccelOnly(rateHz, 20000);
+		report.put("rateOnDeviceHz", device.getSamplingRateShimmer());
+		report.check(configured, "configuration did not complete within 20 s (state " + session.state() + ")");
+		return configured;
+	}
+
+	/** Connects, and records what the unit is: its hardware, firmware and the link CRC in use. */
+	private boolean connectAndDescribe() throws Exception {
 		long start = System.currentTimeMillis();
 		boolean connected = session.connect(30000);
 		report.put("connectMs", System.currentTimeMillis() - start);
@@ -139,10 +156,20 @@ public class JavaHilScenariosTest {
 		report.put("hardware", device.getHardwareVersionParsed());
 		report.put("firmware", device.getFirmwareVersionParsed());
 		report.put("crcMode", String.valueOf(device.getCurrentBtCommsCrcMode()));
-		boolean configured = session.configureAccelOnly(rateHz, 20000);
-		report.put("rateOnDeviceHz", device.getSamplingRateShimmer());
-		report.check(configured, "configuration did not complete within 20 s (state " + session.state() + ")");
-		return configured;
+		return true;
+	}
+
+	/** The driver says the link has gone: lost, or closed under the test. */
+	private boolean linkLost() {
+		BT_STATE s = session.state();
+		return s == BT_STATE.CONNECTION_LOST || s == BT_STATE.DISCONNECTED;
+	}
+
+	/** Accel at rest: NaN fails too, since the scenario configured the accel. */
+	private void checkAccelAtRest(StreamAnalysis a) {
+		report.check(Math.abs(a.accelMagnitudeMean - GRAVITY) <= 1.0, String.format(Locale.ROOT,
+				"accel at rest %.3f m/s^2, expected %.2f±1.00 (NaN: no calibrated accel; otherwise is the unit lying still?)",
+				a.accelMagnitudeMean, GRAVITY));
 	}
 
 	private void checkRate(double deviceRateHz, String what) {
@@ -322,10 +349,7 @@ public class JavaHilScenariosTest {
 			report.putGaps(a);
 			report.samples(samples);
 			checkStream(a, samples, stoppedAtMs, maxLoss, deviceRate, "stream");
-			// NaN fails too: the scenario configured the accel, so a stream without calibrated accel is a fault
-			report.check(Math.abs(a.accelMagnitudeMean - GRAVITY) <= 1.0, String.format(Locale.ROOT,
-					"accel at rest %.3f m/s^2, expected %.2f±1.00 (NaN: no calibrated accel; otherwise is the unit lying still?)",
-					a.accelMagnitudeMean, GRAVITY));
+			checkAccelAtRest(a);
 			checkDriverLog(logMark, "stream");
 			report.check(session.disconnect(10000), "did not disconnect within 10 s");
 		}
@@ -608,6 +632,168 @@ public class JavaHilScenariosTest {
 				report.check(session.stopStreaming(10000), "streaming did not stop within 10 s");
 				report.check(session.disconnect(10000), "did not disconnect within 10 s");
 			}
+		}
+		finish();
+	}
+
+	/**
+	 * Streams for 10 minutes (hil.rolloverSeconds), past the 512 s wrap of the unit's 3-byte
+	 * timestamp counter from wherever it starts, as the C# HIL's stream.rollover does. The driver's
+	 * unwrap must carry the timeline straight across the wrap: DEV-1023 was that rule, wrong the same
+	 * way in four APIs. Fails on the stream checks, or if the raw counter never wrapped.
+	 */
+	@Test
+	public void rollover() throws Exception {
+		begin("rollover");
+		double rate = arg("rate", 256.0);
+		int seconds = arg("rolloverSeconds", 600);
+		double maxLoss = arg("maxLossPercent", 1.0);
+		if (connectAndConfigure(rate)) {
+			double deviceRate = device.getSamplingRateShimmer();
+			checkRate(deviceRate, "stream");
+			int logMark = device.logSize();
+			session.startRecording();
+			report.check(session.startStreaming(10000), "streaming did not start within 10 s");
+			// Watched each second, so a lost link ends the wait instead of sitting out the 10 minutes
+			long start = System.nanoTime();
+			while (System.nanoTime() - start < seconds * 1_000_000_000L && !linkLost()) {
+				Thread.sleep(1000);
+			}
+			double streamedSeconds = (System.nanoTime() - start) / 1e9;
+			double stoppedAtMs = session.nowMs();
+			List<StreamAnalysis.Sample> samples = session.stopRecording();
+			int wraps = TimestampWraps.count(session.rawTicksRecorded());
+			report.put("streamedSeconds", Math.round(streamedSeconds * 10) / 10.0);
+			report.put("counterWraps", wraps);
+			boolean lost = linkLost();
+			report.check(!lost, String.format(Locale.ROOT, "the link was lost %.0f s into the stream (state %s)", streamedSeconds, session.state()));
+			if (!lost) {
+				report.check(session.stopStreaming(10000), "streaming did not stop within 10 s");
+			}
+			StreamAnalysis a = StreamAnalysis.analyse(samples, deviceRate);
+			session.event("stream: " + a + "; the unit's counter wrapped " + wraps + " time(s)");
+			report.putStream("stream", a);
+			report.putGaps(a);
+			report.samples(samples);
+			checkStream(a, samples, stoppedAtMs, maxLoss, deviceRate, "stream");
+			report.check(wraps >= 1, String.format(Locale.ROOT,
+					"the unit's counter did not wrap in %.0f s of streaming, so the stream never crossed the 512 s wrap", streamedSeconds));
+			checkAccelAtRest(a);
+			checkDriverLog(logMark, "stream");
+			if (!lost) {
+				report.check(session.disconnect(10000), "did not disconnect within 10 s");
+			}
+		}
+		finish();
+	}
+
+	/**
+	 * A link left idle, as an app's is between configuring a unit and starting it: 60 s
+	 * (hil.idleSeconds) in which the test sends nothing, with the driver's timers running as they do
+	 * in an app, then a 10 s stream. The link must survive the wait, the status timer's requests
+	 * must be answered, and streaming must start within 500 ms of the call, as the C# and
+	 * shimmer-logandstream HILs require: a Classic link left quiet otherwise answers its next command
+	 * late.
+	 */
+	@Test
+	public void idleStart() throws Exception {
+		begin("idle_start");
+		double rate = arg("rate", 256.0);
+		int idleSeconds = arg("idleSeconds", 60);
+		double maxLoss = arg("maxLossPercent", 1.0);
+		if (connectAndConfigure(rate)) {
+			double deviceRate = device.getSamplingRateShimmer();
+			checkRate(deviceRate, "stream");
+			int idleMark = device.logSize();
+			session.event("idle for " + idleSeconds + " s: timers " + device.timers());
+			long idleStarted = System.nanoTime();
+			while (System.nanoTime() - idleStarted < idleSeconds * 1_000_000_000L && !linkLost()) {
+				Thread.sleep(200);
+			}
+			double idled = (System.nanoTime() - idleStarted) / 1e9;
+			int statusRequests = device.countSince(idleMark, "GET_STATUS_COMMAND Instruction added");
+			report.put("idleSeconds", Math.round(idled * 10) / 10.0);
+			report.put("statusRequestsWhileIdle", statusRequests);
+			session.event(String.format(Locale.ROOT, "idle %.0f s: %d status requests by the driver, timers %s", idled, statusRequests, device.timers()));
+			boolean lost = linkLost();
+			report.check(!lost, String.format(Locale.ROOT, "the link was lost %.0f s into the idle wait (state %s)", idled, session.state()));
+			if (!lost) {
+				checkDriverLog(idleMark, "idle");
+				int logMark = device.logSize();
+				session.startRecording();
+				long asked = System.nanoTime();
+				boolean started = session.startStreaming(10000);
+				double startMs = (System.nanoTime() - asked) / 1e6;
+				report.put("startMs", Math.round(startMs));
+				session.event(String.format(Locale.ROOT, "streaming %s %.0f ms after startStreaming", started ? "started" : "had not started", startMs));
+				report.check(started, "streaming did not start within 10 s after the idle wait");
+				report.check(!started || startMs <= MAX_START_AFTER_IDLE_MS, String.format(Locale.ROOT,
+						"streaming started %.0f ms after startStreaming, over %.0f ms", startMs, MAX_START_AFTER_IDLE_MS));
+				Thread.sleep(10000);
+				double stoppedAtMs = session.nowMs();
+				List<StreamAnalysis.Sample> samples = session.stopRecording();
+				report.check(session.stopStreaming(10000), "streaming did not stop within 10 s");
+				StreamAnalysis a = StreamAnalysis.analyse(samples, deviceRate);
+				session.event("stream: " + a);
+				report.putStream("stream", a);
+				report.putGaps(a);
+				report.samples(samples);
+				checkStream(a, samples, stoppedAtMs, maxLoss, deviceRate, "stream");
+				checkAccelAtRest(a);
+				checkDriverLog(logMark, "stream");
+				report.check(session.disconnect(10000), "did not disconnect within 10 s");
+			}
+		}
+		finish();
+	}
+
+	/**
+	 * Writes 51.2, 256 and 512 Hz in turn, each the way Consensys's Bluetooth manager writes a
+	 * configuration (configureAccelOnly), and streams 5 s at each: the unit must stream at the rate
+	 * it was given, as the shimmer-logandstream HIL's config.sampling_rate checks. Then the unit's own
+	 * rate is written back. The unit is left accel only, as every scenario leaves it.
+	 */
+	@Test
+	public void samplingRates() throws Exception {
+		begin("sampling_rates");
+		double maxLoss = arg("maxLossPercent", 1.0);
+		if (connectAndDescribe()) {
+			double ownRate = device.getSamplingRateShimmer();
+			report.put("ownRateHz", ownRate);
+			List<String> streams = new ArrayList<>();
+			for (double rate : SAMPLING_RATES_HZ) {
+				if (session.hung != null) {
+					break;
+				}
+				String what = String.format(Locale.ROOT, "%.1f Hz", rate);
+				boolean configured = session.configureAccelOnly(rate, 20000);
+				report.check(configured, String.format(Locale.ROOT, "%s: the configuration did not take within 20 s (rate on device %.2f Hz, state %s)",
+						what, device.getSamplingRateShimmer(), session.state()));
+				if (!configured) {
+					continue;
+				}
+				double deviceRate = device.getSamplingRateShimmer();
+				int logMark = device.logSize();
+				session.startRecording();
+				report.check(session.startStreaming(10000), what + ": streaming did not start within 10 s");
+				Thread.sleep(5000);
+				double stoppedAtMs = session.nowMs();
+				List<StreamAnalysis.Sample> samples = session.stopRecording();
+				report.check(session.stopStreaming(10000), what + ": streaming did not stop within 10 s");
+				StreamAnalysis a = StreamAnalysis.analyse(samples, deviceRate);
+				session.event(what + " stream: " + a);
+				streams.add(what + ": " + a);
+				checkStream(a, samples, stoppedAtMs, maxLoss, deviceRate, what);
+				checkDriverLog(logMark, what);
+			}
+			report.put("streams", streams);
+			if (session.hung == null) {
+				boolean restored = session.configureAccelOnly(ownRate, 20000);
+				report.check(restored, String.format(Locale.ROOT, "the unit's own rate, %.2f Hz, was not written back (rate on device %.2f Hz)",
+						ownRate, device.getSamplingRateShimmer()));
+				report.put("rateOnDeviceHz", device.getSamplingRateShimmer());
+			}
+			report.check(session.disconnect(10000), "did not disconnect within 10 s");
 		}
 		finish();
 	}

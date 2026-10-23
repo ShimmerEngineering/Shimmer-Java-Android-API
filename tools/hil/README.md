@@ -44,6 +44,9 @@ If anything merges after step 1, the commit changes, so test again. In an emerge
 | `reconnectLoop` | Connects, streams for 5 s and disconnects, five times on the same `ShimmerPC`. Every connect starts the driver's status timer, which is when the DEV-1266 lock inversion is most likely. | Any cycle fails to connect within 30 s, loses packets, fails the timestamp checks, or the driver logs a parser error or command timeout. |
 | `inStream` | While streaming: first each in-stream reply on its own, three rounds: status (`0x8A 0x71`), directory (`0x8A 0x88`) and battery (`0x8A 0x94`). Then five overlaps as Consensys meets them: with the unit streaming and logging (logging started the Consensys way), stop SD logging mid-stream and request status and battery at once, so in-stream replies, including any status the unit pushes as logging stops, arrive while that command waits for its ACK (DEV-1262). | A reply doesn't arrive within 3 s or isn't decoded; an overlap doesn't complete within 5 s (both replies decoded, logging stopped, the queue empty); the driver logs a command timeout; or the stream fails the checks above. |
 | `queueStress` | While streaming, four app threads call `readBattery()` and `readStatusLogAndStream()` and check the queue length, in tight loops for 60 s, keeping the queue under 8. Each of those calls locks the device and then the instruction list, so one is nearly always under way while the IO thread fetches the next instruction. That is the window DEV-1266's lock inversion needs (#334). No SD logging is involved. | The calls and replies stop for 10 s, or the JVM finds a deadlock; the queue doesn't drain afterwards. Without the DEV-1266 fix a Shimmer3R deadlocked within 0.3 s in every run. |
+| `rollover` | Configures as `streamRest` does and streams for 10 minutes with the unit lying still. That is past the 512 s wrap of the unit's 3-byte timestamp counter from wherever it starts, so the driver's unwrap has to carry the timeline across it (DEV-1023, the same rule wrong in four APIs). The C# HIL's `stream.rollover` does the same. | The stream fails `streamRest`'s checks, or the link is lost; the unit's raw counter never wrapped (counted from the TIMESTAMP channel's raw ticks, so a shortened run doesn't pass). |
+| `idleStart` | Connects and configures, then leaves the link idle for 60 s, with the driver's timers running as they do in an app, before streaming 10 s. The C# and shimmer-logandstream HILs check the same: a Bluetooth Classic link left quiet otherwise answers its next command late. The report counts the status timer's requests during the wait. | The link is lost during the wait, or the driver logs a command timeout or parser error in it; streaming starts more than 500 ms after `startStreaming()`; or the stream fails `streamRest`'s checks. |
+| `samplingRates` | Writes 51.2, 256 and 512 Hz in turn, each the way Consensys's Bluetooth manager writes a configuration, and streams 5 s at each, as the shimmer-logandstream HIL's `config.sampling_rate` does. Then it writes the unit's own rate back, accel only as every scenario leaves it. | A configuration doesn't take within 20 s, or the unit reads back another rate; a stream loses packets, fails the timestamp checks, or has a rate more than 1 % off the one written; the driver logs a parser error or command timeout; or the unit's own rate isn't written back. |
 
 Every API call runs under a watchdog. If one doesn't return within 10 s, the scenario stops, and its
 events hold every thread's stack with the locks each holds and waits on, plus any deadlock the JVM
@@ -65,7 +68,8 @@ which driver timers were running after connect, after configure and while stream
 Starting SD logging mid-stream (`startSDLogging()` while streaming) writes the RTC mid-stream, which a Shimmer3R answers with out-of-order timestamps (DEV-1245). Consensys never does that, and neither do these scenarios.
 
 The stream checks are the Android HIL's (`StreamAnalysis`, the same class in ShimmerAndroidAPI's
-`shimmerHilTest`), so the two judge a stream by the same rules. `StreamAnalysisTest` runs in CI.
+`shimmerHilTest`), so the two judge a stream by the same rules. `StreamAnalysisTest` runs in CI, as
+does `TimestampWrapsTest`, for the wrap count `rollover` relies on.
 
 ### What it does not test
 
@@ -79,7 +83,7 @@ The stream checks are the Android HIL's (`StreamAnalysis`, the same class in Shi
 | | Default | Option |
 |---|---|---|
 | Units | every unit in the rig file | `-Unit s3r-86f8` |
-| Scenarios | all five | `-Scenario inStream` |
+| Scenarios | all eight (`rollover` alone streams 10 minutes a unit) | `-Scenario inStream` |
 | Sampling rate, stream duration | 256 Hz, 30 s | `-Rate 512`, `-Seconds 60` |
 | Link CRC | the driver's default (1 byte) | `-Crc off`, `-Crc 2` |
 | Pause between runs | 10 s | `-SettleSeconds 30` |
@@ -90,7 +94,7 @@ The stream checks are the Android HIL's (`StreamAnalysis`, the same class in Shi
 1. **Pair each unit with the PC** in Windows Settings → Bluetooth (PIN `1234`). Windows creates an
    outgoing serial port for it; the script finds that port from the unit's MAC.
 2. **Prepare each unit:** SD sync and Bluetooth disable off (either keeps Bluetooth off, DEV-1228), an
-   SD card in for `midStreamSet`, lying still during `streamRest`.
+   SD card in for `midStreamSet`, lying still during `streamRest`, `rollover` and `idleStart`.
 3. **List the units:** copy `rig-java.example.json` to `rig-java.json` and fill in each name, MAC
    and `type` (`Shimmer3` or `Shimmer3R`). Add `comPort` only to override the port the script finds.
    That file is gitignored.
