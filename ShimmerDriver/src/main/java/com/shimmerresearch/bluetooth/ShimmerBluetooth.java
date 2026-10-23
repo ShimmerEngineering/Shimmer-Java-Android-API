@@ -76,6 +76,7 @@ package com.shimmerresearch.bluetooth;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -200,8 +201,12 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	private boolean mUseLegacyDelayToDelayForResponse = false;
 
-	ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(10000);
-	public List<Long> mListofPCTimeStamps = new ArrayList<Long>();
+	// The connection's queues are transient: the IO thread and the timers change them while a
+	// connected device is serialised by deepClone(), which threw ConcurrentModificationException
+	// (DEV-1310). readObject() gives a copy empty ones.
+	private static final int PACKET_QUEUE_CAPACITY = 10000;
+	transient ArrayBlockingQueue<RawBytePacketWithPCTimeStamp> mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(PACKET_QUEUE_CAPACITY);
+	public transient List<Long> mListofPCTimeStamps = new ArrayList<Long>();
 	
 	protected boolean mIamAlive = false;
 	protected abstract void connect(String address,String bluetoothLibrary);
@@ -233,7 +238,7 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	private SystemTimestampPlot systemTimestampPlot = new SystemTimestampPlot();
 
-	private List<byte []> mListofInstructions = new  ArrayList<byte[]>();
+	private transient List<byte []> mListofInstructions = new  ArrayList<byte[]>();
 	private final int ACK_TIMER_DURATION = 2; 									// Duration to wait for an ack packet (seconds)
 	protected boolean mDummyRead = false, mDummyReadStarted = false;
 	@Deprecated
@@ -6071,6 +6076,18 @@ public abstract class ShimmerBluetooth extends ShimmerObject implements Serializ
 	
 	//endregion
 
+
+	/**
+	 * A copy made by serialisation (deepClone()) is of the configuration, not of the connection,
+	 * so it starts with none of the connection's queues. They are transient (DEV-1310), and a
+	 * deserialised object runs no field initialisers.
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		mABQPacketByeArray = new ArrayBlockingQueue<RawBytePacketWithPCTimeStamp>(PACKET_QUEUE_CAPACITY);
+		mListofPCTimeStamps = new ArrayList<Long>();
+		mListofInstructions = new ArrayList<byte[]>();
+	}
 
 	/**
 	 * @return the mListofInstructions
