@@ -93,6 +93,26 @@ public class API_00029_LiveViewportFrameClockTest {
 		assertTrue("caught up within 1 s of the stall ending: "+recoveredAt, recoveredAt>0 && recoveredAt-stallTo <= 1000);
 	}
 
+	/** While catching up after a stall the window trails the newest sample by more than in steady
+	 * running; the trace margin must cover that lag at every stall length up to the resync
+	 * threshold, or a blank strip shows at the window's left edge until it has caught up. */
+	@Test
+	public void dataStall_lagStaysWithinTraceMargin_forStallsUpToResync() throws Exception {
+		for(double stallMs : new double[]{300, 600, 900, 980}){
+			setUp();
+			double stallFrom = 10000, stallTo = stallFrom+stallMs, worstLag = 0;
+			for(double t=TICK_MS; t<14000; t+=TICK_MS){
+				deliver(t-TICK_MS, t, 60, stallFrom, stallTo);
+				double end = tick(t);
+				if(t>2000){
+					worstLag = Math.max(worstLag, newestX()-end);
+				}
+			}
+			assertTrue("stall "+stallMs+" ms: lag "+worstLag+" within the trace margin",
+					worstLag <= BasicPlotManagerPC.LIVE_VIEWPORT_TRACE_MARGIN_MS);
+		}
+	}
+
 	@Test
 	public void longEdtStall_stepIsElapsedTimeNotDoubled() throws Exception {
 		double t = 0, prevT = 0, prevEnd = Double.NaN;

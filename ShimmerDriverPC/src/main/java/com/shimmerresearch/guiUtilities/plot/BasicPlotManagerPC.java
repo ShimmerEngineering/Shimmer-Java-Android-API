@@ -98,7 +98,9 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	 * sample. Written by the data thread in filterDataAndPlot(); volatile because the live-viewport
 	 * frame clock reads it on the EDT (DEV-896). */
 	protected volatile double mCurrentXValue = 0;
-	protected boolean mIsPlotPaused = false;
+	/** volatile: set from GUI handlers but read by the live-viewport frame clock tick on the EDT
+	 * and by the data thread, which may not be the thread that set it (DEV-896). */
+	protected volatile boolean mIsPlotPaused = false;
 	public boolean mIsLegendLabelsPainted = true;
 	public boolean mIsScaleLabelsPainted = true;
 	public boolean mIsAxisLabelsPainted = true;
@@ -631,13 +633,16 @@ public class BasicPlotManagerPC extends AbstractPlotManager {
 	public static final double VIEWPORT_LATENCY_MS = 200;
 	/** The frame clock stops once no live sample has arrived for this long. */
 	public static final long FRAME_CLOCK_IDLE_STOP_MS = 2000;
-	/** Extra history a live trace needs while the frame clock runs. A trace sized to exactly the
-	 * window would leave a blank strip of up to ~VIEWPORT_LATENCY_MS at the window's left edge,
-	 * because the window now trails the newest sample. See getLiveViewportTraceMarginInSeconds(). */
-	public static final double LIVE_VIEWPORT_TRACE_MARGIN_MS = 2*VIEWPORT_LATENCY_MS;
 	/** Beyond this distance from its target the playout clock snaps instead of slewing: on the
 	 * first tick, after a long stall, or when the X values jump (new session, clock reset). */
 	private static final double FRAME_CLOCK_RESYNC_MS = 1000;
+	/** Extra history a live trace needs while the frame clock runs. A trace sized to exactly the
+	 * window would leave a blank strip at the window's left edge, because the window trails the
+	 * newest sample: by ~VIEWPORT_LATENCY_MS in steady running, but by up to
+	 * FRAME_CLOCK_RESYNC_MS + VIEWPORT_LATENCY_MS while it catches up (at <=2x) after a data stall
+	 * just short of the resync threshold - a longer stall snaps instead. The margin covers that
+	 * worst case. See getLiveViewportTraceMarginInSeconds(). */
+	public static final double LIVE_VIEWPORT_TRACE_MARGIN_MS = FRAME_CLOCK_RESYNC_MS + VIEWPORT_LATENCY_MS;
 	/** Share of the remaining error the playout clock corrects per tick (~0.3 s time constant). */
 	private static final double FRAME_CLOCK_CORRECTION_GAIN = 0.05;
 	/** Largest correction per tick, as a share of that tick's elapsed time, for small errors and
